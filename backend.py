@@ -4,24 +4,26 @@
 import rapidsms
 
 if __name__ == "__main__":
-	
-	# a pointless app to demonstrate the structure
-	# of sms applications without magic decorators
-	class AlphaApp(rapidsms.app.Base):
-		def incoming(msg):
-			msg.respond("Alpha!")
-	
-	# another pointless app
-	class BetaApp(rapidsms.app.Base):
-		def incoming(msg):
-			msg.respond("Beta!")
-	
 	router = rapidsms.router.Router()
+	conf = rapidsms.Config("config.json")
+	
+	# iterate the app names from the config,
+	# and attempt to import each of them
+	for app_name in conf["apps"]:
+		try:
+			app_mod_str = "apps.%s.app" % (app_name)
+			app_mod = __import__(app_mod_str, {}, {}, [''])
+			router.register_app(app_mod.App())
+		
+		# it's okay if an app couldn't be loaded
+		# TODO: proper logging here (and everywhere!)
+		except ImportError, err:
+			print "Couldn't import app: %s" % (app_name)
 	
 	# register all apps with rapidsms, to
 	# start receiving incoming messages
-	router.register_app(AlphaApp())
-	router.register_app(BetaApp())
+	#router.register_app(AlphaApp())
+	#router.register_app(BetaApp())
 	
 	# wait for incoming sms
 	router.serve_forever()
