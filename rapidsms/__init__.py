@@ -4,3 +4,6 @@
 import app
 import router
 import spomsky
+from config import Config
+
+#__all__ = ("Config")
