@@ -1,0 +1,4 @@
+This module will eventually be distributed as an independant library (via apt-get or
+whatever), so rapidsms instances can be deployed without it. Hopefully, most of the
+code from backend.py can also be moved into here, to keep the amount of duplication
+down.
