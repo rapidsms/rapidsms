@@ -20,10 +20,5 @@ if __name__ == "__main__":
 		except ImportError, err:
 			print "Couldn't import app: %s" % (app_name)
 	
-	# register all apps with rapidsms, to
-	# start receiving incoming messages
-	#router.register_app(AlphaApp())
-	#router.register_app(BetaApp())
-	
 	# wait for incoming sms
 	router.serve_forever()
