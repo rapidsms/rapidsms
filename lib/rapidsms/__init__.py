@@ -3,7 +3,8 @@
 
 import app
 import router
-import spomsky
+import backends
+#import backend.spomsky
 from config import Config
 
 #__all__ = ("Config")

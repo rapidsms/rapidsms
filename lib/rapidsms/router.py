@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-import spomsky
+#import backend.spomsky
 import time
 
 class Router:
@@ -12,16 +12,15 @@ class Router:
     def register_app(self, app):
         self.apps.append(app)
 
-    def add_backend(self, *args):
-        self.backends.append(
-            spomsky.Client(*args))
+    def add_backend(self, backend):
+        self.backends.append(backend)
 
     def serve_forever(self):
 
         # if no backends have been set up, add one with
         # no arguments, for local dev and debugging
         if len(self.backends) == 0:
-            self.add_backend()
+            self.add_backend(backend.spomsky.Client())
 
         # dump some debug info for now
         print "BACKENDS: %r" % (self.backends)
