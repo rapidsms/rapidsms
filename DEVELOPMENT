@@ -1,0 +1,18 @@
+To develop RapidSMS, you'll need to symlink
+a few subdirectories into your Python path,
+because we're currently developing more than
+one library in a single repository.
+
+In Bash, we do this:
+
+  cd rapidsms/lib
+  sudo ln -s * /usr/lib/python2.6/site-packages
+
+Now all of the subdirectories (which are
+Python modules) of lib are available globally.
+This obviously means that you can only run a
+single version of RapidSMS on each computer.
+
+We're going to find a better way to do this,
+just not right now. Relative imports sounds
+good.
