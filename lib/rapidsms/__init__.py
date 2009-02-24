@@ -1,9 +1,10 @@
 #!/usr/bin/env python
-# vim: noet
+# vim: ai ts=4 sts=4 et sw=4
 
 import app
 import router
-import spomsky
+import backends
+#import backend.spomsky
 from config import Config
 
 #__all__ = ("Config")
