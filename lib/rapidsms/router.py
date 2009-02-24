@@ -9,7 +9,7 @@ class Router:
         self.backends = []
         self.apps = []
 
-    def register_app(self, app):
+    def add_app(self, app):
         self.apps.append(app)
 
     def add_backend(self, backend):
@@ -31,3 +31,8 @@ class Router:
         # with a thread for each backend
         while(True):
             time.sleep(1)
+
+    def receive(self, message):
+        for app in self.apps:
+            app.receive(message)
+
