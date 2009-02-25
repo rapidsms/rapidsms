@@ -5,7 +5,7 @@ import unittest
 import rapidsms.backends
 
 
-class MockRouter():
+class MockRouter(object):
     def __init__(self):
         self.messages = []
     
