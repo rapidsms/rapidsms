@@ -2,7 +2,7 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 
-class Base():
+class Base(object):
     pass
 
 #    def start(self):
