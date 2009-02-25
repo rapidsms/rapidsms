@@ -38,6 +38,7 @@ class TestBackend(unittest.TestCase):
     # things to test:
     #   sending messages (without *really* doing it)
     #   arity of api methods (use inspect.getargspec)
+    #   individual tests for required API methods
 
 
 if __name__ == "__main__":
