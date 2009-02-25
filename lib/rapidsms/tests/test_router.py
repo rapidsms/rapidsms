@@ -5,11 +5,11 @@ import unittest
 import rapidsms
 
 
-class MockBackend():
+class MockBackend(object):
     pass
 
 
-class MockApp():
+class MockApp(object):
     
     def __init__(self):
         self.received_message = False
