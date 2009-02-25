@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-import spomsky
+#import backends.Spomsky
 import time
 
 class Router:
@@ -16,12 +16,10 @@ class Router:
         self.backends.append(backend)
 
     def serve_forever(self):
-
         # if no backends have been set up, add one with
         # no arguments, for local dev and debugging
-        if len(self.backends) == 0:
-            #spomsky Client needs something for host and port
-            self.add_backend(spomsky.Client(None,None))
+        #if len(self.backends) == 0:
+        #    self.add_backend(backend.spomsky.Client())
 
         # dump some debug info for now
         print "BACKENDS: %r" % (self.backends)
@@ -33,10 +31,18 @@ class Router:
         while(True):
             time.sleep(1)
 
-    def receive(self, message):
-        for app in self.apps:
-            app.receive(message)
-
-    def register_app(self, app):
-        #bare minimum needed to succeed at test
-        pass 
+    def dispatch_incoming(self, message):                            
+        for app in self.apps:                                        
+            try:
+                print "DISPATCHED INCOMING %s to %s" % (message, app)
+                app.incoming(message)                                
+            except AttributeError:                                        
+                pass                                                 
+    
+    def dispatch_outgoing(self, message):                            
+        for app in self.apps:                                        
+            try:
+                print "DISPATCHED OUTGOING %s to %s" % (message, app)
+                app.outgoing(message)                                
+            except AttributeError:                                        
+                pass
