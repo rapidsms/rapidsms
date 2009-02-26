@@ -39,10 +39,9 @@ class Router:
             except AttributeError:                                        
                 pass                                                 
     
-    def dispatch_outgoing(self, message):                            
-        for app in self.apps:                                        
-            try:
-                print "DISPATCHED OUTGOING %s to %s" % (message, app)
-                app.outgoing(message)                                
-            except AttributeError:                                        
-                pass
+    def dispatch_outgoing(self, message):                                         
+        try:
+            print "DISPATCHED OUTGOING %s to %s" % (message, message.backend)
+            message.backend.send(message)                                
+        except AttributeError:                                        
+            pass
