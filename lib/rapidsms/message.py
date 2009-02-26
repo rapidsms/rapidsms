@@ -15,7 +15,6 @@ class Message(object):
 
     @property
     def backend(self):
-        
         # backend is read-only, since it's an
         # immutable property of this object
         return self._backend
@@ -23,4 +22,13 @@ class Message(object):
     def send(self):
         """Send this message via self.backend, returning
            True if the message was sent successfully."""
-        return self.backend.send(self)
+        return self._backend.router.dispatch_outgoing(self)
+
+    def respond(self, text):
+        """Send the given text back to the original caller of this
+           message on the same route that it came in on"""
+        if self.caller: 
+            return self.backend.router.dispatch_outgoing(
+                Message(self._backend, self.caller, text))
+        else: 
+            return False
