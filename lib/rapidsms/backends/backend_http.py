@@ -65,3 +65,6 @@ class Http(Base):
         msg = Message(self, caller, text)
         # and send it off to the router
         self.router.dispatch_incoming(msg)
+        
+    def send(self, message):
+        print "Message \"%s\" sent to \"%s\"" % (message.text, message.caller)

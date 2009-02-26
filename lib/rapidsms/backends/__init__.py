@@ -3,3 +3,4 @@
 
 from backend_base import Base
 from backend_spomsky import Spomsky
+from backend_http import Http

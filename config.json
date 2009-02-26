@@ -1,1 +1,2 @@
-{ "apps": ["alpha", "beta", "gamma"] }
+{ "apps": ["alpha", "beta", "gamma"], 
+  "backends": ["spomsky", "http"] }
