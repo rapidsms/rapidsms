@@ -22,9 +22,8 @@ class HttpHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             self.end_headers()
             return
         
-        # if the path is of the form /integer/blah we want
-        # want to send a new message from integer with
-        # content blah
+        # if the path is of the form /integer/blah 
+        # send a new message from integer with content blah
         send_regex = re.compile(r"^/(\d{6})/(.*)")
         match = send_regex.match(self.path)
         if match:
@@ -43,7 +42,7 @@ class HttpHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         return
         
     def do_POST(self):
-        # TODO mobe the actual sending over to here
+        # TODO move the actual sending over to here
         return
 
 
