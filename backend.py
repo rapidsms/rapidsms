@@ -19,6 +19,20 @@ if __name__ == "__main__":
     log.info("RapidSMS Server starting up...")
     router = rapidsms.router.Router()
 
+    # import the webui (django) directory so that
+    # we have the settings module for any apps
+    # that may be using the database
+    # TODO: make a check for if we have a webui...
+    try:
+        import webui
+        import django
+        from django.core.management import setup_environ
+        from webui import settings
+        setup_environ(settings)
+    # TODO: proper logging here and everywhere!
+    except ImportError, err:
+        print "Couldn't import webui, check your webui settings module"
+
     # iterate the app names from the config,
     # and attempt to import each of them
     #for app_name in conf["apps"]:
