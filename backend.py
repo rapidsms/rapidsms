@@ -4,11 +4,27 @@
 import rapidsms
 
 if __name__ == "__main__":
-    router = rapidsms.router.Router()
+    # load the local config file
     conf = rapidsms.Config("config.json")
+    
+    # setup the log
+    import rapidsms.log
+    log_level, log_file = "debug", None
+    if conf.has_key("log"): 
+        log_level = conf["log"][0].lower()
+        log_file = conf["log"][1]
+    log = rapidsms.log.Log(log_level, log_file)
+    
+    # load up the message router
+    log.info("RapidSMS Server starting up...")
+    router = rapidsms.router.Router()
 
     # iterate the app names from the config,
     # and attempt to import each of them
+    #for app_name in conf["apps"]:
+    #    app_module_str = "apps.%s.app" % (app_name)
+    #    app_module = __import__(app_module_str, {}, {}, [''])
+    #    router.add_app(app_module.App())
     for app_name in conf["apps"]:
         try:
             app_module_str = "apps.%s.app" % (app_name)
