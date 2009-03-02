@@ -48,7 +48,7 @@ class HttpHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 
 class Http(Base):
     
-    def __init__(self, router, host="localhost", port=8000):
+    def __init__(self, router, host="localhost", port=8080):
         self.server = BaseHTTPServer.HTTPServer((host, port), HttpHandler)
         # set this backend in the server instance so it 
         # can callback when a message is received
