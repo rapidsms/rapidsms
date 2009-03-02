@@ -48,7 +48,7 @@ if __name__ == "__main__":
         # it's okay if an app couldn't be loaded
         # TODO: proper logging here (and everywhere!)
         except ImportError, err:
-            print "Couldn't import app: %s" % (app_name)
+            log.error("Couldn't import app: %s" % (app_name))
 
     # iterate the backend names from the config,
     # and attempt to connect to each of them
@@ -65,10 +65,10 @@ if __name__ == "__main__":
         # it's okay if a backend couldn't be loaded
         # TODO: proper logging here (and everywhere!)
         except ImportError, err:
-            print "Couldn't import backend: %s" % (backend_class)
+            log.error("Couldn't import backend: %s" % (backend_class))
         except AttributeError, err:
-            print "Backend: %s does not have class: %s" % \
-                (backend_name, backend_class)
+            log.error("Backend: %s does not have class: %s" % \
+                (backend_name, backend_class))
 
     # wait for incoming sms
     router.serve_forever()
