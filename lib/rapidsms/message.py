@@ -12,6 +12,9 @@ class Message(object):
         # initialize some empty attributes
         self.received = None
         self.sent = None
+    
+    def __unicode__(self):
+        return self.text
 
     @property
     def backend(self):
