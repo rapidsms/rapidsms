@@ -12,5 +12,8 @@ class Config():
         self.raw = f.read()
         self.data = simplejson.loads(self.raw)
 
-    def __getitem__(self, items):
-        return self.data[items]
+    def __getitem__(self, key):
+        return self.data[key]
+        
+    def has_key(self, key):
+        return self.data.has_key(key)
