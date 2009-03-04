@@ -6,7 +6,7 @@ import thread
 import random
 import re
 
-from backend_base import Base
+from base import Base
 from rapidsms.message import Message
 
 
