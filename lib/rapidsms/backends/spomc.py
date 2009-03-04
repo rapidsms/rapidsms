@@ -5,7 +5,7 @@ from backend import Backend
 import spomsky
 
 
-class Spomsky(Backend):
+class Spomc(Backend):
     
     def __init__(self, router, host="localhost", port="8100"):
         self.client = spomsky.Client(host, port)

@@ -19,15 +19,17 @@ class TestBackend(unittest.TestCase):
 
     def setUp(self):
         self.mock_router = MockRouter()
-        self.backend = rapidsms.backends.Spomsky(self.mock_router)
+        self.backend = rapidsms.backends.Spomc(self.mock_router)
     
     def tearDown(self):
         pass
     
     def test_api(self):
         for m in self.REQUIRED_METHODS:
-            has_method = hasattr(self.backend, m)
-            self.assertTrue(has_method, "Missing method: %s" % (m))
+            base_method = getattr(self.backend.super, m)
+            backend_method = getattr(self.backend, m)
+            self.assertTrue(base_method != backend_method, 
+                "Missing method: %s" % (m))
 
     def test_notifies_router(self):
         n = len(self.mock_router.messages)
