@@ -57,7 +57,7 @@ class Http(Backend):
         thread.start_new_thread(self.__serve_forever, ())
         
     def __serve_forever(self):
-        print "Http backend up and running..."
+        self.info("Http backend up and running...")
         self.server.serve_forever()
     
     def receive(self, caller, text):
@@ -67,4 +67,4 @@ class Http(Backend):
         self.router.dispatch_incoming(msg)
         
     def send(self, message):
-        print "Message \"%s\" sent to \"%s\"" % (message.text, message.caller)
+        self.info("Message \"%s\" sent to \"%s\"" % (message.text, message.caller))
