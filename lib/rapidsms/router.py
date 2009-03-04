@@ -3,7 +3,7 @@
 
 import time
 
-class Router (object)
+class Router (object):
     def __init__(self):
         self.backends = []
         self.apps = []
