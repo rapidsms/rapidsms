@@ -4,7 +4,7 @@
 import rapidsms
 
 # another pointless app
-class App(rapidsms.app.Base):
+class App(rapidsms.app.App):
 
     def incoming(self, message):
         message.respond("Beta!")
