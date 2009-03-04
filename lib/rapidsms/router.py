@@ -2,11 +2,17 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 import time
+import log
 
 class Router:
     def __init__(self):
         self.backends = []
         self.apps = []
+        self.log = log.Log()
+
+    def log(self, level, message):
+        # call the function "level" on self.log
+        getattr(self.log, level)(message)
 
     def add_app(self, app):
         self.apps.append(app)

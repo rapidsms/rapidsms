@@ -20,7 +20,7 @@ LOG_FORMAT  = "%(asctime)s %(levelname)s: %(message)s"
 class Log():
     """A simple wrapper around the standard python logger."""
 
-    def __init__(self, log_level="debug", log_file=None):
+    def __init__(self, log_level="debug", log_file="/tmp/rapidsms.log"):
         try:
             # set up a specific logger with our desired output level
             import random          
