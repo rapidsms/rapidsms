@@ -8,3 +8,21 @@ class App(object):
         
     def log(self, level, message):
         router.log(level, message)
+
+    def start (self):
+        pass
+
+    def parse (self, message):
+        pass
+
+    def handle (self, message):
+        pass
+
+    def cleanup (self, message):
+        pass
+
+    def outgoing (self, message):
+        pass
+
+    def stop (self):
+        pass
