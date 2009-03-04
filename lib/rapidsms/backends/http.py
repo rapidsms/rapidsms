@@ -6,7 +6,7 @@ import thread
 import random
 import re
 
-from base import Base
+from backend import Backend
 from rapidsms.message import Message
 
 
@@ -46,7 +46,7 @@ class HttpHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         return
 
 
-class Http(Base):
+class Http(Backend):
     
     def __init__(self, router, host="localhost", port=8080):
         self.server = BaseHTTPServer.HTTPServer((host, port), HttpHandler)

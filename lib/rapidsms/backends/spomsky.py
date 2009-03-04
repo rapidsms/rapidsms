@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-from base import Base
+from backend import Backend
 import spomsky
 
 
-class Spomsky(Base):
+class Spomsky(Backend):
     
     def __init__(self, router, host="localhost", port="8100"):
         self.client = spomsky.Client(host, port)
