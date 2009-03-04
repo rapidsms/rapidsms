@@ -25,13 +25,13 @@ class Message(object):
     def send(self):
         """Send this message via self.backend, returning
            True if the message was sent successfully."""
-        return self._backend.router.dispatch_outgoing(self)
+        return self._backend.router.outgoing(self)
 
     def respond(self, text):
         """Send the given text back to the original caller of this
            message on the same route that it came in on"""
         if self.caller: 
-            return self.backend.router.dispatch_outgoing(
+            return self.backend.router.outgoing(
                 Message(self._backend, self.caller, text))
         else: 
             return False
