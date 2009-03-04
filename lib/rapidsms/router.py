@@ -3,7 +3,7 @@
 
 import time
 
-class Router:
+class Router (object)
     def __init__(self):
         self.backends = []
         self.apps = []
@@ -25,7 +25,7 @@ class Router:
         while(True):
             time.sleep(1)
 
-    def dispatch_incoming(self, message):      
+    def incoming(self, message):      
         # loop through all of the apps and notify them of
         # the incoming message so that they all get a
         # chance to do what they will with it                      
@@ -38,7 +38,7 @@ class Router:
                 # messages then just fail silently
                 pass                                                 
     
-    def dispatch_outgoing(self, message):
+    def outgoing(self, message):
         # first notify all of the apps that want to know
         # about outgoing messages so that they can do what
         # they will before the message is actually sent
