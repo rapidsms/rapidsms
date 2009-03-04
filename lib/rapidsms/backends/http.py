@@ -1,17 +1,15 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-import BaseHTTPServer
-import thread
+import BaseHTTPServer, SocketServer
+import select
 import random
 import re
 
 from backend import Backend
 from rapidsms.message import Message
 
-
 class HttpHandler(BaseHTTPServer.BaseHTTPRequestHandler):
-    
     def do_GET(self):
         # if the path is just "/" then start a new session
         # and redirect to that session's URL
@@ -45,26 +43,29 @@ class HttpHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         # TODO move the actual sending over to here
         return
 
+class HttpServer (SocketServer.ThreadingMixIn, BaseHTTPServer.HTTPServer):
+    def handle_request (self, timeout=1.0):
+        # don't block on handle_request
+        if select.select((self,),(),(),timeout)[0]:
+            super(self)
 
 class Http(Backend):
-    
     def __init__(self, router, host="localhost", port=8080):
-        self.server = BaseHTTPServer.HTTPServer((host, port), HttpHandler)
+        self.server = HttpServer((host, port), HttpHandler)
         # set this backend in the server instance so it 
         # can callback when a message is received
         self.server.backend = self
         self.router = router
-        thread.start_new_thread(self.__serve_forever, ())
         
-    def __serve_forever(self):
-        print "Http backend up and running..."
-        self.server.serve_forever()
+    def run (self):
+        while self.running:
+            self.handle_request()
     
     def receive(self, caller, text):
         # turn the caller/text into a message object
         msg = Message(self, caller, text)
         # and send it off to the router
-        self.router.dispatch_incoming(msg)
+        self.router.incoming(msg)
         
     def send(self, message):
         print "Message \"%s\" sent to \"%s\"" % (message.text, message.caller)
