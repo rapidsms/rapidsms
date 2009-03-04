@@ -46,7 +46,9 @@ class HttpHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 class HttpServer (SocketServer.ThreadingMixIn, BaseHTTPServer.HTTPServer):
     def handle_request (self, timeout=1.0):
         # don't block on handle_request
-        if select.select((self,),(),(),timeout)[0]:
+        reads, writes, errors = (self,), (), ()
+        reads, writes, errors = select.select(reads, writes, errors, timeout)
+        if reads:
             super(self)
 
 class Http(Backend):
