@@ -8,13 +8,27 @@ class Router (object):
         self.backends = []
         self.apps = []
 
-    def add_app(self, app):
+    def add_app (self, app):
         self.apps.append(app)
 
-    def add_backend(self, backend):
+    def add_backend (self, backend):
         self.backends.append(backend)
 
-    def serve_forever(self):
+    def start_backend (self, backend):
+        while True:
+            try:
+                # start the backend
+                backend.start()
+                # if backend execution completed normally, end the thread
+                break
+            except Exception, e:
+                # an exception was raised in backend.start()
+                # sleep for 5 seconds, then loop and restart it
+                print "%s raised exception: %s" % (backend,e)
+                time.sleep(5)
+                print "restarting %s" % (backend,)
+
+    def start (self):
         # dump some debug info for now
         print "BACKENDS: %r" % (self.backends)
         print "APPS: %r" % (self.apps)
@@ -23,7 +37,7 @@ class Router (object):
         workers = []
         # launch each backend in its own thread
         for backend in self.backends:
-            worker = threading.Thread(target=backend.start)
+            worker = threading.Thread(target=start_backend, args=(backend,))
             worker.start()
             workers.append(worker)
 
