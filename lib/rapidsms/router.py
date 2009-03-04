@@ -4,6 +4,9 @@
 import time, threading
 
 class Router (object):
+    incoming_phases = ('parse', 'handle', 'cleanup')
+    outgoing_phases = ('outgoing',)
+
     def __init__(self):
         self.backends = []
         self.apps = []
@@ -60,17 +63,17 @@ class Router (object):
         # loop through all of the apps and notify them of
         # the incoming message so that they all get a
         # chance to do what they will with it                      
-        for app in self.apps:                                        
-            app.incoming(message)
-            print "DISPATCHED INCOMING %s to %s" % (message, app)
+        for phase in self.incoming_phases:
+            for app in self.apps:                                        
+                getattr(app, phase)(message)
 
     def outgoing(self, message):
         # first notify all of the apps that want to know
         # about outgoing messages so that they can do what
         # they will before the message is actually sent
-        for app in self.apps:
-            app.outgoing(message)
-            print "DISPATCHED OUTGOING %s to %s" % (message, app)
+        for phase in self.outgoing_phases:
+            for app in self.apps:
+                getattr(app, phase)(message)
 
         # now send the message out
         print "SENT MESSAGE %s to %s" % (message, message.backend)
