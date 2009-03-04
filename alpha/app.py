@@ -5,7 +5,7 @@ import rapidsms
 
 # a pointless app to demonstrate the structure
 # of sms applications without magic decorators
-class App(rapidsms.app.Base):
+class App(rapidsms.app.App):
 
     def incoming(self, message):
         message.respond("Alpha!")
