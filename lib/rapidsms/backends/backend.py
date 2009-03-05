@@ -40,6 +40,7 @@ class Backend(rapidsms.component.Component):
         # and send it off to the router
         self.router.incoming(msg)
     
+    @property
     def has_outgoing (self):
         return self._queue.qsize()
  
