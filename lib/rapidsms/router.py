@@ -74,15 +74,19 @@ class Router (component.Receiver):
             if msg is not None:
                 self.incoming(msg)
 
-    def incoming(self, message):      
+    def incoming(self, message):   
+        self.info("Incoming message: %r" % (message))
+           
         # loop through all of the apps and notify them of
         # the incoming message so that they all get a
         # chance to do what they will with it                      
         for phase in self.incoming_phases:
-            for app in self.apps:                                        
+            for app in self.apps:
                 getattr(app, phase)(message)
 
     def outgoing(self, message):
+        self.info("Outgoing message: %r" % (message))
+        
         # first notify all of the apps that want to know
         # about outgoing messages so that they can do what
         # they will before the message is actually sent
