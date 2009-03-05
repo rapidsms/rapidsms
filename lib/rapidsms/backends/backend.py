@@ -2,6 +2,7 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 from rapidsms.component import Receiver
+from rapidsms.message import Message
 
 class Backend (Receiver):
     def __init__ (self, router):
@@ -31,4 +32,4 @@ class Backend (Receiver):
 
     def route(self, msg):
         # send it off to the router
-        self._router.incoming(msg)
+        self.router.send(msg)
