@@ -55,7 +55,7 @@ class Irc(Backend):
             return # not for me
         nick = nick.split("!")[0]
         if nick == self.nick:
-            self.info("routing public message from %s", event.source)
+            self.info("routing public message from %s", event.source())
             caller = event.source().split("!")[0]
             msg = self.message(caller, txt)
             msg.irc_channel = event.target()
