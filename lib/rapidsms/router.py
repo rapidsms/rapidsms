@@ -35,15 +35,15 @@ class Router (component.Receiver):
             except Exception, e:
                 # an exception was raised in backend.start()
                 # sleep for 5 seconds, then loop and restart it
-                self.log.error("%s raised exception: %s" % (backend,e))
+                self.error("%s raised exception: %s" % (backend,e))
                 time.sleep(5)
-                self.log.error("restarting %s" % (backend,))
+                self.error("restarting %s" % (backend,))
 
     def start (self):
         # dump some debug info for now
-        self.log.info("BACKENDS: %r" % (self.backends))
-        self.log.info("APPS: %r" % (self.apps))
-        self.log.info("SERVING FOREVER...")
+        self.info("BACKENDS: %r" % (self.backends))
+        self.info("APPS: %r" % (self.apps))
+        self.info("SERVING FOREVER...")
 
         workers = []
         # launch each backend in its own thread
@@ -90,6 +90,6 @@ class Router (component.Receiver):
                 getattr(app, phase)(message)
 
         # now send the message out
-        self.log.info("SENT MESSAGE %s to %s" % (message, message.backend))
+        self.info("SENT MESSAGE %s to %s" % (message, message.backend))
         message.backend.send(message)
         
