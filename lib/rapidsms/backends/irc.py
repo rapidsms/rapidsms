@@ -1,10 +1,12 @@
+import irclib
+
 from backend import Backend
 from rapidsms.message import Message
 
 class Irc(Backend):
     def __init__(self, router, host="irc.freenode.net", port=6667,
                  nick="rapidsms", channels=["#rapidsms"]):
-        super(Backend,self).__init__(router)
+        Backend.__init__(self,router)
         self.host = host
         self.port = port
         self.nick = nick
@@ -12,28 +14,54 @@ class Irc(Backend):
 
         self.irc = irclib.IRC()
         self.irc.add_global_handler("privmsg", self.privmsg)
+        self.irc.add_global_handler("pubmsg", self.privmsg)
         
     def run (self):
-        self.server = irc.server()
+        self.info("Connecting to %s as %s", self.host, self.nick)
+        self.server = self.irc.server()
         self.server.connect(self.host, self.port, self.nick)
-        for channel in channels:
+
+        for channel in self.channels:
+            self.info("Joining %s on %s", channel, self.host)    
             self.server.join(channel)
 
         while self.running:
             if self.message_waiting:
                 msg = self.next_message()
-                # oops we have to throw the message away
+                self.outgoing(msg)
             self.irc.process_once(timeout=1.0)
 
-    def privmsg (self, connection, event):
-        self.info("%s -> %s: %r", event.source, event.target, event.arguments)
+        self.info("Shutting down...")
+        self.server.disconnect()
+
+    def outgoing (self, msg):
         try:
-            nick, txt = map(str.strip, event.arguments[0].split(":"))
+            channel = msg.irc_channel
+        except AttributeError:
+            channel = self.channels[0]
+        if channel:
+            target = channel
+        else:
+            target = msg.caller
+        self.server.privmsg(target, "%s: %s" % (msg.caller, msg.text))
+
+    def pubmsg (self, connection, event):
+        self.info("%s -> %s: %r", event.source(), event.target(), event.arguments())
+        try:
+            nick, txt = map(str.strip, event.arguments()[0].split(":"))
         except ValueError:
-            nick, txt = None, event.arguments[0]
-        if event.target == self.nick or nick == self.nick:
-            self.info("routing message from %s", event.source)
-            msg = self.message(event.source, txt)
-            msg.irc_event = event
+            nick, txt = "", event.arguments()[0]
+        nick = nick.split("!")[0]
+        if nick == self.nick:
+            self.info("routing public message from %s", event.source)
+            msg = self.message(event.source(), txt)
+            msg.irc_channel = event.target()
             self.route(msg)
 
+    def privmsg (self, connection, event):
+        self.info("%s -> %s: %r", event.source(), event.target(), event.arguments())
+        if event.target() == self.nick:
+            self.info("routing private message from %s", event.source())
+            msg = self.message(event.source(), event.arguments()[0])
+            msg.irc_channel = None
+            self.route(msg)
