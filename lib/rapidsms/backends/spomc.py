@@ -9,7 +9,7 @@ class Spomc(Backend):
     
     def __init__(self, router, host="localhost", port="8100"):
         self.client = spomsky.Client(host, port)
-        self.router = router
+        super(Backend,self).__init_(router)
 
     def start(self):
         #bare minimum to pass test
