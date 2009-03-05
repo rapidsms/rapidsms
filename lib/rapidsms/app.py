@@ -6,7 +6,7 @@ import component
 class App(component.Component):
     
     def __init__(self, router):
-        self.router = router
+        self._router = router
             
     def _get_name(self):
         if hasattr(self, '_name'):
