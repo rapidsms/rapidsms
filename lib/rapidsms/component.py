@@ -1,19 +1,48 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
+import Queue
+
 class Component(object):
+    @property
+    def router (self):
+        if hasattr(self._router):
+            return self._router
     
+    def log(self, level, msg):
+        if self.router: self.router.log(level, msg)
+
     def debug(self, msg):
-        if self.router: self.router.log('debug', msg)
+        self.log('debug', msg)
     
     def info(self, msg):
-        if self.router: self.router.log('info', msg)
+        self.log('info', msg)
         
     def warning(self, msg):
-        if self.router: self.router.log('warning', msg)
+        self.log('warning', msg)
     
     def error(self, msg):
-        if self.router: self.router.log('error', msg)
+        self.log('error', msg)
     
     def critical(self, msg):
-        if self.router: self.router.log('critical', msg)
+        self.log('critical', msg)
+
+class Receiver(object):
+    # do we want to put a limit on the queue size?
+    # and what do we do if the queue gets full?
+    self._queue = Queue.Queue()
+
+    @property
+    def message_waiting (self):
+        return self._queue.qsize()
+ 
+    def next_message (self):
+        try:
+            return self._queue.get_nowait()
+        except Queue.Empty:
+            return None
+
+    def send(self, message):
+        # block until we can add to the queue.
+        # it shouldn't be that long.
+        self._queue.put(message, True)
