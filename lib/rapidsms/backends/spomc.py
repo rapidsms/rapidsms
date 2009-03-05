@@ -17,11 +17,11 @@ class Spomc(Backend):
     def __callback(self, source, message_text):
         
         # drop the "sms://" protocol from the source
-        phone_number = re.compile("[a-z]+://").sub(source, "")
+        phone_number = re.compile("[a-z]+://").sub("", source)
         
         # create a message object, and
         # pass it off to the router
-        m = Message(phone_number, message_text)
+        m = Message(self, phone_number, message_text)
         self.router.send(m)
 
     def send(self, message):
