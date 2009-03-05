@@ -1,10 +1,12 @@
+import irclib
+
 from backend import Backend
 from rapidsms.message import Message
 
 class Irc(Backend):
     def __init__(self, router, host="irc.freenode.net", port=6667,
                  nick="rapidsms", channels=["#rapidsms"]):
-        super(Backend,self).__init__(router)
+        Backend.__init__(self,router)
         self.host = host
         self.port = port
         self.nick = nick
@@ -14,9 +16,9 @@ class Irc(Backend):
         self.irc.add_global_handler("privmsg", self.privmsg)
         
     def run (self):
-        self.server = irc.server()
+        self.server = self.irc.server()
         self.server.connect(self.host, self.port, self.nick)
-        for channel in channels:
+        for channel in self.channels:
             self.server.join(channel)
 
         while self.running:
