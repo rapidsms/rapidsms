@@ -16,7 +16,7 @@ class Component(object):
         if hasattr(self, '_name'):
             return self._name
         else:
-            return unicode(type(self))   
+            return unicode(type(self).__name__)   
 
     def _set_name(self, name):
         self._name = name
