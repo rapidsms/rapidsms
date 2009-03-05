@@ -9,7 +9,7 @@ import sys
 LOG_CHANNEL = "rapidsms"
 LOG_SIZE    = 8192 # 8192 bytes = 64 kb
 LOG_BACKUPS = 256 # number of logs to keep around
-LOG_FORMAT  = "%(asctime)s %(levelname)s [%(component)%s]: %(message)s"
+LOG_FORMAT  = "%(asctime)s %(levelname)s [%(component)s]: %(message)s"
 
 class Logger (object):
     """A simple wrapper around the standard python logger."""

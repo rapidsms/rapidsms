@@ -9,14 +9,14 @@ def _logging_method (level):
 class Component(object):
     @property
     def router (self):
-        if hasattr(self._router):
+        if hasattr(self, "_router"):
             return self._router
 
     def _get_name(self):
         if hasattr(self, '_name'):
             return self._name
         else:
-            return unicode(type(self))   
+            return unicode(type(self).__name__)   
 
     def _set_name(self, name):
         self._name = name
