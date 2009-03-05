@@ -69,7 +69,10 @@ class Router (component.Receiver):
             
         self.running = False
         for backend in self.backends:
-            backend.stop()
+            try:
+                backend.stop()
+            except Exception, e:
+                self.error("%s raised exception on stop: %s" % (backend.name,e))
         
         for worker in workers:
             worker.join()
