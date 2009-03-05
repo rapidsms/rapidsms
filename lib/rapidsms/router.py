@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-import time
+import time, datetime
 import threading
 
 import component
@@ -14,12 +14,10 @@ class Router (component.Receiver):
     def __init__(self):
         self.backends = []
         self.apps = []
-        self.logger = log.Log()
+        self.logger = log.Logger()
 
-    def log(self, level, message):
-        # call the function "level" on self.log
-        # (used by components)
-        getattr(self.logger, level)(message)
+    def log(self, level, msg, *args):
+        self.logger.write(self, level, msg, *args)
 
     def add_app (self, app):
         self.apps.append(app)
