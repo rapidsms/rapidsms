@@ -17,6 +17,7 @@ class Router (object):
 
     def log(self, level, message):
         # call the function "level" on self.log
+        # (used by components)
         getattr(self.log, level)(message)
 
     def add_app (self, app):
