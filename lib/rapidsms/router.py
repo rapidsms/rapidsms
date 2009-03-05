@@ -12,6 +12,7 @@ class Router (component.Receiver):
     outgoing_phases = ('outgoing',)
 
     def __init__(self):
+        component.Receiver.__init__(self)
         self.backends = []
         self.apps = []
         self.logger = log.Logger()
