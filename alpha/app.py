@@ -7,5 +7,6 @@ import rapidsms
 # of sms applications without magic decorators
 class App(rapidsms.app.App):
 
-    def incoming(self, message):
+    def handle(self, message):
+        self.info("Alpha app got messge!")
         message.respond("Alpha!")
