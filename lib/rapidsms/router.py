@@ -78,10 +78,9 @@ class Router (component.Receiver):
             worker.join()
 
     def run(self):
-        while self.message_waiting:
-            msg = self.next_message(timeout=1.0)
-            if msg is not None:
-                self.incoming(msg)
+        msg = self.next_message(timeout=1.0)
+        if msg is not None:
+            self.incoming(msg)
 
     def incoming(self, message):   
         self.info("Incoming message: %r" % (message))
