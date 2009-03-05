@@ -2,27 +2,34 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 from backend import Backend
+from rapidsms.message import Message
+
 import spomsky
 
 
 class Spomc(Backend):
     
-    def __init__(self, router, host="localhost", port="8100"):
+    def __init__(self, router, host="localhost", port=8100):
+        super(Backend, self).__init__()
         self.client = spomsky.Client(host, port)
-        self.router = router
+        self._router = router
+    
+    def __callback(self, source, message_text):
+        
+        # drop the "sms://" protocol from the source
+        phone_number = re.compile("[a-z]+://").sub(source, "")
+        
+        # create a message object, and
+        # pass it off to the router
+        m = Message(phone_number, message_text)
+        self.router.messages.append(m)
 
+    def send(self, message):
+        destination = "sms://%s" % (message.caller)
+        self.client.send(destination, message.text)
+        
     def start(self):
-        #bare minimum to pass test
-        pass
+        self.client.subscribe(self.__callback)
 
     def stop(self):
-        #bare minimum to pass test
-        pass
-
-    def send(self,message):
-        #bare minimum to pass test
-        pass
-
-    def receive(self, number, message):
-        #bare minimum to pass test
-        self.router.messages.append(message)
+        self.client.unsubscribe()
