@@ -46,7 +46,11 @@ class Router (component.Receiver):
         self.info("BACKENDS: %r" % (self.backends))
         self.info("APPS: %r" % (self.apps))
         self.info("SERVING FOREVER...")
-
+        
+        # call the "start" method of each app
+        for app in self.apps:
+            app.start()
+        
         workers = []
         # launch each backend in its own thread
         for backend in self.backends:
