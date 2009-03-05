@@ -1,11 +1,16 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
+import sys
 import rapidsms
 
 if __name__ == "__main__":
     # load the local config file
-    conf = rapidsms.Config("config.ini")
+    if len(sys.argv) > 1:
+        ini = sys.argv[1]
+    else:
+        ini = "rapidsms.ini"
+    conf = rapidsms.Config(ini)
     
     # load up the message router
     log.info("RapidSMS Server starting up...")
@@ -25,17 +30,13 @@ if __name__ == "__main__":
     except ImportError, err:
         log.error("Couldn't import webui, check your webui settings module")
 
-    # iterate the app names from the config,
-    # and attempt to import each of them
-    #for app_name in conf["apps"]:
-    #    app_module_str = "apps.%s.app" % (app_name)
-    #    app_module = __import__(app_module_str, {}, {}, [''])
-    #    router.add_app(app_module.App())
+    # iterate the app classes from the config,
+    # and instantiate them
     for app_class in conf["apps"]:
         router.add_app(app_class(router))
 
-    # iterate the backend names from the config,
-    # and attempt to connect to each of them
+    # iterate the backend classes from the config,
+    # and instantiate them
     for backend_class in conf["backends"]:
         router.add_backend(backend_class(router))
 
