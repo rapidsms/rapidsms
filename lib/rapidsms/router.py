@@ -37,9 +37,9 @@ class Router (component.Receiver):
             except Exception, e:
                 # an exception was raised in backend.start()
                 # sleep for 5 seconds, then loop and restart it
-                self.error("%s raised exception: %s" % (backend,e))
+                self.error("%s raised exception: %s" % (backend.name,e))
                 time.sleep(5)
-                self.error("restarting %s" % (backend,))
+                self.error("restarting %s" % (backend.name,))
 
     def start (self):
         # dump some debug info for now
