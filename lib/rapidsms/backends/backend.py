@@ -5,10 +5,9 @@ from rapidsms.component import Receiver
 
 class Backend (Receiver):
     def __init__ (self, router):
-        super(Receiver, self).__init__()
+        Receiver.__init__(self)
         self._router = router
-        self.running = False
-        super(Receiver,self).__init__()
+        self._running = False
        
     @property
     def running (self):

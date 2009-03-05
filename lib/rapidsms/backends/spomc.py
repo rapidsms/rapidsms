@@ -10,7 +10,7 @@ import spomsky
 class Spomc(Backend):
     
     def __init__(self, router, host="localhost", port=8100):
-        super(Backend, self).__init__(router)
+        Backend.__init__(self,router)
         self.client = spomsky.Client(host, port)
     
     def __callback(self, source, message_text):
