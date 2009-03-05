@@ -3,58 +3,33 @@
 
 import logging
 import logging.handlers
+import random          
+import sys
 
-
-LOG_LEVELS = {
-    "debug": logging.DEBUG,
-    "info": logging.INFO,
-    "warning": logging.WARNING,
-    "error": logging.ERROR,
-    "critical": logging.CRITICAL
-}
+LOG_CHANNEL = "rapidsms"
 LOG_SIZE    = 8192 # 8192 bytes = 64 kb
 LOG_BACKUPS = 256 # number of logs to keep around
-LOG_FORMAT  = "%(asctime)s %(levelname)s: %(message)s"
+LOG_FORMAT  = "%(asctime)s %(levelname)s [%(component)%s]: %(message)s"
 
-
-class Log():
+class Logger (object):
     """A simple wrapper around the standard python logger."""
-
-    def __init__(self, log_level="debug", log_file="/tmp/rapidsms.log"):
+    def __init__(self, log_level='debug', log_file="/tmp/rapidsms.log"):
+        # set up a specific logger with our desired output level
+        self.log = logging.getLogger(LOG_CHANNEL)
+        self.log.setLevel(getattr(logging, log_level.upper()))
+        formatter = logging.Formatter(LOG_FORMAT)
         try:
-            # set up a specific logger with our desired output level
-            import random          
-            self.log = logging.getLogger(
-                "backend.log.%d" % random.randint(0, 999999))
-            self.log.setLevel(LOG_LEVELS[log_level])
-
             # add the log message handler and formatter to the log
-            log_handler = logging.handlers.RotatingFileHandler(
+            file_handler = logging.handlers.RotatingFileHandler(
                 log_file, maxBytes=LOG_SIZE, backupCount=LOG_BACKUPS)
-            log_handler.setFormatter(logging.Formatter(LOG_FORMAT))
-            self.log.addHandler(log_handler)
-        except:
-            # if we fail starting up the log file, just note it and continue
-            print "Error starting log file, check your config and permissions"
-            self.log = None
+            file_handler.setFormatter(formatter)
+            self.log.addHandler(file_handler)
+        except Exception, e:
+            print >>sys.stderr, "Error starting log file %s: %s" % (log_file,e)
+        stderr_handler = logging.handler.StreamHandler()
+        stderr_handler.setFormatter(formatter)
+        self.log.addHandler(stderr_handler)
         
-    def debug(self, msg):
-        if self.log: self.log.debug(msg)
-        print(msg)
-    
-    def info(self, msg):
-        if self.log: self.log.info(msg)
-        print(msg)
-        
-    def warning(self, msg):
-        if self.log: self.log.warning(msg)
-        print(msg)
-    
-    def error(self, msg):
-        if self.log: self.log.error(msg)
-        print(msg)
-    
-    def critical(self, msg):
-        if self.log: self.log.critical(msg)
-        print(msg)
-
+    def write(self, sender, level, msg, *args):
+        level = getattr(logging, level.upper())
+        self.log.log(level, msg, *args, extra={"component":sender.name})
