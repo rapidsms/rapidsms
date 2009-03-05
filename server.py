@@ -31,7 +31,7 @@ if __name__ == "__main__":
         setup_environ(settings)
     # TODO: proper logging here and everywhere!
     except ImportError, err:
-        print "Couldn't import webui, check your webui settings module"
+        log.error("Couldn't import webui, check your webui settings module")
 
     # iterate the app names from the config,
     # and attempt to import each of them
