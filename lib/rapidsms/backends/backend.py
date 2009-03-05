@@ -26,8 +26,9 @@ class Backend (Receiver):
     def stop(self):
         self._running = False
    
-    def receive(self, caller, text):
-        # turn the caller/text into a message object
-        msg = Message(self, caller, text)
-        # and send it off to the router
+    def message(self, caller, text):
+        return Message(self, caller, text)
+
+    def route(self, msg):
+        # send it off to the router
         self._router.incoming(msg)
