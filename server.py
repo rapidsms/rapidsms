@@ -5,15 +5,7 @@ import rapidsms
 
 if __name__ == "__main__":
     # load the local config file
-    conf = rapidsms.Config("config.json")
-    
-    # setup the log
-    import rapidsms.log
-    log_level, log_file = "debug", None
-    if conf.has_key("log"): 
-        log_level = conf["log"][0].lower()
-        log_file = conf["log"][1]
-    log = rapidsms.log.Log(log_level, log_file)
+    conf = rapidsms.Config("config.ini")
     
     # load up the message router
     log.info("RapidSMS Server starting up...")
@@ -39,36 +31,13 @@ if __name__ == "__main__":
     #    app_module_str = "apps.%s.app" % (app_name)
     #    app_module = __import__(app_module_str, {}, {}, [''])
     #    router.add_app(app_module.App())
-    for app_name in conf["apps"]:
-        try:
-            app_module_str = "apps.%s.app" % (app_name)
-            app_module = __import__(app_module_str, {}, {}, [''])
-            router.add_app(app_module.App())
-
-        # it's okay if an app couldn't be loaded
-        # TODO: proper logging here (and everywhere!)
-        except ImportError, err:
-            log.error("Couldn't import app: %s" % (app_name))
+    for app_class in conf["apps"]:
+        router.add_app(app_class(router))
 
     # iterate the backend names from the config,
     # and attempt to connect to each of them
-    for backend_name in conf["backends"]:
-        try:
-            backend_module_str = "rapidsms.backends"
-            backend_module = __import__(backend_module_str, {}, {}, [''])
-            backend_class = backend_name.capitalize()
-            # dynamically create an instance of the given
-            # backend type from the corresponding backend
-            # module, and pass the router to the constructor
-            router.add_backend(getattr(backend_module, backend_class)(router))
-
-        # it's okay if a backend couldn't be loaded
-        # TODO: proper logging here (and everywhere!)
-        except ImportError, err:
-            log.error("Couldn't import backend: %s" % (backend_class))
-        except AttributeError, err:
-            log.error("Backend: %s does not have class: %s" % \
-                (backend_name, backend_class))
+    for backend_class in conf["backends"]:
+        router.add_backend(backend_class(router))
 
     # wait for incoming sms
     router.start()
