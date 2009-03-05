@@ -50,6 +50,8 @@ class Client(object):
     def __init__(self, server_host="localhost", server_port=8100):
         self.server_host = server_host
         self.server_port = server_port
+        self.subscription_id = None
+        self.server = None
     
     
     def __url(self, path):
@@ -80,6 +82,11 @@ class Client(object):
 
 
     def subscribe(self, callback, my_host="localhost", my_port=INCOMING_PORT):
+        
+        # if we are already
+        # subscribed, abort
+        if self.server:
+            return False
         
         # note down the callback, to be called
         # when a message arrives from the server
@@ -127,7 +134,7 @@ class Client(object):
         # if we are subscribed, then send an HTTP
         # POST request to spomskyd to instruct it
         # to stop sending us messages
-        if hasattr(self, "subscription_id"):
+        if self.subscription_id:
             
             # build the POST form
             data = urllib.urlencode({

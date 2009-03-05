@@ -9,7 +9,7 @@ def _logging_method (level):
 class Component(object):
     @property
     def router (self):
-        if hasattr(self._router):
+        if hasattr(self, "_router"):
             return self._router
 
     def _get_name(self):

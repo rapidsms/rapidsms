@@ -5,6 +5,7 @@ from backend import Backend
 from rapidsms.message import Message
 
 import spomsky
+import re
 
 
 class Spomc(Backend):
@@ -21,7 +22,7 @@ class Spomc(Backend):
         # create a message object, and
         # pass it off to the router
         m = Message(phone_number, message_text)
-        self.router.messages.append(m)
+        self.router.send(m)
 
     def send(self, message):
         destination = "sms://%s" % (message.caller)
