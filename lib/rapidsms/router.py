@@ -13,11 +13,11 @@ class Router (object):
     def __init__(self):
         self.backends = []
         self.apps = []
-        self.log = log.Log()
+        self.logger = log.Log()
 
     def log(self, level, message):
         # call the function "level" on self.log
-        getattr(self.log, level)(message)
+        getattr(self.logger, level)(message)
 
     def add_app (self, app):
         self.apps.append(app)
