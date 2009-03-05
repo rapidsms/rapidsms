@@ -16,6 +16,7 @@ class Router (component.Receiver):
         self.backends = []
         self.apps = []
         self.logger = log.Logger()
+        self.running = False
         super(component.Receiver,self).__init__()
 
     def log(self, level, msg, *args):
@@ -28,7 +29,7 @@ class Router (component.Receiver):
         self.backends.append(backend)
 
     def start_backend (self, backend):
-        while True:
+        while self.running:
             try:
                 # start the backend
                 backend.start()
@@ -38,10 +39,13 @@ class Router (component.Receiver):
                 # an exception was raised in backend.start()
                 # sleep for 5 seconds, then loop and restart it
                 self.error("%s raised exception: %s" % (backend.name,e))
-                time.sleep(5)
+                if not self.running: break
+                time.sleep(5.0)
                 self.error("restarting %s" % (backend.name,))
 
     def start (self):
+        self.running = True
+
         # dump some debug info for now
         self.info("BACKENDS: %r" % (self.backends))
         self.info("APPS: %r" % (self.apps))
@@ -67,8 +71,12 @@ class Router (component.Receiver):
             except SystemExit:
                 break
             
+        self.running = False
         for backend in self.backends:
-            backend.stop()
+            try:
+                backend.stop()
+            except Exception, e:
+                self.error("%s raised exception on stop: %s" % (backend.name,e))
         
         for worker in workers:
             worker.join()
