@@ -2,7 +2,7 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 
-import urllib
+import urllib, urllib2
 import cgi
 
 from threading import Thread
@@ -67,18 +67,21 @@ class Client(object):
             "body": body
         })
         
-        # attempt to POST to spomskyd
-        f = urllib.urlopen(self.__url("send"), data)
+        try:
         
-        # read the response, even though we
-        # don't care what it contains (for now)
-        str = f.read()
-        f.close()
+            # attempt to POST to spomskyd
+            f = urllib2.urlopen(self.__url("send"), data)
+            
+            # read the response, even though we
+            # don't care what it contains (for now)
+            str = f.read()
+            f.close()
         
-        # return true if the message was successfully
-        # sent, or false if (for whatever reason), it
-        # was not. TODO: raise exception on failure?
-        return (f.getcode() == 200)
+        # urllib2 raises an exception on failure; we
+        # don't want to blow up the whole process,
+        # so just return false instead
+        except:
+            return False
 
 
     def subscribe(self, callback, my_host="localhost", my_port=INCOMING_PORT):
@@ -111,20 +114,21 @@ class Client(object):
             "path": "receiver"
         })
         
-        # post the request to spomskyd, and fetch the response
-        f = urllib.urlopen(self.__url("receive/subscribe"), data)
-        str = f.read()
-        f.close()
+        try:
         
-        # if the subscription was successful, store the uuid,
-        # and return true to indicate that we're subscribed
-        if (f.getcode() == 200):
+            # post the request to spomskyd, and fetch the response
+            f = urllib2.urlopen(self.__url("receive/subscribe"), data)
+            str = f.read()
+            f.close()
+            
+            # the subscription was successful, so store the uuid,
+            # and return true to indicate that we're subscribed
             self.subscription_id = f.info()["x-subscription-uuid"]
             return True
         
-        # something went wrong, so reset the subscription
-        # id and return false. TODO: raise exception here?
-        else:
+        # something went wrong, so reset the
+        # subscription id and return false
+        except:
             self.subscription_id = None
             return False
         
@@ -142,10 +146,17 @@ class Client(object):
                 "uuid": self.subscription_id
             })
             
-            # post the request to spomskyd, and fetch the response
-            f = urllib.urlopen(self.__url("receive/unsubscribe"), data)
-            str = f.read()
-            f.close()
+            try:
+            
+                # post the request to spomskyd, and fetch the response
+                f = urllib2.urlopen(self.__url("receive/unsubscribe"), data)
+                str = f.read()
+                f.close()
+            
+            # request failed? no  big deal, we've
+            # probably already been unsubscribed
+            except:
+                pass
         
         # unset instance vars
         self.callback = None
