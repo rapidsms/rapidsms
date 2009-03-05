@@ -5,7 +5,7 @@ from rapidsms.component import Component, Receiver
 
 class Backend (Component, Receiver):
     def __init__ (self, router):
-        self.router = router
+        self._router = router
         self.running = False
        
     def _get_name(self):
@@ -40,6 +40,6 @@ class Backend (Component, Receiver):
         # turn the caller/text into a message object
         msg = Message(self, caller, text)
         # and send it off to the router
-        self.router.incoming(msg)
+        self._router.incoming(msg)
     
 
