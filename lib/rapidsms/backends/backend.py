@@ -7,6 +7,7 @@ class Backend (Receiver):
     def __init__ (self, router):
         self._router = router
         self.running = False
+        super(Receiver,self).__init__()
        
     @property
     def running (self):

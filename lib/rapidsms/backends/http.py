@@ -57,8 +57,8 @@ class Http(Backend):
         # set this backend in the server instance so it 
         # can callback when a message is received
         self.server.backend = self
-        self.router = router
-        
+        super(Backend,self).__init__(router)
+ 
     def run (self):
         while self.running:
             if self.message_waiting:

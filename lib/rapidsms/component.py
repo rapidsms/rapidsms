@@ -36,7 +36,8 @@ class Component(object):
 class Receiver(Component):
     # do we want to put a limit on the queue size?
     # and what do we do if the queue gets full?
-    self._queue = Queue.Queue()
+    def __init__(self):
+        self._queue = Queue.Queue()
 
     @property
     def message_waiting (self):
