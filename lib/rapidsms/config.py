@@ -5,7 +5,7 @@ import ConfigParser
 
 
 def to_list (item):
-    return map(lambda x: unicode(x).strip(), item.split(","))
+    return filter(None,map(lambda x: unicode(x).strip(), item.split(",")))
 
 class Config (object):
     def __init__(self, *paths):
