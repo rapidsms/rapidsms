@@ -26,7 +26,7 @@ class Logger (object):
             self.log.addHandler(file_handler)
         except Exception, e:
             print >>sys.stderr, "Error starting log file %s: %s" % (log_file,e)
-        stderr_handler = logging.handler.StreamHandler()
+        stderr_handler = logging.StreamHandler()
         stderr_handler.setFormatter(formatter)
         self.log.addHandler(stderr_handler)
         

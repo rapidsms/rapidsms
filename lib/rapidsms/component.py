@@ -3,7 +3,7 @@
 
 import Queue, sys, datetime
 
-def __logging_method (level):
+def _logging_method (level):
     return lambda self, msg, *args: self.log(level, msg, *args)
 
 class Component(object):
@@ -27,16 +27,18 @@ class Component(object):
         if self.router:
             self.router.logger.write(self, level, msg, *args)
 
-    debug    = __logging_method('debug')
-    info     = __logging_method('info')
-    warning  = __logging_method('warning')
-    error    = __logging_method('error')
-    critical = __logging_method('critical')
+    debug    = _logging_method('debug')
+    info     = _logging_method('info')
+    warning  = _logging_method('warning')
+    error    = _logging_method('error')
+    critical = _logging_method('critical')
 
 class Receiver(Component):
-    # do we want to put a limit on the queue size?
-    # and what do we do if the queue gets full?
-    self._queue = Queue.Queue()
+    
+    def __init__(self):
+        # do we want to put a limit on the queue size?
+        # and what do we do if the queue gets full?
+        self._queue = Queue.Queue()
 
     @property
     def message_waiting (self):
