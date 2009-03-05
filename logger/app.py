@@ -8,7 +8,7 @@ from models import OutgoingMessage, IncomingMessage
 
 class App(rapidsms.app.App):
     
-    def __init__(self):
+    def __init__(self, router):
         super(rapidsms.app.App, self).__init__()
         self.name = 'Logger'
 
