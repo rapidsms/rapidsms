@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-import Queue
+import Queue, sys
 
 class Component(object):
     @property
@@ -10,7 +10,11 @@ class Component(object):
             return self._router
     
     def log(self, level, msg):
-        if self.router: self.router.log(level, msg)
+        if self.router:
+            self.router.log(level, msg)
+        else:
+            vars = (level.upper(), msg)
+            print >>sys.stderr, "%s (could not be logged) %s\n" % vars
 
     def debug(self, msg):
         self.log('debug', msg)
@@ -36,9 +40,9 @@ class Receiver(object):
     def message_waiting (self):
         return self._queue.qsize()
  
-    def next_message (self):
+    def next_message (self, timeout=0.0):
         try:
-            return self._queue.get_nowait()
+            return self._queue.get(timeout, timeout)
         except Queue.Empty:
             return None
 
