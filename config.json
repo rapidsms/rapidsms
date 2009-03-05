@@ -1,3 +1,0 @@
-{ "apps": ["alpha", "beta", "gamma", "logger"], 
-  "backends": ["spomsky", "http"],
-  "log": ["debug", "/tmp/rapidsms.log"] }
