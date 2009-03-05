@@ -4,9 +4,10 @@
 import time
 import threading
 
+import component
 import log
 
-class Router (object):
+class Router (component.Receiver):
     incoming_phases = ('parse', 'handle', 'cleanup')
     outgoing_phases = ('outgoing',)
 
@@ -54,19 +55,25 @@ class Router (object):
             workers.append(worker)
 
         # wait until we're asked to stop
-        try:
-            while True:
-                time.sleep(1)
-        except KeyboardInterrupt:
-            pass
-        except SystemExit:
-            pass
+        while True:
+            try:
+                self.run()
+            except KeyboardInterrupt:
+                break
+            except SystemExit:
+                break
             
         for backend in self.backends:
             backend.stop()
         
         for worker in workers:
             worker.join()
+
+    def run(self):
+        while self.message_waiting:
+            msg = self.next_message(timeout=1.0)
+            if msg is not None:
+                self.incoming(msg)
 
     def incoming(self, message):      
         # loop through all of the apps and notify them of
