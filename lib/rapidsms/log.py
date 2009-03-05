@@ -32,4 +32,5 @@ class Logger (object):
         
     def write(self, sender, level, msg, *args):
         level = getattr(logging, level.upper())
-        self.log.log(level, msg, *args, extra={"component":sender.name})
+        kwargs = {"extra":{"component":sender.name}}
+        self.log.log(level, msg, *args, **kwargs)
