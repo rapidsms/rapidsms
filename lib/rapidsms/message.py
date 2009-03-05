@@ -28,6 +28,8 @@ class Message(object):
     def respond(self, text):
         """Send the given text back to the original caller of this
            message on the same route that it came in on"""
+        print "responding to msg: %s to %s" % (text, self.caller)
+        
         if self.caller: 
             return self.backend.router.outgoing(
                 Message(self._backend, self.caller, text))
