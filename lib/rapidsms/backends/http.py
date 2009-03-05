@@ -29,7 +29,8 @@ class HttpHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             session_id = match.group(1)
             text = match.group(2)
             # TODO unescape the text (i.e. %20 => " ") 
-            self.server.backend.receive(session_id, text)
+            msg = self.server.backend.message(session_id, text)
+            self.server.backend.route(msg)
             # respond with the number and text 
             self.send_response(200)
             self.send_header("Content-type", "text/html")
