@@ -7,6 +7,8 @@ import models
 from models import OutgoingMessage, IncomingMessage
 
 class App(rapidsms.app.App):
+    
+    self.name = 'Logger'
 
     def incoming(self, message):
         msg = IncomingMessage(caller=message.caller, text=message.text, 
