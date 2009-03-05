@@ -9,7 +9,7 @@ class App(rapidsms.app.App):
         self.counters = {}
     
     def parse(self, msg):
-        if not hasattr(self.counters, msg.caller):
+        if not msg.caller in self.counters:
             self.counters[msg.caller] = 0
     
     def handle(self, msg):
