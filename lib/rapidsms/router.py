@@ -49,7 +49,7 @@ class Router (component.Receiver):
         workers = []
         # launch each backend in its own thread
         for backend in self.backends:
-            worker = threading.Thread(target=start_backend, args=(backend,))
+            worker = threading.Thread(target=self.start_backend, args=(backend,))
             worker.start()
             workers.append(worker)
 
