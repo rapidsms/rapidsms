@@ -12,6 +12,7 @@ class Router (component.Receiver):
     outgoing_phases = ('outgoing',)
 
     def __init__(self):
+        component.Receiver.__init__(self)
         self.backends = []
         self.apps = []
         self.logger = log.Logger()
@@ -48,7 +49,7 @@ class Router (component.Receiver):
         workers = []
         # launch each backend in its own thread
         for backend in self.backends:
-            worker = threading.Thread(target=start_backend, args=(backend,))
+            worker = threading.Thread(target=self.start_backend, args=(backend,))
             worker.start()
             workers.append(worker)
 

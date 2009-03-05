@@ -54,14 +54,15 @@ class HttpServer (SocketServer.ThreadingMixIn, BaseHTTPServer.HTTPServer):
 class Http(Backend):
     def __init__(self, router, host="localhost", port=8080):
         self.server = HttpServer((host, port), HttpHandler)
+        super(Backend, self).__init__()
         # set this backend in the server instance so it 
         # can callback when a message is received
         self.server.backend = self
-        self.router = router
+        self._router = router
         
     def run (self):
         while self.running:
             if self.message_waiting:
                 msg = self.next_message()
                 # oops we have to throw the message away
-            self.handle_request()
+            self.server.handle_request()
