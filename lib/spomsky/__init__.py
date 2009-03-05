@@ -143,7 +143,6 @@ class Client(object):
         # unset instance vars
         self.callback = None
         self.server = None
-        self.thread.stop()
         self.thread = None
         
         # what could possibly
