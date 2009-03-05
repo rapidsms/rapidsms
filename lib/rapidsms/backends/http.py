@@ -62,12 +62,3 @@ class Http(Backend):
     def run (self):
         while self.running:
             self.handle_request()
-    
-    def receive(self, caller, text):
-        # turn the caller/text into a message object
-        msg = Message(self, caller, text)
-        # and send it off to the router
-        self.router.incoming(msg)
-        
-    def send(self, message):
-        self.info("Message \"%s\" sent to \"%s\"" % (message.text, message.caller))
