@@ -16,6 +16,7 @@ class Router (component.Receiver):
         self.backends = []
         self.apps = []
         self.logger = log.Logger()
+        super(component.Receiver,self).__init__()
 
     def log(self, level, msg, *args):
         self.logger.write(self, level, msg, *args)
