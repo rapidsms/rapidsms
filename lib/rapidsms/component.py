@@ -46,7 +46,7 @@ class Receiver(Component):
  
     def next_message (self, timeout=0.0):
         try:
-            return self._queue.get(timeout, timeout)
+            return self._queue.get(bool(timeout), timeout)
         except Queue.Empty:
             return None
 
