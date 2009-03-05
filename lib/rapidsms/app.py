@@ -3,7 +3,7 @@
 
 import component
 
-class App(object, component.Component):
+class App(component.Component):
     
     def __init__(self, router):
         self.router = router
