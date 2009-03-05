@@ -71,4 +71,4 @@ if __name__ == "__main__":
                 (backend_name, backend_class))
 
     # wait for incoming sms
-    router.serve_forever()
+    router.start()
