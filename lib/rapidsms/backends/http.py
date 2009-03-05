@@ -61,7 +61,7 @@ class Http(Backend):
         
     def run (self):
         while self.running:
-            if self.has_outgoing:
-                msg = self.outgoing()
+            if self.message_waiting:
+                msg = self.next_message()
                 # oops we have to throw the message away
             self.handle_request()
