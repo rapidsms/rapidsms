@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
+import copy
+
 class Message(object):
     def __init__(self, backend, caller=None, text=None):
         self._backend = backend
@@ -28,10 +30,9 @@ class Message(object):
     def respond(self, text):
         """Send the given text back to the original caller of this
            message on the same route that it came in on"""
-        print "responding to msg: %s to %s" % (text, self.caller)
-        
         if self.caller: 
-            return self.backend.router.outgoing(
-                Message(self._backend, self.caller, text))
+            response = copy.copy(self)
+            response.text = text
+            return self.backend.router.outgoing(response)
         else: 
             return False
