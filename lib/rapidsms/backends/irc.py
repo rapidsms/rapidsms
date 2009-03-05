@@ -14,7 +14,7 @@ class Irc(Backend):
 
         self.irc = irclib.IRC()
         self.irc.add_global_handler("privmsg", self.privmsg)
-        self.irc.add_global_handler("pubmsg", self.privmsg)
+        self.irc.add_global_handler("pubmsg", self.pubmsg)
         
     def run (self):
         self.info("Connecting to %s as %s", self.host, self.nick)
@@ -43,18 +43,21 @@ class Irc(Backend):
             target = channel
         else:
             target = msg.caller
-        self.server.privmsg(target, "%s: %s" % (msg.caller, msg.text))
+        response = "%s: %s" % (msg.caller, msg.text)
+        self.info("sending to %s: %s", target, response)
+        self.server.privmsg(target, response)
 
     def pubmsg (self, connection, event):
         self.info("%s -> %s: %r", event.source(), event.target(), event.arguments())
         try:
             nick, txt = map(str.strip, event.arguments()[0].split(":"))
         except ValueError:
-            nick, txt = "", event.arguments()[0]
+            return # not for me
         nick = nick.split("!")[0]
         if nick == self.nick:
             self.info("routing public message from %s", event.source)
-            msg = self.message(event.source(), txt)
+            caller = event.source().split("!")[0]
+            msg = self.message(caller, txt)
             msg.irc_channel = event.target()
             self.route(msg)
 
@@ -62,6 +65,7 @@ class Irc(Backend):
         self.info("%s -> %s: %r", event.source(), event.target(), event.arguments())
         if event.target() == self.nick:
             self.info("routing private message from %s", event.source())
-            msg = self.message(event.source(), event.arguments()[0])
-            msg.irc_channel = None
+            caller = event.source().split("!")[0]
+            msg = self.message(caller, event.arguments()[0])
+            msg.irc_channel = caller
             self.route(msg)
