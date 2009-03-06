@@ -109,4 +109,13 @@ class Router (component.Receiver):
         # now send the message out
         self.info("SENT MESSAGE %s to %s" % (message, message.backend))
         message.backend.send(message)
-        
+       
+    def configure(self, conf):
+        for app_class in conf["rapidsms"]["apps"]:
+            self.info("Adding app: %r" % app_class)
+            self.add_app(app_class(self))
+
+        for backend_class in conf["rapidsms"]["backends"]:
+            self.info("Adding backend: %r" % backend_class)
+            self.add_backend(backend_class(self))
+ 
