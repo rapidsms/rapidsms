@@ -5,6 +5,7 @@ import BaseHTTPServer, SocketServer
 import select
 import random
 import re
+import urllib
 
 from backend import Backend
 from rapidsms.message import Message
@@ -28,8 +29,8 @@ class HttpHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             # send the message
             session_id = match.group(1)
             text = match.group(2)
-            # TODO unescape the text (i.e. %20 => " ") 
-            msg = self.server.backend.message(session_id, text)
+            # TODO watch out because urllib.unquote will blow up on unicode text 
+            msg = self.server.backend.message(session_id, urllib.unquote(text))
             self.server.backend.route(msg)
             # respond with the number and text 
             self.send_response(200)
@@ -44,13 +45,13 @@ class HttpHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         # TODO move the actual sending over to here
         return
 
-class HttpServer (SocketServer.ThreadingMixIn, BaseHTTPServer.HTTPServer):
+class HttpServer (BaseHTTPServer.HTTPServer, SocketServer.ThreadingMixIn):
     def handle_request (self, timeout=1.0):
         # don't block on handle_request
         reads, writes, errors = (self,), (), ()
         reads, writes, errors = select.select(reads, writes, errors, timeout)
         if reads:
-            super(self)
+            BaseHTTPServer.HTTPServer.handle_request(self)
 
 class Http(Backend):
     def __init__(self, router, host="localhost", port=8080):
