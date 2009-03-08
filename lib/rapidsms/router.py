@@ -38,7 +38,7 @@ class Router (component.Receiver):
             except Exception, e:
                 # an exception was raised in backend.start()
                 # sleep for 5 seconds, then loop and restart it
-                self.error("%s raised exception: %s" % (backend.name,e))
+                self.error("%s failed: %s" % (backend.name,e))
                 if not self.running: break
                 time.sleep(5.0)
                 self.error("restarting %s" % (backend.name,))
@@ -53,8 +53,11 @@ class Router (component.Receiver):
         
         # call the "start" method of each app
         for app in self.apps:
-            app.start()
-        
+            try:
+                app.start()
+            except Exception, e:
+                self.error("%s failed on start: %r", app, e)
+
         workers = []
         # launch each backend in its own thread
         for backend in self.backends:
@@ -76,7 +79,7 @@ class Router (component.Receiver):
             try:
                 backend.stop()
             except Exception, e:
-                self.error("%s raised exception on stop: %s" % (backend.name,e))
+                self.error("%s failed on stop: %s" % (backend.name,e))
         
         for worker in workers:
             worker.join()
@@ -94,7 +97,10 @@ class Router (component.Receiver):
         # chance to do what they will with it                      
         for phase in self.incoming_phases:
             for app in self.apps:
-                getattr(app, phase)(message)
+                try:
+                    getattr(app, phase)(message)
+                except Exception, e:
+                    self.error("%s failed on %s: %r", app, phase, e)
 
     def outgoing(self, message):
         self.info("Outgoing message: %r" % (message))
@@ -104,7 +110,10 @@ class Router (component.Receiver):
         # they will before the message is actually sent
         for phase in self.outgoing_phases:
             for app in self.apps:
-                getattr(app, phase)(message)
+                try:
+                    getattr(app, phase)(message)
+                except Exception, e:
+                    self.error("%s failed on %s: %r", app, phase, e)
 
         # now send the message out
         self.info("SENT MESSAGE %s to %s" % (message, message.backend))
