@@ -32,10 +32,9 @@ class Config (object):
     def load_backends (self, backends):
         backend_classes = []
         for backend_name in backends:
-            backend_module_str = "rapidsms.backends." + backend_name
+            backend_module_str = "rapidsms.backends.%s" % (backend_name)
             backend_module = __import__(backend_module_str, {}, {}, [''])
-            backend_class = getattr(backend_module, backend_name.capitalize())
-            backend_classes.append(backend_class)
+            backend_classes.append(backend_module.Backend)
         return backend_classes
 
     def rapidsms (self, data):
