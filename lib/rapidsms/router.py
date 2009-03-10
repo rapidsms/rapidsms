@@ -11,13 +11,14 @@ class Router (component.Receiver):
     incoming_phases = ('parse', 'handle', 'cleanup')
     outgoing_phases = ('outgoing',)
 
-    def __init__(self):
+    def __init__(self, conf):
         component.Receiver.__init__(self)
         self.backends = []
         self.apps = []
-        self.logger = log.Logger()
         self.running = False
+        self.logger = None
         super(component.Receiver,self).__init__()
+        self.__configure(conf)
 
     def log(self, level, msg, *args):
         self.logger.write(self, level, msg, *args)
@@ -110,12 +111,15 @@ class Router (component.Receiver):
         self.info("SENT MESSAGE %s to %s" % (message, message.backend))
         message.backend.send(message)
        
-    def configure(self, conf):
+    def __configure(self, conf):
+        level, file = conf["log"]["level"], conf["log"]["file"]
+        self.logger = log.Logger(level, file)
+ 
         for app_class in conf["rapidsms"]["apps"]:
             self.info("Adding app: %r" % app_class)
             self.add_app(app_class(self))
 
-        for backend_class in conf["rapidsms"]["backends"]:
+    for backend_class in conf["rapidsms"]["backends"]:
             self.info("Adding backend: %r" % backend_class)
             self.add_backend(backend_class(self))
- 
+
