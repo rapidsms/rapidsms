@@ -22,12 +22,39 @@ class Router (component.Receiver):
     def log(self, level, msg, *args):
         self.logger.write(self, level, msg, *args)
 
-    def add_app (self, app):
-        self.apps.append(app)
 
-    def add_backend (self, backend):
-        self.backends.append(backend)
+    def add_app (self, app_name):
+        """Imports and instantiates an application, given its name.
+           Application classes are assumed to be named "App", in the
+           module "apps.{app_name}.app" """
+        
+        # resolve the app name into a real class
+        app_module_str = "apps.%s.app" % (app_name)
+        app_module = __import__(app_module_str, {}, {}, [''])
+        app_class = app_module.App
+        
+        # create the application with an instance of this router
+        # and keep hold of it here, so we can communicate both ways
+        app_instance = app_class(self)
+        self.apps.append(app_instance)
 
+
+    def add_backend (self, backend_name):
+        """Imports and instantiates a backend, given its name. Backend
+           classes are assumed to be named as the capitalized form of
+           their module name, which is "rapidsms.backend.{backend_name}"""
+        
+        # resolve the backend into a real class
+        backend_module_str = "rapidsms.backends.%s" % (backend_name)
+        backend_module = __import__(backend_module_str, {}, {}, [''])
+        backend_class = getattr(backend_module, backend_name.capitalize())
+        
+        # create the backend with an instance of this router and
+        # keep hold of it here, so we can communicate both ways
+        backend_instance = backend_class(self)
+        self.backends.append(backend_instance)
+    
+    
     def start_backend (self, backend):
         while self.running:
             try:
