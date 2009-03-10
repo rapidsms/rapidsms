@@ -13,6 +13,7 @@ class App(rapidsms.app.App):
     def start(self):
         self.name = 'socialsms'
         self.people = {}
+        self.backends = {}
         self.groups = {}
 
 
@@ -30,7 +31,7 @@ class App(rapidsms.app.App):
                 except Exception, e:
                     print e             
             else:
-				print 'no KW'
+                print 'no KW'
         except Exception, e:
             print e 
 
@@ -119,8 +120,7 @@ class App(rapidsms.app.App):
         # with a very ugly list comprehension, and send
         member_names = [self.__identify(p) for p in self.groups[grp]]
         msg = "Members of %s: %s" % (grp, ", ".join(member_names))
-        Message(message.caller, msg).send()
-        
+        message.respond(msg) 
     
     # JOIN <GROUP>
     @kw("join (letters)")
@@ -162,6 +162,7 @@ class App(rapidsms.app.App):
     @kw("identify (letters)", "my name is (letters)", "i am (letters)")
     def identify(self, message, name):
         name = self.__slug(name)
+        self.backends[message.caller] = message.backend
         self.people[message.caller] = name
         reply = 'Your name is now "%s"' % name
         message.respond(reply)
@@ -186,7 +187,7 @@ class App(rapidsms.app.App):
         msg = "[%s] %s: %s" % (grp, ident, rest)
         for dest in self.groups[grp]:
             if dest != message.caller:
-                Message(dest, msg).send()
+                Message(self.backends[dest], dest, msg).send()
         
         # notify the caller that his/her message was sent
         people = len(self.groups[grp]) - 1
