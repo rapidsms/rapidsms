@@ -95,11 +95,11 @@ class Router (component.Receiver):
         # chance to do what they will with it                      
         for phase in self.incoming_phases:
             for app in self.apps:
-                print '====> ' + phase + ' ' + app.name
+                self.debug('====> ' + phase + ' ' + app.name)
                 try:
                     getattr(app, phase)(message)
                 except AttributeError:
-                    print '!!! BANG !!!'
+                    self.debug('!!! BANG !!!')
 
     def outgoing(self, message):
         self.info("Outgoing message: %r" % (message))
@@ -109,11 +109,11 @@ class Router (component.Receiver):
         # they will before the message is actually sent
         for phase in self.outgoing_phases:
             for app in self.apps:
-                print '====> ' + phase + ' ' + app.name
+                self.debug('====> ' + phase + ' ' + app.name)
                 try:
                     getattr(app, phase)(message)
                 except AttributeError:
-                    print '!!! BANG !!!'
+                    self.debug('!!! BANG !!!')
 
         # now send the message out
         self.info("SENT MESSAGE '%s' to %s" % (message.text,  message.backend.name))
