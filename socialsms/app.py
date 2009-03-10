@@ -4,45 +4,39 @@
 import rapidsms
 from rapidsms.message import Message
 
-from keyworder import *
+from rapidsms.contrib.keyworder import * 
 
 class App(rapidsms.app.App):
 
     kw = Keyworder()
 
     def start(self):
-        print '*********** START ************'
         self.name = 'socialsms'
         self.people = {}
         self.groups = {}
 
 
     def parse(self, message):
-        print '********* PARSE *********'
+        pass 
 
 
     def handle(self, message):
-        print '********* HANDLE *********'
         try:
             if hasattr(self, "kw"):
-                print '********* HAS KW *********'
                 try:
-                    print '************ TRY ***********'
-                    print dir(self.kw)
                     func, captures = self.kw.match(self, message.text)
                     func(self, message, *captures)
                     # nothing was found, use default handler
                 except Exception, e:
                     print e             
             else:
-                print '******** NOPE ************'
-
+				print 'no KW'
         except Exception, e:
             print e 
 
 
     def outgoing(self, message):
-        print '*********** OUTGOING ***********'
+        pass 
 
 
     def __identify(self, message, task=None):
