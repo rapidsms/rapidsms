@@ -70,6 +70,8 @@ class App(rapidsms.app.App):
     
     
     # HELP
+    @kw.blank()
+    @kw.invalid()
     @kw("help")
     def help(self, message):
         message.respond([
