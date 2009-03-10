@@ -2,6 +2,7 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 import ConfigParser
+import log
 
 
 def to_list (item):
@@ -42,6 +43,12 @@ class Config (object):
         backend_classes = self.load_backends(to_list(data["backends"]))
         return { "apps": app_classes,
                  "backends": backend_classes }
+
+    def log(self, data):
+        level, file = log.LOG_LEVEL, log.LOG_FILE
+        if data.has_key("level"): level = data["level"]
+        if data.has_key("file"):  file = data["file"]
+        return {"level": level, "file": file}
 
     def __getitem__(self, key):
         return self.data[key]
