@@ -88,34 +88,37 @@ class Router (component.Receiver):
             self.incoming(msg)
 
     def incoming(self, message):   
-        self.info("Incoming message: %r" % (message))
+        self.info("Incoming message via %s: %s ->'%s'" %\
+			(message.backend.name, message.caller, message.text))
            
         # loop through all of the apps and notify them of
         # the incoming message so that they all get a
         # chance to do what they will with it                      
         for phase in self.incoming_phases:
             for app in self.apps:
-                self.debug('====> ' + phase + ' ' + app.name)
+                self.debug('IN' + ' ' + phase + ' ' + app.name)
                 try:
                     getattr(app, phase)(message)
                 except AttributeError:
                     self.debug('!!! BANG !!!')
 
     def outgoing(self, message):
-        self.info("Outgoing message: %r" % (message))
+        self.info("Outgoing message via %s: %s <- '%s'" %\
+			(message.backend.name, message.caller, message.text))
         
         # first notify all of the apps that want to know
         # about outgoing messages so that they can do what
         # they will before the message is actually sent
         for phase in self.outgoing_phases:
             for app in self.apps:
-                self.debug('====> ' + phase + ' ' + app.name)
+                self.debug('OUT' + ' ' + phase + ' ' + app.name)
                 try:
                     getattr(app, phase)(message)
                 except AttributeError:
                     self.debug('!!! BANG !!!')
 
         # now send the message out
-        self.info("SENT MESSAGE '%s' to %s" % (message.text,  message.backend.name))
         message.backend.send(message)
+        self.info("SENT message '%s' to %s via %s" % (message.text,\
+			message.caller, message.backend.name))\
         
