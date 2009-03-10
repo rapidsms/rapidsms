@@ -51,10 +51,6 @@ class Router (component.Receiver):
         self.info("APPS: %r" % (self.apps))
         self.info("SERVING FOREVER...")
         
-        # call the "start" method of each app
-        for app in self.apps:
-            app.start()
-        
         workers = []
         # launch each backend in its own thread
         for backend in self.backends:
@@ -62,6 +58,10 @@ class Router (component.Receiver):
             worker.start()
             workers.append(worker)
 
+        # call the "start" method of each app
+        for app in self.apps:
+            app.start()
+        
         # wait until we're asked to stop
         while True:
             try:
@@ -81,6 +81,7 @@ class Router (component.Receiver):
         for worker in workers:
             worker.join()
 
+
     def run(self):
         msg = self.next_message(timeout=1.0)
         if msg is not None:
@@ -94,7 +95,11 @@ class Router (component.Receiver):
         # chance to do what they will with it                      
         for phase in self.incoming_phases:
             for app in self.apps:
-                getattr(app, phase)(message)
+                print '====> ' + phase + ' ' + app.name
+                try:
+                    getattr(app, phase)(message)
+                except AttributeError:
+                    print '!!! BANG !!!'
 
     def outgoing(self, message):
         self.info("Outgoing message: %r" % (message))
@@ -104,9 +109,13 @@ class Router (component.Receiver):
         # they will before the message is actually sent
         for phase in self.outgoing_phases:
             for app in self.apps:
-                getattr(app, phase)(message)
+                print '====> ' + phase + ' ' + app.name
+                try:
+                    getattr(app, phase)(message)
+                except AttributeError:
+                    print '!!! BANG !!!'
 
         # now send the message out
-        self.info("SENT MESSAGE %s to %s" % (message, message.backend))
+        self.info("SENT MESSAGE '%s' to %s" % (message.text,  message.backend.name))
         message.backend.send(message)
         
