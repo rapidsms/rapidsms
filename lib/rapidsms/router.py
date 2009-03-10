@@ -119,7 +119,7 @@ class Router (component.Receiver):
             self.info("Adding app: %r" % app_class)
             self.add_app(app_class(self))
 
-    for backend_class in conf["rapidsms"]["backends"]:
+        for backend_class in conf["rapidsms"]["backends"]:
             self.info("Adding backend: %r" % backend_class)
             self.add_backend(backend_class(self))
 
