@@ -31,17 +31,17 @@ if __name__ == "__main__":
     except ImportError, err:
         log.error("Couldn't import webui, check your webui settings module")
 
-    # iterate the app classes from the config,
-    # and instantiate them
-    for app_class in conf["rapidsms"]["apps"]:
-        router.info("Adding app: %r" % app_class)
-        router.add_app(app_class(router))
-
     # iterate the backend classes from the config,
     # and instantiate them
     for backend_class in conf["rapidsms"]["backends"]:
         router.info("Adding backend: %r" % backend_class)
         router.add_backend(backend_class(router))
+
+    # iterate the app classes from the config,
+    # and instantiate them
+    for app_class in conf["rapidsms"]["apps"]:
+        router.info("Adding app: %r" % app_class)
+        router.add_app(app_class(router))
 
     # wait for incoming sms
     router.start()
