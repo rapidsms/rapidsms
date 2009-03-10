@@ -3,7 +3,6 @@
 
 import rapidsms
 from rapidsms.message import Message
-
 from rapidsms.contrib.keyworder import * 
 
 class App(rapidsms.app.App):
@@ -29,11 +28,11 @@ class App(rapidsms.app.App):
                     func(self, message, *captures)
                     # nothing was found, use default handler
                 except Exception, e:
-                    print e             
+                    self.error(e)
             else:
-                print 'no KW'
+                self.debug('App has not instantiated Keyworder as kw')
         except Exception, e:
-            print e 
+            self.error(e) 
 
 
     def outgoing(self, message):
@@ -73,11 +72,12 @@ class App(rapidsms.app.App):
     # HELP
     @kw("help")
     def help(self, message):
-        message.respond(message.caller, [
+        message.respond([
             "join <GROUP>",
             "leave <GROUP>",
             "identify <NAME>",
-            "list [my] groups",
+            "list my groups",
+            "list groups",
             "list members of <GROUP>",
             "<GROUP> <MESSAGE>"])
     
@@ -105,22 +105,25 @@ class App(rapidsms.app.App):
             if my_groups: message.respond("You are not a member of any groups")
             else:         message.respond("No groups have been created yet")
             
-        # return a list of [your|all] groups
-        capt = my_groups and "Your groups" or "Groups"
-        msg = "%s: %s" % (capt, ", ".join(group_names))
-        message.respond(msg) 
+        else:
+            # return a list of [your|all] groups
+            capt = my_groups and "Your groups" or "Groups"
+            msg = "%s: %s" % (capt, ", ".join(group_names))
+            message.respond(msg) 
     
     # LIST MEMBERS OF <GROUP>
     @kw("list members of (letters)")
     def list_members_of_group(self, message, grp):
         ident = self.__identify(message, "making queries")
         grp = self.__group(grp)
-
         # collate the names of the members of this group
         # with a very ugly list comprehension, and send
-        member_names = [self.__identify(p) for p in self.groups[grp]]
-        msg = "Members of %s: %s" % (grp, ", ".join(member_names))
-        message.respond(msg) 
+        # TODO this doesnt work now that identify takes
+        # messages rather than callers
+        #member_names = [self.__identify(p) for p in self.groups[grp]]
+        #msg = "Members of %s: %s" % (grp, ", ".join(member_names))
+        #message.respond(msg) 
+        message.respond('Sorry, this feature is not currently available')
     
     # JOIN <GROUP>
     @kw("join (letters)")
