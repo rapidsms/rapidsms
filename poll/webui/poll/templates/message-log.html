@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+{% block title %}Message Log{% endblock %}
+{% block content %}
+
+<table class="msg-log">
+	<thead>
+		<tr>
+			<th>Phone</th>
+			<th>Time</th>
+			<th>Text</th>
+			<th class="null"></th>
+		</tr>
+	</thead>
+	<tbody>{% for m in messages %}
+		<tr class="{% if m.is_outgoing %}out{% else %}in{% endif %}">
+			<td>{{ m.phone }}</td>
+			<td>{{ m.time|date:"d/m \a\t H:m" }}</td>
+			<td>{{ m.text }}</td>
+			<td class="dir">{% if m.is_outgoing %}out{% else %}in{% endif %}</td>
+		</tr>{% endfor %}
+	</tbody>
+</table>
+{% endblock %}

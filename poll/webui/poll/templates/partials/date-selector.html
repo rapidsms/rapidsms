@@ -1,0 +1,15 @@
+<select name="{{ prefix }}-day">
+	{% for d, sel in days %}
+	<option value="{{ d }}"{% if sel %} selected="selected"{% endif %}>{{ d }}</option>
+	{% endfor %}
+</select>
+
+<select name="{{ prefix }}-month">{% for m, sel in months %}
+	<option value="{{ forloop.counter }}"{% if sel %} selected="selected"{% endif %}>{{ m }}</option>{% endfor %}
+</select>
+
+<select name="{{ prefix }}-year">
+	{% for y, sel in years %}
+	<option value="{{ y }}"{% if sel %} selected="selected"{% endif %}>{{ y }}</option>
+	{% endfor %}
+</select>
