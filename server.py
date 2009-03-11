@@ -3,7 +3,6 @@
 
 import sys
 import rapidsms
-import traceback
 
 if __name__ == "__main__":
     rapidsms.manager.start(sys.argv)
