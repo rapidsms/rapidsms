@@ -13,7 +13,7 @@ if __name__ == "__main__":
     conf = rapidsms.Config(ini)
     
     # load up the message router
-    router = rapidsms.router.Router()
+    router = rapidsms.router.Router(conf)
     router.info("RapidSMS Server started up")
 
     # import the webui (django) directory so that

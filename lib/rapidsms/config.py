@@ -2,6 +2,7 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 import ConfigParser
+import log
 
 
 def to_list (item):
@@ -26,11 +27,33 @@ class Config (object):
             
             self.data[section] = data
 
+    def load_apps (self, apps):
+        app_classes = []
+        for app_name in apps:
+            app_module_str = "apps.%s.app" % (app_name)
+            app_module = __import__(app_module_str, {}, {}, [''])
+            app_classes.append(app_module.App)
+        return app_classes
+
+    def load_backends (self, backends):
+        backend_classes = []
+        for backend_name in backends:
+            backend_module_str = "rapidsms.backends.%s" % (backend_name)
+            backend_module = __import__(backend_module_str, {}, {}, [''])
+            backend_classes.append(backend_module.Backend)
+        return backend_classes
+
     def parse_rapidsms_section (self, data):
-        app_classes = to_list(data["apps"])
-        backend_classes = to_list(data["backends"])
+        app_classes = self.load_apps(to_list(data["apps"]))
+        backend_classes = self.load_backends(to_list(data["backends"]))
         return { "apps": app_classes,
                  "backends": backend_classes }
+
+    def log(self, data):
+        level, file = log.LOG_LEVEL, log.LOG_FILE
+        if data.has_key("level"): level = data["level"]
+        if data.has_key("file"): file = data["file"]
+        return {"level": level, "file": file}
 
     def __getitem__(self, key):
         return self.data[key]
