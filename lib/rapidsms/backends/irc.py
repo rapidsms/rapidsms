@@ -4,9 +4,9 @@ import rapidsms
 from rapidsms.message import Message
 
 class Backend(rapidsms.backends.Backend):
-    def __init__(self, router, host="irc.freenode.net", port=6667,
+    def __init__(self, title, router, host="irc.freenode.net", port=6667,
                  nick="rapidsms", channels=["#rapidsms"]):
-        rapidsms.backends.Backend.__init__(self,router)
+        rapidsms.backends.Backend.__init__(self, title, router)
         self.type = "IRC"
         self.host = host
         self.port = port
