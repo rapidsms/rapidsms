@@ -13,31 +13,44 @@ class Config (object):
         self.parser = ConfigParser.ConfigParser()
         self.data   = {}
         self.parser.read(paths)
-        for section in map(unicode, self.parser.sections()):
+        sections = map(unicode, self.parser.sections())
+        
+        # pass 1 - get the raw data
+        for section in sections:
             data = {}
             for option in self.parser.options(section):
                 data[option] = self.parser.get(section, option)
-            
+            self.data[section] = data
+
+        # pass 2 - parse the specific sections
+        for section in sections:
             # if this class has a parser specifically for this
             # named section, call it and replace the raw contents
             # (which are already in data[section]) with the result
             section_parser = "parse_%s_section" % (section)
             if hasattr(self, section_parser):
-                data = getattr(self, section_parser)(data)
-            
-            self.data[section] = data
+                self.data[section] = \
+                    getattr(self, section_parser)(self.data, self.data[section])
 
-    def parse_rapidsms_section (self, data):
-        app_classes = to_list(data["apps"])
-        backend_classes = to_list(data["backends"])
-        return { "apps": app_classes,
-                 "backends": backend_classes }
+    def get_component_config(self, title, data):
+        component = data.get(title, {}).copy() # defaults to empty config
+        component["title"] = title
+        if not "type" in component:
+            component["type"] = title
+        return component
 
-    def log(self, data):
-        level, file = log.LOG_LEVEL, log.LOG_FILE
-        if data.has_key("level"): level = data["level"]
-        if data.has_key("file"): file = data["file"]
-        return {"level": level, "file": file}
+    def parse_rapidsms_section (self, data, section):
+        app_titles     = to_list(section["apps"])
+        backend_titles = to_list(section["backends"])
+        apps     = [self.get_component_config(app_title, data) for app_title in app_titles]
+        backends = [self.get_component_config(backend_title, data) for backend_title in backend_titles]
+        return { "apps": apps,
+                 "backends": backends }
+
+    def parse_log_section(self, data, section):
+        output = {"level": log.LOG_LEVEL, "file": log.LOG_FILE}
+        output.update(section)
+        return output
 
     def __getitem__(self, key):
         return self.data[key]

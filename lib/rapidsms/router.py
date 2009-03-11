@@ -11,50 +11,57 @@ class Router (component.Receiver):
     incoming_phases = ('parse', 'handle', 'cleanup')
     outgoing_phases = ('outgoing',)
 
-    def __init__(self, conf):
+    def __init__(self):
         component.Receiver.__init__(self)
         self.backends = []
         self.apps = []
         self.running = False
         self.logger = None
         super(component.Receiver,self).__init__()
-        self.__configure(conf)
 
     def log(self, level, msg, *args):
         self.logger.write(self, level, msg, *args)
 
+    def set_logger(self, level, file):
+        self.logger = log.Logger(level, file)
 
-    def add_app (self, app_name):
-        """Imports and instantiates an application, given its name.
+    def add_app (self, app_conf):
+        """Imports and instantiates an application, given a dict with 
+           the config key/value pairs to pass along.
            Application classes are assumed to be named "App", in the
            module "apps.{app_name}.app" """
-        
+       
+        # make a copy of the app_conf so we can delete from it
+        app_conf = app_conf.copy()
+
         # resolve the app name into a real class
-        app_module_str = "apps.%s.app" % (app_name)
+        app_module_str = "apps.%s.app" % (app_conf.pop("type"))
         app_module = __import__(app_module_str, {}, {}, [''])
         app_class = app_module.App
         
         # create the application with an instance of this router
         # and keep hold of it here, so we can communicate both ways
-        app_instance = app_class(self)
+        app_instance = app_class(app_conf.pop("title"), self, **app_conf)
         self.apps.append(app_instance)
 
-
-    def add_backend (self, backend_name):
-        """Imports and instantiates a backend, given its name. Backend
-           classes are assumed to be named as the capitalized form of
-           their module name, which is "rapidsms.backend.{backend_name}"""
+    def add_backend (self, backend_conf):
+        """Imports and instantiates a backend, a dict with the key/value 
+           pairs to pass along. Backend classes are assumed to be named 
+           as the capitalized form of their module name, which is 
+           "rapidsms.backend.{backend_name}"""
+        
+        # make a copy of the backend_conf so we can delete from it
+        backend_conf = backend_conf.copy()
         
         # resolve the backend into a real class
-        backend_module_str = "rapidsms.backends.%s" % (backend_name)
+        backend_module_str = "rapidsms.backends.%s" % (backend_conf.pop("type"))
         backend_module = __import__(backend_module_str, {}, {}, [''])
         backend_class = backend_module.Backend 
         
         # create the backend with an instance of this router and
         # keep hold of it here, so we can communicate both ways
-        backend_instance = backend_class(self)
+        backend_instance = backend_class(backend_conf.pop("title"), self, **backend_conf)
         self.backends.append(backend_instance)
-    
     
     def start_backend (self, backend):
         while self.running:
@@ -156,16 +163,3 @@ class Router (component.Receiver):
         message.backend.send(message)
         self.info("SENT message '%s' to %s via %s" % (message.text,\
 			message.caller, message.backend.name))\
-        
-    def __configure(self, conf):
-        level, file = conf["log"]["level"], conf["log"]["file"]
-        self.logger = log.Logger(level, file)
- 
-        for app_class in conf["rapidsms"]["apps"]:
-            self.info("Adding app: %r" % app_class)
-            self.add_app(app_class)
-
-        for backend_class in conf["rapidsms"]["backends"]:
-            self.info("Adding backend: %r" % backend_class)
-            self.add_backend(backend_class)
-
