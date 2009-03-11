@@ -48,7 +48,7 @@ class Router (component.Receiver):
         # resolve the backend into a real class
         backend_module_str = "rapidsms.backends.%s" % (backend_name)
         backend_module = __import__(backend_module_str, {}, {}, [''])
-        backend_class = getattr(backend_module, backend_name.capitalize())
+        backend_class = backend_module.Backend 
         
         # create the backend with an instance of this router and
         # keep hold of it here, so we can communicate both ways
@@ -163,9 +163,9 @@ class Router (component.Receiver):
  
         for app_class in conf["rapidsms"]["apps"]:
             self.info("Adding app: %r" % app_class)
-            self.add_app(app_class(self))
+            self.add_app(app_class)
 
         for backend_class in conf["rapidsms"]["backends"]:
             self.info("Adding backend: %r" % backend_class)
-            self.add_backend(backend_class(self))
+            self.add_backend(backend_class)
 
