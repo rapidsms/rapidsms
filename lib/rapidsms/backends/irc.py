@@ -10,7 +10,7 @@ class Backend(rapidsms.backends.Backend):
         self.type = "IRC"
         self.host = host
         self.port = port
-        self.nick = nick
+        self.nick = nick[:16] # 16 char limit for IRC nicks
         self.channels = channels
 
         self.irc = irclib.IRC()
