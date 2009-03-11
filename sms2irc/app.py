@@ -10,18 +10,18 @@ class App(rapidsms.app.App):
 
     def start(self):
         self.name = 'sms2irc'
+        self.irc_backend = None
+        print self.router.backends
+        for backend in self.router.backends:
+            if backend.type == 'IRC':
+                self.irc_backend = backend
                   
     def parse(self, message):
-        # TODO move backend lookup into start() once load order is finalized
-        self.backends = self.router.backends
-
-        for backend in self.backends:
-            print unicode(type(backend).__name__)
-            if unicode(type(backend).__name__) == unicode('Irc'):
-                self.irc_backend = backend
+        pass
             
     def handle(self, message):
-        self.forward(message)
+        if self.irc_backend is not None:
+            self.forward(message)
 
     def outgoing(self, message):
         #self.forward(message)
