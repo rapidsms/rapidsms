@@ -25,8 +25,7 @@ class Spomc(Backend):
         self.router.send(m)
 
     def send(self, message):
-        destination = "sms://%s" % (message.caller)
-        self.client.send(destination, message.text)
+        self.client.send(message.caller, message.text)
         
     def start(self):
         self.client.subscribe(self.__callback)
