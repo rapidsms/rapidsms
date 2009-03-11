@@ -3,6 +3,7 @@
 
 from config import Config
 from router import Router
+import os
 
 def load_django_environment (conf):
     # import the webui (django) directory so that
@@ -40,17 +41,21 @@ def django_manage_wrapper (settings, argv):
 
 def start (args):
     # load the local config file
-    if len(args) > 1:
-        ini = args.pop(1)
+    if "RAPIDSMS_INI" in os.environ:
+        ini = os.environ["RAPIDSMS_INI"]
+    elif os.path.isfile("local.ini"):
+        ini = "local.ini"
     else:
         ini = "rapidsms.ini"
+
+    os.environ["RAPIDSMS_INI"] = ini
+
     conf = Config(ini)
 
     django_settings = None
     if "database" in conf:
         django_settings = load_django_environment(conf)
 
-    print args
     if len(args) > 1 and django_settings:
         django_manage_wrapper(django_settings,args)
     else:
