@@ -51,10 +51,6 @@ class Router (component.Receiver):
         self.info("APPS: %r" % (self.apps))
         self.info("SERVING FOREVER...")
         
-        # call the "start" method of each app
-        for app in self.apps:
-            app.start()
-        
         workers = []
         # launch each backend in its own thread
         for backend in self.backends:
@@ -62,6 +58,10 @@ class Router (component.Receiver):
             worker.start()
             workers.append(worker)
 
+        # call the "start" method of each app
+        for app in self.apps:
+            app.start()
+        
         # wait until we're asked to stop
         while True:
             try:
@@ -81,32 +81,44 @@ class Router (component.Receiver):
         for worker in workers:
             worker.join()
 
+
     def run(self):
         msg = self.next_message(timeout=1.0)
         if msg is not None:
             self.incoming(msg)
 
     def incoming(self, message):   
-        self.info("Incoming message: %r" % (message))
+        self.info("Incoming message via %s: %s ->'%s'" %\
+			(message.backend.name, message.caller, message.text))
            
         # loop through all of the apps and notify them of
         # the incoming message so that they all get a
         # chance to do what they will with it                      
         for phase in self.incoming_phases:
             for app in self.apps:
-                getattr(app, phase)(message)
+                self.debug('IN' + ' ' + phase + ' ' + app.name)
+                try:
+                    getattr(app, phase)(message)
+                except AttributeError:
+                    self.debug('!!! BANG !!!')
 
     def outgoing(self, message):
-        self.info("Outgoing message: %r" % (message))
+        self.info("Outgoing message via %s: %s <- '%s'" %\
+			(message.backend.name, message.caller, message.text))
         
         # first notify all of the apps that want to know
         # about outgoing messages so that they can do what
         # they will before the message is actually sent
         for phase in self.outgoing_phases:
             for app in self.apps:
-                getattr(app, phase)(message)
+                self.debug('OUT' + ' ' + phase + ' ' + app.name)
+                try:
+                    getattr(app, phase)(message)
+                except AttributeError:
+                    self.debug('!!! BANG !!!')
 
         # now send the message out
-        self.info("SENT MESSAGE %s to %s" % (message, message.backend))
         message.backend.send(message)
+        self.info("SENT message '%s' to %s via %s" % (message.text,\
+			message.caller, message.backend.name))\
         
