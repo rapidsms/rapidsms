@@ -1,4 +1,27 @@
-# Django settings for webui project.
+#!/usr/bin/env python
+# vim: ai ts=4 sts=4 et sw=4
+
+
+
+
+import os, sys, rapidsms
+
+# find the root of this project, so we can use relative paths (regardless
+# of the pwd), and add it to to the python path so we can easily import apps
+webui_dir = os.path.abspath(os.path.dirname(__file__))
+project_dir = os.path.dirname(webui_dir)
+if not project_dir in sys.path:
+    sys.path.append(project_dir)
+
+# load the rapidsms config, so we
+# don't have to repeat ourselves here
+rs_conf = rapidsms.config.Config(project_dir + "/rapidsms.ini")
+
+# build an array of the webui modules
+rs_apps = [str("apps.%s.webui" % (app)) for app in rs_conf["rapidsms"]["apps"]]
+
+
+
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -71,16 +94,14 @@ TEMPLATE_DIRS = (
     # Don't forget to use absolute paths, not relative paths.
 )
 
-# Patch the python path quick, since we want
-# to keep our apps in a different directory
-import sys
-sys.path.append("../apps")
 
-INSTALLED_APPS = (
+
+
+INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
-    'django.contrib.admin',
-    'logger',
-)
+    'django.contrib.admin'
+] + rs_apps
+

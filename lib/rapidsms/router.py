@@ -22,12 +22,39 @@ class Router (component.Receiver):
     def log(self, level, msg, *args):
         self.logger.write(self, level, msg, *args)
 
-    def add_app (self, app):
-        self.apps.append(app)
 
-    def add_backend (self, backend):
-        self.backends.append(backend)
+    def add_app (self, app_name):
+        """Imports and instantiates an application, given its name.
+           Application classes are assumed to be named "App", in the
+           module "apps.{app_name}.app" """
+        
+        # resolve the app name into a real class
+        app_module_str = "apps.%s.app" % (app_name)
+        app_module = __import__(app_module_str, {}, {}, [''])
+        app_class = app_module.App
+        
+        # create the application with an instance of this router
+        # and keep hold of it here, so we can communicate both ways
+        app_instance = app_class(self)
+        self.apps.append(app_instance)
 
+
+    def add_backend (self, backend_name):
+        """Imports and instantiates a backend, given its name. Backend
+           classes are assumed to be named as the capitalized form of
+           their module name, which is "rapidsms.backend.{backend_name}"""
+        
+        # resolve the backend into a real class
+        backend_module_str = "rapidsms.backends.%s" % (backend_name)
+        backend_module = __import__(backend_module_str, {}, {}, [''])
+        backend_class = getattr(backend_module, backend_name.capitalize())
+        
+        # create the backend with an instance of this router and
+        # keep hold of it here, so we can communicate both ways
+        backend_instance = backend_class(self)
+        self.backends.append(backend_instance)
+    
+    
     def start_backend (self, backend):
         while self.running:
             try:
@@ -38,7 +65,7 @@ class Router (component.Receiver):
             except Exception, e:
                 # an exception was raised in backend.start()
                 # sleep for 5 seconds, then loop and restart it
-                self.error("%s raised exception: %s" % (backend.name,e))
+                self.error("%s failed: %s" % (backend.name,e))
                 if not self.running: break
                 time.sleep(5.0)
                 self.error("restarting %s" % (backend.name,))
@@ -51,6 +78,13 @@ class Router (component.Receiver):
         self.info("APPS: %r" % (self.apps))
         self.info("SERVING FOREVER...")
         
+        # call the "start" method of each app
+        for app in self.apps:
+            try:
+                app.start()
+            except Exception, e:
+                self.error("%s failed on start: %r", app, e)
+
         workers = []
         # launch each backend in its own thread
         for backend in self.backends:
@@ -76,7 +110,7 @@ class Router (component.Receiver):
             try:
                 backend.stop()
             except Exception, e:
-                self.error("%s raised exception on stop: %s" % (backend.name,e))
+                self.error("%s failed on stop: %s" % (backend.name,e))
         
         for worker in workers:
             worker.join()
@@ -99,8 +133,8 @@ class Router (component.Receiver):
                 self.debug('IN' + ' ' + phase + ' ' + app.name)
                 try:
                     getattr(app, phase)(message)
-                except AttributeError:
-                    self.debug('!!! BANG !!!')
+                except Exception, e:
+                    self.error("%s failed on %s: %r", app, phase, e)
 
     def outgoing(self, message):
         self.info("Outgoing message via %s: %s <- '%s'" %\
@@ -114,8 +148,8 @@ class Router (component.Receiver):
                 self.debug('OUT' + ' ' + phase + ' ' + app.name)
                 try:
                     getattr(app, phase)(message)
-                except AttributeError:
-                    self.debug('!!! BANG !!!')
+                except Exception, e:
+                    self.error("%s failed on %s: %r", app, phase, e)
 
         # now send the message out
         message.backend.send(message)
