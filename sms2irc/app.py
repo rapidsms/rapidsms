@@ -28,6 +28,6 @@ class App(rapidsms.app.App):
         pass
         
     def forward(self, message):
-        self.info("%s: '%s' forwarded to %s" % (message.caller, message.text, self.irc_backend.channels))
+        self.info("%s(%s): '%s' forwarded to %s" % (message.caller, message.backend.name, message.text, self.irc_backend.channels))
         txt = "(%s) says '%s'" % (message.backend.name, message.text)
         Message(self.irc_backend, message.caller, txt).send()
