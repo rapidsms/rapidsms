@@ -55,8 +55,18 @@ def start (args):
         django_manage_wrapper(django_settings,args)
     else:
         # load up the message router
-        router = Router(conf)
+        level, file = conf["log"]["level"], conf["log"]["file"]
+        router = Router()
+        router.set_logger(level, file)
         router.info("RapidSMS Server started up")
+ 
+        for app_conf in conf["rapidsms"]["apps"]:
+            router.info("Adding app: %r" % app_conf)
+            router.add_app(app_conf)
+
+        for backend_conf in conf["rapidsms"]["backends"]:
+            router.info("Adding backend: %r" % backend_conf)
+            router.add_backend(backend_conf)
 
         # wait for incoming messages
         router.start()
