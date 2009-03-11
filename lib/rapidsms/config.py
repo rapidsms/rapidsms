@@ -44,3 +44,5 @@ class Config (object):
         
     def has_key(self, key):
         return self.data.has_key(key)
+
+    __contains__ = has_key
