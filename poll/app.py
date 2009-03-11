@@ -4,20 +4,14 @@
 from datetime import date, datetime
 from strings import ENGLISH as STR
 
-# import the essentials of django
-from django.core.management import setup_environ
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
-from webui import settings
-setup_environ(settings)
 
-# import the django models, which should be movd
-# somewhere sensible at the earliest opportunity
 from webui.poll.models import *
 from webui import utils, graph
 
 import rapidsms
 from rapidsms.message import Message
-from rapidsms.contrib.keyworder import * 
+from rapidsms.parsers.keyworder import * 
 
 class App(rapidsms.app.App):
 
@@ -42,7 +36,7 @@ class App(rapidsms.app.App):
                     print e             
             else:
                 print 'no KW'
-				incoming_sms(message)
+            incoming_sms(message)
         except Exception, e:
             print e 
 
@@ -91,8 +85,7 @@ class App(rapidsms.app.App):
     def unsubscribe(self, message, blah=None):
         r, created = Respondant.unsubscribe(message.caller)
         message.respond(STR["unsubscribe"])
-    
-    
+
     # SUBMIT AN ANSWER --------------------------------------------------------
 
     def incoming_sms(self, message):
