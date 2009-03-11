@@ -13,7 +13,7 @@ if __name__ == "__main__":
     conf = rapidsms.Config(ini)
     
     # load up the message router
-    router = rapidsms.router.Router()
+    router = rapidsms.router.Router(conf)
     router.info("RapidSMS Server started up")
 
     # import the webui (django) directory so that
@@ -31,17 +31,17 @@ if __name__ == "__main__":
     except ImportError, err:
         log.error("Couldn't import webui, check your webui settings module")
 
-    # iterate the backend classes from the config,
-    # and instantiate them
-    for backend_class in conf["rapidsms"]["backends"]:
-        router.info("Adding backend: %r" % backend_class)
-        router.add_backend(backend_class(router))
-
     # iterate the app classes from the config,
     # and instantiate them
-    for app_class in conf["rapidsms"]["apps"]:
-        router.info("Adding app: %r" % app_class)
-        router.add_app(app_class(router))
+#    for app_class in conf["rapidsms"]["apps"]:
+#        router.info("Adding app: %s" % app_class)
+#        router.add_app(app_class)
+
+    # iterate the backend classes from the config,
+    # and instantiate them
+#    for backend_class in conf["rapidsms"]["backends"]:
+#        router.info("Adding backend: %r" % backend_class)
+#        router.add_backend(backend_class)
 
     # wait for incoming sms
     router.start()

@@ -1,17 +1,18 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-from backend import Backend
+import rapidsms
 from rapidsms.message import Message
 
 import spomsky
 import re
 
 
-class Spomc(Backend):
+class Backend(rapidsms.backends.Backend):
     
     def __init__(self, router, host="localhost", port=8100):
-        Backend.__init__(self,router)
+        rapidsms.backends.Backend.__init__(self,router)
+        self.type="SPOMC"
         self.client = spomsky.Client(host, port)
     
     def __callback(self, source, message_text):
@@ -25,7 +26,7 @@ class Spomc(Backend):
         self.router.send(m)
 
     def send(self, message):
-        destination = "sms://%s" % (message.caller)
+        destination = "%s" % (message.caller)
         self.client.send(destination, message.text)
         
     def start(self):
