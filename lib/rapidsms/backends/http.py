@@ -7,7 +7,7 @@ import random
 import re
 import urllib
 
-from backend import Backend
+import rapidsms
 from rapidsms.message import Message
 
 class HttpHandler(BaseHTTPServer.BaseHTTPRequestHandler):
@@ -53,10 +53,11 @@ class HttpServer (BaseHTTPServer.HTTPServer, SocketServer.ThreadingMixIn):
         if reads:
             BaseHTTPServer.HTTPServer.handle_request(self)
 
-class Http(Backend):
+class Backend(rapidsms.backends.Backend):
     def __init__(self, router, host="localhost", port=8080):
         self.server = HttpServer((host, port), HttpHandler)
-        Backend.__init__(self, router)
+        rapidsms.backends.Backend.__init__(self, router)
+        self.type = "HTTP"
         # set this backend in the server instance so it 
         # can callback when a message is received
         self.server.backend = self
