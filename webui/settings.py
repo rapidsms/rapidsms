@@ -1,27 +1,7 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-
-
-
 import os, sys, rapidsms
-
-# find the root of this project, so we can use relative paths (regardless
-# of the pwd), and add it to to the python path so we can easily import apps
-webui_dir = os.path.abspath(os.path.dirname(__file__))
-project_dir = os.path.dirname(webui_dir)
-if not project_dir in sys.path:
-    sys.path.append(project_dir)
-
-# load the rapidsms config, so we
-# don't have to repeat ourselves here
-rs_conf = rapidsms.config.Config(project_dir + "/rapidsms.ini")
-
-# build an array of the webui modules
-rs_apps = [str("apps.%s.webui" % (app)) for app in rs_conf["rapidsms"]["apps"]]
-
-
-
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -31,13 +11,6 @@ ADMINS = (
 )
 
 MANAGERS = ADMINS
-
-DATABASE_ENGINE = 'sqlite3'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-DATABASE_NAME = '/tmp/rapidsms.sqlite3'             # Or path to database file if using sqlite3.
-DATABASE_USER = 'root'             # Not used with sqlite3.
-DATABASE_PASSWORD = ''         # Not used with sqlite3.
-DATABASE_HOST = ''             # Set to empty string for localhost. Not used with sqlite3.
-DATABASE_PORT = ''             # Set to empty string for default. Not used with sqlite3.
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -88,14 +61,11 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'webui.urls'
 
-TEMPLATE_DIRS = (
+TEMPLATE_DIRS = [
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-)
-
-
-
+]
 
 INSTALLED_APPS = [
     'django.contrib.auth',
@@ -103,5 +73,5 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.admin'
-] + rs_apps
+]
 
