@@ -6,7 +6,7 @@ from strings import ENGLISH as STR
 
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 
-from webui.poll.models import *
+from models import *
 from webui import utils, graph
 
 import rapidsms
@@ -36,7 +36,7 @@ class App(rapidsms.app.App):
                     print e             
             else:
                 print 'no KW'
-            incoming_sms(message)
+            self.incoming_entry(message)
         except Exception, e:
             print e 
 
@@ -88,7 +88,7 @@ class App(rapidsms.app.App):
 
     # SUBMIT AN ANSWER --------------------------------------------------------
 
-    def incoming_sms(self, message):
+    def incoming_entry(self, message):
         # ensure that the caller is subscribed
         r, created = Respondant.subscribe(message.caller)
         
