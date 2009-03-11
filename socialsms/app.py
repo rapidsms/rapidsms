@@ -3,7 +3,7 @@
 
 import rapidsms
 from rapidsms.message import Message
-from rapidsms.contrib.keyworder import * 
+from rapidsms.parsers.keyworder import * 
 
 class App(rapidsms.app.App):
 
