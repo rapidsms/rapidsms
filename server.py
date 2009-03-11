@@ -3,5 +3,11 @@
 
 import sys
 import rapidsms
+import traceback
 
-rapidsms.manager.start_server(sys.argv)
+print "import server??"
+traceback.print_stack()
+
+if __name__ == "__main__":
+    
+    rapidsms.manager.start(sys.argv)
