@@ -5,7 +5,8 @@ import component
 
 class App(component.Component):
     
-    def __init__(self, router):
+    def __init__(self, title, router):
+        self._name = title
         self._router = router
             
     def _get_name(self):
