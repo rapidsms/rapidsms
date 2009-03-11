@@ -26,7 +26,7 @@ class Backend(rapidsms.backends.Backend):
         self.router.send(m)
 
     def send(self, message):
-        destination = "sms://%s" % (message.caller)
+        destination = "%s" % (message.caller)
         self.client.send(destination, message.text)
         
     def start(self):
