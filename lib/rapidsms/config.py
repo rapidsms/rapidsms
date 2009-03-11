@@ -46,7 +46,7 @@ class Config (object):
     def log(self, data):
         level, file = log.LOG_LEVEL, log.LOG_FILE
         if data.has_key("level"): level = data["level"]
-        if data.has_key("file"):  file = data["file"]
+        if data.has_key("file"): file = data["file"]
         return {"level": level, "file": file}
 
     def __getitem__(self, key):
