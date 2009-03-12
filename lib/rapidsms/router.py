@@ -48,9 +48,12 @@ class Router (component.Receiver):
             component.configure(**conf)
         except TypeError, e:
             # "__init__() got an unexpected keyword argument '...'"
-            missing_keyword = e.message.split("'")[1]
-            raise Exception("Component '%s' does not support a '%s' option."
-                    % (title, missing_keyword))
+            if "unexpected keyword" in e.message:
+                missing_keyword = e.message.split("'")[1]
+                raise Exception("Component '%s' does not support a '%s' option."
+                        % (title, missing_keyword))
+            else:
+                raise
         return component
 
     def add_backend (self, conf):
