@@ -57,7 +57,7 @@ class Router (component.Receiver):
 
     def add_app (self, conf):
         app = self.build_component("apps.%s.app.App", conf)
-        self.backends.append(app)
+        self.apps.append(app)
     
     def start_backend (self, backend):
         while self.running:
