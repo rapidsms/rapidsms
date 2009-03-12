@@ -15,11 +15,12 @@ LOG_FILE    = "/tmp/rapidsms.log"
 
 class Logger (object):
     """A simple wrapper around the standard python logger."""
-    def __init__(self, level=LOG_LEVEL, file=LOG_FILE):
+    def __init__(self, level=LOG_LEVEL, file=LOG_FILE,
+                       format=LOG_FORMAT, stderr=True):
         # set up a specific logger with our desired output level
         self.log = logging.getLogger(LOG_CHANNEL)
         self.log.setLevel(getattr(logging, level.upper()))
-        formatter = logging.Formatter(LOG_FORMAT)
+        formatter = logging.Formatter(format)
         try:
             # add the log message handler and formatter to the log
             file_handler = logging.handlers.RotatingFileHandler(
@@ -28,9 +29,11 @@ class Logger (object):
             self.log.addHandler(file_handler)
         except Exception, e:
             print >>sys.stderr, "Error starting log file %s: %s" % (file,e)
-        stderr_handler = logging.StreamHandler()
-        stderr_handler.setFormatter(formatter)
-        self.log.addHandler(stderr_handler)
+            stderr = True
+        if stderr:
+            stderr_handler = logging.StreamHandler()
+            stderr_handler.setFormatter(formatter)
+            self.log.addHandler(stderr_handler)
         
     def write(self, sender, level, msg, *args):
         level = getattr(logging, level.upper())
