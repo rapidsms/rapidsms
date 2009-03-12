@@ -22,6 +22,7 @@ class App(rapidsms.app.App):
             if self.__find(msg.text):
                 self.info("censored word found in incoming message... reprimanding caller!")
                 msg.respond("Watch your mouth!")
+                return True
 
     def outgoing(self, msg):
         if self._outgoing:
