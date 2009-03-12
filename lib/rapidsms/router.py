@@ -162,7 +162,11 @@ class Router (component.Receiver):
         # they will before the message is actually sent
         for phase in self.outgoing_phases:
             continue_sending = True
-            for app in self.apps:
+			# call outgoing phases in the opposite order of the
+			# incoming phases so that, for example, the first app
+			# called with an incoming message is the last app called
+			# with an outgoing message
+            for app in reversed(self.apps):
                 self.debug('OUT' + ' ' + phase + ' ' + app.name)
                 try:
                     continue_sending = getattr(app, phase)(message)
