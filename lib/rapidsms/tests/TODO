@@ -1,12 +1,8 @@
 manager.py
 router.py
 log.py
-config.py
-backends/backend.py
 backends/http.py
 backends/irc.py
 backends/spomc.py
 app.py
-message.py
 parsers/keyworder.py
-component.py
