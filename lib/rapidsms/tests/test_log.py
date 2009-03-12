@@ -16,8 +16,7 @@ CRITICAL [Testing]: this is a critical message: 5
 
 class TestLog(unittest.TestCase):
     def setUp(self):
-        #self.tmp = NamedTemporaryFile()
-        self.tmp = file("/tmp/log_output.txt","w+")
+        self.tmp = NamedTemporaryFile()
 
     def test_write (self):
         log = Logger("debug", self.tmp.name, 
