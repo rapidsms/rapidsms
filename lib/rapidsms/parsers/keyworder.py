@@ -77,8 +77,8 @@ class Keyworder(object):
             match = pat.match(str)
             if match:
                 return (func, match.groups())
-        # TODO proper error handling
-        print "No method called %s" % (str)
+        # TODO proper logging??
+        #print "No method called %s" % (str)
 
     # a semantic way to add a default
     # handler (when nothing else is matched)
