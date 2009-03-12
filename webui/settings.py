@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-import os, sys, rapidsms
+import os, sys
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
