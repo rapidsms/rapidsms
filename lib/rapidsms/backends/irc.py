@@ -7,7 +7,6 @@ class Backend(rapidsms.backends.Backend):
     def __init__(self, title, router, host="irc.freenode.net", port=6667,
                  nick="rapidsms", channels=["#rapidsms"]):
         rapidsms.backends.Backend.__init__(self, title, router)
-        self.type = "IRC"
         self.host = host
         self.port = port
         self.nick = nick[:16] # 16 char limit for IRC nicks
