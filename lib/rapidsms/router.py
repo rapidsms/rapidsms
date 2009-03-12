@@ -38,18 +38,23 @@ class Router (component.Receiver):
         # resolve the component name into a real class
         module_name = module_template % (conf.pop("type"))
         module = __import__(module_name, {}, {}, [''])
-        component = getattr(module, class_name)
+        component_class = getattr(module, class_name)
         
         # create the component with an instance of this router
         # and keep hold of it here, so we can communicate both ways
         title = conf.pop("title")
+        component = component_class(title, self)
         try:
-            return component(title, self, **conf)
+            component.configure(**conf)
         except TypeError, e:
             # "__init__() got an unexpected keyword argument '...'"
-            missing_keyword = e.message.split("'")[1]
-            raise Exception("Component '%s' does not support a '%s' option."
-                    % (title, missing_keyword))
+            if "unexpected keyword" in e.message:
+                missing_keyword = e.message.split("'")[1]
+                raise Exception("Component '%s' does not support a '%s' option."
+                        % (title, missing_keyword))
+            else:
+                raise
+        return component
 
     def add_backend (self, conf):
         backend = self.build_component("rapidsms.backends.%s.Backend", conf)
@@ -130,18 +135,23 @@ class Router (component.Receiver):
         # chance to do what they will with it                      
         for phase in self.incoming_phases:
             for app in self.apps:
-                responses = len(message.responses)
                 self.debug('IN' + ' ' + phase + ' ' + app.name)
+                responses = len(message.responses)
+                handled = False
                 try:
-                    getattr(app, phase)(message)
+                    handled = getattr(app, phase)(message)
                 except Exception, e:
                     self.error("%s failed on %s: %r", app, phase, e)
-                if phase != 'handle' and responses != len(message.responses):
+                if phase == 'handle':
+                    if handled is True:
+                        self.debug("%s short-circuited handle phase", app.name)
+                        break
+                elif responses != len(message.responses):
                     self.warn("App '%s' shouldn't send responses in %s()!", 
                         app.name, phase)
 
         # now send the message's responses
-        message.flush()
+        message.flush_responses()
 
     def outgoing(self, message):
         self.info("Outgoing message via %s: %s <- '%s'" %\
@@ -151,14 +161,19 @@ class Router (component.Receiver):
         # about outgoing messages so that they can do what
         # they will before the message is actually sent
         for phase in self.outgoing_phases:
+            continue_sending = True
             for app in self.apps:
                 self.debug('OUT' + ' ' + phase + ' ' + app.name)
                 try:
-                    getattr(app, phase)(message)
+                    continue_sending = getattr(app, phase)(message)
                 except Exception, e:
                     self.error("%s failed on %s: %r", app, phase, e)
+                if continue_sending is False:
+                    self.info("App '%s' cancelled outgoing message", app.name)
+                    return False
 
         # now send the message out
         message.backend.send(message)
         self.info("SENT message '%s' to %s via %s" % (message.text,\
-			message.caller, message.backend.name))\
+			message.caller, message.backend.name))
+        return True

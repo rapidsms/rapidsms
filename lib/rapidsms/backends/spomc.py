@@ -7,12 +7,10 @@ import spomsky
 import re
 
 class Backend(backend.Backend):
-    def __init__(self, title, router, host="localhost", port=8100):
-        backend.Backend.__init__(self, title, router)
+    def configure(self, host="localhost", port=8100):
         self.client = spomsky.Client(host, port)
     
     def __callback(self, source, message_text):
-        
         # drop the "sms://" protocol from the source
         phone_number = re.compile("[a-z]+://").sub("", source)
         

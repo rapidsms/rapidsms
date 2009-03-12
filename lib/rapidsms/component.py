@@ -1,7 +1,11 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-import Queue, sys, datetime
+import Queue, sys, datetime, re
+import config
+
+Match_True  = re.compile(r'^(?:true|yes|1)$', re.I)
+Match_False = re.compile(r'^(?:false|no|0)$', re.I)
 
 def _logging_method (level):
     return lambda self, msg, *args: self.log(level, msg, *args)
@@ -23,6 +27,34 @@ class Component(object):
 
     name = property(_get_name, _set_name)
    
+    def configure (self):
+        # overridden by App and Backend subclasses
+        pass
+    
+    # helper method to require mandatory config options
+    def config_requires (self, option, value):
+        if value is None:
+            raise Exception("'%s' component requires a '%s' configuration setting!" % (
+                    self.name, option))
+        return value
+
+    # helper method to get boolean config options
+    def config_bool (self, value):
+        if Match_True.match(value):
+            return True
+        elif Match_False.match(value):
+            return False
+        else:
+            self.warn("config value '%s' isn't boolean!", value)
+            return value
+
+    # helper method to get boolean config options
+    def config_list (self, value, separator=","):
+        # if the value is iterable, make a list and return it.
+        if hasattr(value, "__iter__"): return list(value)
+        # else split on separator and filter blank values
+        return config.to_list(value, separator)
+
     def log(self, level, msg, *args):
         if self.router:
             self.router.logger.write(self, level, msg, *args)
