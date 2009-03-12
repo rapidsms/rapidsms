@@ -48,7 +48,7 @@ class Backend(rapidsms.backends.Backend):
         self.server.privmsg(target, response)
 
     def pubmsg (self, connection, event):
-        self.info("%s -> %s: %r", event.source(), event.target(), event.arguments())
+        self.debug("%s -> %s: %r", event.source(), event.target(), event.arguments())
         try:
             nick, txt = map(str.strip, event.arguments()[0].split(":"))
         except ValueError:
@@ -62,7 +62,7 @@ class Backend(rapidsms.backends.Backend):
             self.route(msg)
 
     def privmsg (self, connection, event):
-        self.info("%s -> %s: %r", event.source(), event.target(), event.arguments())
+        self.debug("%s -> %s: %r", event.source(), event.target(), event.arguments())
         if event.target() == self.nick:
             self.info("routing private message from %s", event.source())
             caller = event.source().split("!")[0]
