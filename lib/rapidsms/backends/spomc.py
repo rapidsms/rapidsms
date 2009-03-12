@@ -30,4 +30,6 @@ class Backend(backend.Backend):
         backend.Backend.start(self)
 
     def stop(self):
+        backend.Backend.stop(self)
         self.client.unsubscribe()
+        self.info("Shutting down...")
