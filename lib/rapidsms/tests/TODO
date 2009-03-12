@@ -1,6 +1,5 @@
 manager.py
 router.py
 backends/http.py
-backends/irc.py
 backends/spomc.py
 parsers/keyworder.py
