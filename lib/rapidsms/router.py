@@ -38,18 +38,20 @@ class Router (component.Receiver):
         # resolve the component name into a real class
         module_name = module_template % (conf.pop("type"))
         module = __import__(module_name, {}, {}, [''])
-        component = getattr(module, class_name)
+        component_class = getattr(module, class_name)
         
         # create the component with an instance of this router
         # and keep hold of it here, so we can communicate both ways
         title = conf.pop("title")
+        component = component_class(title, self)
         try:
-            return component(title, self, **conf)
+            component.configure(**conf)
         except TypeError, e:
             # "__init__() got an unexpected keyword argument '...'"
             missing_keyword = e.message.split("'")[1]
             raise Exception("Component '%s' does not support a '%s' option."
                     % (title, missing_keyword))
+        return component
 
     def add_backend (self, conf):
         backend = self.build_component("rapidsms.backends.%s.Backend", conf)
