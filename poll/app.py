@@ -17,10 +17,6 @@ class App(rapidsms.app.App):
 
     kw = Keyworder()
 
-    def start(self):
-        self.name = 'poll'
-
-
     def parse(self, message):
         pass 
 
@@ -32,11 +28,11 @@ class App(rapidsms.app.App):
                     func, captures = self.kw.match(self, message.text)
                     func(self, message, *captures)
                     # nothing was found, use default handler
+                    self.incoming_entry(message)
                 except Exception, e:
                     print e             
             else:
                 print 'no KW'
-            self.incoming_entry(message)
         except Exception, e:
             print e 
 
