@@ -23,6 +23,10 @@ class Component(object):
 
     name = property(_get_name, _set_name)
    
+    def configure (self):
+        # overridden by App and Backend subclasses
+        pass
+
     def log(self, level, msg, *args):
         if self.router:
             self.router.logger.write(self, level, msg, *args)
