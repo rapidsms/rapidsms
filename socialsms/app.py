@@ -7,11 +7,15 @@ from rapidsms.parsers.keyworder import *
 
 class App(rapidsms.app.App):
 
+    # lets use the Keyworder parser!
     kw = Keyworder()
 
     def start(self):
+        # map names to numbers
         self.people = {}
+        # map numbers to backends
         self.backends = {}
+        # map names to groups
         self.groups = {}
 
     def parse(self, message):
@@ -21,11 +25,17 @@ class App(rapidsms.app.App):
         try:
             if hasattr(self, "kw"):
                 try:
+                    # attempt to match tokens in this message
+                    # using the keyworder parser
                     func, captures = self.kw.match(self, message.text)
                     func(self, message, *captures)
+                    # short-circuit handler calls because 
+                    # we are responding to this message
+                    return True
                 except Exception, e:
-                    # nothing was found, use default handler
-                    self.debug('No keyworder match')
+                    # nothing was found, do nothing and 
+                    # let other apps look at the message
+                    return False
             else:
                 self.debug('App has not instantiated Keyworder as kw')
         except Exception, e:

@@ -10,12 +10,15 @@ import rapidsms
 from rapidsms.message import Message
 from rapidsms.parsers.keyworder import * 
 
+# import poll-specific models as p because
+# poll has a Message class of its own...
 import models as p
 import graph
 import utils
 
 class App(rapidsms.app.App):
 
+    # lets use the Keyworder parser!
     kw = Keyworder()
 
     def parse(self, message):
@@ -26,12 +29,18 @@ class App(rapidsms.app.App):
         try:
             if hasattr(self, "kw"):
                 try:
+                    # attempt to match tokens in this message
+                    # using the keyworder parser
                     func, captures = self.kw.match(self, message.text)
                     func(self, message, *captures)
+                    # short-circuit handler calls because 
+                    # we are responding to this message
+                    return True
                 except Exception, e:
-					# TODO only except NoneType error
+                    # TODO only except NoneType error
                     # nothing was found, use default handler
                     self.incoming_entry(message)
+                    return True
             else:
                 self.debug("App does not instantiate Keyworder as 'kw'")
         except Exception, e:
@@ -86,7 +95,8 @@ class App(rapidsms.app.App):
     # SUBMIT AN ANSWER --------------------------------------------------------
 
     def incoming_entry(self, message):
-        # make a poll.Message from the rapidsms.models.Message
+        # make a poll.Message out of the rapidsms.models.Message
+        # because utils.parse_message expects a poll.Message
         mess = p.Message.objects.create(is_outgoing=False,\
             phone=message.caller, text=message.text)
 
@@ -99,6 +109,11 @@ class App(rapidsms.app.App):
         if ques is None: message.respond(STR["no_question"])
         
         # try to parse the message
+        # pass along the rapidsms.models.Message.backend with the
+        # poll.Message object so that parse_message can check that
+        # the respondant is subscribed
+        # yes this is strange but is a result of porting existing
+        # poll code into rapidsms 
         parsed = utils.parse_message(mess, ques, message.backend)
 
         # send an appropriate response to the caller
