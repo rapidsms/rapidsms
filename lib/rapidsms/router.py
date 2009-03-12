@@ -79,6 +79,27 @@ class Router (component.Receiver):
                 time.sleep(5.0)
                 self.error("restarting %s" % (backend.name,))
 
+    def start_all_apps (self):
+        # call the "start" method of each app
+        for app in self.apps:
+            try:
+                app.start()
+            except Exception, e:
+                self.error("%s failed on start: %r", app, e)
+
+    def start_all_backends (self):
+        # launch each backend in its own thread
+        for backend in self.backends:
+            worker = threading.Thread(target=self.start_backend, args=(backend,))
+            worker.start()
+
+    def stop_all_backends (self):
+        for backend in self.backends:
+            try:
+                backend.stop()
+            except Exception, e:
+                self.error("%s failed on stop: %s" % (backend.name,e))
+
     def start (self):
         self.running = True
 
@@ -87,39 +108,23 @@ class Router (component.Receiver):
         self.info("APPS: %r" % (self.apps))
         self.info("SERVING FOREVER...")
         
-        # call the "start" method of each app
-        for app in self.apps:
-            try:
-                app.start()
-            except Exception, e:
-                self.error("%s failed on start: %r", app, e)
+        self.start_all_backends()
+        self.start_all_apps()
 
-        workers = []
-        # launch each backend in its own thread
-        for backend in self.backends:
-            worker = threading.Thread(target=self.start_backend, args=(backend,))
-            worker.start()
-            workers.append(worker)
-
-        # call the "start" method of each app
-        for app in self.apps:
-            app.start()
-        
         # wait until we're asked to stop
-        while True:
+        while self.running:
             try:
                 self.run()
             except KeyboardInterrupt:
                 break
             except SystemExit:
                 break
-            
+        
+        self.stop_all_backends()
         self.running = False
-        for backend in self.backends:
-            try:
-                backend.stop()
-            except Exception, e:
-                self.error("%s failed on stop: %s" % (backend.name,e))
+
+    def stop (self):
+        self.running = False
         
     def run(self):
         msg = self.next_message(timeout=1.0)
