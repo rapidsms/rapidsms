@@ -11,9 +11,8 @@ class App(rapidsms.app.App):
     def start(self):
         self.name = 'sms2irc'
         self.irc_backend = None
-        print self.router.backends
         for backend in self.router.backends:
-            if backend.type == 'IRC':
+            if backend._name == 'irc':
                 self.irc_backend = backend
                   
     def parse(self, message):
@@ -24,8 +23,9 @@ class App(rapidsms.app.App):
             self.forward(message)
 
     def outgoing(self, message):
-        #self.forward(message)
-        pass
+        if self.irc_backend is not None:
+            if message.backend is not self.irc_backend:
+                self.forward(message)
         
     def forward(self, message):
         self.info("%s(%s): '%s' forwarded to %s" % (message.caller, message.backend.name, message.text, self.irc_backend.channels))
