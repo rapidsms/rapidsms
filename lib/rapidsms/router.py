@@ -25,43 +25,39 @@ class Router (component.Receiver):
     def set_logger(self, level, file):
         self.logger = log.Logger(level, file)
 
-    def add_app (self, app_conf):
-        """Imports and instantiates an application, given a dict with 
-           the config key/value pairs to pass along.
-           Application classes are assumed to be named "App", in the
-           module "apps.{app_name}.app" """
+    def build_component (self, class_template, conf):
+        """Imports and instantiates an module, given a dict with 
+           the config key/value pairs to pass along."""
+        # break the class name off the end of the module template
+        # i.e. "apps.%s.app.App" -> ("apps.%s.app", "App")
+        module_template, class_name = class_template.rsplit(".",1)
        
-        # make a copy of the app_conf so we can delete from it
-        app_conf = app_conf.copy()
+        # make a copy of the conf dict so we can delete from it
+        conf = conf.copy()
 
-        # resolve the app name into a real class
-        app_module_str = "apps.%s.app" % (app_conf.pop("type"))
-        app_module = __import__(app_module_str, {}, {}, [''])
-        app_class = app_module.App
+        # resolve the component name into a real class
+        module_name = module_template % (conf.pop("type"))
+        module = __import__(module_name, {}, {}, [''])
+        component = getattr(module, class_name)
         
-        # create the application with an instance of this router
+        # create the component with an instance of this router
         # and keep hold of it here, so we can communicate both ways
-        app_instance = app_class(app_conf.pop("title"), self, **app_conf)
-        self.apps.append(app_instance)
+        title = conf.pop("title")
+        try:
+            return component(title, self, **conf)
+        except TypeError, e:
+            # "__init__() got an unexpected keyword argument '...'"
+            missing_keyword = e.message.split("'")[1]
+            raise Exception("Component '%s' does not support a '%s' option."
+                    % (title, missing_keyword))
 
-    def add_backend (self, backend_conf):
-        """Imports and instantiates a backend, a dict with the key/value 
-           pairs to pass along. Backend classes are assumed to be named 
-           as the capitalized form of their module name, which is 
-           "rapidsms.backend.{backend_name}"""
-        
-        # make a copy of the backend_conf so we can delete from it
-        backend_conf = backend_conf.copy()
-        
-        # resolve the backend into a real class
-        backend_module_str = "rapidsms.backends.%s" % (backend_conf.pop("type"))
-        backend_module = __import__(backend_module_str, {}, {}, [''])
-        backend_class = backend_module.Backend 
-        
-        # create the backend with an instance of this router and
-        # keep hold of it here, so we can communicate both ways
-        backend_instance = backend_class(backend_conf.pop("title"), self, **backend_conf)
-        self.backends.append(backend_instance)
+    def add_backend (self, conf):
+        backend = self.build_component("rapidsms.backends.%s.Backend", conf)
+        self.backends.append(backend)
+
+    def add_app (self, conf):
+        app = self.build_component("apps.%s.app.App", conf)
+        self.backends.append(app)
     
     def start_backend (self, backend):
         while self.running:

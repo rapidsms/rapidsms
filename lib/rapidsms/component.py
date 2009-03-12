@@ -34,7 +34,6 @@ class Component(object):
     critical = _logging_method('critical')
 
 class Receiver(Component):
-    
     def __init__(self):
         # do we want to put a limit on the queue size?
         # and what do we do if the queue gets full?
