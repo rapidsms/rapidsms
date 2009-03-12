@@ -10,8 +10,8 @@ import re
 
 class Backend(rapidsms.backends.Backend):
     
-    def __init__(self, router, host="localhost", port=8100):
-        rapidsms.backends.Backend.__init__(self,router)
+    def __init__(self, title, router, host="localhost", port=8100):
+        rapidsms.backends.Backend.__init__(self, title, router)
         self.type="SPOMC"
         self.client = spomsky.Client(host, port)
     
