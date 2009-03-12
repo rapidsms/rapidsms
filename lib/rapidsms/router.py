@@ -171,6 +171,6 @@ class Router (component.Receiver):
 
         # now send the message out
         message.backend.send(message)
-        self.info("SENT message '%s' to %s via %s" % (message.text,\
+        self.debug("SENT message '%s' to %s via %s" % (message.text,\
 			message.caller, message.backend.name))
         return True
