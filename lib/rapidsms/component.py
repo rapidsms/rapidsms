@@ -30,6 +30,13 @@ class Component(object):
     def configure (self):
         # overridden by App and Backend subclasses
         pass
+    
+    # helper method to require mandatory config options
+    def config_requires (self, option, value):
+        if value is None:
+            raise Exception("'%s' component requires a '%s' configuration setting!" % (
+                    self.name, option))
+        return value
 
     # helper method to get boolean config options
     def config_bool (self, value):
