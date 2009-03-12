@@ -29,15 +29,13 @@ class App(rapidsms.app.App):
                     func, captures = self.kw.match(self, message.text)
                     func(self, message, *captures)
                 except Exception, e:
-                    print 'kw try'
-                    print e             
+					# TODO only except NoneType error
                     # nothing was found, use default handler
                     self.incoming_entry(message)
             else:
-                print 'no KW'
+                self.debug("App does not instantiate Keyworder as 'kw'")
         except Exception, e:
-            print 'handle try'
-            print e 
+            self.error(e) 
 
 
     def outgoing(self, message):
