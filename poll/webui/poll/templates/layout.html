@@ -1,0 +1,30 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+{% load utils %}
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+	<head>
+		<title>SMS Poll :: {% block title %}{% endblock %}</title>
+		<link type="text/css" rel="stylesheet" href="/assets/style.css" />
+		<script type="text/javascript" src="/assets/mootools-1.2-core-yc.js"></script>
+		<script type="text/javascript" src="/assets/application.js"></script>
+	</head>
+	<body>
+		<div id="header">
+			<h1>SMS Poll</h1>
+			<ul>
+				<li{% ifequal tab "dashboard" %} class="active"{% endifequal %}><a href="/">Dashboard</a></li>
+				<li{% ifequal tab "add-question" %} class="active"{% endifequal %}><a href="/add">Add a Question</a></li>
+				<li{% ifequal tab "log" %} class="active"{% endifequal %}><a href="/log">Message Log</a></li>
+			</ul>
+		</div>
+		<div id="inner">
+			{% block content %}{% endblock %}
+		</div>
+		<div id="footer">
+			<p class="rights">
+				Copyright &copy; 2007 UNICEF. All Rights Reserved.<br /> This software is available
+				under the <a href="http://www.fsf.org/licensing/licenses/agpl-3.0.html">AGPL</a>.
+			</p>
+		</div>
+	</body>
+</html>

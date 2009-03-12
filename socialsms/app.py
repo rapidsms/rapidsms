@@ -3,7 +3,7 @@
 
 import rapidsms
 from rapidsms.message import Message
-from rapidsms.contrib.keyworder import * 
+from rapidsms.parsers.keyworder import * 
 
 class App(rapidsms.app.App):
 
@@ -23,9 +23,9 @@ class App(rapidsms.app.App):
                 try:
                     func, captures = self.kw.match(self, message.text)
                     func(self, message, *captures)
-                    # nothing was found, use default handler
                 except Exception, e:
-                    self.error(e)
+                    # nothing was found, use default handler
+                    self.debug('No keyworder match')
             else:
                 self.debug('App has not instantiated Keyworder as kw')
         except Exception, e:
