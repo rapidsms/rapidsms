@@ -7,15 +7,6 @@ def _logging_method (level):
     return lambda self, msg, *args: self.log(level, msg, *args)
 
 class Component(object):
-    @classmethod
-    def config_options (cls):
-        if hasattr(cls, "__init__"):
-            # deep Python voodoo to discover the keyword
-            # arguments of the class's constructor method
-            return cls.__init__.func_code.co_varnames
-        else:
-            return ()
-
     @property
     def router (self):
         if hasattr(self, "_router"):
