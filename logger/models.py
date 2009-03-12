@@ -8,9 +8,11 @@ from django.db import models
 class MessageBase(models.Model):
     text = models.CharField(max_length=140)
     caller = models.CharField(max_length=15)
+	# TODO save backend title rather than wacky object string?
+    backend = models.CharField(max_length=150)
     
     def __unicode__(self):
-        return "[%s] %s" % (self.caller, self.text)
+        return "[%s (%s)] %s" % (self.caller, self.backend, self.text)
     
     class Meta:
         abstract = True
