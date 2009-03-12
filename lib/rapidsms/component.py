@@ -23,6 +23,10 @@ class Component(object):
 
     name = property(_get_name, _set_name)
    
+    def configure (self):
+        # overridden by App and Backend subclasses
+        pass
+
     def log(self, level, msg, *args):
         if self.router:
             self.router.logger.write(self, level, msg, *args)
@@ -34,7 +38,6 @@ class Component(object):
     critical = _logging_method('critical')
 
 class Receiver(Component):
-    
     def __init__(self):
         # do we want to put a limit on the queue size?
         # and what do we do if the queue gets full?
