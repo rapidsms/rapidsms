@@ -12,6 +12,7 @@ class Message(object):
         # initialize some empty attributes
         self.received = None
         self.sent = None
+        self.responses = []
     
     def __unicode__(self):
         return self.text
@@ -27,12 +28,17 @@ class Message(object):
            True if the message was sent successfully."""
         return self.backend.router.outgoing(self)
 
+    def flush (self):
+        for response in self.responses:
+            response.send()
+
     def respond(self, text):
         """Send the given text back to the original caller of this
            message on the same route that it came in on"""
         if self.caller: 
             response = copy.copy(self)
             response.text = text
-            return self.backend.router.outgoing(response)
+            self.responses.append(response)
+            return True
         else: 
             return False
