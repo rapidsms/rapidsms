@@ -3,6 +3,7 @@
 
 from rapidsms.component import Receiver
 from rapidsms.message import Message
+import time
 
 class Backend (Receiver):
     def __init__ (self, title, router):
@@ -23,7 +24,8 @@ class Backend (Receiver):
             self._running = False
 
     def run (self):
-        raise NotImplementedError
+        while self.running:
+            time.sleep(1)
     
     def stop(self):
         self._running = False
