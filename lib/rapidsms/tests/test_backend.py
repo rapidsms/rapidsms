@@ -19,6 +19,7 @@ class TestBackend(unittest.TestCase):
 
     def test_start_stop (self):
         self.router.start()
+        time.sleep(0.5)
         self.assertTrue(self.backend.running, "backend starts when router starts")
         self.router.stop()
         time.sleep(2.5)
