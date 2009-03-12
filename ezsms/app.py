@@ -26,9 +26,11 @@ class App(rapidsms.app.App):
                 self[key] = None
             return dict.__getitem__(self,key)
 
+    def configure (self, cfg="apps/ezsms/ezsms.cfg"):
+        self.file = cfg
+
     def start(self):
         self.sessions = {}
-        self.file     = "apps/ezsms/ezsms.cfg"
     
     def parse(self, msg):
         if msg.caller not in self.sessions:
