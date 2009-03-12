@@ -54,9 +54,8 @@ class HttpServer (BaseHTTPServer.HTTPServer, SocketServer.ThreadingMixIn):
             BaseHTTPServer.HTTPServer.handle_request(self)
 
 class Backend(rapidsms.backends.Backend):
-    def __init__(self, title, router, host="localhost", port=8080):
+    def configure(self, host="localhost", port=8080):
         self.server = HttpServer((host, port), HttpHandler)
-        rapidsms.backends.Backend.__init__(self, title, router)
         self.type = "HTTP"
         # set this backend in the server instance so it 
         # can callback when a message is received

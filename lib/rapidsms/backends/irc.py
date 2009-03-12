@@ -4,23 +4,22 @@ import rapidsms
 from rapidsms.message import Message
 
 class Backend(rapidsms.backends.Backend):
-    def __init__(self, title, router, host="irc.freenode.net", port=6667,
-                 nick="rapidsms", channels=["#rapidsms"]):
-        rapidsms.backends.Backend.__init__(self, title, router)
+    def configure(self, host="irc.freenode.net", port=6667,
+                        nick=None, channels=["#rapidsms"]):
         self.host = host
         self.port = port
-        self.nick = nick[:16] # 16 char limit for IRC nicks
-        self.channels = channels
+        self.nick = self.config_requires("nick",nick)[:16] # 16 char limit for IRC nicks
+        self.channels = self.config_list(channels)
 
         self.irc = irclib.IRC()
         self.irc.add_global_handler("privmsg", self.privmsg)
         self.irc.add_global_handler("pubmsg", self.pubmsg)
-        
+    
     def run (self):
         self.info("Connecting to %s as %s", self.host, self.nick)
         self.server = self.irc.server()
         self.server.connect(self.host, self.port, self.nick)
-
+ 
         for channel in self.channels:
             self.info("Joining %s on %s", channel, self.host)    
             self.server.join(channel)

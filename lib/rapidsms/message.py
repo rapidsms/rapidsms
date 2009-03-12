@@ -28,7 +28,7 @@ class Message(object):
            True if the message was sent successfully."""
         return self.backend.router.outgoing(self)
 
-    def flush (self):
+    def flush_responses (self):
         for response in self.responses:
             response.send()
 
