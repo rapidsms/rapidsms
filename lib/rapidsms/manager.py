@@ -20,7 +20,7 @@ def load_django_environment (conf):
 
         # add the RapidSMS apps to the Django INSTALLED_APPS
         for app in conf["rapidsms"]["apps"]:
-            appname = str("apps.%s" % (app)) 
+            appname = str("apps.%s" % (app["type"])) 
             settings.INSTALLED_APPS.append(appname)
 
         # add apps/ to TEMPLATE_DIRS
@@ -50,6 +50,9 @@ def start (args):
 
     os.environ["RAPIDSMS_INI"] = ini
 
+    if args.count(ini) == 1:
+        args.remove(ini)
+
     conf = Config(ini)
 
     django_settings = None
@@ -60,8 +63,18 @@ def start (args):
         django_manage_wrapper(django_settings,args)
     else:
         # load up the message router
-        router = Router(conf)
+        level, file = conf["log"]["level"], conf["log"]["file"]
+        router = Router()
+        router.set_logger(level, file)
         router.info("RapidSMS Server started up")
+ 
+        for app_conf in conf["rapidsms"]["apps"]:
+            router.info("Adding app: %r" % app_conf)
+            router.add_app(app_conf)
+
+        for backend_conf in conf["rapidsms"]["backends"]:
+            router.info("Adding backend: %r" % backend_conf)
+            router.add_backend(backend_conf)
 
         # wait for incoming messages
         router.start()
