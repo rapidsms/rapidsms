@@ -4,5 +4,4 @@ log.py
 backends/http.py
 backends/irc.py
 backends/spomc.py
-app.py
 parsers/keyworder.py
