@@ -4,7 +4,7 @@
 import unittest
 from harness import MockRouter
 
-class TestLog(unittest.TestCase):
+class TestBackendIRC(unittest.TestCase):
     def test_backend_irc (self):
         router = MockRouter()
         try:
