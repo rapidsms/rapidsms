@@ -5,8 +5,8 @@ import ConfigParser
 import log
 
 
-def to_list (item):
-    return filter(None,map(lambda x: unicode(x).strip(), item.split(",")))
+def to_list (item, separator=","):
+    return filter(None,map(lambda x: unicode(x).strip(), item.split(separator)))
 
 class Config (object):
     def __init__(self, *paths):
