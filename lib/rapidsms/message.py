@@ -8,10 +8,6 @@ class Message(object):
         self._backend = backend
         self.caller = caller
         self.text = text
-        
-        # initialize some empty attributes
-        self.received = None
-        self.sent = None
         self.responses = []
     
     def __unicode__(self):
@@ -31,6 +27,7 @@ class Message(object):
     def flush_responses (self):
         for response in self.responses:
             response.send()
+            self.responses.remove(response)
 
     def respond(self, text):
         """Send the given text back to the original caller of this

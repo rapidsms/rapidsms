@@ -1,47 +1,37 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-import unittest
-import rapidsms.backends
-
-
-class MockRouter(object):
-    def __init__(self):
-        self.messages = []
-    
-    def receive(self, message):
-        self.messages.append(message)
-
+import unittest, time
+from rapidsms.backends.backend import Backend
+from rapidsms.message import Message
+from harness import MockRouter
 
 class TestBackend(unittest.TestCase):
+    def setUp (self):
+        self.router = MockRouter()
+        self.backend = Backend("testing", self.router)
+        self.router.add_backend(self.backend)
 
-    REQUIRED_METHODS = ("start", "stop", "send", "receive")
+    def test__properties (self):
+        self.assertEquals(self.backend.name, "testing")
+        self.assertEquals(self.backend.router, self.router)
+        self.assertFalse(self.backend.running)
 
-    def setUp(self):
-        self.mock_router = MockRouter()
-        self.backend = rapidsms.backends.Spomc(self.mock_router)
+    def test_start_stop (self):
+        self.router.start()
+        self.assertTrue(self.backend.running, "backend starts when router starts")
+        self.router.stop()
+        time.sleep(2.5)
+        self.assertFalse(self.backend.running, "backend stops when router stops")
     
-    def tearDown(self):
-        pass
-    
-    def test_api(self):
-        for m in self.REQUIRED_METHODS:
-            base_method = getattr(self.backend.super, m)
-            backend_method = getattr(self.backend, m)
-            self.assertTrue(base_method != backend_method, 
-                "Missing method: %s" % (m))
+    def test_message (self):
+        msg = self.backend.message("0000", "Good morning!") 
+        self.assertEquals(type(msg), Message, "message() returns a message")
 
-    def test_notifies_router(self):
-        n = len(self.mock_router.messages)
-        self.backend.receive("1234", "Test Message")
-        self.assertTrue(len(self.mock_router.messages) > n,
-            "The backend didn't notify it's router of an incoming message")
-    
-    # things to test:
-    #   sending messages (without *really* doing it)
-    #   arity of api methods (use inspect.getargspec)
-    #   individual tests for required API methods
-
+    def test_route (self):
+        msg = self.backend.message("0000", "Good morning!") 
+        self.backend.route(msg)
+        self.assertTrue(self.router.message_waiting, "backend sends to router")
 
 if __name__ == "__main__":
     unittest.main()
