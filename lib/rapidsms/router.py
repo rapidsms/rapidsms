@@ -130,11 +130,18 @@ class Router (component.Receiver):
         # chance to do what they will with it                      
         for phase in self.incoming_phases:
             for app in self.apps:
+                responses = len(message.responses)
                 self.debug('IN' + ' ' + phase + ' ' + app.name)
                 try:
                     getattr(app, phase)(message)
                 except Exception, e:
                     self.error("%s failed on %s: %r", app, phase, e)
+                if phase != 'handle' and responses != len(message.responses):
+                    self.warn("App '%s' shouldn't send responses in %s()!", 
+                        app.name, phase)
+
+        # now send the message's responses
+        message.flush()
 
     def outgoing(self, message):
         self.info("Outgoing message via %s: %s <- '%s'" %\
