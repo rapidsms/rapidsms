@@ -5,8 +5,9 @@ from rapidsms.component import Receiver
 from rapidsms.message import Message
 
 class Backend (Receiver):
-    def __init__ (self, router):
+    def __init__ (self, title, router):
         Receiver.__init__(self)
+        self._name = title
         self._router = router
         self._running = False
        
