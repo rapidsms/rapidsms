@@ -65,7 +65,7 @@ class App(rapidsms.app.App):
     @kw.blank()
     @kw("(whatever)")
     def subscribe(self, message, blah=None):
-        r, created = Respondant.subscribe(message.caller)
+        r, created = Respondant.subscribe(message.caller, message.backend)
         
         # acknowledge with an appropriate message
         if created: message.respond(STR["subscribe"])
@@ -79,14 +79,14 @@ class App(rapidsms.app.App):
     @kw.blank()
     @kw("(whatever)")
     def unsubscribe(self, message, blah=None):
-        r, created = Respondant.unsubscribe(message.caller)
+        r, created = Respondant.unsubscribe(message.caller, message.backend)
         message.respond(STR["unsubscribe"])
 
     # SUBMIT AN ANSWER --------------------------------------------------------
 
     def incoming_entry(self, message):
         # ensure that the caller is subscribed
-        r, created = Respondant.subscribe(message.caller)
+        r, created = Respondant.subscribe(message.caller, message.backend)
         
         # if no question is currently running, then
         # we can effectively ignore the incoming sms,

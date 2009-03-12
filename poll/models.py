@@ -8,13 +8,14 @@ from datetime import date
 
 class Respondant(models.Model):
 	phone = models.CharField(max_length=30, blank=True, null=True)
+	backend = models.CharField(max_length=30, blank=True, null=True)
 	is_active = models.BooleanField()
 
 	def __unicode__(self):
 		return self.phone
 	
 	@classmethod
-	def subscribe(klass, caller, active=True):
+	def subscribe(klass, caller, backend, active=True):
 		created = False
 		
 		try:
@@ -27,7 +28,7 @@ class Respondant(models.Model):
 		# no existing respondant, so create
 		# a new, pre-activated, respondant
 		except ObjectDoesNotExist:
-			r = klass.objects.create(phone=caller, is_active=active)
+			r = klass.objects.create(phone=caller, backend=backend, is_active=active)
 			created = True
 		
 		# always return the object, with a bool
@@ -35,11 +36,11 @@ class Respondant(models.Model):
 		return (r, created)
 	
 	@classmethod
-	def unsubscribe(klass, caller):
+	def unsubscribe(klass, caller, backend):
 		
 		# recycle the "subscribe" function to
 		# create and deactivate the respondant
-		return klass.subscribe(caller, False)
+		return klass.subscribe(caller, backend, False)
 		
 
 class Message(models.Model):
