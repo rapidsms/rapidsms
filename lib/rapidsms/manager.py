@@ -20,7 +20,7 @@ def load_django_environment (conf):
 
         # add the RapidSMS apps to the Django INSTALLED_APPS
         for app in conf["rapidsms"]["apps"]:
-            appname = str("apps.%s" % (app)) 
+            appname = str("apps.%s" % (app["type"])) 
             settings.INSTALLED_APPS.append(appname)
 
         # add apps/ to TEMPLATE_DIRS
@@ -49,6 +49,9 @@ def start (args):
         ini = "rapidsms.ini"
 
     os.environ["RAPIDSMS_INI"] = ini
+
+    if args.count(ini) == 1:
+        args.remove(ini)
 
     conf = Config(ini)
 
