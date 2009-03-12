@@ -27,23 +27,29 @@ class Router (component.Receiver):
 
     def build_component (self, class_template, conf):
         """Imports and instantiates an module, given a dict with 
-           the config key/value pairs to pass along.
-           Application classes are assumed to be named "App", in the
-           module "apps.{app_name}.app" """
-
-        class_template, class_name = class_template.rsplit(".",1)
+           the config key/value pairs to pass along."""
+        # break the class name off the end of the module template
+        # i.e. "apps.%s.app.App" -> ("apps.%s.app", "App")
+        module_template, class_name = class_template.rsplit(".",1)
        
-        # make a copy of the app_conf so we can delete from it
-        app_conf = app_conf.copy()
+        # make a copy of the conf dict so we can delete from it
+        conf = conf.copy()
 
-        # resolve the app name into a real class
-        module_str = class_template % (app_conf.pop("type"))
-        module = __import__(module_str, {}, {}, [''])
-        _class = getattr(module, class_name)
+        # resolve the component name into a real class
+        module_name = module_template % (conf.pop("type"))
+        module = __import__(module_name, {}, {}, [''])
+        component = getattr(module, class_name)
         
-        # create the application with an instance of this router
+        # create the component with an instance of this router
         # and keep hold of it here, so we can communicate both ways
-        return _class(conf.pop("title"), self, **conf)
+        title = conf.pop("title")
+        try:
+            return component(title, self, **conf)
+        except TypeError, e:
+            # "__init__() got an unexpected keyword argument '...'"
+            missing_keyword = e.message.split("'")[1]
+            raise Exception("Component '%s' does not support a '%s' option."
+                    % (title, missing_keyword))
 
     def add_backend (self, conf):
         backend = self.build_component("rapidsms.backends.%s.Backend", conf)
