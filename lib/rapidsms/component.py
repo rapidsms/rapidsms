@@ -7,6 +7,15 @@ def _logging_method (level):
     return lambda self, msg, *args: self.log(level, msg, *args)
 
 class Component(object):
+    @classmethod
+    def config_options (cls):
+        if hasattr(cls, "__init__"):
+            # deep Python voodoo to discover the keyword
+            # arguments of the class's constructor method
+            return cls.__init__.func_code.co_varnames
+        else:
+            return ()
+
     @property
     def router (self):
         if hasattr(self, "_router"):
@@ -34,7 +43,6 @@ class Component(object):
     critical = _logging_method('critical')
 
 class Receiver(Component):
-    
     def __init__(self):
         # do we want to put a limit on the queue size?
         # and what do we do if the queue gets full?
