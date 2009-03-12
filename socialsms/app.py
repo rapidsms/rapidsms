@@ -10,15 +10,12 @@ class App(rapidsms.app.App):
     kw = Keyworder()
 
     def start(self):
-        self.name = 'socialsms'
         self.people = {}
         self.backends = {}
         self.groups = {}
 
-
     def parse(self, message):
         pass 
-
 
     def handle(self, message):
         try:

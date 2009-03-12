@@ -7,10 +7,6 @@ from rapidsms.message import Message
 # a pointless app to demonstrate the structure
 # of sms applications without magic decorators
 class App(rapidsms.app.App):
-
-    def start(self):
-        self.name = 'sms2irc'
-                  
     def parse(self, message):
         # TODO move backend lookup into start() once load order is finalized
         self.backends = self.router.backends

@@ -5,7 +5,6 @@ import rapidsms
 import random
 
 class App(rapidsms.app.App):
-    
     def start(self):
         self.questions = {}
         
