@@ -1,5 +1,5 @@
 from django.contrib import admin 
-from webui.poll.models import *
+from models import *
 
 admin.site.register(Respondant)
 admin.site.register(Message)

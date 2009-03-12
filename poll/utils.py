@@ -53,7 +53,7 @@ def extract_date(qd, prefix):
 	pass
 
 
-def parse_message(msg_or_entry, question):
+def parse_message(msg_or_entry, question, backend=None):
 	'''This function takes an incoming message and
 	a question and tries to parse the message as
 	an answer to the question.  If it succeeds it
@@ -62,7 +62,7 @@ def parse_message(msg_or_entry, question):
 	False and creates a new unparseable entry if
 	there was not already one.'''
 
-	from webui.poll.models import Entry, Message, Respondant
+	from models import Entry, Message, Respondant
 	import re
 
 	# regexes for matching boolean anwsers
@@ -85,7 +85,7 @@ def parse_message(msg_or_entry, question):
 	# an existing unparseable one
 	if isinstance(msg_or_entry, Message):
 		message             = msg_or_entry
-		respondant, created = Respondant.subscribe(message.phone)
+		respondant, created = Respondant.subscribe(message.phone, backend)
 		text                = message.text
 	elif isinstance(msg_or_entry, Entry):
 		correction = True
@@ -93,7 +93,9 @@ def parse_message(msg_or_entry, question):
 		message    = entry.message
 		respondant = entry.respondant
 		text       = entry.message.text
-	else: return False
+	else: 
+		print 'not the right kind of message'
+		return False
 
 	# whew, now we have:
 	#

@@ -6,12 +6,13 @@ from strings import ENGLISH as STR
 
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 
-from models import *
-from webui import utils, graph
-
 import rapidsms
 from rapidsms.message import Message
 from rapidsms.parsers.keyworder import * 
+
+import models as p
+import graph
+import utils
 
 class App(rapidsms.app.App):
 
@@ -27,13 +28,15 @@ class App(rapidsms.app.App):
                 try:
                     func, captures = self.kw.match(self, message.text)
                     func(self, message, *captures)
+                except Exception, e:
+                    print 'kw try'
+                    print e             
                     # nothing was found, use default handler
                     self.incoming_entry(message)
-                except Exception, e:
-                    print e             
             else:
                 print 'no KW'
         except Exception, e:
+            print 'handle try'
             print e 
 
 
@@ -65,7 +68,7 @@ class App(rapidsms.app.App):
     @kw.blank()
     @kw("(whatever)")
     def subscribe(self, message, blah=None):
-        r, created = Respondant.subscribe(message.caller, message.backend)
+        r, created = p.Respondant.subscribe(message.caller, message.backend)
         
         # acknowledge with an appropriate message
         if created: message.respond(STR["subscribe"])
@@ -79,29 +82,32 @@ class App(rapidsms.app.App):
     @kw.blank()
     @kw("(whatever)")
     def unsubscribe(self, message, blah=None):
-        r, created = Respondant.unsubscribe(message.caller, message.backend)
+        r, created = p.Respondant.unsubscribe(message.caller, message.backend)
         message.respond(STR["unsubscribe"])
 
     # SUBMIT AN ANSWER --------------------------------------------------------
 
     def incoming_entry(self, message):
+        # make a poll.Message from the rapidsms.models.Message
+        mess = p.Message.objects.create(is_outgoing=False,\
+            phone=message.caller, text=message.text)
+
         # ensure that the caller is subscribed
-        r, created = Respondant.subscribe(message.caller, message.backend)
-        
+        r, created = p.Respondant.subscribe(message.caller, message.backend)
         # if no question is currently running, then
         # we can effectively ignore the incoming sms,
         # but should notify the caller anyway
-        ques = Question.current()
+        ques = p.Question.current()
         if ques is None: message.respond(STR["no_question"])
         
         # try to parse the message
-        parsed = utils.parse_message(message.text, ques)
+        parsed = utils.parse_message(mess, ques, message.backend)
 
         # send an appropriate response to the caller
         if parsed:  
-            graph.graph_entries(ques)
+            #graph.graph_entries(ques)
             message.respond(STR["thanks"])
 
-        else:       self.message(STR["thanks_unparseable"])
+        else:       message.respond(STR["thanks_unparseable"])
 
     # TODO port broadcast and broadcast_question functions

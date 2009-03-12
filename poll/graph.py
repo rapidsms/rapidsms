@@ -6,7 +6,7 @@ from random import choice
 from datetime import datetime, date, timedelta
 from pygooglechart import SimpleLineChart, Axis, PieChart2D, StackedVerticalBarChart
 
-from poll.models import *
+from models import *
 
 # craziness to get the graphs to save in the right spot
 ROOT = os.path.dirname(os.path.abspath(__file__))

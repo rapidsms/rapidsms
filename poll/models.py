@@ -8,7 +8,7 @@ from datetime import date
 
 class Respondant(models.Model):
 	phone = models.CharField(max_length=30, blank=True, null=True)
-	backend = models.CharField(max_length=30, blank=True, null=True)
+	backend = models.CharField(max_length=100, blank=True, null=True)
 	is_active = models.BooleanField()
 
 	def __unicode__(self):
@@ -28,7 +28,7 @@ class Respondant(models.Model):
 		# no existing respondant, so create
 		# a new, pre-activated, respondant
 		except ObjectDoesNotExist:
-			r = klass.objects.create(phone=caller, backend=backend, is_active=active)
+			r = klass.objects.create(phone=caller, backend=str(backend), is_active=active)
 			created = True
 		
 		# always return the object, with a bool
