@@ -116,10 +116,6 @@ class Router (component.Receiver):
             except Exception, e:
                 self.error("%s failed on stop: %s" % (backend.name,e))
         
-        for worker in workers:
-            worker.join()
-
-
     def run(self):
         msg = self.next_message(timeout=1.0)
         if msg is not None:
