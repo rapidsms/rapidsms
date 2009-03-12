@@ -1,5 +1,4 @@
 manager.py
 router.py
 backends/http.py
-backends/spomc.py
 parsers/keyworder.py
