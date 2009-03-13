@@ -17,7 +17,6 @@ class Router (component.Receiver):
         self.apps = []
         self.running = False
         self.logger = None
-        super(component.Receiver,self).__init__()
 
     def log(self, level, msg, *args):
         self.logger.write(self, level, msg, *args)
