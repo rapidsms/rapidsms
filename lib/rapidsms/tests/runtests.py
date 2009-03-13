@@ -8,6 +8,7 @@ from test_app import *
 from test_backend import *
 from test_backend_irc import *
 from test_backend_spomc import *
+from test_router import *
 
 if __name__ == "__main__":
     print "(some tests may pause for a few seconds, this is normal)"
