@@ -1,5 +1,5 @@
 from django.template import Library
-from poll.models import *
+from apps.poll.models import *
 register = Library()
 
 # for date_selector

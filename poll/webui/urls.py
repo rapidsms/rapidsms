@@ -4,8 +4,8 @@ import poll.views as pv
 
 # magic admin stuff (remove during prod)
 from django.conf.urls.defaults import *
-from django.contrib import admin
-admin.autodiscover()
+#from django.contrib import admin
+#admin.autodiscover()
 
 urlpatterns = patterns('',
 
@@ -28,5 +28,5 @@ urlpatterns = patterns('',
 	(r'^correct/(?P<id>\d+)$', pv.correction),\
 
     # enable the django magic admin
-    (r'^admin/(.*)', admin.site.root),
+    #(r'^admin/(.*)', admin.site.root),
 )

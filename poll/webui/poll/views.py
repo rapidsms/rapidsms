@@ -6,8 +6,8 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseServerError
 from django.db import IntegrityError
 
-from models import *
-from utils import *
+from apps.poll.models import *
+from apps.poll.utils import *
 
 def dashboard(req, id=None):
 
