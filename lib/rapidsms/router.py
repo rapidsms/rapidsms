@@ -3,6 +3,7 @@
 
 import time, datetime
 import threading
+import traceback
 
 import component
 import log
@@ -145,7 +146,7 @@ class Router (component.Receiver):
                 try:
                     handled = getattr(app, phase)(message)
                 except Exception, e:
-                    self.error("%s failed on %s: %r", app, phase, e)
+                    self.error("%s failed on %s: %r\n%s", app, phase, e, traceback.print_exc())
                 if phase == 'handle':
                     if handled is True:
                         self.debug("%s short-circuited handle phase", app.name)
@@ -175,7 +176,7 @@ class Router (component.Receiver):
                 try:
                     continue_sending = getattr(app, phase)(message)
                 except Exception, e:
-                    self.error("%s failed on %s: %r", app, phase, e)
+                    self.error("%s failed on %s: %r\n%s", app, phase, e, traceback.print_exc())
                 if continue_sending is False:
                     self.info("App '%s' cancelled outgoing message", app.name)
                     return False
