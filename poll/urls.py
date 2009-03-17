@@ -1,6 +1,6 @@
 import os
 
-import poll.views as pv
+import views as pv
 
 # magic admin stuff (remove during prod)
 from django.conf.urls.defaults import *

@@ -1,6 +1,6 @@
 <div title="{{ question.text }}" class="q-summ">
-	<a href="/question/{{ question.pk }}">
-		<img src="/graphs/{{question.pk}}-240-entries.png" />
+	<a href="/poll/question/{{ question.pk }}">
+		<img src="/poll/graphs/{{question.pk}}-240-entries.png" />
 		<h3>{{ question.text|truncatewords:6 }}</h3>
 		<p class="dates">{{ question.start|date:"M jS Y" }} - {{ question.end|date:"M jS Y" }}</p>
 	</a>

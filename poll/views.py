@@ -68,7 +68,7 @@ def add_question(req):
 					).save()
 			
 			# redirect to the dashboard
-			return HttpResponseRedirect("/")
+			return HttpResponseRedirect("/poll/")
 		
 		# something went wrong during object creation.
 		# this should have been caught by javascript,
