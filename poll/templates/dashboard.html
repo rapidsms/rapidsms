@@ -45,7 +45,7 @@
 					
 					/* submit the moderation via ajax */
 					new Request({
-						"url": ("/moderate/" + pk + "/" + status),
+						"url": ("/poll/moderate/" + pk + "/" + status),
 						"onSuccess": function() {
 							
 							/* accept the entry by removing the
@@ -90,7 +90,7 @@
 				
 						/* submit the correction via ajax */
 						new Request({
-							"url": ("/correct/" + pk),
+							"url": ("/poll/correct/" + pk),
 							"data": {"text": button.value},
 							
 							/* the entry was corrected, so remove
