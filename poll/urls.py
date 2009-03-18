@@ -19,8 +19,12 @@ urlpatterns = patterns('',
 
 	# poll views (move to poll/urls.py)
 	(r'^$', pv.dashboard),
-	(r'^question/(?P<id>\d+)$', pv.dashboard),
-	(r'^add$', pv.add_question),
+	(r'^dashboard$', pv.dashboard),
+	(r'^dashboard/(?P<id>\d+)$', pv.dashboard),
+	(r'^questions$', pv.manage_questions),
+	(r'^question/(?P<id>\d+)$', pv.manage_questions),
+	(r'^question/(?P<id>\d+)/edit$', pv.edit_question),
+	(r'^question/add$', pv.add_question),
 	(r'^log$', pv.message_log),
 	
 	# ajax

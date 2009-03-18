@@ -8,7 +8,7 @@ def querydict_to_dict(qd):
 
 from django.db.models.fields import DateField
 
-def object_from_querydict(model, qd, other=None, suffix=""):
+def from_querydict(model, qd, other=None, suffix=""):
 	dict = querydict_to_dict(qd)
 	obj_dict = {}
 	
@@ -45,13 +45,20 @@ def object_from_querydict(model, qd, other=None, suffix=""):
 			except KeyError:
 				pass
 	
-	# create the instance based upon
-	# the fields we just extracted
-	return model(**obj_dict)
+	return obj_dict
 
-def extract_date(qd, prefix):
-	pass
+# create an instance based upon the dict extracted by from_querydict
+def insert_via_querydict(model, qd, other=None, suffix=""):
+	return model(**from_querydict(model, qd, other, suffix))
 
+# as above, but update an instance..
+def update_via_querydict(instance, qd, other=None, suffix=""):
+	for k,v in from_querydict(instance.__class__, qd, other, suffix).iteritems():
+		setattr(instance, k, v)
+	
+	# send back the instance, so we can
+	# chain a .save call on to the end
+	return instance
 
 def parse_message(msg_or_entry, question, backend=None):
 	'''This function takes an incoming message and

@@ -72,6 +72,27 @@ class Question(models.Model):
 		'''returns True if this is the current question'''
 		return (self == Question.current())
 
+	def is_past(self):
+		"""Return True if this question has already ended"""
+		return (not self.is_current() and (self.end < date.today()))
+	
+	def is_future(self):
+		"""Return True if this question has not started yet"""
+		return (not self.is_current() and (self.start > date.today()))
+
+	def answers(self):
+		"""Return the same data as self.answers_set.all(), with blank
+		   Answers (those with an empty 'choice' or 'text' property removed"""
+		return [answer for answer in self.answer_set.all().order_by("choice") if answer.text != ""]
+	
+	def results(self):
+		"""Return an array of tuples containing each answer for this Question,
+		   and total Entries for each, such as: [(Answer, 10), (Answer, 20)].
+		   We use tuples, rather than a simple Dict, because the order of
+		   answers is sometimes important."""
+		entries = [entry.text for entry in self.entry_set.filter(is_unparseable=False)]
+		return [(answer, entries.count(str(answer.choice))) for answer in self.answers()]
+
 	@staticmethod
 	def current():
 		# delegate to the 'on' method, to find
