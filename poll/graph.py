@@ -13,7 +13,7 @@ ROOT = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(ROOT, '..'))
 
 # path, from above craziness, to graphs directory
-GRAPH_DIR = 'webui/graphs/'
+GRAPH_DIR = 'graphs/'
 
 # graph sizes to generate (small & big)
 GRAPH_SIZES = ['240', '500']

@@ -118,7 +118,7 @@ class App(rapidsms.app.App):
 
         # send an appropriate response to the caller
         if parsed:  
-            #graph.graph_entries(ques)
+            graph.graph_entries(ques)
             message.respond(STR["thanks"])
 
         else:       message.respond(STR["thanks_unparseable"])
