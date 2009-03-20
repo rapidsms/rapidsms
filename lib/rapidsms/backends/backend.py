@@ -3,6 +3,7 @@
 
 from rapidsms.component import Receiver
 from rapidsms.message import Message
+from rapidsms.connection import Connection
 import time
 
 class Backend (Receiver):
@@ -30,8 +31,9 @@ class Backend (Receiver):
     def stop(self):
         self._running = False
    
-    def message(self, caller, text):
-        return Message(self, caller, text)
+    def message(self, connection, text):
+        c = Connection(self, connection)
+        return Message(c, text)
 
     def route(self, msg):
         # send it off to the router
