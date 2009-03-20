@@ -60,7 +60,7 @@ def update_via_querydict(instance, qd, other=None, suffix=""):
 	# chain a .save call on to the end
 	return instance
 
-def parse_message(msg_or_entry, question, backend=None):
+def parse_message(msg_or_entry, question):
 	'''This function takes an incoming message and
 	a question and tries to parse the message as
 	an answer to the question.  If it succeeds it
@@ -92,7 +92,7 @@ def parse_message(msg_or_entry, question, backend=None):
 	# an existing unparseable one
 	if isinstance(msg_or_entry, Message):
 		message             = msg_or_entry
-		respondant, created = Respondant.subscribe(message.phone, backend)
+		respondant, created = Respondant.subscribe(message.connection)
 		text                = message.text
 	elif isinstance(msg_or_entry, Entry):
 		correction = True

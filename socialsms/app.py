@@ -11,10 +11,8 @@ class App(rapidsms.app.App):
     kw = Keyworder()
 
     def start(self):
-        # map names to numbers
+        # map names to connections 
         self.people = {}
-        # map numbers to backends
-        self.backends = {}
         # map names to groups
         self.groups = {}
 
@@ -50,13 +48,13 @@ class App(rapidsms.app.App):
         # if the caller is not yet identified, then
         # send a message asking them to do so, and
         # stop further processing
-        if not self.people.has_key(message.caller):
+        if not self.people.has_key(message.connection):
             err = "You must identify yourself"
             if task: 
                 err += " before %s" % (task)
                 message.respond(err)
         
-        return self.people[message.caller]
+        return self.people[message.connection]
 
 
     # everything that we pass around (identities and
@@ -97,7 +95,7 @@ class App(rapidsms.app.App):
         # collate groups to list into a
         # flat list of slugized names
         for g in self.groups.keys():
-            member = message.caller in self.groups[g]
+            member = message.connection in self.groups[g]
             
             # include this group if we are listing ALL
             # groups, OR we are already a member of it
@@ -150,7 +148,7 @@ class App(rapidsms.app.App):
             
         else:
             # join the group and notify
-            self.groups[grp].append(message.caller)
+            self.groups[grp].append(message.connection)
             msg = "You have joined the %s group" % grp
             message.respond(msg) 
     
@@ -160,11 +158,11 @@ class App(rapidsms.app.App):
         grp = self.__group(grp)
         
         # callers can only send messages to groups which they are members of
-        if not message.caller in self.groups[grp]:
+        if not message.connection in self.groups[grp]:
             err = "You are not a member of the %s group" % (grp)
             message.respond(err)
         
-        self.groups[grp].remove(message.caller)
+        self.groups[grp].remove(message.connection)
         msg = "You have left the %s group" % grp
         message.respond(msg) 
     
@@ -172,8 +170,7 @@ class App(rapidsms.app.App):
     @kw("identify (letters)", "my name is (letters)", "i am (letters)")
     def identify(self, message, name):
         name = self.__slug(name)
-        self.backends[message.caller] = message.backend
-        self.people[message.caller] = name
+        self.people[message.connection] = name
         reply = 'Your name is now "%s"' % name
         message.respond(reply)
 
@@ -185,7 +182,7 @@ class App(rapidsms.app.App):
         
         # check that the caller is a member of
         # the group to which we are broadcasting
-        if not message.caller in self.groups[grp]:
+        if not message.connection in self.groups[grp]:
             err = "You are not a member of the %s group" % (grp)
             message.respond(err)
         
@@ -196,8 +193,8 @@ class App(rapidsms.app.App):
         # to, and queue up the same message to each of them
         msg = "[%s] %s: %s" % (grp, ident, rest)
         for dest in self.groups[grp]:
-            if dest != message.caller:
-                Message(self.backends[dest], dest, msg).send()
+            if dest != message.connection:
+                Message(dest, msg).send()
         
         # notify the caller that his/her message was sent
         people = len(self.groups[grp]) - 1

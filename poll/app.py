@@ -8,6 +8,7 @@ from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 
 import rapidsms
 from rapidsms.message import Message
+from rapidsms.connection import Connection
 from rapidsms.parsers.keyworder import * 
 
 # import poll-specific models as p because
@@ -75,7 +76,7 @@ class App(rapidsms.app.App):
     @kw.blank()
     @kw("(whatever)")
     def subscribe(self, message, blah=None):
-        r, created = p.Respondant.subscribe(message.caller, message.backend)
+        r, created = p.Respondant.subscribe(message.connection)
         
         # acknowledge with an appropriate message
         if created: message.respond(STR["subscribe"])
@@ -89,7 +90,7 @@ class App(rapidsms.app.App):
     @kw.blank()
     @kw("(whatever)")
     def unsubscribe(self, message, blah=None):
-        r, created = p.Respondant.unsubscribe(message.caller, message.backend)
+        r, created = p.Respondant.unsubscribe(message.connection)
         message.respond(STR["unsubscribe"])
 
     # SUBMIT AN ANSWER --------------------------------------------------------
@@ -98,10 +99,10 @@ class App(rapidsms.app.App):
         # make a poll.Message out of the rapidsms.models.Message
         # because utils.parse_message expects a poll.Message
         mess = p.Message.objects.create(is_outgoing=False,\
-            phone=message.caller, text=message.text)
+            connection=message.connection, text=message.text)
 
         # ensure that the caller is subscribed
-        r, created = p.Respondant.subscribe(message.caller, message.backend)
+        r, created = p.Respondant.subscribe(message.connection)
         # if no question is currently running, then
         # we can effectively ignore the incoming sms,
         # but should notify the caller anyway
@@ -112,9 +113,7 @@ class App(rapidsms.app.App):
         # pass along the rapidsms.models.Message.backend with the
         # poll.Message object so that parse_message can check that
         # the respondant is subscribed
-        # yes this is strange but is a result of porting existing
-        # poll code into rapidsms 
-        parsed = utils.parse_message(mess, ques, message.backend)
+        parsed = utils.parse_message(mess, ques)
 
         # send an appropriate response to the caller
         if parsed:  
@@ -144,7 +143,7 @@ class App(rapidsms.app.App):
 		# blast the broadcast message to our active respondants
 		# and increment the counter
 		for r in respondants:
-			r.backend.send(r.phone, broadcast)
+			r.connection.backend.send(r.connection.identity, broadcast)
 			sending += 1
 			self.info('[broadcaster] Blasted to %d of %d numbers...' % (sending, len(respondants)))
 
