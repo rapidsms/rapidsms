@@ -6,3 +6,4 @@ import rapidsms
 
 if __name__ == "__main__":
     rapidsms.manager.start(sys.argv)
+#some test comment
