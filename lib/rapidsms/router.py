@@ -132,7 +132,7 @@ class Router (component.Receiver):
 
     def incoming(self, message):   
         self.info("Incoming message via %s: %s ->'%s'" %\
-			(message.backend.name, message.caller, message.text))
+			(message.connection.backend.name, message.connection.identity, message.text))
            
         # loop through all of the apps and notify them of
         # the incoming message so that they all get a
@@ -159,7 +159,7 @@ class Router (component.Receiver):
 
     def outgoing(self, message):
         self.info("Outgoing message via %s: %s <- '%s'" %\
-			(message.backend.name, message.caller, message.text))
+			(message.connection.backend.name, message.connection.identity, message.text))
         
         # first notify all of the apps that want to know
         # about outgoing messages so that they can do what
@@ -181,7 +181,7 @@ class Router (component.Receiver):
                     return False
 
         # now send the message out
-        message.backend.send(message)
+        message.connection.backend.send(message)
         self.debug("SENT message '%s' to %s via %s" % (message.text,\
-			message.caller, message.backend.name))
+			message.connection.identity, message.connection.backend.name))
         return True
