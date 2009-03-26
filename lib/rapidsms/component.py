@@ -27,7 +27,7 @@ class Component(object):
 
     name = property(_get_name, _set_name)
    
-    def configure (self):
+    def configure (self, **kwargs):
         # overridden by App and Backend subclasses
         pass
     
