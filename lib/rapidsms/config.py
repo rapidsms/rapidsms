@@ -12,7 +12,10 @@ def to_list (item, separator=","):
 class Config (object):
     def __init__ (self, *paths):
         self.parser = SafeConfigParser()
-        self.parser.read(paths)
+        
+        # read the configuration, and store the list of
+        # config files which were successfully parsed
+        self.sources = self.parser.read(paths)
         
         self.raw_data = {}
         self.data = {}
@@ -41,7 +44,7 @@ class Config (object):
             # just copy the raw data as-is
             else:
                 self.data[sn] =\
-                    self.raw_data[sn]
+                    self.raw_data[sn].copy()
 
 
     def component_section (self, name):
