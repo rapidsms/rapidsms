@@ -11,5 +11,5 @@ class App(rapidsms.app.App):
         self.name = 'alpha'
 
     def handle(self, message):
-        self.info("Alpha app got messge!")
+        self.info("Alpha app got message!")
         message.respond("Alpha!")
