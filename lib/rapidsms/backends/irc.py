@@ -42,7 +42,7 @@ class Backend(rapidsms.backends.Backend):
         if channel:
             target = channel
         else:
-            target = msg.cconnection.identity
+            target = msg.connection.identity
         response = "%s: %s" % (msg.connection.identity, msg.text)
         self.info("sending to %s: %s", target, response)
         self.server.privmsg(target, response)
