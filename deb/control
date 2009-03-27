@@ -1,0 +1,22 @@
+Package: python-rapidsms
+Version: 0.5-1
+Architecture: all
+Maintainer: RapidSMS Developers <rapidsms@goolgegroups.com>
+Installed-Size: XXX
+Depends: python (>=2.4), python-django (>=1.0)
+Suggests: python-irclib (>=0.4)
+Section: python
+Priority: optional
+Homepage: http://github.com/unicefinnovation/rapidsms/
+Description: python framework for building SMS-enabled applications
+ RapidSMS is a framework for quickliy building SMS, web, and database
+ enabled applications. RapidSMS provides interfaces for several types
+ of "backends" which are typically GSM modems for sending and
+ receiving SMS messages, but also includes protocols such as HTTP and
+ IRC. Written in python, it is tightly integrated with Django, which
+ allows for application developers to take advantage of many of
+ Django's general application building features such as its ORM, 
+ template system, and webserver. The idea behind RapidSMS is to
+ allow developers to quickly and simply add SMS features to their
+ applications while hiding many of the headaches of dealing directly
+ with GSM hardware.
