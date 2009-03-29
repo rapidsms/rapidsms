@@ -67,7 +67,7 @@ TEMPLATE_CONTEXT_PROCESSORS = [
     "django.core.context_processors.debug",
     "django.core.context_processors.i18n",
     "django.core.context_processors.media",
-    #"webui.integration.apps_context"
+    "rapidsms.webui.contexts.apps"
 ]
 
 TEMPLATE_DIRS = [
@@ -153,7 +153,7 @@ for rs_app in conf["rapidsms"]["apps"]:
         failed.append(rs_app["title"])
 
 # log which apps were imported and failed
-if len(imported): print "Imported WebUI for: %s"         % (", ".join(imported))
+if len(imported): print "Imported WebUI for: %s"        % (", ".join(imported))
 if len(failed):   print "Couldn't import WebUI for: %s" % (", ".join(failed))
 
 
