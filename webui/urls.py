@@ -9,7 +9,7 @@ urlpatterns = patterns('',
     
     url(r'^$', views.dashboard),
     
-    (r'^static/(?P<path>.*)$', "django.views.static.serve",
+    (r'^static/webui/(?P<path>.*)$', "django.views.static.serve",
         {"document_root": os.path.dirname(__file__) + "/static"})
 )
 

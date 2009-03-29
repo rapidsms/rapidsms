@@ -1,0 +1,124 @@
+/* UNICEF RapidSMS UI
+ * vim:set noet:
+ * --
+ * modules.css
+ * --
+ * This stylesheet defines the look of "modules",
+ * which is a concept stolen from django admin,
+ * to break the page into isolated chunks of
+ * related links and/or functionality */
+
+
+/* table captions are a kind of header,
+ * so they look the same. the look is
+ * vaguely ripped off from django */
+h2, caption {
+	background: #74d7e3 url(../images/h2-bg.png) repeat-x;
+	border-bottom: 1px solid #4bd;
+	color: #fff;
+	font-weight: bold;
+	font-size: 100%;
+	margin: 0;
+	padding: 0.5em;
+	text-align: left;
+	white-space: nowrap;
+}
+		
+	/* additional, less important info can
+	 * be wrapped in a span to dullify it */
+	h2 span,
+	caption span {
+		color: #e3f7f9;
+		font-size: 80%;
+	}
+
+
+
+
+table {
+	border-collapse: collapse; }	
+
+	tr { }
+	
+		td, th {
+			padding: 0.5em;
+		}
+		
+			th {
+				background: #e1e1e1 url(../images/table-header-bg.png) repeat-x 100% 0;
+				font-weight: normal;
+				text-align: left;
+				color: #444;
+			}
+			
+			/* for rows which have headers on the left,
+			 * remove the fancy graident and bump the
+			 * title against the content */
+			tr.horiz-th th {
+				background: #e1e1e1;
+				text-align: right;
+			}
+		
+			/* a 1px border between each line
+			 * TODO: why isn't this on a <tr>? */
+			td {
+				border-top: 1px solid #ddd; }
+
+		
+	tr.no-data { }
+		
+			tr.no-data td {
+				text-align: center;
+				padding: 2em;
+				color: #aaa;
+			}
+			
+			tr.no-data td a.add {
+				display: block;
+				padding-top: 0.625em;
+				font-size: 80%;
+			}
+
+	tfoot {
+		background: #eee url("../images/table-footer-bg.png") repeat-x 0 100%;
+		font-size: 80%;
+	}
+		
+		/* no padding in the footer cell; the links will
+		 * float and pad themselves, so the clickable blocks
+		 * will be bigger and easier to hit */
+		tfoot td {
+			padding: 0; }
+		
+			/* footer links are dull, because they're
+			 * less important than the data. TODO: is this
+			 * totally stupid? (i don't care, it's pretty) */
+			tfoot a,
+			tfoot span {
+				display: block;
+				float: right;
+				padding: 0.5em;
+				color: #aaa;
+			}
+			
+				/* footer links can be broken up with spans,
+				 * which look the same, except super dull */
+				tfoot span {
+					color: #ddd; }
+				
+				/* highlight hover links brighter than
+				 * usual, since they're harder to spot */
+				tfoot a:hover {
+					background: #fff; }
+		
+			/* move all paginator links to the left,
+			 * to separate from additional views and
+			 * exporting, which lives on the right */
+			tfoot .paginator,
+			tfoot .paginator a {
+				float: left; }
+			
+				tfoot .paginator a.active {
+					background: #eee;
+					color: #000;
+				}
