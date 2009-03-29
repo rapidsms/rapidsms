@@ -112,6 +112,37 @@ print "Using config(s): %s" %\
 
 
 
+# ==========================
+# LOAD OTHER DJANGO SETTINGS
+# ==========================
+
+# load the database settings first, since those
+# keys don't correspond exactly to their eventual
+# name in this module (they're missing the prefix
+# in rapidsms.ini); inject them into this module
+if "database" in conf:
+    for key, val in conf["database"].items():
+        vars()["DATABASE_%s" % key.upper()] = val
+
+else:
+    # database settings are missing, so
+    # blow up. TODO: is there a way to
+    # run django without a database?
+    raise(
+        ImproperlyConfigured,
+        "Your RapidSMS configuration ini (%r) does not " +\
+        "contain a [database] section, which is required " +\
+        "for the Django webui to function.")
+
+# if there is a "django" section, inject
+# the items as CONSTANTS in this module
+if "django" in conf:
+    for key, val in conf["django"].items():
+        vars()[key.upper()] = val
+
+
+
+
 # ====================
 # INJECT RAPIDSMS APPS
 # ====================
@@ -141,6 +172,15 @@ INSTALLED_APPS = [
 imported = []
 failed = []
 
+# iterate each of the active rapidsms apps (from the ini),
+# and (attempt to) import the urls.py from each. it's okay
+# if this fails, since not all apps have a webui
+#
+# NOTE: we have to do this last, since importing the urls.py
+# can cause all kinds of other things to be imported which
+# require settings to be ready (importing models from other
+# apps raises all kinds of weird errors if the db isn't
+# available yet)
 for rs_app in conf["rapidsms"]["apps"]:
     package_name = "apps.%s.urls" % (rs_app["type"])
     
@@ -155,38 +195,6 @@ for rs_app in conf["rapidsms"]["apps"]:
 # log which apps were imported and failed
 if len(imported): print "Imported WebUI for: %s"        % (", ".join(imported))
 if len(failed):   print "Couldn't import WebUI for: %s" % (", ".join(failed))
-
-
-
-
-
-# ==========================
-# LOAD OTHER DJANGO SETTINGS
-# ==========================
-
-# load the database settings first, since those
-# keys don't correspond exactly to their eventual
-# name in this module (they're missing the prefix
-# in rapidsms.ini); inject them into this module
-if "database" in conf:
-    for key, val in conf["database"].items():
-        locals()["DATABASE_%s" % (key.upper())] = val
-
-else:
-    # database settings are missing, so
-    # blow up. TODO: is there a way to
-    # run django without a database?
-    raise(
-        ImproperlyConfigured,
-        "Your RapidSMS configuration ini (%r) does not " +\
-        "contain a [database] section, which is required " +\
-        "for the Django webui to function.")
-
-# if there is a "django" section, inject
-# the items as CONSTANTS in this module
-if "django" in conf:
-    for key, val in conf["django"].items():
-        locals()[key.upper()] = val
 
 
 
