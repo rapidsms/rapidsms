@@ -25,9 +25,14 @@ class Message(object):
         return self.backend.router.outgoing(self)
 
     def flush_responses (self):
-        for response in self.responses:
-            response.send()
-            self.responses.remove(response)
+        """Sends all responses added to this message (via the
+           Message.respond method) in the order which they were
+           added, and clears self.responses"""
+
+        # keep on iterating until all of
+        # the messages have been sent
+        while self.responses:
+            self.responses.pop(0).send()
 
     def respond(self, text):
         """Send the given text back to the original caller of this
