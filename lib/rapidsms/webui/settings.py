@@ -2,7 +2,7 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 import os, sys
-import urls
+
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -151,29 +151,3 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.admindocs'
 ] + rapidsms_apps
-
-
-
-
-# ================
-# COLLECT URLS.PYs
-# ================
-
-# iterate each of the active rapidsms apps (from the ini),
-# and (attempt to) import the urls.py from each. it's okay
-# if this fails, since not all apps have a webui
-#
-# NOTE: we have to do this last, since importing the urls.py
-# can cause all kinds of other things to be imported which
-# require settings to be ready (importing models from other
-# apps raises all kinds of weird errors if the db isn't
-# available yet)
-for rs_app in conf["rapidsms"]["apps"]:
-    package_name = "apps.%s.urls" % (rs_app["type"])
-    
-    try:
-        module = __import__(package_name, {}, {}, ["urlpatterns"])
-        urls.urlpatterns += module.urlpatterns
-        
-    except ImportError:
-        pass
