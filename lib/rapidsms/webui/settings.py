@@ -79,11 +79,6 @@ TEMPLATE_DIRS = [
 
 
 
-print "Loading RapidSMS WebUI..."
-
-
-
-
 # ====================
 # LOAD RAPIDSMS CONFIG
 # ====================
@@ -103,11 +98,6 @@ if not "RAPIDSMS_INI" in os.environ:
 # load the rapidsms configuration
 from rapidsms.config import Config
 conf = Config(os.environ["RAPIDSMS_INI"])
-
-# log to the screen. TODO: is there a proper
-# way of doing this in django? I can' find one
-print "Using config(s): %s" %\
-    (", ".join(conf.sources))
 
 
 
@@ -169,9 +159,6 @@ INSTALLED_APPS = [
 # COLLECT URLS.PYs
 # ================
 
-imported = []
-failed = []
-
 # iterate each of the active rapidsms apps (from the ini),
 # and (attempt to) import the urls.py from each. it's okay
 # if this fails, since not all apps have a webui
@@ -187,18 +174,6 @@ for rs_app in conf["rapidsms"]["apps"]:
     try:
         module = __import__(package_name, {}, {}, ["urlpatterns"])
         urls.urlpatterns += module.urlpatterns
-        imported.append(rs_app["title"])
         
     except ImportError:
-        failed.append(rs_app["title"])
-
-# log which apps were imported and failed
-if len(imported): print "Imported WebUI for: %s"        % (", ".join(imported))
-if len(failed):   print "Couldn't import WebUI for: %s" % (", ".join(failed))
-
-
-
-
-# log separator
-# (end of rapidsms)
-print
+        pass
