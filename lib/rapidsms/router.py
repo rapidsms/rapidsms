@@ -59,11 +59,11 @@ class Router (component.Receiver):
     def add_backend (self, conf):
         try:
             backend = self.build_component("rapidsms.backends.%s.Backend", conf)
-            router.info("Added backend: %r" % conf)
+            self.info("Added backend: %r" % conf)
             self.backends.append(backend)
             
         except:
-            self.warning("Failed to add backend: %r" % conf)
+            self.log_last_exception("Failed to add backend: %r" % conf)
             
 
     def add_app (self, conf):
