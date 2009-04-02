@@ -43,9 +43,14 @@ class TestMessage(unittest.TestCase):
         msg = Message(self.backend, "9999", "this is a test")
         self.router.start()
         msg.respond("how did it go?")
+        msg.respond("okay?")
         msg.flush_responses()
+        
         waiting = self.backend.next_message()
-        self.assertEquals(waiting.text, "how did it go?", "the backend got the message")
+        self.assertEquals(waiting.text, "how did it go?", "the backend got the first message")
+        
+        waiting = self.backend.next_message()
+        self.assertEquals(waiting.text, "okay?", "the backend got the second message")
         self.router.stop()
 
 if __name__ == "__main__":
