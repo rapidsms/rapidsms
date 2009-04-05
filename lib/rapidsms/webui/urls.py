@@ -17,7 +17,10 @@ conf = Config(os.environ["RAPIDSMS_INI"])
 # if this fails, since not all apps have a webui
 
 for rs_app in conf["rapidsms"]["apps"]:
-    package_name = "apps.%s.urls" % (rs_app["type"])
-    module = __import__(package_name, {}, {}, ["urlpatterns"])
-    urlpatterns += module.urlpatterns
+    try:
+	package_name = "apps.%s.urls" % (rs_app["type"])
+	module = __import__(package_name, {}, {}, ["urlpatterns"])
+	urlpatterns += module.urlpatterns
+    except Exception, e:
+        continue
 
