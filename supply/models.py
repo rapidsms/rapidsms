@@ -47,8 +47,8 @@ class Stock(models.Model):
 	balance = models.PositiveIntegerField(blank=True, null=True, help_text="Amount of supply at warehouse")
 
 class Shipment(models.Model):
-	origin = models.ForeignKey(Location)
-	destination = models.ForeignKey(Location)
+	#origin = models.ForeignKey(Location)
+	#destination = models.ForeignKey(Location)
 	sent = models.DateTimeField()
 	received = models.DateTimeField()
 	shipment_id = models.PositiveIntegerField(blank=True, null=True)
