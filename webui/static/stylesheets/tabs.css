@@ -1,0 +1,53 @@
+/* UNICEF RapidSMS UI
+ * vim:set noet:
+ * --
+ * tabs.css
+ * --
+ * This stylesheet defines a fairly generic look
+ * for tabs overlapping the lower-right of the
+ * UNICEF+RapidSMS header */
+ 
+#tabs {
+	position: absolute;
+	height: 28px;
+	right: 0;
+	bottom: 0;
+	padding: 0;
+	margin: 0;
+}
+
+	#tabs li {
+		display: block;
+		float: left;
+		line-height: 28px;
+		margin-right: 5px;
+	}
+	
+		#tabs li a {
+			color: #fff;
+			display: block;
+			padding: 0 1em;
+			background: #2fa5d1 url("../images/tab-bg.png") repeat-x;
+			border-right: 1px solid #11bad0;
+			border-left: 1px solid #11bad0;
+		}
+		
+		#tabs li.active a,
+		#tabs li.active a:hover {
+			background: #55cfde url("../images/tab-bg-active.png") repeat-x;
+			border: 1px solid #cef1f5;
+			border-bottom: 0;
+			
+			/* nudge the active tab
+			 * north by one pixel */
+			margin-top: -1px;
+			
+			/* don't underline links, even when hovering,
+			 * so we don't highlight the fact that this
+			 * is a link (it's already active)  */
+			text-decoration: none;
+		}
+		
+		/* brighten up inactive tabs when hovering */
+		#tabs li a:hover {
+			background-image: url("../images/tab-bg-hover.png"); }
