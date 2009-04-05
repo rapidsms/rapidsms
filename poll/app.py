@@ -76,7 +76,7 @@ class App(rapidsms.app.App):
     @kw.blank()
     @kw("(whatever)")
     def subscribe(self, message, blah=None):
-        r, created = p.Respondant.subscribe(message.connection)
+        r, created = p.Respondant.subscribe(str(message.connection))
         
         # acknowledge with an appropriate message
         if created: message.respond(STR["subscribe"])
@@ -99,10 +99,10 @@ class App(rapidsms.app.App):
         # make a poll.Message out of the rapidsms.models.Message
         # because utils.parse_message expects a poll.Message
         mess = p.Message.objects.create(is_outgoing=False,\
-            connection=message.connection, text=message.text)
+            connection=str(message.connection), text=message.text)
 
         # ensure that the caller is subscribed
-        r, created = p.Respondant.subscribe(message.connection)
+        r, created = p.Respondant.subscribe(str(message.connection))
         # if no question is currently running, then
         # we can effectively ignore the incoming sms,
         # but should notify the caller anyway
