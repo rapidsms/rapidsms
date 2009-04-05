@@ -1,0 +1,162 @@
+/* UNICEF RapidSMS UI
+ * vim:set noet:
+ * --
+ * layout.css
+ * --
+ * This stylesheet creates a generic RapidSMS look
+ * that can be shared between UNICEF webuis */
+
+
+body {
+	background: #eef url("../images/page-bg.png") repeat-y 50% 0;
+	font: 9pt "Lucida Grande", "Bitstream Vera Sans", Verdana, sans-serif;
+	line-height: 1;
+	color: #333;
+	padding: 0;
+	margin: 0;
+}
+
+
+a {
+	text-decoration: none;
+	color: #33a7d2;
+}
+
+	a:hover {
+		text-decoration: underline; }
+
+abbr {
+	cursor: help; }
+
+
+#wrapper {
+	width: 80em;
+	margin: 0 auto;
+	background: #fff;
+}
+
+	/* no scaling for ie6 */
+	* html #wrapper {
+		width: 960px; }
+
+
+
+
+/* the header is based roughly upon
+ * unicef.org, with rapidsms colors */
+#header {
+	background: url("../images/header-bg.png") repeat-x;
+	padding-top: 23px;
+	padding-bottom: 33px;
+	position: relative;
+	color: #ccf;
+}
+	
+	/* align in the middle of the
+	 * unicef blue stripe of header bg,
+	 * and display logo on the right */
+	#branding h1 {
+		background: url("../images/unicef.png") no-repeat 100% 50%;
+		line-height: 65px;
+		padding-left: 10px;
+		color: #fff;
+		margin: 0;
+	}
+	
+		/* ie6 can't seem to
+		 * figure this out */
+		* html #branding h1 {
+			width: 940px; }
+		
+		/* hide text title on login box;
+		 * it's too long (blows up form) */
+		body.login #branding h1 {
+			text-indent: -9999px; }
+		
+		#branding h1 a {
+			height: 65px;
+			display: block;
+			text-indent: -9999px;
+			background: url("../images/rapidsms.png") no-repeat 0 50%;
+		}
+	
+	#tabs {
+		position: absolute;
+		height: 28px;
+		right: 0;
+		bottom: 0;
+		padding: 0;
+		margin: 0;
+	}
+
+		#tabs li {
+			display: block;
+			float: left;
+			line-height: 28px;
+			margin-right: 5px;
+		}
+	
+			#tabs li a {
+				color: #fff;
+				display: block;
+				padding: 0 1em;
+				background: #2fa5d1 url("../images/tab-bg.png") repeat-x;
+				border-right: 1px solid #11bad0;
+				border-left: 1px solid #11bad0;
+			}
+		
+			#tabs li.active a,
+			#tabs li.active a:hover {
+				background: #55cfde url("../images/tab-bg-active.png") repeat-x;
+				border: 1px solid #cef1f5;
+				border-bottom: 0;
+			
+				/* nudge the active tab
+				 * north by one pixel */
+				margin-top: -1px;
+			
+				/* don't underline links, even when hovering,
+				 * so we don't highlight the fact that this
+				 * is a link (it's already active)  */
+				text-decoration: none;
+			}
+		
+			/* brighten up inactive tabs when hovering */
+			#tabs li a:hover {
+				background-image: url("../images/tab-bg-hover.png"); }
+
+
+
+
+/* page hierachy, in the form
+ * COUNTRY -> DISTRICT -> GMC */
+#breadcrumbs {
+	padding: 10px;
+	font-size: 200%;
+	color: #ddf;
+	border-bottom: 1px dotted #eef;
+}
+
+
+
+
+#inner {
+	padding: 1em;
+}
+
+
+
+
+/* legal junk */
+#footer {
+	border-top: 1px dotted #eee;
+	text-align: right;
+	padding: 0.5em;
+	clear: both;
+	color: #ccc;
+}
+
+	#footer p {
+		margin: 0;
+		line-height: 1.4;
+	}
