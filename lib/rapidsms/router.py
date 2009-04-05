@@ -3,6 +3,7 @@
 
 import time, datetime
 import threading
+import traceback
 
 import component
 import log
@@ -56,12 +57,23 @@ class Router (component.Receiver):
         return component
 
     def add_backend (self, conf):
-        backend = self.build_component("rapidsms.backends.%s.Backend", conf)
-        self.backends.append(backend)
+        try:
+            backend = self.build_component("rapidsms.backends.%s.Backend", conf)
+            self.info("Added backend: %r" % conf)
+            self.backends.append(backend)
+            
+        except:
+            self.log_last_exception("Failed to add backend: %r" % conf)
+            
 
     def add_app (self, conf):
-        app = self.build_component("apps.%s.app.App", conf)
-        self.apps.append(app)
+        try:
+            app = self.build_component("apps.%s.app.App", conf)
+            self.info("Added app: %r" % conf)
+            self.apps.append(app)
+            
+        except:
+            self.log_last_exception("Failed to add app: %r" % conf)
     
     def start_backend (self, backend):
         while self.running:
@@ -145,7 +157,7 @@ class Router (component.Receiver):
                 try:
                     handled = getattr(app, phase)(message)
                 except Exception, e:
-                    self.error("%s failed on %s: %r", app, phase, e)
+                    self.error("%s failed on %s: %r\n%s", app, phase, e, traceback.print_exc())
                 if phase == 'handle':
                     if handled is True:
                         self.debug("%s short-circuited handle phase", app.name)
@@ -175,7 +187,7 @@ class Router (component.Receiver):
                 try:
                     continue_sending = getattr(app, phase)(message)
                 except Exception, e:
-                    self.error("%s failed on %s: %r", app, phase, e)
+                    self.error("%s failed on %s: %r\n%s", app, phase, e, traceback.print_exc())
                 if continue_sending is False:
                     self.info("App '%s' cancelled outgoing message", app.name)
                     return False

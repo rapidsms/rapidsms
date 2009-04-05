@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-import Queue, sys, datetime, re
+import Queue, sys, datetime, re, traceback
 import config
 
 Match_True  = re.compile(r'^(?:true|yes|1)$', re.I)
@@ -27,7 +27,7 @@ class Component(object):
 
     name = property(_get_name, _set_name)
    
-    def configure (self):
+    def configure (self, **kwargs):
         # overridden by App and Backend subclasses
         pass
     
@@ -56,14 +56,37 @@ class Component(object):
         return config.to_list(value, separator)
 
     def log(self, level, msg, *args):
-        if self.router:
-            self.router.logger.write(self, level, msg, *args)
+
+        # find the router to log to (it may be attached
+        # to this component, or it may BE this component)
+        # and pass this message to it's designated logger
+        router = self.router if self.router else self
+        router.logger.write(self, level, msg, *args)
 
     debug    = _logging_method('debug')
     info     = _logging_method('info')
     warning  = _logging_method('warning')
     error    = _logging_method('error')
     critical = _logging_method('critical')
+    
+    def log_last_exception(self, msg=None, level="error"):
+        """Logs an exception, to allow rescuing of unexpected
+        errors without discarding the debug information or
+        killing the entire process."""
+        
+        # fetch the traceback for this exception, as
+        # it would usually be dumped to the STDERR
+        str = traceback.format_exc()
+        
+        # prepend the error message, if one was provided
+        # (sometimes the exception alone is enough, but
+        # the called *should* provide more info)
+        if msg is not None:
+            str = "%s\n--\n%s" % (msg, str)
+        
+        # pass the message on it on to the logger
+        self.logger.write(self, level, str)
+
 
 class Receiver(Component):
     def __init__(self):
