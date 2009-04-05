@@ -2,7 +2,6 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 from datetime import date, datetime
-from strings import ENGLISH as STR
 
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 
