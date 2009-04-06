@@ -3,7 +3,7 @@
 
 
 import urllib, urllib2
-import cgi
+import random, cgi
 
 from threading import Thread
 from SocketServer import ThreadingMixIn
@@ -12,7 +12,6 @@ from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 
 class Client(object):
     PROTOCOL_VERSION = "SPOMSKY/0.91"
-    INCOMING_PORT = 8200
     
     
     class Server(ThreadingMixIn, HTTPServer):
@@ -47,11 +46,22 @@ class Client(object):
         def log_request(*args):
             pass
     
-    def __init__(self, server_host="localhost", server_port=8100):
+    def __init__(self, server_host="localhost", server_port=8100, client_host="localhost", client_port=None):
+    
+        # copy the arguments into
+        # their attrs unchecked (!!)
         self.server_host = server_host
-        self.server_port = server_port
+        self.server_port = int(server_port)
+        self.client_host = client_host
+        
+        # initialize attributes
         self.subscription_id = None
         self.server = None
+        
+        # if no client port was provided, randomly pick a
+        # high one. this is a bad idea, since it can fail.
+        # TODO: check that the port is available!
+        self.client_port = int(client_port) if client_port else random.randrange(10000, 11000)
     
     
     def __url(self, path):
@@ -84,7 +94,7 @@ class Client(object):
             return False
 
 
-    def subscribe(self, callback, my_host="localhost", my_port=INCOMING_PORT):
+    def subscribe(self, callback):
         
         # if we are already
         # subscribed, abort
@@ -97,7 +107,7 @@ class Client(object):
         
         # create an HTTP server (to listen for callbacks from
         # the spomsky server, to notify us of incoming SMS)
-        self.server = self.Server(("", my_port), self.RequestHandler)
+        self.server = self.Server(("", self.client_port), self.RequestHandler)
         self.server.spomsky_client = self
         
         # start the server in a separate thread, and daemonize it
@@ -109,8 +119,8 @@ class Client(object):
         # build the POST form
         data = urllib.urlencode({
             "version": self.PROTOCOL_VERSION,
-            "host": my_host,
-            "port": my_port,
+            "host": self.client_host,
+            "port": self.client_port,
             "path": "receiver"
         })
         

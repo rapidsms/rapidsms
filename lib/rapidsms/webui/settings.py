@@ -3,6 +3,7 @@
 
 import os, sys
 
+
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
@@ -59,7 +60,15 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
 )
 
-ROOT_URLCONF = 'webui.urls'
+ROOT_URLCONF = "rapidsms.webui.urls"
+
+TEMPLATE_CONTEXT_PROCESSORS = [
+    "django.core.context_processors.auth",
+    "django.core.context_processors.debug",
+    "django.core.context_processors.i18n",
+    "django.core.context_processors.media",
+    "rapidsms.webui.contexts.apps"
+]
 
 TEMPLATE_DIRS = [
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
@@ -67,12 +76,78 @@ TEMPLATE_DIRS = [
     # Don't forget to use absolute paths, not relative paths.
 ]
 
+
+
+
+# ====================
+# LOAD RAPIDSMS CONFIG
+# ====================
+
+# this module will usually be called up via the django
+# reloader, which is (in turn) called up by rapidsms's
+# server.py, which adds RAPIDSMS_INI to the environment.
+# just in case, though, check that it's defined rather
+# than repeating the filename selection logic here
+if not "RAPIDSMS_INI" in os.environ:
+    raise(
+        EnvironmentError,
+        "The RAPIDSMS_INI environment variable is not "  +\
+        "defined. Without it, settings.py doesn't know " +\
+        "which ini file to load settings from")
+
+# load the rapidsms configuration
+from rapidsms.config import Config
+conf = Config(os.environ["RAPIDSMS_INI"])
+
+
+
+
+# ==========================
+# LOAD OTHER DJANGO SETTINGS
+# ==========================
+
+# load the database settings first, since those
+# keys don't correspond exactly to their eventual
+# name in this module (they're missing the prefix
+# in rapidsms.ini); inject them into this module
+if "database" in conf:
+    for key, val in conf["database"].items():
+        vars()["DATABASE_%s" % key.upper()] = val
+
+else:
+    # database settings are missing, so
+    # blow up. TODO: is there a way to
+    # run django without a database?
+    raise(
+        ImproperlyConfigured,
+        "Your RapidSMS configuration ini (%r) does not " +\
+        "contain a [database] section, which is required " +\
+        "for the Django webui to function.")
+
+# if there is a "django" section, inject
+# the items as CONSTANTS in this module
+if "django" in conf:
+    for key, val in conf["django"].items():
+        vars()[key.upper()] = val
+
+
+
+
+# ====================
+# INJECT RAPIDSMS APPS
+# ====================
+
+rapidsms_apps = [
+    "apps.%s" % (rs_app["type"])
+    for rs_app in conf["rapidsms"]["apps"]
+]
+
+# TODO: move these?
 INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.admin',
-    'webui.integration',
-]
-
+    'django.contrib.admindocs'
+] + rapidsms_apps

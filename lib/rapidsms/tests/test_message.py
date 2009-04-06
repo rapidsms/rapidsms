@@ -50,12 +50,15 @@ class TestMessage(unittest.TestCase):
         msg = Message(self.connection, "this is a test")
         self.router.start()
         msg.respond("how did it go?")
+        msg.respond("okay?")
         msg.flush_responses()
+        
         waiting = self.backend.next_message()
         self.assertEquals(waiting.text, "how did it go?", "the backend got the message (1)")
         msg.respond("again?")
         msg.respond("and again?")
         msg.flush_responses()
+
         waiting = self.backend.next_message()
         self.assertEquals(waiting.text, "again?", "the backend got the message (2)")
         waiting = self.backend.next_message()
