@@ -8,10 +8,11 @@ from django.db import models
 class MessageBase(models.Model):
     text = models.CharField(max_length=140)
 	# TODO save connection title rather than wacky object string?
-    connection = models.CharField(max_length=150)
+    identity = models.CharField(max_length=150)
+    backend = models.CharField(max_length=150)
     
     def __unicode__(self):
-        return "[%s (%s)] %s" % (self.connection, self.text)
+        return "%s (%s) %s:" % (self.identity, self.backend, self.text)
     
     class Meta:
         abstract = True
