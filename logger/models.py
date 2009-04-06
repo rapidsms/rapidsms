@@ -12,7 +12,7 @@ class MessageBase(models.Model):
     backend = models.CharField(max_length=150)
     
     def __unicode__(self):
-        return "[%s (%s)] %s" % (self.identity, self.backend, self.text)
+        return "%s (%s) %s:" % (self.identity, self.backend, self.text)
     
     class Meta:
         abstract = True
