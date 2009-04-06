@@ -1,0 +1,18 @@
+{% extends "modelrelationship/base.html" %}
+{% load i18n %}
+{% block head_title %}{% trans "All Edge Types" %}{% endblock %}
+{% block mr_content %}
+<h2>{% trans "All EdgeTypes" %}</h2>
+	<a href="{% url modelrelationship.views.new_edgetype %}">{%trans "New EdgeType"%}</a>	
+	<ul>
+   {% for edgetype in edgetype_items %}      
+   	<li>
+   		<a href="{% url modelrelationship.views.single_edgetype edgetype.id %}">{{edgetype}} </a>
+   		<ul>  			        
+   			<li><a href="{% url modelrelationship.views.new_edge edgetype.id%}">Make new edge</a></li>
+   			</ul>
+   	</li>   	
+   {% endfor %}
+   </ul>
+{% endblock %}
+
