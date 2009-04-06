@@ -5,6 +5,7 @@ from django.views.decorators.http import require_GET, require_POST
 from django.shortcuts import render_to_response, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseServerError
 from django.db import IntegrityError
+from django.template import RequestContext
 
 from apps.poll.models import *
 from apps.poll.utils import *
@@ -28,12 +29,13 @@ def dashboard(req, id=None):
 	if ques: entries = ques.entry_set.all()
 	else: entries = []
 
-	return render_to_response("dashboard.html", {
+	return render_to_response("poll/dashboard.html", {
 		"question": ques,
 		"previous": prev,
 		"entries": entries,
 		"tab": "dashboard"
-	})
+	},
+	   context_instance=RequestContext(req))
 
 
 from django.utils import simplejson
@@ -79,11 +81,12 @@ def manage_questions(req, id=None):
 			setattr(ques, ("answer_%d" % (n+1)), answers[n])
 	
 	# otherwise, just render the ADD form
-	return render_to_response("questions.html", {
+	return render_to_response("poll/questions.html", {
 		"questions": Question.objects.all().order_by("start"),
 		"question": ques,
 		"tab": "questions"
-	})
+	},
+	   context_instance=RequestContext(req))
 
 
 def extract_dates(qd):
@@ -270,8 +273,9 @@ def correction(req, id):
 
 
 def message_log(req):
-	return render_to_response("message-log.html", {
+	return render_to_response("poll/message-log.html", {
 		"messages": Message.objects.all().order_by("-pk"),
 		"tab": "log"
-	})
+	},
+	   context_instance=RequestContext(req))
 
