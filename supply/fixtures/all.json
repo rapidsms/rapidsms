@@ -33,6 +33,10 @@
     "fields": {
       "name": "State"
     }
-  }
+  },
+  
+  {"pk": 1, "model": "supply.supply", "fields": {"code": "bn", "name": "bednets"}}, 
+  {"pk": 1, "model": "supply.location", "fields": {"latitude": null, "type": 5, "name": "Abuja State", "longitude": null}}, 
+  {"pk": 2, "model": "supply.location", "fields": {"latitude": null, "type": 4, "name": "Abuja LGA1", "longitude": null}}
   
 ]

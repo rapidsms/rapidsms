@@ -32,7 +32,9 @@ class Supply(models.Model):
 	name = models.CharField(max_length=160, help_text="Name of supply")
 	code = models.CharField(max_length=20, blank=True, null=True, help_text="Abbreviatiation")
 	
-
+	def __unicode__(self):
+		return self.name
+    
 class LocationType(models.Model):
 	name = models.CharField(max_length=160, help_text="Name of location type")
 	
@@ -45,12 +47,19 @@ class Location(models.Model):
 	type = models.ForeignKey(LocationType, blank=True, null=True, help_text="Type of location")
 	latitude = models.DecimalField(max_digits=8, decimal_places=6, null=True, blank=True, help_text="The physical latitude of this location")
 	longitude = models.DecimalField(max_digits=8, decimal_places=6, null=True, blank=True, help_text="The physical longitude of this location")
-	stock = models.ManyToManyField("Stock", help_text="Supplies at inventory location")
+	#stock = models.ManyToManyField("Stock", help_text="Supplies at inventory location", null=True, blank=True)
 
+	def __unicode__(self):
+		return self.name
+    
 class Stock(models.Model):
+	location = models.ForeignKey(Location)
 	supply = models.ForeignKey(Supply)
 	balance = models.PositiveIntegerField(blank=True, null=True, help_text="Amount of supply at warehouse")
-
+	
+	def __unicode__(self):
+		return "%s (%s units)" % (self.supply, self.balance)
+	
 class Shipment(models.Model):
 	origin = models.ForeignKey(Location)
 	destination = models.ForeignKey(Location, related_name='destination')
