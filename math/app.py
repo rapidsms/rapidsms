@@ -13,16 +13,19 @@ class App(rapidsms.app.App):
     
     def handle(self, msg):
     
-        if not msg.caller in self.questions:
+        if not msg.connection.identity in self.questions:
             a = self.__rand()
             b = self.__rand()
-            self.questions[msg.caller] = [a, b]
+            self.questions[msg.connection.identity] = [a, b]
             msg.respond("What's %d + %d?" % (a, b))
+	    return True
             
         # if we are waiting for an
         # answer, check it and respond
         else:
-            a, b = self.questions[msg.caller]
-            del(self.questions[msg.caller])
+            a, b = self.questions[msg.connection.identity]
+            del(self.questions[msg.connection.identity])
             if (a + b) == (int(msg.text)): msg.respond("Correct!")
-            else: msg.respond("Wrong! It's %d" % (a + b))
+            else: 
+	        msg.respond("Wrong! It's %d" % (a + b))
+		return True
