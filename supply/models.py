@@ -32,8 +32,13 @@ class Supply(models.Model):
 	name = models.CharField(max_length=160, help_text="Name of supply")
 	code = models.CharField(max_length=20, blank=True, null=True, help_text="Abbreviatiation")
 	
+
 class LocationType(models.Model):
 	name = models.CharField(max_length=160, help_text="Name of location type")
+	
+	def __unicode__(self):
+		return self.name
+    
 
 class Location(models.Model):
 	name = models.CharField(max_length=160, help_text="Name of location")
@@ -47,8 +52,8 @@ class Stock(models.Model):
 	balance = models.PositiveIntegerField(blank=True, null=True, help_text="Amount of supply at warehouse")
 
 class Shipment(models.Model):
-	#origin = models.ForeignKey(Location)
-	#destination = models.ForeignKey(Location)
+	origin = models.ForeignKey(Location)
+	destination = models.ForeignKey(Location, related_name='destination')
 	sent = models.DateTimeField()
 	received = models.DateTimeField()
 	shipment_id = models.PositiveIntegerField(blank=True, null=True)

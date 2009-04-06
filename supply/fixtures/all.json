@@ -1,0 +1,38 @@
+[
+  {
+    "model": "supply.LocationType",
+    "pk": 1,
+    "fields": {
+      "name": "Village"
+    }
+  },
+  {
+    "model": "supply.LocationType",
+    "pk": 2,
+    "fields": {
+      "name": "Distribution Point"
+    }
+  },
+  {
+    "model": "supply.LocationType",
+    "pk": 3,
+    "fields": {
+      "name": "Ward"
+    }
+  },
+  {
+    "model": "supply.LocationType",
+    "pk": 4,
+    "fields": {
+      "name": "LGA"
+    }
+  },
+  {
+    "model": "supply.LocationType",
+    "pk": 5,
+    "fields": {
+      "name": "State"
+    }
+  }
+  
+]
