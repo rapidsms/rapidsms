@@ -50,7 +50,6 @@ class TestMessage(unittest.TestCase):
         msg = Message(self.connection, "this is a test")
         self.router.start()
         msg.respond("how did it go?")
-        msg.respond("okay?")
         msg.flush_responses()
         
         waiting = self.backend.next_message()
