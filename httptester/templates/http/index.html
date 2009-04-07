@@ -4,49 +4,33 @@
 
 <div class="tester">
 	<table>
-		<caption>All Decision Trees</caption>
+		<caption>All Previous Messages</caption>
 		<thead>
 			<tr>
-				<th scope="col">Trigger</th>
-				<th scope="col">First Question</th>
+				<th scope="col">Date</th>
+				<th scope="col">Text</th>
+				<th scope="col">Outgoing?</th>
 			</tr>
 		</thead>
-		<tbody>{% if trees %}{% for tree in trees %}
+		<tbody>{% if msgs %}{% for allmsg in msgs %}
 			<tr>
-                <th scope="row">{{ tree.trigger }}</th>
-				<td>{{ tree.root_question.text }}</td>
+                <th scope="row">{{ allmsg.date }}</th>
+				<td>{{ allmsg.body }}</td>
+                <td>{{ allmsg.outgoing}}</td>
+				
 			</tr>{% endfor %}{% else %}
 			<tr class="no-data">
 				<td colspan="2">
-					No Trees Yet.
-					<a href="/tree/add" class="add">
-						Add a Tree
-					</a>
+					No Messages Yet.
 				</td>
 			</tr>{% endif %}
 		</tbody>
-		<tfoot>
-			<tr>
-				<td colspan="2">
-					<a href="">
-						Export to Excel
-					</a>
-				</td>
-			</tr>
-		</tfoot>
 	</table>
 </div>
 
-<div class="module dt">
-	<h2>Edit a Decision Tree</h2>
-	{% render_question t.root_question %}
-</div>
-
-<!--<div class="module">
-	<h2>Add a Decision Tree</h2>
-	<form method="post" action="/">
-		<label for="dt-add-trigger">Trigger</label>
-		<input id="dt-add-trigger" type="text" name="trigger" />
-	</form>
-</div>-->
+<form action="" method="post">
+From Phone Number: {{number}}
+{{form.as_table}}
+<input type="submit" value="Add" />
+</form>
 {% endblock %}
