@@ -1,0 +1,2 @@
+include server.py README LICENSE rapidsms.ini
+recursive-include lib *.py
