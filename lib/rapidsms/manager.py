@@ -3,10 +3,27 @@
 
 from config import Config
 from router import Router
-import os
+import os, sys
+
+# the Manager class is a bin for various RapidSMS specific management methods
+class Manager (object):
+    def route (conf, *args):
+        router = Router()
+        router.set_logger(conf["log"]["level"], conf["log"]["file"])
+        router.info("RapidSMS Server started up")
+        
+        # add each application from conf
+        for app_conf in conf["rapidsms"]["apps"]:
+            router.add_app(app_conf)
+
+        # add each backend from conf
+        for backend_conf in conf["rapidsms"]["backends"]:
+            router.add_backend(backend_conf)
+
+        # wait for incoming messages
+        router.start()
 
 def start (args):
-    
     # if a specific conf has been provided (which it
     # will be), if we're inside the django reloaded
     if "RAPIDSMS_INI" in os.environ:
@@ -20,7 +37,6 @@ def start (args):
     
     # otherwise, fall back
     else: ini = "rapidsms.ini"
-
 
     # add the ini path to the environment, so we can
     # access it globally, including any subprocesses
@@ -44,23 +60,14 @@ def start (args):
 
     # if one or more arguments were passed, we're
     # starting up django -- copied from manage.py
-    if len(args) > 1:
-        execute_manager(settings)
-    
-    # no arguments passed, so perform
-    # the default action: START RAPIDSMS
+    if not args:
+        print "Commands: route, startproject <name>, startapp <name>"
+        sys.exit(1)
+
+    if args[0] in Manager:
+        handler = getattr(Manager, args[0])
+        handler(conf, *args[1:])
     else:
-        router = Router()
-        router.set_logger(conf["log"]["level"], conf["log"]["file"])
-        router.info("RapidSMS Server started up")
-        
-        # add each application from conf
-        for app_conf in conf["rapidsms"]["apps"]:
-            router.add_app(app_conf)
-
-        # add each backend from conf
-        for backend_conf in conf["rapidsms"]["backends"]:
-            router.add_backend(backend_conf)
-
-        # wait for incoming messages
-        router.start()
+        # none of the commands were recognized,
+        # so hand off to Django
+        execute_manager(settings)
