@@ -3,7 +3,7 @@
 
 from config import Config
 from router import Router
-import os, sys
+import os, sys, shutil
 
 # the Manager class is a bin for various RapidSMS specific management methods
 class Manager (object):
@@ -22,6 +22,19 @@ class Manager (object):
 
         # wait for incoming messages
         router.start()
+
+    def _skeleton (tree):
+        return os.path.join(os.path.dirname(__file__), "skeleton", tree)
+
+    def startproject (conf, *args):
+        name = args[0]
+        shutil.copytree(_skeleton("project"), name)
+
+    def startapp (conf, *args):
+        name = args[0]
+        target = os.path.join("apps",name)
+        shutil.copytree(_skeleton("app"), target)
+        print "Don't forget to add '%s' to your rapidsms.ini apps." % name
 
 def start (args):
     # if a specific conf has been provided (which it

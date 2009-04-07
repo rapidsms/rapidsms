@@ -4,11 +4,13 @@ from distutils.core import setup
 setup(
     name = "rapidsms",
     version = "0.1.0",
+    maintainer = "RapidSMS development community",
+    maintainer_email = "rapidsms@googlegroups.com",
     description = "A framework for building messaging applications",
     url = "http://rapidsms.org/",
     package_dir = {'': 'lib'},
     packages = ['rapidsms', 'spomsky'],
-    data_files = [('config', ['rapidsms.ini']),],
+    package_data = {'rapidsms': ['skeleton/project/*.ini']},
     scripts = ["server.py"],
     long_description = """
 RapidSMS is a Free and Open Source framework for developing short message-based
