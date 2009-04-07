@@ -1,0 +1,56 @@
+{% extends "modelrelationship/base.html" %}
+{% load i18n %}
+{% block head_title %}{% trans "All Edge Types" %}{% endblock %}
+{% block mr_content %}
+<h2>{% trans "View ContentType" %}</h2>
+	<h3>{%trans "Name: " %}{{content_type}} :: {{content_type.id}}</h3>
+	
+	<ul>
+	<li><a href="{% url modelrelationship.views.new_edgetype %}?parent_type={{content_type.id}}">{%trans "Make New EdgeType with this content type as parent"%}</a></li>
+	<li><a href="{% url modelrelationship.views.new_edgetype %}?child_type={{content_type.id}}">{%trans "Make New EdgeType with this content type as child"%}</a>
+	</li>
+	</ul>
+	<hr>
+	
+	<h3>{%trans "EdgeType as Parent" %}</h3>
+	{%if edgetypes_parent %}
+	<ul>
+	{%for edgetype in edgetypes_parent %}
+		<li>
+		<a href="{% url modelrelationship.views.single_edgetype edgetype.id %}">{{edgetype}} </a>
+		</li>   	
+	{% endfor %}
+	</ul>
+	
+	{%else%}
+	<strong>No edge types</strong>
+	{%endif %}
+	<hr>
+	
+	<h3>{%trans "EdgeType as Child" %}</h3>
+	{%if edgetypes_child %}
+	<ul>
+	{%for edgetype in edgetypes_child %}
+		<li><a href="{% url modelrelationship.views.single_edgetype edgetype.id %}">{{edgetype}} </a></li>
+	{%endfor %}
+	</ul>
+	{%else%}
+	<strong>No edge types</strong>
+	{%endif %}
+	
+	
+	
+   <hr>
+   <h3>All Instances</h3>
+   {%if instances%}
+   <ul>
+	{%for instance in instances%}
+		<li><a href="{%url modelrelationship.views.view_content_item%}?content_type={{content_type.id}}&content_id={{instance.id}}">{{instance}}</a></li>
+	{%endfor%}
+	</ul>
+	{%else %}
+	<strong>No instance data</strong>
+	{%endif%}
+	
+   
+{% endblock %}
