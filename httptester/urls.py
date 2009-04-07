@@ -8,7 +8,8 @@ import apps.httptester.views as views
 urlpatterns = patterns('',
     url(r'^http$', views.index),
     #url(r'^httpbasic$', views.indexbasic),
-    url(r'^httpbasic/(?P<number>\d+)$', views.index_basic),
+    url(r'^httpbasic$', views.index_basic),
+    url(r'^httpbasic/(?P<number>\d+)$', views.basic_ui, name='basic_ui'),
     
     
     # serve the static files for this HTTP app
