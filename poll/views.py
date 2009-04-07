@@ -125,14 +125,14 @@ def add_question(req):
  		if isinstance(avail, HttpResponseServerError):
  			return avail
  		
- 		q = object_from_querydict(Question, p)
+ 		q = insert_via_querydict(Question, p)
  		q.save()
  		
  		# for multiple choice questions, also
  		# create the linked Answer objects
  		if q.type == "M":
  			for n in range(1, 5):
- 				object_from_querydict(
+ 				insert_via_querydict(
  					Answer,
  					req.POST,
  					{ "question": q },
