@@ -31,6 +31,7 @@
 <form action="" method="post">
 From Phone Number: {{number}}
 {{form.as_table}}
+<input type="hidden" name="phone_number" value="{{number}}">
 <input type="submit" value="Add" />
 </form>
 {% endblock %}
