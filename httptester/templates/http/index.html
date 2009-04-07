@@ -1,0 +1,52 @@
+{% extends "layout.html" %}
+{% block title %}Web Message Tester{% endblock %}
+{% block content %}
+
+<div class="tester">
+	<table>
+		<caption>All Decision Trees</caption>
+		<thead>
+			<tr>
+				<th scope="col">Trigger</th>
+				<th scope="col">First Question</th>
+			</tr>
+		</thead>
+		<tbody>{% if trees %}{% for tree in trees %}
+			<tr>
+                <th scope="row">{{ tree.trigger }}</th>
+				<td>{{ tree.root_question.text }}</td>
+			</tr>{% endfor %}{% else %}
+			<tr class="no-data">
+				<td colspan="2">
+					No Trees Yet.
+					<a href="/tree/add" class="add">
+						Add a Tree
+					</a>
+				</td>
+			</tr>{% endif %}
+		</tbody>
+		<tfoot>
+			<tr>
+				<td colspan="2">
+					<a href="">
+						Export to Excel
+					</a>
+				</td>
+			</tr>
+		</tfoot>
+	</table>
+</div>
+
+<div class="module dt">
+	<h2>Edit a Decision Tree</h2>
+	{% render_question t.root_question %}
+</div>
+
+<!--<div class="module">
+	<h2>Add a Decision Tree</h2>
+	<form method="post" action="/">
+		<label for="dt-add-trigger">Trigger</label>
+		<input id="dt-add-trigger" type="text" name="trigger" />
+	</form>
+</div>-->
+{% endblock %}
