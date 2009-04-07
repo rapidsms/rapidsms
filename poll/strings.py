@@ -5,7 +5,7 @@
 ENGLISH = {
 	"subscribe":            "Welcome! You will receive your first question soon.",
 	"resubscribe":          "Thanks for coming back!",
-	"unsubscribe":          "Fuck off",
+	"unsubscribe":          "Thanks for using RapidSMS, Goodbye!",
 	"unsubscribe_unknkown": "Oops. You are not subscribed. Reply with 'join' to subscribe.",
 	"conv_welc":            "You're welcome!",
 	"conv_greet":           "Greetings, friend!",
