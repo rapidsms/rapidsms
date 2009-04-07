@@ -45,7 +45,11 @@ class App(rapidsms.app.App):
             else:
                 self.debug("App does not instantiate Keyworder as 'kw'")
         except Exception, e:
-            self.error(e) 
+	    # TODO maybe don't log here bc any message not meant
+	    # for this app will log this error
+	    #
+            # self.error(e) 
+	    pass
 
 
     def outgoing(self, message):
