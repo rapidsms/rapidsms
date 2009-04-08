@@ -4,6 +4,7 @@
 {% load utils %}
 
 <div class="dashboard">
+        <h3><a href="/poll/questions">New Question</a></h3>
 	<div id="current">{% if question %}
 		<h2>{% if question.is_current %}
 			Current{% else %}{% if question.is_past %}
@@ -17,7 +18,6 @@
 			No question is currently active. You can <a href="/poll/questions">add one</a>.
 		</div>{% endif %}
 	</div>
-	
 	<div id="answers">
 		<h2>Answers</h2>{% if question %}{% if entries %}
 		<ul>{% for entry in entries %}
