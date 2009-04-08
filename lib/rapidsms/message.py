@@ -3,36 +3,49 @@
 
 import copy
 
+from rapidsms.connection import Connection
+from rapidsms.person import Person
+
 class Message(object):
-    def __init__(self, backend, caller=None, text=None):
-        self._backend = backend
-        self.caller = caller
+    def __init__(self, connection=None, text=None, person=None):
+        if connection == None and person == None:
+            raise Exception("Message __init__() must take one of: connection, person")
+        self._connection = connection
         self.text = text
+        self.person = person
         self.responses = []
     
     def __unicode__(self):
         return self.text
 
     @property
-    def backend(self):
-        # backend is read-only, since it's an
+    def connection(self):
+        # connection is read-only, since it's an
         # immutable property of this object
-        return self._backend
+        if self._connection is not None:
+            return self._connection
+        else:
+            return self.person.connection
     
     def send(self):
-        """Send this message via self.backend, returning
+        """Send this message via self.connection.backend, returning
            True if the message was sent successfully."""
-        return self.backend.router.outgoing(self)
+        return self.connection.backend.router.outgoing(self)
 
     def flush_responses (self):
-        for response in self.responses:
-            response.send()
-            self.responses.remove(response)
+        """Sends all responses added to this message (via the
+           Message.respond method) in the order which they were
+           added, and clears self.responses"""
+
+        # keep on iterating until all of
+        # the messages have been sent
+        while self.responses:
+            self.responses.pop(0).send()
 
     def respond(self, text):
         """Send the given text back to the original caller of this
            message on the same route that it came in on"""
-        if self.caller: 
+        if self.connection:
             response = copy.copy(self)
             response.text = text
             self.responses.append(response)

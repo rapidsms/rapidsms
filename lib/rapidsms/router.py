@@ -3,6 +3,7 @@
 
 import time, datetime
 import threading
+import traceback
 
 import component
 import log
@@ -56,12 +57,23 @@ class Router (component.Receiver):
         return component
 
     def add_backend (self, conf):
-        backend = self.build_component("rapidsms.backends.%s.Backend", conf)
-        self.backends.append(backend)
+        try:
+            backend = self.build_component("rapidsms.backends.%s.Backend", conf)
+            self.info("Added backend: %r" % conf)
+            self.backends.append(backend)
+            
+        except:
+            self.log_last_exception("Failed to add backend: %r" % conf)
+            
 
     def add_app (self, conf):
-        app = self.build_component("apps.%s.app.App", conf)
-        self.apps.append(app)
+        try:
+            app = self.build_component("apps.%s.app.App", conf)
+            self.info("Added app: %r" % conf)
+            self.apps.append(app)
+            
+        except:
+            self.log_last_exception("Failed to add app: %r" % conf)
     
     def start_backend (self, backend):
         while self.running:
@@ -132,7 +144,7 @@ class Router (component.Receiver):
 
     def incoming(self, message):   
         self.info("Incoming message via %s: %s ->'%s'" %\
-			(message.backend.name, message.caller, message.text))
+			(message.connection.backend.name, message.connection.identity, message.text))
            
         # loop through all of the apps and notify them of
         # the incoming message so that they all get a
@@ -145,7 +157,7 @@ class Router (component.Receiver):
                 try:
                     handled = getattr(app, phase)(message)
                 except Exception, e:
-                    self.error("%s failed on %s: %r", app, phase, e)
+                    self.error("%s failed on %s: %r\n%s", app, phase, e, traceback.print_exc())
                 if phase == 'handle':
                     if handled is True:
                         self.debug("%s short-circuited handle phase", app.name)
@@ -159,7 +171,7 @@ class Router (component.Receiver):
 
     def outgoing(self, message):
         self.info("Outgoing message via %s: %s <- '%s'" %\
-			(message.backend.name, message.caller, message.text))
+			(message.connection.backend.name, message.connection.identity, message.text))
         
         # first notify all of the apps that want to know
         # about outgoing messages so that they can do what
@@ -175,13 +187,13 @@ class Router (component.Receiver):
                 try:
                     continue_sending = getattr(app, phase)(message)
                 except Exception, e:
-                    self.error("%s failed on %s: %r", app, phase, e)
+                    self.error("%s failed on %s: %r\n%s", app, phase, e, traceback.print_exc())
                 if continue_sending is False:
                     self.info("App '%s' cancelled outgoing message", app.name)
                     return False
 
         # now send the message out
-        message.backend.send(message)
+        message.connection.backend.send(message)
         self.debug("SENT message '%s' to %s via %s" % (message.text,\
-			message.caller, message.backend.name))
+			message.connection.identity, message.connection.backend.name))
         return True
