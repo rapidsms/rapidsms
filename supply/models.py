@@ -4,7 +4,10 @@
 from django.db import models
 from django.contrib.auth import models as auth_models
 from django.core.exceptions import ObjectDoesNotExist 
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes import generic
 from datetime import date
+
 
 class Reporter(models.Model):
 	first_name = models.CharField(max_length=100, blank=True, null=True)
@@ -77,3 +80,124 @@ class Notification(models.Model):
 	notice = models.CharField(max_length=160)
 	received = models.DateTimeField(auto_now_add=True)
 	resolved = models.BooleanField()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class Validator():
+    
+    def get_validation_errors(self, content):
+        '''Returns any errors with this content'''
+        # by default this implementation will do nothing
+        pass
+
+class Validatable():
+    '''Class to extend to allow validaiton.  The validator property should 
+    be overridden with a custom implementation''' 
+    
+    _validator = Validator()
+    
+    def _get_validator(self):
+        return self._validator
+    def _set_validator(self, validator):
+        # todo: check the type of this and make sure it's a valid Validator
+        self._validator = validator
+    validator = property(_get_validator, _set_validator, None, None)
+    
+    def get_validation_errors(self, form):
+        #print "in Validatable, next call will generate errors"
+        return self._validator.get_validation_errors(form)
+
+
+class Form(models.Model, Validatable):
+    
+    type = models.CharField(max_length=160)
+    
+    def __init__ (self, *args, **kwargs):
+        super(Form, self).__init__(*args, **kwargs) 
+        self.validator = FormValidator(self)
+        
+    
+    def __unicode__(self):
+        return "%s" % (self.type)
+
+class Token(models.Model):
+    name = models.CharField(max_length=160)
+    abbreviation = models.CharField(max_length=20)
+    regex = models.CharField(max_length=160)
+    sequence = models.IntegerField()
+    report = models.ForeignKey(Form)
+
+    def __unicode__(self):
+        return "%s %s" % (self.report.type, self.abbreviation)
+
+    
+class FormValidator(Validator):
+    
+    def __init__ (self, form):
+        self._form = form
+        
+        tokens = Token.objects.all().filter(report=self._form)
+        self._validators = {}
+        for token in tokens:
+            validators = TokenExistanceValidator.objects.all(token=token) 
+            if validators:
+                self._validators[token.name] = validators
+        
+    def get_validation_errors(self, form):
+        validation_errors = []
+        print self._validators
+        for token, validators in self._validators.items():
+            print "token: %s" % token
+            if form.has_key(token):
+                for validator in validators:
+                    errors = validator.get_validation_errors(form[token])
+                    print "got back errors: %s" % errors
+                    if errors:
+                        validation_errors.append(errors)
+            return validation_errors
+        
+
+class TokenValidator(models.Model):
+    # to integrate with form/token model - these could be looked up and defined generically through the UI
+    # due to subclassing not working as ideally as i'd like it's possible we want to scrap this class
+    token = models.ForeignKey(Token, unique=True)
+    
+    def get_validation_errors(self, token):
+        pass
+
+    def __unicode__(self):
+        return "%s" % self.token
+
+        
+class TokenExistanceValidator(TokenValidator):
+    lookup_type = models.ForeignKey(ContentType, verbose_name='type to check against')
+    field_name = models.CharField(max_length = 100)
+    
+    def __unicode__(self):
+        return "%s %s %s" % (self.token, self.lookup_type.name, self.field_name)
+    
+    def get_validation_errors(self, token):
+        model_class = ContentType.model_class(self.lookup_type)
+        vals = model_class.objects.values_list(self.field_name, flat=True)
+        print "validating %s with %s" % (token, str(self))
+        if token not in vals:
+            return "%s not in list of %s %s" % (token, self.lookup_type.name, self.field_name) 
+        return None
+        
