@@ -15,9 +15,11 @@ conf = Config(os.environ["RAPIDSMS_INI"])
 # iterate each of the active rapidsms apps (from the ini),
 # and (attempt to) import the urls.py from each. it's okay
 # if this fails, since not all apps have a webui
+try:
+    for rs_app in conf["rapidsms"]["apps"]:
+        package_name = "apps.%s.urls" % (rs_app["type"])
+        module = __import__(package_name, {}, {}, ["urlpatterns"])
+        urlpatterns += module.urlpatterns
 
-for rs_app in conf["rapidsms"]["apps"]:
-    package_name = "apps.%s.urls" % (rs_app["type"])
-    module = __import__(package_name, {}, {}, ["urlpatterns"])
-    urlpatterns += module.urlpatterns
-
+except:
+    pass
