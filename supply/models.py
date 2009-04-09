@@ -7,17 +7,17 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from datetime import date
-
+import re
 
 class Validator():
-    
+    '''An interface that does validation.  The default implementation does nothing'''
     def get_validation_errors(self, content):
         '''Returns any errors with this content'''
         # by default this implementation will do nothing
         pass
 
 class Validatable():
-    '''Class to extend to allow validaiton.  The validator property should 
+    '''Class to extend to allow validation.  The validator property should 
     be overridden with a custom implementation''' 
     
     _validator = Validator()
@@ -25,16 +25,37 @@ class Validatable():
     def _get_validator(self):
         return self._validator
     def _set_validator(self, validator):
-        # todo: check the type of this and make sure it's a valid Validator
         self._validator = validator
     validator = property(_get_validator, _set_validator, None, None)
     
     def get_validation_errors(self, form):
         #print "in Validatable, next call will generate errors"
         return self._validator.get_validation_errors(form)
+        
 
-    def __unicode__(self):
-        return "%s" % (self.type)
+class Alerter():
+    '''An interface that does alerts.  The default implementation does nothing'''
+    def get_alerts(self, content):
+        '''Returns any alerts generated from this content'''
+        # by default this implementation will do nothing
+        pass
+
+class Alertable():
+    '''Class to extend to allow alerts.  The alerter property should 
+    be overridden with a custom implementation''' 
+    
+    _alerter = Alerter()
+    
+    def _get_alerter(self):
+        return self._alerter
+    def _set_alerter(self, alerter):
+        self._alerter = alerter
+    alerter = property(_get_alerter, _set_alerter, None, None)
+    
+    def get_alerts(self, form):
+        #print "in Alertable, next call will generate alerts"
+        return self._alerter.get_alerts(form)
+        
 
 
 class Reporter(models.Model):
@@ -51,13 +72,14 @@ class Reporter(models.Model):
 class Role(models.Model):
         name = models.CharField(max_length=160)
 
-class Report(models.Model, Validatable):
+class Report(models.Model, Validatable, Alertable):
     type = models.CharField(max_length=160)
     supply = models.ForeignKey("Supply")
 
     def __init__ (self, *args, **kwargs):
         super(Report, self).__init__(*args, **kwargs) 
         self.validator = FormValidator(self)
+        self.alerter = FormAlerter(self)
         
     def __unicode__(self):
         return "%s %s" % (self.supply.code, self.type)
@@ -126,10 +148,8 @@ class Notification(models.Model):
     # do we want to save a resolver?
 
 
-
-    
 class FormValidator(Validator):
-    
+    '''Validator for forms, by passing off validation for each token'''
     def __init__ (self, form):
         self._form = form
         
@@ -142,7 +162,7 @@ class FormValidator(Validator):
         
     def get_validation_errors(self, form):
         validation_errors = []
-        print self._validators
+        #print self._validators
         for token, validators in self._validators.items():
             print "token: %s" % token
             if form.has_key(token):
@@ -167,6 +187,7 @@ class TokenValidator(models.Model):
 
         
 class TokenExistanceValidator(TokenValidator):
+    '''Validator that can ensure a token exists in some other model.name db column'''
     lookup_type = models.ForeignKey(ContentType, verbose_name='type to check against')
     field_name = models.CharField(max_length = 100)
     
@@ -181,3 +202,26 @@ class TokenExistanceValidator(TokenValidator):
             return "%s not in list of %s %s" % (token, self.lookup_type.name, self.field_name) 
         return None
         
+class FormAlerter(Alerter):
+    '''Alerter for forms, by passing off alerts to a contained list'''
+    def __init__ (self, form):
+        self._form =form
+        self._alerters = RegexAlerter.objects.all().filter(form = self._form)
+
+    def get_alerts(self, msg):
+        alerts = []
+        for alerter in self._alerters:
+            alert = alerter.get_alerts(msg)
+            if (alert):
+                alerts.append(alert)
+        return alerts
+
+class RegexAlerter(models.Model, Alerter):
+    '''Alerter that raises an error any time a particular regex matches'''
+    form = models.ForeignKey(Report)
+    regex = models.CharField(max_length=100)
+    response = models.CharField(max_length=160)
+        
+    def get_alerts(self, msg):
+        if re.match(self.regex, msg):
+            return self.response
