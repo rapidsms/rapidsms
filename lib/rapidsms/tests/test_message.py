@@ -29,6 +29,10 @@ class TestMessage(unittest.TestCase):
     def test__unicode__ (self):
         msg = Message(self.connection, "this is a test")
         self.assertEquals(unicode(msg), "this is a test", "unicode is right")
+    
+    def test_peer (self):
+        msg = Message(self.connection, "this is a test")
+        self.assertEquals(msg.peer, "12345", "peer identifier is right")
 
     def test_send (self):
         self.router.start()

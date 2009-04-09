@@ -26,6 +26,12 @@ class Message(object):
             return self._connection
         else:
             return self.person.connection
+
+    @property
+    def peer (self):
+        # return the identity (e.g. phone number) of
+        # the other end of this message's connection
+        return self.connection.identity 
     
     def send(self):
         """Send this message via self.connection.backend, returning
