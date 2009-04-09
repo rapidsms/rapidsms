@@ -4,3 +4,4 @@ core.*
 .project
 .pydevproject
 *.sqlite3
+logs/*
