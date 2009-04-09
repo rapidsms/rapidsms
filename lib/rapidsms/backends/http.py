@@ -26,7 +26,7 @@ class HttpHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         
         # if the path is of the form /integer/blah 
         # send a new message from integer with content blah
-        send_regex = re.compile(r"^/(\d{6})/(.*)")
+        send_regex = re.compile(r"^/(\d+)/(.*)")
         match = send_regex.match(self.path)
         if match:
             # send the message
@@ -39,7 +39,7 @@ class HttpHandler(BaseHTTPServer.BaseHTTPRequestHandler):
                 self.end_headers()
                 
                 if msg_store.has_key(session_id) and len(msg_store[session_id]):
-                        self.wfile.write("{'%s'}" % str(msg_store[session_id].pop(0)))
+                        self.wfile.write("{'phone':'%s', 'message':'%s'}" % (session_id, str(msg_store[session_id].pop(0))))
                 return
                 
             # TODO watch out because urllib.unquote will blow up on unicode text 
@@ -49,7 +49,7 @@ class HttpHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             self.send_response(200)
             self.send_header("Content-type", "text/html")
             self.end_headers()
-            self.wfile.write("Number: %s<br>Message: %s" % (session_id, text))
+            self.wfile.write("{'phone':'%s', 'message':'%s'}" % (session_id, urllib.unquote(text)))
             return
             
         return

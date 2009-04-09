@@ -3,3 +3,5 @@ local.ini
 core.*
 .project
 .pydevproject
+*.sqlite3
+logs/*
