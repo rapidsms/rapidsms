@@ -21,22 +21,33 @@ class Role(models.Model):
 	name = models.CharField(max_length=160)
 
 class Report(models.Model):
-	reporter = models.ForeignKey(Reporter)
-	time = models.DateTimeField(auto_now_add=True)
-	text = models.CharField(max_length=160)
+	type = models.CharField(max_length=160)
+	supply = models.ForeignKey("Supply")
 
 	def __unicode__(self):
-		return self.text
+	    return "%s %s" % (self.supply.code, self.type)
+
+class Token(models.Model):
+	name = models.CharField(max_length=160)
+	abbreviation = models.CharField(max_length=20)
+	regex = models.CharField(max_length=160)
+	sequence = models.IntegerField()
+	report = models.ForeignKey(Report)
+
+	def __unicode__(self):
+	    return "%s %s" % (self.report.type, self.abbreviation)
 
 class Supply(models.Model):
 	name = models.CharField(max_length=160, help_text="Name of supply")
-	code = models.CharField(max_length=20, blank=True, null=True, help_text="Abbreviatiation")
+	code = models.CharField(max_length=20, blank=True, null=True,\
+	    help_text="Abbreviation")
 	
 	def __unicode__(self):
 		return self.name
     
 class LocationType(models.Model):
-	name = models.CharField(max_length=160, help_text="Name of location type")
+	name = models.CharField(max_length=160,\
+	    help_text="Name of location type")
 	
 	def __unicode__(self):
 		return self.name
@@ -47,7 +58,6 @@ class Location(models.Model):
 	type = models.ForeignKey(LocationType, blank=True, null=True, help_text="Type of location")
 	latitude = models.DecimalField(max_digits=8, decimal_places=6, null=True, blank=True, help_text="The physical latitude of this location")
 	longitude = models.DecimalField(max_digits=8, decimal_places=6, null=True, blank=True, help_text="The physical longitude of this location")
-	#stock = models.ManyToManyField("Stock", help_text="Supplies at inventory location", null=True, blank=True)
 
 	def __unicode__(self):
 		return self.name
@@ -69,11 +79,13 @@ class Shipment(models.Model):
 
 class Transaction(models.Model):
 	supply = models.ForeignKey(Supply)
-	amount = models.PositiveIntegerField(blank=True, null=True, help_text="Amount of supply being shipped")
+	amount_sent  = models.PositiveIntegerField(blank=True, null=True, help_text="Amount of supply being shipped")
+	amount_received = models.PositiveIntegerField(blank=True, null=True, help_text="Amount of supply being shipped")
 	shipment = models.ForeignKey(Shipment)	
 
 class Notification(models.Model):
 	reporter = models.ForeignKey(Reporter)
 	notice = models.CharField(max_length=160)
 	received = models.DateTimeField(auto_now_add=True)
-	resolved = models.BooleanField()
+	resolved = models.DateTimeField(blank=True, null=True)
+	# do we want to save a resolver?
