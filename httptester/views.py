@@ -14,7 +14,7 @@ import random
 
 def index(req, form_class=MessageForm):
     form_instance = form_class()
-    template_name="http/demo.html"
+    template_name="http/ajaxified.html"
     if req.method == 'POST':
        form_instance = form_class(req.POST)
        if form_instance.is_valid():
@@ -49,7 +49,11 @@ def index_basic(req):
         #return basic_ui(req, phone_number, True)
     return render_to_response(template_name, {}, context_instance=RequestContext(req))
 
-   
+def proxy(req, number, message):
+    url = "http://127.0.0.1:8080/%s/%s" % (urllib2.quote(number), urllib2.quote(message))
+    f = urllib2.urlopen(url)
+    return HttpResponse(f.read())
+
 def basic_ui(req, number, skip_post=False, form_class=MessageForm):
     form_instance = form_class()
     template_name="http/index.html"
