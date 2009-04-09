@@ -10,21 +10,131 @@ from rapidsms.message import Message
 from rapidsms.connection import Connection
 from rapidsms.parsers.keyworder import * 
 
-import models
+from models import *
+from utils import *
 
 class App(rapidsms.app.App):
 
     # lets use the Keyworder parser!
     kw = Keyworder()
 
+    def start(self):
+	self.separator = "[,\.\s]*"
+        self.report_pattern = None 
+	self.supplies_reports_tokens = []
+
+
     def parse(self, message):
-        pass 
+	supplies = Supply.objects.all()
+	# create a list of dictionaries mapping supplies to lists of their
+	# reports, which are dictionaries mapping report types to a list
+	# of their tokens, as tuples of token.abbr, token.regex
+	# e.g.,
+	# [    
+	#      {supply_code : 
+	#          [
+	#          {report_type : [(token.abbr, token.regex),...]},
+	#          ...
+	#          ]
+	#       },
+	#       ...
+	# ]
+	# 
+	#supplies_reports_tokens = []
+	for s in supplies:
+	    # gather reports for this supply
+	    reports = s.report_set.all()
+	    reports_tokens = []
+	    for r in reports:
+		# gather tokens for this report as a list of tuples
+		tokens = r.token_set.order_by('sequence').\
+		            values_list('abbreviation','regex')
+		# make a dictionary mapping this report type to its token list
+		# and add the dict to the running report_tokens list
+		reports_tokens.append(dict([(r.type,tokens)]))
+	    # make a dictionary mapping this supply code to its report list
+	    # and add the dict to the running supply_report_tokens list
+	    self.supplies_reports_tokens.append(dict([(s.code, reports_tokens)]))
+	self.debug(self.supplies_reports_tokens)
+
+	# lists for keeping track of supply codes, report types, and 
+	# number of tokens for use generating ranges
+	supply_code_lengths = []
+	report_code_lengths = []
+	number_of_tokens = []
+	# list for keeping track token sequences
+        sequence_tokens = []
+	for supply_reports_tokens in self.supplies_reports_tokens:
+	    for supply_code,reports in supply_reports_tokens.iteritems():
+		# add the length of the supply code to our list
+	        self.debug("len(supply_code)=%s" % (len(supply_code)))
+		supply_code_lengths.append(len(supply_code))
+	    	for report in reports:
+		    for report_type, tokens in report.iteritems():
+			# add the length of the report type to our list
+			self.debug("len(report_type)=%s len(tokens)=%s" % (len(report_type), len(tokens)))
+			report_code_lengths.append(len(report_type))
+			# add the number of tokens for this report to our list
+			number_of_tokens.append(len(tokens))
+		        for i, token in enumerate(tokens):
+			    # add a tuple of token's sequence and pattern to our list
+			    sequence_tokens.append((i, token[1]))
+			    self.debug((i, token[1]))
+	# list for final patterns for each sequence
+	pattern_for_sequences = []
+	# iterate up to the maximum number of tokens (longest report)
+	number_of_tokens.sort()
+	for n in range(number_of_tokens[-1]):
+	    # gather all tokens that are at this sequence
+	    # (all tokens that are the third token in a report, for example)
+	    def tokens_at_sequence(t): return t[0] == n
+	    patterns_at_sequence = filter(tokens_at_sequence, sequence_tokens)
+	    self.debug(patterns_at_sequence)
+	    # gather the unique patterns out of these tokens and create a
+	    # regex for all of them (by adding an or between them all)
+	    #
+	    # let me break it down, starting from the inside:
+	    # do a list comprehension to get the pattern from the second 
+	    # position in the tuple, then limit to unique patterns, then
+	    # join the patterns together with a pipe between each one, and
+	    # finally add the resulting pattern to the list
+	    unique_patterns = '|'.join(unique(map((lambda t: t[1]),patterns_at_sequence)))
+	    self.debug("PATTERNS")
+	    self.debug(unique_patterns)
+	    pattern_for_sequences.append(unique_patterns.replace(')|(', '|'))
+	self.debug(pattern_for_sequences)
+	# create a pattern for supply_code that matches any word as long as
+	# the shortest code and no longer than the longest code
+	supply_code_lengths.sort()
+	#TODO this only captures the last character if the range is {4,4}
+	#supply_code_pattern = '(\w){%s,%s}' % (supply_code_lengths[0], supply_code_lengths[-1])
+	supply_code_pattern = '(letters)'
+	self.debug(supply_code_pattern)
+	# create a pattern for report type that matches any word as long as
+	# the shortest code and no longer than the longest code
+	report_code_lengths.sort()
+	#report_code_pattern = '(\w){%s,%s}' % (report_code_lengths[0], report_code_lengths[-1])
+	report_code_pattern = '(letters)'
+	self.debug(report_code_pattern)
+	# wrap all of the sequence patterns with separators and make them
+	# optional. i wonder whether doing a list comprehension or 
+	# mapping a lambda is better here
+	#wrapped_patterns = ['(?:[,\.\s]*%s)?' % (p) for p in pattern_for_sequences]
+	wrapped_patterns = map((lambda p: '(?:[,\.\s]*%s)?' % (p)),pattern_for_sequences[1:]) 
+	self.debug(wrapped_patterns)
+	# put all the patterns together!
+	self.report_pattern = supply_code_pattern +\
+	    self.separator + report_code_pattern + self.separator + pattern_for_sequences[0] + ''.join(wrapped_patterns)
+	Keyworder.TOKEN_MAP.append(('report_pattern', str(self.report_pattern)))
+	self.debug(Keyworder.TOKEN_MAP)
+	self.debug(self.report_pattern)
 
 
     def handle(self, message):
         try:
             if hasattr(self, "kw"):
                 try:
+		    self.debug("HANDLE")
                     # attempt to match tokens in this message
                     # using the keyworder parser
                     func, captures = self.kw.match(self, message.text)
@@ -35,8 +145,9 @@ class App(rapidsms.app.App):
                 except Exception, e:
                     # TODO only except NoneType error
                     # nothing was found, use default handler
-                    self.incoming_report(message)
-                    return True
+                    #self.incoming_report(message)
+                    #return True
+		    self.debug(str(e))
             else:
                 self.debug("App does not instantiate Keyworder as 'kw'")
         except Exception, e:
@@ -82,11 +193,59 @@ class App(rapidsms.app.App):
     @kw("(whatever)")
     def alert(self, message):
 	    reporter = self.__identify(message.connection, "alerting")
-	    Notification.objects.create(reporter=reporter, resolved=0, notice=notice)
+	    Notification.objects.create(reporter=reporter, notice=notice)
 	    message.respond("Thanks, %s. Your supervisor has been alerted." % (reporter.first_name))
 
     # SUBMIT A REPORT--------------------------------------------------------
 
-    def incoming_report(self, message):
-	reporter = self.__identify(message.connection, "reporting")
-    	message.respond("Thanks for reporting, %s." % (reporter.first_name))
+    kw.prefix = ""
+    #@kw("[\"'\s]*(letters)[,\.\s]*(letters)[,\.\s]*(\d+|\w+)(?:[,\.\s]*(\d+))?(?:[,\.\s]*(\d+))?(?:[,\.\s]*(\d+))?[\.,\"'\s]*")
+    #@kw(report_pattern)
+    #@kw("[\"'\s]*(letters)[,\.\s]*(letters)[,\.\s]*(\d+|\w+)(?:[,\.\s]*(\d+))?(?:[,\.\s]*(\d+))?(?:[,\.\s]*(\d+))?[\.,\"'\s]*")
+    @kw("[\"'\s]*(letters)[,\.\s]*(letters)[,\.\s]*(\w+|\d+)(?:[,\.\s]*(\d+))?(?:[,\.\s]*(\d+))?(?:[,\.\s]*(\d+))?[\.,\"'\s]*")
+    def report(self, message, code, type, one="", two="", three="", four=""):
+	self.debug("MATCH")
+	#reporter = self.__identify(message.connection, "reporting")
+	self.debug(message.text)
+	self.debug(code)
+	if(code.upper() == 'LLIN'):
+	    info = []
+
+	    if(type.upper() == 'COUPONS'):
+		# collate all of the information submitted, to
+		# be sent back and checked by the caller
+		info = [
+			"villages=%s" % (one or "??"),
+			"people=%s" % (two or "??"),
+			"coupons=%s" % (three or "??"),
+			"revisit=%s" % (four or "??")]
+
+	    if(type.upper() == 'NETS'):
+		# collate all of the information submitted, to
+		# be sent back and checked by the caller
+		info = [
+			"distributed=%s" % (one or "??"),
+			"expected=%s" % (two or "??"),
+			"actual=%s" % (three or "??"),
+			"discrepancy=%s" % (four or "??")]
+
+	    if(type.upper() == 'TO'):
+		# collate all of the information submitted, to
+		# be sent back and checked by the caller
+		info = [
+			"%s" % (one.upper() or "??"),
+			"waybill=%s" % (two or "??"),
+			"amount=%s" % (three or "??"),
+			"stock=%s" % (four or "??")]
+
+	    if(type.upper() == 'FROM'):
+		# collate all of the information submitted, to
+		# be sent back and checked by the caller
+		info = [
+			"%s" % (one.upper() or "??"),
+			"waybill=%s" % (two or "??"),
+			"amount=%s" % (three or "??"),
+			"stock=%s" % (four or "??")]
+
+	    self.debug("Received report for %s %s: %s.\nIf this is not correct, reply with CANCEL" %\
+	    (code.upper(), type.upper(), ", ".join(info)))

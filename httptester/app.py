@@ -10,6 +10,4 @@ class App(rapidsms.app.App):
         self.debug("got message %s" % (message))
         
     def outgoing(self, message):
-        django_msg = Message(phone_number=message.connection.identity, body=message.text, date=datetime.datetime.now(), outgoing=True)
-        django_msg.save()
-        
+        pass
