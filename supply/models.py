@@ -9,6 +9,34 @@ from django.contrib.contenttypes import generic
 from datetime import date
 
 
+class Validator():
+    
+    def get_validation_errors(self, content):
+        '''Returns any errors with this content'''
+        # by default this implementation will do nothing
+        pass
+
+class Validatable():
+    '''Class to extend to allow validaiton.  The validator property should 
+    be overridden with a custom implementation''' 
+    
+    _validator = Validator()
+    
+    def _get_validator(self):
+        return self._validator
+    def _set_validator(self, validator):
+        # todo: check the type of this and make sure it's a valid Validator
+        self._validator = validator
+    validator = property(_get_validator, _set_validator, None, None)
+    
+    def get_validation_errors(self, form):
+        #print "in Validatable, next call will generate errors"
+        return self._validator.get_validation_errors(form)
+
+    def __unicode__(self):
+        return "%s" % (self.type)
+
+
 class Reporter(models.Model):
         first_name = models.CharField(max_length=100, blank=True, null=True)
         last_name = models.CharField(max_length=100, blank=True, null=True)
@@ -23,12 +51,12 @@ class Reporter(models.Model):
 class Role(models.Model):
         name = models.CharField(max_length=160)
 
-class Report(models.Model):
+class Report(models.Model, Validatable):
     type = models.CharField(max_length=160)
     supply = models.ForeignKey("Supply")
 
     def __init__ (self, *args, **kwargs):
-        super(Form, self).__init__(*args, **kwargs) 
+        super(Report, self).__init__(*args, **kwargs) 
         self.validator = FormValidator(self)
         
     def __unicode__(self):
@@ -99,33 +127,6 @@ class Notification(models.Model):
 
 
 
-class Validator():
-    
-    def get_validation_errors(self, content):
-        '''Returns any errors with this content'''
-        # by default this implementation will do nothing
-        pass
-
-class Validatable():
-    '''Class to extend to allow validaiton.  The validator property should 
-    be overridden with a custom implementation''' 
-    
-    _validator = Validator()
-    
-    def _get_validator(self):
-        return self._validator
-    def _set_validator(self, validator):
-        # todo: check the type of this and make sure it's a valid Validator
-        self._validator = validator
-    validator = property(_get_validator, _set_validator, None, None)
-    
-    def get_validation_errors(self, form):
-        #print "in Validatable, next call will generate errors"
-        return self._validator.get_validation_errors(form)
-
-    def __unicode__(self):
-        return "%s" % (self.type)
-
     
 class FormValidator(Validator):
     
@@ -135,9 +136,9 @@ class FormValidator(Validator):
         tokens = Token.objects.all().filter(report=self._form)
         self._validators = {}
         for token in tokens:
-            validators = TokenExistanceValidator.objects.all(token=token) 
+            validators = TokenExistanceValidator.objects.all().filter(token=token) 
             if validators:
-                self._validators[token.name] = validators
+                self._validators[token.abbreviation] = validators
         
     def get_validation_errors(self, form):
         validation_errors = []
@@ -150,7 +151,7 @@ class FormValidator(Validator):
                     print "got back errors: %s" % errors
                     if errors:
                         validation_errors.append(errors)
-            return validation_errors
+        return validation_errors
         
 
 class TokenValidator(models.Model):
