@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
+
 def unique(s):
      """Return a list of the elements in s, but without duplicates.
 
