@@ -110,7 +110,7 @@ class App(rapidsms.app.App):
 		for report in reports:
 		    try:
 			# gather list of token tuples for this report type
-		        tokens = report[type.lower()]
+		        tokens = report[type.upper()]
 			self.debug("REPORT MATCH")
 			info = []
 			for t, d in zip(tokens, data):
@@ -168,10 +168,10 @@ class App(rapidsms.app.App):
                             values_list('abbreviation','regex')
                 # make a dictionary mapping this report type to its token list
                 # and add the dict to the running report_tokens list
-                reports_tokens.append(dict([(r.type,tokens)]))
+                reports_tokens.append(dict([(r.type.upper(),tokens)]))
             # make a dictionary mapping this supply code to its report list
             # and add the dict to the running supply_report_tokens list
-            self.supplies_reports_tokens.append(dict([(s.code, reports_tokens)]))
+            self.supplies_reports_tokens.append(dict([(s.code.upper(), reports_tokens)]))
         self.debug(self.supplies_reports_tokens)
 
         # lists for keeping track of supply codes, report types, and 
