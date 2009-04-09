@@ -37,12 +37,10 @@ class App(rapidsms.app.App):
                     # short-circuit handler calls because 
                     # we are responding to this message
                     return self.handled 
-                except Exception, e:
+                except TypeError:
                     # TODO only except NoneType error
                     # nothing was found, use default handler
-                    #self.incoming_report(message)
-                    #return True
-                    self.debug(str(e))
+                    self.debug("NO MATCH")
             else:
                 self.debug("App does not instantiate Keyworder as 'kw'")
         except Exception, e:
@@ -88,7 +86,7 @@ class App(rapidsms.app.App):
     kw.prefix = "alert"
 
     @kw("(whatever)")
-    def alert(self, message):
+    def alert(self, message, notice):
             reporter = self.__identify(message.connection, "alerting")
             Notification.objects.create(reporter=reporter, notice=notice)
             message.respond("Thanks, %s. Your supervisor has been alerted." % (reporter.first_name))
