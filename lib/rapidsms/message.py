@@ -58,3 +58,14 @@ class Message(object):
             return True
         else: 
             return False
+
+    def forward (self, identity, text=None):
+        if self.connection:
+            target = self.connection.fork(identity)
+            if text is None: text = self.text
+            message = type(self)(connection=target, text=text)
+            self.responses.append(message)
+            return True
+        else:
+            return False
+
