@@ -23,7 +23,7 @@ class App(rapidsms.app.App):
     kw = Keyworder()
 
     def parse(self, message):
-        pass 
+        self.handled = False 
 
 
     def handle(self, message):
@@ -36,12 +36,12 @@ class App(rapidsms.app.App):
                     func(self, message, *captures)
                     # short-circuit handler calls because 
                     # we are responding to this message
-                    return True
+                    return self.handled 
                 except Exception, e:
                     # TODO only except NoneType error
                     # nothing was found, use default handler
                     self.incoming_entry(message)
-                    return True
+                    return self.handled 
             else:
                 self.debug("App does not instantiate Keyworder as 'kw'")
         except Exception, e:
@@ -96,6 +96,7 @@ class App(rapidsms.app.App):
     def unsubscribe(self, message, blah=None):
         r, created = p.Respondant.unsubscribe(message.connection)
         message.respond(STR["unsubscribe"])
+	self.handled = True
 
     # SUBMIT AN ANSWER --------------------------------------------------------
 
@@ -111,7 +112,9 @@ class App(rapidsms.app.App):
         # we can effectively ignore the incoming sms,
         # but should notify the caller anyway
         ques = p.Question.current()
-        if ques is None: message.respond(STR["no_question"])
+        if ques is None: 
+	    message.respond(STR["no_question"])
+	    self.handled = True
         
         # try to parse the message
         # pass along the rapidsms.models.Message.backend with the
@@ -123,8 +126,11 @@ class App(rapidsms.app.App):
         if parsed:  
             graph.graph_entries(ques)
             message.respond(STR["thanks"])
+	    self.handled = True
 
-        else:       message.respond(STR["thanks_unparseable"])
+        else:       
+	    message.respond(STR["thanks_unparseable"])
+	    self.handled = True
 
 	# BROADCAST FUNCTIONS ----------------------------------------------------------
 	

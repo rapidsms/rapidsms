@@ -17,7 +17,7 @@ class App(rapidsms.app.App):
         self.groups = {}
 
     def parse(self, message):
-        pass 
+        self.handled = False 
 
     def handle(self, message):
         try:
@@ -29,11 +29,11 @@ class App(rapidsms.app.App):
                     func(self, message, *captures)
                     # short-circuit handler calls because 
                     # we are responding to this message
-                    return True
+                    return self.handled 
                 except Exception, e:
                     # nothing was found, do nothing and 
                     # let other apps look at the message
-                    return False
+                    return self.handled
             else:
                 self.debug('App has not instantiated Keyworder as kw')
         except Exception, e:
@@ -53,6 +53,7 @@ class App(rapidsms.app.App):
             if task: 
                 err += " before %s" % (task)
                 message.respond(err)
+		self.handled = True
         
         return self.people[message.connection.identity]
 
@@ -85,6 +86,7 @@ class App(rapidsms.app.App):
             "list groups",
             "list members of <GROUP>",
             "<GROUP> <MESSAGE>"])
+	self.handled = True
     
     
     # LIST GROUPS
@@ -107,14 +109,20 @@ class App(rapidsms.app.App):
         
         # if there is nothing to return, then abort
         if not len(group_names):
-            if my_groups: message.respond("You are not a member of any groups")
-            else:         message.respond("No groups have been created yet")
+            if my_groups: 
+	        message.respond("You are not a member of any groups")
+		self.handled = True
+
+            else:         
+	        message.respond("No groups have been created yet")
+		self.handled = True
             
         else:
             # return a list of [your|all] groups
             capt = my_groups and "Your groups" or "Groups"
             msg = "%s: %s" % (capt, ", ".join(group_names))
             message.respond(msg) 
+	    self.handled = True
     
     # LIST MEMBERS OF <GROUP>
     @kw("list members of (letters)")
@@ -129,6 +137,7 @@ class App(rapidsms.app.App):
         #msg = "Members of %s: %s" % (grp, ", ".join(member_names))
         #message.respond(msg) 
         message.respond('Sorry, this feature is not currently available')
+	self.handled = True
     
     # JOIN <GROUP>
     @kw("join (letters)")
@@ -145,12 +154,14 @@ class App(rapidsms.app.App):
         if message.connection.identity in self.groups[grp]:
             err = "You are already a member of the %s group" % (grp)
             message.respond(err)
+	    self.handled = True
             
         else:
             # join the group and notify
             self.groups[grp].append(message.connection.identity)
             msg = "You have joined the %s group" % grp
             message.respond(msg) 
+	    self.handled = True
     
     # LEAVE <GROUP>
     @kw("leave (letters)")
@@ -161,10 +172,12 @@ class App(rapidsms.app.App):
         if not message.connection.identity in self.groups[grp]:
             err = "You are not a member of the %s group" % (grp)
             message.respond(err)
+	    self.handled = True
         
         self.groups[grp].remove(message.connection.identity)
         msg = "You have left the %s group" % grp
         message.respond(msg) 
+	self.handled = True
     
     # IDENTIFY <NAME>
     @kw("identify (letters)", "my name is (letters)", "i am (letters)")
@@ -173,6 +186,7 @@ class App(rapidsms.app.App):
         self.people[message.connection.identity] = name
         reply = 'Your name is now "%s"' % name
         message.respond(reply)
+	self.handled = True
 
     # <GROUP> <MESSAGE>
     @kw("(letters) (.+)")
@@ -185,6 +199,7 @@ class App(rapidsms.app.App):
         if not message.connection.identity in self.groups[grp]:
             err = "You are not a member of the %s group" % (grp)
             message.respond(err)
+	    self.handled = True
         
         # keep a log of broadcasts
         self.info("Sending to group: %s" % grp)
@@ -200,3 +215,4 @@ class App(rapidsms.app.App):
         people = len(self.groups[grp]) - 1
         msg = "Your message was sent to the %s group (%d people)" % (grp, people)
         message.respond(msg) 
+	self.handled = True
