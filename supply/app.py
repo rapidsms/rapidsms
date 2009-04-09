@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
+import re
 from datetime import date, datetime
 
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
@@ -18,6 +19,8 @@ class App(rapidsms.app.App):
 
     def start(self):
         self.separator = "[,\.\s]*"
+	self.leading_pattern = "[\"'\s]*"
+	self.trailing_pattern = "[\.,\"'\s]*"
         self.report_pattern = None 
         self.supplies_reports_tokens = []
 	self.setup()
@@ -94,10 +97,10 @@ class App(rapidsms.app.App):
 
     # SUBMIT A REPORT--------------------------------------------------------
 
-    kw.prefix = ""
+    #kw.prefix = ""
     # TODO figure out how to use the auto-generated regex
-    #@kw("[\"'\s]*" + self.report_pattern + "[\.,\"'\s]*")
-    @kw("[\"'\s]*(letters)[,\.\s]*(letters)[,\.\s]*(\w+|\d+)(?:[,\.\s]*(\d+))?(?:[,\.\s]*(\d+))?(?:[,\.\s]*(\d+))?[\.,\"'\s]*")
+    #@kw("[\"'\s]*(letters)[,\.\s]*(letters)[,\.\s]*(\w+|\d+)(?:[,\.\s]*(\d+))?(?:[,\.\s]*(\d+))?(?:[,\.\s]*(\d+))?[\.,\"'\s]*")
+    #@kw("(report_pattern)")
     def report(self, message, code, type, *data): 
         self.debug("MATCH")
         #reporter = self.__identify(message.connection, "reporting")
@@ -229,24 +232,31 @@ class App(rapidsms.app.App):
         supply_code_lengths.sort()
         #TODO this only captures the last character if the range is {4,4}
         #supply_code_pattern = '(\w){%s,%s}' % (supply_code_lengths[0], supply_code_lengths[-1])
-        supply_code_pattern = '(letters)'
+        #supply_code_pattern = '(letters)'
+        supply_code_pattern = '([a-z]+)'
         self.debug(supply_code_pattern)
         # create a pattern for report type that matches any word as long as
         # the shortest code and no longer than the longest code
         report_code_lengths.sort()
         #report_code_pattern = '(\w){%s,%s}' % (report_code_lengths[0], report_code_lengths[-1])
-        report_code_pattern = '(letters)'
+        #report_code_pattern = '(letters)'
+        report_code_pattern = '([a-z]+)'
         self.debug(report_code_pattern)
-        # wrap all of the sequence patterns with separators and make them
-        # optional. i wonder whether doing a list comprehension or 
-        # mapping a lambda is fastest here
+        # wrap all of the sequence patterns (except for the first one) 
+	# with separators and make them optional.
+	# this way all possible reports (that have at least one token)
+	# will be matched, but we are able to capture n tokens
+	#
+	# i wonder whether doing a list comprehension or 
+        # mapping a lambda is faster here
         #wrapped_patterns = ['(?:[,\.\s]*%s)?' % (p) for p in pattern_for_sequences]
         wrapped_patterns = map((lambda p: '(?:[,\.\s]*%s)?' % (p)),pattern_for_sequences[1:]) 
         self.debug(wrapped_patterns)
         # put all the patterns together!
-        self.report_pattern = supply_code_pattern +\
-            self.separator + report_code_pattern + self.separator + pattern_for_sequences[0] + ''.join(wrapped_patterns)
+        self.report_pattern = self.leading_pattern + supply_code_pattern +\
+            self.separator + report_code_pattern + self.separator + pattern_for_sequences[0] + ''.join(wrapped_patterns) + self.trailing_pattern
 	# hack into keyworder parser in an attempt to make this work
-        Keyworder.TOKEN_MAP.append(('report_pattern', str(self.report_pattern)))
-        self.debug(Keyworder.TOKEN_MAP)
+        #self.kw.TOKEN_MAP.append(('report_pattern', str('(' + self.report_pattern + ')')))
+	self.kw.regexen.append((re.compile(self.report_pattern, re.IGNORECASE), getattr(self,'report').im_func))
+        #self.debug(Keyworder.TOKEN_MAP)
         self.debug(self.report_pattern)
