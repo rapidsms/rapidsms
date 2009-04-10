@@ -53,6 +53,11 @@ def start (args):
         router = Router()
         router.set_logger(conf["log"]["level"], conf["log"]["file"])
         router.info("RapidSMS Server started up")
+
+        # log which config we're using, even though
+        # we've already done it, to avoid confusion
+        router.info("Using configuration(s): %s" %
+            ",".join(conf.sources))
         
         # add each application from conf
         for app_conf in conf["rapidsms"]["apps"]:
