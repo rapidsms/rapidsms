@@ -6,8 +6,9 @@ from django.http import HttpResponse
 from django.template import RequestContext
 from django.shortcuts import render_to_response
 
-from apps.tree.models import *
 
+def check_availability(req):
+    return HttpResponse("OK")
 
 def dashboard(req):
 	return render_to_response("dashboard.html", { },
