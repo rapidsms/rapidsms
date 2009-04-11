@@ -15,12 +15,40 @@ class MetaTestScript (type):
 
 class TestScript (unittest.TestCase):
     __metaclass__ = MetaTestScript
-    apps = []
+
+    """
+        The scripted.TestScript class subclasses unittest.TestCase
+        and allows you to define unit tests for your RapidSMS apps
+        in the form of a 'conversational' script:
+        
+            from apps.myapp.app import App as MyApp
+            from rapidsms.tests.scripted import TestScript
+
+            class TestMyApp (TestScript):
+                apps = (MyApp,)
+                testRegister = \"""
+                   8005551212 > register as someuser
+                   8005551212 < Registered new user 'someuser' for 8005551212!
+                \"""
+
+                testDirectMessage = \"""
+                   8005551212 > tell anotheruser what's up??
+                   8005550000 < someuser said "what's up??"
+                \"""
+
+        This TestMyApp class would then work exactly as any other
+        unittest.TestCase subclass (so you could, for example, call
+        unittest.main()).
+    """
+    apps = None
 
     def setUp (self):
         self.router = MockRouter()
         self.backend = Backend("TestScript", self.router)
         self.router.add_backend(self.backend)
+        if not self.apps:
+            raise Exception(
+                "You must define a list of apps in your TestScript class!")
         for app_class in self.apps:
             app = app_class(app_class.__name__, self.router)
             self.router.add_app(app)
@@ -66,7 +94,7 @@ class MockTestScript (TestScript):
         1234567890 < 1234567890: echo this!
     """
 
-    def testScriptInMethod (self):
+    def testRunScript (self):
         self.runScript("""
             2345678901 > echo?
             2345678901 < 2345678901: echo?
