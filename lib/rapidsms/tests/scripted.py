@@ -17,28 +17,28 @@ class TestScript (unittest.TestCase):
     __metaclass__ = MetaTestScript
 
     """
-        The scripted.TestScript class subclasses unittest.TestCase
-        and allows you to define unit tests for your RapidSMS apps
-        in the form of a 'conversational' script:
-        
-            from apps.myapp.app import App as MyApp
-            from rapidsms.tests.scripted import TestScript
+    The scripted.TestScript class subclasses unittest.TestCase
+    and allows you to define unit tests for your RapidSMS apps
+    in the form of a 'conversational' script:
+    
+        from apps.myapp.app import App as MyApp
+        from rapidsms.tests.scripted import TestScript
 
-            class TestMyApp (TestScript):
-                apps = (MyApp,)
-                testRegister = \"""
-                   8005551212 > register as someuser
-                   8005551212 < Registered new user 'someuser' for 8005551212!
-                \"""
+        class TestMyApp (TestScript):
+            apps = (MyApp,)
+            testRegister = \"""
+               8005551212 > register as someuser
+               8005551212 < Registered new user 'someuser' for 8005551212!
+            \"""
 
-                testDirectMessage = \"""
-                   8005551212 > tell anotheruser what's up??
-                   8005550000 < someuser said "what's up??"
-                \"""
+            testDirectMessage = \"""
+               8005551212 > tell anotheruser what's up??
+               8005550000 < someuser said "what's up??"
+            \"""
 
-        This TestMyApp class would then work exactly as any other
-        unittest.TestCase subclass (so you could, for example, call
-        unittest.main()).
+    This TestMyApp class would then work exactly as any other
+    unittest.TestCase subclass (so you could, for example, call
+    unittest.main()).
     """
     apps = None
 
@@ -77,8 +77,12 @@ class TestScript (unittest.TestCase):
             elif dir == '<':
                 msg = self.backend.next_message()
                 self.assertTrue(msg is not None, "message was returned")
-                self.assertEquals(msg.peer, num, "message.peer is right")
-                self.assertEquals(msg.text, txt, "message.text is right")
+                self.assertEquals(msg.peer, num,
+                    "Expected to send to %s, but message was sent to %s"
+                    % (num, msg.peer))
+                self.assertEquals(msg.text, txt,
+                    "\nReceived text: %s\nExpected text: %s\n"
+                    % (msg.text,txt))
         self.router.stop()
 
     def runScript (self, script):
