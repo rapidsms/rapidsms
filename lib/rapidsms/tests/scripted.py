@@ -10,7 +10,9 @@ class MetaTestScript (type):
         for key, obj in attrs.items():
             if key.startswith("test") and not callable(obj):
                 cmds = TestScript.parseScript(obj)
-                attrs[key] = lambda (self): self.runParsedScript(cmds)
+                def wrapper (self, cmds=cmds):
+                    return self.runParsedScript(cmds)
+                attrs[key] = wrapper
         return type.__new__(cls, name, bases, attrs)
 
 class TestScript (unittest.TestCase):
@@ -94,9 +96,17 @@ class MockTestScript (TestScript):
     testScript = """
         8005551212 > hello
         8005551212 < 8005551212: hello
+    """
+    testScript2 = """
         1234567890 > echo this!
         1234567890 < 1234567890: echo this!
     """
+    
+    def testClosure (self):
+        self.assertEquals(type(self.testScript.func_defaults), tuple)
+        self.assertEquals(type(self.testScript.func_defaults[0]), list)
+        self.assertNotEquals(self.testScript.func_defaults,
+                             self.testScript2.func_defaults)
 
     def testRunScript (self):
         self.runScript("""
