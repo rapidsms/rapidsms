@@ -48,6 +48,12 @@ class Message(object):
         while self.responses:
             self.responses.pop(0).send()
 
+    def error(self, text, level):
+        """Apps send error messages here rather than through respond
+           so users only receive one - the with the highest level of specificity"""
+        #TODO implement this
+        pass
+
     def respond(self, text):
         """Send the given text back to the original caller of this
            message on the same route that it came in on"""
