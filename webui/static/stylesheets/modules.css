@@ -9,6 +9,13 @@
  * related links and/or functionality */
 
 
+div.module {
+	margin-top: 1em;
+}
+
+
+
+
 /* table captions are a kind of header,
  * so they look the same. the look is
  * vaguely ripped off from django */
@@ -22,6 +29,10 @@ h2, caption {
 	padding: 0.5em;
 	text-align: left;
 	white-space: nowrap;
+	
+	/* disp:block, to fill the
+	 * available column width */
+	display: block;
 }
 		
 	/* additional, less important info can
@@ -36,6 +47,7 @@ h2, caption {
 
 
 table {
+	display: block;
 	border-collapse: collapse; }	
 
 	tr { }
@@ -122,3 +134,11 @@ table {
 					background: #eee;
 					color: #000;
 				}
+
+form {
+}
+
+	label {
+		display: block;
+		margin: 0.5em 0 0.25em 0;
+	}
