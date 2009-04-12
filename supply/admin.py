@@ -6,9 +6,9 @@ from apps.supply.models import *
 
 admin.site.register(Reporter)
 admin.site.register(Role)
-admin.site.register(Report)
+admin.site.register(Form)
 admin.site.register(Token)
-admin.site.register(Supply)
+admin.site.register(Domain)
 admin.site.register(LocationType)
 admin.site.register(Location)
 admin.site.register(Stock)
