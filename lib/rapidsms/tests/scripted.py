@@ -71,14 +71,17 @@ class TestScript (unittest.TestCase):
      
     def runParsedScript (self, cmds):
         self.router.start()
+        last_received = ""
         for num, dir, txt in cmds:
             if dir == '>':
+                last_received = txt
                 msg = self.backend.message(num, txt)
                 self.backend.route(msg)  
                 self.router.run()
             elif dir == '<':
                 msg = self.backend.next_message()
-                self.assertTrue(msg is not None, "message was returned")
+                self.assertTrue(msg is not None,
+                    "Response expected for: %s" % last_received)
                 self.assertEquals(msg.peer, num,
                     "Expected to send to %s, but message was sent to %s"
                     % (num, msg.peer))
