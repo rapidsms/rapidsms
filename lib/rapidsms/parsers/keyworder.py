@@ -77,7 +77,8 @@ class Keyworder(object):
             match = pat.match(str)
             if match:
                 # clean up leading and trailing whitespace
-                groups = map(lambda x: x.strip(), match.groups())
+                # note: match groups can be None, hence the and/or business
+                groups = map(lambda x: x and x.strip() or x, match.groups())
                 return (func, groups)
         # TODO proper logging??
         #print "No method called %s" % (str)
