@@ -11,7 +11,6 @@ class App(rapidsms.app.App):
         now, but this is rather useful for checking if everything is
         running, without internet access on either end."""
 
-    
     MSG_OK           = "WIN: The RapidSMS WebUI is alive and well."
     MSG_NOT_RUNNING  = "FAIL: Couldn't connect to the RapidSMS WebUI."
     MSG_BAD_RESPONSE = "FAIL: The RapidSMS WebUI did not respond correctly."

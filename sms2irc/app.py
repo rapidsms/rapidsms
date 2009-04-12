@@ -20,19 +20,19 @@ class App(rapidsms.app.App):
             
     def handle(self, message):
         if self.irc_backend is not None:
-            if message.backend is not self.irc_backend:
+            if message.connection.backend is not self.irc_backend:
                 self.forward(message)
         else:
             self.error('Oops! sms2irc cannot find an irc backend to forward to')
 
     def outgoing(self, message):
         if self.irc_backend is not None:
-            if message.backend is not self.irc_backend:
+            if message.connection.backend is not self.irc_backend:
                 self.forward(message)
         else:
             self.error('Oops! sms2irc cannot find an irc backend to forward to')
         
     def forward(self, message):
-        self.info("%s(%s): '%s' forwarded to %s" % (message.caller, message.backend.name, message.text, self.irc_backend.channels))
-        txt = "(%s) says '%s'" % (message.backend.name, message.text)
-        Message(self.irc_backend, message.caller, txt).send()
+        self.info("%s(%s): '%s' forwarded to %s" % (message.connection.identity, message.connection.backend.name, message.text, self.irc_backend.channels))
+        txt = "(%s) says '%s'" % (message.connection.backend.name, message.text)
+        Message(self.irc_backend, message.connection.identity, txt).send()

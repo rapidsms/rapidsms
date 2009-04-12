@@ -9,9 +9,9 @@ class App(rapidsms.app.App):
         self.counters = {}
     
     def parse(self, msg):
-        if not msg.caller in self.counters:
-            self.counters[msg.caller] = 0
+        if not msg.connection.identity in self.counters:
+            self.counters[msg.connection.identity] = 0
     
     def handle(self, msg):
-        self.counters[msg.caller] += 1
-        msg.respond("You've spoken to me %d times!" % (self.counters[msg.caller]))
+        self.counters[msg.connection.identity] += 1
+        msg.respond("You've spoken to me %d times!" % (self.counters[msg.connection.identity]))

@@ -7,28 +7,27 @@ from django.core.exceptions import ObjectDoesNotExist
 from datetime import date
 
 class Respondant(models.Model):
-	phone = models.CharField(max_length=30, blank=True, null=True)
-	backend = models.CharField(max_length=100, blank=True, null=True)
+	connection = models.CharField(max_length=100, blank=True, null=True)
 	is_active = models.BooleanField()
 
 	def __unicode__(self):
-		return self.phone
+		return self.connection.identity
 	
 	@classmethod
-	def subscribe(klass, caller, backend, active=True):
+	def subscribe(klass, connection, active=True):
 		created = False
 		
 		try:
 			# attempt to reactivate an
 			# unsubscribed respondant
-			r = klass.objects.get(phone=caller)
+			r = klass.objects.get(connection=connection)
 			r.is_active = active
 			r.save()
 		
 		# no existing respondant, so create
 		# a new, pre-activated, respondant
 		except ObjectDoesNotExist:
-			r = klass.objects.create(phone=caller, backend=str(backend), is_active=active)
+			r = klass.objects.create(connection=connection, is_active=active)
 			created = True
 		
 		# always return the object, with a bool
@@ -36,15 +35,15 @@ class Respondant(models.Model):
 		return (r, created)
 	
 	@classmethod
-	def unsubscribe(klass, caller, backend):
+	def unsubscribe(klass, connection):
 		
 		# recycle the "subscribe" function to
 		# create and deactivate the respondant
-		return klass.subscribe(caller, backend, False)
+		return klass.subscribe(connection, False)
 		
 
 class Message(models.Model):
-	phone = models.CharField(max_length=30, blank=True, null=True)
+	connection = models.CharField(max_length=100, blank=True, null=True)
 	time = models.DateTimeField(auto_now_add=True)
 	text = models.CharField(max_length=160)
 	is_outgoing = models.BooleanField()
@@ -71,6 +70,27 @@ class Question(models.Model):
 	def is_current(self):
 		'''returns True if this is the current question'''
 		return (self == Question.current())
+
+	def is_past(self):
+		"""Return True if this question has already ended"""
+		return (not self.is_current() and (self.end < date.today()))
+	
+	def is_future(self):
+		"""Return True if this question has not started yet"""
+		return (not self.is_current() and (self.start > date.today()))
+
+	def answers(self):
+		"""Return the same data as self.answers_set.all(), with blank
+		   Answers (those with an empty 'choice' or 'text' property removed"""
+		return [answer for answer in self.answer_set.all().order_by("choice") if answer.text != ""]
+	
+	def results(self):
+		"""Return an array of tuples containing each answer for this Question,
+		   and total Entries for each, such as: [(Answer, 10), (Answer, 20)].
+		   We use tuples, rather than a simple Dict, because the order of
+		   answers is sometimes important."""
+		entries = [entry.text for entry in self.entry_set.filter(is_unparseable=False)]
+		return [(answer, entries.count(str(answer.choice))) for answer in self.answers()]
 
 	@staticmethod
 	def current():

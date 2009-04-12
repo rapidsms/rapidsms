@@ -1,0 +1,13 @@
+<div title="{{ question.text }}" class="q-summ" id="qs-{{ rnd }}">
+	<a href="/poll/dashboard/{{ question.pk }}">
+		<h3>{{ question.text|truncatewords:6 }}</h3>
+		<p class="dates">{{ question.start|date:"M jS Y" }} - {{ question.end|date:"M jS Y" }}</p>
+	</a>
+</div>
+<script type="text/javascript">
+	(function() {
+		var c = $("qs-{{ rnd }}");
+		var data = {{ data|safe }};
+		new Smspoll.Pie(c, data);
+	})();
+</script>

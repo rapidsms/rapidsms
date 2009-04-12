@@ -141,6 +141,12 @@ form { }
 				margin-left: 2em;
 				margin-top: 0.5em;
 			}
+			
+				form div.submit div.errors li span {
+					margin-bottom: 0.25em;
+					font-weight: bold;
+					display: block;
+				}
 		
 		/* the success div is shown while
 		 * the browser is redirecting */
@@ -286,9 +292,17 @@ form { }
 		 * of the image might be re-jigged by javascript :)
 		 */
 		 
-		.dashboard #current img {
-			/*height: 24.58em;*/
+		.dashboard #current div.graph {
+			position: relative;
+			height: 24.58em;
+			margin: 0.5em 0;
 		}
+		
+			.dashboard #current div.graph embed,
+			.dashboard #current div.graph object {
+				position: absolute;
+				top: 0; left: 0;
+			}
 		
 		.dashboard .no-current {
 			background: #ddd;
@@ -427,8 +441,8 @@ form { }
 			color: #aaa;
 			
 			/* here be dragons  */
-			line-height: 35.625em;
-			height: 35.625em;
+			line-height: 35.5em;
+			height: 35.5em;
 		}
 		
 	
@@ -481,6 +495,11 @@ form { }
 				.dashboard .summaries.num-10 { width: 2450px; }
 				.dashboard .summaries.num-11 { width: 2695px; }
 				.dashboard .summaries.num-12 { width: 2940px; }
+				
+				.dashboard .summaries .graph {
+					margin-bottom: 5px;
+					height: 8em;
+				}
 	
 			/* match the height of a summaries box,
 			 * by combining 100px (img:graph:height),
@@ -502,58 +521,116 @@ form { }
 
 
 
-/* --------------------
-   PAGE: ADD A QUESTION
-   -------------------- */
+/* ----------------------
+   PAGE: MANAGE QUESTIONS
+   ---------------------- */
 
 /* extend vertically to
- * wrap the floaty form */
-.add-question { overflow: auto; }
-	
-	/* float the form, to auto-set the width in
-	 * a cross-browser way. this is only really
-	 * necessary to auto-size the error box */
-	.add-question form {
-		float: left; }
-	
-	/* the "answers" group has a small
-	 * help div, to let the user know
-	 * why it's disabled most of the time */
-	.add-question #grp-answers div.help {
-		
-		/* shunt the help box
-		 * under the label */
-		margin-left: -9.5em;
-		margin-top: 2em;
-		width: 8.5em;
+ * wrap the two columns
+ * (add and list) Qs */
+.manage-questions {
+	overflow: auto; }
+
+	.manage-questions h2 {
+		margin-bottom: 0.5em; }
+
+
+	/* extend vertically to
+	 * wrap the floaty form */
+	.add-question {
+		overflow: auto;
 		float: left;
+		width: 50%;
+	}
 		
-		/* overrides "form div" rule */
-		clear: none;
+		/* LEFT column spacing
+		 * (we stick half of the margin inside
+		 * each column, to keep the split centralized) */
+		.add-question h2,
+		.add-question form {
+			margin-right: 1em; }
+	
+		/* float the form, to auto-set the width in
+		 * a cross-browser way. this is only really
+		 * necessary to auto-size the error box */
+		.add-question form {
+			float: left; }
+	
+		/* the "answers" group has a small
+		 * help div, to let the user know
+		 * why it's disabled most of the time */
+		.add-question #grp-answers div.help {
+		
+			/* shunt the help box
+			 * under the label */
+			margin-left: -9.5em;
+			margin-top: 2em;
+			width: 8.5em;
+			float: left;
+		
+			/* overrides "form div" rule */
+			clear: none;
+		}
+	
+			.add-question #grp-answers div.help p {
+				background: #ffa;
+				border: 1px solid #aa0;
+				font-size: 80%;
+				padding: 0.625em; /* =0.5em */
+				line-height: 1.6;
+			}
+	
+		.add-question .answers {
+			border-collapse: collapse; }
+		
+			.add-question .answers td {
+				padding-top: 0.25em; }
+	
+			.add-question .answers th {
+				font-size: 80%;
+				background: #eee;
+				padding: 0.3125em; /* =0.25em */
+			}
+	
+		.add-question #grp-answers.disabled table {
+			opacity: 0.4; }
+
+	.list-questions {
+		width: 50%;
+		float: left;
 	}
 	
-		.add-question #grp-answers div.help p {
-			background: #ffa;
-			border: 1px solid #aa0;
-			font-size: 80%;
-			padding: 0.625em; /* =0.5em */
-			line-height: 1.6;
+		.list-questions table {
+			border-collapse: collapse;
+			margin-bottom: 0.5em;
 		}
-	
-	.add-question .answers {
-		border-collapse: collapse; }
 		
-		.add-question .answers td {
-			padding-top: 0.25em; }
-	
-		.add-question .answers th {
+			.list-questions table th,
+			.list-questions table td {
+				border: 1px solid #ccc;
+				padding: 0.5em;
+			}
+			
+			.list-questions table th {
+				text-align: left;
+				background: #eee;
+			}
+			
+			.list-questions table td {
+				whitespace: nowrap;
+				line-height: 1.4;
+			}
+		
+		.list-questions p {
+			text-align: center;
 			font-size: 80%;
-			background: #eee;
-			padding: 0.3125em; /* =0.25em */
 		}
-	
-	.add-question #grp-answers.disabled table {
-		opacity: 0.4; }
+		
+		/* RIGHT column spacing */
+		.list-questions h2,
+		.list-questions table,
+		.list-questions p {
+			margin-left: 1em; }
 
 
 

@@ -4,19 +4,24 @@
 {% load utils %}
 
 <div class="dashboard">
+        <h3><a href="/poll/questions">New Question</a></h3>
 	<div id="current">{% if question %}
-		<h2>Question{% if question.is_current %} (Current){% endif %}</h2>
+		<h2>{% if question.is_current %}
+			Current{% else %}{% if question.is_past %}
+			Past{% else %}{% if question.is_future %}
+			Future{% endif %}{% endif %}{% endif %}
+			Question
+		</h2>
 		{% question_full question %}{% else %}
 		<h2>No Question</h2>
 		<div class="no-current">
-			No question is currently active. You can <a href="/add">add one</a>.
+			No question is currently active. You can <a href="/poll/questions">add one</a>.
 		</div>{% endif %}
 	</div>
-	
 	<div id="answers">
 		<h2>Answers</h2>{% if question %}{% if entries %}
 		<ul>{% for entry in entries %}
-			<li{% if entry.is_unparseable %} class="unparseable"{% else %}{% if not entry.moderated %} class="unmoderated"{% endif %}{% endif %} id="ent-{{ entry.pk }}">
+			<li{% if entry.is_unparseable %} class="unparseable"{% else %}{% if not entry.moderated %} class="unmoderated"{% endif %}{% endif %} id="ent-{{ entry.pk }}"{% ifnotequal question.type "F" %} choice="{{ entry.text }}"{% endifnotequal %}>
 				<span>{{ entry.meta_data }}</span>
 				<p>{{ entry.display_text }}</p>{% if entry.is_unparseable %}{% ifequal question.type "B" %}
 				<div class="answers bool">
@@ -29,7 +34,95 @@
 					<button value="REJECT" class="reject">Reject</button>
 				</div>{% endifequal %}{% endif %}
 			</li>{% endfor %}
-		</ul>{% else %}
+		</ul>
+		<script type="text/javascript">
+			(function() {
+				var answers = [{% for answer in question.answers %}["{{ answer.choice|escapejs }}", "{{ answer.text|escapejs }}"]{% if not forloop.last %},{% endif %}{% endfor %}];
+				var entries = $$("#answers li");
+				var last_li = entries.getLast();
+				var choice_map = {};
+				
+				/* build an inverse map to convert
+				 * choices back into to indexes */
+				answers.each(function(answer, index) {
+					choice_map[answer[0]] = [index, answer[1]];
+				});
+				
+				/* when an entry is ctrl+clicked, re-calculate
+				 * the graph data based on just the prior entries */
+				entries.addEvent("click", function(ev) {
+					if(ev && !ev.control) return false;
+					last_li = this;
+					
+					/* if this document has a 'graph' (added by
+					 * question-full.html, but it could have
+					 * failed, or this could have loaded before
+					 * the swiff has loaded */
+					if (window["graph"]) {
+						var last = entries.indexOf(this);
+						var totals = new Hash();
+						var total_strs = [];
+					
+						/* count the results up to (and including)
+						 * the entry that was just clicked on */
+						for(var n=0; n<=last; n++) {
+							var li = entries[n];
+							var choice = li.get("choice");
+							
+							/* initialize or increment the
+							 * counter for this choice */
+							if(totals.has(choice)) totals[choice]++;
+							else totals[choice] = 1;
+							
+							/* ensure that this <li> is fully
+							 * visible, since it's being counted */
+							li.setOpacity(1);
+						}
+						
+						/* if there are any entries after the
+						 * one that was just clicked, make them
+						 * translucent. can't use CSS for this,
+						 * without hacks, so leave it to MooTools */
+						if (entries.length > last) {
+							for(var m=last+1; m<entries.length; m++) {
+								entries[m].setOpacity(0.4);
+							}
+						}
+						
+						/* convert the results back into an
+						 * array of [text/values] tuples */
+						answers.each(function(answer) {
+							if(totals.has(answer[0])) {
+								total_strs.push([
+									answer[1],
+									totals[answer[0]]
+								]);
+							}
+						});
+						
+						/* update the contents of the graph */
+						window["graph"].repopulate(total_strs);
+					}
+				});
+				
+				window.addEvent("keypress", function(ev) {
+					if(!ev.alt) return true;
+					var li = null;
+					
+					/* select one more or one fewer
+					 * entries using the keyboard */
+					if     (ev.key == "[") li = last_li.getPrevious();
+					else if(ev.key == "]") li = last_li.getNext();
+					
+					/* the event wasn't for us */
+					if(!li) return true;
+					
+					/* update the graph */
+					li.fireEvent("click");
+					last_li = li;
+				});
+			})();
+		</script>{% else %}
 		<div class="no-entries">
 			No responses yet.
 		</div>{% endif %}{% else %}
@@ -165,7 +258,7 @@
 			</script>{% endif %}{% endfor %}{% else %}
 			<div class="no-summaries">
 				This box will be useful once you
-				<a href="/add">Add a Question</a>.
+				<a href="/poll/questions">Add a Question</a>.
 			</div>{% endif %}
 		</div>
 	</div>

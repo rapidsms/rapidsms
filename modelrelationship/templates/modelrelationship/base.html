@@ -1,0 +1,13 @@
+{%extends "base.html"%}
+{% load i18n %}	
+{%block content %}
+<h2>{% trans "ModelRelationship Menu" %}</h2>
+<ul>
+	<li><a href="{% url modelrelationship.views.all_edgetypes %}">{%trans "Show All EdgeTypes"%}</a></li>
+	<li><a href="{% url modelrelationship.views.new_edgetype %}">{%trans "Make New EdgeType"%}</a></li>	
+	<li><a href="{% url modelrelationship.views.all_edges %}">{%trans "Show All Edges"%}</a></li>
+	<li><a href="{% url modelrelationship.views.all_types %}">{%trans "Show All ContentTypes"%}</a></li>	
+</ul>
+{%block mr_content %}
+{%endblock%}
+{%endblock%}

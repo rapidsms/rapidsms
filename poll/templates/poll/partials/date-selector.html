@@ -1,0 +1,18 @@
+<select{% if not disabled %} name="{{ prefix }}-day"{% else %} disabled="disabled"{% endif %}>
+	{% for d, sel in days %}
+	<option value="{{ d }}"{% if sel %} selected="selected"{% endif %}>{{ d }}</option>
+	{% endfor %}
+</select>{% if disabled %}
+<input type="hidden" name="{{ prefix }}-day" value="{{ day }}" />{% endif %}
+
+<select{% if not disabled %} name="{{ prefix }}-month"{% else %} disabled="disabled"{% endif %}>{% for m, sel in months %}
+	<option value="{{ forloop.counter }}"{% if sel %} selected="selected"{% endif %}>{{ m }}</option>{% endfor %}
+</select>{% if disabled %}
+<input type="hidden" name="{{ prefix }}-month" value="{{ month }}" />{% endif %}
+
+<select{% if not disabled %} name="{{ prefix }}-year"{% else %} disabled="disabled"{% endif %}>
+	{% for y, sel in years %}
+	<option value="{{ y }}"{% if sel %} selected="selected"{% endif %}>{{ y }}</option>
+	{% endfor %}
+</select>{% if disabled %}
+<input type="hidden" name="{{ prefix }}-year" value="{{ year }}" />{% endif %}

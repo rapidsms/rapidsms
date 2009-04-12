@@ -33,8 +33,8 @@ class App(rapidsms.app.App):
         self.sessions = {}
     
     def parse(self, msg):
-        if msg.caller not in self.sessions:
-            self.sessions[msg.caller] = self.Session()
+        if msg.connection.identity not in self.sessions:
+            self.sessions[msg.connection.identity] = self.Session()
     
     def handle(self, msg):
         sections = self.load()
@@ -51,9 +51,9 @@ class App(rapidsms.app.App):
         if not cmd: return
         if not args: args = filter(None, text.split())
         self.debug("cmd: %s, args: %r", cmd, args)
-        session = self.sessions[msg.caller]
+        session = self.sessions[msg.connection.identity]
         session.prepare({
-            'caller': msg.caller,
+            'caller': msg.connection.identity,
             'text': text,
             'args': args,
             'respond': msg.respond,

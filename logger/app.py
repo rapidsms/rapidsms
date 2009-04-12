@@ -10,16 +10,16 @@ class App(rapidsms.app.App):
     
     def handle(self, message):
         # make and save messages on their way in and 
-        # cast backend as string so pysqlite doesnt complain
-        msg = IncomingMessage(caller=message.caller, text=message.text,
-            backend=str(message.backend), received=message.received)
+        # cast connection as string so pysqlite doesnt complain
+        msg = IncomingMessage(identity=message.connection.identity, text=message.text,
+            backend=message.connection.backend.name)
         msg.save()
         self.debug(msg)
     
     def outgoing(self, message):
         # make and save messages on their way out and 
-        # cast backend as string so pysqlite doesnt complain
-        msg = OutgoingMessage(caller=message.caller, text=message.text, 
-            backend=str(message.backend), sent=message.sent)
+        # cast connection as string so pysqlite doesnt complain
+        msg = OutgoingMessage(identity=message.connection.identity, text=message.text, 
+            backend=message.connection.backend.name)
         msg.save()
         self.debug(msg)
