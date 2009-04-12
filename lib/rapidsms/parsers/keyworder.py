@@ -76,7 +76,9 @@ class Keyworder(object):
         for pat, func in self.regexen:
             match = pat.match(str)
             if match:
-                return (func, match.groups())
+                # clean up leading and trailing whitespace
+                groups = map(lambda x: x.strip(), match.groups())
+                return (func, groups)
         # TODO proper logging??
         #print "No method called %s" % (str)
 
