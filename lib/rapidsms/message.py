@@ -3,26 +3,40 @@
 
 import copy
 
+from rapidsms.connection import Connection
+from rapidsms.person import Person
+
 class Message(object):
-    def __init__(self, backend, caller=None, text=None):
-        self._backend = backend
-        self.caller = caller
+    def __init__(self, connection=None, text=None, person=None):
+        if connection == None and person == None:
+            raise Exception("Message __init__() must take one of: connection, person")
+        self._connection = connection
         self.text = text
+        self.person = person
         self.responses = []
     
     def __unicode__(self):
         return self.text
 
     @property
-    def backend(self):
-        # backend is read-only, since it's an
+    def connection(self):
+        # connection is read-only, since it's an
         # immutable property of this object
-        return self._backend
+        if self._connection is not None:
+            return self._connection
+        else:
+            return self.person.connection
+
+    @property
+    def peer (self):
+        # return the identity (e.g. phone number) of
+        # the other end of this message's connection
+        return self.connection.identity 
     
     def send(self):
-        """Send this message via self.backend, returning
+        """Send this message via self.connection.backend, returning
            True if the message was sent successfully."""
-        return self.backend.router.outgoing(self)
+        return self.connection.backend.router.outgoing(self)
 
     def flush_responses (self):
         """Sends all responses added to this message (via the
@@ -37,7 +51,7 @@ class Message(object):
     def respond(self, text):
         """Send the given text back to the original caller of this
            message on the same route that it came in on"""
-        if self.caller: 
+        if self.connection:
             response = copy.copy(self)
             response.text = text
             self.responses.append(response)
