@@ -76,9 +76,6 @@ TEMPLATE_DIRS = [
     # Don't forget to use absolute paths, not relative paths.
 ]
 
-
-
-
 # ====================
 # LOAD RAPIDSMS CONFIG
 # ====================
@@ -119,8 +116,8 @@ else:
     # blow up. TODO: is there a way to
     # run django without a database?
     raise(
-        ImproperlyConfigured,
-        "Your RapidSMS configuration ini (%r) does not " +\
+        #ImproperlyConfigured,
+        "Your RapidSMS configuration does not " +\
         "contain a [database] section, which is required " +\
         "for the Django webui to function.")
 

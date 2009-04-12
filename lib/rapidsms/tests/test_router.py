@@ -10,7 +10,7 @@ class TestRouter(unittest.TestCase):
     def test_log(self):
         r = Router()
         r.logger = MockLogger()
-	r.log("debug", "test message", 5)
+        r.log("debug", "test message", 5)
         self.assertEquals(r.logger[0], (r,"debug","test message",5),
             "log() calls self.logger.write()")
 
@@ -39,35 +39,35 @@ class TestRouter(unittest.TestCase):
 
     def test_add_app (self):
         ### TODO
-	pass
+        pass
 
     def test_start_backend (self):
         ### TODO
-	pass
+        pass
                  
     def test_start_all_apps (self):
         ### TODO
-	pass
+        pass
 
     def test_start_all_backends (self):
         ### TODO
-	pass
+        pass
 
     def test_stop_all_backends (self):
         ### TODO
-	pass
+        pass
 
     def test_start_and_stop (self):
-	pass
+        pass
 
     def test_run(self):
-	pass
+        pass
 
     def test_incoming(self):
-	pass
+        pass
    
     def test_outgoing(self):
-	pass
+        pass
 
 if __name__ == "__main__":
     unittest.main()

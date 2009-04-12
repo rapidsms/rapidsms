@@ -2,6 +2,7 @@ import irclib
 
 import rapidsms
 from rapidsms.message import Message
+from rapidsms.connection import Connection
 
 class Backend(rapidsms.backends.Backend):
     def configure(self, host="irc.freenode.net", port=6667,
@@ -41,8 +42,8 @@ class Backend(rapidsms.backends.Backend):
         if channel:
             target = channel
         else:
-            target = msg.caller
-        response = "%s: %s" % (msg.caller, msg.text)
+            target = msg.connection.identity
+        response = "%s: %s" % (msg.connection.identity, msg.text)
         self.info("sending to %s: %s", target, response)
         self.server.privmsg(target, response)
 
@@ -55,8 +56,8 @@ class Backend(rapidsms.backends.Backend):
         nick = nick.split("!")[0]
         if nick == self.nick:
             self.info("routing public message from %s", event.source())
-            caller = event.source().split("!")[0]
-            msg = self.message(caller, txt)
+            c = Connection(self, event.source().split("!")[0])
+            msg = self.message(c, txt)
             msg.irc_channel = event.target()
             self.route(msg)
 
@@ -64,7 +65,7 @@ class Backend(rapidsms.backends.Backend):
         self.debug("%s -> %s: %r", event.source(), event.target(), event.arguments())
         if event.target() == self.nick:
             self.info("routing private message from %s", event.source())
-            caller = event.source().split("!")[0]
-            msg = self.message(caller, event.arguments()[0])
-            msg.irc_channel = caller
+            c = Connection(self, event.source().split("!")[0])
+            msg = self.message(c, event.arguments()[0])
+            msg.irc_channel = c.identity
             self.route(msg)

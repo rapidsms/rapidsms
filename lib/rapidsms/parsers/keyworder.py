@@ -5,11 +5,11 @@ import re
 
 class Keyworder(object):
 
-    TOKEN_MAP = (
+    TOKEN_MAP = [
         ("slug",     "([a-z0-9\-]+)"),
         ("letters",  "([a-z]+)"),
         ("numbers",  "(\d+)"),
-        ("whatever", "(.+)"))
+        ("whatever", "(.+)")]
 
     def __init__(self):
         self.regexen = []
