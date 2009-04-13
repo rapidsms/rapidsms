@@ -11,7 +11,7 @@ setup(
     package_dir = {'': 'lib'},
     packages = ['rapidsms', 'spomsky'],
     package_data = {'rapidsms': ['skeleton/project/*.ini']},
-    scripts = ["server.py"],
+    scripts = ["rapidsms"],
     long_description = """
 RapidSMS is a Free and Open Source framework for developing short message-based
 applications.
