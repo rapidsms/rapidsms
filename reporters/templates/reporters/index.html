@@ -1,0 +1,89 @@
+{% extends "layout.html" %}
+{% block title %}Reporters{% endblock %}
+{% block javascripts %}<script type="text/javascript" src="/static/reporters/javascripts/clear-form-elements.js"></script>
+		<script type="text/javascript" src="/static/reporters/javascripts/cloneable.js"></script>{% endblock %}
+{% block content %}
+
+<div class="module">
+	<table>
+		<caption>All Reporters</caption>
+		<thead>
+			<tr>
+				<th scope="col">Name</th>
+				<th scope="col">Alias</th>
+				<th scope="col">Last Seen</th>
+			</tr>
+		</thead>
+		<tbody>{% if reporters %}{% for reporter in reporters %}
+			<tr>
+				<td>{{ reporter.first_name }} {{ reporter.last_name }}</td>
+				<td>{% if reporter.alias %}{{ reporter.alias }}{% else %}<span class="na">n/a</span{% endif %}</td>
+				<td>{{ reporter.last_seen }}</td>
+			</tr>{% endfor %}{% else %}
+			<tr class="no-data">
+				<td colspan="2">
+					No Reporters Yet.
+					<a href="/reporters/add" class="add">
+						Add a Reporter
+					</a>
+				</td>
+			</tr>{% endif %}
+		</tbody>
+		<tfoot>
+			<tr>
+				<td colspan="3">
+					<a href="">
+						Export to Excel
+					</a>
+				</td>
+			</tr>
+		</tfoot>
+	</table>
+</div>
+
+<div class="module">
+	<h2>Add a Reporter</h2>
+	
+	<form method="post" action="/reporters/add">
+		<div>
+			<label for="fm-rep-add-first_name">First Name</label>
+			<input type="text" id="fm-rep-add-first_name" name="first_name" value="" />
+		</div>
+		<div>
+			<label for="fm-rep-add-last_name">Last Name</label>
+			<input type="text" id="fm-rep-add-last_name" name="last_name" value="" />
+		</div>
+		<div>
+			<label for="fm-rep-add-alias">Alias</label>
+			<input type="text" id="fm-rep-add-alias" name="alias" value="" />
+			<p class="help">Must be alphanumeric, up to 20 characters.</p>
+		</div>
+		
+		<div id="fm-rep-add-connections">
+			<label>Primary Connection</label>
+			<div>
+				<select name="backend">{% for backend in backends %}
+					<option value="{{ backend.pk }}">{{ backend.title }}</option>{% endfor %}
+				</select>
+				<input type="text" id="fm-rep-add-connection-1" name="identity" value="" />
+			</div>
+		</div>
+		<script type="text/javascript">
+			/* as soon as possible, make the connection
+			 * div (above) clonable, so more than one
+			 * connection can be added at once */
+			$(function() {
+				var id ="#fm-rep-add-connections";
+				$(id + " > div").cloneable(true);
+				$(id + " > label").text("Connection(s)");
+				$(id).clearFormElements();
+			});
+		</script>
+		
+		<div class="submit">
+			<input type="submit" value="Add Reporter" />
+		</div>
+	</form>
+</div>
+
+{% endblock %}

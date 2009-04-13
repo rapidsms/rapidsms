@@ -48,7 +48,8 @@ h2, caption {
 
 table {
 	display: block;
-	border-collapse: collapse; }	
+	border-collapse: collapse;
+}	
 
 	tr { }
 	
@@ -135,10 +136,21 @@ table {
 					color: #000;
 				}
 
-form {
+.module form {
 }
 
-	label {
-		display: block;
-		margin: 0.5em 0 0.25em 0;
+	.module div.submit {
+		margin-top: 1em;
 	}
+	
+	.module label {
+		display: block;
+		margin: 1em 0 0.5em 0;
+	}
+	
+	.module p.help {
+		margin-top: 0.625em;
+		font-size: 80%;
+		color: #aaa;
+	}
+	
