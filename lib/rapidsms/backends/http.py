@@ -13,6 +13,12 @@ from rapidsms.message import Message
 msg_store = {}
 
 class HttpHandler(BaseHTTPServer.BaseHTTPRequestHandler):
+    def log_error (self, format, *args):
+        self.server.backend.error(format, *args)
+
+    def log_message (self, format, *args):
+        self.server.backend.debug(format, *args)
+
     def do_GET(self):
         global msg_store
         # if the path is just "/" then start a new session
@@ -59,6 +65,7 @@ class HttpHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         return
 
 class HttpServer (BaseHTTPServer.HTTPServer, SocketServer.ThreadingMixIn):
+       
     def handle_request (self, timeout=1.0):
         # don't block on handle_request
         reads, writes, errors = (self,), (), ()
