@@ -32,8 +32,73 @@ class Reporter(models.Model):
             self.first_name,
             self.last_name)
     
-    def last_seen(self):
+    def connection(self):
+        """Returns the connection object last used by this Reporter.
+           The field is (probably) updated by app.py when receiving
+           a message, so depends on _incoming_ messages only."""
+        
+        # TODO: add a "preferred" flag to connection, which then
+        # overrides the last_seen connection as the default, here
         return self.connections.latest("last_seen")
+
+    def last_seen(self):
+        """Returns the Python datetime that this Reporter was last seen,
+           on any Connection. Before displaying in the WebUI, the output
+           should be run through the XXX  filter, to make it prettier."""
+        
+        # comprehend a list of datetimes that this
+        # reporter was last seen on each connection,
+        # excluding those that have never seen them
+        timedates = [
+            c.last_seen
+            for c in self.connections.all()
+            if c.last_seen is not None]
+        
+        # return the latest, or none, if they've
+        # has never been seen on ANY connection
+        return max(timedates) if timedates else None
+
+
+class RecursiveManager(models.Manager):
+    """Provides a method to flatten a recursive model (a model which has a ForeignKey field linked back
+       to itself), in addition to the usual models.Manager methods. This Manager queries the database
+       only once (unlike select_related), and sorts them in-memory. Obivously, this efficiency comes
+       at the cost much higher CPU usage."""
+    
+    def flatten(self, via_field="parent_id"):
+        all_objects = list(self.model.objects.all())
+        
+        def pluck(pk=None, depth=0):
+            output = []
+            
+            for object in all_objects:
+                print getattr(object, via_field)
+                if getattr(object, via_field) == pk:
+                    output += [object] + pluck(object, depth+1)
+                    object.depth = depth
+            
+            return output
+        return pluck()
+
+
+class ReporterGroup(models.Model):
+    title       = models.CharField(max_length=30, unique=True)
+    parent      = models.ForeignKey("self", related_name="children", null=True, blank=True)
+    description = models.TextField(blank=True)
+    objects     = RecursiveManager()
+    
+    class Meta:
+        verbose_name = "Group"
+
+    def __unicode__(self):
+        return self.title
+    
+    def flat_children(self):
+        return [self] + [c.flat_children() for c in self.children.all()]
+        
+    @classmethod
+    def flat_tree(klass):
+        return [g.flat_children() for g in klass.objects.filter(parent=None)]
 
 
 class BackendManager(models.Manager):
@@ -84,10 +149,10 @@ class PersistantConnection(models.Model):
        Reporter is seen communicating via a new backend, or is expected
        to do so in future, a PersistantConnection should be created,
        so they can be recognized by their backend + identity pair."""
-    backend  = models.ForeignKey(PersistantBackend, related_name="connections")
-    identity = models.CharField(max_length=30)
-    reporter = models.ForeignKey(Reporter, related_name="connections")
-    last_seen = models.DateTimeField()
+    backend   = models.ForeignKey(PersistantBackend, related_name="connections")
+    identity  = models.CharField(max_length=30)
+    reporter  = models.ForeignKey(Reporter, related_name="connections")
+    last_seen = models.DateTimeField(blank=True, null=True)
     
     class Meta:
         verbose_name = "Connection"

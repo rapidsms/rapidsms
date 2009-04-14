@@ -5,6 +5,7 @@
 from django import template
 register = template.Library()
 
+
 import datetime
 from django.utils.timesince import timesince
 from django.utils.safestring import mark_safe
@@ -12,7 +13,7 @@ from django.utils.html import conditional_escape
 from django.template.defaultfilters import date as filter_date, time as filter_time
 
 
-@register.filter(name="magnitude_ago")
+@register.filter()
 def magnitude_ago(value):
     """Given a datetime, returns a string containing the
        most appropriate unit to use when describing the
@@ -23,7 +24,7 @@ def magnitude_ago(value):
     return "hours"
 
 
-@register.filter(name="last_seen")
+@register.filter()
 def last_seen(value, autoescape=None):
     """Formats a datetime as an HTML string representing a
        short digest of the time since that date, contained
