@@ -76,7 +76,7 @@ class App(rapidsms.app.App):
 	    self.handled = True
         return reporter 
 
-    # HELP----------------------------------------------------------
+    # HELP ----------------------------------------------------------
     @kw("help")
     def help(self, message):
         message.respond("HELP!")
@@ -97,19 +97,21 @@ class App(rapidsms.app.App):
 
     def form(self, message, code, type, *data): 
         self.debug("FORM")
-        #reporter = self.__identify(message.connection, "reporting")
+        #reporter = self.__identify(message.peer, "reporting")
 	handled = False
 	for domain in self.domains_forms_tokens:
-            # TODO check for key instead of wrapping the lookup in a try
-            # so we are able to respond with more detailed error messages
-	    try:
+	    if code.upper() in domain:
 	        # gather list of form dicts for this domain code
 	        forms = domain[code.upper()]
 		#domain.actions(message, type, *data)
 	        self.debug("DOMAIN MATCH")
+
 		for form in forms:
-                    # TODO ditto
-		    try:
+		    if type.upper() in form:
+                        this_domain = Domain.objects.get(code=code.upper())
+                        this_form = Form.objects.get(type=type)
+                        form_entry = FormEntry.objects.create(domain=this_domain,\
+                            form=this_form)
 			# gather list of token tuples for this form type
 		        tokens = form[type.upper()]
 
@@ -117,6 +119,9 @@ class App(rapidsms.app.App):
 			self.debug("FORM MATCH")
 			info = []
 			for t, d in zip(tokens, data):
+                            this_token = Token.objects.get(abbreviation=t[0])
+                            token_entry = TokenEntry.objects.create(\
+                                form_entry=form_entry, token=this_token, data=d)
 			    # gather info for confirmation message, matching
 			    # abbreviations from the token tuple to the received data
 			    info.append("%s=%s" % (t[0], d or "??"))
@@ -128,7 +133,7 @@ class App(rapidsms.app.App):
 			self.handled = True
 			break
 
-		    except KeyError:
+		    else:
 		        continue	
 
 		if not self.handled:
@@ -137,7 +142,7 @@ class App(rapidsms.app.App):
 		    self.handled = True
 		    break
 
-	    except KeyError:
+	    else:
 	        continue
 		#if not handled:
 		#    message.respond("Oops. Cannot find a supply called %s. Available supplies are %s" %\
@@ -182,6 +187,7 @@ class App(rapidsms.app.App):
         number_of_tokens = []
         # list for keeping track token sequences
         sequence_tokens = []
+
         for domain_forms_tokens in self.domains_forms_tokens:
             for domain_code, forms in domain_forms_tokens.iteritems():
                 # add the length of the domain code to our list
@@ -235,6 +241,7 @@ class App(rapidsms.app.App):
         #form_type_pattern = '(\w){%s,%s}' % (form_type_lengths[0], form_type_lengths[-1])
         #form_type_pattern = '(letters)'
         form_type_pattern = '([a-z]+)'
+
         # wrap all of the sequence patterns (except for the first one) 
 	# with separators and make them optional.
 	# this way all possible forms (that have at least one token)

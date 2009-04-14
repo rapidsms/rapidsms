@@ -70,11 +70,14 @@ class Reporter(models.Model):
             return self.connection.identity
         
 class Role(models.Model):
-        name = models.CharField(max_length=160)
+    name = models.CharField(max_length=160)
+    code = models.CharField(max_length=20, blank=True, null=True,\
+        help_text="Abbreviation")
 
 class Form(models.Model, Validatable, Alertable):
     type = models.CharField(max_length=160)
     tokens = models.ManyToManyField("Token")
+    apps = models.CharField(max_length=160)
 
     def __init__ (self, *args, **kwargs):
         super(Form, self).__init__(*args, **kwargs) 
@@ -147,6 +150,21 @@ class Notification(models.Model):
     resolved = models.DateTimeField(blank=True, null=True)
     # do we want to save a resolver?
 
+class FormEntry(models.Model):
+    reporter = models.ForeignKey(Reporter, blank=True, null=True)#blank for now until we have real users and groups
+    domain = models.ForeignKey(Domain)
+    form = models.ForeignKey(Form)
+
+    def __unicode__(self):
+        return "%s %s" % (self.domain.code, self.form.type)
+
+class TokenEntry(models.Model):
+    form_entry = models.ForeignKey(FormEntry)
+    token = models.ForeignKey(Token)
+    data = models.CharField(max_length=160)
+
+    def __unicode__(self):
+        return "%s %s" % (self.token.abbreviation, self.data)
 
 class FormValidator(Validator):
     '''Validator for forms, by passing off validation for each token'''
