@@ -15,7 +15,8 @@ from apps.reporters.utils import *
 def index(req):
     return render_to_response("reporters/index.html", {
         "reporters": Reporter.objects.all(),
-        "backends": PersistantBackend.objects.all()
+        "groups":    ReporterGroup.objects.flatten(),
+        "backends":  PersistantBackend.objects.all()
     }, context_instance=RequestContext(req))
 
 

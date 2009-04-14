@@ -5,5 +5,6 @@ from django.contrib import admin
 from apps.reporters.models import *
 
 admin.site.register(Reporter)
+admin.site.register(ReporterGroup)
 admin.site.register(PersistantBackend)
 admin.site.register(PersistantConnection)

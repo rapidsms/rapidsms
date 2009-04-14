@@ -112,4 +112,51 @@
 	</form>
 </div>
 
+<div class="module">
+	<h2>Add a Group</h2>
+	
+	<form method="post" id="fm-grp-add" action="/reporters/add">
+		<div>
+			<label for="fm-grp-add-title">Title</label>
+			<input type="text" class="required" id="fm-grp-add-title" name="title" value="" />
+		</div>
+		<div>
+			<label for="fm-grp-add-desc">Description</label>
+			<textarea id="fm-grp-add-desc" name="description" rows="6" cols="40"></textarea>
+			<p class="help">
+				If provided, the text is displayed to users attempting to send a
+				bulk message to this group, to ensure they understand what it is.
+			</p>
+		</div>
+		<div id="fm-grp-add-ancestors">
+			<label>Primary Ancestor</label>
+			<div>
+				<select name="ancestor">{% for group in groups %}
+					<option value="{{ group.pk }}">{{ group.title }}</option>{% endfor %}
+				</select>
+			</div>
+		</div>
+		<script type="text/javascript">
+			$(function() {
+				var id ="#fm-grp-add-ancestors";
+				$(id + " > div").cloneable(true);
+				$(id + " > label").text("Ancestors(s)");
+				$(id).clearFormElements();
+			});
+		</script>
+		<div class="submit">
+			<input type="submit" value="Add Group" />
+		</div>
+	</form>
+</div>
+
+<script type="text/javascript">
+	$(function() {
+		
+		/* hook up the validators */
+		$("#fm-rep-add").rs_validate();
+		$("#fm-grp-add").rs_validate();
+	});
+</script>
+
 {% endblock %}
