@@ -8,8 +8,11 @@ class NigeriaFormsLogic:
        
     def validate(self, *args, **kwargs):
         print "Nigeria validated!"
+        print "You passed in %s" % args[0]
+        
         
     def actions(self, *args, **kwargs):
         print "Nigeria actions!"
+        print "You passed in %s" % args[0]
         
     

@@ -11,7 +11,8 @@ from rapidsms.parsers.keyworder import *
 
 from models import *
 from formslogic import *
-import apps.form.app as forms_app
+import apps.form.app as form_app
+import apps.supply.app as supply_app
 
 class App(rapidsms.app.App):
 
@@ -20,9 +21,9 @@ class App(rapidsms.app.App):
     
     def start(self):
         # initialize the forms app for nigeria
-        self.forms_app = forms_app.App("Nigeria Forms", self.router, self)
-        self.forms_app.register("nigeria", NigeriaFormsLogic())
-        
+        self._form_app = form_app.App("Nigeria Forms", self.router, self)
+        self._form_app.register("nigeria", NigeriaFormsLogic())
+        self._supply_app = supply_app.App("Nigeria Supplies", self.router, self)
 
     def parse(self, message):
         self.handled = False
@@ -87,3 +88,14 @@ class App(rapidsms.app.App):
         self.info("Registering regex: %s for function %s, %s" %(regex, function.im_class, function.im_func.func_name))
         self.kw.regexen.append((re.compile(regex, re.IGNORECASE), function))
         
+    @property
+    def form_app(self):
+        if hasattr(self, "_form_app"):
+            return self._form_app
+
+    @property
+    def supply_app(self):
+        if hasattr(self, "_supply_app"):
+            return self._supply_app
+
+    
