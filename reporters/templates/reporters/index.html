@@ -1,4 +1,5 @@
 {% extends "layout.html" %}
+{% load reporters %}
 {% block title %}Reporters{% endblock %}
 {% block javascripts %}<script type="text/javascript" src="/static/reporters/javascripts/clear-form-elements.js"></script>
 		<script type="text/javascript" src="/static/reporters/javascripts/cloneable.js"></script>{% endblock %}
@@ -17,11 +18,11 @@
 		<tbody>{% if reporters %}{% for reporter in reporters %}
 			<tr>
 				<td>{{ reporter.first_name }} {{ reporter.last_name }}</td>
-				<td>{% if reporter.alias %}{{ reporter.alias }}{% else %}<span class="na">n/a</span{% endif %}</td>
-				<td>{{ reporter.last_seen }}</td>
+				<td>{% if reporter.alias %}{{ reporter.alias }}{% else %}<span class="na">n/a</span>{% endif %}</td>
+				<td>{{ reporter.last_seen|last_seen }}</td>
 			</tr>{% endfor %}{% else %}
 			<tr class="no-data">
-				<td colspan="2">
+				<td colspan="3">
 					No Reporters Yet.
 					<a href="/reporters/add" class="add">
 						Add a Reporter
