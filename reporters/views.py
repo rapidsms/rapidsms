@@ -13,11 +13,10 @@ from apps.reporters.utils import *
 
 @require_GET
 def index(req):
-	return render_to_response("reporters/index.html",
-	    {
-	        "reporters": Reporter.objects.all(),
-	        "backends": PersistantBackend.objects.all()
-	    }, context_instance=RequestContext(req))
+    return render_to_response("reporters/index.html", {
+        "reporters": Reporter.objects.all(),
+        "backends": PersistantBackend.objects.all()
+    }, context_instance=RequestContext(req))
 
 
 @require_POST

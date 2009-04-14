@@ -28,6 +28,19 @@ a {
 abbr {
 	cursor: help; }
 
+p {
+	line-height: 1.4; }
+		
+/* position accessibility-only parts of labels (which are
+ * more verbose than is necessary, sometimes) off-screen:
+ *
+ * <label><span class="acc">Is this user </span>M<span class="acc">ale</span>?</label>
+ */
+label span.acc {
+	position: absolute;
+	text-indent: -9999px;
+}
+
 
 #wrapper {
 	width: 80em;
@@ -147,6 +160,21 @@ abbr {
 
 
 
+/* query log */
+.query-log {
+	border: 1px solid #4bd;
+	background: #fff;
+	margin: 1em;
+}
+
+	.query-log td {
+		font: 80% monospace;
+		line-height: 1.4;
+	}
+
+
+
+
 /* legal junk */
 #footer {
 	border-top: 1px dotted #eee;
@@ -157,6 +185,4 @@ abbr {
 }
 
 	#footer p {
-		margin: 0;
-		line-height: 1.4;
-	}
+		margin: 0; }

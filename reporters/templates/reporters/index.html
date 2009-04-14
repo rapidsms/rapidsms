@@ -45,19 +45,27 @@
 <div class="module">
 	<h2>Add a Reporter</h2>
 	
-	<form method="post" action="/reporters/add">
-		<div>
-			<label for="fm-rep-add-first_name">First Name</label>
-			<input type="text" id="fm-rep-add-first_name" name="first_name" value="" />
-		</div>
-		<div>
-			<label for="fm-rep-add-last_name">Last Name</label>
-			<input type="text" id="fm-rep-add-last_name" name="last_name" value="" />
-		</div>
+	<form method="post" id="fm-rep-add" action="/reporters/add">
 		<div>
 			<label for="fm-rep-add-alias">Alias</label>
-			<input type="text" id="fm-rep-add-alias" name="alias" value="" />
+			<input type="text" class="required" id="fm-rep-add-alias" name="alias" value="" />
 			<p class="help">Must be alphanumeric, up to 20 characters.</p>
+		</div>
+		<div>
+			<label for="fm-rep-add-password">Password</label>
+			<input type="text" class="required" id="fm-rep-add-password" name="password" value="" />
+			<p class="help">If provided, reporters must supply this password when identifying themselves.</p>
+		</div>
+		<div>
+			<label>Name</label>
+			<div>
+				<input type="text" id="fm-rep-add-first_name" name="first_name" value="" />
+				<label for="fm-rep-add-first_name" class="suffix">First<span class="acc"> Name</span></label>
+			</div>
+			<div>
+				<input type="text" id="fm-rep-add-last_name" name="last_name" value="" />
+				<label for="fm-rep-add-last_name" class="suffix">Last<span class="acc"> Name</span></label>
+			</div>
 		</div>
 		
 		<div id="fm-rep-add-connections">
@@ -66,17 +74,34 @@
 				<select name="backend">{% for backend in backends %}
 					<option value="{{ backend.pk }}">{{ backend.title }}</option>{% endfor %}
 				</select>
-				<input type="text" id="fm-rep-add-connection-1" name="identity" value="" />
+				<input type="text" name="identity" value="" />
 			</div>
 		</div>
 		<script type="text/javascript">
-			/* as soon as possible, make the connection
-			 * div (above) clonable, so more than one
-			 * connection can be added at once */
 			$(function() {
+			
+				/* make the connection(s) div (above) clonable, so
+				 * more than one connection can be added at once */
 				var id ="#fm-rep-add-connections";
 				$(id + " > div").cloneable(true);
 				$(id + " > label").text("Connection(s)");
+				$(id).clearFormElements();
+			});
+		</script>
+		
+		<div id="fm-rep-add-groups">
+			<label>Primary Group</label>
+			<div>
+				<select name="group">{% for group in groups %}
+					<option value="{{ group.pk }}" class="depth-{{ group.depth }}">{{ group.title }}</option>{% endfor %}
+				</select>
+			</div>
+		</div>
+		<script type="text/javascript">
+			$(function() {
+				var id ="#fm-rep-add-groups";
+				$(id + " > div").cloneable(true);
+				$(id + " > label").text("Group(s)");
 				$(id).clearFormElements();
 			});
 		</script>
