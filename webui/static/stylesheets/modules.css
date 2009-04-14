@@ -10,8 +10,10 @@
 
 
 div.module {
-	margin-top: 1em;
-}
+	margin-top: 2em; }
+
+#inner div.module:first-child {
+	margin-top: 0; }
 
 
 
@@ -136,21 +138,127 @@ table {
 					color: #000;
 				}
 
+/* HACK: make forms relative, to keep the absolutely
+ * -positioned (by javascript!) error messages from
+ * moving around when the window is resized */
 .module form {
+	position: relative;
 }
-
-	.module div.submit {
-		margin-top: 1em;
-	}
 	
+	.module option.depth-1 { padding-left: 1em; }
+	.module option.depth-2 { padding-left: 2em; }
+	.module option.depth-3 { padding-left: 3em; }
+	.module option.depth-4 { padding-left: 4em; }
+	.module option.depth-5 { padding-left: 5em; }
+	.module option.depth-6 { padding-left: 6em; }
+	.module option.depth-7 { padding-left: 7em; }
+	.module option.depth-8 { padding-left: 8em; }
+	
+	.module div.invalid { }
+		
+		/* if we're using a capable browser (ie, not IE6),
+		 * and the containing module is directly inside the
+		 * #inner (so we know it's hard against the edge of
+		 * the RapidSMS "sheet of paper", add faux notches
+		 * to the edge of troublesome fields, for attention
+		 * TODO: this is a cool attention-grabbing affect.
+		 *       perhaps it should be made more generic? */
+		#inner > .module div.invalid {
+			border-right: 0.5em solid #eef;
+			border-left: 0.5em solid #eef;
+			padding: 0 0.5em;
+			margin: 0 -1em;
+		}
+	
+	/* most of the time, labels should sit
+	 * directly above their field, creating
+	 * 1em of space (margin) from the previous
+	 * field or (if first) the module header */
 	.module label {
 		display: block;
-		margin: 1em 0 0.5em 0;
+		margin: 2em 0 0.5em 0;
 	}
+		
+		/* but sometimes... they can provide a clearer distinction between
+		 * related fields, by sitting AFTER the field. in these cases, the
+		 * input+field should be divved, to clear the next pair. the labels
+		 * should still be explicit, for accessibility, but can be partially
+		 * masked by span.acc for teh pretty. something like:
+		 *
+		 * <div>
+		 *   <label>Full Name</label>
+		 *   <div>
+		 *     <input name="first" id="fm-first">
+		 *     <label for="fm-first">First<span class="acc"> Name</span></label>
+		 *   </div>
+		 *   <div>
+		 *     <input name="last" id="fm-last">
+		 *     <label for="fm-last">Last<span class="acc"> Name</span></label>
+		 *   </div>
+		 * </div>
+		 */
+		.module label.suffix {
+			display: inline;
+			font-style: italic;
+			font-size: 80%;
+			color: #aaa;
+			margin: 0;
+		}
+		
+		/* likewise, the label captioning the invalid field is marked as
+		 * "invalid" (not error, to differentiate from the error label) */
+		.module label.invalid {
+			color: #a00; }
+		
+		/* when a field is marked as invalid by the RapidSMS client-side
+		 * validation lib (a very lightly wrapped jQuery validation lib),
+		 * it inserts an error label just after the field (in the dom),
+		 * and positions it directly to the right (with javascript) */
+		.module label.error {
+			background: #fff url("../icons/16/exclamation.png") no-repeat 0 50%;
+			margin: 0 0 0 0.25em;
+			padding-left: 16px;
+			min-height: 16px;
+			color: #d00;
+		}
+		
+			/* spacing between icon and text */
+			.module label.error span {
+				padding-left: 0.25em; }
+			
+			/* hide the error message until the div containing the field
+			 * and error label is hovered - this is big and easy to hit
+			 * HACK: use CSS2 to prevent IE6 from hiding the text */
+			.module form div       > label.error { text-indent: -9999px; }
+			.module form div:hover > label.error { text-indent: 0; }
 	
+	/* for fields that need a longer description, help
+	 * text can be added below. roughly analogous to
+	 * django's models.Model.help_text */
 	.module p.help {
 		margin-top: 0.625em;
 		font-size: 80%;
-		color: #aaa;
+		color: #ccc;
+		width: 24em;
 	}
 	
+	/* to wrap any submission or action buttons, and
+	 * receive javascript/ajax notifications in response */
+	.module div.submit {
+		margin-top: 2em;
+	}
+	
+		/* when the validation lib catches (an) error(s)
+		 * during submission, it injects a note into the
+		 * submit buttons box. as usual, make it pretty */
+		.module div.submit .errors { }
+		
+			.module div.submit .errors p {
+				display: inline-block;
+				border: 1px solid #fdd;
+				background: #fee;
+				margin:  0 0 1em 0;
+				padding: 1em;
+				color: #d00;
+			}
+

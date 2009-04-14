@@ -8,7 +8,11 @@
 		<link type="text/css" rel="stylesheet" href="/static/webui/stylesheets/layout.css" />
 		<link type="text/css" rel="stylesheet" href="/static/webui/stylesheets/modules.css" />
 		{% block stylesheets %}{% endblock %}
-		{% block jquery %}<script type="text/javascript" src="/static/webui/javascripts/jquery-1.3.2.min.js"></script>{% endblock %}
+		{% block core_javascripts %}
+		<script type="text/javascript" src="/static/webui/javascripts/jquery-1.3.2.min.js"></script>
+		<script type="text/javascript" src="/static/webui/javascripts/jquery.validate-1.5.2.min.js"></script>
+		<script type="text/javascript" src="/static/webui/javascripts/rs-validate.js"></script>
+		{% endblock %}
 		{% block javascripts %}{% endblock %}
 	</head>
 	<body>
