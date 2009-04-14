@@ -215,14 +215,7 @@ class App(rapidsms.app.App):
                             info.append("%s=%s" % (t[0], d or "??"))
                         
                         # validation block
-                        validation_errors = []
-                        apps_used = []
-                        for app_name in this_form.apps.all():
-                            if self.registered_apps.has_key(app_name.name):
-                                app = self.registered_apps[app_name.name]
-                                apps_used.append(app)
-                                errors = getattr(app,'validate')()
-                                if errors: validation_errors.extend(errors)
+                        validation_errors = self._get_validation_errors(this_form, form_entry)
                         # action block
                         if not validation_errors:
                             for app in apps_used:
@@ -251,4 +244,20 @@ class App(rapidsms.app.App):
                 #        (code.upper(), ", ".join([s.keys().pop().upper() for s in self.supplies_reports_tokens]))) 
 
 
-    
+    def _get_validation_errors(self, form, form_entry):
+        validation_errors = []
+        
+        # do form level validation
+        form_errors = form.get_validation_errors(form_entry)
+        if form_errors: validation_errors.extend(form_errors)
+        
+        # also forward to any apps that have registered with this
+        apps_used = []
+        for app_name in form.apps.all():
+            if self.registered_apps.has_key(app_name.name):
+                app = self.registered_apps[app_name.name]
+                apps_used.append(app)
+                errors = getattr(app,'validate')(form_entry)
+                if errors: validation_errors.extend(errors)
+        return validation_errors
+        

@@ -137,17 +137,17 @@ class FormValidator(Validator):
         for token in tokens:
             validators = TokenExistanceValidator.objects.all().filter(token=token) 
             if validators:
-                self._validators[token.abbreviation] = validators
+                self._validators[token] = validators
         
-    def get_validation_errors(self, form):
+    def get_validation_errors(self, form_entry):
         validation_errors = []
         #print self._validators
-        for token, validators in self._validators.items():
-            print "token: %s" % token
-            if form.has_key(token):
-                for validator in validators:
-                    errors = validator.get_validation_errors(form[token])
-                    print "got back errors: %s" % errors
+        for token_value in form_entry.tokenentry_set.all():
+            #print "token: %s" % token_value.token
+            if self._validators.has_key(token_value.token):
+                for validator in self._validators[token_value.token]:
+                    errors = validator.get_validation_errors(token_value)
+                    #print "got back errors: %s" % errors
                     if errors:
                         validation_errors.append(errors)
         return validation_errors
@@ -173,12 +173,12 @@ class TokenExistanceValidator(TokenValidator):
     def __unicode__(self):
         return "%s %s %s" % (self.token, self.lookup_type.name, self.field_name)
     
-    def get_validation_errors(self, token):
+    def get_validation_errors(self, token_value):
         model_class = ContentType.model_class(self.lookup_type)
         vals = model_class.objects.values_list(self.field_name, flat=True)
-        print "validating %s with %s" % (token, str(self))
-        if token not in vals:
-            return "%s not in list of %s %s" % (token, self.lookup_type.name, self.field_name) 
+        #print "validating %s with %s" % (token_value, str(self))
+        if token_value.data not in vals:
+            return "%s not in list of %s %s" % (token_value.data, self.lookup_type.name, self.field_name) 
         return None
         
 class FormAlerter(Alerter):
