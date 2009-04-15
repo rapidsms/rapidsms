@@ -21,9 +21,16 @@ class App(rapidsms.app.App):
     
     def start(self):
         # initialize the forms app for nigeria
-        self._form_app = form_app.App("Nigeria Forms", self.router, self)
-        self._form_app.register("nigeria", NigeriaFormsLogic())
-        self._supply_app = supply_app.App("Nigeria Supplies", self.router, self)
+        self._form_app = form_app.App("Nigeria Forms", self.router)
+        # this tells the form app to add itself as a message handler 
+        # which registers the regex and function that this will dispatch to 
+        self._form_app.add_message_handler_to(self)
+        # this tells the form app that this is also a form handler 
+        self._form_app.add_form_handler("nigeria", NigeriaFormsLogic())
+        # initialize the supply app
+        self._supply_app = supply_app.App("Nigeria Supplies", self.router)
+        # this tells the supply app to register with the forms app as a form handler
+        self._supply_app.add_form_handler_to(self._form_app)
 
     def parse(self, message):
         self.handled = False
@@ -82,8 +89,9 @@ class App(rapidsms.app.App):
         '''
         pass
     
-    def register(self, regex, function):
-        '''Registers a function with the keyworder'''
+    def add_message_handler(self, regex, function):
+        '''Registers a message handler with this app.  Incoming messages that match this 
+           will call the function'''
         self.info("Registering regex: %s for function %s, %s" %(regex, function.im_class, function.im_func.func_name))
         self.kw.regexen.append((re.compile(regex, re.IGNORECASE), function))
         

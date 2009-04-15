@@ -9,10 +9,7 @@ class App(rapidsms.app.App):
 
     def __init__(self, title, router, calling_app=None):
         super(App, self).__init__(title, router)
-        self.calling_app = calling_app 
-        if calling_app:
-            calling_app.form_app.register("supply", SupplyFormsLogic())
-
+        
     def start(self):
         pass
 
@@ -26,3 +23,7 @@ class App(rapidsms.app.App):
     def outgoing(self, message):
         pass 
 
+    def add_form_handler_to(self, app):
+        '''Tell the supply app to register with another app.  This is confusing,
+           but by setting it up this way, no one else is dependant on SupplyFormsLogic()'''
+        app.add_form_handler("supply", SupplyFormsLogic())

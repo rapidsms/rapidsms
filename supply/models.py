@@ -74,18 +74,29 @@ class PendingTransaction(models.Model):
         ('C', 'Confirmed'),
         ('A', 'Amended'),
     )
-    reporter = models.ForeignKey(Reporter)
+    # this should be a foreign key, but waiting on user/group integration
+    phone = models.CharField(max_length=30)
     domain = models.ForeignKey(Domain)
     origin = models.ForeignKey(Location)
     destination = models.ForeignKey(Location, related_name='pending destination')
     shipment_id = models.PositiveIntegerField(blank=True, null=True, help_text="Waybill number")
     amount = models.PositiveIntegerField(blank=True, null=True, help_text="Amount of supply shipped")
+    stock = models.PositiveIntegerField(blank=True, null=True, help_text="Amount of stock present at location.")
     date = models.DateTimeField()
     # this could be a boolean, but is more readable this way
     type = models.CharField(max_length=1, choices=TRANSACTION_TYPES)
     status = models.CharField(max_length=1, choices=STATUS_TYPES)
     
-
+    def __unicode__(self):
+        return "%s reported %s of %s %s from %s to %s. (waybill: %s)" %(self.phone, 
+                                                                        self.type, 
+                                                                        self.amount, 
+                                                                        self.domain, 
+                                                                        self.origin, 
+                                                                        self.destination, 
+                                                                        self.shipment_id) 
+            
+    
 class Notification(models.Model):
     reporter = models.ForeignKey(Reporter)
     notice = models.CharField(max_length=160)

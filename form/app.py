@@ -14,9 +14,8 @@ from utils import *
 
 class App(rapidsms.app.App):
     
-    def __init__(self, title, router, calling_app=None):
+    def __init__(self, title, router):
         super(App, self).__init__(title, router) 
-        self.calling_app = calling_app
         self.separator = "[,\.\s]*"
         self.leading_pattern = "[\"'\s]*"
         self.trailing_pattern = "[\.,\"'\s]*"
@@ -24,7 +23,7 @@ class App(rapidsms.app.App):
         self.domains_forms_tokens = []
         self.setup()
         # allow apps to register to be a part of the message handling control flow
-        self.registered_apps = {}
+        self.form_handlers = {}
         
 
     def start(self):
@@ -41,9 +40,12 @@ class App(rapidsms.app.App):
     def outgoing(self, message):
         pass 
     
-    def register(self, name, app):
-        self.registered_apps[name] = app 
+    def add_form_handler(self, name, app):
+        self.form_handlers[name] = app 
 
+    def add_message_handler_to(self, dispatcher):
+        dispatcher.add_message_handler(self.form_pattern, self.form)
+    
     def setup(self):
         # create a list of dictionaries mapping domains to lists of their
         # forms, which are dictionaries mapping form types to a list
@@ -152,9 +154,6 @@ class App(rapidsms.app.App):
         self.form_pattern = self.leading_pattern + domain_code_pattern + \
             self.separator + form_type_pattern + self.separator + pattern_for_sequences[0] + ''.join(wrapped_patterns) + self.trailing_pattern
         
-        # register the pattern with the calling app
-        if (self.calling_app):
-            self.calling_app.register(self.form_pattern, self.form)
         
         self.debug("FORM PATTERN")
         self.debug(self.form_pattern)
@@ -255,15 +254,15 @@ class App(rapidsms.app.App):
         
         # also forward to any apps that have registered with this
         for app_name in form.apps.all():
-            if self.registered_apps.has_key(app_name.name):
-                app = self.registered_apps[app_name.name]
+            if self.form_handlers.has_key(app_name.name):
+                app = self.form_handlers[app_name.name]
                 errors = getattr(app,'validate')(form_entry)
                 if errors: validation_errors.extend(errors)
         return validation_errors
         
     def _do_actions(self, message, form, form_entry):
         for app_name in form.apps.all():
-            if self.registered_apps.has_key(app_name.name):
-                app = self.registered_apps[app_name.name]
+            if self.form_handlers.has_key(app_name.name):
+                app = self.form_handlers[app_name.name]
                 getattr(app,'actions')(message, form_entry)
                             
