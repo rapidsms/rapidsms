@@ -60,9 +60,31 @@ class Shipment(models.Model):
 
 class Transaction(models.Model):
     domain = models.ForeignKey(Domain)
-    amount_sent  = models.PositiveIntegerField(blank=True, null=True, help_text="Amount of supply being shipped")
-    amount_received = models.PositiveIntegerField(blank=True, null=True, help_text="Amount of supply being shipped")
+    amount_sent  = models.PositiveIntegerField(blank=True, null=True, help_text="Amount of supply shipped from origin")
+    amount_received = models.PositiveIntegerField(blank=True, null=True, help_text="Amount of supply received by destination")
     shipment = models.ForeignKey(Shipment)  
+
+class PendingTransaction(models.Model):
+    TRANSACTION_TYPES = (
+        ('I', 'Issue (outgoing)'),
+        ('R', 'Receive (incoming)'),
+    )
+    STATUS_TYPES = (
+        ('P', 'Pending'),
+        ('C', 'Confirmed'),
+        ('A', 'Amended'),
+    )
+    reporter = models.ForeignKey(Reporter)
+    domain = models.ForeignKey(Domain)
+    origin = models.ForeignKey(Location)
+    destination = models.ForeignKey(Location, related_name='pending destination')
+    shipment_id = models.PositiveIntegerField(blank=True, null=True, help_text="Waybill number")
+    amount = models.PositiveIntegerField(blank=True, null=True, help_text="Amount of supply shipped")
+    date = models.DateTimeField()
+    # this could be a boolean, but is more readable this way
+    type = models.CharField(max_length=1, choices=TRANSACTION_TYPES)
+    status = models.CharField(max_length=1, choices=STATUS_TYPES)
+    
 
 class Notification(models.Model):
     reporter = models.ForeignKey(Reporter)

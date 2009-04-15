@@ -218,8 +218,7 @@ class App(rapidsms.app.App):
                         validation_errors = self._get_validation_errors(this_form, form_entry)
                         # action block
                         if not validation_errors:
-                            for app in apps_used:
-                                getattr(app,'actions')()
+                            self._do_actions(this_form, form_entry)
                             
                         # assemble and send response
                         message.respond("Received report for %s %s: %s.\nIf this is not correct, reply with CANCEL" % \
@@ -252,12 +251,16 @@ class App(rapidsms.app.App):
         if form_errors: validation_errors.extend(form_errors)
         
         # also forward to any apps that have registered with this
-        apps_used = []
         for app_name in form.apps.all():
             if self.registered_apps.has_key(app_name.name):
                 app = self.registered_apps[app_name.name]
-                apps_used.append(app)
                 errors = getattr(app,'validate')(form_entry)
                 if errors: validation_errors.extend(errors)
         return validation_errors
         
+    def _do_actions(self, form, form_entry):
+        for app_name in form.apps.all():
+            if self.registered_apps.has_key(app_name.name):
+                app = self.registered_apps[app_name.name]
+                getattr(app,'actions')()
+                            
