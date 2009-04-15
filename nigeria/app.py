@@ -42,7 +42,6 @@ class App(rapidsms.app.App):
                     return self.handled 
                 except TypeError:
                     # TODO only except NoneType error
-                    # nothing was found, use default handler
                     self.debug("NO MATCH")
             else:
                 self.debug("App does not instantiate Keyworder as 'kw'")
