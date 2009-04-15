@@ -134,6 +134,7 @@ class App(rapidsms.app.App):
         # create a pattern for form type that matches any word as long as
         # the shortest code and no longer than the longest code
         form_type_lengths.sort()
+        # TODO ditto
         #form_type_pattern = '(\w){%s,%s}' % (form_type_lengths[0], form_type_lengths[-1])
         #form_type_pattern = '(letters)'
         form_type_pattern = '([a-z]+)'
@@ -151,7 +152,7 @@ class App(rapidsms.app.App):
         self.form_pattern = self.leading_pattern + domain_code_pattern + \
             self.separator + form_type_pattern + self.separator + pattern_for_sequences[0] + ''.join(wrapped_patterns) + self.trailing_pattern
         
-        # hack this regex into keyworder parser along with the form function we want it to call 
+        # register the pattern with the calling app
         if (self.calling_app):
             self.calling_app.register(self.form_pattern, self.form)
         
@@ -191,7 +192,6 @@ class App(rapidsms.app.App):
             if code.upper() in domain:
                 # gather list of form dicts for this domain code
                 forms = domain[code.upper()]
-                #domain.actions(message, type, *data)
                 self.debug("DOMAIN MATCH")
 
                 for form in forms:
@@ -204,7 +204,6 @@ class App(rapidsms.app.App):
                         # gather list of token tuples for this form type
                         tokens = form[type.upper()]
 
-                        #form.actions(message, *data)
                         self.debug("FORM MATCH")
                         info = []
                         for t, d in zip(tokens, data):
@@ -222,6 +221,7 @@ class App(rapidsms.app.App):
                             self._do_actions(message, this_form, form_entry)
                             
                         # assemble and send response
+                        # TODO this should be handled by registered app
                         message.respond("Received report for %s %s: %s.\nIf this is not correct, reply with CANCEL" % \
                             (code.upper(), type.upper(), ", ".join(info)))
                         # keep track of whether we have responded so we send only one 'Oops' message
@@ -232,6 +232,7 @@ class App(rapidsms.app.App):
                         continue        
 
                 if not self.handled:
+                    # TODO ditto
                     message.respond("Oops. Cannot find a report called %s for %s. Available reports for %s are %s" % \
                         (type.upper(), code.upper(), code.upper(), ", ".join([f.keys().pop().upper() for f in forms]))) 
                     self.handled = True
@@ -239,6 +240,7 @@ class App(rapidsms.app.App):
 
             else:
                 continue
+                # TODO ditto
                 #if not handled:
                 #    message.respond("Oops. Cannot find a supply called %s. Available supplies are %s" %\
                 #        (code.upper(), ", ".join([s.keys().pop().upper() for s in self.supplies_reports_tokens]))) 

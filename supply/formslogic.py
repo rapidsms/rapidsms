@@ -4,7 +4,7 @@
 from models import *
 
 class SupplyFormsLogic:
-    ''' This class will hold the nigeria-specific forms logic.
+    ''' This class will hold the supply-specific forms logic.
         I'm not sure whether this will be the right structure
         this was just for getting something hooked up '''
        
@@ -30,6 +30,7 @@ class SupplyFormsLogic:
         pending.date = form_entry.date
         for token_entry in form_entry.tokenentry_set.all():
             #print token_entry
+            pass
         pending.status = "P"
     #reporter = models.ForeignKey(Reporter)
     #origin = models.ForeignKey(Location)
