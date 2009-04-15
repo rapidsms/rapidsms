@@ -262,5 +262,5 @@ class App(rapidsms.app.App):
         for app_name in form.apps.all():
             if self.registered_apps.has_key(app_name.name):
                 app = self.registered_apps[app_name.name]
-                getattr(app,'actions')()
+                getattr(app,'actions')(form_entry)
                             
