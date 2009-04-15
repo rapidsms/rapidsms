@@ -2,7 +2,7 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 class SupplyFormsLogic:
-    ''' This class will hold the nigeria-specific forms logic.
+    ''' This class will hold the supply-specific forms logic.
         I'm not sure whether this will be the right structure
         this was just for getting something hooked up '''
        
