@@ -115,7 +115,7 @@ class FormEntry(models.Model):
     reporter = models.ForeignKey(Reporter, blank=True, null=True)#blank for now until we have real users and groups
     domain = models.ForeignKey(Domain)
     form = models.ForeignKey(Form)
-
+    date = models.DateTimeField() 
     def __unicode__(self):
         return "%s %s" % (self.domain.code, self.form.type)
 

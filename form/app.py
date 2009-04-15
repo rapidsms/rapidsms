@@ -198,8 +198,9 @@ class App(rapidsms.app.App):
                     if type.upper() in form:
                         this_domain = Domain.objects.get(code=code.upper())
                         this_form = Form.objects.get(type=type)
+                        
                         form_entry = FormEntry.objects.create(domain=this_domain, \
-                            form=this_form)
+                            form=this_form, date=datetime.now())
                         # gather list of token tuples for this form type
                         tokens = form[type.upper()]
 
@@ -218,7 +219,7 @@ class App(rapidsms.app.App):
                         validation_errors = self._get_validation_errors(this_form, form_entry)
                         # action block
                         if not validation_errors:
-                            self._do_actions(this_form, form_entry)
+                            self._do_actions(message, this_form, form_entry)
                             
                         # assemble and send response
                         message.respond("Received report for %s %s: %s.\nIf this is not correct, reply with CANCEL" % \
@@ -258,9 +259,9 @@ class App(rapidsms.app.App):
                 if errors: validation_errors.extend(errors)
         return validation_errors
         
-    def _do_actions(self, form, form_entry):
+    def _do_actions(self, message, form, form_entry):
         for app_name in form.apps.all():
             if self.registered_apps.has_key(app_name.name):
                 app = self.registered_apps[app_name.name]
-                getattr(app,'actions')(form_entry)
+                getattr(app,'actions')(message, form_entry)
                             
