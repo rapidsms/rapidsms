@@ -19,8 +19,8 @@
 	.tester tr td.msg     { font-size: 90%; float: left; width: 40em;}
 </style>
 <div class="tester">
+	<h2>All Previous Messages</h2>
 	<table>
-		<caption>All Previous Messages</caption>
 		<tbody>{% if msgs %}{% for m in msgs %}
 			<tr>
 			<tr class="{% if m.outgoing %}out{% else %}in{% endif %}{% if forloop.first %} first{% endif %}{% if forloop.last %} last{% endif %}">
