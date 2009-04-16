@@ -16,6 +16,9 @@ body {
 	margin: 0;
 }
 
+	body.bare {
+		background: #eef; }
+
 
 a {
 	text-decoration: none;
@@ -30,6 +33,7 @@ abbr {
 
 p {
 	line-height: 1.4; }
+	
 		
 /* position accessibility-only parts of labels (which are
  * more verbose than is necessary, sometimes) off-screen:
@@ -42,6 +46,15 @@ label span.acc {
 }
 
 
+/* this is not okay. but it is, unfortunately, the least
+ * error-prone way of fixing broken floaty layouts in IE6 */
+div.clear-hack {
+	overflow: hidden;
+	clear: both;
+	height: 0;
+}
+
+
 #wrapper {
 	width: 80em;
 	margin: 0 auto;
@@ -51,6 +64,9 @@ label span.acc {
 	/* no scaling for ie6 */
 	* html #wrapper {
 		width: 960px; }
+	
+	body.bare #wrapper {
+		width: auto; }
 
 
 
@@ -156,6 +172,27 @@ label span.acc {
 #inner {
 	padding: 1em;
 }
+
+	body.bare #inner {
+		padding: 0; }
+	
+	#inner div.split {
+		padding: 0 0.5em;
+	}
+		
+		#inner div.split .left {
+			margin-left: -0.5em;
+			float: left;
+			border: none;
+			width: 50%;
+		}
+		
+		#inner div.split .right {
+			margin-right: -0.5em;
+			float: right;
+			border: none;
+			width: 50%;
+		}
 	
 	/* when an app has something really
 	 * important to say, it can use the
