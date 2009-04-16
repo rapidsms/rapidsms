@@ -27,8 +27,8 @@ class SupplyFormsLogic:
         
     # Just hard coding this for now.  We might want to revisit this.
     _form_lookups = {"issue" : {
-                                #"origin" : "origin", 
-                                #"dest" : "destination", 
+                                "origin" : "origin", 
+                                "dest" : "destination", 
                                 "type" : "I",
                                 "waybill" : "shipment_id", 
                                 "sent" : "amount", 
@@ -36,14 +36,16 @@ class SupplyFormsLogic:
                                  
                                 }, 
                      "receive" : {
-                                  #"origin" : "origin", 
-                                  #"dest" : "destination", 
+                                  "origin" : "origin", 
+                                  "dest" : "destination", 
                                   "type" : "R",
                                   "waybill" : "shipment_id", 
                                   "received" : "amount", 
                                   "stock" : "stock", 
                                   }
                      }
+    _foreign_key_lookups = {"Location" : "code"
+                           }
     def _partial_transaction_from_form(self, message, form_entry):
         print("creating pending")
         pending = PartialTransaction()
@@ -53,10 +55,28 @@ class SupplyFormsLogic:
         pending.type = to_use["type"]
         for token_entry in form_entry.tokenentry_set.all():
             if to_use.has_key(token_entry.token.abbreviation):
-                setattr(pending, to_use[token_entry.token.abbreviation], token_entry.data)
-        # TODO hack around locations for now
-        pending.origin = Location.objects.all()[0]
-        pending.destination = Location.objects.all()[1]
+                field_name = to_use[token_entry.token.abbreviation]
+                # this is sillyness.  this gets the model type from the metadata
+                # and if it's a foreign key then "rel" will be non null
+                foreign_key = pending._meta.get_field_by_name(field_name)[0].rel
+                if foreign_key:
+                    # we can't just blindly set it, but we can get the class out 
+                    fk_class = foreign_key.to
+                    # and from there the name
+                    fk_name = fk_class._meta.object_name
+                    # and from there we look it up in our table
+                    field = self._foreign_key_lookups[fk_name]
+                    # get the object instance
+                    filters = { field : token_entry.data }
+                    try:
+                        fk_instance = fk_class.objects.get(**filters)
+                        setattr(pending, field_name, fk_instance)
+                    except fk_class.DoesNotExist:
+                        # ah well, we tried.  Is this a real error?  It might be, but if this
+                        # was a required field then the save() will fail
+                        pass
+                else:
+                    setattr(pending, to_use[token_entry.token.abbreviation], token_entry.data)
         pending.status = "P"
         pending.phone = message.connection.identity
         # gather partial transactions from the same place to the same place with
@@ -79,26 +99,25 @@ class SupplyFormsLogic:
         orphans = PartialTransaction.objects.filter(status='P').exclude(pk=partial.id)\
             .exclude(type=partial.type)
         # save pending transactions that appear in all of these sets
-        matches = self._match_orphans_by(partial, orphans, 'origin', 'destination', 'shipment_id')
-        if len(matches) != 0:
-            print("MATCHES!")
-            # there should only be one...
-            if len(matches) == 1:
-                return self._new_transaction(partial, matches.pop())
-            else:
-                # ... but if there are many, filter these matches by amount
-                print("TOO MANY MATCHES!")
-                amount_matches = self._match_orphans_by(partial, matches, 'amount')
-                if len(amount_matches) != 0:
-                    if len(amount_matches) == 1:
-                        return self._new_transaction(partial, amount_matches.pop())
-        else:
-            # no matches yet, so lets filter orig orphans by origin, dest, and amount
-            # in case we have a waybill typo
-            wrong_waybill_match = self._matches_orphans_by(partial, orphans, 'origin', 'destination', 'amount')
-            if len(wrong_waybill_match) != 0:
-                if len(wrong_waybill_matches) == 1:
-                    return self._new_transaction(partial, wrong_waybill_matches.pop())
+        remainder = self._match_orphans_by(partial, orphans, 'origin', 'destination', 'shipment_id', 'amount')
+        if remainder is not None:
+            print('remainder')
+            # check for mismatched amount 
+            amount_remainder = self._match_orphans_by(partial, orphans, 'origin', 'destination', 'shipment_id')
+            if amount_remainder is not None:
+                print('amount remainder')
+                # no matches yet, so lets filter orig orphans by origin, dest, and amount
+                # in case we have a waybill typo
+                wrong_waybill = self._match_orphans_by(partial, orphans, 'origin', 'destination', 'amount')
+                if wrong_waybill is not None:
+                    print('wrong_waybill')
+                    # still nothing. lets filter by origin, waybill, amount
+                    wrong_dest = self._match_orphans_by(partial, orphans, 'origin', 'shipment_id', 'amount')
+                    if wrong_dest is not None:
+                        print('wrong dest')
+                        # are you serious? no bites?
+                        wrong_origin = self._match_orphans_by(partial, orphans, 'destination', 'shipment_id', 'amount')
+
 
     def _match_orphans_by(self, partial, orphans, *attributes):
         print("matching orphans")
@@ -108,10 +127,19 @@ class SupplyFormsLogic:
             # update orphans with the intersection of itself
             # and itself filtered by an attribute
             filtered_orphans &= filtered_orphans.filter(**param)
-        return orphans 
+
+        print(filtered_orphans)
+        if filtered_orphans.count() != 0:
+            if filtered_orphans.count() == 1:
+                self._new_transaction(partial, filtered_orphans[0], attributes)
+                return None
+            else:
+                return filtered_orphans
+        else:
+            return 0
 
 
-    def _new_transaction(self, issue, receipt):
+    def _new_transaction(self, issue, receipt, *matched_by):
         # create a new shipment
         # TODO should we create a shipment for each waybill we received 
         # i.e., for incomplete transactions?
@@ -120,6 +148,7 @@ class SupplyFormsLogic:
         transaction = Transaction.objects.create(domain=issue.domain, amount_sent=issue.amount,\
             amount_received=receipt.amount,issue=issue, receipt=receipt, shipment=shipment)
         print("NEW TRANSACTION")
+        print(matched_by)
         # set the pending transactions to complete
         issue.status="C"
         issue.save()

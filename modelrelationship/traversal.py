@@ -1,4 +1,4 @@
-from modelrelationship.models import *
+from models import *
 from django.contrib.contenttypes.models import ContentType
 from types import ListType,TupleType
 
