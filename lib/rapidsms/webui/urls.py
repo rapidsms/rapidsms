@@ -15,8 +15,8 @@ conf = Config(os.environ["RAPIDSMS_INI"])
 # iterate each of the active rapidsms apps (from the ini),
 # and (attempt to) import the urls.py from each. it's okay
 # if this fails, since not all apps have a webui
-try:
-    for rs_app in conf["rapidsms"]["apps"]:
+for rs_app in conf["rapidsms"]["apps"]:
+    try:
         package_name = "apps.%s.urls" % (rs_app["type"])
         module = __import__(package_name, {}, {}, ["urlpatterns"])
 
@@ -40,6 +40,9 @@ try:
                 "django.views.static.serve",
                 {"document_root": static_dir }
             ))
-
-except ImportError:
-    pass
+    
+    # urls.py couldn't be imported for
+    # this app. no matter, just carry
+    # on importing the others
+    except ImportError:
+        pass
