@@ -40,8 +40,16 @@
 			</div>
 			{% endblock %}
 		</div>
+		{% if debug %}
+		<div id="debug-tools">
+			<!--
+				disable these tools by setting "debug=false"
+				in the [django] section of rapidsms.ini - it
+				should work in settings.py, too, but doesn't yet
+			-->
+			{% load debug %}
+			{% debug_dump %}
+		</div>
+		{% endif %}
 	</body>
 </html>
-
-{% load debug %}
-{% query_log %}
