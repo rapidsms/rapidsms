@@ -10,10 +10,13 @@
 
 
 div.module {
-	margin-top: 2em; }
+	margin-top: 2em;
+	position: relative;
+}
 
 #inner div.module:first-child {
 	margin-top: 0; }
+
 
 
 
@@ -57,15 +60,20 @@ table {
 	
 		td, th {
 			padding: 0.5em;
+			border-top: 1px solid #eee; 
 		}
 		
 			th {
-				background: #e1e1e1 url(../images/table-header-bg.png) repeat-x 100% 0;
 				font-weight: normal;
 				text-align: left;
-				color: #444;
 			}
 			
+				thead th {
+					background: #e1e1e1 url(../images/table-header-bg.png) repeat-x 100% 0;
+					border-top: none;
+					color: #444;
+				}
+
 			/* for rows which have headers on the left,
 			 * remove the fancy graident and bump the
 			 * title against the content */
@@ -76,14 +84,14 @@ table {
 		
 			/* a 1px border between each line
 			 * TODO: why isn't this on a <tr>? */
-			td {
-				border-top: 1px solid #ddd; }
+			tbody td, tbody th {}
 
 		
 	tr.no-data { }
 		
 			tr.no-data td {
 				text-align: center;
+				background: #f8f8ff;
 				padding: 2em;
 				color: #aaa;
 			}
@@ -93,6 +101,15 @@ table {
 				padding-top: 0.625em;
 				font-size: 80%;
 			}
+	
+	tr.depth-1 th { padding-left: 2em;  }
+	tr.depth-2 th { padding-left: 4em;  }
+	tr.depth-3 th { padding-left: 6em;  }
+	tr.depth-4 th { padding-left: 8em;  }
+	tr.depth-5 th { padding-left: 10em; }
+	tr.depth-6 th { padding-left: 12em; }
+	tr.depth-7 th { padding-left: 14em; }
+	tr.depth-8 th { padding-left: 16em; }
 
 	tfoot {
 		background: #eee url("../images/table-footer-bg.png") repeat-x 0 100%;
@@ -138,13 +155,41 @@ table {
 					color: #000;
 				}
 
-/* HACK: make forms relative, to keep the absolutely
- * -positioned (by javascript!) error messages from
- * moving around when the window is resized */
-.module form {
-	position: relative;
+
+/* modules can optionally contain a small
+ * "toolbar", which hangs in the top right */
+.module div.toolbar {
+	position: absolute;
+	top: 0;
+	right: 0;
+	height: 2em;
+	line-height: 2em;
 }
+	/* toolbar links (add, see more, do
+	 * other things) TODO: make pretty */
+	.module div.toolbar a {
+		display: block;
+		float: right;
+		color: #fff;
+		margin-right: 0.625em;
+		padding-left: 21px;
+		background-repeat: no-repeat;
+		background-position: 0 50%;
+		font-size: 80%;
+	}
 	
+		.module div.toolbar a.add {
+			background-image: url("../icons/16/add.png");
+		}
+
+
+.module form { }
+	
+	/* recursive models can be displayed as a
+	 * tree within a <select>, by ordering them
+	 * cleverly (see RecursiveManager) and adding
+	 * their "depth" to the class to bump them
+	 * to the right, indicating their ancestry */
 	.module option.depth-1 { padding-left: 1em; }
 	.module option.depth-2 { padding-left: 2em; }
 	.module option.depth-3 { padding-left: 3em; }
@@ -168,6 +213,20 @@ table {
 			border-left: 0.5em solid #eef;
 			padding: 0 0.5em;
 			margin: 0 -1em;
+		}
+	
+	.module form .no-data {
+		display: inline-block;
+		background: #f8f8ff;
+		text-align: center;
+		padding: 2em;
+		color: #aaa;
+	}
+		
+		.module form .no-data a.add {
+			display: block;
+			padding-top: 0.625em;
+			font-size: 80%;
 		}
 	
 	/* most of the time, labels should sit
@@ -239,7 +298,7 @@ table {
 		margin-top: 0.625em;
 		font-size: 80%;
 		color: #ccc;
-		width: 24em;
+		width: 30em;
 	}
 	
 	/* to wrap any submission or action buttons, and

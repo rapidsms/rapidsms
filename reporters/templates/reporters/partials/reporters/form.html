@@ -1,0 +1,80 @@
+{% load reporters %}
+
+<div class="module">
+	<h2>{% if reporter %}Edit {{ reporter }}{% else %}Add a Reporter{% endif %}</h2>
+	
+	<form method="post" id="fm-rep-add" action="/reporters/{% if reporter %}{{ reporter.pk }}{% else %}add{% endif %}">
+		<div>
+			<label for="fm-rep-add-alias">Alias</label>
+			<input type="text" class="required" id="fm-rep-add-alias" name="alias"{% if reporter %} value="{{ reporter.alias }}"{% endif %} />
+			<p class="help">Must be alphanumeric, up to 20 characters.</p>
+		</div>
+		<div>
+			<label for="fm-rep-add-password">Password</label>
+			<input type="text" class="required" id="fm-rep-add-password" name="password"{% if reporter %} value="{{ reporter.password }}"{% endif %} />
+			<p class="help">If provided, reporters must supply this password when identifying themselves.</p>
+		</div>
+		<div>
+			<label>Name</label>
+			<div>
+				<input type="text" id="fm-rep-add-first_name" name="first_name"{% if reporter %} value="{{ reporter.first_name }}"{% endif %} />
+				<label for="fm-rep-add-first_name" class="suffix">First<span class="acc"> Name</span></label>
+			</div>
+			<div>
+				<input type="text" id="fm-rep-add-last_name" name="last_name"{% if reporter %} value="{{ reporter.last_name }}"{% endif %} />
+				<label for="fm-rep-add-last_name" class="suffix">Last<span class="acc"> Name</span></label>
+			</div>
+		</div>
+		
+		<div id="fm-rep-add-connections">
+			<label>Primary Connection</label>
+			<div>
+				<select name="backend">{% for backend in backends %}
+					<option value="{{ backend.pk }}">{{ backend.title }}</option>{% endfor %}
+				</select>
+				<input type="text" name="identity" value="" />
+			</div>
+		</div>
+		
+		<div id="fm-rep-add-groups">
+			<label>Primary Group</label>
+			<div>{% if groups %}
+				<select name="group">
+					<option selected="selected">None</option>{% for group in groups %}
+					<option value="{{ group.pk }}" class="depth-{{ group.depth }}">{{ group.title }}</option>{% endfor %}
+				</select>{% else %}
+				<div class="no-data">
+					No Groups Yet.
+					<a href="/reporters/groups/add" class="add">
+						Add a Group
+					</a>
+				</div>{% endif %}
+			</div>
+		</div>
+		
+		<div class="submit">
+			<input type="submit" value="{% if reporter %}Save Changes{% else %}Add Reporter{% endif %}" />
+		</div>
+	</form>
+</div>
+
+<script type="text/javascript">
+	$(function() {
+		
+		/* make the connection(s) div (above) clonable, so
+		 * more than one connection can be added at once */
+		var id ="#fm-rep-add-connections";
+		$(id + " > div").cloneable(true);
+		$(id + " > label").text("Connection(s)");
+		$(id).clearFormElements();{% if groups %}
+		
+		/* groups are also clonable */
+		var id ="#fm-rep-add-groups";
+		$(id + " > div").cloneable(true);
+		$(id + " > label").text("Group(s)");
+		$(id).clearFormElements();{% endif %}
+		
+		/* validate the form on submit */
+		$("#fm-rep-add").rs_validate();
+	});
+</script>

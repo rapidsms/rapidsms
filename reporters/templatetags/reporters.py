@@ -12,6 +12,8 @@ from django.utils.safestring import mark_safe
 from django.utils.html import conditional_escape
 from django.template.defaultfilters import date as filter_date, time as filter_time
 
+from apps.reporters.models import *
+
 
 @register.filter()
 def magnitude_ago(value):
@@ -58,4 +60,28 @@ def last_seen(value, autoescape=None):
     
     return mark_safe(out)
 last_seen.needs_autoescape = True
+
+
+@register.inclusion_tag("reporters/partials/reporters/index.html")
+def reporters_index():
+    return { "reporters": Reporter.objects.all() }
+
+
+@register.inclusion_tag("reporters/partials/reporters/form.html")
+def reporters_form(reporter=None):
+    return {
+        "groups":   ReporterGroup.objects.flatten(),
+        "backends": PersistantBackend.objects.all(),
+        "reporter": reporter
+    }
+
+@register.inclusion_tag("reporters/partials/groups/index.html")
+def groups_index():
+    return { "groups": ReporterGroup.objects.flatten() }
+
+
+@register.inclusion_tag("reporters/partials/groups/form.html")
+def groups_form(reporter=None):
+    return { "groups": ReporterGroup.objects.flatten() }
+
 

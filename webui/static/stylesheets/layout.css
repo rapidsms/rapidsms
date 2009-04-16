@@ -156,6 +156,20 @@ label span.acc {
 #inner {
 	padding: 1em;
 }
+	
+	/* when an app has something really
+	 * important to say, it can use the
+	 * apps/webui/templates/message.html
+	 * template to display a huge message */
+	#inner div.message {
+		text-align: center;
+		padding: 4em 25%;
+	}
+	
+		#inner div.message p {
+			margin: 0 0 0.5em 0;
+			font-size: 2em;
+		}
 
 
 
