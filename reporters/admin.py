@@ -4,6 +4,22 @@
 from django.contrib import admin
 from apps.reporters.models import *
 
+
+class LocationAdmin(admin.ModelAdmin):
+    list_display = ['name',
+                    'type',
+                    'code',
+                    'latitude',
+                    'longitude',
+                    'parent'
+                    ]
+    list_filter = ['type',
+                   ]
+
+
+admin.site.register(Role)
+admin.site.register(LocationType)
+admin.site.register(Location, LocationAdmin)
 admin.site.register(Reporter)
 admin.site.register(ReporterGroup)
 admin.site.register(PersistantBackend)
