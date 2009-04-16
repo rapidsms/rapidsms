@@ -46,3 +46,6 @@ for rs_app in conf["rapidsms"]["apps"]:
     # on importing the others
     except ImportError:
         pass
+    except AttributeError:
+        # module was imported but didn't have url patters
+        pass
