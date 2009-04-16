@@ -6,11 +6,101 @@ import os
 from datetime import datetime
 from django.db import models
 
+from apps.modelrelationship.models import *
+
 # load the rapidsms configuration, for BackendManager
 # to check which backends are currently running
 from rapidsms.config import Config
 conf = Config(os.environ["RAPIDSMS_INI"])
 
+
+
+class Role(models.Model):
+    """Basic representation of a role that someone can have.  For example,
+       'supervisor' or 'data entry clerk'"""
+    name = models.CharField(max_length=160)
+    code = models.CharField(max_length=20, blank=True, null=True,\
+        help_text="Abbreviation")
+    
+    def __unicode__(self):
+        return self.name
+
+class LocationType(models.Model):
+    """A type of location.  For example 'School' or 'Factory'"""
+    name = models.CharField(max_length=160,help_text="Name of location type")
+        
+    def __unicode__(self):
+        return self.name
+    
+
+class Location(models.Model):
+    """A location.  Locations have a name, an optional type, and optional geographic information."""
+    name = models.CharField(max_length=160, help_text="Name of location")
+    type = models.ForeignKey(LocationType, blank=True, null=True, help_text="Type of location")
+    latitude = models.DecimalField(max_digits=8, decimal_places=6, null=True, blank=True, help_text="The physical latitude of this location")
+    longitude = models.DecimalField(max_digits=8, decimal_places=6, null=True, blank=True, help_text="The physical longitude of this location")
+
+    # the parent property.  currently handled by model-relationship 
+    # and and the django signal framework below.
+    _parent = None
+    def _get_parent(self):
+        return self._parent
+    def _set_parent(self, parent):
+        self._parent = parent
+    
+    parent = property(_get_parent, _set_parent, None, None)
+
+    def __unicode__(self):
+        return self.name
+    
+# location signals for saving the parent type  
+def loc_post_save(sender, **kwargs):
+    """Location post save signal that updates model-relationship with
+       the parent/child hierarchy."""
+    created = kwargs["created"]
+    instance = kwargs["instance"]
+    if created and instance.parent:
+        type = _get_location_parent_edge_type()
+        if type:
+            try:
+                # if the edge already exists, update it
+                edge = Edge.objects.get(relationship=type, child_id=instance.id)
+                edge.parent_object = parent
+                edge.save()
+            except Edge.DoesNotExist:
+                # otherwise create a new one
+                edge = Edge(relationship=type, child_object=instance, parent_object=instance.parent)
+                edge.save()
+
+# this registers the signal so it's called every time we save locations
+models.signals.post_save.connect(loc_post_save, sender=Location)
+
+def loc_post_init(sender, **kwargs):
+    """Location post init signal that reads the parent from model-relationship 
+       if it is defined"""
+    instance = kwargs["instance"]
+    
+    type = _get_location_parent_edge_type()
+    if type:
+        try:
+            edge = Edge.objects.get(relationship=type, child_id=instance.id)
+            instance.parent = edge.parent_object
+        except Edge.DoesNotExist:
+            # no parent was set, not a problem
+            pass
+
+models.signals.post_init.connect(loc_post_init, sender=Location)
+
+def _get_location_parent_edge_type():
+    content_type = ContentType.objects.get(name="location")
+    # there is an implicit dependency on this name (Location Parent) being defined
+    # as an edge between locations.  This will be done with fixtures
+    types = EdgeType.objects.all().filter(name="Location Parent").filter(parent_type=content_type).filter(child_type=content_type)
+    # this is dumb for now.  if we have more than one of these edge types, or none,
+    # we won't get anything back
+    if len(types) == 1:
+        return types[0]
+    return None
 
 class Reporter(models.Model):
     """This model represents a KNOWN person, that can be identified via
@@ -23,7 +113,13 @@ class Reporter(models.Model):
     first_name = models.CharField(max_length=30, blank=True)
     last_name  = models.CharField(max_length=30, blank=True)
     password   = models.CharField(max_length=30, blank=True)
-    
+    location = models.ForeignKey("Location", null=True, blank=True)
+    role = models.ForeignKey("Role", null=True, blank=True)
+
+    def __unicode__(self):
+            return self.connection.identity
+        
+
     # the language that this reporter prefers to
     # receive their messages in, as a w3c language tag
     #

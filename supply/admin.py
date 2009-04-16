@@ -4,9 +4,6 @@
 from django.contrib import admin
 from apps.supply.models import *
 
-admin.site.register(Reporter)
-admin.site.register(LocationType)
-admin.site.register(Location)
 admin.site.register(Stock)
 admin.site.register(Shipment)
 admin.site.register(Transaction)
