@@ -31,10 +31,10 @@ class Transaction(models.Model):
     amount_sent  = models.PositiveIntegerField(blank=True, null=True, help_text="Amount of supply shipped from origin")
     amount_received = models.PositiveIntegerField(blank=True, null=True, help_text="Amount of supply received by destination")
     shipment = models.ForeignKey(Shipment)  
-    issue = models.ForeignKey('PendingTransaction')
-    receipt = models.ForeignKey('PendingTransaction', related_name='receipt')
+    issue = models.ForeignKey('PartialTransaction')
+    receipt = models.ForeignKey('PartialTransaction', related_name='receipt')
 
-class PendingTransaction(models.Model):
+class PartialTransaction(models.Model):
     TRANSACTION_TYPES = (
         ('I', 'Issue (outgoing)'),
         ('R', 'Receipt (incoming)'),
