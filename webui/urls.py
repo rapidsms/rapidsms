@@ -6,10 +6,7 @@ from django.conf.urls.defaults import *
 import apps.webui.views as views
 
 urlpatterns = patterns('',
-    
-    url(r'^$', views.dashboard),
-    
-    (r'^static/webui/(?P<path>.*)$', "django.views.static.serve",
-        {"document_root": os.path.dirname(__file__) + "/static"})
+    url(r'^$',     views.dashboard),
+    url(r'^ping$', views.check_availability),
 )
 

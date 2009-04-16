@@ -1,0 +1,17 @@
+<div class="module query-log">
+	<h2>Query Log</h2>
+	<table>
+		<thead>
+			<tr>
+				<th>Time</th>
+				<th>SQL</th>
+			</tr>
+		</thead>
+		<tbody>{% for q in queries %}
+			<tr>
+				<td>{{ q.time }}</td>
+				<td>{{ q.sql }}</td>
+			</tr>{% endfor %}
+		</tbody>
+	</table>
+</div>
