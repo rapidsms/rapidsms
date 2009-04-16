@@ -1,9 +1,7 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-
 from django.http import HttpResponse
-from django.template import RequestContext
 from rapidsms.webui.utils import render_to_response
 
 
