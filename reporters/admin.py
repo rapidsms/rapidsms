@@ -4,6 +4,9 @@
 from django.contrib import admin
 from apps.reporters.models import *
 
+admin.site.register(Role)
+admin.site.register(LocationType)
+admin.site.register(Location)
 admin.site.register(Reporter)
 admin.site.register(ReporterGroup)
 admin.site.register(PersistantBackend)
