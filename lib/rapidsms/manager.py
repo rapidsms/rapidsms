@@ -62,6 +62,7 @@ def start (args):
 
     # if we found a config ini, try to configure Django
     if conf.sources:
+
         # import the webui settings, which builds the django
         # config from rapidsms.config, in a round-about way.
         # can't do it until env[RAPIDSMS_INI] is defined

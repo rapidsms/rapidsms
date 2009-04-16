@@ -5,13 +5,15 @@ import copy
 
 from rapidsms.connection import Connection
 from rapidsms.person import Person
+from datetime import datetime
 
 class Message(object):
-    def __init__(self, connection=None, text=None, person=None):
+    def __init__(self, connection=None, text=None, person=None, date=datetime):
         if connection == None and person == None:
             raise Exception("Message __init__() must take one of: connection, person")
         self._connection = connection
         self.text = text
+        self.date = date
         self.person = person
         self.responses = []
     
