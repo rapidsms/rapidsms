@@ -38,17 +38,20 @@ class App(rapidsms.app.App):
     def handle(self, message):
         try:
             if hasattr(self, "kw"):
-                try:
-                    self.debug("HANDLE")
-                    # attempt to match tokens in this message
-                    # using the keyworder parser
-                    func, captures = self.kw.match(self, message.text)
+                self.debug("HANDLE")
+                
+                # attempt to match tokens in this message
+                # using the keyworder parser
+                func, captures = self.kw.match(self, message.text)
+                
+                # if a function was returned, then a this message
+                # matches the handler _func_. call it, and short-
+                # circuit further handler calls
+                if func is not None:
                     func(self, message, *captures)
-                    # short-circuit handler calls because 
-                    # we are responding to this message
-                    return self.handled 
-                except TypeError:
-                    # TODO only except NoneType error
+                    return self.handled
+                
+                else:
                     self.debug("NO MATCH")
             else:
                 self.debug("App does not instantiate Keyworder as 'kw'")
