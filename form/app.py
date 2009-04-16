@@ -122,6 +122,8 @@ class App(rapidsms.app.App):
             self.debug(unique_patterns)
             # fix any patterns we just or-ed together so they are the kind of or we want
             # e.g., (\w+)|(\d+) => (\w+|\d+)
+            # TODO figure out how to handle non-captured matches
+            # e.g., (?:\w+)|(\d+) => (?:\w+)|(\d+) and then zip up tokens correctly
             pattern_for_sequences.append(unique_patterns.replace(')|(', '|'))
         self.debug("PATTERN FOR SEQUENCES")
         self.debug(pattern_for_sequences)
@@ -129,7 +131,7 @@ class App(rapidsms.app.App):
         # create a pattern for domain_code that matches any word as long as
         # the shortest code and no longer than the longest code
         domain_code_lengths.sort()
-        #TODO this only captures the last character if the range is {4,4}
+        #TODO oops. this only captures the last character if the range is {4,4}
         #domain_code_pattern = '(\w){%s,%s}' % (domain_code_lengths[0], domain_code_lengths[-1])
         #domain_code_pattern = '(letters)'
         domain_code_pattern = '([a-z]+)'
