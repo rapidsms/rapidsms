@@ -37,9 +37,10 @@ class Location(models.Model):
     """A location.  Locations have a name, an optional type, and optional geographic information."""
     name = models.CharField(max_length=160, help_text="Name of location")
     type = models.ForeignKey(LocationType, blank=True, null=True, help_text="Type of location")
+    code = models.CharField(max_length=15)
     latitude = models.DecimalField(max_digits=8, decimal_places=6, null=True, blank=True, help_text="The physical latitude of this location")
     longitude = models.DecimalField(max_digits=8, decimal_places=6, null=True, blank=True, help_text="The physical longitude of this location")
-
+    
     # the parent property.  currently handled by model-relationship 
     # and and the django signal framework below.
     _parent = None
@@ -65,7 +66,7 @@ def loc_post_save(sender, **kwargs):
             try:
                 # if the edge already exists, update it
                 edge = Edge.objects.get(relationship=type, child_id=instance.id)
-                edge.parent_object = parent
+                edge.parent_object = instance.parent
                 edge.save()
             except Edge.DoesNotExist:
                 # otherwise create a new one
