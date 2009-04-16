@@ -21,10 +21,11 @@ div.module {
 
 
 
-/* table captions are a kind of header,
- * so they look the same. the look is
- * vaguely ripped off from django */
-h2, caption {
+/* module headers are mostly ripped off from
+ * django admin, although here, we never use
+ * <caption>, to keep things simple (they have
+ * surprisingly kooky semantics) */
+h2 {
 	background: #74d7e3 url(../images/h2-bg.png) repeat-x;
 	border-bottom: 1px solid #4bd;
 	color: #fff;
@@ -34,16 +35,11 @@ h2, caption {
 	padding: 0.5em;
 	text-align: left;
 	white-space: nowrap;
-	
-	/* disp:block, to fill the
-	 * available column width */
-	display: block;
 }
 		
 	/* additional, less important info can
 	 * be wrapped in a span to dullify it */
-	h2 span,
-	caption span {
+	h2 span {
 		color: #e3f7f9;
 		font-size: 80%;
 	}
@@ -52,7 +48,6 @@ h2, caption {
 
 
 table {
-	display: block;
 	border-collapse: collapse;
 }	
 

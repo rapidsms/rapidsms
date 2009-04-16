@@ -15,6 +15,12 @@
 	<p class="help"><em>TODO: Where should these link go?</em></p>
 </div>
 
-{% reporters_index %}
+<div class="split">
+	<div class="left">
+		{% reporters_index %}
+	</div>
+	<iframe class="right" name="reporter-frame" src="/reporters/add?bare=1"></iframe>
+	<div class="clear-hack"></div>
+</div>
 
 {% endblock %}
