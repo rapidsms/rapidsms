@@ -173,18 +173,23 @@ label span.acc {
 
 
 
+/* the debug tools can be enabled at the
+ * bottom of the page via rapidsms.ini,
+ * by setting debug=true in [django] */
 
-/* query log */
-.query-log {
-	border: 1px solid #4bd;
-	background: #fff;
-	margin: 1em;
+#debug-tools {
+	padding: 1em;
 }
 
-	.query-log td {
-		font: 80% monospace;
-		line-height: 1.4;
+	.query-log {
+		border: 1px solid #4bd;
+		background: #fff;
 	}
+
+		.query-log td {
+			font: 80% monospace;
+			line-height: 1.4;
+		}
 
 
 
