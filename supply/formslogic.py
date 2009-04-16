@@ -27,8 +27,8 @@ class SupplyFormsLogic:
         
     # Just hard coding this for now.  We might want to revisit this.
     _form_lookups = {"issue" : {
-                                #"origin" : "origin", 
-                                #"dest" : "destination", 
+                                "origin" : "origin", 
+                                "dest" : "destination", 
                                 "type" : "I",
                                 "waybill" : "shipment_id", 
                                 "sent" : "amount", 
@@ -36,14 +36,16 @@ class SupplyFormsLogic:
                                  
                                 }, 
                      "receive" : {
-                                  #"origin" : "origin", 
-                                  #"dest" : "destination", 
+                                  "origin" : "origin", 
+                                  "dest" : "destination", 
                                   "type" : "R",
                                   "waybill" : "shipment_id", 
                                   "received" : "amount", 
                                   "stock" : "stock", 
                                   }
                      }
+    _foreign_key_lookups = {"Location" : "code"
+                           }
     def _partial_transaction_from_form(self, message, form_entry):
         print("creating pending")
         pending = PartialTransaction()
@@ -53,10 +55,28 @@ class SupplyFormsLogic:
         pending.type = to_use["type"]
         for token_entry in form_entry.tokenentry_set.all():
             if to_use.has_key(token_entry.token.abbreviation):
-                setattr(pending, to_use[token_entry.token.abbreviation], token_entry.data)
-        # TODO hack around locations for now
-        pending.origin = Location.objects.all()[0]
-        pending.destination = Location.objects.all()[1]
+                field_name = to_use[token_entry.token.abbreviation]
+                # this is sillyness.  this gets the model type from the metadata
+                # and if it's a foreign key then "rel" will be non null
+                foreign_key = pending._meta.get_field_by_name(field_name)[0].rel
+                if foreign_key:
+                    # we can't just blindly set it, but we can get the class out 
+                    fk_class = foreign_key.to
+                    # and from there the name
+                    fk_name = fk_class._meta.object_name
+                    # and from there we look it up in our table
+                    field = self._foreign_key_lookups[fk_name]
+                    # get the object instance
+                    filters = { field : token_entry.data }
+                    try:
+                        fk_instance = fk_class.objects.get(**filters)
+                        setattr(pending, field_name, fk_instance)
+                    except fk_class.DoesNotExist:
+                        # ah well, we tried.  Is this a real error?  It might be, but if this
+                        # was a required field then the save() will fail
+                        pass
+                else:
+                    setattr(pending, to_use[token_entry.token.abbreviation], token_entry.data)
         pending.status = "P"
         pending.phone = message.connection.identity
         # gather partial transactions from the same place to the same place with

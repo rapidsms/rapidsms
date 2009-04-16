@@ -208,6 +208,10 @@ class App(rapidsms.app.App):
                         self.debug("FORM MATCH")
                         info = []
                         for t, d in zip(tokens, data):
+                            if not d:
+                                self.debug("Empty data for token: %s.  This is not allowed." % t.abbreviation)
+                                message.respond("Empty data for token: %s.  This is not allowed." % t.abbreviation)
+                                return
                             this_token = Token.objects.get(abbreviation=t[0])
                             token_entry = TokenEntry.objects.create(\
                                 form_entry=form_entry, token=this_token, data=d)
@@ -220,7 +224,10 @@ class App(rapidsms.app.App):
                         # action block
                         if not validation_errors:
                             self._do_actions(message, this_form, form_entry)
-                            
+                        else:
+                            self.debug("Invalid form.  Errors are %s", ". ".join(validation_errors))
+                            message.respond("Invalid form.  Errors are %s", ". ".join(validation_errors))
+                            return
                         # assemble and send response
                         # TODO this should be handled by registered app
                         message.respond("Received report for %s %s: %s.\nIf this is not correct, reply with CANCEL" % \
