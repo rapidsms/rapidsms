@@ -27,5 +27,17 @@ class TestApp (TestScript):
         self.assertEqual(edge.child_object, lga)
         self.assertEqual(edge.parent_object, state)
         lga_back = Location.objects.get(name="Kano LGA")
-        self.assertEqual(state, lga.parent)
+        self.assertEqual(state, lga_back.parent)
+        # also change it and make sure it updates instead of adds
+        state2 = Location(name="Abuja")
+        state2.save()
+        lga_back.parent = state2
+        lga_back.save()
+        edges = Edge.objects.all().filter(relationship=edge_type).filter(child_id =lga_back.id)
+        self.assertEqual(1, len(edges))
+        edge = edges[0]
+        self.assertEqual(edge.child_object, lga_back)
+        self.assertEqual(edge.parent_object, state2)
+        lga_back_again = Location.objects.get(name="Kano LGA")
+        self.assertEqual(state2, lga_back_again.parent)
         
