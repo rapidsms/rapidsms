@@ -13,22 +13,24 @@ from apps.reporters.utils import *
 
 
 def message(req, msg, link=None):
-    return render_to_response(
+    return render_to_response(req,
         "message.html", {
             "message": msg,
             "link": link
-        })
+    })
 
 
 @require_GET
 def index(req):
-    return render_to_response("reporters/reporters/index.html")
+    return render_to_response(req,
+        "reporters/reporters/index.html")
 
 
 @require_http_methods(["GET", "POST"])
 def add_reporter(req):
     def get(req):
-        return render_to_response("reporters/reporters/add.html")
+        return render_to_response(req,
+            "reporters/reporters/add.html")
 
     @transaction.commit_manually
     def post(req):
@@ -82,21 +84,26 @@ def add_reporter(req):
 
 @require_GET    
 def edit_reporter(req, pk):
-    return render_to_response("reporters/reporters/edit.html", {
+    return render_to_response(req,
+        "reporters/reporters/edit.html", {
         "reporter": get_object_or_404(Reporter, pk=pk) })
 
 
 @require_GET
 def index_groups(req):
-    return render_to_response("reporters/groups/index.html", {
-        "groups": ReporterGroup.objects.flatten()})
+    return render_to_response(req,
+        "reporters/groups/index.html", {
+            "groups": ReporterGroup.objects.flatten()
+    })
 
 
 @require_http_methods(["GET", "POST"])
 def add_group(req):
     if req.method == "GET":
-        return render_to_response("reporters/groups/add.html", {
-            "groups": ReporterGroup.objects.flatten()})
+        return render_to_response(req,
+            "reporters/groups/add.html", {
+                "groups": ReporterGroup.objects.flatten()
+        })
         
     elif req.method == "POST":
         grp = insert_via_querydict(ReporterGroup, req.POST)
@@ -109,5 +116,7 @@ def add_group(req):
 
 @require_http_methods(["GET", "POST"])
 def edit_group(req, pk):
-    return render_to_response("reporters/groups/edit.html", {
-        "group": get_object_or_404(ReporterGroup, pk=pk) })
+    return render_to_response(req,
+        "reporters/groups/edit.html", {
+            "group": get_object_or_404(ReporterGroup, pk=pk)
+    })

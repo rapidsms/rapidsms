@@ -15,9 +15,10 @@
 		{% endblock %}
 		{% block javascripts %}{% endblock %}
 	</head>
-	<body>
+	<body class="{% if bare %}bare{% endif %}">
 		<div id="wrapper">
 			{% block header %}
+			{% if not bare %}
 			<div id="header">
 				<div id="branding">
 					<h1><a title="Return to the Dashboard" href="/">RapidSMS</a></h1>
@@ -26,11 +27,13 @@
 					<li><a href="{{ app.tab_link }}">{{ app.title }}</a></li>{% endif %}{% endfor %}
 				</ul>
 			</div>
+			{% endif %}
 			{% endblock %}
 			<div id="inner">
 				{% block content %}{% endblock %}
 			</div>
 			{% block footer %}
+			{% if not bare %}
 			<div id="footer">
 				<p class="rights">
 					Copyright &copy; 2009 <a href="http://unicefinnovation.org">UNICEF</a> et al.<br />
@@ -38,8 +41,10 @@
 					available under the <a href="http://www.fsf.org/licensing/licenses/lgpl-3.0.html">LGPL</a>.
 				</p>
 			</div>
+			{% endif %}
 			{% endblock %}
 		</div>
+		{% if not bare %}
 		{% if debug %}
 		<div id="debug-tools">
 			<!--
@@ -50,6 +55,7 @@
 			{% load debug %}
 			{% debug_dump %}
 		</div>
+		{% endif %}
 		{% endif %}
 	</body>
 </html>
