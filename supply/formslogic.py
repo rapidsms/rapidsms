@@ -99,26 +99,25 @@ class SupplyFormsLogic:
         orphans = PartialTransaction.objects.filter(status='P').exclude(pk=partial.id)\
             .exclude(type=partial.type)
         # save pending transactions that appear in all of these sets
-        matches = self._match_orphans_by(partial, orphans, 'origin', 'destination', 'shipment_id')
-        if len(matches) != 0:
-            print("MATCHES!")
-            # there should only be one...
-            if len(matches) == 1:
-                return self._new_transaction(partial, matches.pop())
-            else:
-                # ... but if there are many, filter these matches by amount
-                print("TOO MANY MATCHES!")
-                amount_matches = self._match_orphans_by(partial, matches, 'amount')
-                if len(amount_matches) != 0:
-                    if len(amount_matches) == 1:
-                        return self._new_transaction(partial, amount_matches.pop())
-        else:
-            # no matches yet, so lets filter orig orphans by origin, dest, and amount
-            # in case we have a waybill typo
-            wrong_waybill_match = self._matches_orphans_by(partial, orphans, 'origin', 'destination', 'amount')
-            if len(wrong_waybill_match) != 0:
-                if len(wrong_waybill_matches) == 1:
-                    return self._new_transaction(partial, wrong_waybill_matches.pop())
+        remainder = self._match_orphans_by(partial, orphans, 'origin', 'destination', 'shipment_id', 'amount')
+        if remainder is not None:
+            print('remainder')
+            # check for mismatched amount 
+            amount_remainder = self._match_orphans_by(partial, orphans, 'origin', 'destination', 'shipment_id')
+            if amount_remainder is not None:
+                print('amount remainder')
+                # no matches yet, so lets filter orig orphans by origin, dest, and amount
+                # in case we have a waybill typo
+                wrong_waybill = self._match_orphans_by(partial, orphans, 'origin', 'destination', 'amount')
+                if wrong_waybill is not None:
+                    print('wrong_waybill')
+                    # still nothing. lets filter by origin, waybill, amount
+                    wrong_dest = self._match_orphans_by(partial, orphans, 'origin', 'shipment_id', 'amount')
+                    if wrong_dest is not None:
+                        print('wrong dest')
+                        # are you serious? no bites?
+                        wrong_origin = self._match_orphans_by(partial, orphans, 'destination', 'shipment_id', 'amount')
+
 
     def _match_orphans_by(self, partial, orphans, *attributes):
         print("matching orphans")
@@ -128,10 +127,19 @@ class SupplyFormsLogic:
             # update orphans with the intersection of itself
             # and itself filtered by an attribute
             filtered_orphans &= filtered_orphans.filter(**param)
-        return orphans 
+
+        print(filtered_orphans)
+        if filtered_orphans.count() != 0:
+            if filtered_orphans.count() == 1:
+                self._new_transaction(partial, filtered_orphans[0], attributes)
+                return None
+            else:
+                return filtered_orphans
+        else:
+            return 0
 
 
-    def _new_transaction(self, issue, receipt):
+    def _new_transaction(self, issue, receipt, *matched_by):
         # create a new shipment
         # TODO should we create a shipment for each waybill we received 
         # i.e., for incomplete transactions?
@@ -140,6 +148,7 @@ class SupplyFormsLogic:
         transaction = Transaction.objects.create(domain=issue.domain, amount_sent=issue.amount,\
             amount_received=receipt.amount,issue=issue, receipt=receipt, shipment=shipment)
         print("NEW TRANSACTION")
+        print(matched_by)
         # set the pending transactions to complete
         issue.status="C"
         issue.save()
