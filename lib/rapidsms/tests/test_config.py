@@ -41,20 +41,20 @@ class TestConfig(unittest.TestCase):
     def test___init__(self):
         pass
 
-    def test_get_component_config(self):
-        cc = self.config.get_component_config("app1", self.config.data)
+    def test_component_section(self):
+        cc = self.config.component_section("app1")
         self.assertEqual(cc, {"type": "app1", "title": "app1"}, 
             "default component config incorrect")
         
-        cc = self.config.get_component_config("app2", self.config.data)
+        cc = self.config.component_section("app2")
         self.assertEqual(cc, {"type": "app2", "title": "app2", "beginning": "yes", "end": "no"}, 
             "does not correctly configure component with assumed type var and additional vars")
         
-        cc = self.config.get_component_config("app3", self.config.data)
+        cc = self.config.component_section("app3")
         self.assertEqual(cc, {"type": "testapp", "title": "app3"}, 
             "does not correctly configure component with explicit type variable and no additional vars")
         
-        cc = self.config.get_component_config("backend1", self.config.data)
+        cc = self.config.component_section("backend1")
         self.assertEqual(cc, {"type": "testbackend", "title": "backend1", "beginning": "yes", "end": "no"}, 
             "does not correctly configure component with explicit type var and additional vars")
 
