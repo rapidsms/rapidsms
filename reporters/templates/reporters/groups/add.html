@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+{% block title %}Add a Group{% endblock %}
+
+{% block javascripts %}
+<script type="text/javascript" src="/static/reporters/javascripts/clear-form-elements.js"></script>
+<script type="text/javascript" src="/static/reporters/javascripts/cloneable.js"></script>
+{% endblock %}
+
+{% load reporters %}
+{% block content %}
+
+{% groups_form %}
+
+{% endblock %}

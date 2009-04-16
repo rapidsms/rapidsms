@@ -2,8 +2,9 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 
-from django.db import models
 import os
+from datetime import datetime
+from django.db import models
 
 # load the rapidsms configuration, for BackendManager
 # to check which backends are currently running
@@ -18,19 +19,41 @@ class Reporter(models.Model):
        could lead to multiple objects for the same "person". Usually, this
        model should be created through the WebUI, in advance of the reporter
        using the system - but there are always exceptions to these rules..."""
+    alias      = models.CharField(max_length=20, unique=True)
     first_name = models.CharField(max_length=30, blank=True)
     last_name  = models.CharField(max_length=30, blank=True)
-    alias      = models.CharField(max_length=20, unique=True)
+    password   = models.CharField(max_length=30, blank=True)
+    
+    # the language that this reporter prefers to
+    # receive their messages in, as a w3c language tag
+    #
+    # the spec:   http://www.w3.org/International/articles/language-tags/Overview.en.php
+    # reference:  http://www.iana.org/assignments/language-subtag-registry
+    #
+    # to summarize:
+    #   english  = en
+    #   amharic  = am
+    #   chichewa = ny
+    #   klingon  = tlh
+    #
+    language = models.CharField(max_length=10)
+	
 	
     class Meta:
         ordering = ["last_name", "first_name"]
     
-    # the string version of report
-    # now contains only their name
+    
     def __unicode__(self):
         return "%s %s" % (
             self.first_name,
             self.last_name)
+    
+    def __repr__(self):
+        return "%s %s (%s)" % (
+            self.first_name,
+            self.last_name,
+            self.alias)
+    
     
     def connection(self):
         """Returns the connection object last used by this Reporter.
@@ -58,7 +81,6 @@ class Reporter(models.Model):
         # has never been seen on ANY connection
         return max(timedates) if timedates else None
 
-
 class RecursiveManager(models.Manager):
     """Provides a method to flatten a recursive model (a model which has a ForeignKey field linked back
        to itself), in addition to the usual models.Manager methods. This Manager queries the database
@@ -72,9 +94,8 @@ class RecursiveManager(models.Manager):
             output = []
             
             for object in all_objects:
-                print getattr(object, via_field)
                 if getattr(object, via_field) == pk:
-                    output += [object] + pluck(object, depth+1)
+                    output += [object] + pluck(object.pk, depth+1)
                     object.depth = depth
             
             return output
@@ -87,18 +108,21 @@ class ReporterGroup(models.Model):
     description = models.TextField(blank=True)
     objects     = RecursiveManager()
     
+    
     class Meta:
         verbose_name = "Group"
 
+    
     def __unicode__(self):
         return self.title
     
-    def flat_children(self):
-        return [self] + [c.flat_children() for c in self.children.all()]
-        
+    
     @classmethod
     def flat_tree(klass):
         return [g.flat_children() for g in klass.objects.filter(parent=None)]
+    
+    def flat_children(self):
+        return [self] + [c.flat_children() for c in self.children.all()]
 
 
 class BackendManager(models.Manager):
@@ -134,11 +158,24 @@ class PersistantBackend(models.Model):
     raw_objects = models.Manager()
     objects     = BackendManager()
     
+    
     class Meta:
         verbose_name = "Backend"
     
+    
     def __unicode__(self):
         return self.title
+    
+    
+    @classmethod
+    def from_message(klass, msg):
+        """"Fetch a PersistantBackend object from the data buried in a rapidsms.message.Message
+            object. In time, this should be moved to the message object itself, since persistance
+            should be fairly ubiquitous; but right now, that would couple the framework to this
+            individual app. So you can use this for now."""
+        be_title = msg.connection.backend.name
+        return klass.objects.get(title=be_title)
+
 
 
 class PersistantConnection(models.Model):
@@ -151,16 +188,35 @@ class PersistantConnection(models.Model):
        so they can be recognized by their backend + identity pair."""
     backend   = models.ForeignKey(PersistantBackend, related_name="connections")
     identity  = models.CharField(max_length=30)
-    reporter  = models.ForeignKey(Reporter, related_name="connections")
+    reporter  = models.ForeignKey(Reporter, related_name="connections", blank=True, null=True)
     last_seen = models.DateTimeField(blank=True, null=True)
+    
     
     class Meta:
         verbose_name = "Connection"
+    
     
     def __unicode__(self):
         return "%s:%s" % (
             self.backend,
             self.identity)
+    
+    
+    @classmethod
+    def from_message(klass, msg):
+        return klass.objects.get(
+            backend  = PersistantBackend.from_message(msg),
+            identity = msg.connection.identity)
+        
+    
+    
+    def seen(self):
+        """"Updates the last_seen field of this object to _now_, and saves.
+            Unless the linked Reporter has an explict preferred connection
+            (see PersistantConnection.prefer), calling this method will set
+            it as the implicit default connection for the Reporter. """
+        self.last_seen = datetime.now()
+        return self.save()
     
     def prefer(self):
         """Removes the _preferred_ flag from all other PersistantConnection objects
