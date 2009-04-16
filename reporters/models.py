@@ -58,9 +58,9 @@ class Location(models.Model):
 def loc_post_save(sender, **kwargs):
     """Location post save signal that updates model-relationship with
        the parent/child hierarchy."""
-    created = kwargs["created"]
+    # created = kwargs["created"]
     instance = kwargs["instance"]
-    if created and instance.parent:
+    if instance.parent:
         type = _get_location_parent_edge_type()
         if type:
             try:
