@@ -135,6 +135,11 @@ class Reporter(models.Model):
     #
     language = models.CharField(max_length=10)
 	
+    # although it's impossible to enforce, if a user registers
+    # themself (via the app.py backend), this flag should be set
+    # indicate that they probably shouldn't be trusted
+    registered_self = models.BooleanField()
+	
 	
     class Meta:
         ordering = ["last_name", "first_name"]
