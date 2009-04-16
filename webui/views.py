@@ -8,5 +8,6 @@ from rapidsms.webui.utils import render_to_response
 def check_availability(req):
     return HttpResponse("OK")
 
+
 def dashboard(req):
-	return render_to_response("dashboard.html")
+	return render_to_response(req, "dashboard.html")
