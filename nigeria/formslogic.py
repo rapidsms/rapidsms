@@ -19,10 +19,10 @@ class NigeriaFormsLogic:
                                 "discrepancy" : "discrepancy", 
                                 }, 
                      "net" : {    "class" : CardDistribution, 
-                                  "couploc" : "location", 
-                                  "settlements" : "settlements", 
+                                  "cardloc" : "location", 
+                                  "villages" : "settlements", 
                                   "people" : "people", 
-                                  "netcards" : "distributed",
+                                  "coupons" : "distributed",
                                   }
                      }
         
@@ -83,7 +83,7 @@ class NigeriaFormsLogic:
             # nothing went wrong. the data structure
             # is ready to spawn a Reporter object
             return None
-        elif form_entry.form.type in self._form_lookups.keys() and not message.reporter:
+        elif form_entry.form.type in self._form_lookups.keys() and not hasattr(message,"reporter"):
             return [ "You must register your phone before submitting data" ]
         
     
