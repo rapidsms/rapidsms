@@ -80,6 +80,11 @@ table {
 			/* a 1px border between each line
 			 * TODO: why isn't this on a <tr>? */
 			tbody td, tbody th {}
+			
+			/* TODO: docs */
+			td a.unknown {
+				color: #66BDDD;
+				font-style: italic; }
 
 		
 	tr.no-data { }
