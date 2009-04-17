@@ -187,7 +187,7 @@ class Reporter(models.Model):
                 # they might already be aliases
                 if len(g) == 1:
                     alias = g[0].lower()
-                    return (alias, g[0], g[1])
+                    return (alias, g[0], "")
                     
                 else:
                     # return only the letters from

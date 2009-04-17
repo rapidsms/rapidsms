@@ -14,7 +14,7 @@ class SupplyFormsLogic:
         print "You passed in %s" % args[0]
         # if the message doesn't have a registered reporter then fail
         message = args[0]
-        if not message.reporter:
+        if not hasattr(message, "reporter"):
             return [ "You must register your phone before submitting data" ]
             
         
@@ -52,6 +52,9 @@ class SupplyFormsLogic:
     _foreign_key_lookups = {"Location" : "code" 
                            }
     def _partial_transaction_from_form(self, message, form_entry):
+        if not to_use.has_key(form_entry.form.type):
+            # if this form isn't something we know about then return immediately
+            return
         print("creating partial")
         partial = PartialTransaction()
         partial.domain = form_entry.domain
