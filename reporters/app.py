@@ -82,7 +82,11 @@ class App(rapidsms.app.App):
         # for this message's sender, and abort
         # if we've never seen them before
         conn = self.__connection(msg)
-        if conn is None: return False
+        if conn is None:
+            msg.persistant_backend = None
+            msg.persistant_connection = None
+            msg.reporter = None
+            return False
             
         # stuff all that useful meta-data into
         # the message, for other apps to observe
