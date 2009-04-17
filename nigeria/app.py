@@ -14,6 +14,9 @@ from formslogic import *
 import apps.form.app as form_app
 import apps.supply.app as supply_app
 
+from apps.form.models import Domain
+
+
 class App(rapidsms.app.App):
 
     # lets use the Keyworder parser!
@@ -36,6 +39,7 @@ class App(rapidsms.app.App):
         self.handled = False
 
     def handle(self, message):
+        self.handled = False
         try:
             if hasattr(self, "kw"):
                 self.debug("HANDLE")
@@ -56,7 +60,7 @@ class App(rapidsms.app.App):
             else:
                 self.debug("App does not instantiate Keyworder as 'kw'")
         except Exception, e:
-            self.error(e) 
+            self.log_last_exception()
 
 
     def outgoing(self, message):
@@ -78,8 +82,23 @@ class App(rapidsms.app.App):
         message.respond("HELP!")
         self.handled = True
     
-
-    # ALERT <NOTICE> ----------------------------------------------------------
+    
+    
+    
+    # <DOMAIN> REGISTER <LOCATION> <ROLE> <PASSWORD> <NAME> ---------
+    
+    # since we want to capture all messages starting with "<DOMAIN> REGISTER"
+    # but not "(SLUG) REGISTER",  we must build this keyworder prefx dynamically.
+    # unfortunately, this means that rapidsms must be restarted when Domain changes
+#    domain_codes = Domain.objects.values_list("code", flat=True)
+#    kw.prefix = "(%s) register" % ("|".join(domain_codes))
+#    
+#    @kw.invalid()
+#    def register_fail(self, msg, domain, rest):
+#        msg.respond("Domain=%s, Rest=%s" % (domain, rest))
+    
+    
+    # ALERT <NOTICE> ------------------------------------------------
     kw.prefix = "alert"
 
     @kw("(whatever)")
