@@ -48,7 +48,4 @@ def supply_weekly(req, locid):
 def supply_monthly(req, locid):
     return render_to_response("nigeria/supply_monthly.html", context_instance=RequestContext(req))
 
-#This is a testing view
-def test(req):
-    return render_to_response("nigeria/testpages/tests.html", context_instance=RequestContext(req))
 
