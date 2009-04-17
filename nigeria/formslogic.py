@@ -9,21 +9,28 @@ class NigeriaFormsLogic(FormsLogic):
     ''' This class will hold the nigeria-specific forms logic.
         I'm not sure whether this will be the right structure
         this was just for getting something hooked up '''
-       
-    _form_lookups = {"nets" : {
-                                "class" : NetDistribution, 
-                                "netloc" : "location", 
-                                "distributed" : "distributed", 
-                                "expected" : "expected", 
-                                "actual" : "actual",
-                                "discrepancy" : "discrepancy", 
-                                }, 
-                     "net" : {    "class" : CardDistribution, 
-                                  "cardloc" : "location", 
-                                  "villages" : "settlements", 
-                                  "people" : "people", 
-                                  "coupons" : "distributed",
-                                  }
+    
+    _form_lookups = {
+                     "nets" : {
+                               "class" : NetDistribution,
+                               "display" : "nets",
+                               "fields" : {
+                                           "netloc" : "location", 
+                                           "distributed" : "distributed", 
+                                           "expected" : "expected", 
+                                           "actual" : "actual",
+                                           "discrepancy" : "discrepancy", 
+                                           }
+                               },
+                     "net" : {"class" : CardDistribution, 
+                              "display" : "net cards",
+                              "fields" : {
+                                          "cardloc" : "location", 
+                                          "villages" : "settlements", 
+                                          "people" : "people", 
+                                          "coupons" : "distributed",
+                                          }
+                              }
                      }
         
     _foreign_key_lookups = {"Location" : "code" }
@@ -111,8 +118,15 @@ class NigeriaFormsLogic(FormsLogic):
             message.respond("Reporter %s (#%d/%d) added" % (rep.alias, rep.pk, conn.pk))
 
         elif self._form_lookups.has_key(form_entry.form.type):
-            # this borrows a lot from supply.  I think we can make this a utility call
             to_use = self._form_lookups[form_entry.form.type]
             form_class = to_use["class"]
-            instance = self._model_from_form(message, form_entry, form_class, to_use, self._foreign_key_lookups)
+            field_map = to_use["fields"]
+            instance = self._model_from_form(message, form_entry, form_class, field_map, self._foreign_key_lookups)
             instance.save()
+            response = "Received report for %s %s: " % (form_entry.domain.code, to_use["display"])
+            fields = [] 
+            for token, model_attr in field_map.items():
+                if hasattr(instance, model_attr):
+                    fields.append(model_attr + "=" + str(getattr(instance, model_attr)))
+            message.respond(response + ", ".join(fields))
+                    
