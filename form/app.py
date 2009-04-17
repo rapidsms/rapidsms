@@ -207,8 +207,11 @@ class App(rapidsms.app.App):
 
                         self.debug("FORM MATCH")
                         info = []
-                        
                         for t, d in zip(tokens, data):
+                            if not d:
+                                self.debug("Empty data for token: %s.  This is not allowed." % t[0])
+                                message.respond("Empty data for token: %s.  This is not allowed." % t[0])
+                                return
                             this_token = Token.objects.get(abbreviation=t[0])
                             token_entry = TokenEntry.objects.create(\
                                 form_entry=form_entry, token=this_token, data=d)
@@ -221,7 +224,7 @@ class App(rapidsms.app.App):
                         
                         # call the validator methods, which return False on
                         # success, or a list of error messages on failure
-                        validation_errors = self._get_validation_errors(this_form, form_entry)
+                        validation_errors = self._get_validation_errors(message, this_form, form_entry)
                         
                         # if no errors were returned (from ANY
                         # registered app), call the actions
@@ -245,18 +248,15 @@ class App(rapidsms.app.App):
                         # this form - so send back the errors,
                         # and note that we've handled this one
                         else:
-                            
-                            # TODO: chunk the errors into 140 chars
-                            message.respond("\n".join(validation_errors))
-                            self.handled = True
+                            self.debug("Invalid form.  %s", ". ".join(validation_errors))
+                            message.respond("Invalid form.  %s" % ". ".join(validation_errors))
+                            return
+                        self.handled = True
                         
                         
                         # stop processing forms, move
                         # on to the next domain (!?)
                         break
-
-
-
 
                     else:
                         continue        
@@ -276,7 +276,7 @@ class App(rapidsms.app.App):
                 #        (code.upper(), ", ".join([s.keys().pop().upper() for s in self.supplies_reports_tokens]))) 
 
 
-    def _get_validation_errors(self, form, form_entry):
+    def _get_validation_errors(self, message, form, form_entry):
         validation_errors = []
         
         # do form level validation
@@ -287,7 +287,7 @@ class App(rapidsms.app.App):
         for app_name in form.apps.all():
             if self.form_handlers.has_key(app_name.name):
                 app = self.form_handlers[app_name.name]
-                errors = getattr(app,'validate')(form_entry)
+                errors = getattr(app,'validate')(message, form_entry)
                 if errors: validation_errors.extend(errors)
         print "VALIDATION ERRORS: %r" % validation_errors
         return validation_errors

@@ -185,7 +185,7 @@ class TokenExistanceValidator(TokenValidator):
         vals = model_class.objects.values_list(self.field_name, flat=True)
         #print "validating %s with %s" % (token_value, str(self))
         if token_value.data not in vals:
-            return "%s not in list of %s %s" % (token_value.data, self.lookup_type.name, self.field_name) 
+            return "%s not in list of %s %ss" % (token_value.data, self.lookup_type.name, self.field_name) 
         return None
         
 class FormAlerter(Alerter):

@@ -187,7 +187,7 @@ class Reporter(models.Model):
                 # they might already be aliases
                 if len(g) == 1:
                     alias = g[0].lower()
-                    return (alias, g[0], g[1])
+                    return (alias, g[0], "")
                     
                 else:
                     # return only the letters from
@@ -198,7 +198,7 @@ class Reporter(models.Model):
         # we have no idea what is going on,
         # so just return the whole thing
         alias = re.sub(r"[^a-zA-Z]", "", flat_name)
-        return (alias.lower(), flat_name, None)
+        return (alias.lower(), flat_name, "")
     
     
     def connection(self):
@@ -350,9 +350,14 @@ class PersistantConnection(models.Model):
     
     @classmethod
     def from_message(klass, msg):
-        return klass.objects.get(
+        obj, created = klass.objects.get_or_create(
             backend  = PersistantBackend.from_message(msg),
             identity = msg.connection.identity)
+
+        # just return the object. it doesn't matter
+        # if it was created or fetched. TODO: maybe
+        # a parameter to return the tuple
+        return obj
         
     
     
