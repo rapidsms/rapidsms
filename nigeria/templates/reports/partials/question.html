@@ -1,0 +1,19 @@
+{% load tree %}
+<table>
+	<tr class="question">
+		<td{% if question.answers.count %} colspan="{{ question.answers.count }}"{% endif %}>
+			<div>{{ question.text }}</div>
+		</td>
+	</tr>{% if question.answers.count %}
+	<tr class="answers">{% for answer in question.answers.all %}
+		<td>
+			<div>{{ answer.trigger }}</div>{% if answer.next_question %}
+			{% render_question answer.next_question %}{% endif %}
+		</td>{% endfor %}
+	</tr>{% else %}
+	<tr class="no-answers">
+		<td>
+			<div>No answers yet.</div>
+		</td>
+	</tr>{% endif %}
+</table>
