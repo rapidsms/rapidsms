@@ -2,7 +2,7 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 
-import os
+import os, re
 from datetime import datetime
 from django.db import models
 
@@ -145,16 +145,60 @@ class Reporter(models.Model):
         ordering = ["last_name", "first_name"]
     
     
-    def __unicode__(self):
-        return "%s %s" % (
+    def full_name(self):
+        return ("%s %s" % (
             self.first_name,
-            self.last_name)
+            self.last_name)).strip()
+    
+    def __unicode__(self):
+        return self.full_name()
     
     def __repr__(self):
-        return "%s %s (%s)" % (
-            self.first_name,
-            self.last_name,
+        return "%s (%s)" % (
+            self.full_name(),
             self.alias)
+    
+    
+    @classmethod
+    def parse_name(klass, flat_name):
+        """Given a single string, this function returns a three-string
+           tuple containing a suggested alias, first name, and last name,
+           via some quite crude pattern matching."""
+        
+        patterns = [
+            # try a few common name formats.
+            # this is crappy but sufficient
+            r"([a-z]+)",                       # Adam
+            r"([a-z]+)\s+([a-z]+)",            # Evan Wheeler
+            r"([a-z]+)\s+[a-z]\.?\s+([a-z]+)", # Mark E. Johnston
+            r"([a-z]+)\s+([a-z]+\-[a-z]+)"     # Erica Kochi-Fabian
+        ]
+        
+        # try each pattern, returning as
+        # soon as we find something that fits
+        for pat in patterns:
+            m = re.match("^%s$" % pat, flat_name, re.IGNORECASE)
+            print (("^%s$" % pat) + " vs. %s" % flat_name)
+            
+            if m is not None:
+                g = m.groups()
+                
+                # return single names as-is
+                # they might already be aliases
+                if len(g) == 1:
+                    alias = g[0].lower()
+                    return (alias, g[0], "")
+                    
+                else:
+                    # return only the letters from
+                    # the first and last names
+                    alias = g[0][0] + re.sub(r"[^a-zA-Z]", "", g[1])
+                    return (alias.lower(), g[0], g[1])
+        
+        # we have no idea what is going on,
+        # so just return the whole thing
+        alias = re.sub(r"[^a-zA-Z]", "", flat_name)
+        return (alias.lower(), flat_name, None)
     
     
     def connection(self):
