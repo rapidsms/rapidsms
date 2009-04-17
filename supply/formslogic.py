@@ -3,8 +3,9 @@
 
 from models import *
 from apps.form.utils import *
+from apps.form.formslogic import FormsLogic
 
-class SupplyFormsLogic:
+class SupplyFormsLogic(FormsLogic):
     ''' This class will hold the supply-specific forms logic.
         I'm not sure whether this will be the right structure
         this was just for getting something hooked up '''
@@ -52,41 +53,17 @@ class SupplyFormsLogic:
     _foreign_key_lookups = {"Location" : "code" 
                            }
     def _partial_transaction_from_form(self, message, form_entry):
-        if not to_use.has_key(form_entry.form.type):
+        if not self._form_lookups.has_key(form_entry.form.type):
             # if this form isn't something we know about then return immediately
             return
         print("creating partial")
-        partial = PartialTransaction()
+        this_form_lookups = self._form_lookups[form_entry.form.type]
+        partial = self._model_from_form(message, form_entry, PartialTransaction, 
+                                        this_form_lookups, self._foreign_key_lookups)
         partial.domain = form_entry.domain
         partial.date = form_entry.date
-        to_use = self._form_lookups[form_entry.form.type]
-        partial.type = to_use["type"]
-        for token_entry in form_entry.tokenentry_set.all():
-            if to_use.has_key(token_entry.token.abbreviation):
-                field_name = to_use[token_entry.token.abbreviation]
-                # this is sillyness.  this gets the model type from the metadata
-                # and if it's a foreign key then "rel" will be non null
-                foreign_key = partial._meta.get_field_by_name(field_name)[0].rel
-                if foreign_key:
-                    # we can't just blindly set it, but we can get the class out 
-                    fk_class = foreign_key.to
-                    # and from there the name
-                    fk_name = fk_class._meta.object_name
-                    # and from there we look it up in our table
-                    field = self._foreign_key_lookups[fk_name]
-                    # get the object instance
-                    filters = { field : token_entry.data }
-                    try:
-                        fk_instance = fk_class.objects.get(**filters)
-                        setattr(partial, field_name, fk_instance)
-                    except fk_class.DoesNotExist:
-                        # ah well, we tried.  Is this a real error?  It might be, but if this
-                        # was a required field then the save() will fail
-                        pass
-                else:
-                    setattr(partial, to_use[token_entry.token.abbreviation], token_entry.data)
+        partial.type = this_form_lookups["type"]
         partial.status = "P"
-        partial.reporter = message.reporter
         # gather partial transactions from the same place to the same place with
         # for the same stuff with the same waybill before we save the new one
         # TODO checking for same phone currently, should we not?
