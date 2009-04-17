@@ -36,16 +36,16 @@ class Transaction(models.Model):
 
 class PartialTransaction(models.Model):
     TRANSACTION_TYPES = (
-        ('I', 'Issue (outgoing)'),
-        ('R', 'Receipt (incoming)'),
+        ('I', 'Issue'),
+        ('R', 'Receipt'),
     )
     STATUS_TYPES = (
         ('P', 'Pending'),
         ('C', 'Confirmed'),
         ('A', 'Amended'),
     )
-    # this should be a foreign key, but waiting on user/group integration
-    phone = models.CharField(max_length=30)
+    
+    reporter = models.ForeignKey(Reporter)
     domain = models.ForeignKey(Domain)
     origin = models.ForeignKey(Location)
     destination = models.ForeignKey(Location, related_name='pending destination')
@@ -58,7 +58,7 @@ class PartialTransaction(models.Model):
     status = models.CharField(max_length=1, choices=STATUS_TYPES)
     
     def __unicode__(self):
-        return "%s reported %s of %s %s from %s to %s. (waybill: %s)" %(self.phone, 
+        return "%s reported %s of %s %s from %s to %s. (waybill: %s)" %(self.reporter, 
                                                                         self.type, 
                                                                         self.amount, 
                                                                         self.domain, 

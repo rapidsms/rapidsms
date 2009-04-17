@@ -188,7 +188,7 @@ class App(rapidsms.app.App):
     def form(self, app, message, code, type, *data): 
         self.debug("FORM")
         #reporter = self.__identify(message.peer, "reporting")
-        handled = False
+        self.handled = False
         for domain in self.domains_forms_tokens:
             if code.upper() in domain:
                 # gather list of form dicts for this domain code
@@ -209,8 +209,8 @@ class App(rapidsms.app.App):
                         info = []
                         for t, d in zip(tokens, data):
                             if not d:
-                                self.debug("Empty data for token: %s.  This is not allowed." % t.abbreviation)
-                                message.respond("Empty data for token: %s.  This is not allowed." % t.abbreviation)
+                                self.debug("Empty data for token: %s.  This is not allowed." % t[0])
+                                message.respond("Empty data for token: %s.  This is not allowed." % t[0])
                                 return
                             this_token = Token.objects.get(abbreviation=t[0])
                             token_entry = TokenEntry.objects.create(\
@@ -219,21 +219,43 @@ class App(rapidsms.app.App):
                             # abbreviations from the token tuple to the received data
                             info.append("%s=%s" % (t[0], d or "??"))
                         
-                        # validation block
-                        validation_errors = self._get_validation_errors(this_form, form_entry)
-                        # action block
+                        
+                        
+                        
+                        # call the validator methods, which return False on
+                        # success, or a list of error messages on failure
+                        validation_errors = self._get_validation_errors(message, this_form, form_entry)
+                        
+                        # if no errors were returned (from ANY
+                        # registered app), call the actions
                         if not validation_errors:
+                            before = len(message.responses)
                             self._do_actions(message, this_form, form_entry)
+                            after = len(message.responses)
+                            self.handled = True
+                            
+                            # if the action(s) didn't send any responses,
+                            # then send the default confirmation. this is
+                            # just for backwards compatibility, really...
+                            # actions SHOULD send their own confirmation
+                            if(after <= before):
+                                message.respond("Received report for %s %s: %s.\nIf this is not correct, reply with CANCEL" % \
+                                    (code.upper(), type.upper(), ", ".join(info)))                        
+                        # oh no! there were validation errors!
+                        # since we've already matched the domain
+                        # and form, we can be pretty sure that
+                        # this was a valid attempt at submitting
+                        # this form - so send back the errors,
+                        # and note that we've handled this one
                         else:
-                            self.debug("Invalid form.  Errors are %s", ". ".join(validation_errors))
-                            message.respond("Invalid form.  Errors are %s", ". ".join(validation_errors))
+                            self.debug("Invalid form.  %s", ". ".join(validation_errors))
+                            message.respond("Invalid form.  %s" % ". ".join(validation_errors))
                             return
-                        # assemble and send response
-                        # TODO this should be handled by registered app
-                        message.respond("Received report for %s %s: %s.\nIf this is not correct, reply with CANCEL" % \
-                            (code.upper(), type.upper(), ", ".join(info)))
-                        # keep track of whether we have responded so we send only one 'Oops' message
                         self.handled = True
+                        
+                        
+                        # stop processing forms, move
+                        # on to the next domain (!?)
                         break
 
                     else:
@@ -254,7 +276,7 @@ class App(rapidsms.app.App):
                 #        (code.upper(), ", ".join([s.keys().pop().upper() for s in self.supplies_reports_tokens]))) 
 
 
-    def _get_validation_errors(self, form, form_entry):
+    def _get_validation_errors(self, message, form, form_entry):
         validation_errors = []
         
         # do form level validation
@@ -265,8 +287,9 @@ class App(rapidsms.app.App):
         for app_name in form.apps.all():
             if self.form_handlers.has_key(app_name.name):
                 app = self.form_handlers[app_name.name]
-                errors = getattr(app,'validate')(form_entry)
+                errors = getattr(app,'validate')(message, form_entry)
                 if errors: validation_errors.extend(errors)
+        print "VALIDATION ERRORS: %r" % validation_errors
         return validation_errors
         
     def _do_actions(self, message, form, form_entry):

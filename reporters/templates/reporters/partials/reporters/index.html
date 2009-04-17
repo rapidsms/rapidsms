@@ -12,7 +12,7 @@
 		</thead>
 		<tbody>{% if reporters %}{% for reporter in reporters %}
 			<tr>
-				<td><a href="/reporters/{{ reporter.pk }}">{{ reporter }}</a></td>
+				<td><a href="/reporters/{{ reporter.pk }}"{% if reporter.full_name %}>{{ reporter.full_name }}{% else %} class="unknown">Unknown{% endif %}</a></td>
 				<td>{% if reporter.alias %}{{ reporter.alias }}{% else %}<span class="na">n/a</span>{% endif %}</td>
 				<td>{{ reporter.last_seen|last_seen }}</td>
 			</tr>{% endfor %}{% else %}
