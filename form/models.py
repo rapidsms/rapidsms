@@ -115,17 +115,24 @@ class FormEntry(models.Model):
     reporter = models.ForeignKey(Reporter, blank=True, null=True)#blank for now until we have real users and groups
     domain = models.ForeignKey(Domain)
     form = models.ForeignKey(Form)
-    date = models.DateTimeField() 
+    date = models.DateTimeField()
+    
     def __unicode__(self):
         return "%s %s" % (self.domain.code, self.form.type)
+    
+    def to_dict(self):
+        return dict([
+            (str(t.token.abbreviation), t.data)
+            for t in self.tokenentry_set.all()
+        ])
 
 class TokenEntry(models.Model):
     form_entry = models.ForeignKey(FormEntry)
     token = models.ForeignKey(Token)
-    data = models.CharField(max_length=160)
+    data = models.CharField(max_length=160, blank=True, null=True)
 
     def __unicode__(self):
-        return "%s %s" % (self.token.abbreviation, self.data)
+        return "%s %r" % (self.token.abbreviation, self.data)
 
 class FormValidator(Validator):
     '''Validator for forms, by passing off validation for each token'''

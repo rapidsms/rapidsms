@@ -107,6 +107,7 @@ class App(rapidsms.app.App):
         # into a parser of its own
         map = {
             "identify": ["identify (slug)", "this is (slug)", "i am (slug)"],
+            "register": ["register (slug) (slug) (slug) (whatever)"],
             "remind":   ["whoami", "who am i"],
             "lang":     ["lang (slug)"]
         }
@@ -212,3 +213,8 @@ class App(rapidsms.app.App):
         msg.respond(
             self.__str(
                 resp, msg.reporter))
+
+    
+    def register(self, msg, location_code, role, password, name):
+        pass
+
