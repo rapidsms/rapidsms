@@ -1,17 +1,36 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-
+from models import *
 from apps.reporters.models import *
+from apps.form.formslogic import FormsLogic
 
-
-class NigeriaFormsLogic:
+class NigeriaFormsLogic(FormsLogic):
     ''' This class will hold the nigeria-specific forms logic.
         I'm not sure whether this will be the right structure
         this was just for getting something hooked up '''
-    
-    
-    def validate(self, form_entry):
+       
+    _form_lookups = {"nets" : {
+                                "class" : NetDistribution, 
+                                "netloc" : "location", 
+                                "distributed" : "distributed", 
+                                "expected" : "expected", 
+                                "actual" : "actual",
+                                "discrepancy" : "discrepancy", 
+                                }, 
+                     "net" : {    "class" : CardDistribution, 
+                                  "cardloc" : "location", 
+                                  "villages" : "settlements", 
+                                  "people" : "people", 
+                                  "coupons" : "distributed",
+                                  }
+                     }
+        
+    _foreign_key_lookups = {"Location" : "code" }
+
+    def validate(self, *args, **kwargs):
+        message = args[0]
+        form_entry = args[1]
         if form_entry.form.type == "register":
             data = form_entry.to_dict()
             print "\n\n%r\n\n" % data
@@ -64,9 +83,14 @@ class NigeriaFormsLogic:
             # nothing went wrong. the data structure
             # is ready to spawn a Reporter object
             return None
+        elif form_entry.form.type in self._form_lookups.keys() and not hasattr(message,"reporter"):
+            return [ "You must register your phone before submitting data" ]
+        
     
-    
-    def actions(self, message, form_entry):
+
+    def actions(self, *args, **kwargs):
+        message = args[0]
+        form_entry = args[1]
         if form_entry.form.type == "register":
 
             # spawn and save the reporter using the
@@ -85,3 +109,9 @@ class NigeriaFormsLogic:
             # TODO: proper (localized?) messages here
             message.respond("Reporter %s (#%d/%d) added" % (rep.alias, rep.pk, conn.pk))
 
+        elif self._form_lookups.has_key(form_entry.form.type):
+            # this borrows a lot from supply.  I think we can make this a utility call
+            to_use = self._form_lookups[form_entry.form.type]
+            form_class = to_use["class"]
+            instance = self._model_from_form(message, form_entry, form_class, to_use, self._foreign_key_lookups)
+            instance.save()
