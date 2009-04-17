@@ -85,7 +85,7 @@ class Component(object):
             str = "%s\n--\n%s" % (msg, str)
         
         # pass the message on it on to the logger
-        self.logger.write(self, level, str)
+        self.log(level, str)
 
 
 class Receiver(Component):
