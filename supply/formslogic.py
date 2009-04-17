@@ -23,7 +23,7 @@ class SupplyFormsLogic:
         # Since actions was called we assume validation passed.  
         # The first thing we do is create a PendingTransaction object and save it
         pending = self._partial_transaction_from_form(message, form_entry)
-        transaction = self._match_partial_transaction(pending)
+        self._match_partial_transaction(pending)
         
     # Just hard coding this for now.  We might want to revisit this.
     _form_lookups = {"issue" : {
@@ -109,14 +109,6 @@ class SupplyFormsLogic:
                 # no matches yet, so lets filter orig orphans by origin, dest, and amount
                 # in case we have a waybill typo
                 wrong_waybill = self._match_orphans_by(partial, orphans, 'origin', 'destination', 'amount')
-                if wrong_waybill is not None:
-                    print('wrong_waybill')
-                    # still nothing. lets filter by origin, waybill, amount
-                    wrong_dest = self._match_orphans_by(partial, orphans, 'origin', 'shipment_id', 'amount')
-                    if wrong_dest is not None:
-                        print('wrong dest')
-                        # are you serious? no bites?
-                        wrong_origin = self._match_orphans_by(partial, orphans, 'destination', 'shipment_id', 'amount')
 
 
     def _match_orphans_by(self, partial, orphans, *attributes):
