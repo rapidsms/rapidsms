@@ -115,7 +115,8 @@ class NigeriaFormsLogic(FormsLogic):
 
             # notify the user that everyting went okay
             # TODO: proper (localized?) messages here
-            message.respond("Reporter %s (#%d/%d) added" % (rep.alias, rep.pk, conn.pk))
+            message.respond("Hello %s! You are now registered as %s at %s %s."\
+                % (rep.alias, rep.role, rep.location, rep.location.type))
 
         elif self._form_lookups.has_key(form_entry.form.type):
             to_use = self._form_lookups[form_entry.form.type]
