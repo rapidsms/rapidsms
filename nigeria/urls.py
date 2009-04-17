@@ -7,8 +7,12 @@ import apps.nigeria.views as views
 
 urlpatterns = patterns('',
     url(r'^reports?$', views.index),
-    url(r'^reports/coupons/daily/(?P<locid>\d*)$', views.coupons_daily),
+    url(r'^reports/bednets/summary/(?P<range(?P<locid>\d*)$', views.coupons_daily),
     url(r'^reports/coupons/weekly/(?P<locid>\d*)$', views.coupons_weekly),
+    url(r'^reports/coupons/weekly/(?P<locid>\d*)$', views.coupons_weekly),
+    url(r'^reports/coupons/weekly/(?P<locid>\d*)$', views.coupons_weekly),
+    url(r'^reports/coupons/weekly/(?P<locid>\d*)$', views.coupons_weekly),
+    url(r'^reports/coupons/monthly/(?P<locid>\d*)$', views.coupons_monthly),
     url(r'^reports/kano', views.kano),
     url(r'^reports/test', views.tests),
     url(r'^reports/test2', views.raw_tests),
