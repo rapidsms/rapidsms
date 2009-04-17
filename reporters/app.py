@@ -112,7 +112,7 @@ class App(rapidsms.app.App):
         map = {
             "identify": ["identify (slug)", "this is (slug)", "i am (slug)"],
             "register": ["register (slug) (slug) (slug) (whatever)"],
-            "remind":   ["whoami", "who am i"],
+            "remind":   ["whoami", "who am i", "llin my status"],
             "lang":     ["lang (slug)"]
         }
         
@@ -120,7 +120,8 @@ class App(rapidsms.app.App):
         # the message to it, and return/stop
         for method, patterns in map.items():
             if matcher(*patterns) and hasattr(self, method):  
-                return getattr(self, method)(msg, *matcher.groups)
+                getattr(self, method)(msg, *matcher.groups)
+                return True
         
         # no matches, so this message is not
         # for us; allow processing to continue

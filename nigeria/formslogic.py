@@ -83,7 +83,8 @@ class NigeriaFormsLogic(FormsLogic):
             # nothing went wrong. the data structure
             # is ready to spawn a Reporter object
             return None
-        elif form_entry.form.type in self._form_lookups.keys() and not hasattr(message,"reporter"):
+        elif form_entry.form.type in self._form_lookups.keys() and (not hasattr(message,"reporter") or not message.reporter):  
+            
             return [ "You must register your phone before submitting data" ]
         
     
