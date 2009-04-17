@@ -188,7 +188,7 @@ class App(rapidsms.app.App):
     def form(self, app, message, code, type, *data): 
         self.debug("FORM")
         #reporter = self.__identify(message.peer, "reporting")
-        self.handled = False
+        #self.handled = False
         for domain in self.domains_forms_tokens:
             if code.upper() in domain:
                 # gather list of form dicts for this domain code
@@ -197,8 +197,8 @@ class App(rapidsms.app.App):
 
                 for form in forms:
                     if type.upper() in form:
-                        this_domain = Domain.objects.get(code=code.upper())
-                        this_form = Form.objects.get(type=type)
+                        this_domain = Domain.objects.get(code__iexact=code.upper())
+                        this_form = Form.objects.get(type__iexact=type)
                         
                         form_entry = FormEntry.objects.create(domain=this_domain, \
                             form=this_form, date=datetime.now())
