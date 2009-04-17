@@ -220,18 +220,19 @@ class App(rapidsms.app.App):
                             info.append("%s=%s" % (t[0], d or "??"))
                         
                         # validation block
-                        validation_errors = self._get_validation_errors(this_form, form_entry)
+                        validation_errors = self._get_validation_errors(message, this_form, form_entry)
                         # action block
                         if not validation_errors:
                             self._do_actions(message, this_form, form_entry)
                         else:
-                            self.debug("Invalid form.  Errors are %s", ". ".join(validation_errors))
-                            message.respond("Invalid form.  Errors are %s", ". ".join(validation_errors))
+                            self.debug("Invalid form.  %s", ". ".join(validation_errors))
+                            message.respond("Invalid form.  %s" % ". ".join(validation_errors))
                             return
                         # assemble and send response
                         # TODO this should be handled by registered app
-                        message.respond("Received report for %s %s: %s.\nIf this is not correct, reply with CANCEL" % \
-                            (code.upper(), type.upper(), ", ".join(info)))
+                        # moving to actions
+                        #message.respond("Received report for %s %s: %s.\nIf this is not correct, reply with CANCEL" % \
+                        #    (code.upper(), type.upper(), ", ".join(info)))
                         # keep track of whether we have responded so we send only one 'Oops' message
                         self.handled = True
                         break
@@ -254,7 +255,7 @@ class App(rapidsms.app.App):
                 #        (code.upper(), ", ".join([s.keys().pop().upper() for s in self.supplies_reports_tokens]))) 
 
 
-    def _get_validation_errors(self, form, form_entry):
+    def _get_validation_errors(self, message, form, form_entry):
         validation_errors = []
         
         # do form level validation
@@ -265,7 +266,7 @@ class App(rapidsms.app.App):
         for app_name in form.apps.all():
             if self.form_handlers.has_key(app_name.name):
                 app = self.form_handlers[app_name.name]
-                errors = getattr(app,'validate')(form_entry)
+                errors = getattr(app,'validate')(message, form_entry)
                 if errors: validation_errors.extend(errors)
         return validation_errors
         

@@ -12,6 +12,11 @@ class SupplyFormsLogic:
     def validate(self, *args, **kwargs):
         print "Supply validated!"
         print "You passed in %s" % args[0]
+        # if the message doesn't have a registered reporter then fail
+        message = args[0]
+        if not message.reporter:
+            return [ "You must register your phone before submitting data" ]
+            
         
     def actions(self, *args, **kwargs):
         print "Supply actions!"
@@ -44,21 +49,21 @@ class SupplyFormsLogic:
                                   "stock" : "stock", 
                                   }
                      }
-    _foreign_key_lookups = {"Location" : "code"
+    _foreign_key_lookups = {"Location" : "code" 
                            }
     def _partial_transaction_from_form(self, message, form_entry):
-        print("creating pending")
-        pending = PartialTransaction()
-        pending.domain = form_entry.domain
-        pending.date = form_entry.date
+        print("creating partial")
+        partial = PartialTransaction()
+        partial.domain = form_entry.domain
+        partial.date = form_entry.date
         to_use = self._form_lookups[form_entry.form.type]
-        pending.type = to_use["type"]
+        partial.type = to_use["type"]
         for token_entry in form_entry.tokenentry_set.all():
             if to_use.has_key(token_entry.token.abbreviation):
                 field_name = to_use[token_entry.token.abbreviation]
                 # this is sillyness.  this gets the model type from the metadata
                 # and if it's a foreign key then "rel" will be non null
-                foreign_key = pending._meta.get_field_by_name(field_name)[0].rel
+                foreign_key = partial._meta.get_field_by_name(field_name)[0].rel
                 if foreign_key:
                     # we can't just blindly set it, but we can get the class out 
                     fk_class = foreign_key.to
@@ -70,28 +75,30 @@ class SupplyFormsLogic:
                     filters = { field : token_entry.data }
                     try:
                         fk_instance = fk_class.objects.get(**filters)
-                        setattr(pending, field_name, fk_instance)
+                        setattr(partial, field_name, fk_instance)
                     except fk_class.DoesNotExist:
                         # ah well, we tried.  Is this a real error?  It might be, but if this
                         # was a required field then the save() will fail
                         pass
                 else:
-                    setattr(pending, to_use[token_entry.token.abbreviation], token_entry.data)
-        pending.status = "P"
-        pending.phone = message.connection.identity
+                    setattr(partial, to_use[token_entry.token.abbreviation], token_entry.data)
+        partial.status = "P"
+        partial.reporter = message.reporter
         # gather partial transactions from the same place to the same place with
         # for the same stuff with the same waybill before we save the new one
         # TODO checking for same phone currently, should we not?
         # TODO handle confirmed ammendments differently -- update stock!
-        partials_to_ammend = PartialTransaction.objects.filter(origin=pending.origin,\
-            destination=pending.destination, shipment_id=pending.shipment_id,\
-            domain=pending.domain, type=pending.type,  phone=pending.phone)
+        partials_to_ammend = PartialTransaction.objects.filter(origin=partial.origin,\
+            destination=partial.destination, shipment_id=partial.shipment_id,\
+            domain=partial.domain, type=partial.type,  reporter=partial.reporter)
         # if this is an ammendment, set the others as ammended
         if partials_to_ammend is not None:
                 partials_to_ammend.update(status = "A")
 
-        pending.save()
-        return pending
+        partial.save()
+        message.respond("Received report for %s %s: origin=%s, dest=%s, waybill=%s, amount=%s, stock=%s. If this is not correct, reply with CANCEL"  
+                        % (partial.domain.code, form_entry.form.type, partial.origin, partial.destination, partial.shipment_id, partial.amount, partial.stock))
+        return partial
     
     def _match_partial_transaction(self, partial):
         # gather pending, partial transactions that are not the same type
