@@ -350,9 +350,14 @@ class PersistantConnection(models.Model):
     
     @classmethod
     def from_message(klass, msg):
-        return klass.objects.get(
+        obj, created = klass.objects.get_or_create(
             backend  = PersistantBackend.from_message(msg),
             identity = msg.connection.identity)
+
+        # just return the object. it doesn't matter
+        # if it was created or fetched. TODO: maybe
+        # a parameter to return the tuple
+        return obj
         
     
     
