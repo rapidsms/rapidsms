@@ -198,7 +198,7 @@ class Reporter(models.Model):
         # we have no idea what is going on,
         # so just return the whole thing
         alias = re.sub(r"[^a-zA-Z]", "", flat_name)
-        return (alias.lower(), flat_name, None)
+        return (alias.lower(), flat_name, "")
     
     
     def connection(self):
