@@ -209,8 +209,8 @@ class App(rapidsms.app.App):
                         info = []
                         for t, d in zip(tokens, data):
                             if not d:
-                                self.debug("Empty data for token: %s.  This is not allowed." % t.abbreviation)
-                                message.respond("Empty data for token: %s.  This is not allowed." % t.abbreviation)
+                                self.debug("Empty data for token: %s.  This is not allowed." % t[0])
+                                message.respond("Empty data for token: %s.  This is not allowed." % t[0])
                                 return
                             this_token = Token.objects.get(abbreviation=t[0])
                             token_entry = TokenEntry.objects.create(\
