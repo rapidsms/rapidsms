@@ -92,12 +92,26 @@ class NigeriaFormsLogic(FormsLogic):
         message = args[0]
         form_entry = args[1]
         if form_entry.form.type == "register":
+
+            # spawn and save the reporter using the
+            # data we collected in self.validate
             rep = Reporter.objects.create(**form_entry.rep_data)
-            message.respond("Reporter %s (#%d) added" % (rep.alias, rep.pk))
+
+            # we can assume that the new reporter will be using
+            # this device again, so register a connection. this
+            # automatically logs them in, so they can start
+            # reporting straight away
+            conn = PersistantConnection.from_message(message)
+            conn.reporter = rep
+            conn.save()
+
+            # notify the user that everyting went okay
+            # TODO: proper (localized?) messages here
+            message.respond("Reporter %s (#%d/%d) added" % (rep.alias, rep.pk, conn.pk))
+
         elif self._form_lookups.has_key(form_entry.form.type):
             # this borrows a lot from supply.  I think we can make this a utility call
             to_use = self._form_lookups[form_entry.form.type]
             form_class = to_use["class"]
             instance = self._model_from_form(message, form_entry, form_class, to_use, self._foreign_key_lookups)
             instance.save()
-        
