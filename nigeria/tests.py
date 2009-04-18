@@ -41,7 +41,7 @@ class TestApp (TestScript):
            8005551213 > llin nets 2001 123 456 78 90
            8005551213 < Received report for LLIN nets: expected=456, actual=78, location=AJINGI, distributed=123, discrepancy=90
            8005551213 > llin nets 2001 123 456 78 
-           8005551213 < Empty data for token: discrepancy.  This is not allowed.
+           8005551213 < Invalid form.  The following fields are required: discrepancy
          """
     
     testNetCards= """
@@ -52,7 +52,7 @@ class TestApp (TestScript):
            8005551214 > llin net cards 200201 123 456 78 
            8005551214 < Received report for LLIN net cards: settlements=123, people=456, distributed=78, location=ALBASU CENTRAL
            8005551214 > llin net cards 200201 123 456  
-           8005551214 < Empty data for token: coupons.  This is not allowed.
+           8005551214 < Invalid form.  The following fields are required: coupons
          """
     
     def _testKanoLocations(self):
