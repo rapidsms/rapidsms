@@ -5,27 +5,45 @@ from django.http import HttpResponse
 from django.template import RequestContext
 from apps.reporters.models import Location, LocationType
 from django.shortcuts import render_to_response
+from django.db import models
+
 import sys
 
 #Views for handling summary of Reports Displayed as Location Tree
 def index(req):
-    
     reload(sys)
     sys.setdefaultencoding('utf-8')
+
     states = Location.objects.all().filter(type__name="State")
-    
+
     for state in states:
-       # print "%s: %s" % (state.name, state.code)
         lgas = Location.objects.all().filter(type__name="LGA", code__startswith=state.code)
-        dictn={'lgas':lgas}   
-         #for lga in lgas:
-            #print "---%-15s: %6s" % (lga.name, lga.code)
+        states_dict={}
+        lgas_dict={}
+        wards_dict={}
+        dps_dict={}
+        mts_dict={}
+    
+        for lga in lgas:
+            wards = Location.objects.all().filter(type__name="Ward", code__startswith=lga.code)
+            lgas_dict[str(lga.name)]=str(lga.name)
+            for ward in wards:
+                dps =  Location.objects.all().filter(type__name="Distribution Point", code__startswith=ward.code)
+                wards_dict[str(ward.name)] = str(ward.name)
 
-            #wards = Location.objects.all().filter(type__name="Ward", code__startswith=lga.code)
-            #for ward in wards:
-                #print "------%-15s: %8s" % (str(ward.name), ward.code)
+                for dp in dps:
+                    mts =  Location.objects.all().filter(type__name="Mobilization Team", code__startswith=dp.code)
+                    dps_dict[str(dp.name)] = str(dp.name)
+                    for mt in mts:
+                        mts_dict[str(mt.name)]=str(mt.name)
 
-    return render_to_response("nigeria/index.html",dictn, context_instance=RequestContext(req))
+                    dps_dict[dp.name]=mts_dict
+                wards_dict[ward.name]=dps_dict
+            lgas_dict[lga.name]=wards_dict
+        states_dict[state.name]=lgas_dict
+    
+
+    return render_to_response("nigeria/index.html",{}, context_instance=RequestContext(req))
 
 
 def supply_summary(req, frm, to, range):
