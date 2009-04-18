@@ -1,18 +1,18 @@
 {% extends "layout.html" %}
 {% block title %}Decision Trees{% endblock %}
 {% block stylesheets %}<link type="text/css" rel="stylesheet" href="/static/nigeria/stylesheets/tree.css" />{% endblock %}
-{% block content %}
-{% load tree %}
 
-{% block javascripts %}<script src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=true_or_false
-    &amp;key=ABQIAAAAODgdf-xX9X_ahvpOVXVWDhT2yXp_ZAY8_ufC3CFXhHIE1NvwkxTwTYkxtDHL3Ptdt7TqE0oflVsDzQ"
-    type="text/javascript">
-  </script> <script type="text/javascript">
+{% block javascripts %}
+
+<script src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=false&amp;key=ABQIAAAAODgdf-xX9X_ahvpOVXVWDhT0fo3f9n1Vl7bIP27hA4a_-pvvcBS4dyjO5Hy1MpqgUHRRcMg6I3F5ZQ" type="text/javascript">
+  </script>
+
+<script type="text/javascript">
 
     function initialize() {
       if (GBrowserIsCompatible()) {
         var map = new GMap2(document.getElementById("map_canvas"));
-        map.setCenter(new GLatLng(11.84583,8.50583), 7);
+        map.setCenter(new GLatLng(11.84583,8.50583), 9);
 				
 				var point = new GLatLng(12.49917,8.26833);
 					marker = new GMarker(point);
@@ -27,9 +27,11 @@
 
     </script>
 		
-<script type="text/javascript" src="/static/nigeria/scripts/jquery-1.3.2.min.js"></script>
-<script type="text/javascript" src="/static/nigeria/scripts/nigeria.js"></script>			
+<script type="text/javascript" src="/static/nigeria/js/nigeria.js"></script>			
 {% endblock %}
+
+{% block content %}
+
 
 <div class="module">
 <h2>Stock Supply</h2>
@@ -83,7 +85,6 @@
 
 <div class="module dt">
 	<h2>Logistics</h2>
-	{% if t %}{% render_state t.root_state %}{% endif %}
 </div>
 
 <!--<div class="module">
