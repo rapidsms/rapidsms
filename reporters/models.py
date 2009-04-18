@@ -102,6 +102,47 @@ def _get_location_parent_edge_type():
         return types[0]
     return None
 
+
+
+
+
+class RecursiveManager(models.Manager):
+    """Provides a method to flatten a recursive model (a model which has a ForeignKey field linked back
+       to itself), in addition to the usual models.Manager methods. This Manager queries the database
+       only once (unlike select_related), and sorts them in-memory. Obivously, this efficiency comes
+       at the cost local inefficiency -- O(n^2) -- but that's still preferable to recursively querying
+       the database."""
+    
+    def flatten(self, via_field="parent_id"):
+        all_objects = list(self.all())
+        
+        def pluck(pk=None, depth=0):
+            output = []
+            
+            for object in all_objects:
+                if getattr(object, via_field) == pk:
+                    output += [object] + pluck(object.pk, depth+1)
+                    object.depth = depth
+            
+            return output
+        return pluck()
+
+
+class ReporterGroup(models.Model):
+    title       = models.CharField(max_length=30, unique=True)
+    parent      = models.ForeignKey("self", related_name="children", null=True, blank=True)
+    description = models.TextField(blank=True)
+    objects     = RecursiveManager()
+    
+    
+    class Meta:
+        verbose_name = "Group"
+
+    
+    def __unicode__(self):
+        return self.title
+
+
 class Reporter(models.Model):
     """This model represents a KNOWN person, that can be identified via
        their alias and/or connection(s). Unlike the RapidSMS Person class,
@@ -113,8 +154,11 @@ class Reporter(models.Model):
     first_name = models.CharField(max_length=30, blank=True)
     last_name  = models.CharField(max_length=30, blank=True)
     password   = models.CharField(max_length=30, blank=True)
-    location = models.ForeignKey("Location", null=True, blank=True)
-    role = models.ForeignKey("Role", null=True, blank=True)
+    groups     = models.ManyToManyField(ReporterGroup)
+    
+    # here are some fields that don't belong here
+    location   = models.ForeignKey("Location", null=True, blank=True)
+    role       = models.ForeignKey("Role", null=True, blank=True)
 
     def __unicode__(self):
             return self.connection.identity
@@ -225,49 +269,6 @@ class Reporter(models.Model):
         # return the latest, or none, if they've
         # has never been seen on ANY connection
         return max(timedates) if timedates else None
-
-class RecursiveManager(models.Manager):
-    """Provides a method to flatten a recursive model (a model which has a ForeignKey field linked back
-       to itself), in addition to the usual models.Manager methods. This Manager queries the database
-       only once (unlike select_related), and sorts them in-memory. Obivously, this efficiency comes
-       at the cost much higher CPU usage."""
-    
-    def flatten(self, via_field="parent_id"):
-        all_objects = list(self.model.objects.all())
-        
-        def pluck(pk=None, depth=0):
-            output = []
-            
-            for object in all_objects:
-                if getattr(object, via_field) == pk:
-                    output += [object] + pluck(object.pk, depth+1)
-                    object.depth = depth
-            
-            return output
-        return pluck()
-
-
-class ReporterGroup(models.Model):
-    title       = models.CharField(max_length=30, unique=True)
-    parent      = models.ForeignKey("self", related_name="children", null=True, blank=True)
-    description = models.TextField(blank=True)
-    objects     = RecursiveManager()
-    
-    
-    class Meta:
-        verbose_name = "Group"
-
-    
-    def __unicode__(self):
-        return self.title
-    
-    
-    @classmethod
-    def flat_tree(klass):
-        return [g.flat_children() for g in klass.objects.filter(parent=None)]
-    
-    def flat_children(self):
-        return [self] + [c.flat_children() for c in self.children.all()]
 
 
 class BackendManager(models.Manager):

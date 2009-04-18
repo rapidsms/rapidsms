@@ -69,11 +69,16 @@ def reporters_index():
 
 @register.inclusion_tag("reporters/partials/reporters/form.html")
 def reporters_form(reporter=None):
-    return {
-        "groups":   ReporterGroup.objects.flatten(),
-        "backends": PersistantBackend.objects.all(),
-        "reporter": reporter
+    data = {
+        "all_groups": ReporterGroup.objects.flatten()
     }
+    
+    if reporter:
+        data["connections"] = reporter.connections.all()
+        data["groups"] = reporter.groups.flatten()
+        data["reporter"] = reporter
+    
+    return data
 
 @register.inclusion_tag("reporters/partials/groups/index.html")
 def groups_index():
@@ -81,7 +86,51 @@ def groups_index():
 
 
 @register.inclusion_tag("reporters/partials/groups/form.html")
-def groups_form(reporter=None):
-    return { "groups": ReporterGroup.objects.flatten() }
+def group_form(group=None):
+    
+    # fetch all groups, to be displayed
+    # flat in the "parent group" field
+    groups = ReporterGroup.objects.flatten()
+    
+    # if we are editing a group, iterate
+    # the parents, and mark one of them
+    # to pre-select it in the dropdown
+    if group is not None:
+        for grp in groups:
+            if group.parent == grp:
+                grp.selected = True
+    
+    return {
+        "group": group,
+        "groups": groups
+    }
 
 
+@register.inclusion_tag("reporters/partials/groups/widget.html")
+def group_widget(group=None):
+    
+    groups = ReporterGroup.objects.flatten()
+    if group is not None:
+        for grp in groups:
+            if grp == group.parent:
+                grp.selected = True
+    
+    return {
+        "groups": groups,
+        "group": group
+    }
+
+
+@register.inclusion_tag("reporters/partials/connection/widget.html")
+def connection_widget(connection=None):
+    
+    backends = PersistantBackend.objects.all()
+    if connection is not None:
+        for be in backends:
+            if connection.backend == be:
+                be.selected = True
+    
+    return {
+        "backends": backends,
+        "connection": connection
+    }
