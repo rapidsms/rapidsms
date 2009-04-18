@@ -1,5 +1,3 @@
-{% load reporters %}
-
 <div class="module">
 	<h2>{% if group %}Edit {{ group }}{% else %}Add a Group{% endif %}</h2>
 	
@@ -15,19 +13,17 @@
 				If provided, the text is displayed to users attempting to send a
 				bulk message to this group, to ensure they understand what it is.
 			</p>
-		</div>{% if groups %}
+		</div>
 		<div id="fm-grp-add-groups">
 			<label>Parent Group</label>
-			<div>
-				<select name="group_id">
-					<option selected="selected">None</option>{% for group in groups %}
-					<option value="{{ group.pk }}" class="depth-{{ group.depth }}">{{ group.title }}</option>{% endfor %}
-				</select>
-			</div>
+			<select name="group_id" size="6">
+				<option selected="selected" class="na">None</option>{% for group in groups %}
+				<option value="{{ group.pk }}" class="depth-{{ group.depth }}"{% if group.selected %} selected="selected"{% endif %}>{{ group.title }}</option>{% endfor %}
+			</select>
 			<p class="help">
-				<em>This doesn't work quite right yet.</em>
+				The other Group that <em>{% if group %}{{ group.title }}{% else %}this group{% endif %}</em> is contained by.
 			</p>
-		</div>{% endif %}
+		</div>
 		<div class="submit">
 			<input type="submit" value="{% if group %}Save Changes{% else %}Add Group{% endif %}" />
 		</div>
