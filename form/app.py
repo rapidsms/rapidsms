@@ -200,12 +200,18 @@ class App(rapidsms.app.App):
                     if type.upper() in form:
                         this_domain = Domain.objects.get(code__iexact=code.upper())
                         this_form = Form.objects.get(type__iexact=type)
-                        
+                        if hasattr(message, "reporter") and message.reporter:
+                            this_form.reporter = message.reporter
+                        else:
+                            # there was no reporter set.  We allow this
+                            # currently, but we may want to create one or 
+                            # respond here.
+                            pass
                         form_entry = FormEntry.objects.create(domain=this_domain, \
                             form=this_form, date=datetime.now())
                         # gather list of token tuples for this form type
                         tokens = form[type.upper()]
-
+                        
                         self.debug("FORM MATCH")
                         info = []
                         for t, d in zip(tokens, data):

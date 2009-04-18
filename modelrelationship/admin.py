@@ -34,3 +34,5 @@ class EdgeAdmin(admin.ModelAdmin):
 
 admin.site.register(EdgeType,EdgeTypeAdmin)
 admin.site.register(Edge,EdgeAdmin)
+admin.site.register(NewEdge)
+admin.site.register(NewEdgeType)

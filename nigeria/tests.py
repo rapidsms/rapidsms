@@ -33,9 +33,26 @@ class TestApp (TestScript):
            8005551212 < I think you are are dummy user.
          """
     
+    testRegistrationErrors = """
+           12345 > llin my status
+           12345 < Sorry, I don't know who you are.
+           12345 > llin register 45 DL secret hello world 
+           12345 < Invalid form.  45 not in list of location codes
+           12345 > llin my status
+           12345 < Sorry, I don't know who you are.
+           12345 > llin register 20 pp secret hello world 
+           12345 < Invalid form.  pp not in list of role codes
+           12345 > llin my status
+           12345 < Sorry, I don't know who you are.
+           12345 > llin register 6803 AL secret hello world 
+           12345 < Invalid form.  6803 not in list of location codes. AL not in list of role codes
+           12345 > llin my status
+           12345 < Sorry, I don't know who you are.
+         """
+    
     testNets= """
            8005551213 > llin nets 2001 123 456 78 90
-           8005551213 < Invalid form.  You must register your phone before submitting data
+           8005551213 < Invalid form.  You must register your phone before submitting data: llin register <location> <role> <password> <name>
            8005551213 > llin register 2001 lf anothersecret net guy
            8005551213 < Hello nguy! You are now registered as LGA focal person at AJINGI LGA.
            8005551213 > llin nets 2001 123 456 78 90
@@ -46,7 +63,7 @@ class TestApp (TestScript):
     
     testNetCards= """
            8005551214 > llin net cards 200201 123 456 78 
-           8005551214 < Invalid form.  You must register your phone before submitting data
+           8005551214 < Invalid form.  You must register your phone before submitting data: llin register <location> <role> <password> <name>
            8005551214 > llin register 200201 lf anothersecret card guy
            8005551214 < Hello cguy! You are now registered as LGA focal person at ALBASU CENTRAL Ward.
            8005551214 > llin net cards 200201 123 456 78 
@@ -76,9 +93,13 @@ class TestApp (TestScript):
         # test edge and edge type generation.  
         # TODO these don't play nice with new db's because the content type
         # id's change.  We need a true workaround for this.
-        self.assertEqual(1, len(EdgeType.objects.all()))
-        parent_type = EdgeType.objects.all()[0]
-        self.assertEqual(528, len(Edge.objects.all()))
+        self.assertEqual(1, len(NewEdgeType.objects.all()))
+        parent_type = NewEdgeType.objects.all()[0]
+        self.assertEqual(528, len(NewEdge.objects.all()))
+        
+        for lga in locations.filter(type=lga):
+            self.assertEqual(kano, lga.parent)
+        
         
     def _testForms(self):
         forms = Form.objects.all()
