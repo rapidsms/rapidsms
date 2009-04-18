@@ -65,12 +65,12 @@ def loc_post_save(sender, **kwargs):
         if type:
             try:
                 # if the edge already exists, update it
-                edge = Edge.objects.get(relationship=type, child_id=instance.id)
-                edge.parent_object = instance.parent
+                edge = NewEdge.objects.get(relationship=type, child_id=instance.id)
+                edge.parent_id = instance.parent.id
                 edge.save()
-            except Edge.DoesNotExist:
+            except NewEdge.DoesNotExist:
                 # otherwise create a new one
-                edge = Edge(relationship=type, child_object=instance, parent_object=instance.parent)
+                edge = NewEdge(relationship=type, child_id=instance.id, parent_id=instance.parent.id)
                 edge.save()
 
 # this registers the signal so it's called every time we save locations
@@ -83,9 +83,9 @@ def loc_post_init(sender, **kwargs):
     type = _get_location_parent_edge_type()
     if type:
         try:
-            edge = Edge.objects.get(relationship=type, child_id=instance.id)
+            edge = NewEdge.objects.get(relationship=type, child_id=instance.id)
             instance.parent = edge.parent_object
-        except Edge.DoesNotExist:
+        except NewEdge.DoesNotExist:
             # no parent was set, not a problem
             pass
 
@@ -95,7 +95,7 @@ def _get_location_parent_edge_type():
     content_type = ContentType.objects.get(name="location")
     # there is an implicit dependency on this name (Location Parent) being defined
     # as an edge between locations.  This will be done with fixtures
-    types = EdgeType.objects.all().filter(name="Location Parent").filter(parent_type=content_type).filter(child_type=content_type)
+    types = NewEdgeType.objects.all().filter(name="Location Parent").filter(parent_type=content_type.model).filter(child_type=content_type.model)
     # this is dumb for now.  if we have more than one of these edge types, or none,
     # we won't get anything back
     if len(types) == 1:

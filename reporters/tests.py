@@ -15,14 +15,14 @@ class TestApp (TestScript):
 
     def testModel(self):
         loc_type = ContentType.objects.get(name="location")
-        edge_type = EdgeType(name="Location Parent", parent_type=loc_type, child_type=loc_type)
+        edge_type = NewEdgeType(name="Location Parent", parent_type=loc_type, child_type=loc_type)
         edge_type.save()
         state = Location(name="Kano")
         state.save()
         lga = Location(name="Kano LGA")
         lga.parent=state
         lga.save()
-        edge = Edge.objects.get(relationship=edge_type, child_id =lga.id)
+        edge = NewEdge.objects.get(relationship=edge_type, child_id =lga.id)
         self.assertTrue(edge)
         self.assertEqual(edge.child_object, lga)
         self.assertEqual(edge.parent_object, state)
@@ -33,7 +33,7 @@ class TestApp (TestScript):
         state2.save()
         lga_back.parent = state2
         lga_back.save()
-        edges = Edge.objects.all().filter(relationship=edge_type).filter(child_id =lga_back.id)
+        edges = NewEdge.objects.all().filter(relationship=edge_type).filter(child_id =lga_back.id)
         self.assertEqual(1, len(edges))
         edge = edges[0]
         self.assertEqual(edge.child_object, lga_back)
