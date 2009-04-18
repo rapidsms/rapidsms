@@ -1,0 +1,8 @@
+<div>{% if connection %}
+	<input type="hidden" name="conn-id" value="{{ connection.pk }}" />{% endif %}
+	<select name="conn-backend">
+		<option{% if not connection %} selected="selected"{% endif %}></option>{% for backend in backends %}
+		<option value="{{ backend.pk }}"{% if backend.selected %} selected="selected"{% endif %}>{{ backend.title }}</option>{% endfor %}
+	</select>
+	<input type="text" name="conn-identity"{% if connection %} value="{{ connection.identity }}"{% endif %} />
+</div>
