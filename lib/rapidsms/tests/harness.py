@@ -4,7 +4,10 @@ from rapidsms.app import App
 
 # a really dumb Logger stand-in
 class MockLogger (list):
+    to_console = True
     def write (self, *args):
+        if self.to_console:
+            print args[2]
         self.append(args)
 
 # a subclass of Router with all the moving parts replaced
