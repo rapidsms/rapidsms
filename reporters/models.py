@@ -80,7 +80,6 @@ def loc_post_init(sender, **kwargs):
     """Location post init signal that reads the parent from model-relationship 
        if it is defined"""
     instance = kwargs["instance"]
-    
     type = _get_location_parent_edge_type()
     if type:
         try:

@@ -10,6 +10,7 @@ class NigeriaFormsLogic(FormsLogic):
         I'm not sure whether this will be the right structure
         this was just for getting something hooked up '''
     
+    # this is a simple structure we use to describe the forms.  
     _form_lookups = {
                      "nets" : {
                                "class" : NetDistribution,
@@ -115,7 +116,8 @@ class NigeriaFormsLogic(FormsLogic):
 
             # notify the user that everyting went okay
             # TODO: proper (localized?) messages here
-            message.respond("Reporter %s (#%d/%d) added" % (rep.alias, rep.pk, conn.pk))
+            message.respond("Hello %s! You are now registered as %s at %s %s."\
+                % (rep.alias, rep.role, rep.location, rep.location.type))
 
         elif self._form_lookups.has_key(form_entry.form.type):
             to_use = self._form_lookups[form_entry.form.type]
@@ -124,9 +126,8 @@ class NigeriaFormsLogic(FormsLogic):
             instance = self._model_from_form(message, form_entry, form_class, field_map, self._foreign_key_lookups)
             instance.save()
             response = "Received report for %s %s: " % (form_entry.domain.code, to_use["display"])
-            fields = [] 
-            for token, model_attr in field_map.items():
-                if hasattr(instance, model_attr):
-                    fields.append(model_attr + "=" + str(getattr(instance, model_attr)))
-            message.respond(response + ", ".join(fields))
-                    
+            # this line pulls any attributes that are present into 2-item lists
+            attrs = [[attr_name, str(getattr(instance, attr_name))] for attr_name in field_map.values() if hasattr(instance, attr_name)]
+            # joins the inner list on "=" and the outer on ", " so we get 
+            # attr1=value1, attr2=value2
+            message.respond(response + ", ".join(["=".join(t) for t in attrs]))
