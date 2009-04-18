@@ -93,7 +93,7 @@ def getLinearAncestryForEdge(edge):
         
     #does this edge's parents have parents?
     grandparents = Edge.objects.all().filter(relationship=edge.relationship, child_type=parent_type, child_id=parent_id)
-    print len(grandparents)
+    #print len(grandparents)
     if len(grandparents) == 0:
         #no it does not, we're just going to return the parent object because this is the highest ancestor        
         return [edge.child_object,edge.parent_object]
