@@ -24,13 +24,14 @@ class App(rapidsms.app.App):
         self.setup()
         # allow apps to register to be a part of the message handling control flow
         self.form_handlers = {}
-        
+        #self.handled = False
 
     def start(self):
         pass
     
         
     def parse(self, message):
+        #self.handled = False
         pass
 
     def handle(self, message):
@@ -188,17 +189,17 @@ class App(rapidsms.app.App):
     def form(self, app, message, code, type, *data): 
         self.debug("FORM")
         #reporter = self.__identify(message.peer, "reporting")
-        self.handled = False
+        #self.handled = False
         for domain in self.domains_forms_tokens:
             if code.upper() in domain:
                 # gather list of form dicts for this domain code
                 forms = domain[code.upper()]
                 self.debug("DOMAIN MATCH")
-
+                
                 for form in forms:
                     if type.upper() in form:
-                        this_domain = Domain.objects.get(code=code.upper())
-                        this_form = Form.objects.get(type=type)
+                        this_domain = Domain.objects.get(code__iexact=code.upper())
+                        this_form = Form.objects.get(type__iexact=type)
                         
                         form_entry = FormEntry.objects.create(domain=this_domain, \
                             form=this_form, date=datetime.now())
@@ -261,7 +262,7 @@ class App(rapidsms.app.App):
                     else:
                         continue        
 
-                if not self.handled:
+                if not hasattr(self, "handled") or not self.handled:
                     # TODO ditto
                     message.respond("Oops. Cannot find a report called %s for %s. Available reports for %s are %s" % \
                         (type.upper(), code.upper(), code.upper(), ", ".join([f.keys().pop().upper() for f in forms]))) 
@@ -289,7 +290,7 @@ class App(rapidsms.app.App):
                 app = self.form_handlers[app_name.name]
                 errors = getattr(app,'validate')(message, form_entry)
                 if errors: validation_errors.extend(errors)
-        print "VALIDATION ERRORS: %r" % validation_errors
+        #print "VALIDATION ERRORS: %r" % validation_errors
         return validation_errors
         
     def _do_actions(self, message, form, form_entry):
