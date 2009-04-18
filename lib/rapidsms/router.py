@@ -78,38 +78,91 @@ class Router (component.Receiver):
     def start_backend (self, backend):
         while self.running:
             try:
-                # start the backend
                 backend.start()
-                # if backend execution completed normally, end the thread
+
+                # if backend execution completed
+                # normally (and did not raise),
+                # allow the thread to terminate
                 break
+
             except Exception, e:
+                
                 # an exception was raised in backend.start()
                 # sleep for 5 seconds, then loop and restart it
-                self.error("%s failed: %s" % (backend.name,e))
-                if not self.running: break
+                self.log_last_exception("Error in the %s backend" % backend.name)
+
+                # don't bother restarting the backend
+                # if the router isn't running any more
+                if not self.running:
+                    break
+               
+                # TODO: where did the 5.0 constant come from?
+                # we should probably be doing something more intelligent
+                # here, rather than just hoping five seconds is enough
                 time.sleep(5.0)
-                self.error("restarting %s" % (backend.name,))
+                self.info("Restarting the %s backend" % backend.name)
+
 
     def start_all_apps (self):
-        # call the "start" method of each app
+        """Calls the _start_ method of each app registed via
+           Router.add_app, logging any exceptions raised, but
+           not allowing them to propagate. Returns True if all
+           of the apps started without raising."""
+
+        raised = False
         for app in self.apps:
             try:
                 app.start()
-            except Exception, e:
-                self.error("%s failed on start: %r", app, e)
+
+            except Exception:
+                self.log_last_exception("The %s app failed to start" % app.name)
+                raised = True
+
+        # if any of the apps raised, we'll return
+        # False, to warn that _something_ is wrong
+        return not raised
+
 
     def start_all_backends (self):
-        # launch each backend in its own thread
+        """Starts all backends registed via Router.add_backend,
+           by calling self.start_backend in a new thread for each."""
+
         for backend in self.backends:
-            worker = threading.Thread(target=self.start_backend, args=(backend,))
+            worker = threading.Thread(
+                target=self.start_backend,
+                args=(backend,))
+
             worker.start()
 
+            # attach the worker thread to the backend,
+            # so we can check that it's still running
+            backend.thread = worker
+
+
     def stop_all_backends (self):
+        """Notifies all backends registered via Router.add_backend
+           that they should stop. This method cannot guarantee that
+           backends *will* stop in a timely manner."""
+
         for backend in self.backends:
             try:
                 backend.stop()
-            except Exception, e:
-                self.error("%s failed on stop: %s" % (backend.name,e))
+                timeout = 5
+                step = 0.1
+
+                # wait up to five seconds for the backend's
+                # worker thread to terminate, or log failure
+                while(backend.thread.is_alive()):
+                    if timeout <= 0:
+                        raise RuntimeError, "The %s backend's worker thread did not terminate" % backend.name
+
+                    else:
+                        time.sleep(step)
+                        timeout -= step
+
+            except Exception:
+                self.log_last_exception("The %s backend failed to stop" % backend.name)
+
 
     def start (self):
         self.running = True
