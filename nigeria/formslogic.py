@@ -91,9 +91,20 @@ class NigeriaFormsLogic(FormsLogic):
             # nothing went wrong. the data structure
             # is ready to spawn a Reporter object
             return None
-        elif form_entry.form.type in self._form_lookups.keys() and (not hasattr(message,"reporter") or not message.reporter):  
-            
-            return [ "You must register your phone before submitting data" ]
+        elif form_entry.form.type in self._form_lookups.keys():
+            if not hasattr(message,"reporter") or not message.reporter:  
+                return [ "You must register your phone before submitting data" ]
+            # we know all the fields in this form are required, so make sure they're set
+            required_token_names = self._form_lookups[form_entry.form.type]["fields"].keys()
+            for token in form_entry.tokenentry_set.all():
+                if token.token.abbreviation in required_token_names:
+                    # found it, as long as the data isn't empty remove it
+                    if token.data:
+                        required_token_names.remove(token.token.abbreviation)
+            if required_token_names:
+                errors = "The following fields are required: " + ", ".join(required_token_names)
+                return [errors]
+            return None
         
     
 
