@@ -19,7 +19,7 @@ urlpatterns = patterns('',
     url(r'^reports/supply/daily/(?P<locid>\d*)$', views.supply_daily),
     url(r'^reports/supply/weekly/(?P<locid>\d*)$', views.supply_weekly),
     url(r'^reports/supply/monthly/(?P<locid>\d*)$', views.supply_monthly),
-    url(r'^reports/test?$', views.tests),
+    url(r'^reports/test?$', views.index),
     (r'^static/nigeria/(?P<path>.*)$', "django.views.static.serve",
         {"document_root": os.path.dirname(__file__) + "/static"}),
 )
