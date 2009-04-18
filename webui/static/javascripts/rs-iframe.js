@@ -4,7 +4,7 @@ jQuery(function() {
 	if (window.frameElement) {
 		jQuery(window.frameElement).css({
 			"height": jQuery(document.body).outerHeight(),
-			"overflow-y": "hidden"
+			"overflow-y": "scroll"
 		});
 	
 	/* we're not running in an iframe; let's assume that
