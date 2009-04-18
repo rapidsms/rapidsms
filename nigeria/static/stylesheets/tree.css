@@ -1,0 +1,93 @@
+/* Name and/or Title
+ * vim:set noet:
+ * --
+ * Two or three lines of purpose and/or
+ * justification for the existence of this */
+
+.dt { }
+
+	.dt table { }
+	
+		.dt tr { }
+		
+			.dt td {
+				border: none;
+				vertical-align: top;
+				text-align: center;
+				padding: 0;
+			}
+			
+			.dt tr.trigger > td {
+				padding-top: 1em; }
+			
+				.dt tr.trigger > td > div {
+					font-style: italic;
+					background: #fdd;
+				}
+			
+			.dt tr.question > td {
+				background: url("../images/vertical-link.png") repeat-y 50% 100%;
+				padding: 1em 0;
+			}
+			
+				.dt tr.question > td > div {
+					max-width: 12em; }
+				
+				/* all questions and answers are wrapped by
+				 * a div, so box them in, and make sure no
+				 * backgrounds (which join q+a) peek through */
+				.dt div {
+					border: 1px solid #32a6d1;
+					display: inline-block;
+					line-height: 1.4;
+					background: #fff;
+					margin: 0 0.5em;
+					padding: 0.5em;
+				}
+			
+			/* adding state and transitions, which are currently just a copy of questions and answers */
+			.dt tr.state > td {
+                background: url("../images/vertical-link.png") repeat-y 50% 100%;
+                padding: 1em 0;
+            }
+            
+                .dt tr.state > td > div {
+                    max-width: 12em; }
+                
+            .dt tr.transitions > td {
+                padding-top: 2em;
+                background: url("../images/answer-link.png") no-repeat 50% 0;
+            }
+            
+                .dt tr.transitions > td > div {
+                    font-style: italic;
+                    background: #ffd;
+                }
+            
+            .dt tr.transitions > td:first-child {
+                background: url("../images/answer-link-left.png") no-repeat 50% 0; }
+            
+            .dt tr.transitions > td:last-child {
+                background: url("../images/answer-link-right.png") no-repeat 50% 0; }
+            
+            .dt tr.transitions > td {
+				padding-top: 2em;
+				background: url("../images/answer-link.png") no-repeat 50% 0;
+			}
+			
+				.dt tr.answers > td > div {
+					font-style: italic;
+					background: #ffd;
+				}
+			
+			.dt tr.answers > td:first-child {
+				background: url("../images/answer-link-left.png") no-repeat 50% 0; }
+			
+			.dt tr.answers > td:last-child {
+				background: url("../images/answer-link-right.png") no-repeat 50% 0; }
+			
+			.dt tr.no-answers > td > div {
+				border-color: #90d7f1;
+				background: #daf1f9;
+				color: #32a6d1;
+			}

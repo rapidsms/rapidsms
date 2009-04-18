@@ -1,0 +1,62 @@
+{% extends "layout.html" %}
+{% block title %}Daily Coupon Distribution Summary{% endblock %}
+{% block javascripts %}
+<script language="javascript" type="text/javascript" src="/static/nigeria/js/jquery.flot.min.js"></script>
+<!--[if IE]>
+<script language="javascript" type="text/javascript" src="/static/nigeria/js/excanvas.pack.js"></script>
+<![endif]-->
+<script language="javascript">
+$(document).ready(function() {
+	data = [
+	 { label: 'APK', data: [[0,10]]},
+	 { label: 'DPO', data: [[1,20]]},
+	 { label: 'PMS', data: [[2,50]]},
+	 { label: 'AGO', data: [[3,20]]}
+	];
+	options = { pies: {show: true, labelWidth: 30, fontSize: 10, autoScale: true, fillOpacity: 1}};
+	$.plot($('#piechart'), data, options);
+});
+</script>
+{% endblock %}
+{% block stylesheets %}
+<style>
+#data_summary th, #data_summary td { text-align: center; }
+</style>
+{% endblock %}
+{% block content %}
+<div class="container">
+<h2>Daily Coupon Distribution Summary</h2>
+<br />
+<table width="100%" id="data_heading">
+<thead>
+<tr><th><strong>Date</strong></th><th><strong>State</strong></th><th><strong>LGA</strong></th><th><strong>Ward</strong></th></tr>
+<tr><td>Apr 15, 2009</td><td>Kano</td><td>Sabon Gari</td><td>Ward #1</td></tr>
+</thead>
+</table>
+
+<div id="data_summary" style="clear:both;margin-top:1em">
+	<div width="80%" style="float:left">
+		<table width="100%">
+			<thead>
+				<tr><th>Dist. Point</th><th>Team No.</th><th>No. of Settlements</th><th>Total No. of People</th><th>Coupons Issued</th></tr>
+			</thead>
+			<tbody>
+				<tr><td>2</td><td>3</td><td>2343</td><td>8922</td><td>17844</td></tr>
+				<tr><td>2</td><td>3</td><td>2343</td><td>8922</td><td>17844</td></tr>
+				<tr><td>2</td><td>3</td><td>2343</td><td>8922</td><td>17844</td></tr>
+				<tr><td>2</td><td>3</td><td>2343</td><td>8922</td><td>17844</td></tr>
+				<tr><td>2</td><td>3</td><td>2343</td><td>8922</td><td>17844</td></tr>
+				<tr><td>2</td><td>3</td><td>2343</td><td>8922</td><td>17844</td></tr>
+				<tr><td>2</td><td>3</td><td>2343</td><td>8922</td><td>17844</td></tr>
+				<tr><td>2</td><td>3</td><td>2343</td><td>8922</td><td>17844</td></tr>
+				<tr><td>2</td><td>3</td><td>2343</td><td>8922</td><td>17844</td></tr>
+			</tbody>
+		</table>
+	</div>
+	<div width="20%" style="float:right">
+		<div id="piechart" style="height:250px;width:400px;"></div>
+	</div>
+</div>
+
+</div>
+{% endblock %}
