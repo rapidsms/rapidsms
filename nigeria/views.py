@@ -6,13 +6,16 @@ from django.template import RequestContext
 from django.shortcuts import render_to_response
 
 #Views for handling summary of Reports Displayed as Location Tree
-def supply_summary(req, locid):
+def index(req):
+    return render_to_response("nigeria/index.html", context_instance=RequestContext(req))
+
+def supply_summary(req, frm, to, range):
     return render_to_response("nigeria/supply_summary.html", context_instance=RequestContext(req))
 
-def bednets_summary(req, locid):
+def bednets_summary(req, frm, to, range):
     return render_to_response("nigeria/bednets_summary.html", context_instance=RequestContext(req))
 
-def coupons_summary(req, locid):
+def coupons_summary(req, frm, to, range):
     return render_to_response("nigeria/coupons_summary.html", context_instance=RequestContext(req))
 
 
@@ -48,4 +51,7 @@ def supply_weekly(req, locid):
 def supply_monthly(req, locid):
     return render_to_response("nigeria/supply_monthly.html", context_instance=RequestContext(req))
 
+
+def tests(req):
+    return render_to_response("nigeria/testpages/trees.html", context_instance=RequestContext(req))
 
