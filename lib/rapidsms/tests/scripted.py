@@ -81,13 +81,13 @@ class TestScript (unittest.TestCase):
             elif dir == '<':
                 msg = self.backend.next_message()
                 self.assertTrue(msg is not None,
-                    "Response expected for: %s" % last_received)
+                    "Response expected to: %s" % last_received)
                 self.assertEquals(msg.peer, num,
-                    "Expected to send to %s, but message was sent to %s"
-                    % (num, msg.peer))
+                    "Expected to send '%s' to %s, but message was sent to %s"
+                    % (msg.text, num, msg.peer))
                 self.assertEquals(msg.text, txt,
-                    "\nReceived text: %s\nExpected text: %s\n"
-                    % (msg.text,txt))
+                    ("\nIncoming text: %s\nResponse text: %s" +
+                     "\nExpected text: %s\n") % (last_received, msg.text, txt))
         self.router.stop()
 
     def runScript (self, script):
