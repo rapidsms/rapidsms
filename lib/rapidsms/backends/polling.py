@@ -4,7 +4,8 @@
 import time
 from rapidsms.backends import Backend
 from rapidsms.message import Message
-
+from utilities.dbmessagelog.httplog.models import * 
+from datetime import datetime
 
 class Backend(Backend):
     def configure(self, interval=2, timeout=10):
@@ -16,8 +17,10 @@ class Backend(Backend):
 
             # look for any new incoming messages
             # in the database, and route them
-            for msg in IncomingMessage.objects.filter(processed=False):
-                msg = self.message(msg.sender, msg.text, msg.date)
+            for incoming_msg in IncomingMessage.objects.filter(status="R"):
+                incoming_msg.status = "H"
+                incoming_msg.save()
+                msg = self.message(incoming_msg.phone, incoming_msg.text, incoming_msg.time)
                 self.route(msg)
 
                 # pause until the msg.processed
@@ -31,26 +34,43 @@ class Backend(Backend):
 
                     # wait a short time before checking
                     # again, to avoid pegging the cpu
-                    countdown -= timeout
-                    time.sleep(timeout)
+                    countdown -= timestep
+                    time.sleep(timestep)
 
                 # mark the message, so we don't
                 # receive it again next time
                 if msg.processed:
-                    msg.processed = True
-                    msg.save()
+                    incoming_msg.status = "P"
+                    incoming_msg.save()
 
                 else:
                     # TODO: should we do anything other than warn, here?
-                    self.warn("Router timed out while processing incoming message")
-
+                    #self.warn("Router timed out while processing incoming message")
+                    pass 
             # wait a few seconds
             # before polling again
             time.sleep(self.interval)
 
     def send(self, msg):
-        OutgoingMessage(
-            sender = msg.connection.identity,
-            date = time.time(),
-            text = msg.text
-        ).save()
+        outgoing = OutgoingMessage(
+            phone = msg.connection.identity,
+            time = datetime.now(),
+            text = msg.text,
+            status = "R"
+        )
+        outgoing.save()
+        try: 
+            # if this is a response then we we need a handle 
+            # to the original message we are responding to.
+            # As a first pass, assume that there is only one message
+            # per person in the "handle" phase and we just look it 
+            # up in the db
+            original_msg = IncomingMessage.objects.get(status="H", phone=msg.connection.identity)
+            original_msg.responses.add(outgoing)
+            original_msg.save()
+        except IncomingMessage.DoesNotExist:
+            # this might just be a standard outgoing message 
+            # so don't do anything special
+            pass
+        
+        

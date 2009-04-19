@@ -7,14 +7,10 @@ import httplog.views as views
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    # Example:
-    # (r'^dbmessagelog/', include('dbmessagelog.foo.urls')),
-    
-    (r'^api/(.*)', views.api),
-    # Uncomment the admin/doc line below and add 'django.contrib.admindocs' 
-    # to INSTALLED_APPS to enable admin documentation:
-    # (r'^admin/doc/', include('django.contrib.admindocs.urls')),
-
-    # Uncomment the next line to enable the admin:
+    # allow the admin to hijack things first, 
+    # but after that everything gets routed to
+    # the API 
     (r'^admin/(.*)', admin.site.root),
+    (r'^(.*)', views.api),
+    
 )
