@@ -8,7 +8,7 @@ from app import App
 
 class TestApp (TestScript):
     apps = (reporter_app.App, App,form_app.App, supply_app.App )
-    fixtures = ['nigeria_llin', 'kano_locations', 'kano_location_parents']
+    fixtures = ['nigeria_llin', 'kano_locations']
     
     def setUp(self):
         TestScript.setUp(self)
@@ -90,12 +90,7 @@ class TestApp (TestScript):
         kano = locations.get(type=state)
         self.assertEqual("KANO", kano.name)
         
-        # test edge and edge type generation.  
-        # TODO these don't play nice with new db's because the content type
-        # id's change.  We need a true workaround for this.
-        self.assertEqual(1, len(NewEdgeType.objects.all()))
-        parent_type = NewEdgeType.objects.all()[0]
-        self.assertEqual(528, len(NewEdge.objects.all()))
+        self.assertEqual(44, len(kano.children.all()))
         
         for lga in locations.filter(type=lga):
             self.assertEqual(kano, lga.parent)
