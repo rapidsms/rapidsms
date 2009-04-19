@@ -27,12 +27,19 @@ class Shipment(models.Model):
     shipment_id = models.PositiveIntegerField(blank=True, null=True, help_text="Waybill number")
 
 class Transaction(models.Model):
+    FLAG_TYPES = (
+        ('A', 'Amount received does not match amount issued'),
+        ('W', 'Mis-matched waybill'),
+        ('I', 'Incorrect. Has been replaced due to an amendment issue or receipt.'),
+    )
+
     domain = models.ForeignKey(Domain)
     amount_sent  = models.PositiveIntegerField(blank=True, null=True, help_text="Amount of supply shipped from origin")
     amount_received = models.PositiveIntegerField(blank=True, null=True, help_text="Amount of supply received by destination")
     shipment = models.ForeignKey(Shipment)  
-    issue = models.ForeignKey('PartialTransaction')
-    receipt = models.ForeignKey('PartialTransaction', related_name='receipt')
+    issue = models.ForeignKey('PartialTransaction', related_name='issues')
+    receipt = models.ForeignKey('PartialTransaction', related_name='receipts')
+    flag = models.CharField(blank=True, null=True, max_length=1, choices=FLAG_TYPES)
 
 class PartialTransaction(models.Model):
     TRANSACTION_TYPES = (
@@ -44,11 +51,14 @@ class PartialTransaction(models.Model):
         ('C', 'Confirmed'),
         ('A', 'Amended'),
     )
+    FLAG_TYPES = (
+        ('S', 'Reported stock does not match expected stock balance.'),
+    )
     
     reporter = models.ForeignKey(Reporter)
     domain = models.ForeignKey(Domain)
-    origin = models.ForeignKey(Location)
-    destination = models.ForeignKey(Location, related_name='pending destination')
+    origin = models.ForeignKey(Location, related_name='origins')
+    destination = models.ForeignKey(Location, related_name='destinations')
     shipment_id = models.PositiveIntegerField(blank=True, null=True, help_text="Waybill number")
     amount = models.PositiveIntegerField(blank=True, null=True, help_text="Amount of supply shipped")
     stock = models.PositiveIntegerField(blank=True, null=True, help_text="Amount of stock present at location.")
@@ -56,6 +66,7 @@ class PartialTransaction(models.Model):
     # this could be a boolean, but is more readable this way
     type = models.CharField(max_length=1, choices=TRANSACTION_TYPES)
     status = models.CharField(max_length=1, choices=STATUS_TYPES)
+    flag = models.CharField(blank=True, null=True, max_length=1, choices=FLAG_TYPES)
     
     def __unicode__(self):
         return "%s reported %s of %s %s from %s to %s. (waybill: %s)" %(self.reporter, 
@@ -66,6 +77,16 @@ class PartialTransaction(models.Model):
                                                                         self.destination, 
                                                                         self.shipment_id) 
             
+    def _get_transaction(self):
+        if self.status == 'C':
+            if self.type == 'I':
+                return Transaction.objects.filter(issue__pk=self.pk)
+            elif self.type == 'R':
+                return Transaction.objects.filter(receipt__pk=self.pk)
+
+    # there should only ever be one transaction for a partial transaction,
+    # but since this returns a queryset, the property is plural
+    transactions = property(_get_transaction)
     
 class Notification(models.Model):
     reporter = models.ForeignKey(Reporter)
