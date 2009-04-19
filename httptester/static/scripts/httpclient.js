@@ -3,7 +3,7 @@ url = "/http/proxy/";
 
 $(document).ready(function(){
 	$('#form').submit(function(){ sendMsg(); return false; });
-	setInterval("checkMsgs()", 500);
+	setInterval("checkMsgs()", 5000);
 });
 
 function sendMsg() {
