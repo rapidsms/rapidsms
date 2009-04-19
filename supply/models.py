@@ -85,7 +85,7 @@ class PartialTransaction(models.Model):
                 return Transaction.objects.filter(receipt__pk=self.pk)
 
     # there should only ever be one transaction for a partial transaction,
-    # but since this returns a queryset, the property is plural
+    # but since this returns a queryset, the property name is plural
     transactions = property(_get_transaction)
     
 class Notification(models.Model):
@@ -93,5 +93,5 @@ class Notification(models.Model):
     notice = models.CharField(max_length=160)
     received = models.DateTimeField(auto_now_add=True)
     resolved = models.DateTimeField(blank=True, null=True)
-    # do we want to save a resolver?
+    # TODO do we want to save a resolver?
 
