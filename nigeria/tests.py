@@ -24,6 +24,18 @@ class TestApp (TestScript):
         self._testForms()
         self._testRoles()
         
+    def testScript(self):
+        a = """
+           8005551219 > llin register 20 dl secret crummy user
+           8005551219 < Hello cuser! You are now registered as Distribution point team leader at KANO State.
+           """
+        self.runScript(a)
+        # this should succeed because we just created him
+        Reporter.objects.get(alias="cuser")
+        dict = {"alias":"fail"}
+        # make sure checking a non-existant user fails
+        self.assertRaises(Reporter.DoesNotExist, Reporter.objects.get, **dict)     
+        
     testRegistration = """
            8005551212 > llin my status
            8005551212 < Sorry, I don't know who you are.
