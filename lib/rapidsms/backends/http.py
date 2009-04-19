@@ -10,8 +10,6 @@ import httphandlers as handlers
 import rapidsms
 from rapidsms.message import Message
 
-msg_store = {}
-
 class HttpServer (BaseHTTPServer.HTTPServer, SocketServer.ThreadingMixIn):
        
     def handle_request (self, timeout=1.0):
@@ -35,14 +33,12 @@ class Backend(rapidsms.backends.Backend):
         self.server.backend = self
         
     def run (self):
-        global msg_store
         while self.running:
             if self.message_waiting:
                 msg = self.next_message()
-                # oops we have to throw the message away
-                if msg_store.has_key(msg.connection.identity):
-                        msg_store[msg.connection.identity].append(msg.text)
+                if handlers.msg_store.has_key(msg.connection.identity):
+                        handlers.msg_store[msg.connection.identity].append(msg.text)
                 else:
-                        msg_store[msg.connection.identity] = []
-                        msg_store[msg.connection.identity].append(msg.text)
+                        handlers.msg_store[msg.connection.identity] = []
+                        handlers.msg_store[msg.connection.identity].append(msg.text)
             self.server.handle_request()
