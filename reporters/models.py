@@ -96,7 +96,7 @@ class Reporter(models.Model):
     first_name = models.CharField(max_length=30, blank=True)
     last_name  = models.CharField(max_length=30, blank=True)
     password   = models.CharField(max_length=30, blank=True)
-    groups     = models.ManyToManyField(ReporterGroup)
+    groups     = models.ManyToManyField(ReporterGroup, blank=True)
     
     # here are some fields that don't belong here
     location   = models.ForeignKey("Location", null=True, blank=True)
@@ -118,7 +118,7 @@ class Reporter(models.Model):
     #   chichewa = ny
     #   klingon  = tlh
     #
-    language = models.CharField(max_length=10)
+    language = models.CharField(max_length=10, blank=True)
 	
     # although it's impossible to enforce, if a user registers
     # themself (via the app.py backend), this flag should be set
