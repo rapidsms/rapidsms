@@ -16,6 +16,11 @@ class Message(object):
         self.date = date
         self.person = person
         self.responses = []
+
+        # a message is considered "unprocessed" until
+        # rapidsms has dispatched it to all apps, and
+        # flushed the responses out
+        self.processed = False
     
     def __unicode__(self):
         return self.text
