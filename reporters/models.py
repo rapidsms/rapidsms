@@ -38,70 +38,12 @@ class Location(models.Model):
     name = models.CharField(max_length=160, help_text="Name of location")
     type = models.ForeignKey(LocationType, blank=True, null=True, help_text="Type of location")
     code = models.CharField(max_length=15)
+    parent = models.ForeignKey("Location", related_name="children", null=True, blank=True, help_text="The parent location of this")
     latitude = models.DecimalField(max_digits=8, decimal_places=6, null=True, blank=True, help_text="The physical latitude of this location")
     longitude = models.DecimalField(max_digits=8, decimal_places=6, null=True, blank=True, help_text="The physical longitude of this location")
     
-    # the parent property.  currently handled by model-relationship 
-    # and and the django signal framework below.
-    _parent = None
-    def _get_parent(self):
-        return self._parent
-    def _set_parent(self, parent):
-        self._parent = parent
-    
-    parent = property(_get_parent, _set_parent, None, None)
-
     def __unicode__(self):
         return self.name
-    
-# location signals for saving the parent type  
-def loc_post_save(sender, **kwargs):
-    """Location post save signal that updates model-relationship with
-       the parent/child hierarchy."""
-    # created = kwargs["created"]
-    instance = kwargs["instance"]
-    if instance.parent:
-        type = _get_location_parent_edge_type()
-        if type:
-            try:
-                # if the edge already exists, update it
-                edge = NewEdge.objects.get(relationship=type, child_id=instance.id)
-                edge.parent_id = instance.parent.id
-                edge.save()
-            except NewEdge.DoesNotExist:
-                # otherwise create a new one
-                edge = NewEdge(relationship=type, child_id=instance.id, parent_id=instance.parent.id)
-                edge.save()
-
-# this registers the signal so it's called every time we save locations
-models.signals.post_save.connect(loc_post_save, sender=Location)
-
-def loc_post_init(sender, **kwargs):
-    """Location post init signal that reads the parent from model-relationship 
-       if it is defined"""
-    instance = kwargs["instance"]
-    type = _get_location_parent_edge_type()
-    if type:
-        try:
-            edge = NewEdge.objects.get(relationship=type, child_id=instance.id)
-            instance.parent = edge.parent_object
-        except NewEdge.DoesNotExist:
-            # no parent was set, not a problem
-            pass
-
-models.signals.post_init.connect(loc_post_init, sender=Location)
-
-def _get_location_parent_edge_type():
-    content_type = ContentType.objects.get(name="location")
-    # there is an implicit dependency on this name (Location Parent) being defined
-    # as an edge between locations.  This will be done with fixtures
-    types = NewEdgeType.objects.all().filter(name="Location Parent").filter(parent_type=content_type.model).filter(child_type=content_type.model)
-    # this is dumb for now.  if we have more than one of these edge types, or none,
-    # we won't get anything back
-    if len(types) == 1:
-        return types[0]
-    return None
-
 
 
 
