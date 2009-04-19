@@ -5,12 +5,17 @@ class IncomingMessage(models.Model):
         ('R', 'Received'), # when the message is first received
         ('H', 'Handling'), # when the router begins processing the message
         ('P', 'Processed'), # when the router has completed processing the message
+        ('T', 'Timeout'), # we sent it for processing but it timed out
         ('E', 'Error'), # something went wrong
     )
     phone = models.CharField(max_length=100, blank=True, null=True)
     time = models.DateTimeField()
     text = models.CharField(max_length=160)
     status = models.CharField(max_length=1, choices=INCOMING_STATUS_TYPES)
+    
+    @property 
+    def processed(self):
+        return self.status == "P"
     
     def __unicode__(self):
         return "%s > %s" % (self.phone, self.text)
