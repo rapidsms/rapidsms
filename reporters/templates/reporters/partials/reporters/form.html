@@ -27,29 +27,26 @@
 		</div>
 		
 		<div id="fm-rep-add-connections">
-			<label>Primary Connection</label>
-			<div>
-				<select name="backend">{% for backend in backends %}
-					<option value="{{ backend.pk }}">{{ backend.title }}</option>{% endfor %}
-				</select>
-				<input type="text" name="identity" value="" />
-			</div>
+			<label>Primary Connection</label>{% if connections %}{% for connection in connections %}
+			{% connection_widget connection %}{% endfor %}{% else %}
+			{% connection_widget %}{% endif %}
 		</div>
 		
 		<div id="fm-rep-add-groups">
-			<label>Primary Group</label>
-			<div>{% if groups %}
-				<select name="group">
-					<option selected="selected">None</option>{% for group in groups %}
-					<option value="{{ group.pk }}" class="depth-{{ group.depth }}">{{ group.title }}</option>{% endfor %}
-				</select>{% else %}
-				<div class="no-data">
-					No Groups Yet.
-					<a href="/reporters/groups/add" class="add">
-						Add a Group
-					</a>
-				</div>{% endif %}
-			</div>
+			<label>Primary Group</label>{% if all_groups %}{% if groups %}{% for group in groups %}
+			<div>
+				<select name="group">{% for my_group in all_groups %}
+					<option value="{{ my_group.pk }}" class="depth-{{ my_group.depth }}"{% ifequal my_group group %} selected="selected"{% endifequal %}>{{ my_group.title }}</option>{% endfor %}
+				</select>
+			</div>{% endfor %}{% else %}
+			<div>
+				<select name="group">{% for my_group in all_groups %}
+					<option value="{{ my_group.pk }}" class="depth-{{ my_group.depth }}">{{ my_group.title }}</option>{% endfor %}
+				</select>
+			</div>{% endif %}{% else %}
+			<div class="no-data">
+				wat
+			</div>{% endif %}
 		</div>
 		
 		<div class="submit">
@@ -64,15 +61,13 @@
 		/* make the connection(s) div (above) clonable, so
 		 * more than one connection can be added at once */
 		var id ="#fm-rep-add-connections";
-		$(id + " > div").cloneable(true);
-		$(id + " > label").text("Connection(s)");
-		$(id).clearFormElements();{% if groups %}
+		$(id + " > div").cloneable("connection", true);
+		$(id + " > label").text("Connection(s)");{% if all_groups %}
 		
 		/* groups are also clonable */
 		var id ="#fm-rep-add-groups";
-		$(id + " > div").cloneable(true);
-		$(id + " > label").text("Group(s)");
-		$(id).clearFormElements();{% endif %}
+		$(id + " > div").cloneable("groups", true);
+		$(id + " > label").text("Group(s)");{% endif %}
 		
 		/* validate the form on submit */
 		$("#fm-rep-add").rs_validate();

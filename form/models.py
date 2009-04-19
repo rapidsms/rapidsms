@@ -6,6 +6,7 @@ from django.contrib.auth import models as auth_models
 from django.core.exceptions import ObjectDoesNotExist 
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
+from apps.reporters.models import Reporter
 from datetime import date
 import re
 
@@ -58,22 +59,6 @@ class Alertable():
         
 
 
-class Reporter(models.Model):
-    first_name = models.CharField(max_length=100, blank=True, null=True)
-    last_name = models.CharField(max_length=100, blank=True, null=True)
-    nickname = models.CharField(max_length=100, blank=True, null=True)
-    connection = models.CharField(max_length=100, blank=True, null=True)
-    #location = models.ForeignKey("Location")
-    role = models.ForeignKey("Role")
-
-    def __unicode__(self):
-            return self.connection.identity
-        
-class Role(models.Model):
-    name = models.CharField(max_length=160)
-    code = models.CharField(max_length=20, blank=True, null=True,\
-        help_text="Abbreviation")
-
 class App(models.Model):
     name = models.CharField(max_length = 100)
 
@@ -112,7 +97,9 @@ class Domain(models.Model):
         return self.name
     
 class FormEntry(models.Model):
-    reporter = models.ForeignKey(Reporter, blank=True, null=True)#blank for now until we have real users and groups
+    # blank for now until we have real users and groups.
+    # we do have users and groups, but still blank
+    reporter = models.ForeignKey(Reporter, blank=True, null=True)
     domain = models.ForeignKey(Domain)
     form = models.ForeignKey(Form)
     date = models.DateTimeField()
@@ -174,7 +161,7 @@ class TokenValidator(models.Model):
         
 class TokenExistanceValidator(TokenValidator):
     '''Validator that can ensure a token exists in some other model.name db column'''
-    lookup_type = models.ForeignKey(ContentType, verbose_name='type to check against')
+    lookup_type = models.ForeignKey(ContentType, "model", verbose_name='type to check against')
     field_name = models.CharField(max_length = 100)
     
     def __unicode__(self):
@@ -182,11 +169,13 @@ class TokenExistanceValidator(TokenValidator):
     
     def get_validation_errors(self, token_value):
         model_class = ContentType.model_class(self.lookup_type)
-        vals = model_class.objects.values_list(self.field_name, flat=True)
-        #print "validating %s with %s" % (token_value, str(self))
-        if token_value.data not in vals:
+        lookup = { str(self.field_name + "__iexact") : token_value.data } 
+        try: 
+            val = model_class.objects.get(**lookup)
+            return None
+        except model_class.DoesNotExist: 
             return "%s not in list of %s %ss" % (token_value.data, self.lookup_type.name, self.field_name) 
-        return None
+        
         
 class FormAlerter(Alerter):
     '''Alerter for forms, by passing off alerts to a contained list'''

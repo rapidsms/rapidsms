@@ -4,7 +4,6 @@
 from django.contrib import admin
 from apps.form.models import *
 
-admin.site.register(Reporter)
 admin.site.register(Form)
 admin.site.register(Token)
 admin.site.register(Domain)

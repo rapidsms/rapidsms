@@ -70,6 +70,8 @@ class FormsLogic:
         if hasattr(message, "reporter"): 
             # this won't do anything special if this isn't a django property
             instance.reporter = message.reporter
+        # ditto this
+        instance.time = message.date
         return instance
         
     

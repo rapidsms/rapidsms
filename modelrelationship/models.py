@@ -102,3 +102,73 @@ class Edge(models.Model):
     
     def _get_allowable_objects(self):
         pass
+    
+
+class NewEdgeType(models.Model):
+    # This is a really bad class name.  This is to leave the old one in for
+    # backwards compatibility
+    directional = models.BooleanField(default=True)    
+    name = models.CharField(max_length=32, unique=True)
+    description = models.CharField(max_length=255, null=True, blank=True)
+    
+    child_type = models.ForeignKey(ContentType, "model", related_name = 'new child type')    
+    parent_type = models.ForeignKey(ContentType, "model", related_name='new parent type')    
+
+    class Meta:
+        #verbose_name = _("Edge Type")
+        #abstract=True  
+        pass      
+    
+    def __unicode__(self):
+        if self.directional:
+            direction1 = "=="
+            direction2 = '==>'
+        else:
+            direction1 = " <--"
+            direction2 = "--> "
+        
+        return "EdgeType (%s [%s %s %s] %s :: %s)" % (self.parent_type,direction1, self.name,direction2,self.child_type,self.description)
+    
+    def as_edge(self):
+        if self.directional:
+            direction1 = "=="
+            direction2 = '==>'
+        else:
+            direction1 = " <--"
+            direction2 = "--> "
+            
+        return "%s %s %s" % (direction1, self.name, direction2)  
+    def headline_display(self):
+        return "%s" % (self.description)
+
+
+class NewEdge(models.Model):    
+    # This is a really bad class name.  This is to leave the old one in for
+    # backwards compatibility
+    relationship = models.ForeignKey(NewEdgeType)
+    # arg.  this is totally duplicate data with the edge type, but i can't
+    # get django to deal with it correctly
+    # child_type = models.ForeignKey(ContentType, "model", verbose_name=_('child content type'),related_name='new child type set')
+    child_id = models.PositiveIntegerField(_('child object id'), db_index=True)
+    # parent_type = models.ForeignKey(ContentType, "model", verbose_name=_('parent content type'),related_name='new parent type set')
+    parent_id    = models.PositiveIntegerField(_('parent object id'), db_index=True)
+    
+    @property 
+    def child_object(self):
+        model = self.relationship.child_type.model_class()
+        return model.objects.get(id=self.child_id)
+    @property 
+    def parent_object(self):
+        model = self.relationship.parent_type.model_class()
+        return model.objects.get(id=self.parent_id)
+        #generic.GenericForeignKey(ct_field='child_type',fk_field='child_id')    
+    #parent_object = generic.GenericForeignKey(ct_field='parent_type', fk_field='parent_id')
+
+#    @property
+#    def parent_type(self):
+#        return self.relationship.parent_type
+#    @property
+#    def child_type(self):
+#        return self.relationship.child_type
+
+        

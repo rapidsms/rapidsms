@@ -49,7 +49,7 @@ class BasicTestCase(unittest.TestCase):
         for edge in edges:
             cur_id = -1
             ancestry = traversal.getLinearAncestryForEdge(edge)
-            print "*** Verify Ancestry for %s" % (edge.child_object)
+            #print "*** Verify Ancestry for %s" % (edge.child_object)
             for item in ancestry:                
                 #self.assertTrue(cur_id >= item.id)                
                 if item.id > cur_id:

@@ -10,6 +10,7 @@ class NigeriaFormsLogic(FormsLogic):
         I'm not sure whether this will be the right structure
         this was just for getting something hooked up '''
     
+    # this is a simple structure we use to describe the forms.  
     _form_lookups = {
                      "nets" : {
                                "class" : NetDistribution,
@@ -38,17 +39,17 @@ class NigeriaFormsLogic(FormsLogic):
     def validate(self, *args, **kwargs):
         message = args[0]
         form_entry = args[1]
+        # in case we need help, build a valid reminder string
+        required = ["location", "role", "password", "name"]
+        help = ("%s register " % form_entry.domain.code.lower()) +\
+                " ".join(["<%s>" % t for t in required])
         if form_entry.form.type == "register":
             data = form_entry.to_dict()
             print "\n\n%r\n\n" % data
                 
             # check that ALL FIELDS were provided
-            required = ["location", "role", "password", "name"]
             missing = [t for t in required if data[t] is None]
             
-            # in case we need help, build a valid reminder string
-            help = ("%s register " % form_entry.domain.code.lower()) +\
-                " ".join(["<%s>" % t for t in required])
                 
             # missing fields! collate them, and
             # send back a friendly non-localized
@@ -57,21 +58,7 @@ class NigeriaFormsLogic(FormsLogic):
                 mis_str = ", ".join(missing)
                 return ["Missing fields: %s" % mis_str, help]
             
-            try:
-                # attempt to load the location and role objects
-                # via their codes, which will raise if nothing
-                # was found TODO: combine the exceptions
-                data["location"] = Location.objects.get(code__iexact=data["location"])
-                data["role"]     = Role.objects.get(code__iexact=data["role"])
-            
-            except Location.DoesNotExist:
-                return ["Invalid location code: %s" %
-                    data["location"], help]
-            
-            except Role.DoesNotExist:
-                return ["Invalid role code: %s" %
-                    data["role"], help]
-            
+        
             # parse the name via Reporter
             data["alias"], data["first_name"], data["last_name"] =\
                 Reporter.parse_name(data.pop("name"))
@@ -83,6 +70,7 @@ class NigeriaFormsLogic(FormsLogic):
                 return ["Already been registed: %s" %
                     data["alias"], help]
             
+            
             # all fields were present and correct, so copy them into the
             # form_entry, for "actions" to pick up again without re-fetching
             form_entry.rep_data = data
@@ -90,9 +78,20 @@ class NigeriaFormsLogic(FormsLogic):
             # nothing went wrong. the data structure
             # is ready to spawn a Reporter object
             return None
-        elif form_entry.form.type in self._form_lookups.keys() and (not hasattr(message,"reporter") or not message.reporter):  
-            
-            return [ "You must register your phone before submitting data" ]
+        elif form_entry.form.type in self._form_lookups.keys():
+            if not hasattr(message,"reporter") or not message.reporter:  
+                return [ "You must register your phone before submitting data: %s" % help]
+            # we know all the fields in this form are required, so make sure they're set
+            required_token_names = self._form_lookups[form_entry.form.type]["fields"].keys()
+            for token in form_entry.tokenentry_set.all():
+                if token.token.abbreviation in required_token_names:
+                    # found it, as long as the data isn't empty remove it
+                    if token.data:
+                        required_token_names.remove(token.token.abbreviation)
+            if required_token_names:
+                errors = "The following fields are required: " + ", ".join(required_token_names)
+                return [errors]
+            return None
         
     
 
@@ -101,9 +100,14 @@ class NigeriaFormsLogic(FormsLogic):
         form_entry = args[1]
         if form_entry.form.type == "register":
 
+            data = form_entry.rep_data
+            # load the location and role objects via their codes
+            data["location"] = Location.objects.get(code__iexact=data["location"])
+            data["role"]     = Role.objects.get(code__iexact=data["role"])
+            
             # spawn and save the reporter using the
             # data we collected in self.validate
-            rep = Reporter.objects.create(**form_entry.rep_data)
+            rep = Reporter.objects.create(**data)
 
             # we can assume that the new reporter will be using
             # this device again, so register a connection. this
@@ -125,9 +129,8 @@ class NigeriaFormsLogic(FormsLogic):
             instance = self._model_from_form(message, form_entry, form_class, field_map, self._foreign_key_lookups)
             instance.save()
             response = "Received report for %s %s: " % (form_entry.domain.code, to_use["display"])
-            fields = [] 
-            for token, model_attr in field_map.items():
-                if hasattr(instance, model_attr):
-                    fields.append(model_attr + "=" + str(getattr(instance, model_attr)))
-            message.respond(response + ", ".join(fields))
-                    
+            # this line pulls any attributes that are present into 2-item lists
+            attrs = [[attr_name, str(getattr(instance, attr_name))] for attr_name in field_map.values() if hasattr(instance, attr_name)]
+            # joins the inner list on "=" and the outer on ", " so we get 
+            # attr1=value1, attr2=value2
+            message.respond(response + ", ".join(["=".join(t) for t in attrs]))

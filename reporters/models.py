@@ -65,12 +65,12 @@ def loc_post_save(sender, **kwargs):
         if type:
             try:
                 # if the edge already exists, update it
-                edge = Edge.objects.get(relationship=type, child_id=instance.id)
-                edge.parent_object = instance.parent
+                edge = NewEdge.objects.get(relationship=type, child_id=instance.id)
+                edge.parent_id = instance.parent.id
                 edge.save()
-            except Edge.DoesNotExist:
+            except NewEdge.DoesNotExist:
                 # otherwise create a new one
-                edge = Edge(relationship=type, child_object=instance, parent_object=instance.parent)
+                edge = NewEdge(relationship=type, child_id=instance.id, parent_id=instance.parent.id)
                 edge.save()
 
 # this registers the signal so it's called every time we save locations
@@ -80,13 +80,12 @@ def loc_post_init(sender, **kwargs):
     """Location post init signal that reads the parent from model-relationship 
        if it is defined"""
     instance = kwargs["instance"]
-    
     type = _get_location_parent_edge_type()
     if type:
         try:
-            edge = Edge.objects.get(relationship=type, child_id=instance.id)
+            edge = NewEdge.objects.get(relationship=type, child_id=instance.id)
             instance.parent = edge.parent_object
-        except Edge.DoesNotExist:
+        except NewEdge.DoesNotExist:
             # no parent was set, not a problem
             pass
 
@@ -96,12 +95,53 @@ def _get_location_parent_edge_type():
     content_type = ContentType.objects.get(name="location")
     # there is an implicit dependency on this name (Location Parent) being defined
     # as an edge between locations.  This will be done with fixtures
-    types = EdgeType.objects.all().filter(name="Location Parent").filter(parent_type=content_type).filter(child_type=content_type)
+    types = NewEdgeType.objects.all().filter(name="Location Parent").filter(parent_type=content_type.model).filter(child_type=content_type.model)
     # this is dumb for now.  if we have more than one of these edge types, or none,
     # we won't get anything back
     if len(types) == 1:
         return types[0]
     return None
+
+
+
+
+
+class RecursiveManager(models.Manager):
+    """Provides a method to flatten a recursive model (a model which has a ForeignKey field linked back
+       to itself), in addition to the usual models.Manager methods. This Manager queries the database
+       only once (unlike select_related), and sorts them in-memory. Obivously, this efficiency comes
+       at the cost local inefficiency -- O(n^2) -- but that's still preferable to recursively querying
+       the database."""
+    
+    def flatten(self, via_field="parent_id"):
+        all_objects = list(self.all())
+        
+        def pluck(pk=None, depth=0):
+            output = []
+            
+            for object in all_objects:
+                if getattr(object, via_field) == pk:
+                    output += [object] + pluck(object.pk, depth+1)
+                    object.depth = depth
+            
+            return output
+        return pluck()
+
+
+class ReporterGroup(models.Model):
+    title       = models.CharField(max_length=30, unique=True)
+    parent      = models.ForeignKey("self", related_name="children", null=True, blank=True)
+    description = models.TextField(blank=True)
+    objects     = RecursiveManager()
+    
+    
+    class Meta:
+        verbose_name = "Group"
+
+    
+    def __unicode__(self):
+        return self.title
+
 
 class Reporter(models.Model):
     """This model represents a KNOWN person, that can be identified via
@@ -114,8 +154,11 @@ class Reporter(models.Model):
     first_name = models.CharField(max_length=30, blank=True)
     last_name  = models.CharField(max_length=30, blank=True)
     password   = models.CharField(max_length=30, blank=True)
-    location = models.ForeignKey("Location", null=True, blank=True)
-    role = models.ForeignKey("Role", null=True, blank=True)
+    groups     = models.ManyToManyField(ReporterGroup)
+    
+    # here are some fields that don't belong here
+    location   = models.ForeignKey("Location", null=True, blank=True)
+    role       = models.ForeignKey("Role", null=True, blank=True)
 
     def __unicode__(self):
             return self.connection.identity
@@ -226,49 +269,6 @@ class Reporter(models.Model):
         # return the latest, or none, if they've
         # has never been seen on ANY connection
         return max(timedates) if timedates else None
-
-class RecursiveManager(models.Manager):
-    """Provides a method to flatten a recursive model (a model which has a ForeignKey field linked back
-       to itself), in addition to the usual models.Manager methods. This Manager queries the database
-       only once (unlike select_related), and sorts them in-memory. Obivously, this efficiency comes
-       at the cost much higher CPU usage."""
-    
-    def flatten(self, via_field="parent_id"):
-        all_objects = list(self.model.objects.all())
-        
-        def pluck(pk=None, depth=0):
-            output = []
-            
-            for object in all_objects:
-                if getattr(object, via_field) == pk:
-                    output += [object] + pluck(object.pk, depth+1)
-                    object.depth = depth
-            
-            return output
-        return pluck()
-
-
-class ReporterGroup(models.Model):
-    title       = models.CharField(max_length=30, unique=True)
-    parent      = models.ForeignKey("self", related_name="children", null=True, blank=True)
-    description = models.TextField(blank=True)
-    objects     = RecursiveManager()
-    
-    
-    class Meta:
-        verbose_name = "Group"
-
-    
-    def __unicode__(self):
-        return self.title
-    
-    
-    @classmethod
-    def flat_tree(klass):
-        return [g.flat_children() for g in klass.objects.filter(parent=None)]
-    
-    def flat_children(self):
-        return [self] + [c.flat_children() for c in self.children.all()]
 
 
 class BackendManager(models.Manager):
