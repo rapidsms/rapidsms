@@ -113,7 +113,15 @@ class SupplyFormsLogic(FormsLogic):
         partial.save()
         message.respond("Received report for %s %s: origin=%s, dest=%s, waybill=%s, amount=%s, stock=%s. If this is not correct, reply with CANCEL"  
                         % (partial.domain.code, form_entry.form.type, partial.origin, partial.destination, partial.shipment_id, partial.amount, partial.stock))
+        self._notify_counterparty(partial)
         return partial
+
+    def _notify_counterparty(self, partial):
+        #TODO
+        if partial.type == 'I':
+            pass
+        elif partial.type == 'R':
+            pass 
     
     def _match_partial_transaction(self, partial):
         print('match partial transaction')
@@ -204,10 +212,10 @@ class SupplyFormsLogic(FormsLogic):
         # if amount issued does not match amount received, set flag
         if int(issue.amount) != int(receipt.amount):
             transaction.flag = 'A'
-        # if issue's waybill does not match receipt's waybill, set flag
+        # if issue's shipment_id does not match receipt's shipment_id, set flag
         #
         # Note: a transaction can have only one flag. Two 
-        # partial transactions with both mismatched amounts and waybills
+        # partial transactions with both mismatched amounts and shipment_ids
         # should not be sent to this method
         elif int(issue.shipment_id) != int(receipt.shipment_id):
             transaction.flag = 'W'
