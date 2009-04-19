@@ -222,6 +222,12 @@ class Router (component.Receiver):
         # now send the message's responses
         message.flush_responses()
 
+        # we are no longer interested in
+        # this message... but some crazy
+        # synchronous backends might be!
+        message.processed = True
+
+
     def outgoing(self, message):
         self.info("Outgoing message via %s: %s <- '%s'" %\
 			(message.connection.backend.name, message.connection.identity, message.text))
