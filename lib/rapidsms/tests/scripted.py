@@ -4,7 +4,8 @@ from harness import MockRouter, EchoApp
 from rapidsms.backends.backend import Backend
 from rapidsms.message import Message
 import unittest, re
-
+from django.test import TestCase
+ 
 class MetaTestScript (type):
     def __new__(cls, name, bases, attrs):
         for key, obj in attrs.items():
@@ -15,7 +16,7 @@ class MetaTestScript (type):
                 attrs[key] = wrapper
         return type.__new__(cls, name, bases, attrs)
 
-class TestScript (unittest.TestCase):
+class TestScript (TestCase):
     __metaclass__ = MetaTestScript
 
     """

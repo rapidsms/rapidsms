@@ -8,7 +8,7 @@ from rapidsms.person import Person
 from datetime import datetime
 
 class Message(object):
-    def __init__(self, connection=None, text=None, person=None, date=datetime):
+    def __init__(self, connection=None, text=None, person=None, date=datetime.now()):
         if connection == None and person == None:
             raise Exception("Message __init__() must take one of: connection, person")
         self._connection = connection
