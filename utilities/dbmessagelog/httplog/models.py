@@ -8,10 +8,11 @@ class IncomingMessage(models.Model):
         ('T', 'Timeout'), # we sent it for processing but it timed out
         ('E', 'Error'), # something went wrong
     )
-    phone = models.CharField(max_length=100, blank=True, null=True)
+    phone = models.CharField(max_length=100)
     time = models.DateTimeField()
     text = models.CharField(max_length=160)
     status = models.CharField(max_length=1, choices=INCOMING_STATUS_TYPES)
+    responses = models.ManyToManyField("OutgoingMessage")
     
     @property 
     def processed(self):
@@ -26,11 +27,11 @@ class OutgoingMessage(models.Model):
         ('P', 'Processed'), # when the message has been sent back to the user
         ('E', 'Error'), # something went wrong
     )
-    original_message = models.ForeignKey(IncomingMessage) 
+    phone = models.CharField(max_length=100)
     time = models.DateTimeField()
     text = models.CharField(max_length=160)
     status = models.CharField(max_length=1, choices=OUTGOING_STATUS_TYPES)
     
     def __unicode__(self):
-        return "%s < %s" % (self.original_message.phone, self.text)
+        return "%s < %s" % (self.phone, self.text)
 
