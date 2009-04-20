@@ -1,9 +1,10 @@
 from django.db import models
-from apps.reporters.models import Location, Reporter
+from apps.reporters.models import Location, Reporter, PersistantConnection
 
 
 class NetDistribution(models.Model):
-    reporter = models.ForeignKey(Reporter)
+    reporter = models.ForeignKey(Reporter, null=True, blank=True)
+    connection = models.ForeignKey(PersistantConnection, null=True, blank=True)
     location = models.ForeignKey(Location)
     time = models.DateTimeField()
     distributed = models.PositiveIntegerField()
@@ -13,7 +14,8 @@ class NetDistribution(models.Model):
 
 
 class CardDistribution(models.Model):
-    reporter = models.ForeignKey(Reporter)
+    reporter = models.ForeignKey(Reporter, null=True, blank=True)
+    connection = models.ForeignKey(PersistantConnection, null=True, blank=True)
     location = models.ForeignKey(Location)
     time = models.DateTimeField()
     settlements = models.PositiveIntegerField()
