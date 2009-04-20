@@ -1,0 +1,19 @@
+[
+{"pk": 1, "model": "reporters.reportergroup", "fields": {"title": "Users"}},
+
+{"pk": 1, "model": "reporters.reporter", "fields": {"alias": "takinbo", "first_name": "Tim", "last_name": "Akinbo", "password": "1111", "location": 5 }},
+{"pk": 2, "model": "reporters.reporter", "fields": {"alias": "soloz", "first_name": "Solomon", "last_name": "Adebayo", "password": "1111", "location": 6 }},
+{"pk": 3, "model": "reporters.reporter", "fields": {"alias": "czue", "first_name": "Cory", "last_name": "Zue", "password": "1111", "location": 7 }},
+
+{"pk": 1, "model": "nigeria.carddistribution", "fields": {"reporter": 1, "location": 5, "time": "2008-04-20 17:03:03", "settlements": 45, "people": 150, "distributed": 30}},
+{"pk": 2, "model": "nigeria.carddistribution", "fields": {"reporter": 2, "location": 6, "time": "2008-04-20 17:05:03", "settlements": 30, "people": 90, "distributed": 18}},
+{"pk": 3, "model": "nigeria.carddistribution", "fields": {"reporter": 2, "location": 6, "time": "2008-04-21 17:30:03", "settlements": 50, "people": 300, "distributed": 90}},
+{"pk": 4, "model": "nigeria.carddistribution", "fields": {"reporter": 3, "location": 7, "time": "2008-04-21 17:13:03", "settlements": 100, "people": 600, "distributed": 90}},
+{"pk": 5, "model": "nigeria.carddistribution", "fields": {"reporter": 1, "location": 5, "time": "2008-04-22 17:03:03", "settlements": 45, "people": 150, "distributed": 30}},
+{"pk": 6, "model": "nigeria.carddistribution", "fields": {"reporter": 2, "location": 6, "time": "2008-04-22 17:03:03", "settlements": 13, "people": 240, "distributed": 100}},
+{"pk": 7, "model": "nigeria.carddistribution", "fields": {"reporter": 3, "location": 7, "time": "2008-04-22 17:12:03", "settlements": 8, "people": 80, "distributed": 20}},
+{"pk": 8, "model": "nigeria.carddistribution", "fields": {"reporter": 3, "location": 7, "time": "2008-04-23 18:00:03", "settlements": 80, "people": 800, "distributed": 100}},
+{"pk": 9, "model": "nigeria.carddistribution", "fields": {"reporter": 1, "location": 5, "time": "2008-04-23 18:23:00", "settlements": 50, "people": 150, "distributed": 40}},
+{"pk": 10, "model": "nigeria.carddistribution", "fields": {"reporter": 1, "location": 5, "time": "2008-04-24 17:03:03", "settlements": 100, "people": 300, "distributed": 60}},
+{"pk": 11, "model": "nigeria.carddistribution", "fields": {"reporter": 1, "location": 5, "time": "2008-04-25 17:34:20", "settlements": 12, "people": 120, "distributed": 40}}
+]
