@@ -110,3 +110,20 @@ class TestApp (TestScript):
         # new figures should add up
         self.assertEqual(issue.amount, second_receipt.amount)
         self.assertEqual(second_transaction.amount_sent, second_transaction.amount_received)
+
+    def testUnregisteredSubmissions(self):
+        # send a form from an unregistered user and assure it is accepted
+        unregistered_submission = """
+            supply_tus_1 > llin issue from 20 to 2027 11111 200 1800
+            supply_tus_1 < Received report for LLIN issue: origin=KANO, dest=KURA, waybill=11111, amount=200, stock=1800. If this is not correct, reply with CANCEL. Please register your phone
+            """
+        self.runScript(unregistered_submission)
+        
+        # check that the connection object in the transaction is set properly
+        connection = PersistantConnection.objects.get(identity="supply_tus_1")
+        issue = PartialTransaction.objects.get(origin__name="KANO",\
+           destination__name="KURA", shipment_id="11111",\
+           domain__code="LLIN", type="I", connection=connection)
+        
+        # check that the reporter is empty
+        self.assertFalse(issue.reporter)

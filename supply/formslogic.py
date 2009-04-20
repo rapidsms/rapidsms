@@ -68,7 +68,7 @@ class SupplyFormsLogic(FormsLogic):
         # this means that at least one (actually exactly one) is set
         # the method above sets this property in the partial transaction
         # if it was found.
-        if not hasattr(partial.reporter) or not partial.reporter:
+        if not hasattr(partial, "reporter") or not partial.reporter:
             partial.connection = message.persistant_connection
         partial.domain = form_entry.domain
         partial.date = form_entry.date
