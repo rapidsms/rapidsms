@@ -13,6 +13,7 @@ class SupplyFormsLogic(FormsLogic):
         this was just for getting something hooked up '''
        
     def validate(self, *args, **kwargs):
+        #TODO clean up debug print statements in this file
         print "Supply validated!"
         print "You passed in %s" % args[0]
         # if the message doesn't have a registered reporter then fail
@@ -29,7 +30,7 @@ class SupplyFormsLogic(FormsLogic):
         
         # I'm just going to hard code this here.  This should possibly be moved
         # Since actions was called we assume validation passed.  
-        # The first thing we do is create a PendingTransaction object and save it
+        # The first thing we do is create a PartialTransaction object and save it
         pending = self._partial_transaction_from_form(message, form_entry)
         
         # Update stock balance and flag this partial
