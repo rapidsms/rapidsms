@@ -127,6 +127,7 @@ class NigeriaFormsLogic(FormsLogic):
             form_class = to_use["class"]
             field_map = to_use["fields"]
             instance = self._model_from_form(message, form_entry, form_class, field_map, self._foreign_key_lookups)
+            instance.time = message.date
             instance.save()
             response = "Received report for %s %s: " % (form_entry.domain.code, to_use["display"])
             # this line pulls any attributes that are present into 2-item lists
