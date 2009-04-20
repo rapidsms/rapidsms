@@ -13,13 +13,7 @@ class SupplyFormsLogic(FormsLogic):
         this was just for getting something hooked up '''
        
     def validate(self, *args, **kwargs):
-        #TODO clean up debug print statements in this file
-        print "Supply validated!"
-        print "You passed in %s" % args[0]
-        # if the message doesn't have a registered reporter then fail
-        message = args[0]
-        if not hasattr(message, "reporter"):
-            return [ "You must register your phone before submitting data" ]
+        pass 
             
         
     def actions(self, *args, **kwargs):
@@ -70,16 +64,23 @@ class SupplyFormsLogic(FormsLogic):
         this_form_lookups = self._form_lookups[form_entry.form.type]
         partial = self._model_from_form(message, form_entry, PartialTransaction, 
                                         this_form_lookups, self._foreign_key_lookups)
+        # if the reporter isn't set then populate the connection object.
+        # this means that at least one (actually exactly one) is set
+        # the method above sets this property in the partial transaction
+        # if it was found.
+        if not hasattr(partial.reporter) or not partial.reporter:
+            partial.connection = message.persistant_connection
         partial.domain = form_entry.domain
         partial.date = form_entry.date
         partial.type = this_form_lookups["type"]
         partial.status = "P"
         # gather partial transactions from the same place to the same place with
         # for the same stuff with the same waybill before we save the new one
-        # TODO? checking for same phone currently, should we not?
+        # TODO? not checking for same phone reporter or connection currently
+        # should we?
         all_partials_to_amend = PartialTransaction.objects.filter(origin=partial.origin,\
             destination=partial.destination, shipment_id=partial.shipment_id,\
-            domain=partial.domain, type=partial.type,  reporter=partial.reporter)
+            domain=partial.domain, type=partial.type)
 
         # we're going to deal with confirmed partials separately
         confirmed_partials_to_amend = all_partials_to_amend.filter(status = 'C')
@@ -112,8 +113,11 @@ class SupplyFormsLogic(FormsLogic):
                 partials_to_amend.update(status = "A")
 
         partial.save()
-        message.respond("Received report for %s %s: origin=%s, dest=%s, waybill=%s, amount=%s, stock=%s. If this is not correct, reply with CANCEL"  
-                        % (partial.domain.code, form_entry.form.type, partial.origin, partial.destination, partial.shipment_id, partial.amount, partial.stock))
+        response = "Received report for %s %s: origin=%s, dest=%s, waybill=%s, amount=%s, stock=%s. If this is not correct, reply with CANCEL" % (
+             partial.domain.code, form_entry.form.type, partial.origin, partial.destination, partial.shipment_id, partial.amount, partial.stock)  
+        if not partial.reporter:
+            response = response + ". Please register your phone"
+        message.respond(response)
         self._notify_counterparty(partial)
         return partial
 
