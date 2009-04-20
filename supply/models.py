@@ -53,6 +53,7 @@ class PartialTransaction(models.Model):
     )
     FLAG_TYPES = (
         ('S', 'Reported stock does not match expected stock balance.'),
+        ('U', 'Unregistered reporter.'),
     )
     
     reporter = models.ForeignKey(Reporter)
