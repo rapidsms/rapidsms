@@ -53,7 +53,7 @@ def api(request, url, timeout=30, interval=.5):
                 # wait a short time before checking
                 # again, to avoid pegging the cpu
                 countdown -= interval
-                print "sleeping... %s" % countdown
+                #print "sleeping... %s" % countdown
                 time.sleep(interval)
         
         # it was successfully handled by rapid sms
