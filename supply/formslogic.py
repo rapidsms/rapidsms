@@ -41,7 +41,7 @@ class SupplyFormsLogic(FormsLogic):
         # and create a new transaction
         self._match_partial_transaction(pending)
         
-    # Just hard coding this for now.  We might want to revisit this.
+    #TODO Just hard coding this for now.  We might want to revisit this.
     _form_lookups = {"issue" : {
                                 "origin" : "origin", 
                                 "dest" : "destination", 
@@ -76,7 +76,6 @@ class SupplyFormsLogic(FormsLogic):
         partial.status = "P"
         # gather partial transactions from the same place to the same place with
         # for the same stuff with the same waybill before we save the new one
-        # TODO? checking for same phone currently, should we not?
         all_partials_to_amend = PartialTransaction.objects.filter(origin=partial.origin,\
             destination=partial.destination, shipment_id=partial.shipment_id,\
             domain=partial.domain, type=partial.type,  reporter=partial.reporter)
