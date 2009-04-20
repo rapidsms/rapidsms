@@ -36,10 +36,6 @@ class TestApp (TestScript):
         sender = Reporter.objects.get(alias="msender")
         recipient = Reporter.objects.get(alias="mrecipient")
 
-        partials = PartialTransaction.objects.all()
-        for p in partials:
-            print(p)
-
         issue = PartialTransaction.objects.get(origin__name="KANO",\
            destination__name="KURA", shipment_id="11111",\
            domain__code="LLIN", type="I", reporter__pk=sender.pk)
@@ -82,6 +78,7 @@ class TestApp (TestScript):
             """
         self.runScript(amendment)
 
+        # pick fresh sprouts of these from the database
         receipt = PartialTransaction.objects.get(pk=receipt.pk)
         first_transaction = Transaction.objects.get(pk=first_transaction.pk)
 
@@ -95,12 +92,15 @@ class TestApp (TestScript):
            destination__name__iexact="KURA", shipment_id="11111",\
            domain__code__iexact="LLIN", type="R", reporter=recipient, status="C")
 
+        # make sure this is a new one
         self.assertNotEqual(second_receipt.pk, receipt.pk)
 
+        # make sure a new transaction was matched
         second_transaction = Transaction.objects.get(domain__code__iexact="LLIN",\
             amount_sent=issue.amount, amount_received=second_receipt.amount,\
             issue=issue, receipt=second_receipt)
 
+        # make sure this is a new one
         self.assertNotEqual(first_transaction.pk, second_transaction.pk)
 
         # the new transaction should not be flagged with either of these
