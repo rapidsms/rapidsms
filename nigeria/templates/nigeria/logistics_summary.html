@@ -1,0 +1,85 @@
+{% extends "layout.html" %}
+{% block title %}Logistics Summary{% endblock %}
+{% block javascripts %}
+<script language="javascript" type="text/javascript" src="/static/nigeria/js/jquery.flot.min.js"></script>
+<!--[if IE]>
+<script language="javascript" type="text/javascript" src="/static/nigeria/js/excanvas.pack.js"></script>
+<![endif]-->
+<script language="javascript">
+$(document).ready(function() {
+stocklevels_overtime = [[[0, 300], [1, 350], [2, 500], [3, 510], [4, 560]],
+			];
+stocklevels_perlocation = [
+	{ label: 'Ajingi', data: [[0,1000]]},
+	{ label: 'Balare', data: [[1,1500]]},
+	{ label: 'Dam Batta', data: [[2,1300]]},
+	{ label: 'Bunkure', data: [[3,1430]]}
+];
+//	data = [
+//	 { label: 'APK', data: [[0,10]]},
+//	 { label: 'DPO', data: [[1,20]]},
+//	 { label: 'PMS', data: [[2,50]]},
+//	 { label: 'AGO', data: [[3,20]]}
+//	];
+//	options = { pies: {show: true, labelWidth: 30, fontSize: 10, autoScale: true, fillOpacity: 1}};
+///	$.plot($('#piechart'), data, options);
+//$.plot($('#sl_ot'), stocklevels_overtime, {'lines': {show: true, fill: true}});
+//$.plot($('#sl_pl'), stocklevels_perlocation, {'bars':{show: true}});
+
+gData = [{"bars":{"show":true},"label":"Ajingi","data":[[-0.5,100]]},{"bars":{"show":true},"label":"Bebeji","data":[[0.5,650]]},{"bars":{"show":true},"label":"Bichi","data":[[1.5,750]]},{"bars":{"show":true},"label":"Dala","data":[[2.5,100]]},{"bars":{"show":true},"label":"Garko","data":[[3.5,500]]}];
+gOptions = {"grid":{"clickable":true},"xaxis":{"min":-0.5,"max":5,"ticks":[[0,"Ajingi"],[1,"Bebeji"],[2,"Bichi"],[3,"Dala"],[4,"Garko"]],"tickFormatter":"string"}};
+$.plot($("#sl_pl"), gData, gOptions);
+
+data_for_dates = [{"label":"Ajingi","data":[[1239706800000,1000],[1239793200000,800],[1239836400000,700],[1239966000000,650],[1240052400000,450],[1240138800000,350],[1240182000000,200],[1240268400000,100]]},{"label":"Bebeji","data":[[1239706800000,500],[1239793200000,350],[1239836400000,250],[1239966000000,1250],[1240052400000,1000],[1240138800000,900],[1240182000000,700],[1240268400000,650]]},{"label":"Bichi","data":[[1239706800000,1500],[1239793200000,1500],[1239836400000,1500],[1239966000000,1200],[1240052400000,1100],[1240138800000,1000],[1240182000000,850],[1240268400000,750]]},{"label":"Dala","data":[[1239706800000,200],[1239793200000,1500],[1239836400000,1250],[1239966000000,1100],[1240052400000,900],[1240138800000,600],[1240182000000,300],[1240268400000,100]]},{"label":"Garko","data":[[1239706800000,750],[1239793200000,450],[1239836400000,250],[1239966000000,250],[1240052400000,250],[1240138800000,50],[1240182000000,750],[1240268400000,500]]}];
+axis_for_dates = {"bars":{"show":false},"points":{"show":true},"grid":{"clickable":false},"xaxis":{"mode":"time","timeformat":"%m/%d/%y"},"legend":{"show":true},"lines":{"show":true}};
+
+$.plot($('#sl_ot'), data_for_dates, axis_for_dates);
+
+});
+</script>
+{% endblock %}
+{% block stylesheets %}
+<style>
+td {border-top: none}
+</style>
+{% endblock %}
+{% block content %}
+<div class="split">
+  <table width="100%">
+    <tr>
+      <td>
+        <div class="module">
+          <h2>Stock Levels Over Time</h2>
+	  <div id="sl_ot" style="height:350px;width:450px;">
+	  </div>
+        </div>
+      </td>
+      <td>
+	<div class="module">
+          <h2>Stock Levels Per Location</h2>
+	  <div id="sl_pl" style="height:350px;width:450px;">
+	  </div>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <div class="module">
+          <h2>Shipment Discrepancies Over Time</h2>
+			<table class="shipment_discrepancy" width="100%">
+			<thead><tr><th>Waybill No.</th><th>Date Sent</th><th>Date Received</th><th>From</th><th>To</th><th>Amount Sent</th><th>Amount Received</th></tr></thead>
+			<tbody>
+			{% for transaction in transactions %}
+				<tr><td>{{transaction.shipment.shipment_id}}</td><td>{{transaction.shipment.sent|date:"M j, Y h:iA"}}</td><td>{{transaction.shipment.received|date:"M j, Y h:iA"}}</td><td>{{transaction.shipment.origin.name}}</td><td>{{transaction.shipment.destination.name}}</td><td>{{transaction.amount_sent}}</td><td>{{transaction.amount_received}}</td></tr>
+			{% endfor %}
+			</tbody>
+			</table>
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>
+
+</div>
+</div>
+{% endblock %}

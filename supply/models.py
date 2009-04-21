@@ -26,6 +26,9 @@ class Shipment(models.Model):
     received = models.DateTimeField()
     shipment_id = models.PositiveIntegerField(blank=True, null=True, help_text="Waybill number")
 
+    def __unicode__(self):
+        return "%s (%s) ==> %s (%s)" % (self.origin.name, self.sent.date(), self.destination.name, self.received.date())
+    
 class Transaction(models.Model):
     FLAG_TYPES = (
         ('A', 'Amount received does not match amount issued'),
@@ -41,6 +44,9 @@ class Transaction(models.Model):
     receipt = models.ForeignKey('PartialTransaction', related_name='receipts')
     flag = models.CharField(blank=True, null=True, max_length=1, choices=FLAG_TYPES)
 
+    def __unicode__(self):
+        return "%s (%s) ==> %s (%s)" % (self.shipment.origin.name, self.amount_sent, self.shipment.destination.name, self.amount_received)
+    
 class PartialTransaction(models.Model):
     TRANSACTION_TYPES = (
         ('I', 'Issue'),
