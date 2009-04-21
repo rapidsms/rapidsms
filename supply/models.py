@@ -7,7 +7,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from apps.form.models import Domain
-from apps.reporters.models import Location, Reporter
+from apps.reporters.models import Location, Reporter, PersistantConnection
 from datetime import date
 import re
 
@@ -55,7 +55,8 @@ class PartialTransaction(models.Model):
         ('S', 'Reported stock does not match expected stock balance.'),
     )
     
-    reporter = models.ForeignKey(Reporter)
+    reporter = models.ForeignKey(Reporter, blank=True, null=True)
+    connection = models.ForeignKey(PersistantConnection, blank=True, null=True)
     domain = models.ForeignKey(Domain)
     origin = models.ForeignKey(Location, related_name='origins')
     destination = models.ForeignKey(Location, related_name='destinations')

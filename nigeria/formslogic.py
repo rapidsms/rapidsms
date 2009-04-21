@@ -79,8 +79,6 @@ class NigeriaFormsLogic(FormsLogic):
             # is ready to spawn a Reporter object
             return None
         elif form_entry.form.type in self._form_lookups.keys():
-            if not hasattr(message,"reporter") or not message.reporter:  
-                return [ "You must register your phone before submitting data: %s" % help]
             # we know all the fields in this form are required, so make sure they're set
             required_token_names = self._form_lookups[form_entry.form.type]["fields"].keys()
             for token in form_entry.tokenentry_set.all():
@@ -126,11 +124,23 @@ class NigeriaFormsLogic(FormsLogic):
             to_use = self._form_lookups[form_entry.form.type]
             form_class = to_use["class"]
             field_map = to_use["fields"]
+            # create and save the model from the form data
             instance = self._model_from_form(message, form_entry, form_class, field_map, self._foreign_key_lookups)
+            instance.time = message.date
+            
+            # if the reporter isn't set then populate the connection object.
+            # this means that at least one (actually exactly one) is set
+            # the method above sets this property in the instance
+            # if it was found.
+            if not hasattr(instance, "reporter") or not instance.reporter:
+                instance.connection = message.persistant_connection
             instance.save()
             response = "Received report for %s %s: " % (form_entry.domain.code, to_use["display"])
             # this line pulls any attributes that are present into 2-item lists
             attrs = [[attr_name, str(getattr(instance, attr_name))] for attr_name in field_map.values() if hasattr(instance, attr_name)]
             # joins the inner list on "=" and the outer on ", " so we get 
             # attr1=value1, attr2=value2
-            message.respond(response + ", ".join(["=".join(t) for t in attrs]))
+            response = response + ", ".join(["=".join(t) for t in attrs])
+            if not instance.reporter:
+                response = response + ". Please register your phone"
+            message.respond(response)

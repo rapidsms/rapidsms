@@ -13,12 +13,7 @@ class SupplyFormsLogic(FormsLogic):
         this was just for getting something hooked up '''
        
     def validate(self, *args, **kwargs):
-        print "Supply validated!"
-        print "You passed in %s" % args[0]
-        # if the message doesn't have a registered reporter then fail
-        message = args[0]
-        if not hasattr(message, "reporter"):
-            return [ "You must register your phone before submitting data" ]
+        pass 
             
         
     def actions(self, *args, **kwargs):
@@ -29,7 +24,7 @@ class SupplyFormsLogic(FormsLogic):
         
         # I'm just going to hard code this here.  This should possibly be moved
         # Since actions was called we assume validation passed.  
-        # The first thing we do is create a PendingTransaction object and save it
+        # The first thing we do is create a PartialTransaction object and save it
         pending = self._partial_transaction_from_form(message, form_entry)
         
         # Update stock balance and flag this partial
@@ -69,16 +64,23 @@ class SupplyFormsLogic(FormsLogic):
         this_form_lookups = self._form_lookups[form_entry.form.type]
         partial = self._model_from_form(message, form_entry, PartialTransaction, 
                                         this_form_lookups, self._foreign_key_lookups)
+        # if the reporter isn't set then populate the connection object.
+        # this means that at least one (actually exactly one) is set
+        # the method above sets this property in the partial transaction
+        # if it was found.
+        if not hasattr(partial, "reporter") or not partial.reporter:
+            partial.connection = message.persistant_connection
         partial.domain = form_entry.domain
         partial.date = form_entry.date
         partial.type = this_form_lookups["type"]
         partial.status = "P"
         # gather partial transactions from the same place to the same place with
         # for the same stuff with the same waybill before we save the new one
-        # TODO? checking for same phone currently, should we not?
+        # TODO? not checking for same phone reporter or connection currently
+        # should we?
         all_partials_to_amend = PartialTransaction.objects.filter(origin=partial.origin,\
             destination=partial.destination, shipment_id=partial.shipment_id,\
-            domain=partial.domain, type=partial.type,  reporter=partial.reporter)
+            domain=partial.domain, type=partial.type)
 
         # we're going to deal with confirmed partials separately
         confirmed_partials_to_amend = all_partials_to_amend.filter(status = 'C')
@@ -111,9 +113,20 @@ class SupplyFormsLogic(FormsLogic):
                 partials_to_amend.update(status = "A")
 
         partial.save()
-        message.respond("Received report for %s %s: origin=%s, dest=%s, waybill=%s, amount=%s, stock=%s. If this is not correct, reply with CANCEL"  
-                        % (partial.domain.code, form_entry.form.type, partial.origin, partial.destination, partial.shipment_id, partial.amount, partial.stock))
+        response = "Received report for %s %s: origin=%s, dest=%s, waybill=%s, amount=%s, stock=%s. If this is not correct, reply with CANCEL" % (
+             partial.domain.code, form_entry.form.type, partial.origin, partial.destination, partial.shipment_id, partial.amount, partial.stock)  
+        if not partial.reporter:
+            response = response + ". Please register your phone"
+        message.respond(response)
+        self._notify_counterparty(partial)
         return partial
+
+    def _notify_counterparty(self, partial):
+        #TODO
+        if partial.type == 'I':
+            pass
+        elif partial.type == 'R':
+            pass 
     
     def _match_partial_transaction(self, partial):
         print('match partial transaction')
@@ -204,10 +217,10 @@ class SupplyFormsLogic(FormsLogic):
         # if amount issued does not match amount received, set flag
         if int(issue.amount) != int(receipt.amount):
             transaction.flag = 'A'
-        # if issue's waybill does not match receipt's waybill, set flag
+        # if issue's shipment_id does not match receipt's shipment_id, set flag
         #
         # Note: a transaction can have only one flag. Two 
-        # partial transactions with both mismatched amounts and waybills
+        # partial transactions with both mismatched amounts and shipment_ids
         # should not be sent to this method
         elif int(issue.shipment_id) != int(receipt.shipment_id):
             transaction.flag = 'W'

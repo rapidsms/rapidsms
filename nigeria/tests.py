@@ -24,6 +24,18 @@ class TestApp (TestScript):
         self._testForms()
         self._testRoles()
         
+    def testScript(self):
+        a = """
+           8005551219 > llin register 20 dl secret crummy user
+           8005551219 < Hello cuser! You are now registered as Distribution point team leader at KANO State.
+           """
+        self.runScript(a)
+        # this should succeed because we just created him
+        Reporter.objects.get(alias="cuser")
+        dict = {"alias":"fail"}
+        # make sure checking a non-existant user fails
+        self.assertRaises(Reporter.DoesNotExist, Reporter.objects.get, **dict)     
+        
     testRegistration = """
            8005551212 > llin my status
            8005551212 < Sorry, I don't know who you are.
@@ -51,8 +63,6 @@ class TestApp (TestScript):
          """
     
     testNets= """
-           8005551213 > llin nets 2001 123 456 78 90
-           8005551213 < Invalid form.  You must register your phone before submitting data: llin register <location> <role> <password> <name>
            8005551213 > llin register 2001 lf anothersecret net guy
            8005551213 < Hello nguy! You are now registered as LGA focal person at AJINGI LGA.
            8005551213 > llin nets 2001 123 456 78 90
@@ -62,8 +72,6 @@ class TestApp (TestScript):
          """
     
     testNetCards= """
-           8005551214 > llin net cards 200201 123 456 78 
-           8005551214 < Invalid form.  You must register your phone before submitting data: llin register <location> <role> <password> <name>
            8005551214 > llin register 200201 lf anothersecret card guy
            8005551214 < Hello cguy! You are now registered as LGA focal person at ALBASU CENTRAL Ward.
            8005551214 > llin net cards 200201 123 456 78 
@@ -71,6 +79,19 @@ class TestApp (TestScript):
            8005551214 > llin net cards 200201 123 456  
            8005551214 < Invalid form.  The following fields are required: coupons
          """
+         
+    testUnregisteredSubmissions = """
+            tus_1 > llin net cards 200201 123 456 78
+            tus_1 < Received report for LLIN net cards: settlements=123, people=456, distributed=78, location=ALBASU CENTRAL. Please register your phone
+            tus_1 > llin my status
+            tus_1 < Sorry, I don't know who you are.
+            tus_2 > llin nets 2001 123 456 78 90
+            tus_2 < Received report for LLIN nets: expected=456, actual=78, location=AJINGI, distributed=123, discrepancy=90. Please register your phone
+            tus_2 > llin my status
+            tus_2 < Sorry, I don't know who you are.
+         """
+           
+         
     
     def _testKanoLocations(self):
         loc_types = LocationType.objects.all()
