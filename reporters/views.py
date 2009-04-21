@@ -101,18 +101,8 @@ def add_reporter(req):
                 link="/reporters")
         
         except Exception, err:
-            
-            # roll back the transaction, to avoid creating
-            # a reporter with no connections, if the error
-            # came late in the creation process
             transaction.rollback()
-            	
-            # something went wrong during object creation.
-            # this should have been caught by javascript,
-            # so halt with a low-tech but safe error
-            return HttpResponseServerError(
-                "\n".join(list(e for e in err)),
-                content_type="text/plain")
+            raise
     
     # invoke the correct function...
     # this should be abstracted away
@@ -148,9 +138,7 @@ def edit_reporter(req, pk):
         
         except Exception, err:
             transaction.rollback()
-            return HttpResponseServerError(
-                "\n".join(list(e for e in err)),
-                content_type="text/plain")
+            raise
         
     # invoke the correct function...
     # this should be abstracted away
