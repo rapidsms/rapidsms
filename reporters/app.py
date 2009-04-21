@@ -73,24 +73,8 @@ class App(rapidsms.app.App):
         # not found in localized language. try again in english
         # TODO: allow the default to be set in rapidsms.ini
         return self.__str(key, lang="en") if lang != "en" else None
-        
     
     
-    def __connection(self, msg):
-        """Given a message, search for a PersistantConnection
-           object for an matching the backend and identity,
-           which indicates that it was created via the same
-           device (not necessarily the same person, though!)."""
-        try:
-            ident = msg.connection.identity
-            bck = PersistantBackend.from_message(msg)
-            return PersistantConnection.objects.get(
-                identity=ident, backend=bck)
-        
-        # the caller is unknown to us...
-        except PersistantConnection.DoesNotExist:
-            return None
-
     def __deny(self, msg):
         """Responds to an incoming message with a localizable
            error message to instruct the caller to identify."""
@@ -100,22 +84,17 @@ class App(rapidsms.app.App):
     def parse(self, msg):
         
         # fetch the persistantconnection object
-        # for this message's sender, and abort
-        # if we've never seen them before
-        conn = self.__connection(msg)
-        if conn is None:
-            msg.persistant_backend = None
-            msg.persistant_connection = None
-            msg.reporter = None
-            return False
-            
-        # stuff all that useful meta-data into
-        # the message, for other apps to observe
-        msg.persistant_backend = conn.backend
+        # for this message's sender (or create
+        # one if this is the first time we've
+        # seen the sender), and stuff the meta-
+        # dta into the message for other apps
+        conn = PersistantConnection.from_message(msg)
         msg.persistant_connection = conn
         msg.reporter = conn.reporter
         
-        self.info("Identified %s as %r" % (conn.reporter, msg.reporter))
+        # log, whether we know who the sender is or not
+        if msg.reporter: self.info("Identified: %s as %r" % (conn, msg.reporter))
+        else:            self.info("Unidentified: %s" % (conn))
         
         # update last_seen, which automatically
         # populates the same property 
@@ -163,18 +142,13 @@ class App(rapidsms.app.App):
             msg.respond(self.__str("bad-alias"))
             return True
         
-        # find (or create) the PersistantConnection object for
-        # this message's sender, or create a fresh one if this
-        # is the first time we've heard from this device
-        ident = msg.connection.identity
-        bck = PersistantBackend.from_message(msg)
-        conn, created = PersistantConnection.objects.get_or_create(
-            identity=ident, backend=bck)
         
-        # assign the reporter to it (it may have
-        # already been linked to someone else!)
-        conn.reporter = rep
-        conn.save()
+        # assign the reporter to this message's connection
+        # (it may currently be assigned to someone else)
+        msg.persistant_connection.reporter = rep
+        msg.persistant_connection.save()
+        msg.reporter = rep
+        
         
         # send a welcome message back to the now-registered reporter,
         # depending on how long it's been since their last visit
