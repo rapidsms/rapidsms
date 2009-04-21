@@ -5,7 +5,8 @@ from rapidsms.backends.backend import Backend
 from rapidsms.message import Message
 import unittest, re
 from django.test import TestCase
- 
+from datetime import datetime
+
 class MetaTestScript (type):
     def __new__(cls, name, bases, attrs):
         for key, obj in attrs.items():
@@ -67,14 +68,22 @@ class TestScript (TestCase):
             if not line or line.startswith("#"): continue
             tokens = re.split(r'([<>])', line, 1)
             num, dir, txt = map(lambda (x):x.strip(), tokens)
-            cmds.append((num, dir, txt))
+            # allow users to optionally put dates in the number
+            # 19232922@200804150730
+            if "@" in num:
+                num, datestr = num.split("@")
+                date = datetime.strptime(datestr, "%Y%m%d%H%M")
+            else:
+                date = datetime.now()
+            cmds.append((num, date, dir, txt))
         return cmds
      
     def runParsedScript (self, cmds):
         self.router.start()
-        for num, dir, txt in cmds:
+        for num, date, dir, txt in cmds:
             if dir == '>':
                 msg = self.backend.message(num, txt)
+                msg.date = date 
                 self.backend.route(msg)  
                 self.router.run()
             elif dir == '<':
