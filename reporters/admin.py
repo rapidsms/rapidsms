@@ -4,23 +4,26 @@
 from django.contrib import admin
 from apps.reporters.models import *
 
+class LocationInline(admin.TabularInline):
+    model = Location
 
 class LocationAdmin(admin.ModelAdmin):
-    list_display = ['name',
-                    'type',
-                    'code',
-                    'latitude',
-                    'longitude',
-                    'parent'
-                    ]
-    list_filter = ['type',
-                   ]
+    list_display = ['name','type','code','latitude','longitude','parent']
+    list_filter = ['type',]
+    search_fields = ['name','code']
+    inlines = [LocationInline,]
 
+class ReporterAdmin(admin.ModelAdmin):
+    list_display = ['alias', 'first_name', 'last_name', 'location','role']
+    search_fields = ['alias','first_name','last_name','groups'] 
 
-admin.site.register(Role)
+class RoleAdmin(admin.ModelAdmin):
+    list_display = ['name','code']
+
+admin.site.register(Role, RoleAdmin)
 admin.site.register(LocationType)
 admin.site.register(Location, LocationAdmin)
-admin.site.register(Reporter)
+admin.site.register(Reporter, ReporterAdmin)
 admin.site.register(ReporterGroup)
 admin.site.register(PersistantBackend)
 admin.site.register(PersistantConnection)
