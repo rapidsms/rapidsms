@@ -1,0 +1,163 @@
+Grapher README
+
+Eliane Stampfer: eliane.stampfer@gmail.com
+April 2009
+
+The grapher is a python wrapper for flot.  It generates javascript and html to display flot graphs.  
+The grapher does not do error checking.  Inputs are assumed to be valid.  Invalid inputs may make flot crash.
+
+Flot API: http://flot.googlecode.com/svn/trunk/API.txt
+
+
+**Displaying Data**
+Data:
+	Data should be organized in an array of hashes.  The datapoints themselves should be in an array of arrays.  The inner arrays are the [x,y] coordinates, and the outer arrays organize them into series.  
+	Simple example:
+		>d1 = [[1, 11],[2, 12],[3, 13]]
+		>d2 = [[1, 14], [2,17], [3,18], [4,19]]
+		>d3 = [[11, 1],[12, 2],[13, 3]]
+		>sample_array = [{'data': d1}, {'data': d2}, {'data': d3}]
+		>g = FlotGraph()
+		>g.set_data(sample_array)
+		In this example, the graph will plot three series with default settings for titles and display.
+		The default display is a line with points.  The default title is "series [number]"
+	
+	Data can include a title for the series and options for how the series should be plotted.
+	Titles go under 'label'.
+	The display options 'lines', 'bars', and 'points' should each have their respective hash, even if the options are not set (ex. the points hash for the third data set in the full example)
+	line options: 
+		fill--assign a value from 0 to 1 to fill the area under the line.  The value determines the opacity.  
+				Default value is not filled.
+		lineWidth--assign an integer to set the thickness of the line
+	bar options:
+		fill--assign a value from 0 to 1 to fill the bars.  The value determines the opacity.  Default value is filled.
+		barWidth--assign a value to set the thickness of the bars.  The default value is 1.
+		align--"left" or "center" to determine the placement of the bars.  Default value is left.
+	point options:
+		radius--assign an integer to set the size of the points
+	
+	Full example:
+		>d1 = [[1, 11],[2, 12],[3, 13]]
+		>d2 = [[1, 14], [2,17], [3,18], [4,19]]
+		>d3 = [[11, 1],[12, 2],[13, 3]]
+		>d4 = [[1, 4], [2,7], [3,8], [4,9]]
+		>array_of_series = [
+		>	{'data': d1, 'label': "United States", 'lines': {'fill': ".5", 'lineWidth': "2"},}, 
+		>	{'data': d2, 'label': "Russia", 'bars': {'barWidth': ".5", 'align': "center"}}, 
+		>	{'data': d3, 'label': "United Kingdom", 'points':{}}, 
+		>	{'data': d4,}
+		>]
+		>g = FlotGraph()
+		>g.set_data(array_of_series)
+		In this example, the fourth data series did not have options set and will have default settings for display and title.
+
+	To have an axis display time:  
+	>g.set_xaxis_mode("time")
+	From the Flot API: "The time series support in Flot is based on Javascript timestamps,
+		i.e. everywhere a time value is expected or handed over, a Javascript
+		timestamp number is used. This is a number, not a Date object. A
+		Javascript timestamp is the number of milliseconds since January 1,
+		1970 00:00:00 UTC. This is almost the same as Unix timestamps, except it's
+		in milliseconds, so remember to multiply by 1000!"
+	
+	To set the time format (sample): 
+	>g.set_time_format("%d/%m")
+	From the Flot API: " The following specifiers are supported 
+		%h': hours
+  		%H': hours (left-padded with a zero)
+ 		%M': minutes (left-padded with a zero)
+  		%S': seconds (left-padded with a zero)
+  		%d': day of month (1-31)
+  		%m': month (1-12)
+  		%y': year (four digits"
+	The grapher does not validate the time format.
+
+Markings:
+	Rectangular areas of the graph can be highlighted with colors.  Their dimensions should be organized in an array of hashes.  If a color is not given, a default color will be used.  If a label and a color are given, the label will be added to the key of the graph.  If a label is given without a color, it will not be on the key.  If dimensions are only given for one axis, the area will extend the full length of the other axis.  In this example, the second marking will extend from the bottom to the top of the graph.
+	If you just want to graph the markings without graphing any data, you must explicity set the maximum values for the x and y axis.
+	Example:
+		>array_of_markings = [
+		>	{
+		>		'xaxis': {'from': "0", 'to': "6"}, 
+		>		'yaxis': {'from': "5", 'to': "6"}, 
+		>		'color': "#bb0000", 
+		>		'label': "danger zone"
+		>	}, 
+		>	{
+		>		'xaxis': {'from': "9", 'to': "11"}, 
+		>	}
+		>]
+		>g = FlotGraph()
+		>g.set_xaxis_max("15")
+		>g.set_yaxis_max("15")
+		>g.set_markings(array_of_markings)
+
+**Options**
+Toggling Data:
+	Datasets can be toggled on and off in the graph.  Toggleable and non-toggleable data can be displayed in the same graph.
+		>d1 = [[1, 11],[2, 12],[3, 13]]
+		>d2 = [[1, 14], [2,17], [3,18], [4,19]]
+		>d3 = [[11, 1],[12, 2],[13, 3]]
+		>d4 = [[1, 4], [2,7], [3,8], [4,9]]
+		>toggle_data = [
+		>	{'data': d1, 'label': "United States",}, 
+		>	{'data': d2, 'label': "Russia",}, 
+		>	{'data': d3,}, 
+		>]
+		>regular_data = [
+		>	{'data': d4, 'label': "Cannot toggle me",}, 
+		>]
+		>g = FlotGraph()
+		>g.set_toggle_data(toggle_data)
+		>g.set_data(regular_data)
+
+Zoom:
+	The user can zoom in on selected data.  The default is to have this feature enabled.  
+	To disable zoom:
+	>g.set_zoomable(0)
+	To enable zoom:
+	>g.set_zoomable(1)
+	When zoom is enabled, click on the mini graph to go back to the full un-zoomed view.
+
+Tooltip:
+	When a user hovers over a datapoint, the values for that point are shown in a tooltip.  The default is to have this feature enabled.
+	To disable the tooltip:
+	>g.set_show_tooltip(0)
+	To enable the tooltip:
+	>g.set_show_tooltip(1)
+
+Key Location:
+	The key can be within the bounds of the graph, in the upper right corner, or outside the graph.  The default is to have the key outside the graph.
+	To set the key inside the graph:
+	>g.set_key_position(0)
+	To set the key outside the graph:
+	>g.set_key_position(1)
+	When zoom is enabled, the key is always outside the graph.
+
+
+**Other**
+Title:
+	A title can be displayed with the graph:
+	>g.set_display_title("Amazing Flot Graph")
+	
+	Internal titles are also used to name divs and containers.  If you are going to have multiple graphs on one page, each graph should have a unique name.  The internal titles are changed so that spaces are replaced with underscores.  Aside from that, there is no checking on the display title or the internal title, and they are assumed to be safe to output as html.  
+	>g.set_title("amazing flot graph")
+
+Min/Max values:
+	The min/max values for bot axes can be set:
+	>g.set_xaxis_max("15")
+	>g.set_yaxis_max("19")
+	>g.set_xaxis_min("5.8")
+	>g.set_yaxis_min("5.5")
+	The values should be inputted as strings, not integers.
+	If these values are not given, they will be determined from the datasets.
+
+Size of the graph:
+	The size of the graph can be set in pixles:
+	>g.set_width(1000)
+	>g.set_height(200)
+	The default values are 600 for width and 300 for height.
+
+**Notes**
+Some of the code was taken/inspired/based on http://people.iola.dk/olau/flot/examples/
+	
