@@ -41,6 +41,7 @@ $.plot($('#sl_ot'), data_for_dates, axis_for_dates);
 {% block stylesheets %}
 <style>
 td {border-top: none}
+tr.variant { background-color: #FFD6DD; }
 </style>
 {% endblock %}
 {% block content %}
@@ -70,7 +71,7 @@ td {border-top: none}
 			<thead><tr><th>Waybill No.</th><th>Date Sent</th><th>Date Received</th><th>From</th><th>To</th><th>Amount Sent</th><th>Amount Received</th></tr></thead>
 			<tbody>
 			{% for transaction in transactions %}
-				<tr><td>{{transaction.shipment.shipment_id}}</td><td>{{transaction.shipment.sent|date:"M j, Y h:iA"}}</td><td>{{transaction.shipment.received|date:"M j, Y h:iA"}}</td><td>{{transaction.shipment.origin.name}}</td><td>{{transaction.shipment.destination.name}}</td><td>{{transaction.amount_sent}}</td><td>{{transaction.amount_received}}</td></tr>
+				<tr {% if transaction.flag %}class="variant"{% endif %}><td>{{transaction.shipment.shipment_id}}</td><td>{{transaction.shipment.sent|date:"M j, Y h:iA"}}</td><td>{{transaction.shipment.received|date:"M j, Y h:iA"}}</td><td>{{transaction.shipment.origin.name}}</td><td>{{transaction.shipment.destination.name}}</td><td>{{transaction.amount_sent}}</td><td>{{transaction.amount_received}}</td></tr>
 			{% endfor %}
 			</tbody>
 			</table>
