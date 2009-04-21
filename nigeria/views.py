@@ -56,7 +56,7 @@ def index(req):
     return render_to_response(req, "nigeria/index.html",{})
 
 def logistics_summary(req, locid):
-    transactions = Transaction.objects.all().order_by("shipment__sent")[0:10].reverse()
+    transactions = Transaction.objects.all().order_by("shipment__sent").reverse()
     return render_to_response(req, "nigeria/logistics_summary.html", {'transactions': transactions})
 
 def supply_summary(req, frm, to, range):
