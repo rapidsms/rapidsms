@@ -40,7 +40,7 @@ class NigeriaFormsLogic(FormsLogic):
         message = args[0]
         form_entry = args[1]
         # in case we need help, build a valid reminder string
-        required = ["location", "role", "password", "name"]
+        required = ["location", "role", "name"]
         help = ("%s register " % form_entry.domain.code.lower()) +\
                 " ".join(["<%s>" % t for t in required])
         if form_entry.form.type == "register":
