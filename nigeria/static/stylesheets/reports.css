@@ -1,0 +1,20 @@
+.field {
+	left: 25em;
+	position: absolute;
+}
+.field span {
+	width: 8em;
+	display: inline-block;
+}
+.datatable th {
+	width: 7em
+}
+.datatable .first {
+	width: 16em
+	
+}
+
+.treeview-blue  li {
+	border-top:1px solid #ccc;
+}
+}	
