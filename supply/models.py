@@ -26,11 +26,14 @@ class Shipment(models.Model):
     received = models.DateTimeField()
     shipment_id = models.PositiveIntegerField(blank=True, null=True, help_text="Waybill number")
 
+    def __unicode__(self):
+        return "Sent from %s (%s) to %s (%s)" % (self.origin, self.sent, self.destination, self.received)
+
 class Transaction(models.Model):
     FLAG_TYPES = (
-        ('A', 'Amount received does not match amount issued'),
+        ('A', 'Mis-matched amounts'),
         ('W', 'Mis-matched waybill'),
-        ('I', 'Incorrect. Has been replaced due to an amendment issue or receipt.'),
+        ('I', 'Incorrect. Has been replaced.'),
     )
 
     domain = models.ForeignKey(Domain)
@@ -40,6 +43,11 @@ class Transaction(models.Model):
     issue = models.ForeignKey('PartialTransaction', related_name='issues')
     receipt = models.ForeignKey('PartialTransaction', related_name='receipts')
     flag = models.CharField(blank=True, null=True, max_length=1, choices=FLAG_TYPES)
+
+    def __unicode__(self):
+        return "Sent from %s (%s %s) to %s (%s %s)" % (self.issue.origin.name,\
+            str(self.amount_sent), self.domain.code, self.receipt.destination.name,\
+            str(self.amount_received), self.domain.code)
 
 class PartialTransaction(models.Model):
     TRANSACTION_TYPES = (
@@ -89,6 +97,9 @@ class PartialTransaction(models.Model):
     # there should only ever be one transaction for a partial transaction,
     # but since this returns a queryset, the property name is plural
     transactions = property(_get_transaction)
+
+    class Meta:
+        ordering = ['-status']
     
 class Notification(models.Model):
     reporter = models.ForeignKey(Reporter)
