@@ -40,9 +40,9 @@ def index(req):
             wards_code_list.append(str(wards_objects[n].code))
         lga_dict[str(lga_objects[i].name)] = wards_list
         codes[str(lga_objects[i].code)] = wards_code_list
+        
 
-
-        states = ['Abia','Adamawa','Akwa-Ibom','Anambra','Bauchi','Bayelsa',
+    states = ['Abia','Adamawa','Akwa-Ibom','Anambra','Bauchi','Bayelsa',
         'Benue','Borno','Cross River','Delta','Ebonyi','Edo','Ekiti','Enugu','FCT','Gombe','Imo','Jigawa','Kaduna','Kano','Katsina','Kebbi','Kogi','Kwara','Lagos','Nasarawa','Niger','Ogun','Ondo','Osun','Oyo','Plateau','Rivers','Sokoto','Taraba','Yobe','Zamfara']
     
     

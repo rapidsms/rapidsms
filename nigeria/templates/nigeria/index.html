@@ -5,6 +5,7 @@
 	{% block stylesheets %}	
 	<link rel="stylesheet" href="/static/nigeria/jquery-treeview/jquery.treeview.css" />
 	<link rel="stylesheet" href="/static/nigeria/jquery-treeview/demo/screen.css" />
+	<link rel="stylesheet" href="/static/nigeria/stylesheets/reports.css" />
 
 	{% endblock %}
 	
@@ -28,16 +29,30 @@
 	
 
 <h2>Report Summary</h2>
+<table class="datatable"><thead><tr>
+<th scope="col" class="first"><b>State/LGA/Ward</b></th>
+<th scope="col"><b>Stock <br/> Level</b></th>
+<th scope="col"><b>Coupons <br/> Distributed</b></th>
+<th scope="col"><b>Nets <br/> Distributed</b></th>
+<th scope="col"><b> Head/<br/>Supervisor</b></th>
+<th scope="col"><b>Summary 5</b></th>
+<th scope="col"><b>Summary 6</b></th>
+<th scope="col"><b></b></th>
+<th scope="col"><b></b></th>
+</tr></thead></table>
+
 {%for state in states%}
 {% ifequal state "Kano" %} 
 <ul id="red" class="treeview-blue">
-<li><span><a href="reports/logistics/summary/">{{state}}</a></span>
+<li class="{% cycle 'odd' 'even' %}"><span><a href="reports/logistics/summary/">{{state}}</a><span class="field"><span class="datafield"><b>234</b></span> <span>566</span> <span>9807</span> <span>12</span> <span>98</span> <span>14</span></span></span>
+</span>
 
 {%for lga,wards in lgas.items %}
 <ul>
-<li><span><a href="">{{lga}}</a> 234 566 9807 12 98 14</span>
+<li class="{% cycle 'odd' 'even' %}"><span><a href="">{{lga}}</a> <span class="field"><span class="datafield"><b>234</b></span> <span>566</span> <span>9807</span> <span>12</span> <span>98</span> <span>14</span></span></span>
+
 {% for ward in wards%}
-<ul><li><span><a href="">{{ward}}</a> 100 202 300 3 43 4</span>
+<ul><li class="{% cycle 'odd' 'even' %}"><span><a href="">{{ward}}</a> <span class="field"><span class="datafield">100</span> <span>202</span> <span>300</span> <span>3</span> <span>43</span> 4</span></span>
 </li></ul>
 {%endfor%}
 
