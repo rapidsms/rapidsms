@@ -1,10 +1,10 @@
 {% extends "layout.html" %}
 {% block title %}Logistics Summary{% endblock %}
 {% block javascripts %}
-<script language="javascript" type="text/javascript" src="/static/nigeria/js/jquery.flot.min.js"></script>
 <!--[if IE]>
 <script language="javascript" type="text/javascript" src="/static/nigeria/js/excanvas.pack.js"></script>
 <![endif]-->
+<script language="javascript" type="text/javascript" src="/static/nigeria/js/jquery.flot.min.js"></script>
 <script language="javascript">
 $(document).ready(function() {
 stocklevels_overtime = [[[0, 300], [1, 350], [2, 500], [3, 510], [4, 560]],
@@ -66,7 +66,7 @@ tr.variant { background-color: #FFD6DD; }
     <tr>
       <td colspan="2">
         <div class="module">
-          <h2>Shipment Discrepancies Over Time</h2>
+          <h2>Shipment Transactions</h2>
 			<table class="shipment_discrepancy" width="100%">
 			<thead><tr><th>Waybill No.</th><th>Date Sent</th><th>Date Received</th><th>From</th><th>To</th><th>Amount Sent</th><th>Amount Received</th></tr></thead>
 			<tbody>
