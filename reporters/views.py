@@ -4,7 +4,7 @@
 from django.http import HttpResponse, HttpResponseNotAllowed, HttpResponseServerError
 from django.template import RequestContext
 from django.views.decorators.http import require_GET, require_POST, require_http_methods
-from django.shortcuts import get_object_or_404, render_to_response
+from django.shortcuts import get_object_or_404
 from django.db import IntegrityError, transaction
 
 from rapidsms.webui.utils import *
