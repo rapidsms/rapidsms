@@ -15,7 +15,6 @@ import sys
 locid = "20"
 lgas = Location.objects.filter(code=locid)[0].children.all()[0:10]
 stocklevel_perlocation_data = []
-seed()
 
 for lga in lgas:
     stocklevel_perlocation_data.extend({'label': lga.name, 'data': [[len(stocklevel_perlocation_data)+1, randrange(1000, 5000, 100)]]})
@@ -57,7 +56,7 @@ def index(req):
     
 # Logic below handles objects retrieval from Location Models
 
-    return render_to_response(req, "nigeria/index.html",{})
+    return render_to_response(req, "nigeria/index.html",{'states':states, 'lgas':lga_dict})
 
 def logistics_summary(req, locid):
     transactions = Transaction.objects.all().order_by("shipment__sent").reverse()
