@@ -208,7 +208,7 @@ class App(rapidsms.app.App):
                             # respond here.
                             pass
                         form_entry = FormEntry.objects.create(domain=this_domain, \
-                            form=this_form, date=datetime.now())
+                            form=this_form, date=message.date)
                         # gather list of token tuples for this form type
                         tokens = form[type.upper()]
                         
