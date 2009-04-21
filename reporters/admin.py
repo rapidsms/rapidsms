@@ -20,10 +20,14 @@ class ReporterAdmin(admin.ModelAdmin):
 class RoleAdmin(admin.ModelAdmin):
     list_display = ['name','code']
 
+class PersistantConnectionAdmin(admin.ModelAdmin):
+    list_display = ['backend', 'identity', 'reporter', 'last_seen']
+    date_hierarchy = 'last_seen'
+
 admin.site.register(Role, RoleAdmin)
 admin.site.register(LocationType)
 admin.site.register(Location, LocationAdmin)
 admin.site.register(Reporter, ReporterAdmin)
 admin.site.register(ReporterGroup)
 admin.site.register(PersistantBackend)
-admin.site.register(PersistantConnection)
+admin.site.register(PersistantConnection, PersistantConnectionAdmin)
