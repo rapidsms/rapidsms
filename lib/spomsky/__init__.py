@@ -92,6 +92,9 @@ class Client(object):
         # so just return false instead
         except:
             return False
+        
+        # nothing went bang
+        return True
 
 
     def subscribe(self, callback):
