@@ -33,7 +33,7 @@ class App(rapidsms.app.App):
             "bad-alias":   "Sorry, I don't know anyone by that name.",
             "first-login": "Hello, %(name)s! This is the first time I've met you.",
             "login":       "Hello, %(name)s! It has been %(days)d days since I last heard from you.",
-            "reminder":    "I think you are are %(name)s.",
+            "reminder":    "I think you are %(name)s.",
             "dont-know":   "Sorry, I don't know who you are.",
             "lang-set":    "I will now speak to you in English, where possible.",
             "denied":      "Sorry, you must identify yourself before you can do that." },
