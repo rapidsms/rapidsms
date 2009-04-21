@@ -1,19 +1,6 @@
-{% extends "layout.html" %}
-{% block title %}Reporters{% endblock %}
-
-{% block javascripts %}
-<script type="text/javascript" src="/static/reporters/javascripts/clear-form-elements.js"></script>
-<script type="text/javascript" src="/static/reporters/javascripts/cloneable.js"></script>
-{% endblock %}
-
+{% extends "reporters/base.html" %}
 {% load reporters %}
 {% block content %}
-
-<div class="links">
-	<a href="/reporters">Reporters</a>
-	&bull; <a href="/reporters/groups">Groups</a>
-	<p class="help"><em>TODO: Where should these link go?</em></p>
-</div>
 
 <div class="split">
 	<div class="left">
