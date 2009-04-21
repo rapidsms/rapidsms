@@ -1,49 +1,54 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-from django.http import HttpResponse
+from django.http import HttpResponse, QueryDict
 from django.template import RequestContext
 from apps.reporters.models import Location, LocationType
 from django.shortcuts import render_to_response
 from django.db import models
+# The import here newly added for serializations
+from django.core import serializers
 
 import sys
 
 #Views for handling summary of Reports Displayed as Location Tree
 def index(req):
+    wards_list = []
+    ward_objects = {}
+    lga_dict={}
+    lga_code_dict={}
+    codes = {}
+    wards_code_list = []
+
+
     reload(sys)
     sys.setdefaultencoding('utf-8')
-
-    states = Location.objects.all().filter(type__name="State")
-
-    for state in states:
-        lgas = Location.objects.all().filter(type__name="LGA", code__startswith=state.code)
-        states_dict={}
-        lgas_dict={}
-        wards_dict={}
-        dps_dict={}
-        mts_dict={}
+#Line below will be replaced by a for loop to iterate through objects for state retrieval
+    state = Location.objects.get(code="20")
     
-        for lga in lgas:
-            wards = Location.objects.all().filter(type__name="Ward", code__startswith=lga.code)
-            lgas_dict[str(lga.name)]=str(lga.name)
-            for ward in wards:
-                dps =  Location.objects.all().filter(type__name="Distribution Point", code__startswith=ward.code)
-                wards_dict[str(ward.name)] = str(ward.name)
-
-                for dp in dps:
-                    mts =  Location.objects.all().filter(type__name="Mobilization Team", code__startswith=dp.code)
-                    dps_dict[str(dp.name)] = str(dp.name)
-                    for mt in mts:
-                        mts_dict[str(mt.name)]=str(mt.name)
-
-                    dps_dict[dp.name]=mts_dict
-                wards_dict[ward.name]=dps_dict
-            lgas_dict[lga.name]=wards_dict
-        states_dict[state.name]=lgas_dict
+    lga_objects = state.children.all()[0:8]
     
+    for i in range(8):
+        lga_dict[str(lga_objects[i].name)] = {}
+        wards_objects = lga_objects[i].children.all()[0:5]
+        
+        wards_list = []
+        wards_code_list = []
+        for n in range(wards_objects.count()):
+    #        wards_dict[str(wards_objects[n].name)] = str(wards_objects[n].name)
+            wards_list.append(str(wards_objects[n].name))
+            wards_code_list.append(str(wards_objects[n].code))
+        lga_dict[str(lga_objects[i].name)] = wards_list
+        codes[str(lga_objects[i].code)] = wards_code_list
 
-    return render_to_response("nigeria/index.html",{}, context_instance=RequestContext(req))
+
+        states = ['Abia','Adamawa','Akwa-Ibom','Anambra','Bauchi','Bayelsa',
+        'Benue','Borno','Cross River','Delta','Ebonyi','Edo','Ekiti','Enugu','FCT','Gombe','Imo','Jigawa','Kaduna','Kano','Katsina','Kebbi','Kogi','Kwara','Lagos','Nasarawa','Niger','Ogun','Ondo','Osun','Oyo','Plateau','Rivers','Sokoto','Taraba','Yobe','Zamfara']
+    
+    
+# Logic below handles objects retrieval from Location Models
+
+    return render_to_response("nigeria/index.html",{'lgas':lga_dict,'states':states,'codes':codes}, context_instance=RequestContext(req))
 
 
 def supply_summary(req, frm, to, range):
@@ -92,6 +97,4 @@ def supply_monthly(req, locid):
     return render_to_response("nigeria/supply_monthly.html", context_instance=RequestContext(req))
 
 #This portion of code is for testing
-def tests(req):
-    return render_to_response("nigeria/testpages/trees.html", context_instance=RequestContext(req))
 
