@@ -45,11 +45,14 @@ class TestApp (TestScript):
         amount_match_percent = .9
         loc_match_percent = .95
         num_locs = len(Location.objects.all())
+        
+        # allow specifying the minimum and maximum dates for message generation
         min_date = datetime(2009,4,1)
         max_date = datetime(2009,4,30)
         min_time = time.mktime(min_date.timetuple())
         max_time = time.mktime(max_date.timetuple())
         for i in range(transaction_count):
+            # get some random data based on the parameters we've set above
             origin = Location.objects.get(code=random.choice(originating_locations ))
             destination = random.choice(origin.children.all())
             waybill = random.randint(10000,99999)
@@ -77,7 +80,9 @@ class TestApp (TestScript):
                 ret_dest = destination
             else:
                 ret_dest = Location.objects.get(pk=random.randint(1, num_locs))
+            # make sure the stock at the receiver is higher than the amount of the bill
             ret_stock = random.randint(1, 2000) * 10 + ret_amount
+            # make sure the date received is after the date sent
             ret_date = datetime.fromtimestamp(random.randint(time.mktime(date.timetuple()), max_time))
             receive_string = "%s@%s > llin receive from %s to %s %s %s %s" % (phone, ret_date.strftime("%Y%m%d%H%M"), ret_orig.code, ret_dest.code, ret_waybill, ret_amount, ret_stock)
             all_txns.append(receive_string)
