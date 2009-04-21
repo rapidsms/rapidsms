@@ -12,6 +12,8 @@ class NetDistribution(models.Model):
     actual = models.PositiveIntegerField()
     discrepancy = models.PositiveIntegerField()
 
+    def __unicode__(self):
+        return "%s (%s) %s" % (self.location, self.reporter, self.time)
 
 class CardDistribution(models.Model):
     reporter = models.ForeignKey(Reporter, null=True, blank=True)
@@ -21,3 +23,6 @@ class CardDistribution(models.Model):
     settlements = models.PositiveIntegerField()
     people = models.PositiveIntegerField()
     distributed = models.PositiveIntegerField()
+
+    def __unicode__(self):
+        return "%s (%s) %s" % (self.location, self.reporter, self.time)
