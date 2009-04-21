@@ -1,5 +1,5 @@
 .field {
-	left: 25em;
+	left: 22em;
 	position: absolute;
 }
 .field span {
@@ -10,11 +10,12 @@
 	width: 7em
 }
 .datatable .first {
-	width: 16em
+	width: 18em
 	
 }
 
-.treeview-blue  li {
+.treeview-blue  li.odd {
 	border-top:1px solid #ccc;
+	background-color: #eee;
 }
 }	
