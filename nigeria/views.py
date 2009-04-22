@@ -70,25 +70,29 @@ def logistics_summary(req, locid):
     except Location.DoesNotExist:
         location = None
 
-    # get all the children.  we will use these to generate some plots
+    # get all the transactions that this location was involved in 
+    transactions_from_loc = Transaction.objects.all().filter(shipment__origin=location) 
+    transactions_to_loc = Transaction.objects.all().filter(shipment__destination=location)  
+    transactions = (transactions_from_loc | transactions_to_loc).order_by("shipment__sent").reverse() 
+        
+    # get any place this location has shipped to or from.  
+    # we will use these to generate some plots
     # and pass them forward to the template
-    child_locations = Location.objects.all().filter(parent=location)
+    locations_shipped_to = []
+    [locations_shipped_to.append(trans.shipment.destination) for trans in transactions_from_loc if trans.shipment.destination not in locations_shipped_to]
     
     # set the stock value in all the children.
-    [_set_stock(child) for child in child_locations]
-    # get all the transactions that this location was involved in 
-    transactions = Transaction.objects.all().filter(shipment__origin=location) | Transaction.objects.all().filter(shipment__destination=location)  
-    transactions = transactions.order_by("shipment__sent").reverse()
-        
+    [_set_stock(child) for child in locations_shipped_to]
+    
     # get some JSON strings for the plots
-    stock_per_loc_data, stock_per_loc_options = _get_stock_per_location_strings(child_locations)
+    stock_per_loc_data, stock_per_loc_options = _get_stock_per_location_strings(locations_shipped_to)
     stock_over_time_data, stock_over_time_options = _get_stock_over_time_strings([location])
-    stock_over_time_child_data, stock_over_time_child_options = _get_stock_over_time_strings(child_locations)
+    stock_over_time_child_data, stock_over_time_child_options = _get_stock_over_time_strings(locations_shipped_to)
     
     # send the whole list of stuff back to the template
     return render_to_response(req, "nigeria/logistics_summary.html", 
                               {'location': location,
-                               'child_locations': child_locations,
+                               'child_locations': locations_shipped_to,
                                'transactions': transactions,
                                'stock_per_loc_plot_data' : stock_per_loc_data, 
                                'stock_per_loc_plot_options' : stock_per_loc_options, 
