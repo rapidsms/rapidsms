@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-from django.http import HttpResponse, HttpResponseNotAllowed, HttpResponseServerError
+from django.http import HttpResponse, HttpResponseNotAllowed, HttpResponseServerError, Http404
 from django.template import RequestContext
 from apps.reporters.models import Location, LocationType
 from apps.supply.models import Shipment, Transaction, Stock, PartialTransaction
@@ -9,10 +9,12 @@ from rapidsms.webui.utils import render_to_response
 from django.db import models
 # The import here newly added for serializations
 from django.core import serializers
+from django.core.paginator import *
 from random import randrange, seed
 import time
 import sys
 
+ITEMS_PER_PAGE = 10
 
 #Views for handling summary of Reports Displayed as Location Tree
 def index(req):
@@ -49,7 +51,7 @@ def logistics_summary(req, locid):
     # get all the transactions that this location was involved in 
     transactions_from_loc = Transaction.objects.all().filter(shipment__origin=location) 
     transactions_to_loc = Transaction.objects.all().filter(shipment__destination=location)  
-    transactions = (transactions_from_loc | transactions_to_loc).order_by("shipment__sent").reverse() 
+    transactions = (transactions_from_loc | transactions_to_loc).order_by("-shipment__sent") 
         
     # get any place this location has shipped to or from.  
     # we will use these to generate some plots
@@ -65,11 +67,25 @@ def logistics_summary(req, locid):
     stock_over_time_data, stock_over_time_options = _get_stock_over_time_strings([location])
     stock_over_time_child_data, stock_over_time_child_options = _get_stock_over_time_strings(locations_shipped_to)
     
+    paginator = Paginator(transactions, ITEMS_PER_PAGE)
+
+    try:
+        page = int(req.GET['page'])
+    except:
+        page = 1
+
+    try:
+        transactions_pager = paginator.page(page)
+    except:
+        raise Http404
+
     # send the whole list of stuff back to the template
     return render_to_response(req, "nigeria/logistics_summary.html", 
                               {'location': location,
                                'child_locations': locations_shipped_to,
-                               'transactions': transactions,
+                               'transactions_pager': transactions_pager,
+                               'paginator': paginator,
+                               'page': page,
                                'stock_per_loc_plot_data' : stock_per_loc_data, 
                                'stock_per_loc_plot_options' : stock_per_loc_options, 
                                'stock_over_time_data' : stock_over_time_data, 

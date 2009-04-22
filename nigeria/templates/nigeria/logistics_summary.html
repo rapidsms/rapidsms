@@ -100,12 +100,13 @@ tr.variant-incorrect { background-color: #FFD6DD; }
     </tr>
     <tr>
       <td colspan="2">
-        <div class="module">
+        <a name="st">
+		<div class="module">
           <h2>Shipment Transactions</h2>
 			<table class="shipment_discrepancy" width="100%">
 			<thead><tr><th>Waybill No.</th><th>Date Sent</th><th>Date Received</th><th>From</th><th>To</th><th>Amount Sent</th><th>Amount Received</th></tr></thead>
 			<tbody>
-			{% for transaction in transactions %}
+			{% for transaction in transactions_pager.object_list %}
 				<tr {% ifequal transaction.flag "W" %}class="variant-waybill"{% else %}{% ifequal transaction.flag "A" %}class="variant-amount"{% endifequal %}{% endifequal %}>
                    <td>{{transaction.shipment.shipment_id}}</td>
                    <td>{{transaction.shipment.sent|date:"M j, Y h:iA"}}</td>
@@ -118,12 +119,18 @@ tr.variant-incorrect { background-color: #FFD6DD; }
 			{% endfor %}
 			</tbody>
 			</table>
-        </div>
+			<div class="toolbar">
+				{% if transactions_pager.has_other_pages %}<a href="?page={{paginator.num_pages}}#st">Last &raquo;</a>{% endif %}
+				{% if transactions_pager.has_next %}<a href="?page={{transactions_pager.next_page_number}}#st">Next &rsaquo;</a>{% endif %}
+				<a href="javascript:;">Page {{page}} of {{paginator.num_pages}}</a>
+				<a href="?page={% if transactions_pager.previous_page_number %}{{transactions_pager.previous_page_number}}{% else %}1{% endif %}#st">&lsaquo; Prev</a>
+				<a href="?page=1#st">&laquo; First</a>
+			</div>
+        </div></a>
       </td>
     </tr>
   </table>
 </div>
-
 </div>
 </div>
 {% endblock %}
