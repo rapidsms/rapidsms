@@ -7,7 +7,7 @@ import apps.nigeria.views as views
 
 urlpatterns = patterns('',
     url(r'^reports/?$', views.index),
-    url(r'^reports/logistics/summary/(?P<locid>.*)/$', views.logistics_summary),
+    url(r'^reports/logistics/summary/(?P<locid>.*)/?$', views.logistics_summary),
     url(r'^reports/bednets/summary/(?P<range>.*)/?(?P<from>.*)/?(?P<to>.*)/?$', views.bednets_summary),
     url(r'^reports/coupons/summary/(?P<range>.*)/?(?P<from>.*)/?(?P<to>.*)/?$', views.coupons_summary),
     url(r'^reports/supply/summary/(?P<range>.*)/?(?P<from>.*)/?(?P<to>.*)/?$', views.supply_summary),
