@@ -32,12 +32,13 @@ class HttpHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         
         # if the path is of the form /integer/blah 
         # send a new message from integer with content blah
-        send_regex = re.compile(r"^/(\d+)/(.*)")
+        send_regex = re.compile(r"^(/\w+/)/(\d+)/(.+)")
         match = send_regex.match(self.path)
         if match:
             # send the message
-            session_id = match.group(1)
-            text = match.group(2)
+            backend = match.group(1)
+            session_id = match.group(2)
+            text = match.group(3)
             
             if text == "json_resp":
                 self.send_response(200)
@@ -49,8 +50,12 @@ class HttpHandler(BaseHTTPServer.BaseHTTPRequestHandler):
                 return
                 
             # TODO watch out because urllib.unquote will blow up on unicode text 
-            msg = self.server.backend.message(session_id, urllib.unquote(text))
-            self.server.backend.route(msg)
+            if backend:
+                target = self.server.backend.router.get_backend(backend)
+            else:
+                target = self.server.backend
+            msg = target.message(session_id, urllib.unquote(text))
+            target.route(msg)
             # respond with the number and text 
             self.send_response(200)
             self.send_header("Content-type", "text/html")
