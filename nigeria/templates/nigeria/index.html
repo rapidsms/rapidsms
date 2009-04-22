@@ -41,7 +41,7 @@
 {%for state in states%}
 {% ifequal state "Kano" %} 
 <ul id="red" class="treeview-blue">
-<li class="{% cycle 'odd' 'even' %}"><span><a href="/reports/logistics/summary/20/">{{state}}</a><span class="field"><span class="datafield"><b>234</b></span> <span>566</span> <span>9807</span></span></span>
+<li class="{% cycle 'odd' 'even' %}"><span><a href="/reports/logistics/summary/{{st.pk}}/">{{state}}</a><span class="field"><span class="datafield"><b>234</b></span> <span>566</span> <span>9807</span></span></span>
 </span>
 
 {%for lga, wards in lgas.items %} 
