@@ -103,7 +103,14 @@ td {border-top: none}
 			<thead><tr><th>Waybill No.</th><th>Date Sent</th><th>Date Received</th><th>From</th><th>To</th><th>Amount Sent</th><th>Amount Received</th></tr></thead>
 			<tbody>
 			{% for transaction in transactions %}
-				<tr><td>{{transaction.shipment.shipment_id}}</td><td>{{transaction.shipment.sent|date:"M j, Y h:iA"}}</td><td>{{transaction.shipment.received|date:"M j, Y h:iA"}}</td><td>{{transaction.shipment.origin.name}}</td><td>{{transaction.shipment.destination.name}}</td><td>{{transaction.amount_sent}}</td><td>{{transaction.amount_received}}</td></tr>
+				<tr>
+				   <td>{{transaction.shipment.shipment_id}}</td>
+				   <td>{{transaction.shipment.sent|date:"M j, Y h:iA"}}</td>
+				   <td>{{transaction.shipment.received|date:"M j, Y h:iA"}}</td>
+				   <td><a href="/reports/logistics/summary/{{transaction.shipment.origin.id}}/">{{transaction.shipment.origin.name}}</a></td>
+				   <td><a href="/reports/logistics/summary/{{transaction.shipment.destination.id}}/">{{transaction.shipment.destination.name}}</a></td>
+				   <td>{{transaction.amount_sent}}</td><td>{{transaction.amount_received}}</td>
+				</tr>
 			{% endfor %}
 			</tbody>
 			</table>
