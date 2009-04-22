@@ -75,6 +75,23 @@ class PartialTransaction(models.Model):
     status = models.CharField(max_length=1, choices=STATUS_TYPES)
     flag = models.CharField(blank=True, null=True, max_length=1, choices=FLAG_TYPES)
     
+    @staticmethod
+    def get_all_with_stock_updates(location):
+        '''Gets all transactions that involve adjusting the 
+           stock at the location passed in.  This entails either
+           a CONFIRMED ISSUE transaction FROM the location, or a 
+           CONFIRMED RECEIVE transaction TO the location'''
+        issues = PartialTransaction.objects.all().filter(origin=location).filter(type="I").filter(status="C")
+        receipts = PartialTransaction.objects.all().filter(destination=location).filter(type="R").filter(status="C") 
+        return issues | receipts 
+        
+    @staticmethod
+    def get_all_involving(location):
+        '''Gets all transactions that have either an origin
+           or a destination matching the location'''
+        return PartialTransaction.objects.all().filter(origin=location) | PartialTransaction.objects.all().filter(destination=location)  
+        
+        
     def __unicode__(self):
         return "%s reported %s of %s %s from %s to %s. (waybill: %s)" %(self.reporter, 
                                                                         self.type, 
