@@ -42,7 +42,7 @@ class TestApp (TestScript):
            8005551212 > llin register 20 dl secret dummy user
            8005551212 < Hello duser! You are now registered as Distribution point team leader at KANO State.
            8005551212 > llin my status
-           8005551212 < I think you are are dummy user.
+           8005551212 < I think you are dummy user.
          """
     
     testRegistrationErrors = """
