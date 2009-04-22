@@ -27,8 +27,8 @@ class Shipment(models.Model):
     shipment_id = models.PositiveIntegerField(blank=True, null=True, help_text="Waybill number")
 
     def __unicode__(self):
-        return "Sent from %s (%s) to %s (%s)" % (self.origin, self.sent, self.destination, self.received)
-
+        return "%s (%s) ==> %s (%s)" % (self.origin.name, self.sent.date(), self.destination.name, self.received.date())
+    
 class Transaction(models.Model):
     FLAG_TYPES = (
         ('A', 'Mis-matched amounts'),
@@ -45,10 +45,8 @@ class Transaction(models.Model):
     flag = models.CharField(blank=True, null=True, max_length=1, choices=FLAG_TYPES)
 
     def __unicode__(self):
-        return "Sent from %s (%s %s) to %s (%s %s)" % (self.issue.origin.name,\
-            str(self.amount_sent), self.domain.code, self.receipt.destination.name,\
-            str(self.amount_received), self.domain.code)
-
+        return "%s (%s) ==> %s (%s)" % (self.shipment.origin.name, self.amount_sent, self.shipment.destination.name, self.amount_received)
+    
 class PartialTransaction(models.Model):
     TRANSACTION_TYPES = (
         ('I', 'Issue'),
