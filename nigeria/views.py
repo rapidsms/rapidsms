@@ -13,43 +13,31 @@ from random import randrange, seed
 import time
 import sys
 
-locid = "20"
-lgas = Location.objects.filter(code=locid)[0].children.all()[0:10]
-stocklevel_perlocation_data = []
-
-for lga in lgas:
-    stocklevel_perlocation_data.extend({'label': lga.name, 'data': [[len(stocklevel_perlocation_data)+1, randrange(1000, 5000, 100)]]})
 
 #Views for handling summary of Reports Displayed as Location Tree
 def index(req):
     
     lga_dict={}
-
     reload(sys)
     sys.setdefaultencoding('utf-8')
-#Line below will be replaced by a for loop to iterate through objects for state retrieval
+    #Line below will be replaced by a for loop to iterate through objects for state retrieval
     state = Location.objects.get(code="20")
-   
+    
     lgas = state.children.all()[0:9]
 
     for lga in lgas:
         wards = lga.children.all()
-   #     lga_dict2[lga] = wards
-	lga_dict[lga] = wards
+        lga_dict[lga] = wards
 
-    states = ['Abia','Adamawa','Akwa-Ibom','Anambra','Bauchi','Bayelsa',
-        'Benue','Borno','Cross River','Delta','Ebonyi','Edo','Ekiti','Enugu','FCT','Gombe','Imo','Jigawa','Kaduna','Kano','Katsina','Kebbi','Kogi','Kwara','Lagos','Nasarawa','Niger','Ogun','Ondo','Osun','Oyo','Plateau','Rivers','Sokoto','Taraba','Yobe','Zamfara']
-    
-    
-# Logic below handles objects retrieval from Location Models
-
+    # Logic below handles objects retrieval from Location Models
+    states = [loc.name for loc in Location.objects.all().filter(type__name__iexact="state")]
     return render_to_response(req, "nigeria/index.html",{'st':state, 'states':states,'lgas':lga_dict})
 
 def logistics_summary(req, locid):
     # Get the location we are going to work with.
     # If there is no location set, this will default to the first
     # one in the database.  If there are no locations in the
-    # database we are SOL
+    # database we are S.O.L.
     if not locid:
         locid = 1
     try: 
@@ -200,8 +188,5 @@ def _get_stock_over_time_strings(locations):
             #print "adding update for %s" % location 
             rows.append('{"label":"%s", "data":[%s]}' % (location.name, ",".join(update_strings)))
     data = "[%s]" % (",".join(rows))
-    #data_for_dates = [label":"KANO", "data":[[1240316478.0,1800]]}];\n                    
-    # todo: make this real
-    #data = '[{"label":"Ajingi","data":[[1239706800000,1000],[1239793200000,800],[1239836400000,700],[1239966000000,650],[1240052400000,450],[1240138800000,350],[1240182000000,200],[1240268400000,100]]},{"label":"Bebeji","data":[[1239706800000,500],[1239793200000,350],[1239836400000,250],[1239966000000,1250],[1240052400000,1000],[1240138800000,900],[1240182000000,700],[1240268400000,650]]},{"label":"Bichi","data":[[1239706800000,1500],[1239793200000,1500],[1239836400000,1500],[1239966000000,1200],[1240052400000,1100],[1240138800000,1000],[1240182000000,850],[1240268400000,750]]},{"label":"Dala","data":[[1239706800000,200],[1239793200000,1500],[1239836400000,1250],[1239966000000,1100],[1240052400000,900],[1240138800000,600],[1240182000000,300],[1240268400000,100]]},{"label":"Garko","data":[[1239706800000,750],[1239793200000,450],[1239836400000,250],[1239966000000,250],[1240052400000,250],[1240138800000,50],[1240182000000,750],[1240268400000,500]]}];'
     options = '{"bars":{"show":false},"points":{"show":true},"grid":{"clickable":false},"xaxis":{"mode":"time","timeformat":"%m/%d/%y"},"yaxis":{"min":0},"legend":{"show":true},"lines":{"show":true}}'
     return (data, options)
