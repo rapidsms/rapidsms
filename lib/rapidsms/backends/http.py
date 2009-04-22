@@ -32,7 +32,7 @@ class HttpHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         
         # if the path is of the form /integer/blah 
         # send a new message from integer with content blah
-        send_regex = re.compile(r"^(/[a-zA-Z]\w*/)?/(\d+)/(.+)")
+        send_regex = re.compile(r"^(?:/([a-zA-Z]\w*))?/([^/]+)/([^/]+)$")
         match = send_regex.match(self.path)
         if match:
             # send the message
@@ -49,19 +49,21 @@ class HttpHandler(BaseHTTPServer.BaseHTTPRequestHandler):
                         self.wfile.write("{'phone':'%s', 'message':'%s'}" % (session_id, str(msg_store[session_id].pop(0))))
                 return
                 
-            # TODO watch out because urllib.unquote will blow up on unicode text 
             if backend:
                 target = self.server.backend.router.get_backend(backend)
             else:
                 target = self.server.backend
-            msg = target.message(session_id, urllib.unquote(text))
+            # TODO watch out because urllib.unquote will blow up on unicode text 
+            session_id, text = map(urllib.unquote_plus, (session_id, text))
+            msg = target.message(session_id, text)
             target.route(msg)
             # respond with the number and text 
             self.send_response(200)
             self.send_header("Content-type", "text/html")
             self.end_headers()
             self.wfile.write("{'backend': '%s', 'phone':'%s', 'message':'%s'}" % (target.name, session_id, urllib.unquote(text)))
-            return
+        else:
+            self.log_error("Unhandled request: %s", self.path)
             
         return
         
