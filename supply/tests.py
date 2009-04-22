@@ -9,7 +9,7 @@ from models import *
 from django.core.management.commands.dumpdata import Command
 import random
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 
 class TestApp (TestScript):
     apps = (reporter_app.App, App,form_app.App, nigeria_app.App )
@@ -30,12 +30,14 @@ class TestApp (TestScript):
             supply app and spit out the data in a format that can
             be sucked into a fixture"""
         # this is the number of transactions that will be generated
-        transaction_count = 50
+        transaction_count = 100
         
         # these are the locations that will be the origins, chosen randomly
         # from this list
         # the destinations will be chosen randomly from the origins' children
-        originating_locations = [20, 2001, 2002, 2003]
+        originating_locations = [20, 2001, 2002, 2003,2004]
+        stock_levels = dict([[loc, random.randint(1, 10000) * 10 + 50000] for loc in originating_locations])
+            
         
         # the sender will always be the same, for now
         phone = "55555"
@@ -51,15 +53,36 @@ class TestApp (TestScript):
         max_date = datetime(2009,4,30)
         min_time = time.mktime(min_date.timetuple())
         max_time = time.mktime(max_date.timetuple())
+        
+        # generate the array of dates we're going to use at the start.  This is so we can order 
+        # our transactions
+        iss_dates = []
+        for i in range(transaction_count):
+            iss_dates.append(datetime.fromtimestamp(random.randint(min_time, max_time)))
+        iss_dates.sort()
+        rec_dates = []
+        for i in range(transaction_count):
+            # make the date from a min and max timestamp
+            rec_dates.append(datetime.fromtimestamp(
+                random.randint(
+                   # the min is the shipment date
+                   time.mktime(iss_dates[i].timetuple()), 
+                   #the max is the shipment date + 0 to 4 days
+                   time.mktime((iss_dates[i] + timedelta(random.randint(0,4))).timetuple()))))
+        
         for i in range(transaction_count):
             # get some random data based on the parameters we've set above
             origin = Location.objects.get(code=random.choice(originating_locations ))
             destination = random.choice(origin.children.all())
             waybill = random.randint(10000,99999)
             amount = random.randint(1, 500) * 10
-            stock = random.randint(1, 3000) * 10
-            date = datetime.fromtimestamp(random.randint(min_time, max_time))
-            issue_string = "%s@%s > llin issue from %s to %s %s %s %s" % (phone, date.strftime("%Y%m%d%H%M"), origin.code, destination.code, waybill, amount, stock)
+            diff = stock_levels[int(origin.code)] - amount 
+            if diff > 0:
+                stock = diff
+            else:
+                stock = random.randint(1, 10000) * 10
+            stock_levels[int(origin.code)] = stock
+            issue_string = "%s@%s > llin issue from %s to %s %s %s %s" % (phone, iss_dates[i].strftime("%Y%m%d%H%M"), origin.code, destination.code, waybill, amount, stock)
             all_txns.append(issue_string)
             # create a waybill number based on the likelihood of match
             if random.random() < waybill_match_percent:
@@ -80,11 +103,14 @@ class TestApp (TestScript):
                 ret_dest = destination
             else:
                 ret_dest = Location.objects.get(pk=random.randint(1, num_locs))
-            # make sure the stock at the receiver is higher than the amount of the bill
-            ret_stock = random.randint(1, 2000) * 10 + ret_amount
+            if stock_levels.has_key(int(ret_dest.code)):
+                ret_stock = stock_levels[int(ret_dest.code)] + amount
+            else: 
+                # make sure the stock at the receiver is higher than the amount of the bill
+                ret_stock = random.randint(1, 2000) * 10 + ret_amount
+            stock_levels[int(ret_dest.code)] = ret_stock
             # make sure the date received is after the date sent
-            ret_date = datetime.fromtimestamp(random.randint(time.mktime(date.timetuple()), max_time))
-            receive_string = "%s@%s > llin receive from %s to %s %s %s %s" % (phone, ret_date.strftime("%Y%m%d%H%M"), ret_orig.code, ret_dest.code, ret_waybill, ret_amount, ret_stock)
+            receive_string = "%s@%s > llin receive from %s to %s %s %s %s" % (phone, rec_dates[i].strftime("%Y%m%d%H%M"), ret_orig.code, ret_dest.code, ret_waybill, ret_amount, ret_stock)
             all_txns.append(receive_string)
             
         script = "\n".join(all_txns)
