@@ -46,10 +46,10 @@
 
 {%for lga, wards in lgas.items %} 
 <ul>
-<li class="{% cycle 'odd' 'even' %}"><span><a href="/reports/logistics/summary/{{lga.code}}/">{{lga.name}}</a> <span class="field"><span class="datafield"><b><a href="/reports/logistics/summary/{{lga.code}}/">234</a></b></span> <span><a href="/reports/coupons/summary/{{lga.code}}/">566</a></span> <span><a href="/reports/bednets/summary/{{lga.code}}/">9807</a></span></span></span>
+<li class="{% cycle 'odd' 'even' %}"><span><a href="/reports/logistics/summary/{{lga.pk}}/">{{lga.name}}</a> <span class="field"><span class="datafield"><b><a href="/reports/logistics/summary/{{lga.pk}}/">234</a></b></span> <span><a href="/reports/coupons/summary/{{lga.pk}}/">566</a></span> <span><a href="/reports/bednets/summary/{{lga.pk}}/">9807</a></span></span></span>
 
 {% for ward in wards%}
-<ul><li class="{% cycle 'odd' 'even' %}"><span><a href="/reports/logistics/summary/{{ward.code}}/">{{ward.name}}</a> <span class="field"><span class="datafield"><a href"/reports/logistics/summary/{{ward.code}}/">100</a></span> <span><a href="/reports/coupons/summary/{{ward.code}}/">202</a></span> <span><a href="/reports/bednets/summary/{{ward.code}}/">300</a></span></span></span>
+<ul><li class="{% cycle 'odd' 'even' %}"><span><a href="/reports/logistics/summary/{{ward.pk}}/">{{ward.name}}</a> <span class="field"><span class="datafield"><a href="/reports/logistics/summary/{{ward.pk}}/">100</a></span> <span><a href="/reports/coupons/summary/{{ward.pk}}/">202</a></span> <span><a href="/reports/bednets/summary/{{ward.pk}}/">300</a></span></span></span>
 </li></ul>
 {%endfor%}
 
