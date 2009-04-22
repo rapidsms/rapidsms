@@ -22,34 +22,20 @@ for lga in lgas:
 
 #Views for handling summary of Reports Displayed as Location Tree
 def index(req):
-    wards_list = []
-    ward_objects = {}
+    
     lga_dict={}
-    lga_code_dict={}
-    codes = {}
-    wards_code_list = []
-
 
     reload(sys)
     sys.setdefaultencoding('utf-8')
 #Line below will be replaced by a for loop to iterate through objects for state retrieval
     state = Location.objects.get(code="20")
-    
-    lga_objects = state.children.all()[0:8]
-    
-    for i in range(8):
-        lga_dict[str(lga_objects[i].name)] = {}
-        wards_objects = lga_objects[i].children.all()[0:5]
-        
-        wards_list = []
-        wards_code_list = []
-        for n in range(wards_objects.count()):
-    #        wards_dict[str(wards_objects[n].name)] = str(wards_objects[n].name)
-            wards_list.append(str(wards_objects[n].name))
-            wards_code_list.append(str(wards_objects[n].code))
-        lga_dict[str(lga_objects[i].name)] = wards_list
-        codes[str(lga_objects[i].code)] = wards_code_list
-        
+   
+    lgas = state.children.all()[0:9]
+
+    for lga in lgas:
+        wards = lga.children.all()
+   #     lga_dict2[lga] = wards
+	lga_dict[lga] = wards
 
     states = ['Abia','Adamawa','Akwa-Ibom','Anambra','Bauchi','Bayelsa',
         'Benue','Borno','Cross River','Delta','Ebonyi','Edo','Ekiti','Enugu','FCT','Gombe','Imo','Jigawa','Kaduna','Kano','Katsina','Kebbi','Kogi','Kwara','Lagos','Nasarawa','Niger','Ogun','Ondo','Osun','Oyo','Plateau','Rivers','Sokoto','Taraba','Yobe','Zamfara']
