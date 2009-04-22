@@ -32,7 +32,7 @@ class HttpHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         
         # if the path is of the form /integer/blah 
         # send a new message from integer with content blah
-        send_regex = re.compile(r"^(/\w+/)/(\d+)/(.+)")
+        send_regex = re.compile(r"^(/[a-zA-Z]\w*/)?/(\d+)/(.+)")
         match = send_regex.match(self.path)
         if match:
             # send the message
@@ -60,7 +60,7 @@ class HttpHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             self.send_response(200)
             self.send_header("Content-type", "text/html")
             self.end_headers()
-            self.wfile.write("{'phone':'%s', 'message':'%s'}" % (session_id, urllib.unquote(text)))
+            self.wfile.write("{'backend': '%s', 'phone':'%s', 'message':'%s'}" % (target.name, session_id, urllib.unquote(text)))
             return
             
         return
