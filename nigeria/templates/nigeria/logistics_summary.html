@@ -64,7 +64,9 @@ $.plot($('#sl_ot_children'), data_for_child_dates, axis_for_child_dates);
 {% block stylesheets %}
 <style>
 td {border-top: none}
-tr.variant { background-color: #FFD6DD; }
+tr.variant-amount { background-color: #FFD6DD; }
+tr.variant-waybill { background-color: #FFD869; }
+tr.variant-incorrect { background-color: #FFD6DD; }
 </style>
 {% endblock %}
 {% block content %}
@@ -104,7 +106,7 @@ tr.variant { background-color: #FFD6DD; }
 			<thead><tr><th>Waybill No.</th><th>Date Sent</th><th>Date Received</th><th>From</th><th>To</th><th>Amount Sent</th><th>Amount Received</th></tr></thead>
 			<tbody>
 			{% for transaction in transactions %}
-				<tr {% if transaction.flag %}class="variant"{% endif %}>
+				<tr {% ifequal transaction.flag "W" %}class="variant-waybill"{% else %}{% ifequal transaction.flag "A" %}class="variant-amount"{% endifequal %}{% endifequal %}>
                    <td>{{transaction.shipment.shipment_id}}</td>
                    <td>{{transaction.shipment.sent|date:"M j, Y h:iA"}}</td>
                    <td>{{transaction.shipment.received|date:"M j, Y h:iA"}}</td>
@@ -113,7 +115,7 @@ tr.variant { background-color: #FFD6DD; }
 				   <td>{{transaction.amount_sent}}</td>
                    <td>{{transaction.amount_received}}</td>
                 </tr>
-				{% endfor %}
+			{% endfor %}
 			</tbody>
 			</table>
         </div>
