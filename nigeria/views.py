@@ -188,7 +188,7 @@ def _get_stock_per_location_strings(locations):
             rows.append(row)
             count = count + 1
     data = "[%s]" % ", ".join(rows)
-    options = '{"grid":{"clickable":true},"xaxis":{"min":0,"ticks":[],"tickFormatter":"string"}}'
+    options = '{"grid":{"clickable":true},"xaxis":{"min":0,"ticks":[],"tickFormatter":"string"},"yaxis":{"min":0}}'
     return (data, options)
 
 
@@ -218,5 +218,5 @@ def _get_stock_over_time_strings(locations):
     #data_for_dates = [label":"KANO", "data":[[1240316478.0,1800]]}];\n                    
     # todo: make this real
     #data = '[{"label":"Ajingi","data":[[1239706800000,1000],[1239793200000,800],[1239836400000,700],[1239966000000,650],[1240052400000,450],[1240138800000,350],[1240182000000,200],[1240268400000,100]]},{"label":"Bebeji","data":[[1239706800000,500],[1239793200000,350],[1239836400000,250],[1239966000000,1250],[1240052400000,1000],[1240138800000,900],[1240182000000,700],[1240268400000,650]]},{"label":"Bichi","data":[[1239706800000,1500],[1239793200000,1500],[1239836400000,1500],[1239966000000,1200],[1240052400000,1100],[1240138800000,1000],[1240182000000,850],[1240268400000,750]]},{"label":"Dala","data":[[1239706800000,200],[1239793200000,1500],[1239836400000,1250],[1239966000000,1100],[1240052400000,900],[1240138800000,600],[1240182000000,300],[1240268400000,100]]},{"label":"Garko","data":[[1239706800000,750],[1239793200000,450],[1239836400000,250],[1239966000000,250],[1240052400000,250],[1240138800000,50],[1240182000000,750],[1240268400000,500]]}];'
-    options = '{"bars":{"show":false},"points":{"show":true},"grid":{"clickable":false},"xaxis":{"mode":"time","timeformat":"%m/%d/%y"},"legend":{"show":true},"lines":{"show":true}}'
+    options = '{"bars":{"show":false},"points":{"show":true},"grid":{"clickable":false},"xaxis":{"mode":"time","timeformat":"%m/%d/%y"},"yaxis":{"min":0},"legend":{"show":true},"lines":{"show":true}}'
     return (data, options)
