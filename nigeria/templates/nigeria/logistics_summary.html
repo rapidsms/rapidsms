@@ -1,10 +1,10 @@
 {% extends "layout.html" %}
 {% block title %}Logistics Summary{% endblock %}
 {% block javascripts %}
-<script language="javascript" type="text/javascript" src="/static/nigeria/js/jquery.flot.min.js"></script>
 <!--[if IE]>
 <script language="javascript" type="text/javascript" src="/static/nigeria/js/excanvas.pack.js"></script>
 <![endif]-->
+<script language="javascript" type="text/javascript" src="/static/nigeria/js/jquery.flot.min.js"></script>
 <script language="javascript">
 $(document).ready(function() {
 //	data = [
@@ -64,6 +64,7 @@ $.plot($('#sl_ot_children'), data_for_child_dates, axis_for_child_dates);
 {% block stylesheets %}
 <style>
 td {border-top: none}
+tr.variant { background-color: #FFD6DD; }
 </style>
 {% endblock %}
 {% block content %}
@@ -98,20 +99,21 @@ td {border-top: none}
     <tr>
       <td colspan="2">
         <div class="module">
-          <h2>Shipment Discrepancies Over Time</h2>
+          <h2>Shipment Transactions</h2>
 			<table class="shipment_discrepancy" width="100%">
 			<thead><tr><th>Waybill No.</th><th>Date Sent</th><th>Date Received</th><th>From</th><th>To</th><th>Amount Sent</th><th>Amount Received</th></tr></thead>
 			<tbody>
 			{% for transaction in transactions %}
-				<tr>
-				   <td>{{transaction.shipment.shipment_id}}</td>
-				   <td>{{transaction.shipment.sent|date:"M j, Y h:iA"}}</td>
-				   <td>{{transaction.shipment.received|date:"M j, Y h:iA"}}</td>
-				   <td><a href="/reports/logistics/summary/{{transaction.shipment.origin.id}}/">{{transaction.shipment.origin.name}}</a></td>
+				<tr {% if transaction.flag %}class="variant"{% endif %}>
+                   <td>{{transaction.shipment.shipment_id}}</td>
+                   <td>{{transaction.shipment.sent|date:"M j, Y h:iA"}}</td>
+                   <td>{{transaction.shipment.received|date:"M j, Y h:iA"}}</td>
+                   <td><a href="/reports/logistics/summary/{{transaction.shipment.origin.id}}/">{{transaction.shipment.origin.name}}</a></td>
 				   <td><a href="/reports/logistics/summary/{{transaction.shipment.destination.id}}/">{{transaction.shipment.destination.name}}</a></td>
-				   <td>{{transaction.amount_sent}}</td><td>{{transaction.amount_received}}</td>
-				</tr>
-			{% endfor %}
+				   <td>{{transaction.amount_sent}}</td>
+                   <td>{{transaction.amount_received}}</td>
+                </tr>
+				{% endfor %}
 			</tbody>
 			</table>
         </div>
