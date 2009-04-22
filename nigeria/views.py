@@ -39,7 +39,7 @@ def index(req):
     
 # Logic below handles objects retrieval from Location Models
 
-    return render_to_response(req, "nigeria/index.html",{'states':states, 'lgas':lga_dict})
+    return render_to_response(req, "nigeria/index.html",{'st':state, 'states':states,'lgas':lga_dict})
 
 def logistics_summary(req, locid):
     # Get the location we are going to work with.
