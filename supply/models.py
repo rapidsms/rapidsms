@@ -119,3 +119,20 @@ class Notification(models.Model):
     resolved = models.DateTimeField(blank=True, null=True)
     # TODO do we want to save a resolver?
 
+
+
+# this is a signal that says that whenever a location is loaded,
+# if these models have also been loaded we should try to set the 
+# stock in that location
+def loc_stock_post_init(sender, **kwargs):
+    """Location post init signal that reads the stock from the stock table and 
+       sets it in the location object, if it is defined"""
+    instance = kwargs["instance"]
+    try:
+        instance.stock = Stock.objects.get(location=instance)
+    except Stock.DoesNotExist:
+        # this isn't a real error, we just don't have any stock information
+        instance.stock = None
+
+# this is the magic that glues the signal to the post load call
+models.signals.post_init.connect(loc_stock_post_init, sender=Location)
