@@ -30,7 +30,7 @@ class TestApp (TestScript):
             supply app and spit out the data in a format that can
             be sucked into a fixture"""
         # this is the number of transactions that will be generated
-        transaction_count = 100
+        transaction_count = 0
         
         # these are the locations that will be the origins, chosen randomly
         # from this list
