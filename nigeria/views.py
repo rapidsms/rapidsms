@@ -94,6 +94,34 @@ def logistics_summary(req, locid):
                                'stock_over_time_child_options' : stock_over_time_child_options 
                                })
 
+def generate(req):
+    # for the demo, to quickly generate dps and teams for all wards
+    all_wards = Location.objects.all().filter(type__name__iexact="ward")
+    dps_per_ward = 3
+    teams_per_dp = 4
+    dp_type = LocationType.objects.get(name__iexact="Distribution Point")
+    team_type = LocationType.objects.get(name__iexact="Mobilization Team")
+    teams_created = 0
+    dps_created = 0
+    ward_count = 1
+    for ward in all_wards:
+        print "ward: %s, %s of %s" %(ward.name, ward_count, len(all_wards))
+        ward_count = ward_count + 1
+        # assume if this ward already has DPs we don't need to do this
+        if (len(ward.children.all()) > 0):
+            continue
+        for dp_id in range(1, dps_per_ward + 1):
+            dp_name = "%s DP %s" %(ward.name, dp_id)
+            dp_code = "%s%s" % (ward.code, dp_id)
+            dp = Location.objects.create(name=dp_name, type=dp_type, code=dp_code, parent=ward)
+            dps_created = dps_created + 1
+            for team_id in range(1, teams_per_dp + 1):
+                team_name = "%s TEAM %s" %(dp_name, team_id)
+                team_code = "%s%s" % (dp_code, team_id)
+                team = Location.objects.create(name=team_name, type=team_type, code=team_code, parent=dp)
+                teams_created = teams_created + 1
+    return HttpResponse("Successfully created %s distribution points and %s teams" % (dps_created, teams_created))
+    
 def supply_summary(req, frm, to, range):
     return render_to_response(req, "nigeria/supply_summary.html")
 
