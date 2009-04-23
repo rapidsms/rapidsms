@@ -191,14 +191,15 @@ class App(rapidsms.app.App):
         #reporter = self.__identify(message.peer, "reporting")
         #self.handled = False
         for domain in self.domains_forms_tokens:
-            if code.upper() in domain:
+            code_matched = self._get_code(code, domain)
+            if code_matched:
                 # gather list of form dicts for this domain code
-                forms = domain[code.upper()]
+                # forms = domain[code.upper()]
                 self.debug("DOMAIN MATCH")
-                
+                forms = domain[code_matched]
                 for form in forms:
                     if type.upper() in form:
-                        this_domain = Domain.objects.get(code__iexact=code.upper())
+                        this_domain = Domain.objects.get(code__iexact=code_matched)
                         this_form = Form.objects.get(type__iexact=type)
                         if hasattr(message, "reporter") and message.reporter:
                             this_form.reporter = message.reporter
@@ -243,7 +244,7 @@ class App(rapidsms.app.App):
                             # actions SHOULD send their own confirmation
                             if(after <= before):
                                 message.respond("Received report for %s %s: %s.\nIf this is not correct, reply with CANCEL" % \
-                                    (code.upper(), type.upper(), ", ".join(info)))                        
+                                    (code_matched, type.upper(), ", ".join(info)))                        
                         # oh no! there were validation errors!
                         # since we've already matched the domain
                         # and form, we can be pretty sure that
@@ -264,9 +265,8 @@ class App(rapidsms.app.App):
                         continue        
 
                 if not hasattr(self, "handled") or not self.handled:
-                    # TODO ditto
                     message.respond("Oops. Cannot find a report called %s for %s. Available reports for %s are %s" % \
-                        (type.upper(), code.upper(), code.upper(), ", ".join([f.keys().pop().upper() for f in forms]))) 
+                        (type.upper(), code_matched, code_matched, ", ".join([f.keys().pop().upper() for f in forms]))) 
                     self.handled = True
                     break
 
@@ -278,6 +278,18 @@ class App(rapidsms.app.App):
                 #        (code.upper(), ", ".join([s.keys().pop().upper() for s in self.supplies_reports_tokens]))) 
 
 
+    def _get_code(self, code, domain):
+         '''Gets the code out of the code and domain.  This allows us to 
+            do some additional hacking on the matching logic'''
+         # original logic
+         if code.upper() in domain:
+             return code.upper()
+         # super hacked in demo logic
+         if "LLIN" in domain:
+             if code.upper() == "LL" or re.match(r"^(l*i*l*i*n+)", code.lower()): 
+                 return "LLIN"
+         return False
+        
     def _get_validation_errors(self, message, form, form_entry):
         validation_errors = []
         
