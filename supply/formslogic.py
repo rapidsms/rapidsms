@@ -111,10 +111,10 @@ class SupplyFormsLogic(FormsLogic):
                 partials_to_amend.update(status = "A")
 
         partial.save()
-        response = "Received report for %s %s: origin=%s, dest=%s, waybill=%s, amount=%s, stock=%s. If this is not correct, reply with CANCEL" % (
+        response = "Received report for %s %s: origin=%s, dest=%s, waybill=%s, amount=%s, stock=%s." % (
              partial.domain.code, form_entry.form.type, partial.origin, partial.destination, partial.shipment_id, partial.amount, partial.stock)  
         if not partial.reporter:
-            response = response + ". Please register your phone"
+            message.respond("Please register your phone with RapidSMS.")
         message.respond(response)
         self._notify_counterparty(partial)
         return partial
