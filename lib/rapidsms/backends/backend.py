@@ -31,8 +31,8 @@ class Backend (Receiver):
     def stop(self):
         self._running = False
    
-    def message(self, connection, text, date=None):
-        c = Connection(self, connection)
+    def message(self, identity, text, date=None):
+        c = Connection(self, identity)
         return Message(c, text, date)
 
     def route(self, msg):
