@@ -116,6 +116,7 @@ class TestApp (TestScript):
         unregistered_submission = """
             supply_tus_1 > llin issue from 20 to 2027 11111 200 1800
             supply_tus_1 < Received report for LLIN issue: origin=KANO, dest=KURA, waybill=11111, amount=200, stock=1800.
+            supply_tus_1 < Please register your phone with RapidSMS.
             """
         self.runScript(unregistered_submission)
         
