@@ -224,16 +224,19 @@ class Router (component.Receiver):
         msg = self.next_message(timeout=1.0)
         if msg is not None:
             self.incoming(msg)
-
+    
+    def __sorted_apps(self):
+        return sorted(self.apps, key=lambda a: a.priority())
+    
     def incoming(self, message):   
         self.info("Incoming message via %s: %s ->'%s'" %\
 			(message.connection.backend.name, message.connection.identity, message.text))
-           
+        
         # loop through all of the apps and notify them of
         # the incoming message so that they all get a
         # chance to do what they will with it                      
         for phase in self.incoming_phases:
-            for app in self.apps:
+            for app in self.__sorted_apps():
                 self.debug('IN' + ' ' + phase + ' ' + app.name)
                 responses = len(message.responses)
                 handled = False
@@ -267,11 +270,12 @@ class Router (component.Receiver):
         # they will before the message is actually sent
         for phase in self.outgoing_phases:
             continue_sending = True
+            
 			# call outgoing phases in the opposite order of the
 			# incoming phases so that, for example, the first app
 			# called with an incoming message is the last app called
 			# with an outgoing message
-            for app in reversed(self.apps):
+            for app in reversed(self.__sorted_apps()):
                 self.debug('OUT' + ' ' + phase + ' ' + app.name)
                 try:
                     continue_sending = getattr(app, phase)(message)
