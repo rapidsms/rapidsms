@@ -17,23 +17,18 @@ import sys
 ITEMS_PER_PAGE = 10
 
 #Views for handling summary of Reports Displayed as Location Tree
-def index(req):
-    
-    lga_dict={}
+def index(req, locid=None):
     reload(sys)
     sys.setdefaultencoding('utf-8')
-    #Line below will be replaced by a for loop to iterate through objects for state retrieval
-    state = Location.objects.get(code="20")
+    # TODO (better) ajax this
+    if not locid:
+        locid = 1
+    try:
+        location = Location.objects.get(id=locid)
+    except Location.DoesNotExist:
+        location= None
     
-    lgas = state.children.all()[0:9]
-
-    for lga in lgas:
-        wards = lga.children.all()
-        lga_dict[lga] = wards
-
-    # Logic below handles objects retrieval from Location Models
-    states = [loc.name for loc in Location.objects.all().filter(type__name__iexact="state")]
-    return render_to_response(req, "nigeria/index.html",{'st':state, 'states':states,'lgas':lga_dict})
+    return render_to_response(req, "nigeria/index.html",{'location':location })
 
 def logistics_summary(req, locid):
     # Get the location we are going to work with.
@@ -44,7 +39,6 @@ def logistics_summary(req, locid):
         locid = 1
     try: 
         location = Location.objects.get(pk=locid)
-        _set_stock(location)
     except Location.DoesNotExist:
         location = None
 
@@ -60,7 +54,8 @@ def logistics_summary(req, locid):
     [locations_shipped_to.append(trans.shipment.destination) for trans in transactions_from_loc if trans.shipment.destination not in locations_shipped_to]
     
     # set the stock value in all the children.
-    [_set_stock(child) for child in locations_shipped_to]
+    # this is now handled by signals!  see supply/models.py
+    #[_set_stock(child) for child in locations_shipped_to]
     
     # get some JSON strings for the plots
     stock_per_loc_data, stock_per_loc_options = _get_stock_per_location_strings(locations_shipped_to)
@@ -183,7 +178,22 @@ def _set_stock(location):
         # this isn't a real error, we just don't have any stock information
         location.stock = None
 
-        
+def _set_net_data(location):
+    '''Get the stock object associated with this.  None if none found'''
+    try:
+        location.stock = Stock.objects.get(location=location)
+    except Stock.DoesNotExist:
+        # this isn't a real error, we just don't have any stock information
+        location.stock = None
+
+def _set_net_card_data(location):
+    '''Get the stock object associated with this.  None if none found'''
+    try:
+        location.stock = Stock.objects.get(location=location)
+    except Stock.DoesNotExist:
+        # this isn't a real error, we just don't have any stock information
+        location.stock = None
+
 def _get_stock_per_location_strings(locations):
     '''Get a JSON formatted list that flot can plot
        based on the data in the stock table'''
