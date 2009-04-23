@@ -35,6 +35,8 @@ class App(rapidsms.app.App):
             "login":       "Hello, %(name)s! It has been %(days)d days since I last heard from you.",
             "reminder":    "I think you are %(name)s.",
             "dont-know":   "Please register your phone with RapidSMS.",
+            "list":        "I have %(num)d %(noun)s: %(items)s",
+            "empty-list":  "I don't have any %(noun)s.",
             "lang-set":    "I will now speak to you in English, where possible.",
             "denied":      "Sorry, you must identify yourself before you can do that." },
             
@@ -47,6 +49,10 @@ class App(rapidsms.app.App):
             "login":       "%(name)s hallo! Ich habe nicht gesehen, Sie sich fur %(days)d Tag",
             "reminder":    "Sie sind %(name)s.",
             "lang-set":    "Sie sind Deutsche." }}
+    
+    HELP = [
+        ("identify", "To identify yourself to RapidSMS, reply: IDENTIFY <alias>")
+    ]
     
     
     def __str(self, key, reporter=None, lang=None):
@@ -110,9 +116,10 @@ class App(rapidsms.app.App):
         # replace it *with* the keyworder, or extract it
         # into a parser of its own
         map = {
-            "identify": ["identify (slug)", "this is (slug)", "i am (slug)"],
-            "remind":   ["whoami", "who am i", LLIN_MY_STATUS],
-            "lang":     ["lang (slug)"]
+            "identify":  ["identify (slug)", "this is (slug)", "i am (slug)"],
+            "remind":    ["whoami", "who am i", LLIN_MY_STATUS],
+            "reporters": ["list reporters", "reporters\\?"],
+            "lang":      ["lang (slug)"]
         }
         
         # search the map for a match, dispatch
@@ -182,9 +189,44 @@ class App(rapidsms.app.App):
         # if not, we have no idea
         # who the message was from
         else:
-            msg.respond(self.__str("dont-know", msg.reporter))
-
+            msg.respond(self.__str(
+                "dont-know",
+                msg.reporter))
     
+    
+    def reporters(self, msg):
+        if msg.reporter is not None:
+            
+            # collate all reporters, with their full name,
+            # username, and current connection. TODO: this
+            # sucks, don't use __unicode__ and __repr__!
+            items = [
+                "%r (%s)" % (rep, rep.connection())
+                for rep in Reporter.objects.all()
+                if rep.connection()]
+            
+            if items:
+                msg.respond(
+                    self.__str("list", msg.reporter) % {
+                        "items": ", ".join(items),
+                        "noun":  "reporters",
+                        "num":    len(items), })
+            
+            else:
+                # there are no reportes to list!
+                msg.respond(
+                    self.__str("empty-list", msg.reporter) % {
+                        "noun": "reporters" })
+        
+        # not identified yet; reject, so
+        # we don't allow random people to
+        # query our reporters list
+        else:
+            msg.respond(
+                self.__str(
+                    "denied", msg.reporter))
+
+
     def lang(self, msg, code):
         
         # reqiure identification to continue
