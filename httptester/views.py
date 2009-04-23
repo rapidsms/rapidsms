@@ -1,10 +1,10 @@
-#!/usr/bin/env python
+
 # vim: ai ts=4 sts=4 et sw=4
 
 
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import RequestContext
-from django.shortcuts import render_to_response
+from rapidsms.webui.utils import render_to_response
 from apps.httptester.models import Message
 from apps.httptester.forms import MessageForm
 from django.core.urlresolvers import reverse
@@ -27,15 +27,8 @@ def index(req, form_class=MessageForm):
     #       #return render_to_response('shared/thanks.html')
     #   else:
     #       print "something bad happened"
-    return render_to_response(template_name, {
-    #    "form": form_instance,
-    #    "mootools_src": "/static/http/scripts/mootools-yui-compressed.js"
-    }, context_instance=RequestContext(req))
-
-
-	#return render_to_response("http/index.html",
-	#{ },
-	#    context_instance=RequestContext(req))
+    return render_to_response(req, template_name, {
+    })
 
 def index_basic(req):
     
@@ -48,7 +41,7 @@ def index_basic(req):
             phone_number = random.randint(100000, 999999) 
         return HttpResponseRedirect("/httpbasic/%s" % (phone_number))
         #return basic_ui(req, phone_number, True)
-    return render_to_response(template_name, {}, context_instance=RequestContext(req))
+    return render_to_response(req, template_name, {})
 
 def proxy(req, number, message):
     # ideally the hostname and port should be read from the rapidsms configuration
@@ -75,14 +68,8 @@ def basic_ui(req, number, skip_post=False, form_class=MessageForm):
            return basic_ui(req, msg.phone_number, True)
        else: 
            print "something bad happened"
-    return render_to_response(template_name, {
+    return render_to_response(req, template_name, {
         "form": form_instance,
         "msgs": msgs,
         "number": number
-        #"mootools_src": "/static/http/scripts/mootools-yui-compressed.js"
-    }, context_instance=RequestContext(req))
-
-
-	#return render_to_response("http/index.html",
-	#{ },
-	#    context_instance=RequestContext(req))
+    })
