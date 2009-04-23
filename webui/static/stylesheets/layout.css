@@ -109,23 +109,36 @@ div.clear-hack {
 			background: url("../images/rapidsms.png") no-repeat 0 50%;
 		}
 	
-	#tabs {
+	#tabs,
+	#page-tabs {
 		position: absolute;
 		height: 28px;
-		right: 0;
 		bottom: 0;
 		padding: 0;
 		margin: 0;
 	}
-
-		#tabs li {
+	
+	/* global tabs sit on the right,
+	 * page-specific tabs sit on the
+	 * left, to draw more attention */
+	#tabs      { right: 0; }
+	#page-tabs { left: 0;  }
+	
+		#tabs li,
+		#page-tabs li {
 			display: block;
 			float: left;
 			line-height: 28px;
-			margin-right: 5px;
 		}
+		
+		/* 5px spacing between each tab, to match
+		 * the top gap, since we're using pixel-
+		 * positioned backgrounds */
+		#tabs li      { margin-right: 5px; }
+		#page-tabs li { margin-left: 5px; }
 	
-			#tabs li a {
+			#tabs li a,
+			#page-tabs li a {
 				color: #fff;
 				display: block;
 				padding: 0 1em;
@@ -135,7 +148,9 @@ div.clear-hack {
 			}
 		
 			#tabs li.active a,
-			#tabs li.active a:hover {
+			#page-tabs li.active a,
+			#tabs li.active a:hover,
+			#page-tabs li.active a:hover {
 				background: #55cfde url("../images/tab-bg-active.png") repeat-x;
 				border: 1px solid #cef1f5;
 				border-bottom: 0;
@@ -151,7 +166,8 @@ div.clear-hack {
 			}
 		
 			/* brighten up inactive tabs when hovering */
-			#tabs li a:hover {
+			#tabs li a:hover,
+			#page-tabs li a:hover {
 				background-image: url("../images/tab-bg-hover.png"); }
 
 

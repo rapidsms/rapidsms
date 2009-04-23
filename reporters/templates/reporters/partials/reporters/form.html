@@ -10,11 +10,6 @@
 			<p class="help">Must be alphanumeric, up to 20 characters.</p>
 		</div>
 		<div>
-			<label for="fm-rep-add-password">Password</label>
-			<input type="text" class="required" id="fm-rep-add-password" name="password"{% if reporter %} value="{{ reporter.password }}"{% endif %} />
-			<p class="help">If provided, reporters must supply this password when identifying themselves.</p>
-		</div>
-		<div>
 			<label>Name</label>
 			<div>
 				<input type="text" id="fm-rep-add-first_name" name="first_name"{% if reporter %} value="{{ reporter.first_name }}"{% endif %} />
