@@ -16,4 +16,18 @@
 {"pk": 9, "model": "nigeria.carddistribution", "fields": {"reporter": 1, "location": 5, "time": "2008-04-23 18:23:00", "settlements": 50, "people": 150, "distributed": 40}},
 {"pk": 10, "model": "nigeria.carddistribution", "fields": {"reporter": 1, "location": 5, "time": "2008-04-24 17:03:03", "settlements": 100, "people": 300, "distributed": 60}},
 {"pk": 11, "model": "nigeria.carddistribution", "fields": {"reporter": 1, "location": 5, "time": "2008-04-25 17:34:20", "settlements": 12, "people": 120, "distributed": 40}}
+{"pk": 12, "model": "nigeria.carddistribution", "fields": {"reporter": 2, "location": 6, "time": "2008-04-25 17:45:10", "settlements": 35, "people": 430, "distributed": 55}}
+{"pk": 13, "model": "nigeria.carddistribution", "fields": {"reporter": 3, "location": 7, "time": "2008-04-25 12:34:20", "settlements": 22, "people": 100, "distributed": 50}}
+{"pk": 14, "model": "nigeria.carddistribution", "fields": {"reporter": 1, "location": 5, "time": "2008-04-26 13:34:12", "settlements": 100, "people": 1200, "distributed": 300}}
+{"pk": 15, "model": "nigeria.carddistribution", "fields": {"reporter": 2, "location": 6, "time": "2008-04-26 16:34:20", "settlements": 20, "people": 120, "distributed": 40}}
+{"pk": 15, "model": "nigeria.carddistribution", "fields": {"reporter": 3, "location": 7, "time": "2008-04-26 13:45:02", "settlements": 50, "people": 220, "distributed": 80}}
+{"pk": 16, "model": "nigeria.carddistribution", "fields": {"reporter": 1, "location": 5, "time": "2008-04-26 14:04:20", "settlements": 40, "people": 320, "distributed": 400}}
+{"pk": 17, "model": "nigeria.carddistribution", "fields": {"reporter": 2, "location": 6, "time": "2008-04-27 15:34:20", "settlements": 67, "people": 320, "distributed": 240}}
+{"pk": 18, "model": "nigeria.carddistribution", "fields": {"reporter": 3, "location": 7, "time": "2008-04-27 16:34:20", "settlements": 60, "people": 180, "distributed": 240}}
+{"pk": 19, "model": "nigeria.carddistribution", "fields": {"reporter": 1, "location": 5, "time": "2008-04-27 17:34:20", "settlements": 120, "people": 420, "distributed": 540}}
+{"pk": 20, "model": "nigeria.carddistribution", "fields": {"reporter": 2, "location": 6, "time": "2008-04-28 18:44:20", "settlements": 170, "people": 500, "distributed": 1000}}
+{"pk": 21, "model": "nigeria.carddistribution", "fields": {"reporter": 3, "location": 7, "time": "2008-04-28 19:39:21", "settlements": 20, "people": 120, "distributed": 70}}
+{"pk": 22, "model": "nigeria.carddistribution", "fields": {"reporter": 1, "location": 5, "time": "2008-04-28 12:44:20", "settlements": 320, "people": 1120, "distributed": 1840}}
+{"pk": 23, "model": "nigeria.carddistribution", "fields": {"reporter": 2, "location": 6, "time": "2008-04-29 13:34:20", "settlements": 120, "people": 220, "distributed": 240}}
+{"pk": 24, "model": "nigeria.carddistribution", "fields": {"reporter": 3, "location": 7, "time": "2008-04-30 14:34:20", "settlements": 90, "people": 160, "distributed": 140}}
 ]
