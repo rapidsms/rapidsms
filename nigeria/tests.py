@@ -62,6 +62,27 @@ class TestApp (TestScript):
            12345 < Sorry, I don't know who you are.
          """
     
+    testKeyword= """
+           tkw_1 > llin register 20 dl secret keyword tester
+           tkw_1 < Hello ktester! You are now registered as Distribution point team leader at KANO State.
+           tkw_1 > llin nets 2001 123 456 78 90
+           tkw_1 < Received report for LLIN nets: expected=456, actual=78, location=AJINGI, distributed=123, discrepancy=90
+           tkw_1 > LLIN nets 2001 123 456 78 90
+           tkw_1 < Received report for LLIN nets: expected=456, actual=78, location=AJINGI, distributed=123, discrepancy=90
+           tkw_1 > lin nets 2001 123 456 78 90
+           tkw_1 < Received report for LLIN nets: expected=456, actual=78, location=AJINGI, distributed=123, discrepancy=90
+           tkw_1 > ILLn nets 2001 123 456 78 90
+           tkw_1 < Received report for LLIN nets: expected=456, actual=78, location=AJINGI, distributed=123, discrepancy=90
+           tkw_1 > ilin nets 2001 123 456 78 90
+           tkw_1 < Received report for LLIN nets: expected=456, actual=78, location=AJINGI, distributed=123, discrepancy=90
+           tkw_1 > ll nets 2001 123 456 78 90
+           tkw_1 < Received report for LLIN nets: expected=456, actual=78, location=AJINGI, distributed=123, discrepancy=90
+           tkw_1 > llan nets 2001 123 456 78 90
+           tkw_1 < Sorry, we didn't understand that message.  Please try again.
+           tkw_1 > nets 2001 123 456 78 90
+           tkw_1 < Sorry, we didn't understand that message.  Please try again.
+        """
+    
     testNets= """
            8005551213 > llin register 2001 lf anothersecret net guy
            8005551213 < Hello nguy! You are now registered as LGA focal person at AJINGI LGA.
