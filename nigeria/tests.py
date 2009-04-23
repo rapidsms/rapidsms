@@ -80,9 +80,9 @@ class TestApp (TestScript):
            tkw_1 > ll nets 2001 123 456 78 90
            tkw_1 < Received report for LLIN nets: expected=456, actual=78, location=AJINGI, distributed=123, discrepancy=90
            tkw_1 > llan nets 2001 123 456 78 90
-           tkw_1 < Sorry, we didn't understand that message.  Please try again.
+           tkw_1 < Sorry, we didn't understand that message.
            tkw_1 > nets 2001 123 456 78 90
-           tkw_1 < Sorry, we didn't understand that message.  Please try again.
+           tkw_1 < Sorry, we didn't understand that message.
         """
     
     testNets= """
