@@ -5,15 +5,22 @@ import copy
 
 from rapidsms.connection import Connection
 from rapidsms.person import Person
+from datetime import datetime
 
 class Message(object):
-    def __init__(self, connection=None, text=None, person=None):
+    def __init__(self, connection=None, text=None, person=None, date=datetime.now()):
         if connection == None and person == None:
             raise Exception("Message __init__() must take one of: connection, person")
         self._connection = connection
         self.text = text
+        self.date = date
         self.person = person
         self.responses = []
+
+        # a message is considered "unprocessed" until
+        # rapidsms has dispatched it to all apps, and
+        # flushed the responses out
+        self.processed = False
     
     def __unicode__(self):
         return self.text
@@ -26,6 +33,12 @@ class Message(object):
             return self._connection
         else:
             return self.person.connection
+
+    @property
+    def peer (self):
+        # return the identity (e.g. phone number) of
+        # the other end of this message's connection
+        return self.connection.identity 
     
     def send(self):
         """Send this message via self.connection.backend, returning
@@ -42,6 +55,12 @@ class Message(object):
         while self.responses:
             self.responses.pop(0).send()
 
+    def error(self, text, level):
+        """Apps send error messages here rather than through respond
+           so users only receive one - the with the highest level of specificity"""
+        #TODO implement this
+        pass
+
     def respond(self, text):
         """Send the given text back to the original caller of this
            message on the same route that it came in on"""
@@ -52,3 +71,14 @@ class Message(object):
             return True
         else: 
             return False
+
+    def forward (self, identity, text=None):
+        if self.connection:
+            target = self.connection.fork(identity)
+            if text is None: text = self.text
+            message = type(self)(connection=target, text=text)
+            self.responses.append(message)
+            return True
+        else:
+            return False
+

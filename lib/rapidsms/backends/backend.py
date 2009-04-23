@@ -31,9 +31,9 @@ class Backend (Receiver):
     def stop(self):
         self._running = False
    
-    def message(self, connection, text):
-        c = Connection(self, connection)
-        return Message(c, text)
+    def message(self, identity, text, date=None):
+        c = Connection(self, identity)
+        return Message(c, text, date)
 
     def route(self, msg):
         # send it off to the router

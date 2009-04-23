@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-import time, datetime
+import time, datetime, os
 import threading
 import traceback
 
@@ -78,38 +78,91 @@ class Router (component.Receiver):
     def start_backend (self, backend):
         while self.running:
             try:
-                # start the backend
                 backend.start()
-                # if backend execution completed normally, end the thread
+
+                # if backend execution completed
+                # normally (and did not raise),
+                # allow the thread to terminate
                 break
+
             except Exception, e:
+                
                 # an exception was raised in backend.start()
                 # sleep for 5 seconds, then loop and restart it
-                self.error("%s failed: %s" % (backend.name,e))
-                if not self.running: break
+                self.log_last_exception("Error in the %s backend" % backend.name)
+
+                # don't bother restarting the backend
+                # if the router isn't running any more
+                if not self.running:
+                    break
+               
+                # TODO: where did the 5.0 constant come from?
+                # we should probably be doing something more intelligent
+                # here, rather than just hoping five seconds is enough
                 time.sleep(5.0)
-                self.error("restarting %s" % (backend.name,))
+                self.info("Restarting the %s backend" % backend.name)
+
 
     def start_all_apps (self):
-        # call the "start" method of each app
+        """Calls the _start_ method of each app registed via
+           Router.add_app, logging any exceptions raised, but
+           not allowing them to propagate. Returns True if all
+           of the apps started without raising."""
+
+        raised = False
         for app in self.apps:
             try:
                 app.start()
-            except Exception, e:
-                self.error("%s failed on start: %r", app, e)
+
+            except Exception:
+                self.log_last_exception("The %s app failed to start" % app.name)
+                raised = True
+
+        # if any of the apps raised, we'll return
+        # False, to warn that _something_ is wrong
+        return not raised
+
 
     def start_all_backends (self):
-        # launch each backend in its own thread
+        """Starts all backends registed via Router.add_backend,
+           by calling self.start_backend in a new thread for each."""
+
         for backend in self.backends:
-            worker = threading.Thread(target=self.start_backend, args=(backend,))
+            worker = threading.Thread(
+                target=self.start_backend,
+                args=(backend,))
+
             worker.start()
 
+            # attach the worker thread to the backend,
+            # so we can check that it's still running
+            backend.thread = worker
+
+
     def stop_all_backends (self):
+        """Notifies all backends registered via Router.add_backend
+           that they should stop. This method cannot guarantee that
+           backends *will* stop in a timely manner."""
+
         for backend in self.backends:
             try:
                 backend.stop()
-            except Exception, e:
-                self.error("%s failed on stop: %s" % (backend.name,e))
+                timeout = 5
+                step = 0.1
+
+                # wait up to five seconds for the backend's
+                # worker thread to terminate, or log failure
+                while(backend.thread.is_alive()):
+                    if timeout <= 0:
+                        raise RuntimeError, "The %s backend's worker thread did not terminate" % backend.name
+
+                    else:
+                        time.sleep(step)
+                        timeout -= step
+
+            except Exception:
+                self.log_last_exception("The %s backend failed to stop" % backend.name)
+
 
     def start (self):
         self.running = True
@@ -122,6 +175,36 @@ class Router (component.Receiver):
         self.start_all_backends()
         self.start_all_apps()
 
+        # check for any pending messages
+        try:
+            fn = "/tmp/rapidsms-pending"
+            f = file(fn)
+            
+            # trash the file, to prevent
+            # these messages being re-sent
+            msgs = f.readlines()
+            os.unlink(fn)
+            f.close()
+            
+            # iterate the pending messages,
+            for pending_msg in msgs:
+                be_name, identity, txt =\
+                    pending_msg.strip().split(":")
+                
+                # find the backend named by the message,
+                # reconstruct the object, and send it
+                for backend in self.backends:
+                    if backend.name == be_name:
+                        msg = backend.message(identity, txt)
+                        self.info("Sending pending message: %r" % msg)
+                        msg.send()
+         
+        # something went bang. not sure what, and don't
+        # particularly care. they'll be re-tried the
+        # next time rapidsms starts up
+        except:
+            pass
+        
         # wait until we're asked to stop
         while self.running:
             try:
@@ -141,16 +224,19 @@ class Router (component.Receiver):
         msg = self.next_message(timeout=1.0)
         if msg is not None:
             self.incoming(msg)
-
+    
+    def __sorted_apps(self):
+        return sorted(self.apps, key=lambda a: a.priority())
+    
     def incoming(self, message):   
         self.info("Incoming message via %s: %s ->'%s'" %\
 			(message.connection.backend.name, message.connection.identity, message.text))
-           
+        
         # loop through all of the apps and notify them of
         # the incoming message so that they all get a
         # chance to do what they will with it                      
         for phase in self.incoming_phases:
-            for app in self.apps:
+            for app in self.__sorted_apps():
                 self.debug('IN' + ' ' + phase + ' ' + app.name)
                 responses = len(message.responses)
                 handled = False
@@ -169,6 +255,12 @@ class Router (component.Receiver):
         # now send the message's responses
         message.flush_responses()
 
+        # we are no longer interested in
+        # this message... but some crazy
+        # synchronous backends might be!
+        message.processed = True
+
+
     def outgoing(self, message):
         self.info("Outgoing message via %s: %s <- '%s'" %\
 			(message.connection.backend.name, message.connection.identity, message.text))
@@ -178,11 +270,12 @@ class Router (component.Receiver):
         # they will before the message is actually sent
         for phase in self.outgoing_phases:
             continue_sending = True
+            
 			# call outgoing phases in the opposite order of the
 			# incoming phases so that, for example, the first app
 			# called with an incoming message is the last app called
 			# with an outgoing message
-            for app in reversed(self.apps):
+            for app in reversed(self.__sorted_apps()):
                 self.debug('OUT' + ' ' + phase + ' ' + app.name)
                 try:
                     continue_sending = getattr(app, phase)(message)

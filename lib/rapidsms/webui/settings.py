@@ -67,7 +67,7 @@ TEMPLATE_CONTEXT_PROCESSORS = [
     "django.core.context_processors.debug",
     "django.core.context_processors.i18n",
     "django.core.context_processors.media",
-    "rapidsms.webui.contexts.apps"
+    "rapidsms.webui.contexts.layout"
 ]
 
 TEMPLATE_DIRS = [
@@ -75,9 +75,6 @@ TEMPLATE_DIRS = [
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
 ]
-
-
-
 
 # ====================
 # LOAD RAPIDSMS CONFIG
@@ -119,8 +116,8 @@ else:
     # blow up. TODO: is there a way to
     # run django without a database?
     raise(
-        ImproperlyConfigured,
-        "Your RapidSMS configuration ini (%r) does not " +\
+        #ImproperlyConfigured,
+        "Your RapidSMS configuration does not " +\
         "contain a [database] section, which is required " +\
         "for the Django webui to function.")
 

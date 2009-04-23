@@ -1,9 +1,16 @@
 from rapidsms.router import Router
+from rapidsms.backends.backend import Backend
 from rapidsms.app import App
 
 # a really dumb Logger stand-in
 class MockLogger (list):
+    to_console = True
     def write (self, *args):
+        if self.to_console:
+            if len(args) == 3:
+                print args[2]
+            else:    
+                print args[2] % args[3:]
         self.append(args)
 
 # a subclass of Router with all the moving parts replaced
@@ -16,6 +23,7 @@ class MockRouter (Router):
         self.backends.append(backend)
 
     def add_app (self, app):
+        app.configure()
         self.apps.append(app)
 
     def start (self):
@@ -27,6 +35,16 @@ class MockRouter (Router):
         self.running = False
         self.stop_all_backends()
 
+class MockBackend (Backend):
+    def start (self):
+        self._running = True
+        self.outgoing = []
+
+    def run (self):
+        while self.running:
+            msg = self.next_message(0.25)
+            if msg is not None: self.outgoing.append(msg) 
+ 
 # a subclass of App with all the moving parts replaced
 class MockApp (App):
     def configure (self):
@@ -49,3 +67,8 @@ class MockApp (App):
 
     def stop (self):
         self.calls.append(("stop",))
+
+class EchoApp (MockApp):
+    def handle (self, message):
+        MockApp.handle(self, message)
+        message.respond(message.peer + ": " + message.text)
