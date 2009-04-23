@@ -14,7 +14,7 @@ from random import randrange, seed
 import time
 import sys
 
-ITEMS_PER_PAGE = 10
+ITEMS_PER_PAGE = 20
 
 #Views for handling summary of Reports Displayed as Location Tree
 def index(req):
