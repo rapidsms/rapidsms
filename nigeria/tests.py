@@ -4,10 +4,11 @@ from apps.reporters.models import *
 import apps.reporters.app as reporter_app
 import apps.supply.app as supply_app
 import apps.form.app as form_app
+import apps.default.app as default_app
 from app import App
 
 class TestApp (TestScript):
-    apps = (reporter_app.App, App,form_app.App, supply_app.App )
+    apps = (reporter_app.App, App,form_app.App, supply_app.App, default_app.App )
     fixtures = ['nigeria_llin', 'kano_locations']
     
     def setUp(self):
