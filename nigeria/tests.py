@@ -94,6 +94,7 @@ class TestApp (TestScript):
          
     
     def _testKanoLocations(self):
+        #TODO test for DPs and MTs
         loc_types = LocationType.objects.all()
         self.assertEqual(6, len(loc_types))
         state = LocationType.objects.get(name="State")
