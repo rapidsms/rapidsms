@@ -34,7 +34,7 @@ class App(component.Component):
             # priority. these should almost always be used over integers,
             # so we can re-jig them in future, if necessary
             if pt == str:
-                if named in p:
+                if p in named:
                     return named[p]
                 
                 else:
