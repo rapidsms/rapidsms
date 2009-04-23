@@ -26,7 +26,7 @@ class TestApp (TestScript):
         
     def testScript(self):
         a = """
-           8005551219 > llin register 20 dl secret crummy user
+           8005551219 > llin register 20 dl crummy user
            8005551219 < Hello cuser! You are now registered as Distribution point team leader at KANO State.
            """
         self.runScript(a)
@@ -38,8 +38,8 @@ class TestApp (TestScript):
         
     testRegistration = """
            8005551212 > llin my status
-           8005551212 < Sorry, I don't know who you are.
-           8005551212 > llin register 20 dl secret dummy user
+           8005551212 < Please register your phone with RapidSMS.
+           8005551212 > llin register 20 dl dummy user
            8005551212 < Hello duser! You are now registered as Distribution point team leader at KANO State.
            8005551212 > llin my status
            8005551212 < I think you are dummy user.
@@ -47,23 +47,23 @@ class TestApp (TestScript):
     
     testRegistrationErrors = """
            12345 > llin my status
-           12345 < Sorry, I don't know who you are.
-           12345 > llin register 45 DL secret hello world 
+           12345 < Please register your phone with RapidSMS.
+           12345 > llin register 45 DL hello world 
            12345 < Invalid form.  45 not in list of location codes
            12345 > llin my status
-           12345 < Sorry, I don't know who you are.
-           12345 > llin register 20 pp secret hello world 
+           12345 < Please register your phone with RapidSMS.
+           12345 > llin register 20 pp hello world 
            12345 < Invalid form.  pp not in list of role codes
            12345 > llin my status
-           12345 < Sorry, I don't know who you are.
-           12345 > llin register 6803 AL secret hello world 
+           12345 < Please register your phone with RapidSMS.
+           12345 > llin register 6803 AL hello world 
            12345 < Invalid form.  6803 not in list of location codes. AL not in list of role codes
            12345 > llin my status
-           12345 < Sorry, I don't know who you are.
+           12345 < Please register your phone with RapidSMS.
          """
     
     testNets= """
-           8005551213 > llin register 2001 lf anothersecret net guy
+           8005551213 > llin register 2001 lf net guy
            8005551213 < Hello nguy! You are now registered as LGA focal person at AJINGI LGA.
            8005551213 > llin nets 2001 123 456 78 90
            8005551213 < Received report for LLIN nets: expected=456, actual=78, location=AJINGI, distributed=123, discrepancy=90
@@ -72,7 +72,7 @@ class TestApp (TestScript):
          """
     
     testNetCards= """
-           8005551214 > llin register 200201 lf anothersecret card guy
+           8005551214 > llin register 200201 lf card guy
            8005551214 < Hello cguy! You are now registered as LGA focal person at ALBASU CENTRAL Ward.
            8005551214 > llin net cards 200201 123 456 78 
            8005551214 < Received report for LLIN net cards: settlements=123, people=456, distributed=78, location=ALBASU CENTRAL
@@ -84,11 +84,11 @@ class TestApp (TestScript):
             tus_1 > llin net cards 200201 123 456 78
             tus_1 < Received report for LLIN net cards: settlements=123, people=456, distributed=78, location=ALBASU CENTRAL. Please register your phone
             tus_1 > llin my status
-            tus_1 < Sorry, I don't know who you are.
+            tus_1 < Please register your phone with RapidSMS. 
             tus_2 > llin nets 2001 123 456 78 90
             tus_2 < Received report for LLIN nets: expected=456, actual=78, location=AJINGI, distributed=123, discrepancy=90. Please register your phone
             tus_2 > llin my status
-            tus_2 < Sorry, I don't know who you are.
+            tus_2 < Please register your phone with RapidSMS. 
          """
            
          
