@@ -34,7 +34,7 @@ class App(rapidsms.app.App):
             "first-login": "Hello, %(name)s! This is the first time I've met you.",
             "login":       "Hello, %(name)s! It has been %(days)d days since I last heard from you.",
             "reminder":    "I think you are %(name)s.",
-            "dont-know":   "Sorry, I don't know who you are.",
+            "dont-know":   "Please register your phone with RapidSMS.",
             "lang-set":    "I will now speak to you in English, where possible.",
             "denied":      "Sorry, you must identify yourself before you can do that." },
             
