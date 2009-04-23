@@ -121,10 +121,10 @@ class TestApp (TestScript):
         
     def testScript(self):
         mismatched_amounts = """
-            8005552222 > llin register 20 sm secret mister sender 
-            8005552222 < Hello msender! You are now registered as Stock manager at KANO State.
-            8005551111 > llin register 2027 sm shhh mister recipient
-            8005551111 < Hello mrecipient! You are now registered as Stock manager at KURA LGA.
+            8005552222 > llin register 20 sm mister sender 
+            8005552222 < Hello mister! You are now registered as Stock manager at KANO State.
+            8005551111 > llin register 2027 sm mister recipient
+            8005551111 < Hello mister! You are now registered as Stock manager at KURA LGA.
             8005552222 > llin issue from 20 to 2027 11111 200 1800
             8005552222 < Received report for LLIN issue: origin=KANO, dest=KURA, waybill=11111, amount=200, stock=1800. If this is not correct, reply with CANCEL
             8005551111 > llin receive from 20 to 2027 11111 150 500
