@@ -22,8 +22,8 @@
 	
 	
 	{% block content %}
-<div>		
-	
+
+
 
 <h2>Report Summary</h2>
 <table class="datatable"><thead><tr>
@@ -36,15 +36,16 @@
 <th scope="col"><b></b></th>
 <th scope="col"><b></b></th>
 <th scope="col"><b></b></th>
+
 </tr></thead></table>
 
 {%for state in states%}
-{% ifequal state "Kano" %} 
-<ul id="red" class="treeview-blue">
+{% ifequal state "Kano" %}
+<ul id="navigation">
 <li class="{% cycle 'odd' 'even' %}"><span><a href="/reports/logistics/summary/{{st.pk}}/">{{state}}</a><span class="field"><span class="datafield"><b>234</b></span> <span>566</span> <span>9807</span></span></span>
 </span>
 
-{%for lga, wards in lgas.items %} 
+{%for lga, wards in lgas.items %}
 <ul>
 <li class="{% cycle 'odd' 'even' %}"><span><a href="/reports/logistics/summary/{{lga.pk}}/">{{lga.name}}</a> <span class="field"><span class="datafield"><b><a href="/reports/logistics/summary/{{lga.pk}}/">234</a></b></span> <span><a href="/reports/coupons/summary/{{lga.pk}}/">566</a></span> <span><a href="/reports/bednets/summary/{{lga.pk}}/">9807</a></span></span></span>
 
