@@ -181,7 +181,18 @@ table {
 		.module div.toolbar a.add {
 			background-image: url("../icons/16/add.png");
 		}
-
+		.module div.toolbar a.prev {
+			background-image: url("../icons/16/go-previous.png");
+		}
+		.module div.toolbar a.next {
+			background-image: url("../icons/16/go-next.png");
+		}
+		.module div.toolbar a.first {
+			background-image: url("../icons/16/go-first.png");
+		}
+		.module div.toolbar a.last {
+			background-image: url("../icons/16/go-last.png");
+		}
 
 .module form { }
 	

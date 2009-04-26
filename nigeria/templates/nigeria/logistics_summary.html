@@ -7,14 +7,6 @@
 <script language="javascript" type="text/javascript" src="/static/nigeria/js/jquery.flot.min.js"></script>
 <script language="javascript">
 $(document).ready(function() {
-stocklevels_overtime = [[[0, 300], [1, 350], [2, 500], [3, 510], [4, 560]],
-			];
-stocklevels_perlocation = [
-	{ label: 'Ajingi', data: [[0,1000]]},
-	{ label: 'Balare', data: [[1,1500]]},
-	{ label: 'Dam Batta', data: [[2,1300]]},
-	{ label: 'Bunkure', data: [[3,1430]]}
-];
 //	data = [
 //	 { label: 'APK', data: [[0,10]]},
 //	 { label: 'DPO', data: [[1,20]]},
@@ -26,38 +18,81 @@ stocklevels_perlocation = [
 //$.plot($('#sl_ot'), stocklevels_overtime, {'lines': {show: true, fill: true}});
 //$.plot($('#sl_pl'), stocklevels_perlocation, {'bars':{show: true}});
 
-gData = [{"bars":{"show":true},"label":"Ajingi","data":[[-0.5,100]]},{"bars":{"show":true},"label":"Bebeji","data":[[0.5,650]]},{"bars":{"show":true},"label":"Bichi","data":[[1.5,750]]},{"bars":{"show":true},"label":"Dala","data":[[2.5,100]]},{"bars":{"show":true},"label":"Garko","data":[[3.5,500]]}];
-gOptions = {"grid":{"clickable":true},"xaxis":{"min":-0.5,"max":5,"ticks":[[0,"Ajingi"],[1,"Bebeji"],[2,"Bichi"],[3,"Dala"],[4,"Garko"]],"tickFormatter":"string"}};
-$.plot($("#sl_pl"), gData, gOptions);
+stock_loc_data = {{stock_per_loc_plot_data|safe}};
+stock_loc_options = {{stock_per_loc_plot_options|safe}};
+$.plot($("#sl_pl"), stock_loc_data , stock_loc_options );
 
-data_for_dates = [{"label":"Ajingi","data":[[1239706800000,1000],[1239793200000,800],[1239836400000,700],[1239966000000,650],[1240052400000,450],[1240138800000,350],[1240182000000,200],[1240268400000,100]]},{"label":"Bebeji","data":[[1239706800000,500],[1239793200000,350],[1239836400000,250],[1239966000000,1250],[1240052400000,1000],[1240138800000,900],[1240182000000,700],[1240268400000,650]]},{"label":"Bichi","data":[[1239706800000,1500],[1239793200000,1500],[1239836400000,1500],[1239966000000,1200],[1240052400000,1100],[1240138800000,1000],[1240182000000,850],[1240268400000,750]]},{"label":"Dala","data":[[1239706800000,200],[1239793200000,1500],[1239836400000,1250],[1239966000000,1100],[1240052400000,900],[1240138800000,600],[1240182000000,300],[1240268400000,100]]},{"label":"Garko","data":[[1239706800000,750],[1239793200000,450],[1239836400000,250],[1239966000000,250],[1240052400000,250],[1240138800000,50],[1240182000000,750],[1240268400000,500]]}];
-axis_for_dates = {"bars":{"show":false},"points":{"show":true},"grid":{"clickable":false},"xaxis":{"mode":"time","timeformat":"%m/%d/%y"},"legend":{"show":true},"lines":{"show":true}};
+// add tooltip.  unfortunately this isn't working now
+$("#sl_pl").bind("plotclick", function (event, pos, item) {
+            if (item) {
+                $("#tooltip").remove();
+                var y = item.datapoint[1].toFixed(0);
+                showTooltip(item.pageX, item.pageY,
+                            item.series.label + " = " + y);
+            }
+                });
+       
+
+data_for_dates = {{stock_over_time_data|safe}};
+axis_for_dates =  {{stock_over_time_options|safe}};
 
 $.plot($('#sl_ot'), data_for_dates, axis_for_dates);
 
+data_for_child_dates = {{stock_over_time_child_data|safe}};
+axis_for_child_dates =  {{stock_over_time_child_options|safe}};
+
+$.plot($('#sl_ot_children'), data_for_child_dates, axis_for_child_dates);
+
 });
+
+     function showTooltip(x, y, contents) {
+        $('<div id="tooltip">' + contents + '</div>').css( {
+            position: 'absolute',
+            display: 'none',
+            top: y + 5,
+            left: x + 5,
+            border: '1px solid #fdd',
+            padding: '2px',
+            'background-color': '#fee',
+            opacity: 0.80
+        }).appendTo("body").fadeIn(200);
+    }
+
+
 </script>
 {% endblock %}
 {% block stylesheets %}
 <style>
 td {border-top: none}
-tr.variant { background-color: #FFD6DD; }
+tr.variant-amount { background-color: #FFD6DD; }
+tr.variant-waybill { background-color: #FFD869; }
+tr.variant-incorrect { background-color: #FFD6DD; }
 </style>
 {% endblock %}
 {% block content %}
 <div class="split">
+  <div class = "location_summary">
+    <h3>Logistics information for {{location.name}}</h3>
+    <b>Current Stock: </b>{% if location.stock %}{{location.stock}}{% else %}None{% endif %}
+  </div> 
   <table width="100%">
+    <td colspan="2">
+      <div class="module">
+        <h2>Stock Levels Over Time</h2>
+        <div id="sl_ot" style="height:350px;width:900;"></div>
+      </div>
+    </td>
     <tr>
       <td>
         <div class="module">
-          <h2>Stock Levels Over Time</h2>
-	  <div id="sl_ot" style="height:350px;width:450px;">
+          <h2>Stock Levels Over Time For {{location.name}} Shipment Destinations</h2>
+	  <div id="sl_ot_children" style="height:350px;width:450px;">
 	  </div>
         </div>
       </td>
       <td>
 	<div class="module">
-          <h2>Stock Levels Per Location</h2>
+          <h2>Current Stock Levels at {{location.name}} Shipment Destinations</h2>
 	  <div id="sl_pl" style="height:350px;width:450px;">
 	  </div>
         </div>
@@ -65,22 +100,37 @@ tr.variant { background-color: #FFD6DD; }
     </tr>
     <tr>
       <td colspan="2">
-        <div class="module">
+        <a name="st">
+		<div class="module">
           <h2>Shipment Transactions</h2>
 			<table class="shipment_discrepancy" width="100%">
 			<thead><tr><th>Waybill No.</th><th>Date Sent</th><th>Date Received</th><th>From</th><th>To</th><th>Amount Sent</th><th>Amount Received</th></tr></thead>
 			<tbody>
-			{% for transaction in transactions %}
-				<tr {% if transaction.flag %}class="variant"{% endif %}><td>{{transaction.shipment.shipment_id}}</td><td>{{transaction.shipment.sent|date:"M j, Y h:iA"}}</td><td>{{transaction.shipment.received|date:"M j, Y h:iA"}}</td><td>{{transaction.shipment.origin.name}}</td><td>{{transaction.shipment.destination.name}}</td><td>{{transaction.amount_sent}}</td><td>{{transaction.amount_received}}</td></tr>
+			{% for transaction in transactions_pager.object_list %}
+				<tr {% ifequal transaction.flag "W" %}class="variant-waybill"{% else %}{% ifequal transaction.flag "A" %}class="variant-amount"{% endifequal %}{% endifequal %}>
+                   <td>{{transaction.shipment.shipment_id}}</td>
+                   <td>{{transaction.shipment.sent|date:"M j, Y h:iA"}}</td>
+                   <td>{{transaction.shipment.received|date:"M j, Y h:iA"}}</td>
+                   <td><a href="/reports/logistics/summary/{{transaction.shipment.origin.id}}/">{{transaction.shipment.origin.name}}</a></td>
+				   <td><a href="/reports/logistics/summary/{{transaction.shipment.destination.id}}/">{{transaction.shipment.destination.name}}</a></td>
+				   <td>{{transaction.amount_sent}}</td>
+                   <td>{{transaction.amount_received}}</td>
+                </tr>
 			{% endfor %}
 			</tbody>
 			</table>
-        </div>
+			<div class="toolbar">
+				{% if transactions_pager.has_other_pages %}<a href="?page={{paginator.num_pages}}#st">Last &raquo;</a>{% endif %}
+				{% if transactions_pager.has_next %}<a href="?page={{transactions_pager.next_page_number}}#st">Next &rsaquo;</a>{% endif %}
+				<a href="javascript:;">Page {{page}} of {{paginator.num_pages}}</a>
+				<a href="?page={% if transactions_pager.previous_page_number %}{{transactions_pager.previous_page_number}}{% else %}1{% endif %}#st">&lsaquo; Prev</a>
+				<a href="?page=1#st">&laquo; First</a>
+			</div>
+        </div></a>
       </td>
     </tr>
   </table>
 </div>
-
 </div>
 </div>
 {% endblock %}

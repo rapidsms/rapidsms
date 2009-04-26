@@ -42,6 +42,13 @@ class Location(models.Model):
     latitude = models.DecimalField(max_digits=8, decimal_places=6, null=True, blank=True, help_text="The physical latitude of this location")
     longitude = models.DecimalField(max_digits=8, decimal_places=6, null=True, blank=True, help_text="The physical longitude of this location")
     
+    
+    def top_children(self):
+        # this is a pretty silly way to provide easy access to the first N children
+        # inside a template
+        count = 10
+        return self.children.all()[0:10]
+        
     def __unicode__(self):
         return self.name
 
@@ -95,7 +102,6 @@ class Reporter(models.Model):
     alias      = models.CharField(max_length=20, unique=True)
     first_name = models.CharField(max_length=30, blank=True)
     last_name  = models.CharField(max_length=30, blank=True)
-    password   = models.CharField(max_length=30, blank=True)
     groups     = models.ManyToManyField(ReporterGroup, blank=True)
     
     # here are some fields that don't belong here
@@ -246,6 +252,10 @@ class PersistantBackend(models.Model):
     raw_objects = models.Manager()
     objects     = BackendManager()
     
+    @property
+    def name(self):
+        # this is to be consistent with backend object
+        return self.title
     
     class Meta:
         verbose_name = "Backend"
