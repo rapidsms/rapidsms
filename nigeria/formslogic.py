@@ -2,6 +2,7 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 from models import *
+from rapidsms.message import StatusCodes
 from apps.reporters.models import *
 from apps.form.formslogic import FormsLogic
 
@@ -118,7 +119,7 @@ class NigeriaFormsLogic(FormsLogic):
             # notify the user that everyting went okay
             # TODO: proper (localized?) messages here
             message.respond("Hello %s! You are now registered as %s at %s %s."\
-                % (rep.alias, rep.role, rep.location, rep.location.type))
+                % (rep.alias, rep.role, rep.location, rep.location.type), StatusCodes.OK)
 
         elif self._form_lookups.has_key(form_entry.form.type):
             to_use = self._form_lookups[form_entry.form.type]
@@ -143,4 +144,4 @@ class NigeriaFormsLogic(FormsLogic):
             response = response + ", ".join(["=".join(t) for t in attrs])
             if not instance.reporter:
                 response = response + ". Please register your phone"
-            message.respond(response)
+            message.respond(response, StatusCodes.OK)
