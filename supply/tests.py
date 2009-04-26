@@ -214,7 +214,8 @@ class TestApp (TestScript):
         # send a form from an unregistered user and assure it is accepted
         unregistered_submission = """
             supply_tus_1 > llin issue from 20 to 2027 11111 200 1800
-            supply_tus_1 < Received report for LLIN issue: origin=KANO, dest=KURA, waybill=11111, amount=200, stock=1800. If this is not correct, reply with CANCEL. Please register your phone
+            supply_tus_1 < Received report for LLIN issue: origin=KANO, dest=KURA, waybill=11111, amount=200, stock=1800. If this is not correct, reply with CANCEL
+            supply_tus_1 < Please register your phone.
             """
         self.runScript(unregistered_submission)
         
