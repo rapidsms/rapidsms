@@ -8,17 +8,14 @@ import apps.default.app as default_app
 from app import App
 
 class TestApp (TestScript):
-    apps = (reporter_app.App, App,form_app.App, supply_app.App, default_app.App )
-    fixtures = ['nigeria_llin', 'kano_locations']
+    #apps = (reporter_app.App, App,form_app.App, supply_app.App, default_app.App )
+    apps = (reporter_app.App, App,form_app.App, supply_app.App )
+    # the test_backend script does the loading of the dummy backend that allows reporters
+    # to work properly in tests
+    fixtures = ['nigeria_llin', 'kano_locations', 'test_backend']
     
     def setUp(self):
         TestScript.setUp(self)
-        # have to initialize the backend for the reporters app to function properly
-        title = self.backend.name
-        try:
-            PersistantBackend.objects.get(title=title)
-        except PersistantBackend.DoesNotExist:
-            PersistantBackend(title=title).save()
         
     def testFixtures(self):
         self._testKanoLocations()

@@ -252,6 +252,10 @@ class PersistantBackend(models.Model):
     raw_objects = models.Manager()
     objects     = BackendManager()
     
+    @property
+    def name(self):
+        # this is to be consistent with backend object
+        return self.title
     
     class Meta:
         verbose_name = "Backend"
