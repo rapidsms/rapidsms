@@ -13,17 +13,13 @@ from datetime import datetime, timedelta
 
 class TestApp (TestScript):
     apps = (reporter_app.App, App,form_app.App, nigeria_app.App )
-    fixtures = ['nigeria_llin', 'kano_locations']
+    # the test_backend script does the loading of the dummy backend that allows reporters
+    # to work properly in tests
+    fixtures = ['nigeria_llin', 'kano_locations', 'test_backend']
     
     def setUp(self):
         TestScript.setUp(self)
-        # have to initialize the backend for the reporters app to function properly
-        title = self.backend.name
-        try:
-            PersistantBackend.objects.get(title=title)
-        except PersistantBackend.DoesNotExist:
-            PersistantBackend(title=title).save()
-
+        
     def testFixture(self): 
         """"This isn't actually a test.  It just takes advantage
             of the test harness to spam a bunch of messages to the 
