@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
+import os
 from ConfigParser import SafeConfigParser
 import log
 
@@ -47,6 +48,25 @@ class Config (object):
                     self.raw_data[sn].copy()
 
 
+    def __import_class(self, class_tmpl):
+        """Given a full class name (ie, apps.webui.app.App), returns the
+           class object. There doesn't seem to be a built-in way of doing
+           this without mucking with __import__."""
+        
+        # break the class name off the end of  module template
+        # i.e. "apps.ABCD.app.App" -> ("apps.ABC.app", "App")
+        try:
+            module_str, class_str = class_tmpl.rsplit(".",1)
+            module = __import__(module_str, {}, {}, [class_str])
+            
+            # import the requested class or None
+            if hasattr(module, class_str):
+                return getattr(module, class_str)
+        
+        except ImportError:
+            pass
+
+
     def component_section (self, name):
         
         # fetch the current config for this section
@@ -60,25 +80,6 @@ class Config (object):
         if not "type" in data:
             data["type"] = name
         
-        try:
-            # attempt to import the "config" module from the app's package, to
-            # read in default configuration values. note that this DOES NOT
-            # import the app, just it's config.py
-            package_name = "apps.%s" % (data["type"])
-            module = __import__(package_name, {}, {}, ["config"])
-            if hasattr(module, "config"):
-                
-                # copy all of the names not starting with underscore (those are
-                # private or __magic__) into this component's default config
-                for var_name in dir(module.config):
-                    if not var_name.startswith("_"):
-                        data[var_name] = getattr(module.config, var_name)
-        
-        # no config module?
-        # doesn't really matter
-        except ImportError:
-            pass
-        
         # apps should set a title in their "config" module,
         # but in case they don't, recycle their name (again)
         if not "title" in data:
@@ -86,7 +87,34 @@ class Config (object):
         
         return data
 
+    
+    def app_section (self, name):
+        data = self.component_section(name)
+        mod_str = "apps.%s" % (data["type"])
+        
+        # attempt to import the rapidsms app from this
+        # app package, for other apps to peek into
+        #data["class"] = self.__import_class("apps.%s.app.App" % data["type"])
+        
+        # load the config.py for this app, if possible
+        config = self.__import_class("apps.%s.config" % data["type"])
+        if config is not None:
+            
+            # copy all of the names not starting with underscore (those are
+            # private or __magic__) into this component's default config
+            for var_name in dir(config):
+                if not var_name.startswith("_"):
+                    data[var_name] = getattr(config, var_name)
+        
+        # return the component with the additional
+        # app-specific data included.
+        return data
 
+
+    def backend_section (self, name):
+        return self.component_section(name)
+    
+    
     def parse_rapidsms_section (self, raw_section):
         
         # "apps" and "backends" are strings of comma-separated
@@ -96,8 +124,8 @@ class Config (object):
         
         # run lists of component names through component_section,
         # to transform into lists of dicts containing more meta-info
-        return { "apps":     [self.component_section(n) for n in app_names],
-                 "backends": [self.component_section(n) for n in backend_names] }
+        return { "apps":     [self.app_section(n) for n in app_names],
+                 "backends": [self.backend_section(n) for n in backend_names] }
 
 
     def parse_log_section (self, raw_section):
@@ -113,3 +141,26 @@ class Config (object):
         return self.data.has_key(key)
 
     __contains__ = has_key
+
+
+def conf(section, key):
+    """Returns a value from the RapidSMS configuration file, as found in the
+       RAPIDSMS_INI environment variable. This introduces mild coupling between
+       the webui and backend, for the sake of convenience."""
+    
+    var = "RAPIDSMS_INI"
+    if not var in os.environ:
+        # "rapidsms.webui.utils.conf should only
+        # be called from within a running rapidsms
+        # server, where env[RAPIDSMS_INI] is defined"
+        raise KeyError(var)
+    
+    try:
+        return Config(os.environ[var])[section][key]
+    
+    # if the section or key (or both) were invalid,
+    # just return none. as far as we're concerned,
+    # absence is the same as False or None here
+    except KeyError:
+        return None
+
