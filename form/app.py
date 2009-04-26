@@ -46,7 +46,12 @@ class App(rapidsms.app.App):
         self.form_handlers[name] = app 
 
     def add_message_handler_to(self, dispatcher):
-        dispatcher.add_message_handler(self.form_pattern, self.form)
+        if self.form_pattern:
+            dispatcher.add_message_handler(self.form_pattern, self.form)
+            
+        else:
+            self.warning("add_message_handler_to was called with no form_patterns. Have you loaded your fixtures?")
+            
     
     def setup(self):
         # create a list of dictionaries mapping domains to lists of their
