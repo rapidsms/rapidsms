@@ -8,6 +8,7 @@ from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 
 import rapidsms
 from rapidsms.parsers.keyworder import * 
+from rapidsms.message import StatusCodes
 
 from models import *
 from utils import *
@@ -45,7 +46,12 @@ class App(rapidsms.app.App):
         self.form_handlers[name] = app 
 
     def add_message_handler_to(self, dispatcher):
-        dispatcher.add_message_handler(self.form_pattern, self.form)
+        if self.form_pattern:
+            dispatcher.add_message_handler(self.form_pattern, self.form)
+            
+        else:
+            self.warning("add_message_handler_to was called with no form_patterns. Have you loaded your fixtures?")
+            
     
     def setup(self):
         # create a list of dictionaries mapping domains to lists of their
@@ -253,7 +259,7 @@ class App(rapidsms.app.App):
                         # and note that we've handled this one
                         else:
                             self.debug("Invalid form.  %s", ". ".join(validation_errors))
-                            message.respond("Invalid form.  %s" % ". ".join(validation_errors))
+                            message.respond("Invalid form.  %s" % ". ".join(validation_errors), StatusCodes.APP_ERROR)
                             return
                         self.handled = True
 
@@ -266,7 +272,8 @@ class App(rapidsms.app.App):
 
                 if not hasattr(self, "handled") or not self.handled:
                     message.respond("Oops. Cannot find a report called %s for %s. Available reports for %s are %s" % \
-                        (type.upper(), code_matched, code_matched, ", ".join([f.keys().pop().upper() for f in forms]))) 
+                        (type.upper(), code_matched, code_matched, ", ".join([f.keys().pop().upper() for f in forms])), 
+                        StatusCodes.APP_ERROR) 
                     self.handled = True
                     break
 
