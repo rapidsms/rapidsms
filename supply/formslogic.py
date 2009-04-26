@@ -2,7 +2,7 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
-
+from rapidsms.message import StatusCodes
 from models import *
 from apps.form.utils import *
 from apps.form.formslogic import FormsLogic
@@ -17,8 +17,8 @@ class SupplyFormsLogic(FormsLogic):
             
         
     def actions(self, *args, **kwargs):
-        print "Supply actions!"
-        print "You passed in %s and %s" % (args[0], args[1])
+        #print "Supply actions!"
+        #print "You passed in %s and %s" % (args[0], args[1])
         message = args[0]
         form_entry = args[1]
         
@@ -60,7 +60,7 @@ class SupplyFormsLogic(FormsLogic):
         if not self._form_lookups.has_key(form_entry.form.type):
             # if this form isn't something we know about then return immediately
             return
-        print("creating partial")
+        #print("creating partial")
         this_form_lookups = self._form_lookups[form_entry.form.type]
         partial = self._model_from_form(message, form_entry, PartialTransaction, 
                                         this_form_lookups, self._foreign_key_lookups)
@@ -89,7 +89,7 @@ class SupplyFormsLogic(FormsLogic):
         # and set its partial transactions as pending or ammended
         # (depending on what type of partial we have just received)
         for p in confirmed_partials_to_amend:
-            print('we have confirmation')
+            #print('we have confirmation')
             transactions = p.transactions
             # there should only ever be one transaction per partial,
             # but p.transactions will always return a queryset
@@ -111,11 +111,11 @@ class SupplyFormsLogic(FormsLogic):
                 partials_to_amend.update(status = "A")
 
         partial.save()
-        response = "Received report for %s %s: origin=%s, dest=%s, waybill=%s, amount=%s, stock=%s." % (
+        response = "Received report for %s %s: origin=%s, dest=%s, waybill=%s, amount=%s, stock=%s. If this is not correct, reply with CANCEL" % (
              partial.domain.code, form_entry.form.type, partial.origin, partial.destination, partial.shipment_id, partial.amount, partial.stock)  
+        message.respond(response, StatusCodes.OK)
         if not partial.reporter:
-            message.respond("Please register your phone with RapidSMS.")
-        message.respond(response)
+            message.respond("Please register your phone.")
         self._notify_counterparty(partial)
         return partial
 
@@ -127,7 +127,7 @@ class SupplyFormsLogic(FormsLogic):
             pass 
     
     def _match_partial_transaction(self, partial):
-        print('match partial transaction')
+        #print('match partial transaction')
         # gather pending, partial transactions that are not the same type
         # as this one (e.g., look at receipts if this one is an issue)
         orphans = PartialTransaction.objects.filter(status='P').exclude(pk=partial.id)\
@@ -139,11 +139,11 @@ class SupplyFormsLogic(FormsLogic):
         # save pending transactions that appear in all of these sets
         remainder = self._match_orphans_by(partial, orphans, 'origin', 'destination', 'shipment_id', 'amount')
         if remainder is not None:
-            print('remainder')
+            #print('remainder')
             # check for mismatched amount 
             amount_remainder = self._match_orphans_by(partial, orphans, 'origin', 'destination', 'shipment_id')
             if amount_remainder is not None:
-                print('amount remainder')
+                #print('amount remainder')
                 # no matches yet, so lets filter orig orphans by origin, dest, and amount
                 # in case we have a waybill typo
                 wrong_waybill = self._match_orphans_by(partial, orphans, 'origin', 'destination', 'amount')
@@ -155,7 +155,7 @@ class SupplyFormsLogic(FormsLogic):
             transaction with respect to whichever attributes are given.
             Returns None if _new_transaction is successful and otherwise
             returns the remaining filtered_orphans matched on these attributes.'''
-        print("matching orphans")
+        #print("matching orphans")
         filtered_orphans = orphans
 
         # intersect filtered_orphans destructively to narrow down possible matches
@@ -165,7 +165,7 @@ class SupplyFormsLogic(FormsLogic):
             # itself and itself filtered by an attribute
             filtered_orphans &= filtered_orphans.filter(**param)
 
-        print(filtered_orphans)
+        #print(filtered_orphans)
         if filtered_orphans.count() != 0:
             if filtered_orphans.count() == 1:
                 # try to make a new transaction with this orphan, pass along
@@ -203,8 +203,8 @@ class SupplyFormsLogic(FormsLogic):
             sent=issue.date, received=receipt.date, shipment_id=issue.shipment_id)
         transaction = Transaction(domain=issue.domain, amount_sent=issue.amount,\
             amount_received=receipt.amount,issue=issue, receipt=receipt, shipment=shipment)
-        print("NEW TRANSACTION")
-        print(matched_by)
+        #print("NEW TRANSACTION")
+        #print(matched_by)
         
         # set the pending transactions to confirmed 
         issue.status="C"
@@ -230,7 +230,7 @@ class SupplyFormsLogic(FormsLogic):
         ''' Update stock balance based on reported balance.
             Flag partial transaction if they don't add up to the
             estimated/expected balance. Returns True if updated.'''
-        print('update stock balance')
+        #print('update stock balance')
         if partial.type == 'I':
             # get or create stock at origin if this is an issue partial
             stock, created = Stock.objects.get_or_create(location=partial.origin, domain=partial.domain)
