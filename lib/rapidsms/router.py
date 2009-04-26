@@ -66,6 +66,13 @@ class Router (component.Receiver):
             self.log_last_exception("Failed to add backend: %r" % conf)
             
 
+    def get_backend (self, name):
+        '''gets a backend by name, if it exists'''
+        for backend in self.backends:
+            if backend.name == name:
+                return backend
+        return None
+
     def add_app (self, conf):
         try:
             app = self.build_component("apps.%s.app.App", conf)
@@ -226,7 +233,7 @@ class Router (component.Receiver):
             self.incoming(msg)
     
     def __sorted_apps(self):
-        return sorted(self.apps, key=lambda a: a.priority())
+        return sorted(self.apps, reverse=True, key=lambda a: a.priority())
     
     def incoming(self, message):   
         self.info("Incoming message via %s: %s ->'%s'" %\
