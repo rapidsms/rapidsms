@@ -127,6 +127,8 @@ def coupons_daily(req, locid):
     except Location.DoesNotExist:
         location = None
         
+    #TODO: Generate and Send all plots data from here to the templates
+    
         
     return render_to_response(req, "nigeria/coupons_daily.html", {'location': location})
     
@@ -207,7 +209,7 @@ def _get_stock_per_location_strings(locations):
     options = '{"grid":{"clickable":true},"xaxis":{"min":0,"ticks":[],"tickFormatter":"string"},"yaxis":{"min":0}}'
     return (data, options)
 
-def _get_distribution_over_time_strings(location):
+def _get_distribution_over_time_strings(ward):
     '''Get a JSON formated list for flot plots on the template, 
     based on data in the Nets Distribution Data'''
     

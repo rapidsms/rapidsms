@@ -3,14 +3,26 @@
 {% block javascripts %}
 <script language="javascript" type="text/javascript" src="/static/nigeria/js/jquery.flot.js"></script>
 <script language="javascript" type="text/javascript" src="/static/nigeria/js/jquery.flot.pie.pack.js"></script>
+<script language="javascript" type="text/javascript" src="/static/nigeria/jquery-ui/jquery-ui-1.7.1.custom.min.js"></script>
+
 <!--[if IE]>
 <script language="javascript" type="text/javascript" src="/static/nigeria/js/excanvas.pack.js"></script>
 <![endif]-->
 
 <script language="javascript">
+
 $(document).ready(function() {
-	
-	
+
+//The following few lines are jquery-ui codes for styling display of some elements on the page.
+
+$("#accordion").accordion({ header: "h3" });
+$("#datepicker").datepicker({showOn: 'button', buttonImage: '/static/nigeria/jquery-ui/images/calendar.gif', buttonImageOnly: true, showButtonPanel: true,changeMonth: true,
+changeYear: true
+
+});
+
+
+
 	//These are sample/dummy plots for Coupons Distributions at the Ward and Distribution Point Levels
   //Fake Data Used here, data will be generated from appropriate views/models
 	//TODO: Retrieve Real data for plots
@@ -49,15 +61,50 @@ $(document).ready(function() {
 		//The following options for display of Coupons Distribution Over time. Should be generated from the view
 		//And sent as (coupons_distribution_over_time_data_options)
 				 var coupons_distribution_over_time_data_options = {
-          lines:     { show: true },
-          points:    { show: true },
-          legend:    { noColumns: 2 },
+          //lines:     { show: true },
+          //points:    { show: true },
+          //legend:    { noColumns: 2 },
           xaxis:     { mode: 'time',timeformat:'%m/%d', label:'Time' },
-          yaxis:     { min: 0, label: 'Coupons Distributed' },
-          selection: { mode: 'x', snapToTicks: true }
+          //yaxis:     { min: 0, label: 'Coupons Distributed' },
+          //selection: { mode: 'x', snapToTicks: true },
+					
+					legend: { show: false },
+         // xaxis: { mode: "time" },
+          lines: { show: true, lineWidth: ".5", fill: false },
+          points: { show: false, radius: "1", fill: false },
+          selection: { mode: "xy" },
+          shadowSize: "2",
+          grid: { hoverable: true, mouseOverHighlight: 'black' },
+					
+					//This option is supposed to display tip/hint on location of chart element and its value on the chart
+					hints: {
+            show: true,
+            showColorBox: true,
+            showSeriesLabel: true,
+            labelFormatter: 
+              function labelFormatter( label ) {
+                return "<span style='font-size:0.8em;'>" + label + "</span>";
+              },
+            hintFormatter:
+              function hintFormatter( datapoint ) {
+                var datetime = new Date( datapoint.x );
+
+                var hour = datetime.getHours();
+                var minute = datetime.getMinutes();
+                var second = datetime.getSeconds();
+                var time = ( ( hour < 10 ) ? "0" : "" ) + hour + ":" +
+                           ( ( minute < 10 ) ? "0" : "" ) + minute + ":" +
+                           ( ( second < 10 ) ? "0" : "" ) + second;
+
+                return "<table><tr><td><strong>Time:</strong></td><td>" +
+                       datetime.toDateString() + "<br/>@" + time + "</td></tr>" +
+                       "<tr><td><strong>Value:</strong></td><td>" +
+                       datapoint.y.toFixed(2) + "</td></tr></table>";
+              }
+          }
         };
 				
-		$.plot($('#cd_dps_ot'), coupons_distribution_over_time_data, coupons_distribution_over_time_data_options);
+		var plot = $.plot($('#cd_dps_ot'), coupons_distribution_over_time_data, coupons_distribution_over_time_data_options);
 	
 	var coupons_distribution_discrepancy_data  = [{data: data5, bars: { show: true }, "label":"MT 1"} , 
 													{ data: data6, bars: { show: true },"label":"MT 2" },
@@ -83,9 +130,7 @@ $(document).ready(function() {
 			show: true, 
 			pieStrokeLineWidth: 1, 
 			pieStrokeColor: '#FFF', 
-			//pieChartRadius: 100, 			// by default it calculated by 
-			//centerOffsetTop:30,
-			//centerOffsetLeft:30, 			// if 'auto' and legend position is "nw" then centerOffsetLeft is equal a width of legend.
+			
 			showLabel: true,				//use ".pieLabel div" to format looks of labels
 			labelOffsetFactor: 5/6, 		// part of radius (default 5/6)
 			//labelOffset: 0        		// offset in pixels if > 0 then labelOffsetFactor is ignored
@@ -110,15 +155,20 @@ $(document).ready(function() {
                           { data: data12, bars: { show: false, fill: true, fillColor:"#FFFFFF","label":"MT 4" }}
 	], opts);
   
-
+$('#cd_dps_ot').bind( 'plotmousemove', function( e, pos ) {
+          if( !pos.selected ) { return; }
+          plot.highlight( pos.selected );
+        } );
 });
 </script>
 
 {% endblock %}
 {% block stylesheets %}
+<link rel="stylesheet" href="/static/nigeria/jquery-ui/jquery-ui-1.7.1.custom.css" />
 <style>
 #data_summary th, #data_summary td { text-align: center; }
 </style>
+
 {% endblock %}
 {% block content %}
 <div class="container">
@@ -127,7 +177,7 @@ $(document).ready(function() {
 <table width="100%" id="data_heading">
 <thead>
 <tr><th><strong>Date</strong></th><th><strong>State</strong></th><th><strong>LGA</strong></th><th><strong>Ward</strong></th></tr>
-<tr><td>Apr 15, 2009</td><td>Kano</td><td>{{location}}</td><td>Ward #1</td></tr>
+<tr><td><input type="text" id="datepicker" value="4/3/2009"/></td><td>Kano</td><td>{{location}}</td><td>Ward #1</td></tr>
 </thead>
 </table>
 
@@ -136,7 +186,7 @@ $(document).ready(function() {
 		<table width="100%" id="data_heading">
 			<thead>
 				<tr><th>Dist. Point</th><th>Team No.</th><th>No. of Settlements</th>
-				<th>Total No. of People</th><th>Coupons Issued</th><th>Coupons Returned</th><th>Av. HouseHold Visited/Day</th></tr>
+				<th>Total No. of People</th><th>Coupons Issued</th><th>Coupons Returned</th></tr>
 			</thead>
 			<tbody>
 				<tr><td>1</td><td>1</td><td>234</td><td>8922</td><td>178</td><td>17</td></tr>
@@ -150,7 +200,7 @@ $(document).ready(function() {
 				<tr><td>3</td><td>3</td><td>2343</td><td>8922</td><td>174</td><td>4</td><td></td></tr>
 			</tbody>
 			<tr>
-			<td colspan="2">
+			<td colspan="3">
 		<div class="module">
           <h2>Coupons Distributed at {{location.name}}</h2>
 	  <div width="20%" style="float:left">
@@ -159,7 +209,7 @@ $(document).ready(function() {
         </div>
 				</td>
 			
-			<td colspan="2">
+			<td colspan="3">
 		<div class="module">
           <h2>Coupons Distributed over time at {{location.name}}</h2>
 	  <div width="20%" style="float:right">
@@ -169,7 +219,7 @@ $(document).ready(function() {
 				</td>
 				</tr>
 				<tr>
-				<td colspan="2">
+				<td colspan="3">
 		<div class="module"><br/><br/>
           <h2>Coupons Distribution Discrepancy Graph at {{location.name}}</h2>
 	  <div width="20%" style="float:right">
@@ -177,7 +227,7 @@ $(document).ready(function() {
 	  </div>
         </div>
 				</td>
-				<td colspan="2">
+				<td colspan="3">
 		<div class="module"><br/><br/>
           <h2>Percentage Distribution in the Wards at {{location.name}}</h2>
 	  <div width="20%" style="float:right">
@@ -187,13 +237,32 @@ $(document).ready(function() {
 				</td>
 				</tr>
 				<tr>
-				<td colspan="2">
+				<td colspan="3">
 		<div class="module"><br/><br/>
           <h2>HouseHolds visited by Teams at {{location.name}}</h2>
 	  <div width="20%" style="float:right">
-		<div id="cd_hh_mts" style="height:250px;width:400px;"></div>
+		
 	  </div>
         </div>
+				</td>
+				</tr>
+				<tr>
+				<td colspan="4">
+				<h2 class="demoHeaders">Other Charts</h2>
+		<div id="accordion">
+			<div>
+				<h3><a href="#">House Holds visited by Teams at {{location.name}}</a></h3>
+				<div id="cd_hh_mts" style="height:300px;width:500px;"></div>
+			</div>
+			<div>
+				<h3><a href="#">Percentage Distribution in the Wards at {{location.name}}</a></h3>
+				<div>Percentage Distribution in the Wards at {{location.name}}</div>
+			</div>
+			<div>
+				<h3><a href="#">Coupons Distribution Discrepancy Graph at {{location.name}}</a></h3>
+				<div>Coupons Distribution Discrepancy Graph at {{location.name}}</div>
+			</div>
+		</div>
 				</td>
 				</tr>
 			</table>
@@ -204,4 +273,6 @@ $(document).ready(function() {
 </div>
 
 </div>
+
+		
 {% endblock %}
