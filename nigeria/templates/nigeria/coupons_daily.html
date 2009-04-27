@@ -2,29 +2,53 @@
 {% block title %}Daily Coupon Distribution Summary{% endblock %}
 {% block javascripts %}
 <script language="javascript" type="text/javascript" src="/static/nigeria/js/jquery.flot.js"></script>
+<script language="javascript" type="text/javascript" src="/static/nigeria/js/jquery.flot.pie.pack.js"></script>
 <!--[if IE]>
 <script language="javascript" type="text/javascript" src="/static/nigeria/js/excanvas.pack.js"></script>
 <![endif]-->
 
 <script language="javascript">
 $(document).ready(function() {
-	/*data = [
-	 { "pies":{"show":"true"},"label": 'MT 1', data: [[0,10]]},
-	 { "pies":{"show":"true"},"label": 'MT 2', data: [[0,20]]},
-	 { "pies":{"show":"true"},"label": 'MT 3', data: [[0,50]]},
-	 ];*/
-	//options = { pies: {show: true, labelWidth: 30, fontSize: 10, autoScale: true, fillOpacity: 1}};
-	//stock_loc_data = {{stock_per_loc_plot_data|safe}};
-	//stock_loc_options = {{stock_per_loc_plot_options|safe}};
 	
-	//These are sample plots for Coupons Distributions at the Ward and Distribution Point Levels
-  //Fake Data Used here, data will be generated from appropriate views	
+	
+	//These are sample/dummy plots for Coupons Distributions at the Ward and Distribution Point Levels
+  //Fake Data Used here, data will be generated from appropriate views/models
 	//TODO: Retrieve Real data for plots
 	
-				 data=[{label:"MT 1","data":[[1239103320000,121],[1239208060000,314],[1239598080000,675]]},
-				 {"label":"MT 2", "data":[[1239036000000,259],[1239318000000,689],[1239342000000,905]]},
-				 {"label":"MT 3", "data":[[1239329880000,207],[1240168160000,441], [1240280160000,1071]]}]
-				 var options = {
+				data1 = [[1,100],[5,60],[9,70],[13,40]];
+				data2 = [[2,50],[6,60],[10,60],[14,100]];
+				data3 = [[3,50],[7,60],[11,60],[15,100]];
+				data4 = [[20,0]];
+				
+				data5 = [[1,5],[5,2],[9,1],[13,5]];
+				data6 = [[2,1],[6,0],[10,0],[14,2]];
+				data7 = [[3,0],[7,2],[11,3],[15,3]];
+				data8 = [[19,100]];
+				 
+				data9 = [[1,100],[5,60],[9,70],[13,40]];
+				data10 = [[2,50],[6,60],[10,60],[14,100]];
+				data11 = [[3,50],[7,60],[11,60],[15,100]];
+				data12 = [[0,0]]; 
+				
+	var opts = '{"grid":{"clickable":true},"xaxis":{"min":0,"ticks":[],"tickFormatter":"string"},"yaxis":{"min":0}}'
+	$.plot($('#cd_dps'), [{ data: data1, bars: { show: true}, "label":"MT 1" }, 
+													{ data: data2, bars: { show: true },"label":"MT 2" },
+													{ data: data3, bars: { show: true },"label":"MT 3" },
+													{ data: data4, bars: { show: true, fill: true, fillColor:"#FFFFFF","label":"MT 4" }}
+													
+													
+	], opts);
+				 
+				 coupons_distribution_over_time_data=
+				 [{label:"MT 1","data":[[1240558443000,121],[1240558529400,314],[1240558615800,675], [1240558702200,975]]},
+					{"label":"MT 2", "data":[[1240558443000,259],[1240558529400,689],[1240558615800,905], [1240558702200,1205]]},
+					{"label":"MT 3", "data":[[1240558443000,207],[1240558529400,441], [1240558615800,1071], [1240558702200,1371]]},
+					{"label":"MT 4", "data":[[1240558443000,307],[1240558529400,541], [1240558615800,671], [1240558702200,871]]}
+				 ]
+				 
+		//The following options for display of Coupons Distribution Over time. Should be generated from the view
+		//And sent as (coupons_distribution_over_time_data_options)
+				 var coupons_distribution_over_time_data_options = {
           lines:     { show: true },
           points:    { show: true },
           legend:    { noColumns: 2 },
@@ -33,33 +57,60 @@ $(document).ready(function() {
           selection: { mode: 'x', snapToTicks: true }
         };
 				
-				data1 = [[1,100],[5,60],[9,70],[13,40]];
-				data2 = [[2,50],[6,60],[10,60],[14,100]];
-				data3 = [[3,50],[7,60],[11,60],[15,100]];
-				data4 = [[19,0]];
-				
-				data5 = [[1,5],[5,2],[9,1],[13,5]];
-				data6 = [[2,1],[6,0],[10,0],[14,2]];
-				data7 = [[3,0],[7,2],[11,3],[15,3]];
-				data8 = [[19,100]];
-				 
-	//These are sample plots for Coupons Distributions at the Ward and Distribution Point Levels
-  //Fake Data Used here, data will be generated from appropriate views	
-	//TODO: Retrieve Real data for plots
-	//options = '{"grid":{"clickable":true},"xaxis":{"min":0,"ticks":[],"tickFormatter":"string"},"yaxis":{"min":0}}'
-	$.plot($('#piechart'), [{ data: data1, bars: { show: true}, "label":"MT 1" }, 
-													{ data: data2, bars: { show: true },"label":"MT 2" },
-													{ data: data3, bars: { show: true },"label":"MT 3" },
-													{ data: data4, bars: { show: true },"label":"MT 4" }
-	], {grid: {labelMargin: 5}});
-	$.plot($('#piechart2'), data, options);
-	$.plot($('#piechart3'), [{ data: data5, bars: { show: true}, "label":"MT 1" }, 
+		$.plot($('#cd_dps_ot'), coupons_distribution_over_time_data, coupons_distribution_over_time_data_options);
+	
+	var coupons_distribution_discrepancy_data  = [{data: data5, bars: { show: true }, "label":"MT 1"} , 
 													{ data: data6, bars: { show: true },"label":"MT 2" },
 													{ data: data7, bars: { show: true },"label":"MT 3" },
-													{ data: data8, bars: { show: true },"label":"MT 4" }
+													{ data: data8, bars: { show: false, fill: true, fillColor: "#FFFFFF","label":"MT 4"} }
+	]
+	
+							$.plot($('#cd_discr'), coupons_distribution_discrepancy_data)
+							/*var pie_data = [
+															{"label": 'MT 1', data: 10},
+															{"label": 'MT 2', data: 20},
+															{,"label": 'MT 3', data: 50},
+									]*/
+	 		$.plot($('#cd_pie_chart'),  [
+        { label: "Ajingi",  data: 10},
+        { label: "Bebeji",  data: 30},
+		{ label: "Bunkure",  data: 90},
+		{ label: "DALA",  data: 70},
+		{ label: "Akirun",  data: 80},
+		{ label: "Smaila",  data: 110}
 	], {
-              yaxis: { "label": 'Budget' },
-              xaxis: { "label": 'Year' }})
+		pie: { 
+			show: true, 
+			pieStrokeLineWidth: 1, 
+			pieStrokeColor: '#FFF', 
+			//pieChartRadius: 100, 			// by default it calculated by 
+			//centerOffsetTop:30,
+			//centerOffsetLeft:30, 			// if 'auto' and legend position is "nw" then centerOffsetLeft is equal a width of legend.
+			showLabel: true,				//use ".pieLabel div" to format looks of labels
+			labelOffsetFactor: 5/6, 		// part of radius (default 5/6)
+			//labelOffset: 0        		// offset in pixels if > 0 then labelOffsetFactor is ignored
+			labelBackgroundOpacity: 0.55, 	// default is 0.85
+			labelFormatter: function(serie){// default formatter is "serie.label"
+				//return serie.label;
+				//return serie.data;
+				return serie.label+'<br/>'+Math.round(serie.percent)+'%';
+			}
+		},
+		legend: {
+			show: true, 
+			position: "ne", 
+			backgroundOpacity: 0
+		}
+	} 
+ )
+   $.plot($('#cd_hh_mts'), [{ data: data9, bars: { show: true, barWidth: 1}, "label":"MT 1" }, 
+													{ data: data10, bars: { show: true }, "label":"MT 2" },
+													{ data: data11, bars: { show: true }, "label":"MT 3" },
+                          { data: data12, bars: { show: false, fill: true, fillColor:"#FFFFFF","label":"MT 4" }},
+                          { data: data12, bars: { show: false, fill: true, fillColor:"#FFFFFF","label":"MT 4" }}
+	], opts);
+  
+
 });
 </script>
 
@@ -82,9 +133,10 @@ $(document).ready(function() {
 
 <div id="data_summary" style="clear:both;margin-top:1em">
 	<div width="80%" style="float:left">
-		<table width="100%">
+		<table width="100%" id="data_heading">
 			<thead>
-				<tr><th>Dist. Point</th><th>Team No.</th><th>No. of Settlements</th><th>Total No. of People</th><th>Coupons Issued</th><th>Coupons Returned</th></tr>
+				<tr><th>Dist. Point</th><th>Team No.</th><th>No. of Settlements</th>
+				<th>Total No. of People</th><th>Coupons Issued</th><th>Coupons Returned</th><th>Av. HouseHold Visited/Day</th></tr>
 			</thead>
 			<tbody>
 				<tr><td>1</td><td>1</td><td>234</td><td>8922</td><td>178</td><td>17</td></tr>
@@ -102,7 +154,7 @@ $(document).ready(function() {
 		<div class="module">
           <h2>Coupons Distributed at {{location.name}}</h2>
 	  <div width="20%" style="float:left">
-		<div id="piechart" style="height:250px;width:400px;"></div>
+		<div id="cd_dps" style="height:250px;width:400px;"></div>
 	  </div>
         </div>
 				</td>
@@ -111,7 +163,7 @@ $(document).ready(function() {
 		<div class="module">
           <h2>Coupons Distributed over time at {{location.name}}</h2>
 	  <div width="20%" style="float:right">
-		<div id="piechart2" style="height:250px;width:400px;"></div>
+		<div id="cd_dps_ot" style="height:250px;width:400px;"></div>
 	  </div>
         </div>
 				</td>
@@ -121,7 +173,25 @@ $(document).ready(function() {
 		<div class="module"><br/><br/>
           <h2>Coupons Distribution Discrepancy Graph at {{location.name}}</h2>
 	  <div width="20%" style="float:right">
-		<div id="piechart3" style="height:250px;width:400px;"></div>
+		<div id="cd_discr" style="height:250px;width:400px;"></div>
+	  </div>
+        </div>
+				</td>
+				<td colspan="2">
+		<div class="module"><br/><br/>
+          <h2>Percentage Distribution in the Wards at {{location.name}}</h2>
+	  <div width="20%" style="float:right">
+		<div id="cd_pie_chart" style="height:250px;width:400px;"></div>
+	  </div>
+        </div>
+				</td>
+				</tr>
+				<tr>
+				<td colspan="2">
+		<div class="module"><br/><br/>
+          <h2>HouseHolds visited by Teams at {{location.name}}</h2>
+	  <div width="20%" style="float:right">
+		<div id="cd_hh_mts" style="height:250px;width:400px;"></div>
 	  </div>
         </div>
 				</td>
