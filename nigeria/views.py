@@ -141,7 +141,15 @@ def coupons_monthly(req, locid):
 
 # Periodical Reporting  by day, week, month for bednets
 def bednets_daily(req, locid):
-    return render_to_response(req, "nigeria/bednets_daily.html")
+    if not locid:
+        locid = 1
+    try: 
+        location = Location.objects.get(pk=locid)
+        #_set_stock(location)
+    except Location.DoesNotExist:
+        location = None
+        
+    return render_to_response(req, "nigeria/bednets_daily.html", {'location': location})
 
 def bednets_weekly(req, locid):
     return render_to_response(req, "nigeria/bednets_weekly.html")
@@ -199,7 +207,24 @@ def _get_stock_per_location_strings(locations):
     options = '{"grid":{"clickable":true},"xaxis":{"min":0,"ticks":[],"tickFormatter":"string"},"yaxis":{"min":0}}'
     return (data, options)
 
+def _get_distribution_over_time_strings(location):
+    '''Get a JSON formated list for flot plots on the template, 
+    based on data in the Nets Distribution Data'''
+    
+def _get_distribution_per_distribution_team_strings(ward):
+    '''Get a JSON formated list for flot plots on the template, 
+    based on data in the Nets Distribution Data'''
+    
+def _get_mobilization_data_over_time_strings(ward):
+    '''Get a JSON formated list for flot plots on the template, 
+    based on data in the Net Cards Distribution Data'''
+    
+    
+def _get_mobilization_data_per_mobilization_team_string(ward):
+    '''Get a JSON formated list for flot plots on the template, 
+    based on data in the Net Cards Distribution Data'''
 
+    
 def _get_stock_over_time_strings(locations):
     '''Get a JSON formatted list that flot can plot
        based on the data in the stock table'''
