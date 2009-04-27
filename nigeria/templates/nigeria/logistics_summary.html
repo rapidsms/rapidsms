@@ -67,12 +67,14 @@ tr.variant-waybill { background-color: #FFD869; }
 tr.variant-incorrect { background-color: #FFD6DD; }
 </style>
 {% endblock %}
+
 {% block content %}
 <div class="split">
   <div class = "location_summary">
     <h3>Logistics information for {{location.name}}</h3>
     <b>Current Stock: </b>{% if location.stock %}{{location.stock}}{% else %}None{% endif %}
   </div> 
+	
   <table width="100%">
     <td colspan="2">
       <div class="module">
