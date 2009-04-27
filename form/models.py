@@ -66,8 +66,9 @@ class App(models.Model):
         return "%s" % (self.name)
 
 class Form(models.Model, Validatable, Alertable):
-    type = models.CharField(max_length=160)
-    tokens = models.ManyToManyField("Token")
+    name = models.CharField(max_length=160)
+    code = models.ForeignKey("Token")
+    form_tokens = models.ManyToManyField("FormToken")
     apps = models.ManyToManyField(App)
 
     def __init__ (self, *args, **kwargs):
@@ -76,21 +77,39 @@ class Form(models.Model, Validatable, Alertable):
         self.alerter = FormAlerter(self)
         
     def __unicode__(self):
-        return "%s" % (self.type)
+        return "%s" % (self.code.abbreviation)
 
 class Token(models.Model):
     name = models.CharField(max_length=160)
     abbreviation = models.CharField(max_length=20)
-    regex = models.CharField(max_length=160)
-    sequence = models.IntegerField()
+    patterns = models.ManyToManyField("Pattern")
 
     def __unicode__(self):
         return "%s" % (self.abbreviation)
 
+    def _get_regex(self):
+        return '|'.join(self.patterns.values_list('regex', flat=True))
+
+    regex = property(_get_regex)
+
+class FormToken(models.Model):
+    token = models.ForeignKey(Token)
+    sequence = models.IntegerField()
+    required = models.BooleanField(blank=True, null=True)
+
+    def __unicode__(self):
+        return "%s: %s" % (str(self.sequence), self.token) 
+
+class Pattern(models.Model):
+    name = models.CharField(max_length=160)
+    regex = models.CharField(max_length=160)
+
+    def __unicode__(self):
+        return "%s %s" % (self.name, self.regex)
+
 class Domain(models.Model):
     name = models.CharField(max_length=160, help_text="Name of form domain")
-    code = models.CharField(max_length=20, blank=True, null=True,\
-        help_text="Abbreviation")
+    code = models.ForeignKey(Token)
     forms = models.ManyToManyField(Form)
         
     def __unicode__(self):
@@ -105,7 +124,7 @@ class FormEntry(models.Model):
     date = models.DateTimeField()
     
     def __unicode__(self):
-        return "%s %s" % (self.domain.code, self.form.type)
+        return "%s %s" % (self.domain.code.abbreviation, self.form.code.abbreviation)
     
     def to_dict(self):
         return dict([
@@ -126,12 +145,12 @@ class FormValidator(Validator):
     def __init__ (self, form):
         self._form = form
         
-        tokens = Token.objects.all().filter(form=self._form)
+        form_tokens = FormToken.objects.all().filter(form=self._form)
         self._validators = {}
-        for token in tokens:
-            validators = TokenExistanceValidator.objects.all().filter(token=token) 
+        for ft in form_tokens:
+            validators = TokenExistanceValidator.objects.all().filter(token=ft.token) 
             if validators:
-                self._validators[token] = validators
+                self._validators[ft.token] = validators
         
     def get_validation_errors(self, form_entry):
         validation_errors = []

@@ -74,15 +74,20 @@ class App(rapidsms.app.App):
             forms = d.forms.all()
             forms_tokens = []
             for f in forms:
+                print(f)
                 # gather tokens for this form as a list of tuples
-                tokens = f.tokens.order_by('sequence').\
-                            values_list('abbreviation', 'regex')
+                form_tokens = f.form_tokens.order_by('sequence')
+                tokens = []
+                for ft in form_tokens:
+                    tokens.append((ft.token.abbreviation, ft.token.regex))
                 # make a dictionary mapping this form type to its token list
                 # and add the dict to the running form_tokens list
-                forms_tokens.append(dict([(f.type.upper(), tokens)]))
+                # TODO use the code's regex instead of abbreviation
+                forms_tokens.append(dict([(f.code.abbreviation.upper(), tokens)]))
             # make a dictionary mapping this domain code to its form list
             # and add the dict to the running domain_form_tokens list
-            self.domains_forms_tokens.append(dict([(d.code.upper(), forms_tokens)]))
+            # TODO ditto
+            self.domains_forms_tokens.append(dict([(d.code.abbreviation.upper(), forms_tokens)]))
 
         # lists for keeping track of domain codes, form types, and 
         # number of tokens for use generating ranges
@@ -120,8 +125,9 @@ class App(rapidsms.app.App):
             # regex for all of them (by adding an or between them all)
             #
             # let me break it down, starting from the inside:
-            # do a list comprehension to get the pattern from the second 
-            # position in the tuple, then limit to unique patterns, then
+            # do a list comprehension to get the patterns from the second 
+            # position in the tuple -- join each regex with a pipe, 
+            # then limit to unique patterns, then
             # join the patterns together with a pipe between each one, and
             # finally add the resulting pattern to the list
             unique_patterns = '|'.join(unique(map((lambda t: t[1]), patterns_at_sequence)))
@@ -148,6 +154,8 @@ class App(rapidsms.app.App):
         # TODO ditto
         #form_type_pattern = '(\w){%s,%s}' % (form_type_lengths[0], form_type_lengths[-1])
         #form_type_pattern = '(letters)'
+        # TODO figure out how to handle 'net cards' instead of 'net' 'cards'
+        #form_type_pattern = '([a-z]+)|([a-z]+\s[a-z]+)'
         form_type_pattern = '([a-z]+)'
 
         # wrap all of the sequence patterns (except for the first one) 
@@ -162,8 +170,6 @@ class App(rapidsms.app.App):
         # put all the patterns together!
         self.form_pattern = self.leading_pattern + domain_code_pattern + \
             self.separator + form_type_pattern + self.separator + pattern_for_sequences[0] + ''.join(wrapped_patterns) + self.trailing_pattern
-        
-        
         self.debug("FORM PATTERN")
         self.debug(self.form_pattern)
 
@@ -171,7 +177,7 @@ class App(rapidsms.app.App):
         try:
             # attempt to fetch the object
             return model.objects.get(**kwargs)
-            
+
         # no objects or multiple objects found (in the latter case,
         # something is probably broken, so perhaps we should warn)
         except (ObjectDoesNotExist, MultipleObjectsReturned):
@@ -197,16 +203,18 @@ class App(rapidsms.app.App):
         #reporter = self.__identify(message.peer, "reporting")
         #self.handled = False
         for domain in self.domains_forms_tokens:
-            code_matched = self._get_code(code, domain)
-            if code_matched:
+            domain_matched = self._get_code(code, domain)
+            if domain_matched:
                 # gather list of form dicts for this domain code
                 # forms = domain[code.upper()]
                 self.debug("DOMAIN MATCH")
-                forms = domain[code_matched]
+                forms = domain[domain_matched]
                 for form in forms:
-                    if type.upper() in form:
-                        this_domain = Domain.objects.get(code__iexact=code_matched)
-                        this_form = Form.objects.get(type__iexact=type)
+                    form_matched = self._get_code(type, form)
+                    self.debug(form_matched)
+                    if form_matched:
+                        this_domain = Domain.objects.get(code__abbreviation__iexact=domain_matched)
+                        this_form = Form.objects.get(code__abbreviation__iexact=form_matched)
                         if hasattr(message, "reporter") and message.reporter:
                             this_form.reporter = message.reporter
                         else:
@@ -217,7 +225,7 @@ class App(rapidsms.app.App):
                         form_entry = FormEntry.objects.create(domain=this_domain, \
                             form=this_form, date=message.date)
                         # gather list of token tuples for this form type
-                        tokens = form[type.upper()]
+                        tokens = form[form_matched]
                         
                         self.debug("FORM MATCH")
                         info = []
@@ -250,7 +258,7 @@ class App(rapidsms.app.App):
                             # actions SHOULD send their own confirmation
                             if(after <= before):
                                 message.respond("Received report for %s %s: %s.\nIf this is not correct, reply with CANCEL" % \
-                                    (code_matched, type.upper(), ", ".join(info)))                        
+                                    (domain_matched, form_matched, ", ".join(info)))                        
                         # oh no! there were validation errors!
                         # since we've already matched the domain
                         # and form, we can be pretty sure that
@@ -272,7 +280,7 @@ class App(rapidsms.app.App):
 
                 if not hasattr(self, "handled") or not self.handled:
                     message.respond("Oops. Cannot find a report called %s for %s. Available reports for %s are %s" % \
-                        (type.upper(), code_matched, code_matched, ", ".join([f.keys().pop().upper() for f in forms])), 
+                        (type.upper(), domain_matched, domain_matched, ", ".join([f.keys().pop().upper() for f in forms])), 
                         StatusCodes.APP_ERROR) 
                     self.handled = True
                     break
@@ -285,17 +293,18 @@ class App(rapidsms.app.App):
                 #        (code.upper(), ", ".join([s.keys().pop().upper() for s in self.supplies_reports_tokens]))) 
 
 
-    def _get_code(self, code, domain):
-         '''Gets the code out of the code and domain.  This allows us to 
+    def _get_code(self, code, dict):
+        '''Gets the code out of the code and dict.  This allows us to 
             do some additional hacking on the matching logic'''
-         # original logic
-         if code.upper() in domain:
-             return code.upper()
-         # super hacked in demo logic
-         if "LLIN" in domain:
-             if code.upper() == "LL" or re.match(r"^(l*i*l*i*n+)", code.lower()): 
-                 return "LLIN"
-         return False
+        # original logic
+        if code.upper() in dict:
+            return code.upper()
+        # super hacked in demo logic
+        if "LLIN" in dict:
+            if code.upper() == "LL" or re.match(r"^(l*i*l*i*n+)", code.lower()): 
+                return "LLIN"
+        return False
+
         
     def _get_validation_errors(self, message, form, form_entry):
         validation_errors = []
