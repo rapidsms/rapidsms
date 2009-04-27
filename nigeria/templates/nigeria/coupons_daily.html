@@ -5,18 +5,64 @@
 <!--[if IE]>
 <script language="javascript" type="text/javascript" src="/static/nigeria/js/excanvas.pack.js"></script>
 <![endif]-->
+
 <script language="javascript">
 $(document).ready(function() {
-	data = [
-	 { label: 'APK', data: [[0,10]]},
-	 { label: 'DPO', data: [[1,20]]},
-	 { label: 'PMS', data: [[2,50]]},
-	 { label: 'AGO', data: [[3,20]]}
-	];
-	options = { pies: {show: true, labelWidth: 30, fontSize: 10, autoScale: true, fillOpacity: 1}};
-	$.plot($('#piechart'), data, options);
+	/*data = [
+	 { "pies":{"show":"true"},"label": 'MT 1', data: [[0,10]]},
+	 { "pies":{"show":"true"},"label": 'MT 2', data: [[0,20]]},
+	 { "pies":{"show":"true"},"label": 'MT 3', data: [[0,50]]},
+	 ];*/
+	//options = { pies: {show: true, labelWidth: 30, fontSize: 10, autoScale: true, fillOpacity: 1}};
+	//stock_loc_data = {{stock_per_loc_plot_data|safe}};
+	//stock_loc_options = {{stock_per_loc_plot_options|safe}};
+	
+	//These are sample plots for Coupons Distributions at the Ward and Distribution Point Levels
+  //Fake Data Used here, data will be generated from appropriate views	
+	//TODO: Retrieve Real data for plots
+	
+				 data=[{label:"MT 1","data":[[1239103320000,121],[1239208060000,314],[1239598080000,675]]},
+				 {"label":"MT 2", "data":[[1239036000000,259],[1239318000000,689],[1239342000000,905]]},
+				 {"label":"MT 3", "data":[[1239329880000,207],[1240168160000,441], [1240280160000,1071]]}]
+				 var options = {
+          lines:     { show: true },
+          points:    { show: true },
+          legend:    { noColumns: 2 },
+          xaxis:     { mode: 'time',timeformat:'%m/%d', label:'Time' },
+          yaxis:     { min: 0, label: 'Coupons Distributed' },
+          selection: { mode: 'x', snapToTicks: true }
+        };
+				
+				data1 = [[1,100],[5,60],[9,70],[13,40]];
+				data2 = [[2,50],[6,60],[10,60],[14,100]];
+				data3 = [[3,50],[7,60],[11,60],[15,100]];
+				data4 = [[19,0]];
+				
+				data5 = [[1,5],[5,2],[9,1],[13,5]];
+				data6 = [[2,1],[6,0],[10,0],[14,2]];
+				data7 = [[3,0],[7,2],[11,3],[15,3]];
+				data8 = [[19,100]];
+				 
+	//These are sample plots for Coupons Distributions at the Ward and Distribution Point Levels
+  //Fake Data Used here, data will be generated from appropriate views	
+	//TODO: Retrieve Real data for plots
+	//options = '{"grid":{"clickable":true},"xaxis":{"min":0,"ticks":[],"tickFormatter":"string"},"yaxis":{"min":0}}'
+	$.plot($('#piechart'), [{ data: data1, bars: { show: true}, "label":"MT 1" }, 
+													{ data: data2, bars: { show: true },"label":"MT 2" },
+													{ data: data3, bars: { show: true },"label":"MT 3" },
+													{ data: data4, bars: { show: true },"label":"MT 4" }
+	], {grid: {labelMargin: 5}});
+	$.plot($('#piechart2'), data, options);
+	$.plot($('#piechart3'), [{ data: data5, bars: { show: true}, "label":"MT 1" }, 
+													{ data: data6, bars: { show: true },"label":"MT 2" },
+													{ data: data7, bars: { show: true },"label":"MT 3" },
+													{ data: data8, bars: { show: true },"label":"MT 4" }
+	], {
+              yaxis: { "label": 'Budget' },
+              xaxis: { "label": 'Year' }})
 });
 </script>
+
 {% endblock %}
 {% block stylesheets %}
 <style>
@@ -30,7 +76,7 @@ $(document).ready(function() {
 <table width="100%" id="data_heading">
 <thead>
 <tr><th><strong>Date</strong></th><th><strong>State</strong></th><th><strong>LGA</strong></th><th><strong>Ward</strong></th></tr>
-<tr><td>Apr 15, 2009</td><td>Kano</td><td>BEBEJI</td><td>Ward #1</td></tr>
+<tr><td>Apr 15, 2009</td><td>Kano</td><td>{{location}}</td><td>Ward #1</td></tr>
 </thead>
 </table>
 
@@ -38,24 +84,53 @@ $(document).ready(function() {
 	<div width="80%" style="float:left">
 		<table width="100%">
 			<thead>
-				<tr><th>Dist. Point</th><th>Team No.</th><th>No. of Settlements</th><th>Total No. of People</th><th>Coupons Issued</th></tr>
+				<tr><th>Dist. Point</th><th>Team No.</th><th>No. of Settlements</th><th>Total No. of People</th><th>Coupons Issued</th><th>Coupons Returned</th></tr>
 			</thead>
 			<tbody>
-				<tr><td>2</td><td>3</td><td>2343</td><td>8922</td><td>17844</td></tr>
-				<tr><td>2</td><td>3</td><td>2343</td><td>8922</td><td>17844</td></tr>
-				<tr><td>2</td><td>3</td><td>2343</td><td>8922</td><td>17844</td></tr>
-				<tr><td>2</td><td>3</td><td>2343</td><td>8922</td><td>17844</td></tr>
-				<tr><td>2</td><td>3</td><td>2343</td><td>8922</td><td>17844</td></tr>
-				<tr><td>2</td><td>3</td><td>2343</td><td>8922</td><td>17844</td></tr>
-				<tr><td>2</td><td>3</td><td>2343</td><td>8922</td><td>17844</td></tr>
-				<tr><td>2</td><td>3</td><td>2343</td><td>8922</td><td>17844</td></tr>
-				<tr><td>2</td><td>3</td><td>2343</td><td>8922</td><td>17844</td></tr>
+				<tr><td>1</td><td>1</td><td>234</td><td>8922</td><td>178</td><td>17</td></tr>
+				<tr><td>1</td><td>2</td><td>233</td><td>8922</td><td>144</td><td>78</td></tr>
+				<tr><td>1</td><td>3</td><td>23</td><td>8922</td><td>174</td><td>74</td></tr>
+				<tr><td>2</td><td>1</td><td>2343</td><td>8922</td><td>844</td><td>44</td></tr>
+				<tr><td>2</td><td>2</td><td>2343</td><td>8922</td><td>184</td><td>84</td></tr>
+				<tr><td>2</td><td>3</td><td>2343</td><td>8922</td><td>178</td><td>17</td></tr>
+				<tr><td>3</td><td>1</td><td>2343</td><td>8922</td><td>174</td><td>14</td></tr>
+				<tr><td>3</td><td>2</td><td>2343</td><td>8922</td><td>180</td><td>144</td></tr>
+				<tr><td>3</td><td>3</td><td>2343</td><td>8922</td><td>174</td><td>4</td><td></td></tr>
 			</tbody>
-		</table>
-	</div>
-	<div width="20%" style="float:right">
+			<tr>
+			<td colspan="2">
+		<div class="module">
+          <h2>Coupons Distributed at {{location.name}}</h2>
+	  <div width="20%" style="float:left">
 		<div id="piechart" style="height:250px;width:400px;"></div>
+	  </div>
+        </div>
+				</td>
+			
+			<td colspan="2">
+		<div class="module">
+          <h2>Coupons Distributed over time at {{location.name}}</h2>
+	  <div width="20%" style="float:right">
+		<div id="piechart2" style="height:250px;width:400px;"></div>
+	  </div>
+        </div>
+				</td>
+				</tr>
+				<tr>
+				<td colspan="2">
+		<div class="module"><br/><br/>
+          <h2>Coupons Distribution Discrepancy Graph at {{location.name}}</h2>
+	  <div width="20%" style="float:right">
+		<div id="piechart3" style="height:250px;width:400px;"></div>
+	  </div>
+        </div>
+				</td>
+				</tr>
+			</table>
 	</div>
+	
+	</div>
+	
 </div>
 
 </div>

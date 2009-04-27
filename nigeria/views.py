@@ -14,31 +14,37 @@ from random import randrange, seed
 import time
 import sys
 
+#Parameter for paging reports outputs
 ITEMS_PER_PAGE = 20
 
-#Views for handling summary of Reports Displayed as Location Tree
+#This is required for ***unicode*** characters***
+reload(sys)
+sys.setdefaultencoding('utf-8')
+    
+#Views for handling Reports Summary Displayed as Locations Tree (State -> LGA -> Wards -> DPs -> MTs)
 def index(req):
     
+    #Variable to hold LGA dictionary
     lga_dict={}
-
-    reload(sys)
-    sys.setdefaultencoding('utf-8')
-#Line below will be replaced by a for loop to iterate through objects for state retrieval
+    
+    #TODO: Line below should be replaced by a for loop to iterate through objects for state retrieval through code="<statecode>" parameter to .get() method
     state = Location.objects.get(code="20")
    
+    # Retrieves all LGAs in the states. TODO: This will be shifted in the forloop for state
     lgas = state.children.all()[0:9]
 
     for lga in lgas:
+        #Obtains list of wards from the model
         wards = lga.children.all()
-   #     lga_dict2[lga] = wards
-	lga_dict[lga] = wards
-
+        
+        #Builds a dictionary of wards with LGA as keys
+        lga_dict[lga] = wards
+        
+    #TODO: This list should be removed after creating a for loop to retrieve states  from model (above)
     states = ['Abia','Adamawa','Akwa-Ibom','Anambra','Bauchi','Bayelsa',
         'Benue','Borno','Cross River','Delta','Ebonyi','Edo','Ekiti','Enugu','FCT','Gombe','Imo','Jigawa','Kaduna','Kano','Katsina','Kebbi','Kogi','Kwara','Lagos','Nasarawa','Niger','Ogun','Ondo','Osun','Oyo','Plateau','Rivers','Sokoto','Taraba','Yobe','Zamfara']
     
     
-# Logic below handles objects retrieval from Location Models
-
     return render_to_response(req, "nigeria/index.html",{'st':state, 'states':states,'lgas':lga_dict})
 
 def logistics_summary(req, locid):
@@ -112,12 +118,19 @@ def coupons_summary(req, frm, to, range):
 
 # Periodical Reporting  by day, week, month for coupons
 def coupons_daily(req, locid):
-    location = False
-    try:
-        location_object = Location.objects.get(code=locid)
-        location = {'name': location_object.name}
-    except: pass
+    
+    if not locid:
+        locid = 1
+    try: 
+        location = Location.objects.get(pk=locid)
+        #_set_stock(location)
+    except Location.DoesNotExist:
+        location = None
+        
+        
     return render_to_response(req, "nigeria/coupons_daily.html", {'location': location})
+    
+    
 
 def coupons_weekly(req, locid):
     return render_to_response(req, "nigeria/coupons_weekly.html")
