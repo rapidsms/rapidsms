@@ -11,6 +11,9 @@ class NetDistribution(models.Model):
     expected = models.PositiveIntegerField()
     actual = models.PositiveIntegerField()
     discrepancy = models.PositiveIntegerField()
+
+    def __unicode__(self):
+        return "%s (%s) %s" % (self.location, self.reporter, self.time)
     
     @staticmethod
     def get_totals(location):
@@ -29,13 +32,6 @@ class NetDistribution(models.Model):
                 "actual":actual,
                 "discrepancy":discrepancy }
         
-    def __unicode__(self):
-        return "%s reported net distribution at %s.  distributed=%s, expected=%s, actual=%s, discrepancy=%s" %(self.reporter, 
-                                                                        self.location, 
-                                                                        self.distributed, 
-                                                                        self.expected, 
-                                                                        self.actual, 
-                                                                        self.discrepancy)
 
 class CardDistribution(models.Model):
     reporter = models.ForeignKey(Reporter, null=True, blank=True)
@@ -45,6 +41,9 @@ class CardDistribution(models.Model):
     settlements = models.PositiveIntegerField()
     people = models.PositiveIntegerField()
     distributed = models.PositiveIntegerField()
+
+    def __unicode__(self):
+        return "%s (%s) %s" % (self.location, self.reporter, self.time)
     
     @staticmethod
     def get_totals(location):
@@ -61,13 +60,6 @@ class CardDistribution(models.Model):
                 "distributed":distributed
     }
                 
-    
-    def __unicode__(self):
-        return "%s reported net card distribution at %s.  settlements=%s, people=%s, cards=%s" %(self.reporter, 
-                                                                        self.location, 
-                                                                        self.settlements, 
-                                                                        self.people, 
-                                                                        self.distributed)
 
 # this is a signal that says that whenever a location is loaded,
 # if these models have also been loaded we should try to set the 

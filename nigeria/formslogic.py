@@ -2,6 +2,7 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 from models import *
+from rapidsms.message import StatusCodes
 from apps.reporters.models import *
 from apps.form.formslogic import FormsLogic
 
@@ -40,6 +41,7 @@ class NigeriaFormsLogic(FormsLogic):
         message = args[0]
         form_entry = args[1]
         # in case we need help, build a valid reminder string
+        # TODO move to db! 
         required = ["location", "role", "name"]
         help = ("%s register " % form_entry.domain.code.lower()) +\
                 " ".join(["<%s>" % t for t in required])
@@ -50,7 +52,6 @@ class NigeriaFormsLogic(FormsLogic):
             # check that ALL FIELDS were provided
             missing = [t for t in required if data[t] is None]
             
-                
             # missing fields! collate them, and
             # send back a friendly non-localized
             # error message, then abort
@@ -58,7 +59,6 @@ class NigeriaFormsLogic(FormsLogic):
                 mis_str = ", ".join(missing)
                 return ["Missing fields: %s" % mis_str, help]
             
-        
             # parse the name via Reporter
             data["alias"], data["first_name"], data["last_name"] =\
                 Reporter.parse_name(data.pop("name"))
@@ -69,7 +69,6 @@ class NigeriaFormsLogic(FormsLogic):
             if len(reps):
                 return ["Already been registed: %s" %
                     data["alias"], help]
-            
             
             # all fields were present and correct, so copy them into the
             # form_entry, for "actions" to pick up again without re-fetching
@@ -118,7 +117,7 @@ class NigeriaFormsLogic(FormsLogic):
             # notify the user that everyting went okay
             # TODO: proper (localized?) messages here
             message.respond("Hello %s! You are now registered as %s at %s %s."\
-                % (rep.alias, rep.role, rep.location, rep.location.type))
+                % (rep.alias, rep.role, rep.location, rep.location.type), StatusCodes.OK)
 
         elif self._form_lookups.has_key(form_entry.form.type):
             to_use = self._form_lookups[form_entry.form.type]
@@ -143,4 +142,4 @@ class NigeriaFormsLogic(FormsLogic):
             response = response + ", ".join(["=".join(t) for t in attrs])
             if not instance.reporter:
                 response = response + ". Please register your phone"
-            message.respond(response)
+            message.respond(response, StatusCodes.OK)
