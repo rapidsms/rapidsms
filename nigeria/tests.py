@@ -30,7 +30,7 @@ class TestApp (TestScript):
         self.runScript(a)
         # this should succeed because we just created him
         reporters = Reporter.objects.all()
-        Reporter.objects.get(alias="cuser")
+        Reporter.objects.get(alias="crummy")
         dict = {"alias":"fail"}
         # make sure checking a non-existant user fails
         self.assertRaises(Reporter.DoesNotExist, Reporter.objects.get, **dict)     
@@ -39,9 +39,9 @@ class TestApp (TestScript):
            8005551212 > llin my status
            8005551212 < Please register your phone with RapidSMS.
            8005551212 > llin register 20 dl dummy user
-           8005551212 < Hello duser! You are now registered as Distribution point team leader at KANO State.
+           8005551212 < Hello dummy! You are now registered as Distribution point team leader at KANO State.
            8005551212 > llin my status
-           8005551212 < I think you are dummy user.
+           8005551212 < I think you are dummy.
          """
     
     testRegistrationErrors = """
@@ -65,17 +65,17 @@ class TestApp (TestScript):
            tkw_1 > llin register 20 dl keyword tester
            tkw_1 < Hello keyword! You are now registered as Distribution point team leader at KANO State.
            tkw_1 > llin nets 2001 123 456 78 90
-           tkw_1 < Received report for LLIN nets: expected=456, actual=78, location=AJINGI, distributed=123, discrepancy=90
+           tkw_1 < Received report for LLIN nets: location=AJINGI, distributed=123, expected=456, actual=78, discrepancy=90
            tkw_1 > LLIN nets 2001 123 456 78 90
-           tkw_1 < Received report for LLIN nets: expected=456, actual=78, location=AJINGI, distributed=123, discrepancy=90
+           tkw_1 < Received report for LLIN nets: location=AJINGI, distributed=123, expected=456, actual=78, discrepancy=90
            tkw_1 > lin nets 2001 123 456 78 90
-           tkw_1 < Received report for LLIN nets: expected=456, actual=78, location=AJINGI, distributed=123, discrepancy=90
+           tkw_1 < Received report for LLIN nets: location=AJINGI, distributed=123, expected=456, actual=78, discrepancy=90
            tkw_1 > ILLn nets 2001 123 456 78 90
-           tkw_1 < Received report for LLIN nets: expected=456, actual=78, location=AJINGI, distributed=123, discrepancy=90
+           tkw_1 < Received report for LLIN nets: location=AJINGI, distributed=123, expected=456, actual=78, discrepancy=90
            tkw_1 > ilin nets 2001 123 456 78 90
-           tkw_1 < Received report for LLIN nets: expected=456, actual=78, location=AJINGI, distributed=123, discrepancy=90
+           tkw_1 < Received report for LLIN nets: location=AJINGI, distributed=123, expected=456, actual=78, discrepancy=90
            tkw_1 > ll nets 2001 123 456 78 90
-           tkw_1 < Received report for LLIN nets: expected=456, actual=78, location=AJINGI, distributed=123, discrepancy=90
+           tkw_1 < Received report for LLIN nets: location=AJINGI, distributed=123, expected=456, actual=78, discrepancy=90
            tkw_1 > llan nets 2001 123 456 78 90
            tkw_1 < Sorry, we didn't understand that message.
            tkw_1 > nets 2001 123 456 78 90
@@ -86,7 +86,7 @@ class TestApp (TestScript):
            8005551213 > llin register 2001 lf net guy
            8005551213 < Hello net! You are now registered as LGA focal person at AJINGI LGA.
            8005551213 > llin nets 2001 123 456 78 90
-           8005551213 < Received report for LLIN nets: expected=456, actual=78, location=AJINGI, distributed=123, discrepancy=90
+           8005551213 < Received report for LLIN nets: location=AJINGI, distributed=123, expected=456, actual=78, discrepancy=90
            8005551213 > llin nets 2001 123 456 78 
            8005551213 < Invalid form.  The following fields are required: discrepancy
          """
@@ -95,18 +95,18 @@ class TestApp (TestScript):
            8005551214 > llin register 200201 lf card guy
            8005551214 < Hello card! You are now registered as LGA focal person at ALBASU CENTRAL Ward.
            8005551214 > llin net cards 200201 123 456 78 
-           8005551214 < Received report for LLIN net cards: settlements=123, people=456, distributed=78, location=ALBASU CENTRAL
+           8005551214 < Received report for LLIN net cards: location=ALBASU CENTRAL, settlements=123, people=456, distributed=78
            8005551214 > llin net cards 200201 123 456  
            8005551214 < Invalid form.  The following fields are required: coupons
          """
          
     testUnregisteredSubmissions = """
             tus_1 > llin net cards 200201 123 456 78
-            tus_1 < Received report for LLIN net cards: settlements=123, people=456, distributed=78, location=ALBASU CENTRAL. Please register your phone
+            tus_1 < Received report for LLIN net cards: location=ALBASU CENTRAL, settlements=123, people=456, distributed=78. Please register your phone
             tus_1 > llin my status
             tus_1 < Please register your phone with RapidSMS. 
             tus_2 > llin nets 2001 123 456 78 90
-            tus_2 < Received report for LLIN nets: expected=456, actual=78, location=AJINGI, distributed=123, discrepancy=90. Please register your phone
+            tus_2 < Received report for LLIN nets: location=AJINGI, distributed=123, expected=456, actual=78, discrepancy=90. Please register your phone
             tus_2 > llin my status
             tus_2 < Please register your phone with RapidSMS. 
          """
@@ -143,7 +143,7 @@ class TestApp (TestScript):
         self.assertEqual(5, len(forms))
         for form_name in ["register", "issue", "receive", "nets", "net"]:
             # this will throw an error if it doesn't exist
-            Form.objects.get(type=form_name)
+            Form.objects.get(code__abbreviation=form_name)
         
     def _testRoles(self):
         # add this when we have a fixture for roles
