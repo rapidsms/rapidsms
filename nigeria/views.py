@@ -24,9 +24,6 @@ sys.setdefaultencoding('utf-8')
 
 #Views for handling summary of Reports Displayed as Location Tree
 def index(req, locid=None):
-    reload(sys)
-    sys.setdefaultencoding('utf-8')
-    # TODO (better) ajax this
     if not locid:
         locid = 1
     try:
@@ -36,32 +33,6 @@ def index(req, locid=None):
     print "location: %s" % location
     return render_to_response(req, "nigeria/index.html",{'location':location })
 
-
-#Views for handling Reports Summary Displayed as Locations Tree (State -> LGA -> Wards -> DPs -> MTs)
-#def index(req):
-#    
-#    #Variable to hold LGA dictionary
-#    lga_dict={}
-#    
-#    #TODO: Line below should be replaced by a for loop to iterate through objects for state retrieval through code="<statecode>" parameter to .get() method
-#    state = Location.objects.get(code="20")
-#   
-#    # Retrieves all LGAs in the states. TODO: This will be shifted in the forloop for state
-#    lgas = state.children.all()[0:9]
-#
-#    for lga in lgas:
-#        #Obtains list of wards from the model
-#        wards = lga.children.all()
-#        
-#        #Builds a dictionary of wards with LGA as keys
-#        lga_dict[lga] = wards
-#        
-#    #TODO: This list should be removed after creating a for loop to retrieve states  from model (above)
-#    states = ['Abia','Adamawa','Akwa-Ibom','Anambra','Bauchi','Bayelsa',
-#        'Benue','Borno','Cross River','Delta','Ebonyi','Edo','Ekiti','Enugu','FCT','Gombe','Imo','Jigawa','Kaduna','Kano','Katsina','Kebbi','Kogi','Kwara','Lagos','Nasarawa','Niger','Ogun','Ondo','Osun','Oyo','Plateau','Rivers','Sokoto','Taraba','Yobe','Zamfara']
-#    
-#    
-#    return render_to_response(req, "nigeria/index.html",{'st':state, 'states':states,'lgas':lga_dict})
 
 def logistics_summary(req, locid):
     # Get the location we are going to work with.
