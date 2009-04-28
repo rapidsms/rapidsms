@@ -82,6 +82,13 @@ class Router (component.Receiver):
         except:
             self.log_last_exception("Failed to add app: %r" % conf)
     
+    def get_app(self, name):
+        '''gets an app by name, if it exists'''
+        for app in self.apps:
+            if app.name == name:
+                return app
+        return None
+
     def start_backend (self, backend):
         while self.running:
             try:
