@@ -286,11 +286,9 @@ class App(rapidsms.app.App):
                     break
 
             else:
-                continue
-                # TODO ditto
-                #if not handled:
-                #    message.respond("Oops. Cannot find a supply called %s. Available supplies are %s" %\
-                #        (code.upper(), ", ".join([s.keys().pop().upper() for s in self.supplies_reports_tokens]))) 
+                if not hasattr(self, "handled") or not self.handled:
+                    message.respond("Oops. Cannot find a supply called %s. Available supplies are %s" %\
+                        (code.upper(), ", ".join([d.keys().pop().upper() for d in self.domains_forms_tokens])))
 
 
     def _get_code(self, code, dict):
