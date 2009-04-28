@@ -124,11 +124,25 @@ def coupons_daily(req, locid):
     try: 
         location = Location.objects.get(pk=locid)
         #_set_stock(location)
+        location_type = Location.objects.get(pk=locid).type
+
+	#The Lines of Code below determines the location type and builds appropriate data for reporting
+        if str(location_type) == "State":
+            pass
+	elif str(location_type) == "LGA":
+	    pass
+        elif str(location_type) == "Ward":
+	    pass
+	elif str(location_type) == "Distribution Point":
+	    pass
+	elif str(location_type) == "Mobilization Team":
+	    pass
+
     except Location.DoesNotExist:
         location = None
         
     #TODO: Generate and Send all plots data from here to the templates
-    
+    	    
         
     return render_to_response(req, "nigeria/coupons_daily.html", {'location': location})
     
