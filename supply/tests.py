@@ -133,16 +133,16 @@ class TestApp (TestScript):
 
         issue = PartialTransaction.objects.get(origin__name="KANO",\
            destination__name="KURA", shipment_id="11111",\
-           domain__code="LLIN", type="I", reporter__pk=sender.pk)
+           domain__code__abbreviation="LLIN", type="I", reporter__pk=sender.pk)
 
         receipt = PartialTransaction.objects.get(origin__name__iexact="KANO",\
            destination__name__iexact="KURA", shipment_id="11111",\
-           domain__code__iexact="LLIN", type="R", reporter__pk=recipient.pk)
+           domain__code__abbreviation__iexact="LLIN", type="R", reporter__pk=recipient.pk)
         
         origin_stock = Stock.objects.get(location__name__iexact="KANO",\
-            domain__code__iexact="LLIN")
+            domain__code__abbreviation__iexact="LLIN")
         dest_stock = Stock.objects.get(location__name__iexact="KURA",\
-            domain__code__iexact="LLIN")
+            domain__code__abbreviation__iexact="LLIN")
         
         # everything in its right place
         self.assertEqual(sender.location, issue.origin)
@@ -157,7 +157,7 @@ class TestApp (TestScript):
         # issue and receipt have been matched into a transaction
         self.assertEqual(issue.status, 'C')
         self.assertEqual(issue.status, receipt.status)
-        first_transaction = Transaction.objects.get(domain__code__iexact="LLIN",\
+        first_transaction = Transaction.objects.get(domain__code__abbreviation__iexact="LLIN",\
             amount_sent=issue.amount, amount_received=receipt.amount,\
             issue=issue, receipt=receipt)
 
@@ -185,13 +185,13 @@ class TestApp (TestScript):
         # mister recipient's amendment
         second_receipt = PartialTransaction.objects.get(origin__name__iexact="KANO",\
            destination__name__iexact="KURA", shipment_id="11111",\
-           domain__code__iexact="LLIN", type="R", reporter=recipient, status="C")
+           domain__code__abbreviation__iexact="LLIN", type="R", reporter=recipient, status="C")
 
         # make sure this is a new one
         self.assertNotEqual(second_receipt.pk, receipt.pk)
 
         # make sure a new transaction was matched
-        second_transaction = Transaction.objects.get(domain__code__iexact="LLIN",\
+        second_transaction = Transaction.objects.get(domain__code__abbreviation__iexact="LLIN",\
             amount_sent=issue.amount, amount_received=second_receipt.amount,\
             issue=issue, receipt=second_receipt)
 
