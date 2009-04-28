@@ -4,7 +4,7 @@ $(document).ready(function(){
 	$("#navigation").treeview({
 		persist: "location",
 		collapsed: true,
-		unique: true
+		unique: false
 	});
 	
 	// second example
@@ -25,7 +25,7 @@ $(document).ready(function(){
 	// third example
 	$("#red").treeview({
 		animated: "fast",
-		collapsed: false,
+		collapsed: true,
 		unique: false,
 		persist: "cookie",
 		toggle: function() {

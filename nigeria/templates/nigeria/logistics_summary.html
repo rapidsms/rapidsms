@@ -1,10 +1,8 @@
 {% extends "layout.html" %}
 {% block title %}Logistics Summary{% endblock %}
 {% block javascripts %}
-<!--[if IE]>
-<script language="javascript" type="text/javascript" src="/static/nigeria/js/excanvas.pack.js"></script>
-<![endif]-->
-<script language="javascript" type="text/javascript" src="/static/nigeria/js/jquery.flot.min.js"></script>
+<!--[if IE]><script language="javascript" type="text/javascript" src="/static/nigeria/js/excanvas.pack.js"></script><![endif]-->
+<script language="javascript" type="text/javascript" src="/static/nigeria/js/jquery.flot.js"></script>
 <script language="javascript">
 $(document).ready(function() {
 //	data = [
@@ -69,12 +67,14 @@ tr.variant-waybill { background-color: #FFD869; }
 tr.variant-incorrect { background-color: #FFD6DD; }
 </style>
 {% endblock %}
+
 {% block content %}
 <div class="split">
   <div class = "location_summary">
     <h3>Logistics information for {{location.name}}</h3>
     <b>Current Stock: </b>{% if location.stock %}{{location.stock}}{% else %}None{% endif %}
   </div> 
+	
   <table width="100%">
     <td colspan="2">
       <div class="module">
@@ -122,7 +122,7 @@ tr.variant-incorrect { background-color: #FFD6DD; }
 			<div class="toolbar">
 				{% if transactions_pager.has_other_pages %}<a href="?page={{paginator.num_pages}}#st">Last &raquo;</a>{% endif %}
 				{% if transactions_pager.has_next %}<a href="?page={{transactions_pager.next_page_number}}#st">Next &rsaquo;</a>{% endif %}
-				<a href="javascript:;">Page {{page}} of {{paginator.num_pages}}</a>
+				<span><strong>Page {{page}} of {{paginator.num_pages}}</strong></span>
 				<a href="?page={% if transactions_pager.previous_page_number %}{{transactions_pager.previous_page_number}}{% else %}1{% endif %}#st">&lsaquo; Prev</a>
 				<a href="?page=1#st">&laquo; First</a>
 			</div>
