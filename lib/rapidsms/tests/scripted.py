@@ -88,11 +88,11 @@ class TestScript (TestCase):
                 self.router.run()
             elif dir == '<':
                 msg = self.backend.next_message()
-                self.assertTrue(msg is not None, "message was returned")
+                self.assertTrue(msg is not None, "message was returned (expecting %s)" % txt)
                 self.assertEquals(msg.peer, num,
                     "Expected to send to %s, but message was sent to %s"
                     % (num, msg.peer))
-                self.assertEquals(msg.text, txt,
+                self.assertEquals(msg.text.strip(), txt,
                     "\nReceived text: %s\nExpected text: %s\n"
                     % (msg.text,txt))
         self.router.stop()
