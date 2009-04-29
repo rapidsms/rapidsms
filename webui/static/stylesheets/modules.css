@@ -68,6 +68,12 @@ table {
 					border-top: none;
 					color: #444;
 				}
+				
+				/* sometimes fake columns are added to the
+				 * table head, to make things line up. hide
+				 * this embarressing fact as best i can. */
+				thead td {
+					border-top: none; }
 
 			/* for rows which have headers on the left,
 			 * remove the fancy graident and bump the
