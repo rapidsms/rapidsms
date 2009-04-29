@@ -112,9 +112,17 @@ class TestApp (TestScript):
         script = "\n".join(all_txns)
         self.runScript(script)
         dumpdata = Command()
-        print "\n\n=========This is your fixture.  Copy and paste it to a text file========\n\n"
-        print dumpdata.handle("supply")
+        filename = os.path.abspath(os.path.join(os.path.dirname(__file__),"fixtures/test_transactions_stock.json"))
+        options = { "indent" : 2 }
+        datadump = dumpdata.handle("supply", **options)
+        # uncomment these lines to save the fixture
+        #file = open(filename, "w")
+        #file.write(datadump)
+        #file.write(datadump)
+        #file.close()
+        print "=== Successfully wrote fixtures to %s ===" % filename
         
+
     def testScript(self):
         mismatched_amounts = """
             8005552222 > llin register 20 sm mister sender 
