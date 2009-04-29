@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-import urllib2
+import urllib, urllib2
 from django.http import HttpResponse
 from rapidsms.config import app_conf
 
@@ -17,8 +17,15 @@ def proxy(req, path):
     try:
         # attempt to fetch the requested url from the
         # backend, and proxy the response back as-sis
-        out = urllib2.urlopen(url)
+        args = [url]
         code = 200
+        
+        # if this was a POST, included exactly
+        # the same form data in the subrequest
+        if req.method == "POST":
+            args.append(req.POST.urlencode())
+        
+        out = urllib2.urlopen(*args)
     
     # the request was successful, but the server
     # returned an error. as above, proxy it as-is,
