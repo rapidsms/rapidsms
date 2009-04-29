@@ -1,0 +1,4202 @@
+[
+  {
+    "pk": 1, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 484, 
+      "reporter": null, 
+      "distributed": 249, 
+      "discrepancy": 49, 
+      "connection": 1, 
+      "location": 535, 
+      "time": "2009-04-15 07:52:00", 
+      "expected": 484
+    }
+  }, 
+  {
+    "pk": 2, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 155, 
+      "reporter": null, 
+      "distributed": 452, 
+      "discrepancy": 89, 
+      "connection": 1, 
+      "location": 575, 
+      "time": "2009-04-27 13:28:00", 
+      "expected": 155
+    }
+  }, 
+  {
+    "pk": 3, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 317, 
+      "reporter": null, 
+      "distributed": 454, 
+      "discrepancy": 57, 
+      "connection": 1, 
+      "location": 575, 
+      "time": "2009-04-17 00:16:00", 
+      "expected": 317
+    }
+  }, 
+  {
+    "pk": 4, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1686, 
+      "reporter": null, 
+      "distributed": 340, 
+      "discrepancy": 10, 
+      "connection": 1, 
+      "location": 555, 
+      "time": "2009-04-01 19:37:00", 
+      "expected": 1686
+    }
+  }, 
+  {
+    "pk": 5, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1114, 
+      "reporter": null, 
+      "distributed": 462, 
+      "discrepancy": 41, 
+      "connection": 1, 
+      "location": 685, 
+      "time": "2009-04-18 04:03:00", 
+      "expected": 1114
+    }
+  }, 
+  {
+    "pk": 6, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 355, 
+      "reporter": null, 
+      "distributed": 95, 
+      "discrepancy": 14, 
+      "connection": 1, 
+      "location": 540, 
+      "time": "2009-04-20 22:56:00", 
+      "expected": 355
+    }
+  }, 
+  {
+    "pk": 7, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1844, 
+      "reporter": null, 
+      "distributed": 401, 
+      "discrepancy": 36, 
+      "connection": 1, 
+      "location": 545, 
+      "time": "2009-04-08 12:26:00", 
+      "expected": 1844
+    }
+  }, 
+  {
+    "pk": 8, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 348, 
+      "reporter": null, 
+      "distributed": 126, 
+      "discrepancy": 13, 
+      "connection": 1, 
+      "location": 545, 
+      "time": "2009-04-16 19:27:00", 
+      "expected": 348
+    }
+  }, 
+  {
+    "pk": 9, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 151, 
+      "reporter": null, 
+      "distributed": 261, 
+      "discrepancy": 6, 
+      "connection": 1, 
+      "location": 560, 
+      "time": "2009-04-05 06:49:00", 
+      "expected": 1826
+    }
+  }, 
+  {
+    "pk": 10, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 56, 
+      "reporter": null, 
+      "distributed": 152, 
+      "discrepancy": 4, 
+      "connection": 1, 
+      "location": 545, 
+      "time": "2009-04-05 02:37:00", 
+      "expected": 56
+    }
+  }, 
+  {
+    "pk": 11, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1505, 
+      "reporter": null, 
+      "distributed": 296, 
+      "discrepancy": 49, 
+      "connection": 1, 
+      "location": 555, 
+      "time": "2009-04-06 08:58:00", 
+      "expected": 980
+    }
+  }, 
+  {
+    "pk": 12, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 287, 
+      "reporter": null, 
+      "distributed": 143, 
+      "discrepancy": 19, 
+      "connection": 1, 
+      "location": 570, 
+      "time": "2009-04-28 10:13:00", 
+      "expected": 287
+    }
+  }, 
+  {
+    "pk": 13, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 551, 
+      "reporter": null, 
+      "distributed": 109, 
+      "discrepancy": 10, 
+      "connection": 1, 
+      "location": 530, 
+      "time": "2009-04-27 08:46:00", 
+      "expected": 551
+    }
+  }, 
+  {
+    "pk": 14, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1538, 
+      "reporter": null, 
+      "distributed": 343, 
+      "discrepancy": 68, 
+      "connection": 1, 
+      "location": 530, 
+      "time": "2009-04-13 16:47:00", 
+      "expected": 1538
+    }
+  }, 
+  {
+    "pk": 15, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1799, 
+      "reporter": null, 
+      "distributed": 269, 
+      "discrepancy": 45, 
+      "connection": 1, 
+      "location": 690, 
+      "time": "2009-04-25 20:40:00", 
+      "expected": 1799
+    }
+  }, 
+  {
+    "pk": 16, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 231, 
+      "reporter": null, 
+      "distributed": 411, 
+      "discrepancy": 60, 
+      "connection": 1, 
+      "location": 550, 
+      "time": "2009-04-13 14:35:00", 
+      "expected": 231
+    }
+  }, 
+  {
+    "pk": 17, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 594, 
+      "reporter": null, 
+      "distributed": 351, 
+      "discrepancy": 27, 
+      "connection": 1, 
+      "location": 565, 
+      "time": "2009-04-16 16:26:00", 
+      "expected": 930
+    }
+  }, 
+  {
+    "pk": 18, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1761, 
+      "reporter": null, 
+      "distributed": 126, 
+      "discrepancy": 20, 
+      "connection": 1, 
+      "location": 680, 
+      "time": "2009-04-27 18:05:00", 
+      "expected": 1761
+    }
+  }, 
+  {
+    "pk": 19, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 644, 
+      "reporter": null, 
+      "distributed": 366, 
+      "discrepancy": 47, 
+      "connection": 1, 
+      "location": 560, 
+      "time": "2009-04-13 06:21:00", 
+      "expected": 644
+    }
+  }, 
+  {
+    "pk": 20, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 247, 
+      "reporter": null, 
+      "distributed": 419, 
+      "discrepancy": 63, 
+      "connection": 1, 
+      "location": 535, 
+      "time": "2009-04-21 08:22:00", 
+      "expected": 681
+    }
+  }, 
+  {
+    "pk": 21, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1117, 
+      "reporter": null, 
+      "distributed": 420, 
+      "discrepancy": 53, 
+      "connection": 1, 
+      "location": 680, 
+      "time": "2009-04-15 12:50:00", 
+      "expected": 1687
+    }
+  }, 
+  {
+    "pk": 22, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 859, 
+      "reporter": null, 
+      "distributed": 410, 
+      "discrepancy": 41, 
+      "connection": 1, 
+      "location": 565, 
+      "time": "2009-04-02 03:54:00", 
+      "expected": 859
+    }
+  }, 
+  {
+    "pk": 23, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1328, 
+      "reporter": null, 
+      "distributed": 454, 
+      "discrepancy": 77, 
+      "connection": 1, 
+      "location": 690, 
+      "time": "2009-04-03 02:48:00", 
+      "expected": 1328
+    }
+  }, 
+  {
+    "pk": 24, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1540, 
+      "reporter": null, 
+      "distributed": 248, 
+      "discrepancy": 1, 
+      "connection": 1, 
+      "location": 545, 
+      "time": "2009-04-27 08:00:00", 
+      "expected": 1540
+    }
+  }, 
+  {
+    "pk": 25, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 848, 
+      "reporter": null, 
+      "distributed": 483, 
+      "discrepancy": 48, 
+      "connection": 1, 
+      "location": 550, 
+      "time": "2009-04-21 06:59:00", 
+      "expected": 848
+    }
+  }, 
+  {
+    "pk": 26, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1873, 
+      "reporter": null, 
+      "distributed": 276, 
+      "discrepancy": 24, 
+      "connection": 1, 
+      "location": 685, 
+      "time": "2009-04-19 07:14:00", 
+      "expected": 1873
+    }
+  }, 
+  {
+    "pk": 27, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1165, 
+      "reporter": null, 
+      "distributed": 62, 
+      "discrepancy": 1, 
+      "connection": 1, 
+      "location": 690, 
+      "time": "2009-04-01 01:10:00", 
+      "expected": 1165
+    }
+  }, 
+  {
+    "pk": 28, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1545, 
+      "reporter": null, 
+      "distributed": 366, 
+      "discrepancy": 63, 
+      "connection": 1, 
+      "location": 530, 
+      "time": "2009-04-02 08:02:00", 
+      "expected": 1545
+    }
+  }, 
+  {
+    "pk": 29, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 535, 
+      "reporter": null, 
+      "distributed": 388, 
+      "discrepancy": 51, 
+      "connection": 1, 
+      "location": 580, 
+      "time": "2009-04-01 19:06:00", 
+      "expected": 535
+    }
+  }, 
+  {
+    "pk": 30, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1219, 
+      "reporter": null, 
+      "distributed": 273, 
+      "discrepancy": 12, 
+      "connection": 1, 
+      "location": 570, 
+      "time": "2009-04-21 00:31:00", 
+      "expected": 1219
+    }
+  }, 
+  {
+    "pk": 31, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1878, 
+      "reporter": null, 
+      "distributed": 351, 
+      "discrepancy": 58, 
+      "connection": 1, 
+      "location": 540, 
+      "time": "2009-04-26 12:02:00", 
+      "expected": 1878
+    }
+  }, 
+  {
+    "pk": 32, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 628, 
+      "reporter": null, 
+      "distributed": 129, 
+      "discrepancy": 25, 
+      "connection": 1, 
+      "location": 540, 
+      "time": "2009-04-28 19:32:00", 
+      "expected": 628
+    }
+  }, 
+  {
+    "pk": 33, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 643, 
+      "reporter": null, 
+      "distributed": 158, 
+      "discrepancy": 13, 
+      "connection": 1, 
+      "location": 550, 
+      "time": "2009-04-09 06:22:00", 
+      "expected": 643
+    }
+  }, 
+  {
+    "pk": 34, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1095, 
+      "reporter": null, 
+      "distributed": 205, 
+      "discrepancy": 1, 
+      "connection": 1, 
+      "location": 585, 
+      "time": "2009-04-17 03:51:00", 
+      "expected": 1095
+    }
+  }, 
+  {
+    "pk": 35, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 4, 
+      "reporter": null, 
+      "distributed": 153, 
+      "discrepancy": 26, 
+      "connection": 1, 
+      "location": 560, 
+      "time": "2009-04-21 12:20:00", 
+      "expected": 4
+    }
+  }, 
+  {
+    "pk": 36, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 498, 
+      "reporter": null, 
+      "distributed": 315, 
+      "discrepancy": 1, 
+      "connection": 1, 
+      "location": 680, 
+      "time": "2009-04-18 23:32:00", 
+      "expected": 498
+    }
+  }, 
+  {
+    "pk": 37, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 739, 
+      "reporter": null, 
+      "distributed": 114, 
+      "discrepancy": 2, 
+      "connection": 1, 
+      "location": 690, 
+      "time": "2009-04-01 06:41:00", 
+      "expected": 1506
+    }
+  }, 
+  {
+    "pk": 38, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 526, 
+      "reporter": null, 
+      "distributed": 251, 
+      "discrepancy": 0, 
+      "connection": 1, 
+      "location": 550, 
+      "time": "2009-04-05 12:40:00", 
+      "expected": 1879
+    }
+  }, 
+  {
+    "pk": 39, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 602, 
+      "reporter": null, 
+      "distributed": 107, 
+      "discrepancy": 13, 
+      "connection": 1, 
+      "location": 585, 
+      "time": "2009-04-09 19:03:00", 
+      "expected": 602
+    }
+  }, 
+  {
+    "pk": 40, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 592, 
+      "reporter": null, 
+      "distributed": 182, 
+      "discrepancy": 2, 
+      "connection": 1, 
+      "location": 585, 
+      "time": "2009-04-19 10:35:00", 
+      "expected": 592
+    }
+  }, 
+  {
+    "pk": 41, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1585, 
+      "reporter": null, 
+      "distributed": 110, 
+      "discrepancy": 21, 
+      "connection": 1, 
+      "location": 540, 
+      "time": "2009-04-21 12:07:00", 
+      "expected": 1585
+    }
+  }, 
+  {
+    "pk": 42, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 694, 
+      "reporter": null, 
+      "distributed": 206, 
+      "discrepancy": 19, 
+      "connection": 1, 
+      "location": 545, 
+      "time": "2009-04-26 02:13:00", 
+      "expected": 694
+    }
+  }, 
+  {
+    "pk": 43, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 420, 
+      "reporter": null, 
+      "distributed": 348, 
+      "discrepancy": 36, 
+      "connection": 1, 
+      "location": 680, 
+      "time": "2009-04-26 01:54:00", 
+      "expected": 626
+    }
+  }, 
+  {
+    "pk": 44, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1973, 
+      "reporter": null, 
+      "distributed": 140, 
+      "discrepancy": 15, 
+      "connection": 1, 
+      "location": 680, 
+      "time": "2009-04-29 03:10:00", 
+      "expected": 1973
+    }
+  }, 
+  {
+    "pk": 45, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1149, 
+      "reporter": null, 
+      "distributed": 228, 
+      "discrepancy": 11, 
+      "connection": 1, 
+      "location": 555, 
+      "time": "2009-04-02 23:40:00", 
+      "expected": 1149
+    }
+  }, 
+  {
+    "pk": 46, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 703, 
+      "reporter": null, 
+      "distributed": 495, 
+      "discrepancy": 91, 
+      "connection": 1, 
+      "location": 540, 
+      "time": "2009-04-05 13:36:00", 
+      "expected": 703
+    }
+  }, 
+  {
+    "pk": 47, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 376, 
+      "reporter": null, 
+      "distributed": 354, 
+      "discrepancy": 12, 
+      "connection": 1, 
+      "location": 685, 
+      "time": "2009-04-20 09:43:00", 
+      "expected": 376
+    }
+  }, 
+  {
+    "pk": 48, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 526, 
+      "reporter": null, 
+      "distributed": 186, 
+      "discrepancy": 24, 
+      "connection": 1, 
+      "location": 535, 
+      "time": "2009-04-28 23:59:00", 
+      "expected": 526
+    }
+  }, 
+  {
+    "pk": 49, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 645, 
+      "reporter": null, 
+      "distributed": 396, 
+      "discrepancy": 38, 
+      "connection": 1, 
+      "location": 580, 
+      "time": "2009-04-01 05:33:00", 
+      "expected": 645
+    }
+  }, 
+  {
+    "pk": 50, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1270, 
+      "reporter": null, 
+      "distributed": 463, 
+      "discrepancy": 75, 
+      "connection": 1, 
+      "location": 585, 
+      "time": "2009-04-21 15:21:00", 
+      "expected": 1270
+    }
+  }, 
+  {
+    "pk": 51, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 878, 
+      "reporter": null, 
+      "distributed": 189, 
+      "discrepancy": 27, 
+      "connection": 1, 
+      "location": 580, 
+      "time": "2009-04-15 19:54:00", 
+      "expected": 878
+    }
+  }, 
+  {
+    "pk": 52, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 223, 
+      "reporter": null, 
+      "distributed": 382, 
+      "discrepancy": 66, 
+      "connection": 1, 
+      "location": 545, 
+      "time": "2009-04-12 03:48:00", 
+      "expected": 223
+    }
+  }, 
+  {
+    "pk": 53, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 189, 
+      "reporter": null, 
+      "distributed": 335, 
+      "discrepancy": 66, 
+      "connection": 1, 
+      "location": 690, 
+      "time": "2009-04-02 06:53:00", 
+      "expected": 189
+    }
+  }, 
+  {
+    "pk": 54, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1882, 
+      "reporter": null, 
+      "distributed": 246, 
+      "discrepancy": 9, 
+      "connection": 1, 
+      "location": 545, 
+      "time": "2009-04-16 00:46:00", 
+      "expected": 1882
+    }
+  }, 
+  {
+    "pk": 55, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1464, 
+      "reporter": null, 
+      "distributed": 186, 
+      "discrepancy": 8, 
+      "connection": 1, 
+      "location": 560, 
+      "time": "2009-04-12 07:35:00", 
+      "expected": 1464
+    }
+  }, 
+  {
+    "pk": 56, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 106, 
+      "reporter": null, 
+      "distributed": 480, 
+      "discrepancy": 5, 
+      "connection": 1, 
+      "location": 570, 
+      "time": "2009-04-07 13:40:00", 
+      "expected": 106
+    }
+  }, 
+  {
+    "pk": 57, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 758, 
+      "reporter": null, 
+      "distributed": 202, 
+      "discrepancy": 29, 
+      "connection": 1, 
+      "location": 685, 
+      "time": "2009-04-26 23:57:00", 
+      "expected": 758
+    }
+  }, 
+  {
+    "pk": 58, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1937, 
+      "reporter": null, 
+      "distributed": 90, 
+      "discrepancy": 5, 
+      "connection": 1, 
+      "location": 550, 
+      "time": "2009-04-21 05:44:00", 
+      "expected": 1937
+    }
+  }, 
+  {
+    "pk": 59, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1460, 
+      "reporter": null, 
+      "distributed": 98, 
+      "discrepancy": 13, 
+      "connection": 1, 
+      "location": 535, 
+      "time": "2009-04-27 14:27:00", 
+      "expected": 1460
+    }
+  }, 
+  {
+    "pk": 60, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 560, 
+      "reporter": null, 
+      "distributed": 145, 
+      "discrepancy": 9, 
+      "connection": 1, 
+      "location": 530, 
+      "time": "2009-04-05 04:16:00", 
+      "expected": 560
+    }
+  }, 
+  {
+    "pk": 61, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 467, 
+      "reporter": null, 
+      "distributed": 95, 
+      "discrepancy": 7, 
+      "connection": 1, 
+      "location": 545, 
+      "time": "2009-04-14 07:28:00", 
+      "expected": 467
+    }
+  }, 
+  {
+    "pk": 62, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1995, 
+      "reporter": null, 
+      "distributed": 388, 
+      "discrepancy": 21, 
+      "connection": 1, 
+      "location": 535, 
+      "time": "2009-04-25 02:00:00", 
+      "expected": 1995
+    }
+  }, 
+  {
+    "pk": 63, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 109, 
+      "reporter": null, 
+      "distributed": 135, 
+      "discrepancy": 4, 
+      "connection": 1, 
+      "location": 585, 
+      "time": "2009-04-26 20:05:00", 
+      "expected": 109
+    }
+  }, 
+  {
+    "pk": 64, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 633, 
+      "reporter": null, 
+      "distributed": 362, 
+      "discrepancy": 17, 
+      "connection": 1, 
+      "location": 560, 
+      "time": "2009-04-17 23:26:00", 
+      "expected": 633
+    }
+  }, 
+  {
+    "pk": 65, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1365, 
+      "reporter": null, 
+      "distributed": 105, 
+      "discrepancy": 14, 
+      "connection": 1, 
+      "location": 555, 
+      "time": "2009-04-20 14:02:00", 
+      "expected": 1365
+    }
+  }, 
+  {
+    "pk": 66, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 10, 
+      "reporter": null, 
+      "distributed": 221, 
+      "discrepancy": 22, 
+      "connection": 1, 
+      "location": 540, 
+      "time": "2009-04-17 10:25:00", 
+      "expected": 10
+    }
+  }, 
+  {
+    "pk": 67, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 847, 
+      "reporter": null, 
+      "distributed": 237, 
+      "discrepancy": 33, 
+      "connection": 1, 
+      "location": 530, 
+      "time": "2009-04-26 22:31:00", 
+      "expected": 847
+    }
+  }, 
+  {
+    "pk": 68, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 525, 
+      "reporter": null, 
+      "distributed": 430, 
+      "discrepancy": 73, 
+      "connection": 1, 
+      "location": 690, 
+      "time": "2009-04-24 08:45:00", 
+      "expected": 1839
+    }
+  }, 
+  {
+    "pk": 69, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1303, 
+      "reporter": null, 
+      "distributed": 75, 
+      "discrepancy": 8, 
+      "connection": 1, 
+      "location": 580, 
+      "time": "2009-04-01 22:18:00", 
+      "expected": 1702
+    }
+  }, 
+  {
+    "pk": 70, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 158, 
+      "reporter": null, 
+      "distributed": 480, 
+      "discrepancy": 31, 
+      "connection": 1, 
+      "location": 575, 
+      "time": "2009-04-15 17:56:00", 
+      "expected": 1892
+    }
+  }, 
+  {
+    "pk": 71, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 540, 
+      "reporter": null, 
+      "distributed": 296, 
+      "discrepancy": 7, 
+      "connection": 1, 
+      "location": 545, 
+      "time": "2009-04-07 21:56:00", 
+      "expected": 540
+    }
+  }, 
+  {
+    "pk": 72, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 635, 
+      "reporter": null, 
+      "distributed": 361, 
+      "discrepancy": 72, 
+      "connection": 1, 
+      "location": 535, 
+      "time": "2009-04-18 04:44:00", 
+      "expected": 1530
+    }
+  }, 
+  {
+    "pk": 73, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1138, 
+      "reporter": null, 
+      "distributed": 355, 
+      "discrepancy": 20, 
+      "connection": 1, 
+      "location": 530, 
+      "time": "2009-04-11 08:17:00", 
+      "expected": 1138
+    }
+  }, 
+  {
+    "pk": 74, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1741, 
+      "reporter": null, 
+      "distributed": 453, 
+      "discrepancy": 49, 
+      "connection": 1, 
+      "location": 540, 
+      "time": "2009-04-24 21:04:00", 
+      "expected": 1741
+    }
+  }, 
+  {
+    "pk": 75, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1668, 
+      "reporter": null, 
+      "distributed": 431, 
+      "discrepancy": 46, 
+      "connection": 1, 
+      "location": 530, 
+      "time": "2009-04-09 10:28:00", 
+      "expected": 1610
+    }
+  }, 
+  {
+    "pk": 76, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 619, 
+      "reporter": null, 
+      "distributed": 211, 
+      "discrepancy": 38, 
+      "connection": 1, 
+      "location": 580, 
+      "time": "2009-04-12 04:14:00", 
+      "expected": 897
+    }
+  }, 
+  {
+    "pk": 77, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 574, 
+      "reporter": null, 
+      "distributed": 200, 
+      "discrepancy": 15, 
+      "connection": 1, 
+      "location": 580, 
+      "time": "2009-04-23 22:25:00", 
+      "expected": 1597
+    }
+  }, 
+  {
+    "pk": 78, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1316, 
+      "reporter": null, 
+      "distributed": 295, 
+      "discrepancy": 24, 
+      "connection": 1, 
+      "location": 570, 
+      "time": "2009-04-09 03:42:00", 
+      "expected": 1316
+    }
+  }, 
+  {
+    "pk": 79, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1179, 
+      "reporter": null, 
+      "distributed": 339, 
+      "discrepancy": 37, 
+      "connection": 1, 
+      "location": 565, 
+      "time": "2009-04-19 12:04:00", 
+      "expected": 1624
+    }
+  }, 
+  {
+    "pk": 80, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1826, 
+      "reporter": null, 
+      "distributed": 386, 
+      "discrepancy": 71, 
+      "connection": 1, 
+      "location": 690, 
+      "time": "2009-04-05 10:02:00", 
+      "expected": 1826
+    }
+  }, 
+  {
+    "pk": 81, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 780, 
+      "reporter": null, 
+      "distributed": 227, 
+      "discrepancy": 24, 
+      "connection": 1, 
+      "location": 530, 
+      "time": "2009-04-18 11:21:00", 
+      "expected": 1279
+    }
+  }, 
+  {
+    "pk": 82, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 778, 
+      "reporter": null, 
+      "distributed": 309, 
+      "discrepancy": 8, 
+      "connection": 1, 
+      "location": 570, 
+      "time": "2009-04-28 21:49:00", 
+      "expected": 778
+    }
+  }, 
+  {
+    "pk": 83, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1225, 
+      "reporter": null, 
+      "distributed": 60, 
+      "discrepancy": 11, 
+      "connection": 1, 
+      "location": 535, 
+      "time": "2009-04-08 18:55:00", 
+      "expected": 1225
+    }
+  }, 
+  {
+    "pk": 84, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 953, 
+      "reporter": null, 
+      "distributed": 295, 
+      "discrepancy": 12, 
+      "connection": 1, 
+      "location": 555, 
+      "time": "2009-04-26 13:58:00", 
+      "expected": 953
+    }
+  }, 
+  {
+    "pk": 85, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 277, 
+      "reporter": null, 
+      "distributed": 303, 
+      "discrepancy": 1, 
+      "connection": 1, 
+      "location": 690, 
+      "time": "2009-04-02 00:54:00", 
+      "expected": 277
+    }
+  }, 
+  {
+    "pk": 86, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 19, 
+      "reporter": null, 
+      "distributed": 234, 
+      "discrepancy": 44, 
+      "connection": 1, 
+      "location": 690, 
+      "time": "2009-04-26 20:02:00", 
+      "expected": 1473
+    }
+  }, 
+  {
+    "pk": 87, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 482, 
+      "reporter": null, 
+      "distributed": 246, 
+      "discrepancy": 40, 
+      "connection": 1, 
+      "location": 530, 
+      "time": "2009-04-10 08:29:00", 
+      "expected": 482
+    }
+  }, 
+  {
+    "pk": 88, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1293, 
+      "reporter": null, 
+      "distributed": 454, 
+      "discrepancy": 79, 
+      "connection": 1, 
+      "location": 530, 
+      "time": "2009-04-06 12:04:00", 
+      "expected": 1293
+    }
+  }, 
+  {
+    "pk": 89, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 735, 
+      "reporter": null, 
+      "distributed": 185, 
+      "discrepancy": 36, 
+      "connection": 1, 
+      "location": 570, 
+      "time": "2009-04-29 04:28:00", 
+      "expected": 735
+    }
+  }, 
+  {
+    "pk": 90, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 96, 
+      "reporter": null, 
+      "distributed": 442, 
+      "discrepancy": 64, 
+      "connection": 1, 
+      "location": 560, 
+      "time": "2009-04-22 17:25:00", 
+      "expected": 104
+    }
+  }, 
+  {
+    "pk": 91, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 47, 
+      "reporter": null, 
+      "distributed": 466, 
+      "discrepancy": 77, 
+      "connection": 1, 
+      "location": 540, 
+      "time": "2009-04-28 05:37:00", 
+      "expected": 47
+    }
+  }, 
+  {
+    "pk": 92, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1805, 
+      "reporter": null, 
+      "distributed": 173, 
+      "discrepancy": 21, 
+      "connection": 1, 
+      "location": 580, 
+      "time": "2009-04-17 19:57:00", 
+      "expected": 1986
+    }
+  }, 
+  {
+    "pk": 93, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 620, 
+      "reporter": null, 
+      "distributed": 164, 
+      "discrepancy": 11, 
+      "connection": 1, 
+      "location": 530, 
+      "time": "2009-04-27 05:25:00", 
+      "expected": 620
+    }
+  }, 
+  {
+    "pk": 94, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1728, 
+      "reporter": null, 
+      "distributed": 304, 
+      "discrepancy": 37, 
+      "connection": 1, 
+      "location": 535, 
+      "time": "2009-04-22 07:48:00", 
+      "expected": 1728
+    }
+  }, 
+  {
+    "pk": 95, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1771, 
+      "reporter": null, 
+      "distributed": 81, 
+      "discrepancy": 1, 
+      "connection": 1, 
+      "location": 545, 
+      "time": "2009-04-10 02:33:00", 
+      "expected": 1771
+    }
+  }, 
+  {
+    "pk": 96, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 677, 
+      "reporter": null, 
+      "distributed": 175, 
+      "discrepancy": 23, 
+      "connection": 1, 
+      "location": 565, 
+      "time": "2009-04-27 03:35:00", 
+      "expected": 969
+    }
+  }, 
+  {
+    "pk": 97, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 153, 
+      "reporter": null, 
+      "distributed": 195, 
+      "discrepancy": 28, 
+      "connection": 1, 
+      "location": 540, 
+      "time": "2009-04-27 12:15:00", 
+      "expected": 153
+    }
+  }, 
+  {
+    "pk": 98, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1134, 
+      "reporter": null, 
+      "distributed": 295, 
+      "discrepancy": 51, 
+      "connection": 1, 
+      "location": 685, 
+      "time": "2009-04-21 00:56:00", 
+      "expected": 1134
+    }
+  }, 
+  {
+    "pk": 99, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1472, 
+      "reporter": null, 
+      "distributed": 72, 
+      "discrepancy": 4, 
+      "connection": 1, 
+      "location": 535, 
+      "time": "2009-04-01 19:02:00", 
+      "expected": 1472
+    }
+  }, 
+  {
+    "pk": 100, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1136, 
+      "reporter": null, 
+      "distributed": 174, 
+      "discrepancy": 21, 
+      "connection": 1, 
+      "location": 690, 
+      "time": "2009-04-19 10:22:00", 
+      "expected": 1136
+    }
+  }, 
+  {
+    "pk": 101, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1840, 
+      "reporter": null, 
+      "distributed": 168, 
+      "discrepancy": 22, 
+      "connection": 1, 
+      "location": 535, 
+      "time": "2009-04-28 09:17:00", 
+      "expected": 1840
+    }
+  }, 
+  {
+    "pk": 102, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 792, 
+      "reporter": null, 
+      "distributed": 79, 
+      "discrepancy": 8, 
+      "connection": 1, 
+      "location": 585, 
+      "time": "2009-04-24 05:22:00", 
+      "expected": 792
+    }
+  }, 
+  {
+    "pk": 103, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1178, 
+      "reporter": null, 
+      "distributed": 462, 
+      "discrepancy": 51, 
+      "connection": 1, 
+      "location": 530, 
+      "time": "2009-04-23 07:36:00", 
+      "expected": 1178
+    }
+  }, 
+  {
+    "pk": 104, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 986, 
+      "reporter": null, 
+      "distributed": 193, 
+      "discrepancy": 20, 
+      "connection": 1, 
+      "location": 550, 
+      "time": "2009-04-29 00:33:00", 
+      "expected": 986
+    }
+  }, 
+  {
+    "pk": 105, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 141, 
+      "reporter": null, 
+      "distributed": 328, 
+      "discrepancy": 55, 
+      "connection": 1, 
+      "location": 565, 
+      "time": "2009-04-26 22:01:00", 
+      "expected": 888
+    }
+  }, 
+  {
+    "pk": 106, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 565, 
+      "reporter": null, 
+      "distributed": 350, 
+      "discrepancy": 69, 
+      "connection": 1, 
+      "location": 570, 
+      "time": "2009-04-08 22:11:00", 
+      "expected": 565
+    }
+  }, 
+  {
+    "pk": 107, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 433, 
+      "reporter": null, 
+      "distributed": 142, 
+      "discrepancy": 6, 
+      "connection": 1, 
+      "location": 690, 
+      "time": "2009-04-02 02:40:00", 
+      "expected": 433
+    }
+  }, 
+  {
+    "pk": 108, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1825, 
+      "reporter": null, 
+      "distributed": 187, 
+      "discrepancy": 11, 
+      "connection": 1, 
+      "location": 535, 
+      "time": "2009-04-13 16:01:00", 
+      "expected": 1825
+    }
+  }, 
+  {
+    "pk": 109, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 920, 
+      "reporter": null, 
+      "distributed": 290, 
+      "discrepancy": 29, 
+      "connection": 1, 
+      "location": 565, 
+      "time": "2009-04-13 14:08:00", 
+      "expected": 920
+    }
+  }, 
+  {
+    "pk": 110, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 370, 
+      "reporter": null, 
+      "distributed": 304, 
+      "discrepancy": 30, 
+      "connection": 1, 
+      "location": 555, 
+      "time": "2009-04-10 06:57:00", 
+      "expected": 370
+    }
+  }, 
+  {
+    "pk": 111, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 544, 
+      "reporter": null, 
+      "distributed": 190, 
+      "discrepancy": 35, 
+      "connection": 1, 
+      "location": 540, 
+      "time": "2009-04-13 15:29:00", 
+      "expected": 544
+    }
+  }, 
+  {
+    "pk": 112, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 916, 
+      "reporter": null, 
+      "distributed": 433, 
+      "discrepancy": 3, 
+      "connection": 1, 
+      "location": 685, 
+      "time": "2009-04-21 14:37:00", 
+      "expected": 916
+    }
+  }, 
+  {
+    "pk": 113, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 819, 
+      "reporter": null, 
+      "distributed": 181, 
+      "discrepancy": 32, 
+      "connection": 1, 
+      "location": 555, 
+      "time": "2009-04-15 15:41:00", 
+      "expected": 1979
+    }
+  }, 
+  {
+    "pk": 114, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 689, 
+      "reporter": null, 
+      "distributed": 299, 
+      "discrepancy": 36, 
+      "connection": 1, 
+      "location": 585, 
+      "time": "2009-04-11 15:43:00", 
+      "expected": 211
+    }
+  }, 
+  {
+    "pk": 115, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 503, 
+      "reporter": null, 
+      "distributed": 407, 
+      "discrepancy": 78, 
+      "connection": 1, 
+      "location": 585, 
+      "time": "2009-04-11 10:42:00", 
+      "expected": 503
+    }
+  }, 
+  {
+    "pk": 116, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1465, 
+      "reporter": null, 
+      "distributed": 265, 
+      "discrepancy": 16, 
+      "connection": 1, 
+      "location": 680, 
+      "time": "2009-04-12 17:27:00", 
+      "expected": 1815
+    }
+  }, 
+  {
+    "pk": 117, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1970, 
+      "reporter": null, 
+      "distributed": 387, 
+      "discrepancy": 11, 
+      "connection": 1, 
+      "location": 565, 
+      "time": "2009-04-02 21:52:00", 
+      "expected": 1970
+    }
+  }, 
+  {
+    "pk": 118, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 704, 
+      "reporter": null, 
+      "distributed": 231, 
+      "discrepancy": 5, 
+      "connection": 1, 
+      "location": 680, 
+      "time": "2009-04-27 13:38:00", 
+      "expected": 704
+    }
+  }, 
+  {
+    "pk": 119, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1798, 
+      "reporter": null, 
+      "distributed": 359, 
+      "discrepancy": 19, 
+      "connection": 1, 
+      "location": 685, 
+      "time": "2009-04-26 20:03:00", 
+      "expected": 1798
+    }
+  }, 
+  {
+    "pk": 120, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1615, 
+      "reporter": null, 
+      "distributed": 218, 
+      "discrepancy": 18, 
+      "connection": 1, 
+      "location": 535, 
+      "time": "2009-04-25 00:36:00", 
+      "expected": 1615
+    }
+  }, 
+  {
+    "pk": 121, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 919, 
+      "reporter": null, 
+      "distributed": 322, 
+      "discrepancy": 46, 
+      "connection": 1, 
+      "location": 560, 
+      "time": "2009-04-02 10:36:00", 
+      "expected": 950
+    }
+  }, 
+  {
+    "pk": 122, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 941, 
+      "reporter": null, 
+      "distributed": 205, 
+      "discrepancy": 36, 
+      "connection": 1, 
+      "location": 565, 
+      "time": "2009-04-08 18:33:00", 
+      "expected": 941
+    }
+  }, 
+  {
+    "pk": 123, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1602, 
+      "reporter": null, 
+      "distributed": 198, 
+      "discrepancy": 8, 
+      "connection": 1, 
+      "location": 570, 
+      "time": "2009-04-25 17:27:00", 
+      "expected": 1602
+    }
+  }, 
+  {
+    "pk": 124, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1909, 
+      "reporter": null, 
+      "distributed": 242, 
+      "discrepancy": 29, 
+      "connection": 1, 
+      "location": 530, 
+      "time": "2009-04-27 04:02:00", 
+      "expected": 1909
+    }
+  }, 
+  {
+    "pk": 125, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 914, 
+      "reporter": null, 
+      "distributed": 303, 
+      "discrepancy": 2, 
+      "connection": 1, 
+      "location": 565, 
+      "time": "2009-04-19 08:43:00", 
+      "expected": 914
+    }
+  }, 
+  {
+    "pk": 126, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1679, 
+      "reporter": null, 
+      "distributed": 415, 
+      "discrepancy": 50, 
+      "connection": 1, 
+      "location": 680, 
+      "time": "2009-04-05 16:11:00", 
+      "expected": 1679
+    }
+  }, 
+  {
+    "pk": 127, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 311, 
+      "reporter": null, 
+      "distributed": 267, 
+      "discrepancy": 24, 
+      "connection": 1, 
+      "location": 575, 
+      "time": "2009-04-16 01:27:00", 
+      "expected": 686
+    }
+  }, 
+  {
+    "pk": 128, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 47, 
+      "reporter": null, 
+      "distributed": 331, 
+      "discrepancy": 66, 
+      "connection": 1, 
+      "location": 555, 
+      "time": "2009-04-23 15:07:00", 
+      "expected": 47
+    }
+  }, 
+  {
+    "pk": 129, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1498, 
+      "reporter": null, 
+      "distributed": 263, 
+      "discrepancy": 42, 
+      "connection": 1, 
+      "location": 540, 
+      "time": "2009-04-28 06:41:00", 
+      "expected": 1498
+    }
+  }, 
+  {
+    "pk": 130, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1775, 
+      "reporter": null, 
+      "distributed": 497, 
+      "discrepancy": 57, 
+      "connection": 1, 
+      "location": 535, 
+      "time": "2009-04-24 18:45:00", 
+      "expected": 1775
+    }
+  }, 
+  {
+    "pk": 131, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 758, 
+      "reporter": null, 
+      "distributed": 182, 
+      "discrepancy": 34, 
+      "connection": 1, 
+      "location": 585, 
+      "time": "2009-04-15 01:06:00", 
+      "expected": 758
+    }
+  }, 
+  {
+    "pk": 132, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 796, 
+      "reporter": null, 
+      "distributed": 265, 
+      "discrepancy": 12, 
+      "connection": 1, 
+      "location": 570, 
+      "time": "2009-04-12 23:48:00", 
+      "expected": 796
+    }
+  }, 
+  {
+    "pk": 133, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 783, 
+      "reporter": null, 
+      "distributed": 291, 
+      "discrepancy": 31, 
+      "connection": 1, 
+      "location": 555, 
+      "time": "2009-04-03 00:11:00", 
+      "expected": 783
+    }
+  }, 
+  {
+    "pk": 134, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1557, 
+      "reporter": null, 
+      "distributed": 292, 
+      "discrepancy": 53, 
+      "connection": 1, 
+      "location": 565, 
+      "time": "2009-04-24 14:00:00", 
+      "expected": 1557
+    }
+  }, 
+  {
+    "pk": 135, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 44, 
+      "reporter": null, 
+      "distributed": 294, 
+      "discrepancy": 11, 
+      "connection": 1, 
+      "location": 585, 
+      "time": "2009-04-28 23:08:00", 
+      "expected": 44
+    }
+  }, 
+  {
+    "pk": 136, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1292, 
+      "reporter": null, 
+      "distributed": 232, 
+      "discrepancy": 25, 
+      "connection": 1, 
+      "location": 550, 
+      "time": "2009-04-04 08:25:00", 
+      "expected": 1479
+    }
+  }, 
+  {
+    "pk": 137, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1330, 
+      "reporter": null, 
+      "distributed": 323, 
+      "discrepancy": 52, 
+      "connection": 1, 
+      "location": 690, 
+      "time": "2009-04-26 23:51:00", 
+      "expected": 1426
+    }
+  }, 
+  {
+    "pk": 138, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 336, 
+      "reporter": null, 
+      "distributed": 382, 
+      "discrepancy": 1, 
+      "connection": 1, 
+      "location": 580, 
+      "time": "2009-04-15 15:45:00", 
+      "expected": 336
+    }
+  }, 
+  {
+    "pk": 139, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1418, 
+      "reporter": null, 
+      "distributed": 362, 
+      "discrepancy": 55, 
+      "connection": 1, 
+      "location": 565, 
+      "time": "2009-04-09 07:45:00", 
+      "expected": 1418
+    }
+  }, 
+  {
+    "pk": 140, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 746, 
+      "reporter": null, 
+      "distributed": 408, 
+      "discrepancy": 0, 
+      "connection": 1, 
+      "location": 585, 
+      "time": "2009-04-03 06:56:00", 
+      "expected": 1635
+    }
+  }, 
+  {
+    "pk": 141, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1693, 
+      "reporter": null, 
+      "distributed": 197, 
+      "discrepancy": 3, 
+      "connection": 1, 
+      "location": 585, 
+      "time": "2009-04-06 08:24:00", 
+      "expected": 1693
+    }
+  }, 
+  {
+    "pk": 142, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1044, 
+      "reporter": null, 
+      "distributed": 435, 
+      "discrepancy": 3, 
+      "connection": 1, 
+      "location": 680, 
+      "time": "2009-04-02 18:14:00", 
+      "expected": 1170
+    }
+  }, 
+  {
+    "pk": 143, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 642, 
+      "reporter": null, 
+      "distributed": 478, 
+      "discrepancy": 45, 
+      "connection": 1, 
+      "location": 535, 
+      "time": "2009-04-15 05:42:00", 
+      "expected": 642
+    }
+  }, 
+  {
+    "pk": 144, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 12, 
+      "reporter": null, 
+      "distributed": 232, 
+      "discrepancy": 0, 
+      "connection": 1, 
+      "location": 680, 
+      "time": "2009-04-26 19:01:00", 
+      "expected": 12
+    }
+  }, 
+  {
+    "pk": 145, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1655, 
+      "reporter": null, 
+      "distributed": 466, 
+      "discrepancy": 47, 
+      "connection": 1, 
+      "location": 690, 
+      "time": "2009-04-09 14:27:00", 
+      "expected": 1655
+    }
+  }, 
+  {
+    "pk": 146, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1298, 
+      "reporter": null, 
+      "distributed": 309, 
+      "discrepancy": 28, 
+      "connection": 1, 
+      "location": 690, 
+      "time": "2009-04-06 11:36:00", 
+      "expected": 1298
+    }
+  }, 
+  {
+    "pk": 147, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1452, 
+      "reporter": null, 
+      "distributed": 296, 
+      "discrepancy": 20, 
+      "connection": 1, 
+      "location": 565, 
+      "time": "2009-04-10 13:12:00", 
+      "expected": 1452
+    }
+  }, 
+  {
+    "pk": 148, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 7, 
+      "reporter": null, 
+      "distributed": 99, 
+      "discrepancy": 12, 
+      "connection": 1, 
+      "location": 690, 
+      "time": "2009-04-26 04:51:00", 
+      "expected": 7
+    }
+  }, 
+  {
+    "pk": 149, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 791, 
+      "reporter": null, 
+      "distributed": 255, 
+      "discrepancy": 16, 
+      "connection": 1, 
+      "location": 680, 
+      "time": "2009-04-16 05:05:00", 
+      "expected": 1283
+    }
+  }, 
+  {
+    "pk": 150, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1105, 
+      "reporter": null, 
+      "distributed": 314, 
+      "discrepancy": 25, 
+      "connection": 1, 
+      "location": 575, 
+      "time": "2009-04-29 13:47:00", 
+      "expected": 1105
+    }
+  }, 
+  {
+    "pk": 151, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 425, 
+      "reporter": null, 
+      "distributed": 446, 
+      "discrepancy": 64, 
+      "connection": 1, 
+      "location": 570, 
+      "time": "2009-04-27 04:44:00", 
+      "expected": 425
+    }
+  }, 
+  {
+    "pk": 152, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 2, 
+      "reporter": null, 
+      "distributed": 185, 
+      "discrepancy": 21, 
+      "connection": 1, 
+      "location": 550, 
+      "time": "2009-04-13 03:43:00", 
+      "expected": 2
+    }
+  }, 
+  {
+    "pk": 153, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 5, 
+      "reporter": null, 
+      "distributed": 421, 
+      "discrepancy": 26, 
+      "connection": 1, 
+      "location": 560, 
+      "time": "2009-04-15 17:14:00", 
+      "expected": 5
+    }
+  }, 
+  {
+    "pk": 154, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1001, 
+      "reporter": null, 
+      "distributed": 477, 
+      "discrepancy": 88, 
+      "connection": 1, 
+      "location": 555, 
+      "time": "2009-04-16 05:04:00", 
+      "expected": 1001
+    }
+  }, 
+  {
+    "pk": 155, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 642, 
+      "reporter": null, 
+      "distributed": 91, 
+      "discrepancy": 1, 
+      "connection": 1, 
+      "location": 550, 
+      "time": "2009-04-08 19:37:00", 
+      "expected": 642
+    }
+  }, 
+  {
+    "pk": 156, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1857, 
+      "reporter": null, 
+      "distributed": 478, 
+      "discrepancy": 55, 
+      "connection": 1, 
+      "location": 570, 
+      "time": "2009-04-05 18:40:00", 
+      "expected": 1173
+    }
+  }, 
+  {
+    "pk": 157, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1439, 
+      "reporter": null, 
+      "distributed": 130, 
+      "discrepancy": 22, 
+      "connection": 1, 
+      "location": 570, 
+      "time": "2009-04-24 09:21:00", 
+      "expected": 1439
+    }
+  }, 
+  {
+    "pk": 158, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1726, 
+      "reporter": null, 
+      "distributed": 159, 
+      "discrepancy": 25, 
+      "connection": 1, 
+      "location": 535, 
+      "time": "2009-04-22 21:06:00", 
+      "expected": 1726
+    }
+  }, 
+  {
+    "pk": 159, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1270, 
+      "reporter": null, 
+      "distributed": 252, 
+      "discrepancy": 2, 
+      "connection": 1, 
+      "location": 545, 
+      "time": "2009-04-22 20:44:00", 
+      "expected": 1305
+    }
+  }, 
+  {
+    "pk": 160, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1738, 
+      "reporter": null, 
+      "distributed": 309, 
+      "discrepancy": 41, 
+      "connection": 1, 
+      "location": 575, 
+      "time": "2009-04-14 22:48:00", 
+      "expected": 1738
+    }
+  }, 
+  {
+    "pk": 161, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1968, 
+      "reporter": null, 
+      "distributed": 241, 
+      "discrepancy": 17, 
+      "connection": 1, 
+      "location": 575, 
+      "time": "2009-04-26 11:55:00", 
+      "expected": 1968
+    }
+  }, 
+  {
+    "pk": 162, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1790, 
+      "reporter": null, 
+      "distributed": 112, 
+      "discrepancy": 3, 
+      "connection": 1, 
+      "location": 680, 
+      "time": "2009-04-15 02:00:00", 
+      "expected": 1790
+    }
+  }, 
+  {
+    "pk": 163, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1531, 
+      "reporter": null, 
+      "distributed": 80, 
+      "discrepancy": 6, 
+      "connection": 1, 
+      "location": 585, 
+      "time": "2009-04-29 01:34:00", 
+      "expected": 1531
+    }
+  }, 
+  {
+    "pk": 164, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 72, 
+      "reporter": null, 
+      "distributed": 230, 
+      "discrepancy": 28, 
+      "connection": 1, 
+      "location": 560, 
+      "time": "2009-04-28 06:34:00", 
+      "expected": 72
+    }
+  }, 
+  {
+    "pk": 165, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 573, 
+      "reporter": null, 
+      "distributed": 248, 
+      "discrepancy": 47, 
+      "connection": 1, 
+      "location": 560, 
+      "time": "2009-04-25 09:06:00", 
+      "expected": 925
+    }
+  }, 
+  {
+    "pk": 166, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 708, 
+      "reporter": null, 
+      "distributed": 53, 
+      "discrepancy": 0, 
+      "connection": 1, 
+      "location": 690, 
+      "time": "2009-04-24 03:29:00", 
+      "expected": 708
+    }
+  }, 
+  {
+    "pk": 167, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1800, 
+      "reporter": null, 
+      "distributed": 267, 
+      "discrepancy": 31, 
+      "connection": 1, 
+      "location": 555, 
+      "time": "2009-04-17 09:17:00", 
+      "expected": 1800
+    }
+  }, 
+  {
+    "pk": 168, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1341, 
+      "reporter": null, 
+      "distributed": 468, 
+      "discrepancy": 54, 
+      "connection": 1, 
+      "location": 680, 
+      "time": "2009-04-28 20:35:00", 
+      "expected": 1341
+    }
+  }, 
+  {
+    "pk": 169, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 976, 
+      "reporter": null, 
+      "distributed": 127, 
+      "discrepancy": 20, 
+      "connection": 1, 
+      "location": 575, 
+      "time": "2009-04-18 04:43:00", 
+      "expected": 976
+    }
+  }, 
+  {
+    "pk": 170, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 553, 
+      "reporter": null, 
+      "distributed": 77, 
+      "discrepancy": 5, 
+      "connection": 1, 
+      "location": 550, 
+      "time": "2009-04-23 21:11:00", 
+      "expected": 1709
+    }
+  }, 
+  {
+    "pk": 171, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1457, 
+      "reporter": null, 
+      "distributed": 494, 
+      "discrepancy": 14, 
+      "connection": 1, 
+      "location": 560, 
+      "time": "2009-04-15 03:01:00", 
+      "expected": 1457
+    }
+  }, 
+  {
+    "pk": 172, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1876, 
+      "reporter": null, 
+      "distributed": 416, 
+      "discrepancy": 10, 
+      "connection": 1, 
+      "location": 690, 
+      "time": "2009-04-23 06:13:00", 
+      "expected": 1566
+    }
+  }, 
+  {
+    "pk": 173, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1405, 
+      "reporter": null, 
+      "distributed": 306, 
+      "discrepancy": 9, 
+      "connection": 1, 
+      "location": 535, 
+      "time": "2009-04-26 06:17:00", 
+      "expected": 1405
+    }
+  }, 
+  {
+    "pk": 174, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 612, 
+      "reporter": null, 
+      "distributed": 229, 
+      "discrepancy": 10, 
+      "connection": 1, 
+      "location": 560, 
+      "time": "2009-04-14 16:54:00", 
+      "expected": 612
+    }
+  }, 
+  {
+    "pk": 175, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 955, 
+      "reporter": null, 
+      "distributed": 280, 
+      "discrepancy": 42, 
+      "connection": 1, 
+      "location": 555, 
+      "time": "2009-04-25 01:26:00", 
+      "expected": 1361
+    }
+  }, 
+  {
+    "pk": 176, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 141, 
+      "reporter": null, 
+      "distributed": 320, 
+      "discrepancy": 15, 
+      "connection": 1, 
+      "location": 535, 
+      "time": "2009-04-05 13:51:00", 
+      "expected": 141
+    }
+  }, 
+  {
+    "pk": 177, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1932, 
+      "reporter": null, 
+      "distributed": 86, 
+      "discrepancy": 7, 
+      "connection": 1, 
+      "location": 535, 
+      "time": "2009-04-23 09:09:00", 
+      "expected": 1932
+    }
+  }, 
+  {
+    "pk": 178, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1046, 
+      "reporter": null, 
+      "distributed": 422, 
+      "discrepancy": 12, 
+      "connection": 1, 
+      "location": 550, 
+      "time": "2009-04-08 15:08:00", 
+      "expected": 1046
+    }
+  }, 
+  {
+    "pk": 179, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1141, 
+      "reporter": null, 
+      "distributed": 368, 
+      "discrepancy": 13, 
+      "connection": 1, 
+      "location": 685, 
+      "time": "2009-04-09 19:50:00", 
+      "expected": 1141
+    }
+  }, 
+  {
+    "pk": 180, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 857, 
+      "reporter": null, 
+      "distributed": 371, 
+      "discrepancy": 3, 
+      "connection": 1, 
+      "location": 680, 
+      "time": "2009-04-02 21:18:00", 
+      "expected": 857
+    }
+  }, 
+  {
+    "pk": 181, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 616, 
+      "reporter": null, 
+      "distributed": 210, 
+      "discrepancy": 7, 
+      "connection": 1, 
+      "location": 545, 
+      "time": "2009-04-28 04:05:00", 
+      "expected": 616
+    }
+  }, 
+  {
+    "pk": 182, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1839, 
+      "reporter": null, 
+      "distributed": 281, 
+      "discrepancy": 53, 
+      "connection": 1, 
+      "location": 555, 
+      "time": "2009-04-09 16:44:00", 
+      "expected": 1839
+    }
+  }, 
+  {
+    "pk": 183, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 485, 
+      "reporter": null, 
+      "distributed": 237, 
+      "discrepancy": 27, 
+      "connection": 1, 
+      "location": 550, 
+      "time": "2009-04-14 04:39:00", 
+      "expected": 605
+    }
+  }, 
+  {
+    "pk": 184, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 796, 
+      "reporter": null, 
+      "distributed": 445, 
+      "discrepancy": 29, 
+      "connection": 1, 
+      "location": 685, 
+      "time": "2009-04-18 16:47:00", 
+      "expected": 796
+    }
+  }, 
+  {
+    "pk": 185, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 999, 
+      "reporter": null, 
+      "distributed": 297, 
+      "discrepancy": 48, 
+      "connection": 1, 
+      "location": 565, 
+      "time": "2009-04-05 02:07:00", 
+      "expected": 999
+    }
+  }, 
+  {
+    "pk": 186, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 756, 
+      "reporter": null, 
+      "distributed": 107, 
+      "discrepancy": 6, 
+      "connection": 1, 
+      "location": 580, 
+      "time": "2009-04-08 01:10:00", 
+      "expected": 756
+    }
+  }, 
+  {
+    "pk": 187, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 9, 
+      "reporter": null, 
+      "distributed": 77, 
+      "discrepancy": 14, 
+      "connection": 1, 
+      "location": 560, 
+      "time": "2009-04-08 20:07:00", 
+      "expected": 9
+    }
+  }, 
+  {
+    "pk": 188, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 630, 
+      "reporter": null, 
+      "distributed": 136, 
+      "discrepancy": 21, 
+      "connection": 1, 
+      "location": 535, 
+      "time": "2009-04-17 01:06:00", 
+      "expected": 630
+    }
+  }, 
+  {
+    "pk": 189, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1380, 
+      "reporter": null, 
+      "distributed": 144, 
+      "discrepancy": 21, 
+      "connection": 1, 
+      "location": 570, 
+      "time": "2009-04-03 18:07:00", 
+      "expected": 1380
+    }
+  }, 
+  {
+    "pk": 190, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 40, 
+      "reporter": null, 
+      "distributed": 89, 
+      "discrepancy": 0, 
+      "connection": 1, 
+      "location": 540, 
+      "time": "2009-04-16 18:17:00", 
+      "expected": 230
+    }
+  }, 
+  {
+    "pk": 191, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 653, 
+      "reporter": null, 
+      "distributed": 123, 
+      "discrepancy": 0, 
+      "connection": 1, 
+      "location": 555, 
+      "time": "2009-04-10 04:33:00", 
+      "expected": 882
+    }
+  }, 
+  {
+    "pk": 192, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 32, 
+      "reporter": null, 
+      "distributed": 147, 
+      "discrepancy": 22, 
+      "connection": 1, 
+      "location": 575, 
+      "time": "2009-04-11 11:23:00", 
+      "expected": 32
+    }
+  }, 
+  {
+    "pk": 193, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 562, 
+      "reporter": null, 
+      "distributed": 365, 
+      "discrepancy": 73, 
+      "connection": 1, 
+      "location": 580, 
+      "time": "2009-04-23 12:07:00", 
+      "expected": 562
+    }
+  }, 
+  {
+    "pk": 194, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 84, 
+      "reporter": null, 
+      "distributed": 66, 
+      "discrepancy": 12, 
+      "connection": 1, 
+      "location": 540, 
+      "time": "2009-04-07 23:33:00", 
+      "expected": 84
+    }
+  }, 
+  {
+    "pk": 195, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 542, 
+      "reporter": null, 
+      "distributed": 377, 
+      "discrepancy": 37, 
+      "connection": 1, 
+      "location": 575, 
+      "time": "2009-04-29 03:25:00", 
+      "expected": 542
+    }
+  }, 
+  {
+    "pk": 196, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1219, 
+      "reporter": null, 
+      "distributed": 468, 
+      "discrepancy": 55, 
+      "connection": 1, 
+      "location": 530, 
+      "time": "2009-04-17 18:51:00", 
+      "expected": 1219
+    }
+  }, 
+  {
+    "pk": 197, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 942, 
+      "reporter": null, 
+      "distributed": 50, 
+      "discrepancy": 9, 
+      "connection": 1, 
+      "location": 585, 
+      "time": "2009-04-20 15:42:00", 
+      "expected": 942
+    }
+  }, 
+  {
+    "pk": 198, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 67, 
+      "reporter": null, 
+      "distributed": 325, 
+      "discrepancy": 20, 
+      "connection": 1, 
+      "location": 550, 
+      "time": "2009-04-21 03:42:00", 
+      "expected": 136
+    }
+  }, 
+  {
+    "pk": 199, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1193, 
+      "reporter": null, 
+      "distributed": 158, 
+      "discrepancy": 11, 
+      "connection": 1, 
+      "location": 540, 
+      "time": "2009-04-19 00:13:00", 
+      "expected": 1193
+    }
+  }, 
+  {
+    "pk": 200, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1897, 
+      "reporter": null, 
+      "distributed": 441, 
+      "discrepancy": 82, 
+      "connection": 1, 
+      "location": 580, 
+      "time": "2009-04-18 18:18:00", 
+      "expected": 1066
+    }
+  }, 
+  {
+    "pk": 201, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1261, 
+      "reporter": null, 
+      "distributed": 211, 
+      "discrepancy": 10, 
+      "connection": 1, 
+      "location": 690, 
+      "time": "2009-04-27 04:19:00", 
+      "expected": 1261
+    }
+  }, 
+  {
+    "pk": 202, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 491, 
+      "reporter": null, 
+      "distributed": 77, 
+      "discrepancy": 4, 
+      "connection": 1, 
+      "location": 555, 
+      "time": "2009-04-24 04:53:00", 
+      "expected": 491
+    }
+  }, 
+  {
+    "pk": 203, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 787, 
+      "reporter": null, 
+      "distributed": 494, 
+      "discrepancy": 45, 
+      "connection": 1, 
+      "location": 570, 
+      "time": "2009-04-09 11:20:00", 
+      "expected": 787
+    }
+  }, 
+  {
+    "pk": 204, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 336, 
+      "reporter": null, 
+      "distributed": 163, 
+      "discrepancy": 22, 
+      "connection": 1, 
+      "location": 550, 
+      "time": "2009-04-20 03:52:00", 
+      "expected": 1173
+    }
+  }, 
+  {
+    "pk": 205, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1534, 
+      "reporter": null, 
+      "distributed": 160, 
+      "discrepancy": 32, 
+      "connection": 1, 
+      "location": 550, 
+      "time": "2009-04-27 14:42:00", 
+      "expected": 1316
+    }
+  }, 
+  {
+    "pk": 206, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 783, 
+      "reporter": null, 
+      "distributed": 212, 
+      "discrepancy": 14, 
+      "connection": 1, 
+      "location": 690, 
+      "time": "2009-04-24 16:47:00", 
+      "expected": 783
+    }
+  }, 
+  {
+    "pk": 207, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 58, 
+      "reporter": null, 
+      "distributed": 386, 
+      "discrepancy": 21, 
+      "connection": 1, 
+      "location": 580, 
+      "time": "2009-04-28 17:04:00", 
+      "expected": 58
+    }
+  }, 
+  {
+    "pk": 208, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1236, 
+      "reporter": null, 
+      "distributed": 250, 
+      "discrepancy": 43, 
+      "connection": 1, 
+      "location": 540, 
+      "time": "2009-04-24 19:31:00", 
+      "expected": 1236
+    }
+  }, 
+  {
+    "pk": 209, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 887, 
+      "reporter": null, 
+      "distributed": 430, 
+      "discrepancy": 8, 
+      "connection": 1, 
+      "location": 545, 
+      "time": "2009-04-29 18:15:00", 
+      "expected": 887
+    }
+  }, 
+  {
+    "pk": 210, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 773, 
+      "reporter": null, 
+      "distributed": 316, 
+      "discrepancy": 11, 
+      "connection": 1, 
+      "location": 690, 
+      "time": "2009-04-27 15:59:00", 
+      "expected": 773
+    }
+  }, 
+  {
+    "pk": 211, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 254, 
+      "reporter": null, 
+      "distributed": 315, 
+      "discrepancy": 49, 
+      "connection": 1, 
+      "location": 560, 
+      "time": "2009-04-21 12:05:00", 
+      "expected": 254
+    }
+  }, 
+  {
+    "pk": 212, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1411, 
+      "reporter": null, 
+      "distributed": 83, 
+      "discrepancy": 6, 
+      "connection": 1, 
+      "location": 565, 
+      "time": "2009-04-15 18:44:00", 
+      "expected": 1411
+    }
+  }, 
+  {
+    "pk": 213, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 282, 
+      "reporter": null, 
+      "distributed": 370, 
+      "discrepancy": 44, 
+      "connection": 1, 
+      "location": 555, 
+      "time": "2009-04-26 00:00:00", 
+      "expected": 282
+    }
+  }, 
+  {
+    "pk": 214, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 244, 
+      "reporter": null, 
+      "distributed": 382, 
+      "discrepancy": 38, 
+      "connection": 1, 
+      "location": 575, 
+      "time": "2009-04-07 02:27:00", 
+      "expected": 244
+    }
+  }, 
+  {
+    "pk": 215, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 845, 
+      "reporter": null, 
+      "distributed": 393, 
+      "discrepancy": 24, 
+      "connection": 1, 
+      "location": 560, 
+      "time": "2009-04-06 19:07:00", 
+      "expected": 845
+    }
+  }, 
+  {
+    "pk": 216, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1779, 
+      "reporter": null, 
+      "distributed": 223, 
+      "discrepancy": 1, 
+      "connection": 1, 
+      "location": 570, 
+      "time": "2009-04-25 08:52:00", 
+      "expected": 1779
+    }
+  }, 
+  {
+    "pk": 217, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1451, 
+      "reporter": null, 
+      "distributed": 61, 
+      "discrepancy": 1, 
+      "connection": 1, 
+      "location": 535, 
+      "time": "2009-04-06 14:26:00", 
+      "expected": 1451
+    }
+  }, 
+  {
+    "pk": 218, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1279, 
+      "reporter": null, 
+      "distributed": 259, 
+      "discrepancy": 18, 
+      "connection": 1, 
+      "location": 680, 
+      "time": "2009-04-26 22:04:00", 
+      "expected": 782
+    }
+  }, 
+  {
+    "pk": 219, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1887, 
+      "reporter": null, 
+      "distributed": 94, 
+      "discrepancy": 16, 
+      "connection": 1, 
+      "location": 565, 
+      "time": "2009-04-17 10:00:00", 
+      "expected": 1887
+    }
+  }, 
+  {
+    "pk": 220, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1007, 
+      "reporter": null, 
+      "distributed": 141, 
+      "discrepancy": 28, 
+      "connection": 1, 
+      "location": 580, 
+      "time": "2009-04-07 21:28:00", 
+      "expected": 1054
+    }
+  }, 
+  {
+    "pk": 221, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 169, 
+      "reporter": null, 
+      "distributed": 283, 
+      "discrepancy": 9, 
+      "connection": 1, 
+      "location": 540, 
+      "time": "2009-04-27 12:54:00", 
+      "expected": 169
+    }
+  }, 
+  {
+    "pk": 222, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1113, 
+      "reporter": null, 
+      "distributed": 323, 
+      "discrepancy": 16, 
+      "connection": 1, 
+      "location": 565, 
+      "time": "2009-04-23 19:16:00", 
+      "expected": 1329
+    }
+  }, 
+  {
+    "pk": 223, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 43, 
+      "reporter": null, 
+      "distributed": 190, 
+      "discrepancy": 32, 
+      "connection": 1, 
+      "location": 685, 
+      "time": "2009-04-06 20:47:00", 
+      "expected": 43
+    }
+  }, 
+  {
+    "pk": 224, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1070, 
+      "reporter": null, 
+      "distributed": 150, 
+      "discrepancy": 24, 
+      "connection": 1, 
+      "location": 560, 
+      "time": "2009-04-02 16:10:00", 
+      "expected": 30
+    }
+  }, 
+  {
+    "pk": 225, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1817, 
+      "reporter": null, 
+      "distributed": 291, 
+      "discrepancy": 31, 
+      "connection": 1, 
+      "location": 680, 
+      "time": "2009-04-25 07:54:00", 
+      "expected": 1817
+    }
+  }, 
+  {
+    "pk": 226, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1320, 
+      "reporter": null, 
+      "distributed": 343, 
+      "discrepancy": 38, 
+      "connection": 1, 
+      "location": 545, 
+      "time": "2009-04-28 01:03:00", 
+      "expected": 1320
+    }
+  }, 
+  {
+    "pk": 227, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 842, 
+      "reporter": null, 
+      "distributed": 321, 
+      "discrepancy": 36, 
+      "connection": 1, 
+      "location": 690, 
+      "time": "2009-04-08 11:58:00", 
+      "expected": 842
+    }
+  }, 
+  {
+    "pk": 228, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1714, 
+      "reporter": null, 
+      "distributed": 230, 
+      "discrepancy": 40, 
+      "connection": 1, 
+      "location": 570, 
+      "time": "2009-04-17 18:00:00", 
+      "expected": 1714
+    }
+  }, 
+  {
+    "pk": 229, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1355, 
+      "reporter": null, 
+      "distributed": 157, 
+      "discrepancy": 7, 
+      "connection": 1, 
+      "location": 685, 
+      "time": "2009-04-24 23:19:00", 
+      "expected": 1355
+    }
+  }, 
+  {
+    "pk": 230, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 210, 
+      "reporter": null, 
+      "distributed": 261, 
+      "discrepancy": 23, 
+      "connection": 1, 
+      "location": 545, 
+      "time": "2009-04-28 17:17:00", 
+      "expected": 993
+    }
+  }, 
+  {
+    "pk": 231, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1288, 
+      "reporter": null, 
+      "distributed": 454, 
+      "discrepancy": 19, 
+      "connection": 1, 
+      "location": 560, 
+      "time": "2009-04-07 00:47:00", 
+      "expected": 1288
+    }
+  }, 
+  {
+    "pk": 232, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 457, 
+      "reporter": null, 
+      "distributed": 118, 
+      "discrepancy": 21, 
+      "connection": 1, 
+      "location": 550, 
+      "time": "2009-04-15 18:04:00", 
+      "expected": 457
+    }
+  }, 
+  {
+    "pk": 233, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 529, 
+      "reporter": null, 
+      "distributed": 373, 
+      "discrepancy": 5, 
+      "connection": 1, 
+      "location": 545, 
+      "time": "2009-04-03 19:51:00", 
+      "expected": 529
+    }
+  }, 
+  {
+    "pk": 234, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 788, 
+      "reporter": null, 
+      "distributed": 463, 
+      "discrepancy": 58, 
+      "connection": 1, 
+      "location": 685, 
+      "time": "2009-04-21 05:31:00", 
+      "expected": 788
+    }
+  }, 
+  {
+    "pk": 235, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1445, 
+      "reporter": null, 
+      "distributed": 217, 
+      "discrepancy": 38, 
+      "connection": 1, 
+      "location": 550, 
+      "time": "2009-04-29 23:27:00", 
+      "expected": 1445
+    }
+  }, 
+  {
+    "pk": 236, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 884, 
+      "reporter": null, 
+      "distributed": 227, 
+      "discrepancy": 3, 
+      "connection": 1, 
+      "location": 680, 
+      "time": "2009-04-20 00:38:00", 
+      "expected": 884
+    }
+  }, 
+  {
+    "pk": 237, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 17, 
+      "reporter": null, 
+      "distributed": 109, 
+      "discrepancy": 14, 
+      "connection": 1, 
+      "location": 555, 
+      "time": "2009-04-20 07:01:00", 
+      "expected": 17
+    }
+  }, 
+  {
+    "pk": 238, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1668, 
+      "reporter": null, 
+      "distributed": 265, 
+      "discrepancy": 7, 
+      "connection": 1, 
+      "location": 570, 
+      "time": "2009-04-23 17:46:00", 
+      "expected": 1668
+    }
+  }, 
+  {
+    "pk": 239, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 173, 
+      "reporter": null, 
+      "distributed": 492, 
+      "discrepancy": 85, 
+      "connection": 1, 
+      "location": 545, 
+      "time": "2009-04-26 01:04:00", 
+      "expected": 173
+    }
+  }, 
+  {
+    "pk": 240, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 705, 
+      "reporter": null, 
+      "distributed": 468, 
+      "discrepancy": 74, 
+      "connection": 1, 
+      "location": 555, 
+      "time": "2009-04-27 19:29:00", 
+      "expected": 705
+    }
+  }, 
+  {
+    "pk": 241, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1594, 
+      "reporter": null, 
+      "distributed": 142, 
+      "discrepancy": 4, 
+      "connection": 1, 
+      "location": 530, 
+      "time": "2009-04-28 22:23:00", 
+      "expected": 963
+    }
+  }, 
+  {
+    "pk": 242, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 920, 
+      "reporter": null, 
+      "distributed": 265, 
+      "discrepancy": 50, 
+      "connection": 1, 
+      "location": 545, 
+      "time": "2009-04-23 08:05:00", 
+      "expected": 920
+    }
+  }, 
+  {
+    "pk": 243, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1804, 
+      "reporter": null, 
+      "distributed": 89, 
+      "discrepancy": 10, 
+      "connection": 1, 
+      "location": 685, 
+      "time": "2009-04-07 06:00:00", 
+      "expected": 1804
+    }
+  }, 
+  {
+    "pk": 244, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1167, 
+      "reporter": null, 
+      "distributed": 374, 
+      "discrepancy": 74, 
+      "connection": 1, 
+      "location": 565, 
+      "time": "2009-04-02 18:30:00", 
+      "expected": 1167
+    }
+  }, 
+  {
+    "pk": 245, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 162, 
+      "reporter": null, 
+      "distributed": 228, 
+      "discrepancy": 23, 
+      "connection": 1, 
+      "location": 555, 
+      "time": "2009-04-03 12:18:00", 
+      "expected": 179
+    }
+  }, 
+  {
+    "pk": 246, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1245, 
+      "reporter": null, 
+      "distributed": 281, 
+      "discrepancy": 37, 
+      "connection": 1, 
+      "location": 530, 
+      "time": "2009-04-11 04:24:00", 
+      "expected": 1245
+    }
+  }, 
+  {
+    "pk": 247, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1488, 
+      "reporter": null, 
+      "distributed": 222, 
+      "discrepancy": 28, 
+      "connection": 1, 
+      "location": 690, 
+      "time": "2009-04-22 22:33:00", 
+      "expected": 187
+    }
+  }, 
+  {
+    "pk": 248, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1835, 
+      "reporter": null, 
+      "distributed": 440, 
+      "discrepancy": 4, 
+      "connection": 1, 
+      "location": 565, 
+      "time": "2009-04-08 01:35:00", 
+      "expected": 1835
+    }
+  }, 
+  {
+    "pk": 249, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1856, 
+      "reporter": null, 
+      "distributed": 117, 
+      "discrepancy": 1, 
+      "connection": 1, 
+      "location": 680, 
+      "time": "2009-04-24 17:05:00", 
+      "expected": 123
+    }
+  }, 
+  {
+    "pk": 250, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1053, 
+      "reporter": null, 
+      "distributed": 415, 
+      "discrepancy": 14, 
+      "connection": 1, 
+      "location": 690, 
+      "time": "2009-04-24 13:22:00", 
+      "expected": 1053
+    }
+  }, 
+  {
+    "pk": 251, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 148, 
+      "reporter": null, 
+      "distributed": 485, 
+      "discrepancy": 44, 
+      "connection": 1, 
+      "location": 690, 
+      "time": "2009-04-25 21:14:00", 
+      "expected": 148
+    }
+  }, 
+  {
+    "pk": 252, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1743, 
+      "reporter": null, 
+      "distributed": 234, 
+      "discrepancy": 13, 
+      "connection": 1, 
+      "location": 555, 
+      "time": "2009-04-03 14:21:00", 
+      "expected": 1743
+    }
+  }, 
+  {
+    "pk": 253, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 808, 
+      "reporter": null, 
+      "distributed": 57, 
+      "discrepancy": 7, 
+      "connection": 1, 
+      "location": 535, 
+      "time": "2009-04-04 16:44:00", 
+      "expected": 808
+    }
+  }, 
+  {
+    "pk": 254, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 328, 
+      "reporter": null, 
+      "distributed": 185, 
+      "discrepancy": 25, 
+      "connection": 1, 
+      "location": 535, 
+      "time": "2009-04-04 14:36:00", 
+      "expected": 328
+    }
+  }, 
+  {
+    "pk": 255, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 765, 
+      "reporter": null, 
+      "distributed": 371, 
+      "discrepancy": 4, 
+      "connection": 1, 
+      "location": 545, 
+      "time": "2009-04-27 16:59:00", 
+      "expected": 765
+    }
+  }, 
+  {
+    "pk": 256, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1912, 
+      "reporter": null, 
+      "distributed": 292, 
+      "discrepancy": 50, 
+      "connection": 1, 
+      "location": 535, 
+      "time": "2009-04-01 18:15:00", 
+      "expected": 1338
+    }
+  }, 
+  {
+    "pk": 257, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 38, 
+      "reporter": null, 
+      "distributed": 345, 
+      "discrepancy": 49, 
+      "connection": 1, 
+      "location": 580, 
+      "time": "2009-04-15 06:52:00", 
+      "expected": 38
+    }
+  }, 
+  {
+    "pk": 258, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1381, 
+      "reporter": null, 
+      "distributed": 145, 
+      "discrepancy": 13, 
+      "connection": 1, 
+      "location": 545, 
+      "time": "2009-04-15 04:41:00", 
+      "expected": 1381
+    }
+  }, 
+  {
+    "pk": 259, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 537, 
+      "reporter": null, 
+      "distributed": 428, 
+      "discrepancy": 42, 
+      "connection": 1, 
+      "location": 585, 
+      "time": "2009-04-28 17:18:00", 
+      "expected": 537
+    }
+  }, 
+  {
+    "pk": 260, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 897, 
+      "reporter": null, 
+      "distributed": 101, 
+      "discrepancy": 2, 
+      "connection": 1, 
+      "location": 550, 
+      "time": "2009-04-08 08:50:00", 
+      "expected": 897
+    }
+  }, 
+  {
+    "pk": 261, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1470, 
+      "reporter": null, 
+      "distributed": 422, 
+      "discrepancy": 8, 
+      "connection": 1, 
+      "location": 580, 
+      "time": "2009-04-08 19:08:00", 
+      "expected": 1470
+    }
+  }, 
+  {
+    "pk": 262, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1253, 
+      "reporter": null, 
+      "distributed": 136, 
+      "discrepancy": 3, 
+      "connection": 1, 
+      "location": 570, 
+      "time": "2009-04-17 03:37:00", 
+      "expected": 1253
+    }
+  }, 
+  {
+    "pk": 263, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1683, 
+      "reporter": null, 
+      "distributed": 340, 
+      "discrepancy": 12, 
+      "connection": 1, 
+      "location": 560, 
+      "time": "2009-04-21 08:12:00", 
+      "expected": 1683
+    }
+  }, 
+  {
+    "pk": 264, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1833, 
+      "reporter": null, 
+      "distributed": 97, 
+      "discrepancy": 16, 
+      "connection": 1, 
+      "location": 540, 
+      "time": "2009-04-26 05:29:00", 
+      "expected": 1833
+    }
+  }, 
+  {
+    "pk": 265, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1437, 
+      "reporter": null, 
+      "distributed": 259, 
+      "discrepancy": 45, 
+      "connection": 1, 
+      "location": 555, 
+      "time": "2009-04-07 09:29:00", 
+      "expected": 1437
+    }
+  }, 
+  {
+    "pk": 266, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 833, 
+      "reporter": null, 
+      "distributed": 493, 
+      "discrepancy": 69, 
+      "connection": 1, 
+      "location": 540, 
+      "time": "2009-04-08 23:37:00", 
+      "expected": 833
+    }
+  }, 
+  {
+    "pk": 267, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 579, 
+      "reporter": null, 
+      "distributed": 399, 
+      "discrepancy": 38, 
+      "connection": 1, 
+      "location": 530, 
+      "time": "2009-04-01 06:29:00", 
+      "expected": 579
+    }
+  }, 
+  {
+    "pk": 268, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 183, 
+      "reporter": null, 
+      "distributed": 432, 
+      "discrepancy": 9, 
+      "connection": 1, 
+      "location": 580, 
+      "time": "2009-04-14 22:52:00", 
+      "expected": 183
+    }
+  }, 
+  {
+    "pk": 269, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 21, 
+      "reporter": null, 
+      "distributed": 259, 
+      "discrepancy": 27, 
+      "connection": 1, 
+      "location": 540, 
+      "time": "2009-04-07 23:15:00", 
+      "expected": 780
+    }
+  }, 
+  {
+    "pk": 270, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 995, 
+      "reporter": null, 
+      "distributed": 392, 
+      "discrepancy": 10, 
+      "connection": 1, 
+      "location": 690, 
+      "time": "2009-04-26 04:27:00", 
+      "expected": 107
+    }
+  }, 
+  {
+    "pk": 271, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1506, 
+      "reporter": null, 
+      "distributed": 425, 
+      "discrepancy": 20, 
+      "connection": 1, 
+      "location": 575, 
+      "time": "2009-04-17 06:43:00", 
+      "expected": 1506
+    }
+  }, 
+  {
+    "pk": 272, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1290, 
+      "reporter": null, 
+      "distributed": 301, 
+      "discrepancy": 54, 
+      "connection": 1, 
+      "location": 535, 
+      "time": "2009-04-15 21:41:00", 
+      "expected": 1290
+    }
+  }, 
+  {
+    "pk": 273, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1619, 
+      "reporter": null, 
+      "distributed": 117, 
+      "discrepancy": 12, 
+      "connection": 1, 
+      "location": 555, 
+      "time": "2009-04-28 05:45:00", 
+      "expected": 1621
+    }
+  }, 
+  {
+    "pk": 274, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1593, 
+      "reporter": null, 
+      "distributed": 441, 
+      "discrepancy": 40, 
+      "connection": 1, 
+      "location": 560, 
+      "time": "2009-04-26 07:19:00", 
+      "expected": 1593
+    }
+  }, 
+  {
+    "pk": 275, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 72, 
+      "reporter": null, 
+      "distributed": 347, 
+      "discrepancy": 51, 
+      "connection": 1, 
+      "location": 690, 
+      "time": "2009-04-03 14:55:00", 
+      "expected": 72
+    }
+  }, 
+  {
+    "pk": 276, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1973, 
+      "reporter": null, 
+      "distributed": 333, 
+      "discrepancy": 26, 
+      "connection": 1, 
+      "location": 530, 
+      "time": "2009-04-17 09:59:00", 
+      "expected": 1973
+    }
+  }, 
+  {
+    "pk": 277, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1013, 
+      "reporter": null, 
+      "distributed": 222, 
+      "discrepancy": 14, 
+      "connection": 1, 
+      "location": 685, 
+      "time": "2009-04-26 07:04:00", 
+      "expected": 1013
+    }
+  }, 
+  {
+    "pk": 278, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 792, 
+      "reporter": null, 
+      "distributed": 395, 
+      "discrepancy": 73, 
+      "connection": 1, 
+      "location": 575, 
+      "time": "2009-04-28 15:11:00", 
+      "expected": 792
+    }
+  }, 
+  {
+    "pk": 279, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 808, 
+      "reporter": null, 
+      "distributed": 268, 
+      "discrepancy": 3, 
+      "connection": 1, 
+      "location": 565, 
+      "time": "2009-04-19 20:49:00", 
+      "expected": 808
+    }
+  }, 
+  {
+    "pk": 280, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 26, 
+      "reporter": null, 
+      "distributed": 292, 
+      "discrepancy": 28, 
+      "connection": 1, 
+      "location": 535, 
+      "time": "2009-04-23 20:13:00", 
+      "expected": 26
+    }
+  }, 
+  {
+    "pk": 281, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 416, 
+      "reporter": null, 
+      "distributed": 308, 
+      "discrepancy": 41, 
+      "connection": 1, 
+      "location": 690, 
+      "time": "2009-04-20 11:06:00", 
+      "expected": 1322
+    }
+  }, 
+  {
+    "pk": 282, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 211, 
+      "reporter": null, 
+      "distributed": 164, 
+      "discrepancy": 30, 
+      "connection": 1, 
+      "location": 570, 
+      "time": "2009-04-01 23:57:00", 
+      "expected": 211
+    }
+  }, 
+  {
+    "pk": 283, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1550, 
+      "reporter": null, 
+      "distributed": 435, 
+      "discrepancy": 69, 
+      "connection": 1, 
+      "location": 680, 
+      "time": "2009-04-02 15:50:00", 
+      "expected": 1550
+    }
+  }, 
+  {
+    "pk": 284, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 214, 
+      "reporter": null, 
+      "distributed": 451, 
+      "discrepancy": 89, 
+      "connection": 1, 
+      "location": 560, 
+      "time": "2009-04-09 03:31:00", 
+      "expected": 214
+    }
+  }, 
+  {
+    "pk": 285, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 541, 
+      "reporter": null, 
+      "distributed": 138, 
+      "discrepancy": 9, 
+      "connection": 1, 
+      "location": 545, 
+      "time": "2009-04-27 22:48:00", 
+      "expected": 541
+    }
+  }, 
+  {
+    "pk": 286, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 299, 
+      "reporter": null, 
+      "distributed": 199, 
+      "discrepancy": 17, 
+      "connection": 1, 
+      "location": 560, 
+      "time": "2009-04-04 04:33:00", 
+      "expected": 299
+    }
+  }, 
+  {
+    "pk": 287, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1140, 
+      "reporter": null, 
+      "distributed": 492, 
+      "discrepancy": 19, 
+      "connection": 1, 
+      "location": 550, 
+      "time": "2009-04-17 15:51:00", 
+      "expected": 251
+    }
+  }, 
+  {
+    "pk": 288, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 644, 
+      "reporter": null, 
+      "distributed": 397, 
+      "discrepancy": 39, 
+      "connection": 1, 
+      "location": 580, 
+      "time": "2009-04-07 13:20:00", 
+      "expected": 1431
+    }
+  }, 
+  {
+    "pk": 289, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 869, 
+      "reporter": null, 
+      "distributed": 358, 
+      "discrepancy": 5, 
+      "connection": 1, 
+      "location": 690, 
+      "time": "2009-04-06 00:53:00", 
+      "expected": 869
+    }
+  }, 
+  {
+    "pk": 290, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 324, 
+      "reporter": null, 
+      "distributed": 500, 
+      "discrepancy": 61, 
+      "connection": 1, 
+      "location": 560, 
+      "time": "2009-04-08 22:27:00", 
+      "expected": 324
+    }
+  }, 
+  {
+    "pk": 291, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 719, 
+      "reporter": null, 
+      "distributed": 334, 
+      "discrepancy": 13, 
+      "connection": 1, 
+      "location": 565, 
+      "time": "2009-04-19 18:37:00", 
+      "expected": 719
+    }
+  }, 
+  {
+    "pk": 292, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1969, 
+      "reporter": null, 
+      "distributed": 151, 
+      "discrepancy": 10, 
+      "connection": 1, 
+      "location": 555, 
+      "time": "2009-04-14 05:22:00", 
+      "expected": 1969
+    }
+  }, 
+  {
+    "pk": 293, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1740, 
+      "reporter": null, 
+      "distributed": 434, 
+      "discrepancy": 9, 
+      "connection": 1, 
+      "location": 535, 
+      "time": "2009-04-20 22:29:00", 
+      "expected": 1740
+    }
+  }, 
+  {
+    "pk": 294, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 358, 
+      "reporter": null, 
+      "distributed": 423, 
+      "discrepancy": 13, 
+      "connection": 1, 
+      "location": 530, 
+      "time": "2009-04-14 00:47:00", 
+      "expected": 447
+    }
+  }, 
+  {
+    "pk": 295, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 577, 
+      "reporter": null, 
+      "distributed": 493, 
+      "discrepancy": 39, 
+      "connection": 1, 
+      "location": 560, 
+      "time": "2009-04-25 21:09:00", 
+      "expected": 577
+    }
+  }, 
+  {
+    "pk": 296, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1649, 
+      "reporter": null, 
+      "distributed": 130, 
+      "discrepancy": 5, 
+      "connection": 1, 
+      "location": 565, 
+      "time": "2009-04-21 15:15:00", 
+      "expected": 1649
+    }
+  }, 
+  {
+    "pk": 297, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 861, 
+      "reporter": null, 
+      "distributed": 475, 
+      "discrepancy": 65, 
+      "connection": 1, 
+      "location": 690, 
+      "time": "2009-04-16 15:35:00", 
+      "expected": 861
+    }
+  }, 
+  {
+    "pk": 298, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1333, 
+      "reporter": null, 
+      "distributed": 163, 
+      "discrepancy": 9, 
+      "connection": 1, 
+      "location": 545, 
+      "time": "2009-04-16 22:23:00", 
+      "expected": 1333
+    }
+  }, 
+  {
+    "pk": 299, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 518, 
+      "reporter": null, 
+      "distributed": 498, 
+      "discrepancy": 60, 
+      "connection": 1, 
+      "location": 585, 
+      "time": "2009-04-21 12:43:00", 
+      "expected": 518
+    }
+  }, 
+  {
+    "pk": 300, 
+    "model": "nigeria.netdistribution", 
+    "fields": {
+      "actual": 1078, 
+      "reporter": null, 
+      "distributed": 281, 
+      "discrepancy": 8, 
+      "connection": 1, 
+      "location": 550, 
+      "time": "2009-04-23 18:45:00", 
+      "expected": 1078
+    }
+  }
+]
