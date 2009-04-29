@@ -323,6 +323,12 @@ class PersistantConnection(models.Model):
             self.backend,
             self.identity)
     
+    def __json__(self):
+        return {
+            "pk": self.pk,
+            "identity": self.identity,
+            "reporter": self.reporter }
+    
     
     @classmethod
     def from_message(klass, msg):
