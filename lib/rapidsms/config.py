@@ -164,3 +164,17 @@ def conf(section, key):
     except KeyError:
         return None
 
+
+def app_conf(app_type):
+    """Returns the current configuration for a RapidSMS app, by searching the
+       output of conf("rapidsms", "apps") for a matching app_type. This is a
+       hack, until we sort out the configuration file architecture."""
+    
+    # iterate apps, looking out for a
+    # match; return as soon as possible
+    for app in conf("rapidsms", "apps"):
+        if app["type"] == app_type:
+            return app
+    
+    # couldn't find the app
+    return None

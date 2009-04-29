@@ -233,7 +233,7 @@ class Router (component.Receiver):
             self.incoming(msg)
     
     def __sorted_apps(self):
-        return sorted(self.apps, reverse=True, key=lambda a: a.priority())
+        return sorted(self.apps, key=lambda a: a.priority())
     
     def incoming(self, message):   
         self.info("Incoming message via %s: %s ->'%s'" %\
@@ -255,7 +255,7 @@ class Router (component.Receiver):
                     if handled is True:
                         self.debug("%s short-circuited handle phase", app.name)
                         break
-                elif responses != len(message.responses):
+                elif responses < len(message.responses):
                     self.warn("App '%s' shouldn't send responses in %s()!", 
                         app.name, phase)
 

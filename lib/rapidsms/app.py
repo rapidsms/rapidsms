@@ -24,9 +24,9 @@ class App(component.Component):
            of incoming and outgoing messages, relative to other apps.
            The best way to set the priority of an app is to include a
            PRIORITY constant in the class definition."""
-        
+
+        named = App.NAMED_PRIORITIES
         if hasattr(self, "PRIORITY"):
-            named = App.NAMED_PRIORITIES
             p = getattr(self, "PRIORITY")
             pt = type(p)
             
@@ -59,7 +59,7 @@ class App(component.Component):
         
         # if the app doesn't have a priority of its own, or it
         # was invalid (and warned) above, default to "normal"
-        return ["normal"]
+        return named["normal"]
     
     def start (self):
         pass
