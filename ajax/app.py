@@ -41,8 +41,13 @@ class App(rapidsms.app.App):
             # no app by that
             # name was found
             return None
-            
-        def do_GET(self):
+        
+        # handle both GET and POST with
+        # the same method
+        def do_GET(self):  return self.process()
+        def do_POST(self): return self.process()
+        
+        def process(self):
             def response(code, output):
                 self.send_response(code)
                 self.send_header("content-type", "application/json")
@@ -93,8 +98,42 @@ class App(rapidsms.app.App):
             # target method, and return the response (as
             # a string, for now)
             try:
+                method = getattr(app, meth_name)
                 params = urlparse.parse_qs(url.query)
-                output = getattr(app, meth_name)(params)
+                args   = [params]
+                
+                # for post requests, we'll also need to parse
+                # the form data, and hand it to the method
+                if self.command == "POST":
+                    form = {}
+                
+                    # parse the form data via the CGI lib. this is
+                    # a horrible mess, but supports all kinds of
+                    # encodings (multipart, in particular)
+                    storage = cgi.FieldStorage(
+                        fp = self.rfile, 
+                        headers = self.headers,
+                        environ = {
+                            "REQUEST_METHOD": "POST",
+                            "CONTENT_TYPE": self.headers["content-type"] })
+                    
+                    # convert the fieldstorage object into a dict,
+                    # to keep it simple for the handler methods.
+                    # TODO: maybe make this a util if it's useful
+                    # elsewhere. it isn't, for the time being.
+                    for key in storage.keys():
+                        v = storage.getlist(key)
+                        
+                        # where possible, just store the values as singular,
+                        # to avoid CGIs usual post["id"][0] verbosity
+                        if len(v) > 1: form[key] = v
+                        else:          form[key] = v[0]
+                    
+                    args.append(form)
+                
+                # call the method, and send back whatever data
+                # structure was returned, serialized with JSON
+                output = method(*args)
                 return response(200, output)
  
             # something raised during the request, so
