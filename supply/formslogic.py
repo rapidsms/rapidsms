@@ -35,13 +35,13 @@ class SupplyFormsLogic(FormsLogic):
         # and create a new transaction
         self._match_partial_transaction(pending)
         
-    # Just hard coding this for now.  We might want to revisit this.
+    #TODO Just hard coding this for now.  We might want to revisit this.
     _form_lookups = {"issue" : {
                                 "origin" : "origin", 
                                 "dest" : "destination", 
                                 "type" : "I",
                                 "waybill" : "shipment_id", 
-                                "sent" : "amount", 
+                                "amount" : "amount", 
                                 "stock" : "stock", 
                                  
                                 }, 
@@ -50,18 +50,18 @@ class SupplyFormsLogic(FormsLogic):
                                   "dest" : "destination", 
                                   "type" : "R",
                                   "waybill" : "shipment_id", 
-                                  "received" : "amount", 
+                                  "amount" : "amount", 
                                   "stock" : "stock", 
                                   }
                      }
     _foreign_key_lookups = {"Location" : "code" 
                            }
     def _partial_transaction_from_form(self, message, form_entry):
-        if not self._form_lookups.has_key(form_entry.form.type):
+        if not self._form_lookups.has_key(form_entry.form.code.abbreviation):
             # if this form isn't something we know about then return immediately
             return
         #print("creating partial")
-        this_form_lookups = self._form_lookups[form_entry.form.type]
+        this_form_lookups = self._form_lookups[form_entry.form.code.abbreviation]
         partial = self._model_from_form(message, form_entry, PartialTransaction, 
                                         this_form_lookups, self._foreign_key_lookups)
         # if the reporter isn't set then populate the connection object.
@@ -76,8 +76,6 @@ class SupplyFormsLogic(FormsLogic):
         partial.status = "P"
         # gather partial transactions from the same place to the same place with
         # for the same stuff with the same waybill before we save the new one
-        # TODO? not checking for same phone reporter or connection currently
-        # should we?
         all_partials_to_amend = PartialTransaction.objects.filter(origin=partial.origin,\
             destination=partial.destination, shipment_id=partial.shipment_id,\
             domain=partial.domain, type=partial.type)
@@ -114,7 +112,7 @@ class SupplyFormsLogic(FormsLogic):
 
         partial.save()
         response = "Received report for %s %s: origin=%s, dest=%s, waybill=%s, amount=%s, stock=%s. If this is not correct, reply with CANCEL" % (
-             partial.domain.code, form_entry.form.type, partial.origin, partial.destination, partial.shipment_id, partial.amount, partial.stock)  
+             partial.domain.code, form_entry.form.code.abbreviation, partial.origin, partial.destination, partial.shipment_id, partial.amount, partial.stock)  
         message.respond(response, StatusCodes.OK)
         if not partial.reporter:
             message.respond("Please register your phone.")

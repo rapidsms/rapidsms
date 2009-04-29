@@ -31,9 +31,9 @@ class Shipment(models.Model):
     
 class Transaction(models.Model):
     FLAG_TYPES = (
-        ('A', 'Amount received does not match amount issued'),
+        ('A', 'Mis-matched amounts'),
         ('W', 'Mis-matched waybill'),
-        ('I', 'Incorrect. Has been replaced due to an amendment issue or receipt.'),
+        ('I', 'Incorrect. Has been replaced.'),
     )
 
     domain = models.ForeignKey(Domain)
@@ -59,6 +59,7 @@ class PartialTransaction(models.Model):
     )
     FLAG_TYPES = (
         ('S', 'Reported stock does not match expected stock balance.'),
+        ('U', 'Unregistered reporter.'),
     )
     
     reporter = models.ForeignKey(Reporter, blank=True, null=True)
@@ -111,6 +112,9 @@ class PartialTransaction(models.Model):
     # there should only ever be one transaction for a partial transaction,
     # but since this returns a queryset, the property name is plural
     transactions = property(_get_transaction)
+
+    class Meta:
+        ordering = ['-status']
     
 class Notification(models.Model):
     reporter = models.ForeignKey(Reporter)

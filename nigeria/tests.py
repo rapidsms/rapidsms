@@ -8,17 +8,14 @@ import apps.default.app as default_app
 from app import App
 
 class TestApp (TestScript):
-    apps = (reporter_app.App, App,form_app.App, supply_app.App, default_app.App )
-    fixtures = ['nigeria_llin', 'kano_locations']
+    #apps = (reporter_app.App, App,form_app.App, supply_app.App, default_app.App )
+    apps = (reporter_app.App, App,form_app.App, supply_app.App )
+    # the test_backend script does the loading of the dummy backend that allows reporters
+    # to work properly in tests
+    fixtures = ['nigeria_llin', 'kano_locations', 'test_backend']
     
     def setUp(self):
         TestScript.setUp(self)
-        # have to initialize the backend for the reporters app to function properly
-        title = self.backend.name
-        try:
-            PersistantBackend.objects.get(title=title)
-        except PersistantBackend.DoesNotExist:
-            PersistantBackend(title=title).save()
         
     def testFixtures(self):
         self._testKanoLocations()
@@ -33,52 +30,52 @@ class TestApp (TestScript):
         self.runScript(a)
         # this should succeed because we just created him
         reporters = Reporter.objects.all()
-        Reporter.objects.get(alias="cuser")
+        Reporter.objects.get(alias="crummy")
         dict = {"alias":"fail"}
         # make sure checking a non-existant user fails
         self.assertRaises(Reporter.DoesNotExist, Reporter.objects.get, **dict)     
         
     testRegistration = """
            8005551212 > llin my status
-           8005551212 < Sorry, I don't know who you are.
+           8005551212 < Please register your phone with RapidSMS.
            8005551212 > llin register 20 dl dummy user
            8005551212 < Hello dummy! You are now registered as Distribution point team leader at KANO State.
            8005551212 > llin my status
-           8005551212 < I think you are are dummy.
+           8005551212 < I think you are dummy.
          """
     
     testRegistrationErrors = """
            12345 > llin my status
-           12345 < Sorry, I don't know who you are.
+           12345 < Please register your phone with RapidSMS.
            12345 > llin register 45 DL hello world 
            12345 < Invalid form.  45 not in list of location codes
            12345 > llin my status
-           12345 < Sorry, I don't know who you are.
+           12345 < Please register your phone with RapidSMS.
            12345 > llin register 20 pp hello world 
            12345 < Invalid form.  pp not in list of role codes
            12345 > llin my status
-           12345 < Sorry, I don't know who you are.
+           12345 < Please register your phone with RapidSMS.
            12345 > llin register 6803 AL hello world 
            12345 < Invalid form.  6803 not in list of location codes. AL not in list of role codes
            12345 > llin my status
-           12345 < Sorry, I don't know who you are.
+           12345 < Please register your phone with RapidSMS.
          """
     
     testKeyword= """
            tkw_1 > llin register 20 dl keyword tester
            tkw_1 < Hello keyword! You are now registered as Distribution point team leader at KANO State.
            tkw_1 > llin nets 2001 123 456 78 90
-           tkw_1 < Received report for LLIN nets: expected=456, actual=78, location=AJINGI, distributed=123, discrepancy=90
+           tkw_1 < Received report for LLIN nets: location=AJINGI, distributed=123, expected=456, actual=78, discrepancy=90
            tkw_1 > LLIN nets 2001 123 456 78 90
-           tkw_1 < Received report for LLIN nets: expected=456, actual=78, location=AJINGI, distributed=123, discrepancy=90
+           tkw_1 < Received report for LLIN nets: location=AJINGI, distributed=123, expected=456, actual=78, discrepancy=90
            tkw_1 > lin nets 2001 123 456 78 90
-           tkw_1 < Received report for LLIN nets: expected=456, actual=78, location=AJINGI, distributed=123, discrepancy=90
+           tkw_1 < Received report for LLIN nets: location=AJINGI, distributed=123, expected=456, actual=78, discrepancy=90
            tkw_1 > ILLn nets 2001 123 456 78 90
-           tkw_1 < Received report for LLIN nets: expected=456, actual=78, location=AJINGI, distributed=123, discrepancy=90
+           tkw_1 < Received report for LLIN nets: location=AJINGI, distributed=123, expected=456, actual=78, discrepancy=90
            tkw_1 > ilin nets 2001 123 456 78 90
-           tkw_1 < Received report for LLIN nets: expected=456, actual=78, location=AJINGI, distributed=123, discrepancy=90
+           tkw_1 < Received report for LLIN nets: location=AJINGI, distributed=123, expected=456, actual=78, discrepancy=90
            tkw_1 > ll nets 2001 123 456 78 90
-           tkw_1 < Received report for LLIN nets: expected=456, actual=78, location=AJINGI, distributed=123, discrepancy=90
+           tkw_1 < Received report for LLIN nets: location=AJINGI, distributed=123, expected=456, actual=78, discrepancy=90
            tkw_1 > llan nets 2001 123 456 78 90
            tkw_1 < Sorry, we didn't understand that message.
            tkw_1 > nets 2001 123 456 78 90
@@ -89,7 +86,7 @@ class TestApp (TestScript):
            8005551213 > llin register 2001 lf net guy
            8005551213 < Hello net! You are now registered as LGA focal person at AJINGI LGA.
            8005551213 > llin nets 2001 123 456 78 90
-           8005551213 < Received report for LLIN nets: expected=456, actual=78, location=AJINGI, distributed=123, discrepancy=90
+           8005551213 < Received report for LLIN nets: location=AJINGI, distributed=123, expected=456, actual=78, discrepancy=90
            8005551213 > llin nets 2001 123 456 78 
            8005551213 < Invalid form.  The following fields are required: discrepancy
          """
@@ -98,25 +95,26 @@ class TestApp (TestScript):
            8005551214 > llin register 200201 lf card guy
            8005551214 < Hello card! You are now registered as LGA focal person at ALBASU CENTRAL Ward.
            8005551214 > llin net cards 200201 123 456 78 
-           8005551214 < Received report for LLIN net cards: settlements=123, people=456, distributed=78, location=ALBASU CENTRAL
+           8005551214 < Received report for LLIN net cards: location=ALBASU CENTRAL, settlements=123, people=456, distributed=78
            8005551214 > llin net cards 200201 123 456  
            8005551214 < Invalid form.  The following fields are required: coupons
          """
          
     testUnregisteredSubmissions = """
             tus_1 > llin net cards 200201 123 456 78
-            tus_1 < Received report for LLIN net cards: settlements=123, people=456, distributed=78, location=ALBASU CENTRAL. Please register your phone
+            tus_1 < Received report for LLIN net cards: location=ALBASU CENTRAL, settlements=123, people=456, distributed=78. Please register your phone
             tus_1 > llin my status
-            tus_1 < Sorry, I don't know who you are.
+            tus_1 < Please register your phone with RapidSMS. 
             tus_2 > llin nets 2001 123 456 78 90
-            tus_2 < Received report for LLIN nets: expected=456, actual=78, location=AJINGI, distributed=123, discrepancy=90. Please register your phone
+            tus_2 < Received report for LLIN nets: location=AJINGI, distributed=123, expected=456, actual=78, discrepancy=90. Please register your phone
             tus_2 > llin my status
-            tus_2 < Sorry, I don't know who you are.
+            tus_2 < Please register your phone with RapidSMS. 
          """
            
          
     
     def _testKanoLocations(self):
+        #TODO test for DPs and MTs
         loc_types = LocationType.objects.all()
         self.assertEqual(6, len(loc_types))
         state = LocationType.objects.get(name="State")
@@ -145,7 +143,7 @@ class TestApp (TestScript):
         self.assertEqual(5, len(forms))
         for form_name in ["register", "issue", "receive", "nets", "net"]:
             # this will throw an error if it doesn't exist
-            Form.objects.get(type=form_name)
+            Form.objects.get(code__abbreviation=form_name)
         
     def _testRoles(self):
         # add this when we have a fixture for roles
