@@ -154,7 +154,8 @@ class Reporter(models.Model):
             "pk":         self.pk,
             "alias":      self.alias,
             "first_name": self.first_name,
-            "last_name":  self.last_name }
+            "last_name":  self.last_name,
+            "str":        unicode(self) }
     
     
     @classmethod
@@ -327,7 +328,8 @@ class PersistantConnection(models.Model):
         return {
             "pk": self.pk,
             "identity": self.identity,
-            "reporter": self.reporter }
+            "reporter": self.reporter,
+            "str": unicode(self) }
     
     
     @classmethod
