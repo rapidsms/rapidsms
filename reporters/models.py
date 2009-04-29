@@ -149,6 +149,13 @@ class Reporter(models.Model):
             self.full_name(),
             self.alias)
     
+    def __json__(self):
+        return {
+            "pk":         self.pk,
+            "alias":      self.alias,
+            "first_name": self.first_name,
+            "last_name":  self.last_name }
+    
     
     @classmethod
     def parse_name(klass, flat_name):
