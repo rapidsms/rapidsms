@@ -6,13 +6,18 @@ import apps.supply.app as supply_app
 import apps.form.app as form_app
 import apps.default.app as default_app
 from app import App
+from django.core.management.commands.dumpdata import Command
+import time
+import random
+import os        
+from datetime import datetime
 
 class TestApp (TestScript):
     #apps = (reporter_app.App, App,form_app.App, supply_app.App, default_app.App )
     apps = (reporter_app.App, App,form_app.App, supply_app.App )
     # the test_backend script does the loading of the dummy backend that allows reporters
     # to work properly in tests
-    fixtures = ['nigeria_llin', 'kano_locations', 'test_backend']
+    fixtures = ['nigeria_llin', 'kano_locations_extended', 'test_backend']
     
     def setUp(self):
         TestScript.setUp(self)
@@ -111,7 +116,62 @@ class TestApp (TestScript):
             tus_2 < Please register your phone with RapidSMS. 
          """
            
-         
+    def testGenerateNetFixture(self): 
+        """ This isn't actually a test.  It just takes advantage
+            of the test harness to spam a bunch of messages to the 
+            supply app and spit out the data in a format that can
+            be sucked into a fixture """
+        # this is the number of net reports that will be generated
+        
+        net_count = 0
+        
+        
+        "8005551213 > llin nets 2001 123 456 78 90"
+              
+        # the sender will always be the same, for now
+        phone = "55555"
+        
+        expected_actual_match_percent = .8
+        
+        
+        # allow specifying the minimum and maximum dates for message generation
+        min_date = datetime(2009,4,1)
+        max_date = datetime(2009,4,30)
+        min_time = time.mktime(min_date.timetuple())
+        max_time = time.mktime(max_date.timetuple())
+        
+        # these are the locations that will be chosen.  The actual
+        # location will be a distribution point under one of these 
+        # wards
+        wards = [200101, 200102, 200103, 200104, 200201]
+        all_net_strings = []
+        for i in range(net_count):
+            date = datetime.fromtimestamp(random.randint(min_time, max_time))
+            ward = Location.objects.get(code=random.choice(wards))
+            dp = random.choice(ward.children.all())
+            distributed = random.randint(50,500)
+            expected = random.randint(0,2000)
+            # create an actual amount based on the likelihood of match
+            if random.random() < expected_actual_match_percent:
+                actual = expected
+            else:
+                actual = random.randint(0,2000)
+            discrepancy = random.randint(0,distributed/5)
+            net_string = "%s@%s > llin nets %s %s %s %s %s" % (phone, date.strftime("%Y%m%d%H%M"), dp.code, distributed, expected, actual, discrepancy)
+            all_net_strings.append(net_string)
+        script = "\n".join(all_net_strings)
+        self.runScript(script)
+        dumpdata = Command()
+        filename = os.path.abspath(os.path.join(os.path.dirname(__file__),"fixtures/test_net_data.json"))
+        options = { "indent" : 2 }
+        datadump = dumpdata.handle("nigeria", **options)
+        # uncomment these lines to save the fixture
+        #file = open(filename, "w")
+        #file.write(datadump)
+        #file.write(datadump)
+        #file.close()
+        #print "=== Successfully wrote fixtures to %s ===" % filename
+        
     
     def _testKanoLocations(self):
         #TODO test for DPs and MTs
@@ -141,7 +201,7 @@ class TestApp (TestScript):
     def _testForms(self):
         forms = Form.objects.all()
         self.assertEqual(5, len(forms))
-        for form_name in ["register", "issue", "receive", "nets", "net"]:
+        for form_name in ["register", "issue", "receive", "nets", "netcards"]:
             # this will throw an error if it doesn't exist
             Form.objects.get(code__abbreviation=form_name)
         

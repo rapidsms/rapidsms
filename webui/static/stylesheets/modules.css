@@ -183,6 +183,14 @@ table {
 		background-position: 0 50%;
 		font-size: 80%;
 	}
+
+	.module div.toolbar span {
+		display: block;
+		float: right;
+		color: #fff;
+		padding-left: 21px;
+		font-size: 80%;
+	}
 	
 		.module div.toolbar a.add {
 			background-image: url("../icons/16/add.png");
