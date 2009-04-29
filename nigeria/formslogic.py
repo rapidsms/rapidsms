@@ -61,15 +61,9 @@ class NigeriaFormsLogic(FormsLogic):
                 return ["Missing fields: %s" % mis_str, help]
             
             # parse the name via Reporter
+            flat_name = data.pop("firstname") + " " + data.pop("lastname") + " " + data.pop("othername")
             data["alias"], data["first_name"], data["last_name"] =\
-                Reporter.parse_name(data.pop("firstname") + " " + data.pop("secondname") + " " + data.pop("thirdname"))
-
-            # check that the name/alias
-            # hasn't already been registered
-            reps = Reporter.objects.filter(alias=data["alias"])
-            if len(reps):
-                return ["Already been registed: %s" %
-                    data["alias"], help]
+                Reporter.parse_name(flat_name.strip())
             
             # all fields were present and correct, so copy them into the
             # form_entry, for "actions" to pick up again without re-fetching
