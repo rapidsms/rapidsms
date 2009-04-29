@@ -5,6 +5,7 @@ from django.http import HttpResponse, HttpResponseNotAllowed, HttpResponseServer
 from django.template import RequestContext
 from apps.reporters.models import Location, LocationType
 from apps.supply.models import Shipment, Transaction, Stock, PartialTransaction
+from apps.nigeria.models import CardDistribution
 from rapidsms.webui.utils import render_to_response
 from django.db import models
 # The import here newly added for serializations
@@ -18,45 +19,31 @@ import sys
 ITEMS_PER_PAGE = 20
 
 #This is required for ***unicode*** characters***
+# do we really need to reload it?  TIM to check
 reload(sys)
 sys.setdefaultencoding('utf-8')
-    
-#Views for handling Reports Summary Displayed as Locations Tree (State -> LGA -> Wards -> DPs -> MTs)
-def index(req):
-    
-    #Variable to hold LGA dictionary
-    lga_dict={}
-    
-    #TODO: Line below should be replaced by a for loop to iterate through objects for state retrieval through code="<statecode>" parameter to .get() method
-    state = Location.objects.get(code="20")
-   
-    # Retrieves all LGAs in the states. TODO: This will be shifted in the forloop for state
-    lgas = state.children.all()[0:9]
 
-    for lga in lgas:
-        #Obtains list of wards from the model
-        wards = lga.children.all()
-        
-        #Builds a dictionary of wards with LGA as keys
-        lga_dict[lga] = wards
-        
-    #TODO: This list should be removed after creating a for loop to retrieve states  from model (above)
-    states = ['Abia','Adamawa','Akwa-Ibom','Anambra','Bauchi','Bayelsa',
-        'Benue','Borno','Cross River','Delta','Ebonyi','Edo','Ekiti','Enugu','FCT','Gombe','Imo','Jigawa','Kaduna','Kano','Katsina','Kebbi','Kogi','Kwara','Lagos','Nasarawa','Niger','Ogun','Ondo','Osun','Oyo','Plateau','Rivers','Sokoto','Taraba','Yobe','Zamfara']
-    
-    
-    return render_to_response(req, "nigeria/index.html",{'st':state, 'states':states,'lgas':lga_dict})
+#Views for handling summary of Reports Displayed as Location Tree
+def index(req, locid=None):
+    if not locid:
+        locid = 1
+    try:
+        location = Location.objects.get(id=locid)
+    except Location.DoesNotExist:
+        location= None
+    print "location: %s" % location
+    return render_to_response(req, "nigeria/index.html",{'location':location })
+
 
 def logistics_summary(req, locid):
     # Get the location we are going to work with.
     # If there is no location set, this will default to the first
     # one in the database.  If there are no locations in the
-    # database we are SOL
+    # database we are S.O.L.
     if not locid:
         locid = 1
     try: 
         location = Location.objects.get(pk=locid)
-        _set_stock(location)
     except Location.DoesNotExist:
         location = None
 
@@ -72,7 +59,8 @@ def logistics_summary(req, locid):
     [locations_shipped_to.append(trans.shipment.destination) for trans in transactions_from_loc if trans.shipment.destination not in locations_shipped_to]
     
     # set the stock value in all the children.
-    [_set_stock(child) for child in locations_shipped_to]
+    # this is now handled by signals!  see supply/models.py
+    #[_set_stock(child) for child in locations_shipped_to]
     
     # get some JSON strings for the plots
     stock_per_loc_data, stock_per_loc_options = _get_stock_per_location_strings(locations_shipped_to)
@@ -106,6 +94,34 @@ def logistics_summary(req, locid):
                                'stock_over_time_child_options' : stock_over_time_child_options 
                                })
 
+def generate(req):
+    # for the demo, to quickly generate dps and teams for all wards
+    all_wards = Location.objects.all().filter(type__name__iexact="ward")
+    dps_per_ward = 3
+    teams_per_dp = 4
+    dp_type = LocationType.objects.get(name__iexact="Distribution Point")
+    team_type = LocationType.objects.get(name__iexact="Mobilization Team")
+    teams_created = 0
+    dps_created = 0
+    ward_count = 1
+    for ward in all_wards:
+        print "ward: %s, %s of %s" %(ward.name, ward_count, len(all_wards))
+        ward_count = ward_count + 1
+        # assume if this ward already has DPs we don't need to do this
+        if (len(ward.children.all()) > 0):
+            continue
+        for dp_id in range(1, dps_per_ward + 1):
+            dp_name = "%s DP %s" %(ward.name, dp_id)
+            dp_code = "%s%s" % (ward.code, dp_id)
+            dp = Location.objects.create(name=dp_name, type=dp_type, code=dp_code, parent=ward)
+            dps_created = dps_created + 1
+            for team_id in range(1, teams_per_dp + 1):
+                team_name = "%s TEAM %s" %(dp_name, team_id)
+                team_code = "%s%s" % (dp_code, team_id)
+                team = Location.objects.create(name=team_name, type=team_type, code=team_code, parent=dp)
+                teams_created = teams_created + 1
+    return HttpResponse("Successfully created %s distribution points and %s teams" % (dps_created, teams_created))
+    
 def supply_summary(req, frm, to, range):
     return render_to_response(req, "nigeria/supply_summary.html")
 
@@ -118,19 +134,62 @@ def coupons_summary(req, frm, to, range):
 
 # Periodical Reporting  by day, week, month for coupons
 def coupons_daily(req, locid):
-    
+    #Declarations
+    coupons_distribution_data_per_ward = []
+    coupons_distribution_data_over_time = []  
+    child = Location.objects.get(pk=locid).children.all()[0]
     if not locid:
         locid = 1
     try: 
         location = Location.objects.get(pk=locid)
         #_set_stock(location)
+        location_type = Location.objects.get(pk=locid).type
+        loc_children = []
+        plot_area = 1
+        plot_data = []
+	plottable_data = []
+	# The loop below will be replaced by a neater code when method of returning children field properties are discovered
+        for i, child in enumerate(location.children.all()):
+            people, coupons, settlements = _get_card_distribution_data(child)
+	    child.people = people
+	    child.settlements = settlements
+	    child.coupons = coupons
+	    type = child.type
+	    if coupons != 0:
+                plottable_data.append([plot_area, coupons])
+                plot_area = plot_area + 3 
+                plot_data.append({'data' : [[plot_area, coupons]], "bars":{"show":"true", "barWidth": 2}, "label":str(child.name)})
+ 
+	    loc_children.append(child)
+       
+        overflow_data = [[20,0]]
+        plot_data.append({ 'data': overflow_data, "bars": { "show": "true", "fill": "true", "fillColor":"#FFFFFF","label":"MT 4" }})
     except Location.DoesNotExist:
         location = None
         
     #TODO: Generate and Send all plots data from here to the templates
-    
+	
+
+    coupons_data_for_dps_mts1 = [[1,100],[5,60],[9,70],[13,40]]
+    coupons_data_for_dps_mts2 = [[2,50],[6,60],[10,60],[14,100]]
+    coupons_data_for_dps_mts3 = [[3,50],[7,60],[11,60],[15,100]]
+
+    overflow_data = [[20,0]]
+
+    coupons_data =  [{ 'data': coupons_data_for_dps_mts1, "bars": { "show": "true"}, "label":"MT 1" },
+                     {'data': coupons_data_for_dps_mts2, "bars": { "show": "true" },"label":"MT 2" },
+                     { 'data': coupons_data_for_dps_mts3, "bars": { "show": "true" },"label":"MT 3" },
+                     { 'data': overflow_data, "bars": { "show": "true", "fill": "true", "fillColor":"#FFFFFF","label":"MT 4" }} ] 
+#    plot_data = [{'data' : plottable_data, "bars":{"show":"true", "barWidth": 2}, "label":"Null"},{ 'data': overflow_data, "bars": { "show": "true", "fill": "true", "fillColor":"#FFFFFF","label":"MT 4" }} ]
         
-    return render_to_response(req, "nigeria/coupons_daily.html", {'location': location})
+    return render_to_response(req, "nigeria/coupons_daily.html", {'location': location,
+					 'children' : loc_children, 
+					 'type':type, 
+					 'child':child, 
+					 'coupons_data':coupons_data,
+					 'plots':plot_data
+					 }
+			     )
     
     
 
@@ -184,7 +243,22 @@ def _set_stock(location):
         # this isn't a real error, we just don't have any stock information
         location.stock = None
 
-        
+def _set_net_data(location):
+    '''Get the stock object associated with this.  None if none found'''
+    try:
+        location.stock = Stock.objects.get(location=location)
+    except Stock.DoesNotExist:
+        # this isn't a real error, we just don't have any stock information
+        location.stock = None
+
+def _set_net_card_data(location):
+    '''Get the stock object associated with this.  None if none found'''
+    try:
+        location.stock = Stock.objects.get(location=location)
+    except Stock.DoesNotExist:
+        # this isn't a real error, we just don't have any stock information
+        location.stock = None
+
 def _get_stock_per_location_strings(locations):
     '''Get a JSON formatted list that flot can plot
        based on the data in the stock table'''
@@ -213,7 +287,7 @@ def _get_distribution_over_time_strings(ward):
     '''Get a JSON formated list for flot plots on the template, 
     based on data in the Nets Distribution Data'''
     
-def _get_distribution_per_distribution_team_strings(ward):
+def _get_distribution_per_distribution_team_strings(location):
     '''Get a JSON formated list for flot plots on the template, 
     based on data in the Nets Distribution Data'''
     
@@ -226,7 +300,25 @@ def _get_mobilization_data_per_mobilization_team_string(ward):
     '''Get a JSON formated list for flot plots on the template, 
     based on data in the Net Cards Distribution Data'''
 
-    
+def _get_card_distribution_data(location):
+    people = 0
+    settlements = 0
+    coupons = 0
+
+    list = CardDistribution.objects.filter(location=location)
+    for distribution in list:
+        people = people + distribution.people
+        coupons = coupons + distribution.distributed
+        settlements = settlements + distribution.settlements
+
+    for child in location.children.all():
+        child_data = _get_card_distribution_data(child)
+        people += child_data[0]
+ 	coupons += child_data[1]
+	settlements += child_data[2]
+
+    return people, coupons, settlements
+ 
 def _get_stock_over_time_strings(locations):
     '''Get a JSON formatted list that flot can plot
        based on the data in the stock table'''
@@ -250,8 +342,5 @@ def _get_stock_over_time_strings(locations):
             #print "adding update for %s" % location 
             rows.append('{"label":"%s", "data":[%s]}' % (location.name, ",".join(update_strings)))
     data = "[%s]" % (",".join(rows))
-    #data_for_dates = [label":"KANO", "data":[[1240316478.0,1800]]}];\n                    
-    # todo: make this real
-    #data = '[{"label":"Ajingi","data":[[1239706800000,1000],[1239793200000,800],[1239836400000,700],[1239966000000,650],[1240052400000,450],[1240138800000,350],[1240182000000,200],[1240268400000,100]]},{"label":"Bebeji","data":[[1239706800000,500],[1239793200000,350],[1239836400000,250],[1239966000000,1250],[1240052400000,1000],[1240138800000,900],[1240182000000,700],[1240268400000,650]]},{"label":"Bichi","data":[[1239706800000,1500],[1239793200000,1500],[1239836400000,1500],[1239966000000,1200],[1240052400000,1100],[1240138800000,1000],[1240182000000,850],[1240268400000,750]]},{"label":"Dala","data":[[1239706800000,200],[1239793200000,1500],[1239836400000,1250],[1239966000000,1100],[1240052400000,900],[1240138800000,600],[1240182000000,300],[1240268400000,100]]},{"label":"Garko","data":[[1239706800000,750],[1239793200000,450],[1239836400000,250],[1239966000000,250],[1240052400000,250],[1240138800000,50],[1240182000000,750],[1240268400000,500]]}];'
-    options = '{"bars":{"show":false},"points":{"show":true},"grid":{"clickable":false},"xaxis":{"mode":"time","timeformat":"%m/%d/%y"},"yaxis":{"min":0},"legend":{"show":true},"lines":{"show":true}}'
+    options = '{"bars":{"show":false},"points":{"show":true},"grid":{"clickable":false},"xaxis":{"mode":"time","timeformat":"%m/%d/%y"},"yaxis":{"min":0},"legend":{"show":true},"lines":{"show":true}}'    
     return (data, options)
