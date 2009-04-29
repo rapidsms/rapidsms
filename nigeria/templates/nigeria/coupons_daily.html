@@ -27,30 +27,28 @@ changeYear: true
   //Fake Data Used here, data will be generated from appropriate views/models
 	//TODO: Retrieve Real data for plots
 	
-				data1 = [[1,100],[5,60],[9,70],[13,40]];
-				data2 = [[2,50],[6,60],[10,60],[14,100]];
-				data3 = [[3,50],[7,60],[11,60],[15,100]];
-				data4 = [[20,0]];
+			coupons_data_for_dps_mts1 = [[1,100],[5,60],[9,70],[13,40]];
+			coupons_data_for_dps_mts2 = [[2,50],[6,60],[10,60],[14,100]];
+			coupons_data_for_dps_mts3 = [[3,50],[7,60],[11,60],[15,100]];
+			overflow_data = [[20,0]];
 
+   				
 //coupons_distribution_data_mts1 = [[]]
 				data5 = [[1,5],[5,2],[9,1],[13,5]];
 				data6 = [[2,1],[6,0],[10,0],[14,2]];
 				data7 = [[3,0],[7,2],[11,3],[15,3]];
 				data8 = [[19,100]];
-				 
+				
 				data9 = [[1,100],[5,60],[9,70],[13,40]];
 				data10 = [[2,50],[6,60],[10,60],[14,100]];
 				data11 = [[3,50],[7,60],[11,60],[15,100]];
 				data12 = [[0,0]]; 
 				
 	var opts = '{"grid":{"clickable":true},"xaxis":{"min":0,"ticks":[],"tickFormatter":"string"},"yaxis":{"min":0}}'
-	$.plot($('#cd_dps'), [{ data: data1, bars: { show: true}, "label":"MT 1" }, 
-													{ data: data2, bars: { show: true },"label":"MT 2" },
-													{ data: data3, bars: { show: true },"label":"MT 3" },
-													{ data: data4, bars: { show: true, fill: true, fillColor:"#FFFFFF","label":"MT 4" }}
-													
-													
-	], opts);
+	
+	coupons_data = {{coupons_data|safe}};
+
+	 $.plot($('#cd_dps'), coupons_data);
 				 
 				 coupons_distribution_over_time_data=
 				 [{label:"MT 1","data":[[1240558443000,121],[1240558529400,314],[1240558615800,675], [1240558702200,975]]},
@@ -186,19 +184,21 @@ $('#cd_dps_ot').bind( 'plotmousemove', function( e, pos ) {
 	<div width="80%" style="float:left">
 		<table width="100%" id="data_heading">
 			<thead>
-				<tr><th>Dist. Point</th><th>Team No.</th><th>No. of Settlements</th>
+				<tr><th>{{child.type}}</th><th>No. of Settlements</th>
 				<th>Total No. of People</th><th>Coupons Issued</th><th>Coupons Returned</th></tr>
 			</thead>
 			<tbody>
-				<tr><td>1</td><td>1</td><td>234</td><td>8922</td><td>178</td><td>17</td></tr>
-				<tr><td>1</td><td>2</td><td>233</td><td>8922</td><td>144</td><td>78</td></tr>
+				{% for child in children %}
+				<tr><td>{{child.name}}</td><td>{{child.settlements}}</td><td>{{child.people}}</td><td>{{child.coupons}}</td><td>17</td></tr>
+				<!-- <tr><td>1</td><td>2</td><td>233</td><td>8922</td><td>144</td><td>78</td></tr>
 				<tr><td>1</td><td>3</td><td>23</td><td>8922</td><td>174</td><td>74</td></tr>
 				<tr><td>2</td><td>1</td><td>2343</td><td>8922</td><td>844</td><td>44</td></tr>
 				<tr><td>2</td><td>2</td><td>2343</td><td>8922</td><td>184</td><td>84</td></tr>
 				<tr><td>2</td><td>3</td><td>2343</td><td>8922</td><td>178</td><td>17</td></tr>
 				<tr><td>3</td><td>1</td><td>2343</td><td>8922</td><td>174</td><td>14</td></tr>
 				<tr><td>3</td><td>2</td><td>2343</td><td>8922</td><td>180</td><td>144</td></tr>
-				<tr><td>3</td><td>3</td><td>2343</td><td>8922</td><td>174</td><td>4</td><td></td></tr>
+				<tr><td>3</td><td>3</td><td>2343</td><td>8922</td><td>174</td><td>4</td><td></td></tr>-->
+				{% endfor %}
 			</tbody>
 			<tr>
 			<td colspan="3">
