@@ -12,6 +12,7 @@ class NigeriaFormsLogic(FormsLogic):
         this was just for getting something hooked up '''
     
     # this is a simple structure we use to describe the forms.  
+    # maps token names to db names
     _form_lookups = {
                      "nets" : {
                                "class" : NetDistribution,
@@ -24,13 +25,13 @@ class NigeriaFormsLogic(FormsLogic):
                                            "discrepancy" : "discrepancy", 
                                            }
                                },
-                     "net" : {"class" : CardDistribution, 
+                     "netcards" : {"class" : CardDistribution, 
                               "display" : "net cards",
                               "fields" : {
                                           "location" : "location", 
                                           "settlements" : "settlements", 
                                           "people" : "people", 
-                                          "netcards" : "distributed",
+                                          "issued" : "distributed",
                                           }
                               }
                      }
@@ -73,6 +74,7 @@ class NigeriaFormsLogic(FormsLogic):
             return None
         elif form_entry.form.code.abbreviation in self._form_lookups.keys():
             # we know all the fields in this form are required, so make sure they're set
+            # TODO check the token's required flag
             required_token_names = self._form_lookups[form_entry.form.code.abbreviation]["fields"].keys()
             for token in form_entry.tokenentry_set.all():
                 if token.token.abbreviation in required_token_names:
@@ -89,6 +91,7 @@ class NigeriaFormsLogic(FormsLogic):
     def actions(self, *args, **kwargs):
         message = args[0]
         form_entry = args[1]
+        print(form_entry.form.code.abbreviation)
         if form_entry.form.code.abbreviation== "register":
 
             data = form_entry.rep_data
@@ -128,7 +131,7 @@ class NigeriaFormsLogic(FormsLogic):
             if not hasattr(instance, "reporter") or not instance.reporter:
                 instance.connection = message.persistant_connection
             instance.save()
-            response = "Received report for %s %s: " % (form_entry.domain.code.abbreviation, to_use["display"])
+            response = "Received report for %s %s: " % (form_entry.domain.code.abbreviation.upper(), to_use["display"].upper())
             # this line pulls any attributes that are present into 2-item lists
             attrs = [[attr_name, str(getattr(instance, attr_name))] for attr_name in field_map.values() if hasattr(instance, attr_name)]
             # joins the inner list on "=" and the outer on ", " so we get 

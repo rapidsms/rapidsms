@@ -15,7 +15,7 @@
 	
 }
 
-.treeview-blue  li.odd {
+#navigation li.odd {
 	border-top:1px solid #ccc;
 	background-color: #eee;
 }
