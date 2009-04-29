@@ -130,18 +130,25 @@ def coupons_daily(req, locid):
         #_set_stock(location)
         location_type = Location.objects.get(pk=locid).type
         loc_children = []
-        
+        plot_area = 1
+        plot_data = []
+	plottable_data = []
 	# The loop below will be replaced by a neater code when method of returning children field properties are discovered
         for i, child in enumerate(location.children.all()):
-            list = CardDistribution.objects.filter(location=child)
             people, coupons, settlements = _get_card_distribution_data(child)
 	    child.people = people
 	    child.settlements = settlements
 	    child.coupons = coupons
 	    type = child.type
-
+	    if coupons != 0:
+                plottable_data.append([plot_area, coupons])
+                plot_area = plot_area + 3 
+                plot_data.append({'data' : [[plot_area, coupons]], "bars":{"show":"true", "barWidth": 2}, "label":str(child.name)})
+ 
 	    loc_children.append(child)
-
+       
+        overflow_data = [[20,0]]
+        plot_data.append({ 'data': overflow_data, "bars": { "show": "true", "fill": "true", "fillColor":"#FFFFFF","label":"MT 4" }})
     except Location.DoesNotExist:
         location = None
         
@@ -158,10 +165,15 @@ def coupons_daily(req, locid):
                      {'data': coupons_data_for_dps_mts2, "bars": { "show": "true" },"label":"MT 2" },
                      { 'data': coupons_data_for_dps_mts3, "bars": { "show": "true" },"label":"MT 3" },
                      { 'data': overflow_data, "bars": { "show": "true", "fill": "true", "fillColor":"#FFFFFF","label":"MT 4" }} ] 
-    	    
+#    plot_data = [{'data' : plottable_data, "bars":{"show":"true", "barWidth": 2}, "label":"Null"},{ 'data': overflow_data, "bars": { "show": "true", "fill": "true", "fillColor":"#FFFFFF","label":"MT 4" }} ]
         
     return render_to_response(req, "nigeria/coupons_daily.html", {'location': location,
-					 'children' : loc_children, 'type':type, 'child':child, 'coupons_data':coupons_data }
+					 'children' : loc_children, 
+					 'type':type, 
+					 'child':child, 
+					 'coupons_data':coupons_data,
+					 'plots':plot_data
+					 }
 			     )
     
     
@@ -262,6 +274,7 @@ def _get_card_distribution_data(location):
     people = 0
     settlements = 0
     coupons = 0
+
     list = CardDistribution.objects.filter(location=location)
     for distribution in list:
         people = people + distribution.people
@@ -274,7 +287,7 @@ def _get_card_distribution_data(location):
  	coupons += child_data[1]
 	settlements += child_data[2]
 
-    return [people, coupons, settlements]
+    return people, coupons, settlements
  
 def _get_stock_over_time_strings(locations):
     '''Get a JSON formatted list that flot can plot
