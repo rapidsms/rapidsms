@@ -8,6 +8,7 @@ from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 
 import rapidsms
 from rapidsms.parsers.keyworder import * 
+from rapidsms.message import StatusCodes
 
 from models import *
 from utils import *
@@ -19,7 +20,7 @@ class App(rapidsms.app.App):
         self.separator = "[,\.\s]*"
         self.leading_pattern = "[\"'\s]*"
         self.trailing_pattern = "[\.,\"'\s]*"
-        self.form_pattern = None 
+        self.form_patterns = [] 
         self.domains_forms_tokens = []
         self.setup()
         # allow apps to register to be a part of the message handling control flow
@@ -45,7 +46,13 @@ class App(rapidsms.app.App):
         self.form_handlers[name] = app 
 
     def add_message_handler_to(self, dispatcher):
-        dispatcher.add_message_handler(self.form_pattern, self.form)
+        if self.form_patterns:
+            for form_pattern in self.form_patterns:
+                dispatcher.add_message_handler(form_pattern, self.form)
+            
+        else:
+            self.warning("add_message_handler_to was called with no form_patterns. Have you loaded your fixtures?")
+            
     
     def setup(self):
         # create a list of dictionaries mapping domains to lists of their
@@ -53,9 +60,10 @@ class App(rapidsms.app.App):
         # of their tokens, as tuples of token.abbr, token.regex
         # e.g.,
         # [    
-        #      {domain_code : 
+        #      {(domain.code.abbreviation, domain.code.regex) : 
         #          [
-        #          {form_type : [(token.abbr, token.regex),...]},
+        #          {(form.code.abbreviation, form.code.regex) : 
+        #               [(token.abbr, token.regex),...]},
         #          ...
         #          ]
         #       },
@@ -65,107 +73,37 @@ class App(rapidsms.app.App):
         domains = Domain.objects.all()
         for d in domains:
             # gather forms for this domain
-            forms = d.forms.all()
+            forms = d.domain_forms.all().order_by('sequence')
             forms_tokens = []
             for f in forms:
                 # gather tokens for this form as a list of tuples
-                tokens = f.tokens.order_by('sequence').\
-                            values_list('abbreviation', 'regex')
+                form_tokens = f.form.form_tokens.order_by('sequence')
+                tokens = []
+                for ft in form_tokens:
+                    tokens.append((ft.token.abbreviation, ft.token.regex))
+
                 # make a dictionary mapping this form type to its token list
                 # and add the dict to the running form_tokens list
-                forms_tokens.append(dict([(f.type.upper(), tokens)]))
+                forms_tokens.append(dict([((f.form.code.abbreviation.upper(), f.form.code.regex), tokens)]))
+
+                # put together domain pattern, form pattern, and token patterns
+                # along with leading patterns and separators, etc
+                form_pattern = self.leading_pattern + d.code.regex + \
+                    self.separator + f.form.code.regex + self.separator + \
+                    ''.join(['(?:[,\.\s]*%s)?' % (t[1]) for t in tokens]) + \
+                    self.trailing_pattern
+                self.form_patterns.append(form_pattern)
+
             # make a dictionary mapping this domain code to its form list
             # and add the dict to the running domain_form_tokens list
-            self.domains_forms_tokens.append(dict([(d.code.upper(), forms_tokens)]))
+            self.domains_forms_tokens.append(dict([((d.code.abbreviation.upper(), d.code.regex), forms_tokens)]))
 
-        # lists for keeping track of domain codes, form types, and 
-        # number of tokens for use generating ranges
-        domain_code_lengths = []
-        form_type_lengths = []
-        number_of_tokens = []
-        # list for keeping track token sequences
-        sequence_tokens = []
-        if not self.domains_forms_tokens:
-            return
-        for domain_forms_tokens in self.domains_forms_tokens:
-            for domain_code, forms in domain_forms_tokens.iteritems():
-                # add the length of the domain code to our list
-                domain_code_lengths.append(len(domain_code))
-                for form in forms:
-                    for form_type, tokens in form.iteritems():
-                        # add the length of the form type to our list
-                        form_type_lengths.append(len(form_type))
-                        # add the number of tokens for this form to our list
-                        number_of_tokens.append(len(tokens))
-                        for i, token in enumerate(tokens):
-                            # add a tuple of token's sequence and pattern to our list
-                            sequence_tokens.append((i, token[1]))
-
-        # list for final patterns for each sequence
-        pattern_for_sequences = []
-        # iterate up to the maximum number of tokens (longest form)
-        number_of_tokens.sort()
-        for n in range(number_of_tokens[ - 1]):
-            # gather all tokens that are at this sequence
-            # (all tokens that are the third token in a report, for example)
-            def tokens_at_sequence(t): return t[0] == n
-            patterns_at_sequence = filter(tokens_at_sequence, sequence_tokens)
-            # gather the unique patterns out of these tokens and create a
-            # regex for all of them (by adding an or between them all)
-            #
-            # let me break it down, starting from the inside:
-            # do a list comprehension to get the pattern from the second 
-            # position in the tuple, then limit to unique patterns, then
-            # join the patterns together with a pipe between each one, and
-            # finally add the resulting pattern to the list
-            unique_patterns = '|'.join(unique(map((lambda t: t[1]), patterns_at_sequence)))
-            self.debug("UNIQUE PATTERN " + str(n))
-            self.debug(unique_patterns)
-            # fix any patterns we just or-ed together so they are the kind of or we want
-            # e.g., (\w+)|(\d+) => (\w+|\d+)
-            # TODO figure out how to handle non-captured matches
-            # e.g., (?:\w+)|(\d+) => (?:\w+)|(\d+) and then zip up tokens correctly
-            pattern_for_sequences.append(unique_patterns.replace(')|(', '|'))
-        self.debug("PATTERN FOR SEQUENCES")
-        self.debug(pattern_for_sequences)
-
-        # create a pattern for domain_code that matches any word as long as
-        # the shortest code and no longer than the longest code
-        domain_code_lengths.sort()
-        #TODO oops. this only captures the last character if the range is {4,4}
-        #domain_code_pattern = '(\w){%s,%s}' % (domain_code_lengths[0], domain_code_lengths[-1])
-        #domain_code_pattern = '(letters)'
-        domain_code_pattern = '([a-z]+)'
-        # create a pattern for form type that matches any word as long as
-        # the shortest code and no longer than the longest code
-        form_type_lengths.sort()
-        # TODO ditto
-        #form_type_pattern = '(\w){%s,%s}' % (form_type_lengths[0], form_type_lengths[-1])
-        #form_type_pattern = '(letters)'
-        form_type_pattern = '([a-z]+)'
-
-        # wrap all of the sequence patterns (except for the first one) 
-        # with separators and make them optional.
-        # this way all possible forms (that have at least one token)
-        # will be matched, but we are able to capture n tokens
-        #
-        # i wonder whether doing a list comprehension or 
-        # mapping a lambda is faster here
-        #wrapped_patterns = ['(?:[,\.\s]*%s)?' % (p) for p in pattern_for_sequences]
-        wrapped_patterns = map((lambda p: '(?:[,\.\s]*%s)?' % (p)), pattern_for_sequences[1:]) 
-        # put all the patterns together!
-        self.form_pattern = self.leading_pattern + domain_code_pattern + \
-            self.separator + form_type_pattern + self.separator + pattern_for_sequences[0] + ''.join(wrapped_patterns) + self.trailing_pattern
-        
-        
-        self.debug("FORM PATTERN")
-        self.debug(self.form_pattern)
 
     def __get(self, model, **kwargs):
         try:
             # attempt to fetch the object
             return model.objects.get(**kwargs)
-            
+
         # no objects or multiple objects found (in the latter case,
         # something is probably broken, so perhaps we should warn)
         except (ObjectDoesNotExist, MultipleObjectsReturned):
@@ -188,18 +126,23 @@ class App(rapidsms.app.App):
 
     def form(self, app, message, code, type, *data): 
         self.debug("FORM")
+        self.debug(data)
         #reporter = self.__identify(message.peer, "reporting")
         #self.handled = False
         for domain in self.domains_forms_tokens:
-            if code.upper() in domain:
+            domain_matched = self._get_code(code, domain)
+            self.debug(domain_matched)
+            if domain_matched:
                 # gather list of form dicts for this domain code
-                forms = domain[code.upper()]
+                # forms = domain[code.upper()]
                 self.debug("DOMAIN MATCH")
-                
+                forms = domain[domain_matched]
                 for form in forms:
-                    if type.upper() in form:
-                        this_domain = Domain.objects.get(code__iexact=code.upper())
-                        this_form = Form.objects.get(type__iexact=type)
+                    form_matched = self._get_code(type, form)
+                    self.debug(form_matched)
+                    if form_matched:
+                        this_domain = Domain.objects.get(code__abbreviation__iexact=domain_matched[0])
+                        this_form = Form.objects.get(code__abbreviation__iexact=form_matched[0])
                         if hasattr(message, "reporter") and message.reporter:
                             this_form.reporter = message.reporter
                         else:
@@ -210,9 +153,10 @@ class App(rapidsms.app.App):
                         form_entry = FormEntry.objects.create(domain=this_domain, \
                             form=this_form, date=message.date)
                         # gather list of token tuples for this form type
-                        tokens = form[type.upper()]
+                        tokens = form[form_matched]
                         
                         self.debug("FORM MATCH")
+                        print(data)
                         info = []
                         for t, d in zip(tokens, data):
                             if not d:
@@ -243,7 +187,7 @@ class App(rapidsms.app.App):
                             # actions SHOULD send their own confirmation
                             if(after <= before):
                                 message.respond("Received report for %s %s: %s.\nIf this is not correct, reply with CANCEL" % \
-                                    (code.upper(), type.upper(), ", ".join(info)))                        
+                                    (domain_matched[0], form_matched[0], ", ".join(info)))                        
                         # oh no! there were validation errors!
                         # since we've already matched the domain
                         # and form, we can be pretty sure that
@@ -252,7 +196,7 @@ class App(rapidsms.app.App):
                         # and note that we've handled this one
                         else:
                             self.debug("Invalid form.  %s", ". ".join(validation_errors))
-                            message.respond("Invalid form.  %s" % ". ".join(validation_errors))
+                            message.respond("Invalid form.  %s" % ". ".join(validation_errors), StatusCodes.APP_ERROR)
                             return
                         self.handled = True
 
@@ -264,20 +208,28 @@ class App(rapidsms.app.App):
                         continue        
 
                 if not hasattr(self, "handled") or not self.handled:
-                    # TODO ditto
                     message.respond("Oops. Cannot find a report called %s for %s. Available reports for %s are %s" % \
-                        (type.upper(), code.upper(), code.upper(), ", ".join([f.keys().pop().upper() for f in forms]))) 
+                        (type.upper(), domain_matched[0], domain_matched[0], ", ".join([f.keys().pop().upper() for f in forms])), 
+                        StatusCodes.APP_ERROR) 
                     self.handled = True
                     break
 
             else:
-                continue
-                # TODO ditto
-                #if not handled:
+                pass
+                #if not hasattr(self, "handled") or not self.handled:
                 #    message.respond("Oops. Cannot find a supply called %s. Available supplies are %s" %\
-                #        (code.upper(), ", ".join([s.keys().pop().upper() for s in self.supplies_reports_tokens]))) 
+                #        (code.upper(), ", ".join([d.keys().pop().upper() for d in self.domains_forms_tokens])))
 
 
+    def _get_code(self, code, dict):
+        '''Gets the code out of the code and dict.  This allows us to 
+            do try to match each token's regex'''
+        for tuple in dict.keys():
+            if re.match(tuple[1], code):
+                return tuple
+        return False
+
+        
     def _get_validation_errors(self, message, form, form_entry):
         validation_errors = []
         

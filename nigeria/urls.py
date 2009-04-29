@@ -6,7 +6,9 @@ from django.conf.urls.defaults import *
 import apps.nigeria.views as views
 
 urlpatterns = patterns('',
+    url(r'^locgen/?$', views.generate),
     url(r'^reports/?$', views.index),
+    url(r'^reports/summary/(?P<locid>\d*)/?$', views.index),
     url(r'^reports/logistics/summary/(?P<locid>\d*)/?$', views.logistics_summary),
     url(r'^reports/bednets/summary/(?P<range>.*)/?(?P<from>.*)/?(?P<to>.*)/?$', views.bednets_summary),
     url(r'^reports/coupons/summary/(?P<range>.*)/?(?P<from>.*)/?(?P<to>.*)/?$', views.coupons_summary),

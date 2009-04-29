@@ -13,24 +13,20 @@ from datetime import datetime, timedelta
 
 class TestApp (TestScript):
     apps = (reporter_app.App, App,form_app.App, nigeria_app.App )
-    fixtures = ['nigeria_llin', 'kano_locations']
+    # the test_backend script does the loading of the dummy backend that allows reporters
+    # to work properly in tests
+    fixtures = ['nigeria_llin', 'kano_locations', 'test_backend']
     
     def setUp(self):
         TestScript.setUp(self)
-        # have to initialize the backend for the reporters app to function properly
-        title = self.backend.name
-        try:
-            PersistantBackend.objects.get(title=title)
-        except PersistantBackend.DoesNotExist:
-            PersistantBackend(title=title).save()
-
+        
     def testFixture(self): 
         """"This isn't actually a test.  It just takes advantage
             of the test harness to spam a bunch of messages to the 
             supply app and spit out the data in a format that can
             be sucked into a fixture"""
         # this is the number of transactions that will be generated
-        transaction_count = 100
+        transaction_count = 0
         
         # these are the locations that will be the origins, chosen randomly
         # from this list
@@ -116,15 +112,23 @@ class TestApp (TestScript):
         script = "\n".join(all_txns)
         self.runScript(script)
         dumpdata = Command()
-        print "\n\n=========This is your fixture.  Copy and paste it to a text file========\n\n"
-        print dumpdata.handle("supply")
+        filename = os.path.abspath(os.path.join(os.path.dirname(__file__),"fixtures/test_transactions_stock.json"))
+        options = { "indent" : 2 }
+        datadump = dumpdata.handle("supply", **options)
+        # uncomment these lines to save the fixture
+        #file = open(filename, "w")
+        #file.write(datadump)
+        #file.write(datadump)
+        #file.close()
+        print "=== Successfully wrote fixtures to %s ===" % filename
         
+
     def testScript(self):
         mismatched_amounts = """
-            8005552222 > llin register 20 sm secret mister sender 
-            8005552222 < Hello msender! You are now registered as Stock manager at KANO State.
-            8005551111 > llin register 2027 sm shhh mister recipient
-            8005551111 < Hello mrecipient! You are now registered as Stock manager at KURA LGA.
+            8005552222 > llin register 20 sm mister sender 
+            8005552222 < Hello mister! You are now registered as Stock manager at KANO State.
+            8005551111 > llin register 2027 sm mister recipient
+            8005551111 < Hello mister! You are now registered as Stock manager at KURA LGA.
             8005552222 > llin issue from 20 to 2027 11111 200 1800
             8005552222 < Received report for LLIN issue: origin=KANO, dest=KURA, waybill=11111, amount=200, stock=1800. If this is not correct, reply with CANCEL
             8005551111 > llin receive from 20 to 2027 11111 150 500
@@ -137,16 +141,16 @@ class TestApp (TestScript):
 
         issue = PartialTransaction.objects.get(origin__name="KANO",\
            destination__name="KURA", shipment_id="11111",\
-           domain__code="LLIN", type="I", reporter__pk=sender.pk)
+           domain__code__abbreviation="LLIN", type="I", reporter__pk=sender.pk)
 
         receipt = PartialTransaction.objects.get(origin__name__iexact="KANO",\
            destination__name__iexact="KURA", shipment_id="11111",\
-           domain__code__iexact="LLIN", type="R", reporter__pk=recipient.pk)
+           domain__code__abbreviation__iexact="LLIN", type="R", reporter__pk=recipient.pk)
         
         origin_stock = Stock.objects.get(location__name__iexact="KANO",\
-            domain__code__iexact="LLIN")
+            domain__code__abbreviation__iexact="LLIN")
         dest_stock = Stock.objects.get(location__name__iexact="KURA",\
-            domain__code__iexact="LLIN")
+            domain__code__abbreviation__iexact="LLIN")
         
         # everything in its right place
         self.assertEqual(sender.location, issue.origin)
@@ -161,7 +165,7 @@ class TestApp (TestScript):
         # issue and receipt have been matched into a transaction
         self.assertEqual(issue.status, 'C')
         self.assertEqual(issue.status, receipt.status)
-        first_transaction = Transaction.objects.get(domain__code__iexact="LLIN",\
+        first_transaction = Transaction.objects.get(domain__code__abbreviation__iexact="LLIN",\
             amount_sent=issue.amount, amount_received=receipt.amount,\
             issue=issue, receipt=receipt)
 
@@ -189,13 +193,13 @@ class TestApp (TestScript):
         # mister recipient's amendment
         second_receipt = PartialTransaction.objects.get(origin__name__iexact="KANO",\
            destination__name__iexact="KURA", shipment_id="11111",\
-           domain__code__iexact="LLIN", type="R", reporter=recipient, status="C")
+           domain__code__abbreviation__iexact="LLIN", type="R", reporter=recipient, status="C")
 
         # make sure this is a new one
         self.assertNotEqual(second_receipt.pk, receipt.pk)
 
         # make sure a new transaction was matched
-        second_transaction = Transaction.objects.get(domain__code__iexact="LLIN",\
+        second_transaction = Transaction.objects.get(domain__code__abbreviation__iexact="LLIN",\
             amount_sent=issue.amount, amount_received=second_receipt.amount,\
             issue=issue, receipt=second_receipt)
 
@@ -214,7 +218,8 @@ class TestApp (TestScript):
         # send a form from an unregistered user and assure it is accepted
         unregistered_submission = """
             supply_tus_1 > llin issue from 20 to 2027 11111 200 1800
-            supply_tus_1 < Received report for LLIN issue: origin=KANO, dest=KURA, waybill=11111, amount=200, stock=1800. If this is not correct, reply with CANCEL. Please register your phone
+            supply_tus_1 < Received report for LLIN issue: origin=KANO, dest=KURA, waybill=11111, amount=200, stock=1800. If this is not correct, reply with CANCEL
+            supply_tus_1 < Please register your phone.
             """
         self.runScript(unregistered_submission)
         
@@ -222,7 +227,7 @@ class TestApp (TestScript):
         connection = PersistantConnection.objects.get(identity="supply_tus_1")
         issue = PartialTransaction.objects.get(origin__name="KANO",\
            destination__name="KURA", shipment_id="11111",\
-           domain__code="LLIN", type="I", connection=connection)
+           domain__code__abbreviation="LLIN", type="I", connection=connection)
         
         # check that the reporter is empty
         self.assertFalse(issue.reporter)
