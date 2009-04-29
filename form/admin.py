@@ -32,6 +32,7 @@ class PatternAdmin(admin.ModelAdmin):
 admin.site.register(Form)
 admin.site.register(Token, TokenAdmin)
 admin.site.register(FormToken)
+admin.site.register(DomainForm)
 admin.site.register(Pattern, PatternAdmin)
 admin.site.register(Domain, DomainAdmin)
 admin.site.register(FormEntry, FormEntryAdmin)

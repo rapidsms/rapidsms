@@ -111,8 +111,8 @@ class SupplyFormsLogic(FormsLogic):
                 partials_to_amend.update(status = "A")
 
         partial.save()
-        response = "Received report for %s %s: origin=%s, dest=%s, waybill=%s, amount=%s, stock=%s. If this is not correct, reply with CANCEL" % (
-             partial.domain.code, form_entry.form.code.abbreviation, partial.origin, partial.destination, partial.shipment_id, partial.amount, partial.stock)  
+        response = "Received report for %s %s: origin=%s, dest=%s, waybill=%s, amount=%s, stock=%s" % (
+             partial.domain.code.abbreviation.upper(), form_entry.form.code.abbreviation.upper(), partial.origin, partial.destination, partial.shipment_id, partial.amount, partial.stock)  
         message.respond(response, StatusCodes.OK)
         if not partial.reporter:
             message.respond("Please register your phone.")

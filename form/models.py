@@ -88,7 +88,12 @@ class Token(models.Model):
         return "%s" % (self.abbreviation)
 
     def _get_regex(self):
-        return '|'.join(self.patterns.values_list('regex', flat=True))
+        # fix any patterns we just or-ed together so they are the kind of or we want
+        # e.g., (\w+)|(\d+) => (\w+|\d+)
+        # TODO figure out how to handle non-captured matches
+        # e.g., (?:\w+)|(\d+) => (?:\w+)|(\d+) and then zip up tokens correctly
+        regex = '|'.join(self.patterns.values_list('regex', flat=True))
+        return regex.replace(')|(', '|')
 
     regex = property(_get_regex)
 
@@ -100,6 +105,13 @@ class FormToken(models.Model):
     def __unicode__(self):
         return "%s: %s" % (str(self.sequence), self.token) 
 
+class DomainForm(models.Model):
+    form = models.ForeignKey(Form)
+    sequence = models.IntegerField()
+
+    def __unicode__(self):
+        return "%s: %s" % (str(self.sequence), self.form)
+
 class Pattern(models.Model):
     name = models.CharField(max_length=160)
     regex = models.CharField(max_length=160)
@@ -110,7 +122,7 @@ class Pattern(models.Model):
 class Domain(models.Model):
     name = models.CharField(max_length=160, help_text="Name of form domain")
     code = models.ForeignKey(Token)
-    forms = models.ManyToManyField(Form)
+    domain_forms = models.ManyToManyField(DomainForm)
         
     def __unicode__(self):
         return self.name

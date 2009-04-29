@@ -141,7 +141,7 @@ class TestApp (TestScript):
     def _testForms(self):
         forms = Form.objects.all()
         self.assertEqual(5, len(forms))
-        for form_name in ["register", "issue", "receive", "nets", "net"]:
+        for form_name in ["register", "issue", "receive", "nets", "netcards"]:
             # this will throw an error if it doesn't exist
             Form.objects.get(code__abbreviation=form_name)
         
