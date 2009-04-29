@@ -42,7 +42,7 @@ class NigeriaFormsLogic(FormsLogic):
         form_entry = args[1]
         # in case we need help, build a valid reminder string
         # TODO put this in the db!
-        required = ["location", "role", "name"]
+        required = ["location", "role", "firstname"]
         help = ("%s register " % form_entry.domain.code.abbreviation.lower()) +\
                 " ".join(["<%s>" % t for t in required])
         if form_entry.form.code.abbreviation == "register":
@@ -61,7 +61,7 @@ class NigeriaFormsLogic(FormsLogic):
             
             # parse the name via Reporter
             data["alias"], data["first_name"], data["last_name"] =\
-                Reporter.parse_name(data.pop("name"))
+                Reporter.parse_name(data.pop("firstname") + " " + data.pop("lastname") + " " + data.pop("othername"))
 
             # check that the name/alias
             # hasn't already been registered
@@ -117,7 +117,7 @@ class NigeriaFormsLogic(FormsLogic):
             # notify the user that everyting went okay
             # TODO: proper (localized?) messages here
             message.respond("Hello %s! You are now registered as %s at %s %s."\
-                % (rep.alias, rep.role, rep.location, rep.location.type), StatusCodes.OK)
+                % (rep.first_name, rep.role, rep.location, rep.location.type), StatusCodes.OK)
 
         elif self._form_lookups.has_key(form_entry.form.code.abbreviation):
             to_use = self._form_lookups[form_entry.form.code.abbreviation]
