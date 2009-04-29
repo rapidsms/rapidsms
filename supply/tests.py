@@ -130,18 +130,18 @@ class TestApp (TestScript):
             8005551111 > llin register 2027 sm mister recipient
             8005551111 < Hello mister! You are now registered as Stock manager at KURA LGA.
             8005552222 > llin issue from 20 to 2027 11111 200 1800
-            8005552222 < Received report for LLIN issue: origin=KANO, dest=KURA, waybill=11111, amount=200, stock=1800. If this is not correct, reply with CANCEL
+            8005552222 < Received report for LLIN ISSUE: origin=KANO, dest=KURA, waybill=11111, amount=200, stock=1800
             8005551111 > llin receive from 20 to 2027 11111 150 500
-            8005551111 < Received report for LLIN receive: origin=KANO, dest=KURA, waybill=11111, amount=150, stock=500. If this is not correct, reply with CANCEL
+            8005551111 < Received report for LLIN RECEIVE: origin=KANO, dest=KURA, waybill=11111, amount=150, stock=500
             """
         self.runScript(mismatched_amounts)
 
         sender = Reporter.objects.get(alias="msender")
         recipient = Reporter.objects.get(alias="mrecipient")
 
-        issue = PartialTransaction.objects.get(origin__name="KANO",\
-           destination__name="KURA", shipment_id="11111",\
-           domain__code__abbreviation="LLIN", type="I", reporter__pk=sender.pk)
+        issue = PartialTransaction.objects.get(origin__name__iexact="KANO",\
+           destination__name__iexact="KURA", shipment_id="11111",\
+           domain__code__abbreviation__iexact="LLIN", type="I", reporter__pk=sender.pk)
 
         receipt = PartialTransaction.objects.get(origin__name__iexact="KANO",\
            destination__name__iexact="KURA", shipment_id="11111",\
