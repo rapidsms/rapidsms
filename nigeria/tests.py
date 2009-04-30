@@ -68,9 +68,12 @@ class TestApp (TestScript):
            #test_reg_6 < Hello short! You are now registered as Distribution point team leader at KANO State.
            test_reg_7 > llin registered 20 dl long user
            test_reg_7 < Hello long! You are now registered as Distribution point team leader at KANO State.
+           # extra spaces
+           test_reg_8 > llin    register   20   dl    space     guy
+           test_reg_8 < Hello space! You are now registered as Distribution point team leader at KANO State.
            # alas, we're not perfect
-           test_reg_8 > llin rgstr 20 dl sorry guy
-           test_reg_8 < Sorry we didn't understand that. Available forms are LLIN: REGISTER, NETCARDS, NETS, RECEIVE, ISSUE
+           test_reg_fail > llin rgstr 20 dl sorry guy
+           test_reg_fail < Sorry we didn't understand that. Available forms are LLIN: REGISTER, NETCARDS, NETS, RECEIVE, ISSUE
            
          """
     
