@@ -116,18 +116,14 @@ class TestApp (TestScript):
             tus_2 < Please register your phone with RapidSMS. 
          """
            
-    def testGenerateNetFixture(self): 
+    def testGenerateNetFixtures(self): 
         """ This isn't actually a test.  It just takes advantage
             of the test harness to spam a bunch of messages to the 
-            supply app and spit out the data in a format that can
+            nigeria app and spit out the data in a format that can
             be sucked into a fixture """
         # this is the number of net reports that will be generated
+        count = 0
         
-        net_count = 0
-        
-        
-        "8005551213 > llin nets 2001 123 456 78 90"
-              
         # the sender will always be the same, for now
         phone = "55555"
         
@@ -145,7 +141,8 @@ class TestApp (TestScript):
         # wards
         wards = [200101, 200102, 200103, 200104, 200201]
         all_net_strings = []
-        for i in range(net_count):
+        for i in range(count):
+            # this first part generates a net form at a random DP
             date = datetime.fromtimestamp(random.randint(min_time, max_time))
             ward = Location.objects.get(code=random.choice(wards))
             dp = random.choice(ward.children.all())
@@ -159,6 +156,17 @@ class TestApp (TestScript):
             discrepancy = random.randint(0,distributed/5)
             net_string = "%s@%s > llin nets %s %s %s %s %s" % (phone, date.strftime("%Y%m%d%H%M"), dp.code, distributed, expected, actual, discrepancy)
             all_net_strings.append(net_string)
+            # the second part generates a net card form at a random MT
+            date = datetime.fromtimestamp(random.randint(min_time, max_time))
+            ward = Location.objects.get(code=random.choice(wards))
+            dp = random.choice(ward.children.all())
+            mt = random.choice(dp.children.all())
+            settlements = random.randint(3, 50)
+            people = random.randint(50, 600)
+            coupons = random.randint(50, 600)
+            net_card_string = "%s@%s > llin net cards %s %s %s %s" % (phone, date.strftime("%Y%m%d%H%M"), mt.code, settlements, people, coupons )
+            all_net_strings.append(net_card_string)
+            
         script = "\n".join(all_net_strings)
         self.runScript(script)
         dumpdata = Command()
@@ -167,7 +175,6 @@ class TestApp (TestScript):
         datadump = dumpdata.handle("nigeria", **options)
         # uncomment these lines to save the fixture
         #file = open(filename, "w")
-        #file.write(datadump)
         #file.write(datadump)
         #file.close()
         #print "=== Successfully wrote fixtures to %s ===" % filename
