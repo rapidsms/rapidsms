@@ -120,7 +120,7 @@ class TestApp (TestScript):
         #file.write(datadump)
         #file.write(datadump)
         #file.close()
-        print "=== Successfully wrote fixtures to %s ===" % filename
+        #print "=== Successfully wrote fixtures to %s ===" % filename
         
 
     def testScript(self):
