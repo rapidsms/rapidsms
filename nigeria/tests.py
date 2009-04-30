@@ -59,13 +59,15 @@ class TestApp (TestScript):
            test_reg_3 > llin register 20 dl onename
            test_reg_3 < Hello onename! You are now registered as Distribution point team leader at KANO State.
            # these fail
-           #test_reg_4 > llin register 20 dl mister three names
-           #test_reg_4 < Hello mister! You are now registered as Distribution point team leader at KANO State.
-           #test_reg_5 > llin register 20 dl mister four name guy
-           #test_reg_5 < Hello mister! You are now registered as Distribution point team leader at KANO State.
-           # some shortcuts
-           #test_reg_6 > llin reg 20 dl short user
-           #test_reg_6 < Hello short! You are now registered as Distribution point team leader at KANO State.
+           test_reg_4 > llin register 20 dl mister three names
+           test_reg_4 < Hello mister! You are now registered as Distribution point team leader at KANO State.
+           test_reg_5 > llin register 20 dl mister four name guy
+           test_reg_5 < Hello mister! You are now registered as Distribution point team leader at KANO State.
+           # some other spellings
+           test_reg_6 > llin regstr 20 dl short user
+           test_reg_6 < Hello short! You are now registered as Distribution point team leader at KANO State.
+           test_reg_6 > llin regs 20 dl short user
+           test_reg_6 < Hello short! You are now registered as Distribution point team leader at KANO State.
            test_reg_7 > llin registered 20 dl long user
            test_reg_7 < Hello long! You are now registered as Distribution point team leader at KANO State.
            # extra spaces
