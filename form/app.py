@@ -213,7 +213,7 @@ class App(rapidsms.app.App):
         '''Gets the code out of the code and dict.  This allows us to 
            try to match each token's regex'''
         for tuple in dict.keys():
-            if re.match(tuple[1], code):
+            if re.match(tuple[1], code, re.IGNORECASE):
                 return tuple
         return False
 
