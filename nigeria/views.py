@@ -5,6 +5,7 @@ from django.http import HttpResponse, HttpResponseNotAllowed, HttpResponseServer
 from django.template import RequestContext
 from apps.reporters.models import Location, LocationType
 from apps.supply.models import Shipment, Transaction, Stock, PartialTransaction
+from apps.nigeria.models import CardDistribution
 from rapidsms.webui.utils import render_to_response
 from django.db import models
 # The import here newly added for serializations
@@ -133,19 +134,62 @@ def coupons_summary(req, frm, to, range):
 
 # Periodical Reporting  by day, week, month for coupons
 def coupons_daily(req, locid):
-    
+    #Declarations
+    coupons_distribution_data_per_ward = []
+    coupons_distribution_data_over_time = []  
+    child = Location.objects.get(pk=locid).children.all()[0]
     if not locid:
         locid = 1
     try: 
         location = Location.objects.get(pk=locid)
         #_set_stock(location)
+        location_type = Location.objects.get(pk=locid).type
+        loc_children = []
+        plot_area = 1
+        plot_data = []
+	plottable_data = []
+	# The loop below will be replaced by a neater code when method of returning children field properties are discovered
+        for i, child in enumerate(location.children.all()):
+            people, coupons, settlements = _get_card_distribution_data(child)
+	    child.people = people
+	    child.settlements = settlements
+	    child.coupons = coupons
+	    type = child.type
+	    if coupons != 0:
+                plottable_data.append([plot_area, coupons])
+                plot_area = plot_area + 3 
+                plot_data.append({'data' : [[plot_area, coupons]], "bars":{"show":"true", "barWidth": 2}, "label":str(child.name)})
+ 
+	    loc_children.append(child)
+       
+        overflow_data = [[20,0]]
+        plot_data.append({ 'data': overflow_data, "bars": { "show": "true", "fill": "true", "fillColor":"#FFFFFF","label":"MT 4" }})
     except Location.DoesNotExist:
         location = None
         
     #TODO: Generate and Send all plots data from here to the templates
-    
+	
+
+    coupons_data_for_dps_mts1 = [[1,100],[5,60],[9,70],[13,40]]
+    coupons_data_for_dps_mts2 = [[2,50],[6,60],[10,60],[14,100]]
+    coupons_data_for_dps_mts3 = [[3,50],[7,60],[11,60],[15,100]]
+
+    overflow_data = [[20,0]]
+
+    coupons_data =  [{ 'data': coupons_data_for_dps_mts1, "bars": { "show": "true"}, "label":"MT 1" },
+                     {'data': coupons_data_for_dps_mts2, "bars": { "show": "true" },"label":"MT 2" },
+                     { 'data': coupons_data_for_dps_mts3, "bars": { "show": "true" },"label":"MT 3" },
+                     { 'data': overflow_data, "bars": { "show": "true", "fill": "true", "fillColor":"#FFFFFF","label":"MT 4" }} ] 
+#    plot_data = [{'data' : plottable_data, "bars":{"show":"true", "barWidth": 2}, "label":"Null"},{ 'data': overflow_data, "bars": { "show": "true", "fill": "true", "fillColor":"#FFFFFF","label":"MT 4" }} ]
         
-    return render_to_response(req, "nigeria/coupons_daily.html", {'location': location})
+    return render_to_response(req, "nigeria/coupons_daily.html", {'location': location,
+					 'children' : loc_children, 
+					 'type':type, 
+					 'child':child, 
+					 'coupons_data':coupons_data,
+					 'plots':plot_data
+					 }
+			     )
     
     
 
@@ -243,7 +287,7 @@ def _get_distribution_over_time_strings(ward):
     '''Get a JSON formated list for flot plots on the template, 
     based on data in the Nets Distribution Data'''
     
-def _get_distribution_per_distribution_team_strings(ward):
+def _get_distribution_per_distribution_team_strings(location):
     '''Get a JSON formated list for flot plots on the template, 
     based on data in the Nets Distribution Data'''
     
@@ -256,7 +300,25 @@ def _get_mobilization_data_per_mobilization_team_string(ward):
     '''Get a JSON formated list for flot plots on the template, 
     based on data in the Net Cards Distribution Data'''
 
-    
+def _get_card_distribution_data(location):
+    people = 0
+    settlements = 0
+    coupons = 0
+
+    list = CardDistribution.objects.filter(location=location)
+    for distribution in list:
+        people = people + distribution.people
+        coupons = coupons + distribution.distributed
+        settlements = settlements + distribution.settlements
+
+    for child in location.children.all():
+        child_data = _get_card_distribution_data(child)
+        people += child_data[0]
+ 	coupons += child_data[1]
+	settlements += child_data[2]
+
+    return people, coupons, settlements
+ 
 def _get_stock_over_time_strings(locations):
     '''Get a JSON formatted list that flot can plot
        based on the data in the stock table'''
