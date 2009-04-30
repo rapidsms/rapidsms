@@ -7,3 +7,4 @@ core.*
 .pydevproject
 *.sqlite3
 logs/*
+apps/nigeria/fixtures/airtime.json
