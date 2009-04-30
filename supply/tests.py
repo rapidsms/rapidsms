@@ -122,6 +122,59 @@ class TestApp (TestScript):
         #file.close()
         #print "=== Successfully wrote fixtures to %s ===" % filename
         
+    
+    testIssueFormats = """
+         t_i_formats > llin register 20 sm mister sender 
+         t_i_formats < Hello mister! You are now registered as Stock manager at KANO State.
+         # base case
+         t_i_formats > llin issue from 20 to 2027 11111 200 1800
+         t_i_formats < Received report for LLIN ISSUE: origin=KANO, dest=KURA, waybill=11111, amount=200, stock=1800
+         # casing
+         t_i_formats > llin ISSUE from 20 to 2027 11111 200 1800
+         t_i_formats < Received report for LLIN ISSUE: origin=KANO, dest=KURA, waybill=11111, amount=200, stock=1800
+         # other spellings
+         t_i_formats > llin issued from 20 to 2027 11111 200 1800
+         t_i_formats < Received report for LLIN ISSUE: origin=KANO, dest=KURA, waybill=11111, amount=200, stock=1800
+         t_i_formats > llin ishew from 20 to 2027 11111 200 1800
+         t_i_formats < Received report for LLIN ISSUE: origin=KANO, dest=KURA, waybill=11111, amount=200, stock=1800
+         t_i_formats > llin is from 20 to 2027 11111 200 1800
+         t_i_formats < Received report for LLIN ISSUE: origin=KANO, dest=KURA, waybill=11111, amount=200, stock=1800
+         # spaces
+         t_i_formats > llin      issue      from   20  to    2027    11111     200  1800
+         t_i_formats < Received report for LLIN ISSUE: origin=KANO, dest=KURA, waybill=11111, amount=200, stock=1800
+         # fail
+         t_i_formats > llin send from 20 to 2027 11111 200 1800
+         t_i_formats < Sorry we didn't understand that. Available forms are LLIN: REGISTER, NETCARDS, NETS, RECEIVE, ISSUE
+    """
+    
+    testReceiveFormats = """
+         t_r_formats > llin register 20 sm mister sender 
+         t_r_formats < Hello mister! You are now registered as Stock manager at KANO State.
+         # base case
+         t_r_formats > llin receive from 20 to 2027 11111 200 1800
+         t_r_formats < Received report for LLIN RECEIVE: origin=KANO, dest=KURA, waybill=11111, amount=200, stock=1800
+         # casing
+         t_r_formats > llin RECEIVE from 20 to 2027 11111 200 1800
+         t_r_formats < Received report for LLIN RECEIVE: origin=KANO, dest=KURA, waybill=11111, amount=200, stock=1800
+         # other spellings
+         t_r_formats > llin receeved from 20 to 2027 11111 200 1800
+         t_r_formats < Received report for LLIN RECEIVE: origin=KANO, dest=KURA, waybill=11111, amount=200, stock=1800
+         t_r_formats > llin recieve from 20 to 2027 11111 200 1800
+         t_r_formats < Received report for LLIN RECEIVE: origin=KANO, dest=KURA, waybill=11111, amount=200, stock=1800
+         t_r_formats > llin recv from 20 to 2027 11111 200 1800
+         t_r_formats < Received report for LLIN RECEIVE: origin=KANO, dest=KURA, waybill=11111, amount=200, stock=1800
+         t_r_formats > llin receeev from 20 to 2027 11111 200 1800
+         t_r_formats < Received report for LLIN RECEIVE: origin=KANO, dest=KURA, waybill=11111, amount=200, stock=1800
+         # spaces
+         t_r_formats > llin     receive     from   20  to     2027    11111     200    1800
+         t_r_formats < Received report for LLIN RECEIVE: origin=KANO, dest=KURA, waybill=11111, amount=200, stock=1800
+         # fail
+         # should this one fail??
+         t_r_formats > llin rcv from 20 to 2027 11111 200 1800
+         t_r_formats < Sorry we didn't understand that. Available forms are LLIN: REGISTER, NETCARDS, NETS, RECEIVE, ISSUE
+         t_r_formats > llin get from 20 to 2027 11111 200 1800
+         t_r_formats < Sorry we didn't understand that. Available forms are LLIN: REGISTER, NETCARDS, NETS, RECEIVE, ISSUE
+    """
 
     def testScript(self):
         mismatched_amounts = """
