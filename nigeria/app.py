@@ -46,25 +46,28 @@ class App(rapidsms.app.App):
                 
                 # attempt to match tokens in this message
                 # using the keyworder parser
-                func, captures = self.kw.match(self, message.text)
-                
-                # if a function was returned, then a this message
-                # matches the handler _func_. call it, and short-
-                # circuit further handler calls
-                if func is not None:
+                results = self.kw.match(self, message.text)
+                if results:
+                    func, captures = results
+                    # if a function was returned, then a this message
+                    # matches the handler _func_. call it, and short-
+                    # circuit further handler calls
                     func(self, message, *captures)
                     return self.handled
-                
                 else:
-                    self.debug("NO MATCH")
+                    self.debug("NO MATCH FOR %s" % message.text)
             else:
                 self.debug("App does not instantiate Keyworder as 'kw'")
         except Exception, e:
             self.log_last_exception()
 
 
-    def outgoing(self, message):
-        pass 
+    def cleanup(self, message):
+        # this will add a generic response based 
+        # on the available forms
+        if not message.responses:
+            message.respond("Sorry we didn't understand that. %s" % self.form_app.get_helper_message())
+        
 
     def __get(self, model, **kwargs):
         try:
