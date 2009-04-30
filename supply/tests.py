@@ -177,7 +177,7 @@ class TestApp (TestScript):
         # mister recipient realizes his error and resends with correct amount
         amendment = """
             8005551111 > llin receive from 20 to 2027 11111 200 500
-            8005551111 < Received report for LLIN receive: origin=KANO, dest=KURA, waybill=11111, amount=200, stock=500. If this is not correct, reply with CANCEL
+            8005551111 < Received report for LLIN RECEIVE: origin=KANO, dest=KURA, waybill=11111, amount=200, stock=500
             """
         self.runScript(amendment)
 
@@ -218,7 +218,7 @@ class TestApp (TestScript):
         # send a form from an unregistered user and assure it is accepted
         unregistered_submission = """
             supply_tus_1 > llin issue from 20 to 2027 11111 200 1800
-            supply_tus_1 < Received report for LLIN issue: origin=KANO, dest=KURA, waybill=11111, amount=200, stock=1800. If this is not correct, reply with CANCEL
+            supply_tus_1 < Received report for LLIN ISSUE: origin=KANO, dest=KURA, waybill=11111, amount=200, stock=1800
             supply_tus_1 < Please register your phone.
             """
         self.runScript(unregistered_submission)
