@@ -47,6 +47,31 @@ class TestApp (TestScript):
            8005551212 < Hello dummy! You are now registered as Distribution point team leader at KANO State.
            8005551212 > llin my status
            8005551212 < I think you are dummy user.
+           #duplicate submission
+           test_reg_1 > llin register 20 dl dummy user
+           test_reg_1 < Hello dummy! You are now registered as Distribution point team leader at KANO State.
+           test_reg_1 > llin register 20 dl DUMMY USER
+           test_reg_1 < Hello DUMMY! You are now registered as Distribution point team leader at KANO State.
+           # case sensitivity
+           test_reg_2 > llin REGISTER 20 dl another user
+           test_reg_2 < Hello another! You are now registered as Distribution point team leader at KANO State.
+           # different name formats
+           test_reg_3 > llin register 20 dl onename
+           test_reg_3 < Hello onename! You are now registered as Distribution point team leader at KANO State.
+           # these fail
+           #test_reg_4 > llin register 20 dl mister three names
+           #test_reg_4 < Hello mister! You are now registered as Distribution point team leader at KANO State.
+           #test_reg_5 > llin register 20 dl mister four name guy
+           #test_reg_5 < Hello mister! You are now registered as Distribution point team leader at KANO State.
+           # some shortcuts
+           #test_reg_6 > llin reg 20 dl short user
+           #test_reg_6 < Hello short! You are now registered as Distribution point team leader at KANO State.
+           test_reg_7 > llin registered 20 dl long user
+           test_reg_7 < Hello long! You are now registered as Distribution point team leader at KANO State.
+           # alas, we're not perfect
+           test_reg_8 > llin rgstr 20 dl sorry guy
+           test_reg_8 < Sorry we didn't understand that. Available forms are LLIN: REGISTER, NETCARDS, NETS, RECEIVE, ISSUE
+           
          """
     
     testRegistrationErrors = """
