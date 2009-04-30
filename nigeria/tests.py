@@ -13,8 +13,8 @@ import os
 from datetime import datetime
 
 class TestApp (TestScript):
-    apps = (reporter_app.App, App,form_app.App, supply_app.App, default_app.App )
-    #apps = (reporter_app.App, App,form_app.App, supply_app.App )
+    #apps = (reporter_app.App, App,form_app.App, supply_app.App, default_app.App )
+    apps = (reporter_app.App, App,form_app.App, supply_app.App )
     # the test_backend script does the loading of the dummy backend that allows reporters
     # to work properly in tests
     fixtures = ['nigeria_llin', 'test_kano_locations', 'test_backend']
@@ -91,7 +91,7 @@ class TestApp (TestScript):
            # don't support w/o keyword
            tkw_1 > nets 2001 123 456 78 90
            # the default app to the rescue!
-           tkw_1 < Sorry, we didn't understand that message.
+           tkw_1 < Sorry we didn't understand that. Available forms are LLIN: REGISTER, NETCARDS, NETS, RECEIVE, ISSUE
         """
     
     testNets= """
@@ -101,6 +101,24 @@ class TestApp (TestScript):
            8005551213 < Received report for LLIN NETS: location=AJINGI, distributed=123, expected=456, actual=78, discrepancy=90
            8005551213 > llin nets 2001 123 456 78 
            8005551213 < Invalid form.  The following fields are required: discrepancy
+           # test some of the different form prefix options
+           # case sensitivity
+           8005551213 > llin NETS 2001 123 456 78 90
+           8005551213 < Received report for LLIN NETS: location=AJINGI, distributed=123, expected=456, actual=78, discrepancy=90
+           # no s
+           8005551213 > llin net 2001 123 456 78 90
+           8005551213 < Received report for LLIN NETS: location=AJINGI, distributed=123, expected=456, actual=78, discrepancy=90
+           # really?  this works?
+           8005551213 > llin Nt 2001 123 456 78 90
+           8005551213 < Received report for LLIN NETS: location=AJINGI, distributed=123, expected=456, actual=78, discrepancy=90
+           # something's gotta fail
+           8005551213 > llin n 2001 123 456 78 90
+           8005551213 < Sorry we didn't understand that. Available forms are LLIN: REGISTER, NETCARDS, NETS, RECEIVE, ISSUE
+           8005551213 > llin bednets 2001 123 456 78 90
+           8005551213 < Sorry we didn't understand that. Available forms are LLIN: REGISTER, NETCARDS, NETS, RECEIVE, ISSUE
+           8005551213 > llin ents 2001 123 456 78 90
+           8005551213 < Sorry we didn't understand that. Available forms are LLIN: REGISTER, NETCARDS, NETS, RECEIVE, ISSUE
+
          """
     
     testNetCards= """
@@ -110,6 +128,27 @@ class TestApp (TestScript):
            8005551214 < Received report for LLIN NET CARDS: location=ALBASU CENTRAL, settlements=123, people=456, distributed=78
            8005551214 > llin net cards 200201 123 456  
            8005551214 < Invalid form.  The following fields are required: issued
+           # test some of the different form prefix options
+           # case sensitivity
+           8005551214 > llin NET CARDS 200201 123 456 78
+           8005551214 < Received report for LLIN NET CARDS: location=ALBASU CENTRAL, settlements=123, people=456, distributed=78
+           # no s 
+           8005551214 > llin net card 200201 123 456 78 
+           8005551214 < Received report for LLIN NET CARDS: location=ALBASU CENTRAL, settlements=123, people=456, distributed=78
+           # one word
+           8005551214 > llin netcards 200201 123 456 78 
+           8005551214 < Received report for LLIN NET CARDS: location=ALBASU CENTRAL, settlements=123, people=456, distributed=78
+           8005551214 > llin netcard 200201 123 456 78 
+           8005551214 < Received report for LLIN NET CARDS: location=ALBASU CENTRAL, settlements=123, people=456, distributed=78
+           # he he
+           8005551214 > llin nt cd 200201 123 456 78 
+           8005551214 < Received report for LLIN NET CARDS: location=ALBASU CENTRAL, settlements=123, people=456, distributed=78
+           8005551214 > llin ntcrds 200201 123 456 78 
+           8005551214 < Received report for LLIN NET CARDS: location=ALBASU CENTRAL, settlements=123, people=456, distributed=78
+           # something's gotta fail
+           8005551214 > llin cards 200201 123 456 78 
+           8005551214 < Sorry we didn't understand that. Available forms are LLIN: REGISTER, NETCARDS, NETS, RECEIVE, ISSUE
+           
          """
          
     testUnregisteredSubmissions = """
