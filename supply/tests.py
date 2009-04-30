@@ -225,9 +225,9 @@ class TestApp (TestScript):
         
         # check that the connection object in the transaction is set properly
         connection = PersistantConnection.objects.get(identity="supply_tus_1")
-        issue = PartialTransaction.objects.get(origin__name="KANO",\
-           destination__name="KURA", shipment_id="11111",\
-           domain__code__abbreviation="LLIN", type="I", connection=connection)
+        issue = PartialTransaction.objects.get(origin__name__iexact="KANO",\
+           destination__name__iexact="KURA", shipment_id="11111",\
+           domain__code__abbreviation__iexact="LLIN", type="I", connection=connection)
         
         # check that the reporter is empty
         self.assertFalse(issue.reporter)
