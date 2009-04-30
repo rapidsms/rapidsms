@@ -17,7 +17,8 @@ class App(rapidsms.app.App):
     
     def __init__(self, title, router):
         super(App, self).__init__(title, router) 
-        self.separator = "[,\.\s]*"
+        self.separator = "[,\.\s]+"
+        self.token_separator = "[,\.\s]*"
         self.leading_pattern = "[\"'\s]*"
         self.trailing_pattern = "[\.,\"'\s]*"
         self.form_patterns = [] 
@@ -90,7 +91,7 @@ class App(rapidsms.app.App):
                 # along with leading patterns, separators, etc
                 form_pattern = self.leading_pattern + d.code.regex + \
                     self.separator + f.form.code.regex + self.separator + \
-                    ''.join(['(?:[,\.\s]*%s)?' % (t[1]) for t in tokens]) + \
+                    ''.join(['(?:%s%s)?' % (self.token_separator, t[1]) for t in tokens]) + \
                     self.trailing_pattern
                 self.form_patterns.append(form_pattern)
 
@@ -166,8 +167,7 @@ class App(rapidsms.app.App):
                             before = len(message.responses)
                             self._do_actions(message, this_form, form_entry)
                             after = len(message.responses)
-                            self.handled = True
- 
+                            
                             # if the action(s) didn't send any responses,
                             # then send the default confirmation. this is
                             # just for backwards compatibility, really...
@@ -186,29 +186,45 @@ class App(rapidsms.app.App):
                             self.debug("Invalid form.  %s", ". ".join(validation_errors))
                             message.respond("Invalid form.  %s" % ". ".join(validation_errors), StatusCodes.APP_ERROR)
                             return
-                        self.handled = True
-
+                        
                         # stop processing forms, move
                         # on to the next domain (!?)
                         break
 
                     else:
                         continue        
-
-                if not hasattr(self, "handled") or not self.handled:
-                    message.respond("Oops. Cannot find a report called %s for %s. Available reports for %s are %s" % \
-                        (type.upper(), domain_matched[0], domain_matched[0], ", ".join([f.keys().pop().upper() for f in forms])), 
-                        StatusCodes.APP_ERROR) 
-                    self.handled = True
-                    break
+                
+                # this is now handled at a higher level 
+                # (e.g. by the nigeria app)
+                # the new parsing logic calls this method
+                # not to be called at all if none of the 
+                # forms match so we can never reach this code
+                #if not handled:
+                #    message.respond("Oops. Cannot find a report called %s for %s. Available reports for %s are %s" % \
+                #        (type.upper(), domain_matched[0], domain_matched[0], ", ".join([f.keys().pop().upper() for f in forms])), 
+                #        StatusCodes.APP_ERROR) 
+                #    handled = True
+                #    break
 
             else:
+                # this was probably just a message for another
+                # app so don't bother sending a message
                 pass
                 #if not hasattr(self, "handled") or not self.handled:
                 #    message.respond("Oops. Cannot find a supply called %s. Available supplies are %s" %\
                 #        (code.upper(), ", ".join([d.keys().pop().upper() for d in self.domains_forms_tokens])))
 
-
+    def get_helper_message(self):
+        domains = Domain.objects.all()
+        domain_helpers = []
+        for d in domains:
+            # gather forms for this domain
+            forms = d.domain_forms.all().order_by('sequence')
+            forms_names = [f.form.code.abbreviation.upper() for f in forms]
+            this_domain_msg = "%s: %s" % (d.code.abbreviation.upper(), ", ".join(forms_names))
+            domain_helpers.append(this_domain_msg)
+        return "Available forms are %s" % " or ".join(domain_helpers)
+    
     def _get_code(self, code, dict):
         '''Gets the code out of the code and dict.  This allows us to 
            try to match each token's regex'''
@@ -223,7 +239,8 @@ class App(rapidsms.app.App):
         
         # do form level validation
         form_errors = form.get_validation_errors(form_entry)
-        if form_errors: validation_errors.extend(form_errors)
+        if form_errors: 
+            validation_errors.extend(form_errors)
         
         # also forward to any apps that have registered with this
         for app_name in form.apps.all():
