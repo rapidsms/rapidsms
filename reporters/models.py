@@ -169,7 +169,7 @@ class Reporter(models.Model):
             # this is crappy but sufficient
             r"([a-z]+)",                       # Adam
             r"([a-z]+)\s+([a-z]+)",            # Evan Wheeler
-            r"([a-z]+)\s+[a-z]\.?\s+([a-z]+)", # Mark E. Johnston
+            r"([a-z]+)\s+[a-z]+\.?\s+([a-z]+)",# Mark E. Johnston, Lee Harvey Oswald 
             r"([a-z]+)\s+([a-z]+\-[a-z]+)"     # Erica Kochi-Fabian
         ]
         
