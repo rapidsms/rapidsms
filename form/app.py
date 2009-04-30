@@ -56,7 +56,7 @@ class App(rapidsms.app.App):
     
     def setup(self):
         # create a list of dictionaries mapping domains to lists of their
-        # forms, which are dictionaries mapping form types to a list
+        # forms, which are dictionaries mapping forms to a list
         # of their tokens, as tuples of token.abbr, token.regex
         # e.g.,
         # [    
@@ -87,7 +87,7 @@ class App(rapidsms.app.App):
                 forms_tokens.append(dict([((f.form.code.abbreviation.upper(), f.form.code.regex), tokens)]))
 
                 # put together domain pattern, form pattern, and token patterns
-                # along with leading patterns and separators, etc
+                # along with leading patterns, separators, etc
                 form_pattern = self.leading_pattern + d.code.regex + \
                     self.separator + f.form.code.regex + self.separator + \
                     ''.join(['(?:[,\.\s]*%s)?' % (t[1]) for t in tokens]) + \
@@ -109,29 +109,16 @@ class App(rapidsms.app.App):
         except (ObjectDoesNotExist, MultipleObjectsReturned):
             return None
 
-    def __identify(self, message, task=None):
-        reporter = self.__get(Reporter, connection=message.connection)
-        # if the caller is not identified, then send
-        # them a message asking them to do so, and
-        # stop further processing
-        if not reporter:
-            msg = "Please register your mobile number"
-            if task: msg += " before %s" % (task)
-            msg += ", by replying: I AM <USERNAME>"
-            message.respond(msg)
-            self.handled = True
-        return reporter 
 
     # SUBMIT A FORM --------------------------------------------------------
 
     def form(self, app, message, code, type, *data): 
         self.debug("FORM")
         self.debug(data)
-        #reporter = self.__identify(message.peer, "reporting")
-        #self.handled = False
         for domain in self.domains_forms_tokens:
             domain_matched = self._get_code(code, domain)
             self.debug(domain_matched)
+
             if domain_matched:
                 # gather list of form dicts for this domain code
                 # forms = domain[code.upper()]
@@ -140,6 +127,7 @@ class App(rapidsms.app.App):
                 for form in forms:
                     form_matched = self._get_code(type, form)
                     self.debug(form_matched)
+
                     if form_matched:
                         this_domain = Domain.objects.get(code__abbreviation__iexact=domain_matched[0])
                         this_form = Form.objects.get(code__abbreviation__iexact=form_matched[0])
@@ -154,7 +142,7 @@ class App(rapidsms.app.App):
                             form=this_form, date=message.date)
                         # gather list of token tuples for this form type
                         tokens = form[form_matched]
-                        
+
                         self.debug("FORM MATCH")
                         info = []
                         for t, d in zip(tokens, data):
@@ -167,11 +155,11 @@ class App(rapidsms.app.App):
                             # gather info for confirmation message, matching
                             # abbreviations from the token tuple to the received data
                             info.append("%s=%s" % (t[0], d or "??"))
-                        
+
                         # call the validator methods, which return False on
                         # success, or a list of error messages on failure
                         validation_errors = self._get_validation_errors(message, this_form, form_entry)
-                        
+
                         # if no errors were returned (from ANY
                         # registered app), call the actions
                         if not validation_errors:
@@ -179,7 +167,7 @@ class App(rapidsms.app.App):
                             self._do_actions(message, this_form, form_entry)
                             after = len(message.responses)
                             self.handled = True
-                            
+ 
                             # if the action(s) didn't send any responses,
                             # then send the default confirmation. this is
                             # just for backwards compatibility, really...
@@ -187,6 +175,7 @@ class App(rapidsms.app.App):
                             if(after <= before):
                                 message.respond("Received report for %s %s: %s.\nIf this is not correct, reply with CANCEL" % \
                                     (domain_matched[0], form_matched[0], ", ".join(info)))                        
+
                         # oh no! there were validation errors!
                         # since we've already matched the domain
                         # and form, we can be pretty sure that
@@ -222,9 +211,9 @@ class App(rapidsms.app.App):
 
     def _get_code(self, code, dict):
         '''Gets the code out of the code and dict.  This allows us to 
-            do try to match each token's regex'''
+           try to match each token's regex'''
         for tuple in dict.keys():
-            if re.match(tuple[1], code):
+            if re.match(tuple[1], code, re.IGNORECASE):
                 return tuple
         return False
 
