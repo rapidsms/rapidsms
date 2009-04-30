@@ -7,6 +7,15 @@ from rapidsms.connection import Connection
 from rapidsms.person import Person
 from datetime import datetime
 
+
+class StatusCodes:
+    '''Enum for representing status types of a message or response.'''
+    NONE = "None" # we don't know.  the default
+    OK  = "Ok" # is great success!
+    APP_ERROR = "Application Error" # application specific errors - e.g. bad data 
+    GENERIC_ERROR = "Generic error" # generic errors - e.g. a catch all responder
+    
+    
 class Message(object):
     def __init__(self, connection=None, text=None, person=None, date=datetime.now()):
         if connection == None and person == None:
@@ -16,7 +25,8 @@ class Message(object):
         self.date = date
         self.person = person
         self.responses = []
-
+        self.status = StatusCodes.NONE
+        
         # a message is considered "unprocessed" until
         # rapidsms has dispatched it to all apps, and
         # flushed the responses out
@@ -61,12 +71,13 @@ class Message(object):
         #TODO implement this
         pass
 
-    def respond(self, text):
+    def respond(self, text, status = StatusCodes.NONE):
         """Send the given text back to the original caller of this
            message on the same route that it came in on"""
         if self.connection:
             response = copy.copy(self)
             response.text = text
+            response.status = status
             self.responses.append(response)
             return True
         else: 
