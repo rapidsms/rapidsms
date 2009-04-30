@@ -13,8 +13,8 @@ import os
 from datetime import datetime
 
 class TestApp (TestScript):
-    #apps = (reporter_app.App, App,form_app.App, supply_app.App, default_app.App )
-    apps = (reporter_app.App, App,form_app.App, supply_app.App )
+    apps = (reporter_app.App, App,form_app.App, supply_app.App, default_app.App )
+    #apps = (reporter_app.App, App,form_app.App, supply_app.App )
     # the test_backend script does the loading of the dummy backend that allows reporters
     # to work properly in tests
     fixtures = ['nigeria_llin', 'test_kano_locations', 'test_backend']
@@ -69,21 +69,28 @@ class TestApp (TestScript):
     testKeyword= """
            tkw_1 > llin register 20 dl keyword tester
            tkw_1 < Hello keyword! You are now registered as Distribution point team leader at KANO State.
+           # base case
            tkw_1 > llin nets 2001 123 456 78 90
            tkw_1 < Received report for LLIN NETS: location=AJINGI, distributed=123, expected=456, actual=78, discrepancy=90
+           # capitalize the domain
            tkw_1 > LLIN nets 2001 123 456 78 90
            tkw_1 < Received report for LLIN NETS: location=AJINGI, distributed=123, expected=456, actual=78, discrepancy=90
+           # drop an L
            tkw_1 > lin nets 2001 123 456 78 90
            tkw_1 < Received report for LLIN NETS: location=AJINGI, distributed=123, expected=456, actual=78, discrepancy=90
-           tkw_1 > ILLn nets 2001 123 456 78 90
-           tkw_1 < Received report for LLIN NETS: location=AJINGI, distributed=123, expected=456, actual=78, discrepancy=90
-           tkw_1 > ilin nets 2001 123 456 78 90
-           tkw_1 < Received report for LLIN NETS: location=AJINGI, distributed=123, expected=456, actual=78, discrepancy=90
+           # mix the order - this is no longer supported
+           #tkw_1 > ILLn nets 2001 123 456 78 90
+           #tkw_1 < Received report for LLIN NETS: location=AJINGI, distributed=123, expected=456, actual=78, discrepancy=90
+           #tkw_1 > ilin nets 2001 123 456 78 90
+           #tkw_1 < Received report for LLIN NETS: location=AJINGI, distributed=123, expected=456, actual=78, discrepancy=90
+           # ll anything works?
            tkw_1 > ll nets 2001 123 456 78 90
            tkw_1 < Received report for LLIN NETS: location=AJINGI, distributed=123, expected=456, actual=78, discrepancy=90
            tkw_1 > llan nets 2001 123 456 78 90
-           tkw_1 < Sorry, we didn't understand that message.
+           tkw_1 < Received report for LLIN NETS: location=AJINGI, distributed=123, expected=456, actual=78, discrepancy=90
+           # don't support w/o keyword
            tkw_1 > nets 2001 123 456 78 90
+           # the default app to the rescue!
            tkw_1 < Sorry, we didn't understand that message.
         """
     
@@ -102,7 +109,7 @@ class TestApp (TestScript):
            8005551214 > llin net cards 200201 123 456 78 
            8005551214 < Received report for LLIN NET CARDS: location=ALBASU CENTRAL, settlements=123, people=456, distributed=78
            8005551214 > llin net cards 200201 123 456  
-           8005551214 < Invalid form.  The following fields are required: coupons
+           8005551214 < Invalid form.  The following fields are required: issued
          """
          
     testUnregisteredSubmissions = """
@@ -111,7 +118,7 @@ class TestApp (TestScript):
             tus_1 > llin my status
             tus_1 < Please register your phone with RapidSMS. 
             tus_2 > llin nets 2001 123 456 78 90
-            tus_2 < Received report for LLIN nets: location=AJINGI, distributed=123, expected=456, actual=78, discrepancy=90. Please register your phone
+            tus_2 < Received report for LLIN NETS: location=AJINGI, distributed=123, expected=456, actual=78, discrepancy=90. Please register your phone
             tus_2 > llin my status
             tus_2 < Please register your phone with RapidSMS. 
          """
