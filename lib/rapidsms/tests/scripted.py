@@ -90,13 +90,13 @@ class TestScript (TestCase):
             elif dir == '<':
                 msg = self.backend.next_message()
                 self.assertTrue(msg is not None, 
-                    "message was returned (last message: '%s', expecting: '%s')" % (last_msg, txt))
+                    "message was returned.\nMessage: '%s'\nExpecting: '%s')" % (last_msg, txt))
                 self.assertEquals(msg.peer, num,
                     "Expected to send to %s, but message was sent to %s"
                     % (num, msg.peer))
                 self.assertEquals(msg.text, txt,
-                    "\nReceived text: %s\nExpected text: %s\n"
-                    % (msg.text,txt))
+                    "\nMessage: %s\nReceived text: %s\nExpected text: %s\n"
+                    % (last_msg, msg.text,txt))
             last_msg = txt
         self.router.stop()
 
