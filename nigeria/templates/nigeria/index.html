@@ -15,15 +15,11 @@
 	<script type="text/javascript" src="/static/nigeria/jquery-treeview/demo/demo.js"></script>
 <script>
 </script>
-	
-		
 
 	{% endblock %}
-	
-	
 	{% block content %}
 
-
+<div>		
 
 <h2>Report Summary</h2>
 <table class="datatable"><thead><tr>
@@ -36,33 +32,45 @@
 <th scope="col"><b></b></th>
 <th scope="col"><b></b></th>
 <th scope="col"><b></b></th>
-
 </tr></thead></table>
-
-{%for state in states%}
-{% ifequal state "Kano" %}
+{% if location %}
 <ul id="navigation">
-<li class="{% cycle 'odd' 'even' %}"><span><a href="/reports/logistics/summary/{{st.pk}}/">{{state}}</a><span class="field"><span class="datafield"><b>234</b></span> <span>566</span> <span>9807</span></span></span>
-</span>
+<li class="{% cycle 'odd' 'even' %}">
+  <span>
+    <a href="/reports/logistics/summary/{{st.pk}}/">{{location}}</a>
+    <span class="field"><span class="datafield">
+        <b>{{location.stock.balance}}</b></span> 
+    <span>{{location.net_data.distributed}}</span> 
+    <span>{{location.card_data.distributed}}</span>
+    </span>
+    </span>
+  </span>
+  {%for lga in location.top_children.all %} 
+    <ul>
+    <li class="{% cycle 'odd' 'even' %}">
+      <span>
+        <a href="/reports/logistics/summary/{{lga.pk}}/">{{lga.name}}</a> 
+        <span class="field"><span class="datafield"><b><a href="/reports/logistics/summary/{{lga.pk}}/">{{lga.stock.balance}}</a></b></span> 
+        <span><a href="/reports/coupons/summary/{{lga.pk}}/">{{ lga.net_data.distributed}}</a>
+        </span> <span><a href="/reports/bednets/summary/{{lga.pk}}/">{{lga.card_data.distributed}}</a>
+        </span>
+        </span>
+        </span>
 
-{%for lga, wards in lgas.items %}
-<ul>
-<li class="{% cycle 'odd' 'even' %}"><span><a href="/reports/logistics/summary/{{lga.pk}}/">{{lga.name}}</a> <span class="field"><span class="datafield"><b><a href="/reports/logistics/summary/{{lga.pk}}/">234</a></b></span> <span><a href="/reports/coupons/daily/{{lga.pk}}/">566</a></span> <span><a href="/reports/bednets/daily/{{lga.pk}}/">9807</a></span></span></span>
-
-{% for ward in wards%}
-<ul><li class="{% cycle 'odd' 'even' %}"><span><a href="/reports/logistics/summary/{{ward.pk}}/">{{ward.name}}</a> <span class="field"><span class="datafield"><a href="/reports/logistics/summary/{{ward.pk}}/">100</a></span> <span><a href="/reports/coupons/daily/{{ward.pk}}/">202</a></span> <span><a href="/reports/bednets/daily/{{ward.pk}}/">300</a></span></span></span>
+{% for ward in lga.top_children.all %}
+<ul><li class="{% cycle 'odd' 'even' %}"><span><a href="/reports/logistics/summary/{{ward.pk}}/">{{ward.name}}</a> <span class="field">
+   <span class="datafield"><a href="/reports/logistics/summary/{{ward.pk}}/">{{ward.stock.balance}}</a></span> 
+   <span><a href="/reports/coupons/summary/{{ward.pk}}/">{{ward.net_data.distributed}}</a></span> 
+   <span><a href="/reports/bednets/summary/{{ward.pk}}/">{{ward.card_data.distributed}}</a></span>
+   </span></span>
 </li></ul>
 {%endfor%}
 
 </li>
 </ul>
 {% endfor %}
-{%else%}
-
-{% endifequal %}
-
 </li>
 </ul>
-{%endfor%}
+{% endif %}
 </div>
 {% endblock %} 

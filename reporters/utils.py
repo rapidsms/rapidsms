@@ -87,13 +87,10 @@ def field_bundles(qd, *keys):
 	bundles = []
 	length = None
 	
-	# check that all of the keys are present,
-	# and of equal length. pretty strict, but
-	# all kinds of fun could creep into the
-	# database if we're sloppy here
+	# check that all values are of the same
+	# length, even if that is zero, to avoid
+	# creating half-bundles with missing data
 	for key in keys:
-		if not key in qd:
-			raise KeyError(key)
 		
 		# if this is the first pair, then store the length
 		# of the value, to check against subsequent pairs
