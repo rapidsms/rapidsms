@@ -61,7 +61,7 @@ class NigeriaFormsLogic(FormsLogic):
                 return ["Missing fields: %s" % mis_str, help]
             
             # parse the name via Reporter
-            flat_name = data.pop("firstname") + " " + data.pop("lastname") + " " + data.pop("othername")
+            flat_name = data.pop("firstname") + " " + data.pop("secondname") + " " + data.pop("thirdname")
             data["alias"], data["first_name"], data["last_name"] =\
                 Reporter.parse_name(flat_name.strip())
             
