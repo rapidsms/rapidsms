@@ -233,32 +233,6 @@ def supply_monthly(req, locid):
     return render_to_response(req, "nigeria/supply_monthly.html")
 
 
-
-
-def _set_stock(location):
-    '''Get the stock object associated with this.  None if none found'''
-    try:
-        location.stock = Stock.objects.get(location=location)
-    except Stock.DoesNotExist:
-        # this isn't a real error, we just don't have any stock information
-        location.stock = None
-
-def _set_net_data(location):
-    '''Get the stock object associated with this.  None if none found'''
-    try:
-        location.stock = Stock.objects.get(location=location)
-    except Stock.DoesNotExist:
-        # this isn't a real error, we just don't have any stock information
-        location.stock = None
-
-def _set_net_card_data(location):
-    '''Get the stock object associated with this.  None if none found'''
-    try:
-        location.stock = Stock.objects.get(location=location)
-    except Stock.DoesNotExist:
-        # this isn't a real error, we just don't have any stock information
-        location.stock = None
-
 def _get_stock_per_location_strings(locations):
     '''Get a JSON formatted list that flot can plot
        based on the data in the stock table'''
@@ -301,22 +275,14 @@ def _get_mobilization_data_per_mobilization_team_string(ward):
     based on data in the Net Cards Distribution Data'''
 
 def _get_card_distribution_data(location):
-    people = 0
-    settlements = 0
-    coupons = 0
-
-    list = CardDistribution.objects.filter(location=location)
-    for distribution in list:
-        people = people + distribution.people
-        coupons = coupons + distribution.distributed
-        settlements = settlements + distribution.settlements
-
+    people = location.card_data["people"]
+    coupons = location.card_data["distributed"]
+    settlements = location.card_data["settlements"]
     for child in location.children.all():
         child_data = _get_card_distribution_data(child)
         people += child_data[0]
- 	coupons += child_data[1]
-	settlements += child_data[2]
-
+        coupons += child_data[1]
+        settlements += child_data[2]
     return people, coupons, settlements
  
 def _get_stock_over_time_strings(locations):
