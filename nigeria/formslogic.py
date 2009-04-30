@@ -48,7 +48,6 @@ class NigeriaFormsLogic(FormsLogic):
                 " ".join(["<%s>" % t for t in required])
         if form_entry.form.code.abbreviation == "register":
             data = form_entry.to_dict()
-            print "\n\n%r\n\n" % data
 
             # check that ALL FIELDS were provided
             missing = [t for t in required if data[t] is None]
@@ -91,7 +90,6 @@ class NigeriaFormsLogic(FormsLogic):
     def actions(self, *args, **kwargs):
         message = args[0]
         form_entry = args[1]
-        print(form_entry.form.code.abbreviation)
         if form_entry.form.code.abbreviation== "register":
 
             data = form_entry.rep_data

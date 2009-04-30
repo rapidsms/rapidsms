@@ -156,7 +156,6 @@ class App(rapidsms.app.App):
                         tokens = form[form_matched]
                         
                         self.debug("FORM MATCH")
-                        print(data)
                         info = []
                         for t, d in zip(tokens, data):
                             if not d:
