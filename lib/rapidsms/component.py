@@ -45,7 +45,7 @@ class Component(object):
         elif Match_False.match(value):
             return False
         else:
-            self.warn("config value '%s' isn't boolean!", value)
+            self.warning("config value '%s' isn't boolean!", value)
             return value
 
     # helper method to get boolean config options

@@ -256,7 +256,7 @@ class Router (component.Receiver):
                         self.debug("%s short-circuited handle phase", app.name)
                         break
                 elif responses < len(message.responses):
-                    self.warn("App '%s' shouldn't send responses in %s()!", 
+                    self.warning("App '%s' shouldn't send responses in %s()!", 
                         app.name, phase)
 
         # now send the message's responses
