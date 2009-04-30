@@ -17,7 +17,7 @@ class TestApp (TestScript):
     apps = (reporter_app.App, App,form_app.App, supply_app.App )
     # the test_backend script does the loading of the dummy backend that allows reporters
     # to work properly in tests
-    fixtures = ['nigeria_llin', 'kano_locations_extended', 'test_backend']
+    fixtures = ['nigeria_llin', 'test_kano_locations', 'test_backend']
     
     def setUp(self):
         TestScript.setUp(self)
@@ -188,8 +188,6 @@ class TestApp (TestScript):
         lga = LocationType.objects.get(name="LGA")
         ward = LocationType.objects.get(name="Ward")
         locations = Location.objects.all()
-        # 529 total locations - except we added some others so don't bother
-        #self.assertEqual(529, len(locations))
         # 1 state
         self.assertEqual(1, len(locations.filter(type=state)))
         # 44 lgas
