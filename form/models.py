@@ -81,7 +81,7 @@ class Form(models.Model, Validatable, Alertable):
 
 class Token(models.Model):
     name = models.CharField(max_length=160)
-    abbreviation = models.CharField(max_length=20)
+    abbreviation = models.CharField(max_length=20, unique=True)
     patterns = models.ManyToManyField("Pattern")
 
     def __unicode__(self):

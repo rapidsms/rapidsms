@@ -23,33 +23,21 @@ changeYear: true
 
 
 
-	//These are sample/dummy plots for Coupons Distributions at the Ward and Distribution Point Levels
-  //Fake Data Used here, data will be generated from appropriate views/models
-	//TODO: Retrieve Real data for plots
-	
-				data1 = [[1,100],[5,60],[9,70],[13,40]];
-				data2 = [[2,50],[6,60],[10,60],[14,100]];
-				data3 = [[3,50],[7,60],[11,60],[15,100]];
-				data4 = [[20,0]];
-				
 				data5 = [[1,5],[5,2],[9,1],[13,5]];
 				data6 = [[2,1],[6,0],[10,0],[14,2]];
 				data7 = [[3,0],[7,2],[11,3],[15,3]];
 				data8 = [[19,100]];
-				 
+				
 				data9 = [[1,100],[5,60],[9,70],[13,40]];
 				data10 = [[2,50],[6,60],[10,60],[14,100]];
 				data11 = [[3,50],[7,60],[11,60],[15,100]];
 				data12 = [[0,0]]; 
 				
 	var opts = '{"grid":{"clickable":true},"xaxis":{"min":0,"ticks":[],"tickFormatter":"string"},"yaxis":{"min":0}}'
-	$.plot($('#cd_dps'), [{ data: data1, bars: { show: true}, "label":"MT 1" }, 
-													{ data: data2, bars: { show: true },"label":"MT 2" },
-													{ data: data3, bars: { show: true },"label":"MT 3" },
-													{ data: data4, bars: { show: true, fill: true, fillColor:"#FFFFFF","label":"MT 4" }}
-													
-													
-	], opts);
+	
+	coupons_data = {{coupons_data|safe}};
+        plots_data = {{plots|safe}};
+	 $.plot($('#cd_dps'), plots_data);
 				 
 				 coupons_distribution_over_time_data=
 				 [{label:"MT 1","data":[[1240558443000,121],[1240558529400,314],[1240558615800,675], [1240558702200,975]]},
@@ -104,7 +92,7 @@ changeYear: true
           }
         };
 				
-		var plot = $.plot($('#cd_dps_ot'), coupons_distribution_over_time_data, coupons_distribution_over_time_data_options);
+		// var plot = $.plot($('#cd_dps_ot'), coupons_distribution_over_time_data, coupons_distribution_over_time_data_options);
 	
 	var coupons_distribution_discrepancy_data  = [{data: data5, bars: { show: true }, "label":"MT 1"} , 
 													{ data: data6, bars: { show: true },"label":"MT 2" },
@@ -155,10 +143,10 @@ changeYear: true
                           { data: data12, bars: { show: false, fill: true, fillColor:"#FFFFFF","label":"MT 4" }}
 	], opts);
   
-$('#cd_dps_ot').bind( 'plotmousemove', function( e, pos ) {
+/*$('#cd_dps_ot').bind( 'plotmousemove', function( e, pos ) {
           if( !pos.selected ) { return; }
           plot.highlight( pos.selected );
-        } );
+        } );*/
 });
 </script>
 
@@ -172,100 +160,53 @@ $('#cd_dps_ot').bind( 'plotmousemove', function( e, pos ) {
 {% endblock %}
 {% block content %}
 <div class="container">
+
 <h2>Daily Coupon Distribution Summary</h2>
 <br />
 <table width="100%" id="data_heading">
 <thead>
-<tr><th><strong>Date</strong></th><th><strong>State</strong></th><th><strong>LGA</strong></th><th><strong>Ward</strong></th></tr>
-<tr><td><input type="text" id="datepicker" value="4/3/2009"/></td><td>Kano</td><td>{{location}}</td><td>Ward #1</td></tr>
+<tr><th><strong>Date</strong></th><th><strong>State</strong></th><th><strong>LGA</strong></th><th><strong>{{plot_data}}Ward</strong></th></tr>
+<tr><td><input type="text" id="datepicker" value="4/3/2009"/></td><td>Kano</td><td>{{location}}</td><td>{{child_data}}Ward #1</td></tr>
 </thead>
 </table>
 
 <div id="data_summary" style="clear:both;margin-top:1em">
 	<div width="80%" style="float:left">
 		<table width="100%" id="data_heading">
-			<thead>
-				<tr><th>Dist. Point</th><th>Team No.</th><th>No. of Settlements</th>
-				<th>Total No. of People</th><th>Coupons Issued</th><th>Coupons Returned</th></tr>
-			</thead>
-			<tbody>
-				<tr><td>1</td><td>1</td><td>234</td><td>8922</td><td>178</td><td>17</td></tr>
-				<tr><td>1</td><td>2</td><td>233</td><td>8922</td><td>144</td><td>78</td></tr>
-				<tr><td>1</td><td>3</td><td>23</td><td>8922</td><td>174</td><td>74</td></tr>
-				<tr><td>2</td><td>1</td><td>2343</td><td>8922</td><td>844</td><td>44</td></tr>
-				<tr><td>2</td><td>2</td><td>2343</td><td>8922</td><td>184</td><td>84</td></tr>
-				<tr><td>2</td><td>3</td><td>2343</td><td>8922</td><td>178</td><td>17</td></tr>
-				<tr><td>3</td><td>1</td><td>2343</td><td>8922</td><td>174</td><td>14</td></tr>
-				<tr><td>3</td><td>2</td><td>2343</td><td>8922</td><td>180</td><td>144</td></tr>
-				<tr><td>3</td><td>3</td><td>2343</td><td>8922</td><td>174</td><td>4</td><td></td></tr>
-			</tbody>
+
 			<tr>
-			<td colspan="3">
-		<div class="module">
-          <h2>Coupons Distributed at {{location.name}}</h2>
-	  <div width="20%" style="float:left">
-		<div id="cd_dps" style="height:250px;width:400px;"></div>
-	  </div>
-        </div>
-				</td>
-			
-			<td colspan="3">
-		<div class="module">
-          <h2>Coupons Distributed over time at {{location.name}}</h2>
-	  <div width="20%" style="float:right">
-		<div id="cd_dps_ot" style="height:250px;width:400px;"></div>
-	  </div>
-        </div>
-				</td>
-				</tr>
-				<tr>
-				<td colspan="3">
-		<div class="module"><br/><br/>
-          <h2>Coupons Distribution Discrepancy Graph at {{location.name}}</h2>
-	  <div width="20%" style="float:right">
-		<div id="cd_discr" style="height:250px;width:400px;"></div>
-	  </div>
-        </div>
-				</td>
-				<td colspan="3">
-		<div class="module"><br/><br/>
-          <h2>Percentage Distribution in the Wards at {{location.name}}</h2>
-	  <div width="20%" style="float:right">
-		<div id="cd_pie_chart" style="height:250px;width:400px;"></div>
-	  </div>
-        </div>
-				</td>
-				</tr>
-				<tr>
-				<td colspan="3">
-		<div class="module"><br/><br/>
-          <h2>HouseHolds visited by Teams at {{location.name}}</h2>
-	  <div width="20%" style="float:right">
-		
-	  </div>
-        </div>
-				</td>
-				</tr>
-				<tr>
 				<td colspan="4">
 				<h2 class="demoHeaders">Other Charts</h2>
 		<div id="accordion">
 			<div>
-				<h3><a href="#">House Holds visited by Teams at {{location.name}}</a></h3>
-				<div id="cd_hh_mts" style="height:300px;width:500px;"></div>
+				<h3><a href="#">Daily Coupons Distribution by {{child.type}}s at {{location.name}}</a></h3>
+		<div id="cd_dps" style="height:250px;width:600px;"></div>
 			</div>
 			<div>
-				<h3><a href="#">Percentage Distribution in the Wards at {{location.name}}</a></h3>
-				<div>Percentage Distribution in the Wards at {{location.name}}</div>
+				<h3><a href="#">Percentage Distribution in the {{child.type}}s at {{location.name}}</a></h3>
+		                <div id="cd_pie_chart" style="height:250px;width:600px;"></div>
 			</div>
 			<div>
-				<h3><a href="#">Coupons Distribution Discrepancy Graph at {{location.name}}</a></h3>
-				<div>Coupons Distribution Discrepancy Graph at {{location.name}}</div>
+				<h3><a href="#">Coupons Distribution Discrepancy Chart in the {{child.type}}s in {{location.name}}</a></h3>
+		<div id="cd_discr" style="height:250px;width:600px;"></div>
 			</div>
 		</div>
-				</td>
-				</tr>
+				</td></tr>
+			
+				
+		</table><br/>
+		<table width="100%" id="data_heading">
+			<thead>
+				<tr><th><b>{{child.type}}</b></th><th><b>No. of Settlements</b></th>
+				<th><b>Total No. of People</b></th><th><b>Coupons Issued</b></th><th><b>Coupons Returned</b></th></tr>
+			</thead>
+			<tbody>
+				{% for child in children %}
+				<tr><td>{{child.name}}</td><td>{{child.settlements}}</td><td>{{child.people}}</td><td>{{child.coupons}}</td><td>17</td></tr>
+				{% endfor %}
+			</tbody>
 			</table>
+
 	</div>
 	
 	</div>
