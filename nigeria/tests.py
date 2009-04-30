@@ -17,6 +17,9 @@ class TestApp (TestScript):
     apps = (reporter_app.App, App,form_app.App, supply_app.App )
     # the test_backend script does the loading of the dummy backend that allows reporters
     # to work properly in tests
+
+    # these fixtures are making the tests really fucking slow.
+    # TODO: create test fixtures with a *much* smaller set of locations
     fixtures = ['nigeria_llin', 'kano_locations_extended', 'test_backend']
     
     def setUp(self):
