@@ -89,13 +89,9 @@ class Token(models.Model):
         return "%s" % (self.abbreviation)
 
     def _get_regex(self):
-        # fix any patterns we just or-ed together so they are the kind of or we want
-        # e.g., (\w+)|(\d+) => (\w+|\d+)
-        # TODO figure out how to handle non-captured matches
-        # e.g., (?:\w+)|(\d+) => (?:\w+)|(\d+) and then zip up tokens correctly
-        regex = '|'.join(self.patterns.values_list('regex', flat=True))
-        return regex.replace(')|(', '|')
-
+        # convenience accessor for joining patterns
+        return Pattern.join(self.patterns)
+        
     regex = property(_get_regex)
 
 class FormToken(models.Model):
