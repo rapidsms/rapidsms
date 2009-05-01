@@ -224,8 +224,15 @@ class Reporter(models.Model):
         
         # TODO: add a "preferred" flag to connection, which then
         # overrides the last_seen connection as the default, here
-        return self.connections.latest("last_seen")
+        try:
+            return self.connections.latest("last_seen")
+        
+        # if no connections exist for this reporter (how
+        # did that happen?!), then just return None...
+        except PersistantConnection.DoesNotExist:
+            return None
 
+    
     def last_seen(self):
         """Returns the Python datetime that this Reporter was last seen,
            on any Connection. Before displaying in the WebUI, the output
