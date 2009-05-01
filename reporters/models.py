@@ -6,7 +6,7 @@ import os, re
 from datetime import datetime
 from django.db import models
 
-from apps.modelrelationship.models import *
+from apps.patterns.models import Pattern
 
 # load the rapidsms configuration, for BackendManager
 # to check which backends are currently running
@@ -21,6 +21,15 @@ class Role(models.Model):
     name = models.CharField(max_length=160)
     code = models.CharField(max_length=20, blank=True, null=True,\
         help_text="Abbreviation")
+    patterns = models.ManyToManyField(Pattern)
+    
+    def match(self, token):
+        return self.regex and re.match(self.regex, token, re.IGNORECASE)
+    
+    @property
+    def regex(self):
+        # convenience accessor for joining patterns
+        return Pattern.join(self.patterns)
     
     def __unicode__(self):
         return self.name
