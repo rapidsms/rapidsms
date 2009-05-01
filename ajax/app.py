@@ -4,14 +4,16 @@
 import rapidsms
 
 import cgi, urlparse, traceback
-from simplejson import JSONEncoder
 from threading import Thread
 from SocketServer import ThreadingMixIn
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 
+from django.utils.simplejson import JSONEncoder
+
 
 class App(rapidsms.app.App):
     """This app has no docstring!"""
+    
     
     class Server(ThreadingMixIn, HTTPServer):
         pass
