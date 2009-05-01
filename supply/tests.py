@@ -163,6 +163,8 @@ class TestApp (TestScript):
          t_r_formats < Received report for LLIN RECEIVE: origin=KANO, dest=KURA, waybill=11111, amount=200, stock=1800
          t_r_formats > llin recv from 20 to 2027 11111 200 1800
          t_r_formats < Received report for LLIN RECEIVE: origin=KANO, dest=KURA, waybill=11111, amount=200, stock=1800
+         t_r_formats > llin rec from 20 to 2027 11111 200 1800
+         t_r_formats < Received report for LLIN RECEIVE: origin=KANO, dest=KURA, waybill=11111, amount=200, stock=1800
          t_r_formats > llin receeev from 20 to 2027 11111 200 1800
          t_r_formats < Received report for LLIN RECEIVE: origin=KANO, dest=KURA, waybill=11111, amount=200, stock=1800
          # spaces

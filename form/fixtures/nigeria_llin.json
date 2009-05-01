@@ -614,23 +614,16 @@
     "fields": {
       "token": 3
     }
-  }, 
+  },
   {
     "pk": 2, 
-    "model": "form.tokenvalidator", 
-    "fields": {
-      "token": 4
-    }
-  }, 
-  {
-    "pk": 3, 
     "model": "form.tokenvalidator", 
     "fields": {
       "token": 24
     }
   }, 
   {
-    "pk": 4, 
+    "pk": 3, 
     "model": "form.tokenvalidator", 
     "fields": {
       "token": 25
@@ -643,17 +636,10 @@
       "lookup_type": "location", 
       "field_name": "code"
     }
-  }, 
+  },
   {
+
     "pk": 2, 
-    "model": "form.tokenexistancevalidator", 
-    "fields": {
-      "lookup_type": "role", 
-      "field_name": "code"
-    }
-  }, 
-  {
-    "pk": 3, 
     "model": "form.tokenexistancevalidator", 
     "fields": {
       "lookup_type": "location", 
@@ -661,7 +647,7 @@
     }
   }, 
   {
-    "pk": 4, 
+    "pk": 3, 
     "model": "form.tokenexistancevalidator", 
     "fields": {
       "lookup_type": "location", 
@@ -680,7 +666,7 @@
     "pk": 2, 
     "model": "patterns.pattern", 
     "fields": {
-      "regex": "(reg[a-z]+)", 
+      "regex": "(reg[a-z]*)", 
       "name": "register"
     }
   }, 
@@ -752,8 +738,24 @@
     "pk": 11, 
     "model": "patterns.pattern", 
     "fields": {
-      "regex": "(rec[a-z]+)", 
+      "regex": "(rec[a-z]*)", 
       "name": "receive"
+    }
+  }, 
+  {
+    "pk": 12, 
+    "model": "patterns.pattern", 
+    "fields": {
+      "regex": "(dp|dl|ds|dm)", 
+      "name": "distribution leader code"
+    }
+  }, 
+  {
+    "pk": 13, 
+    "model": "patterns.pattern", 
+    "fields": {
+      "regex": "(lf|lp)", 
+      "name": "lga focal person code"
     }
   }
 ]

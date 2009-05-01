@@ -3,6 +3,9 @@
     "pk": 1, 
     "model": "reporters.role", 
     "fields": {
+      "patterns": [
+        12
+      ], 
       "code": "DL", 
       "name": "Distribution point team leader"
     }
@@ -11,6 +14,7 @@
     "pk": 2, 
     "model": "reporters.role", 
     "fields": {
+      "patterns": [], 
       "code": "SM", 
       "name": "Stock manager"
     }
@@ -19,6 +23,7 @@
     "pk": 3, 
     "model": "reporters.role", 
     "fields": {
+      "patterns": [], 
       "code": "WS", 
       "name": "Ward supervisor"
     }
@@ -27,6 +32,9 @@
     "pk": 4, 
     "model": "reporters.role", 
     "fields": {
+      "patterns": [
+        13
+      ], 
       "code": "LF", 
       "name": "LGA focal person"
     }

@@ -68,11 +68,26 @@ class TestApp (TestScript):
            test_reg_6 < Hello short! You are now registered as Distribution point team leader at KANO State.
            test_reg_6 > llin regs 20 dl short user
            test_reg_6 < Hello short! You are now registered as Distribution point team leader at KANO State.
+           test_reg_6 > llin reg 20 dl short user
+           test_reg_6 < Hello short! You are now registered as Distribution point team leader at KANO State.
            test_reg_7 > llin registered 20 dl long user
            test_reg_7 < Hello long! You are now registered as Distribution point team leader at KANO State.
            # extra spaces
            test_reg_8 > llin    register   20   dl    space     guy
            test_reg_8 < Hello space! You are now registered as Distribution point team leader at KANO State.
+           # new tests for more flexible roles
+           test_reg_dl > llin register 20 dl distribution leader
+           test_reg_dl < Hello distribution! You are now registered as Distribution point team leader at KANO State.
+           test_reg_dl > llin register 20 ds distribution leader
+           test_reg_dl < Hello distribution! You are now registered as Distribution point team leader at KANO State.
+           test_reg_dl > llin register 20 dm distribution leader
+           test_reg_dl < Hello distribution! You are now registered as Distribution point team leader at KANO State.
+           test_reg_dl > llin register 20 dp distribution leader
+           test_reg_dl < Hello distribution! You are now registered as Distribution point team leader at KANO State.
+           test_reg_lf > llin register 20 lf lga focal person
+           test_reg_lf < Hello lga! You are now registered as LGA focal person at KANO State.
+           test_reg_lf > llin register 20 lp lga focal person
+           test_reg_lf < Hello lga! You are now registered as LGA focal person at KANO State.
            # alas, we're not perfect
            test_reg_fail > llin rgstr 20 dl sorry guy
            test_reg_fail < Sorry we didn't understand that. Available forms are LLIN: REGISTER, NETCARDS, NETS, RECEIVE, ISSUE
@@ -83,15 +98,15 @@ class TestApp (TestScript):
            12345 > llin my status
            12345 < Please register your phone with RapidSMS.
            12345 > llin register 45 DL hello world 
-           12345 < Invalid form.  45 not in list of location codes
+           12345 < Invalid form. 45 not in list of location codes
            12345 > llin my status
            12345 < Please register your phone with RapidSMS.
            12345 > llin register 20 pp hello world 
-           12345 < Invalid form.  pp not in list of role codes
+           12345 < Invalid form. Unknown role code: pp
            12345 > llin my status
            12345 < Please register your phone with RapidSMS.
            12345 > llin register 6803 AL hello world 
-           12345 < Invalid form.  6803 not in list of location codes. AL not in list of role codes
+           12345 < Invalid form. 6803 not in list of location codes. Unknown role code: AL
            12345 > llin my status
            12345 < Please register your phone with RapidSMS.
          """
@@ -130,7 +145,7 @@ class TestApp (TestScript):
            8005551213 > llin nets 2001 123 456 78 90
            8005551213 < Received report for LLIN NETS: location=AJINGI, distributed=123, expected=456, actual=78, discrepancy=90
            8005551213 > llin nets 2001 123 456 78 
-           8005551213 < Invalid form.  The following fields are required: discrepancy
+           8005551213 < Invalid form. The following fields are required: discrepancy
            # test some of the different form prefix options
            # case sensitivity
            8005551213 > llin NETS 2001 123 456 78 90
@@ -157,7 +172,7 @@ class TestApp (TestScript):
            8005551214 > llin net cards 200201 123 456 78 
            8005551214 < Received report for LLIN NET CARDS: location=ALBASU CENTRAL, settlements=123, people=456, distributed=78
            8005551214 > llin net cards 200201 123 456  
-           8005551214 < Invalid form.  The following fields are required: issued
+           8005551214 < Invalid form. The following fields are required: issued
            # test some of the different form prefix options
            # case sensitivity
            8005551214 > llin NET CARDS 200201 123 456 78
