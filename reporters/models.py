@@ -41,14 +41,14 @@ class Location(models.Model):
     parent = models.ForeignKey("Location", related_name="children", null=True, blank=True, help_text="The parent location of this")
     latitude = models.DecimalField(max_digits=8, decimal_places=6, null=True, blank=True, help_text="The physical latitude of this location")
     longitude = models.DecimalField(max_digits=8, decimal_places=6, null=True, blank=True, help_text="The physical longitude of this location")
-    
-    
+
+
     def top_children(self):
         # this is a pretty silly way to provide easy access to the first N children
         # inside a template
         count = 10
         return self.children.all()[0:10]
-        
+
     def __unicode__(self):
         return self.name
 
@@ -149,6 +149,14 @@ class Reporter(models.Model):
             self.full_name(),
             self.alias)
     
+    def __json__(self):
+        return {
+            "pk":         self.pk,
+            "alias":      self.alias,
+            "first_name": self.first_name,
+            "last_name":  self.last_name,
+            "str":        unicode(self) }
+    
     
     @classmethod
     def parse_name(klass, flat_name):
@@ -161,34 +169,51 @@ class Reporter(models.Model):
             # this is crappy but sufficient
             r"([a-z]+)",                       # Adam
             r"([a-z]+)\s+([a-z]+)",            # Evan Wheeler
-            r"([a-z]+)\s+[a-z]\.?\s+([a-z]+)", # Mark E. Johnston
+            r"([a-z]+)\s+[a-z]+\.?\s+([a-z]+)",# Mark E. Johnston, Lee Harvey Oswald 
             r"([a-z]+)\s+([a-z]+\-[a-z]+)"     # Erica Kochi-Fabian
         ]
+        
+        def unique(str):
+            """Checks an alias for uniqueness; if it is already taken, alter it
+               (by append incrementing digits) until an available alias is found."""
+            
+            n = 1
+            alias = str.lower()
+            
+            # keep on looping until an alias becomes available.
+            # --
+            # WARNING: this isn't going to work at high volumes, since the alias
+            # that we return might be taken before we have time to do anything
+            # with it! This should logic should probably be moved to the
+            # initializer, to make the find/grab alias loop atomic
+            while klass.objects.filter(alias__iexact=alias).count():
+                alias = "%s%d" % (str.lower(), n)
+                n += 1
+            
+            return alias
         
         # try each pattern, returning as
         # soon as we find something that fits
         for pat in patterns:
             m = re.match("^%s$" % pat, flat_name, re.IGNORECASE)
-            print (("^%s$" % pat) + " vs. %s" % flat_name)
-            
             if m is not None:
                 g = m.groups()
                 
                 # return single names as-is
                 # they might already be aliases
                 if len(g) == 1:
-                    alias = g[0].lower()
+                    alias = unique(g[0].lower())
                     return (alias, g[0], "")
                     
                 else:
                     # return only the letters from
                     # the first and last names
-                    alias = g[0][0] + re.sub(r"[^a-zA-Z]", "", g[1])
+                    alias = unique(g[0][0] + re.sub(r"[^a-zA-Z]", "", g[1]))
                     return (alias.lower(), g[0], g[1])
         
         # we have no idea what is going on,
         # so just return the whole thing
-        alias = re.sub(r"[^a-zA-Z]", "", flat_name)
+        alias = unique(re.sub(r"[^a-zA-Z]", "", flat_name))
         return (alias.lower(), flat_name, "")
     
     
@@ -298,6 +323,13 @@ class PersistantConnection(models.Model):
         return "%s:%s" % (
             self.backend,
             self.identity)
+    
+    def __json__(self):
+        return {
+            "pk": self.pk,
+            "identity": self.identity,
+            "reporter": self.reporter,
+            "str": unicode(self) }
     
     
     @classmethod

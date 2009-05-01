@@ -6,13 +6,18 @@ import apps.supply.app as supply_app
 import apps.form.app as form_app
 import apps.default.app as default_app
 from app import App
+from django.core.management.commands.dumpdata import Command
+import time
+import random
+import os        
+from datetime import datetime
 
 class TestApp (TestScript):
     #apps = (reporter_app.App, App,form_app.App, supply_app.App, default_app.App )
     apps = (reporter_app.App, App,form_app.App, supply_app.App )
     # the test_backend script does the loading of the dummy backend that allows reporters
     # to work properly in tests
-    fixtures = ['nigeria_llin', 'kano_locations', 'test_backend']
+    fixtures = ['nigeria_llin', 'test_kano_locations', 'test_backend']
     
     def setUp(self):
         TestScript.setUp(self)
@@ -39,9 +44,39 @@ class TestApp (TestScript):
            8005551212 > llin my status
            8005551212 < Please register your phone with RapidSMS.
            8005551212 > llin register 20 dl dummy user
-           8005551212 < Hello duser! You are now registered as Distribution point team leader at KANO State.
+           8005551212 < Hello dummy! You are now registered as Distribution point team leader at KANO State.
            8005551212 > llin my status
            8005551212 < I think you are dummy user.
+           #duplicate submission
+           test_reg_1 > llin register 20 dl dummy user
+           test_reg_1 < Hello dummy! You are now registered as Distribution point team leader at KANO State.
+           test_reg_1 > llin register 20 dl DUMMY USER
+           test_reg_1 < Hello DUMMY! You are now registered as Distribution point team leader at KANO State.
+           # case sensitivity
+           test_reg_2 > llin REGISTER 20 dl another user
+           test_reg_2 < Hello another! You are now registered as Distribution point team leader at KANO State.
+           # different name formats
+           test_reg_3 > llin register 20 dl onename
+           test_reg_3 < Hello onename! You are now registered as Distribution point team leader at KANO State.
+           # these fail
+           test_reg_4 > llin register 20 dl mister three names
+           test_reg_4 < Hello mister! You are now registered as Distribution point team leader at KANO State.
+           test_reg_5 > llin register 20 dl mister four name guy
+           test_reg_5 < Hello mister! You are now registered as Distribution point team leader at KANO State.
+           # some other spellings
+           test_reg_6 > llin regstr 20 dl short user
+           test_reg_6 < Hello short! You are now registered as Distribution point team leader at KANO State.
+           test_reg_6 > llin regs 20 dl short user
+           test_reg_6 < Hello short! You are now registered as Distribution point team leader at KANO State.
+           test_reg_7 > llin registered 20 dl long user
+           test_reg_7 < Hello long! You are now registered as Distribution point team leader at KANO State.
+           # extra spaces
+           test_reg_8 > llin    register   20   dl    space     guy
+           test_reg_8 < Hello space! You are now registered as Distribution point team leader at KANO State.
+           # alas, we're not perfect
+           test_reg_fail > llin rgstr 20 dl sorry guy
+           test_reg_fail < Sorry we didn't understand that. Available forms are LLIN: REGISTER, NETCARDS, NETS, RECEIVE, ISSUE
+           
          """
     
     testRegistrationErrors = """
@@ -64,54 +99,162 @@ class TestApp (TestScript):
     testKeyword= """
            tkw_1 > llin register 20 dl keyword tester
            tkw_1 < Hello keyword! You are now registered as Distribution point team leader at KANO State.
+           # base case
            tkw_1 > llin nets 2001 123 456 78 90
-           tkw_1 < Received report for LLIN nets: expected=456, actual=78, location=AJINGI, distributed=123, discrepancy=90
+           tkw_1 < Received report for LLIN NETS: location=AJINGI, distributed=123, expected=456, actual=78, discrepancy=90
+           # capitalize the domain
            tkw_1 > LLIN nets 2001 123 456 78 90
-           tkw_1 < Received report for LLIN nets: expected=456, actual=78, location=AJINGI, distributed=123, discrepancy=90
+           tkw_1 < Received report for LLIN NETS: location=AJINGI, distributed=123, expected=456, actual=78, discrepancy=90
+           # drop an L
            tkw_1 > lin nets 2001 123 456 78 90
-           tkw_1 < Received report for LLIN nets: expected=456, actual=78, location=AJINGI, distributed=123, discrepancy=90
-           tkw_1 > ILLn nets 2001 123 456 78 90
-           tkw_1 < Received report for LLIN nets: expected=456, actual=78, location=AJINGI, distributed=123, discrepancy=90
-           tkw_1 > ilin nets 2001 123 456 78 90
-           tkw_1 < Received report for LLIN nets: expected=456, actual=78, location=AJINGI, distributed=123, discrepancy=90
+           tkw_1 < Received report for LLIN NETS: location=AJINGI, distributed=123, expected=456, actual=78, discrepancy=90
+           # mix the order - this is no longer supported
+           #tkw_1 > ILLn nets 2001 123 456 78 90
+           #tkw_1 < Received report for LLIN NETS: location=AJINGI, distributed=123, expected=456, actual=78, discrepancy=90
+           #tkw_1 > ilin nets 2001 123 456 78 90
+           #tkw_1 < Received report for LLIN NETS: location=AJINGI, distributed=123, expected=456, actual=78, discrepancy=90
+           # ll anything works?
            tkw_1 > ll nets 2001 123 456 78 90
-           tkw_1 < Received report for LLIN nets: expected=456, actual=78, location=AJINGI, distributed=123, discrepancy=90
+           tkw_1 < Received report for LLIN NETS: location=AJINGI, distributed=123, expected=456, actual=78, discrepancy=90
            tkw_1 > llan nets 2001 123 456 78 90
-           tkw_1 < Sorry, we didn't understand that message.
+           tkw_1 < Received report for LLIN NETS: location=AJINGI, distributed=123, expected=456, actual=78, discrepancy=90
+           # don't support w/o keyword
            tkw_1 > nets 2001 123 456 78 90
-           tkw_1 < Sorry, we didn't understand that message.
+           # the default app to the rescue!
+           tkw_1 < Sorry we didn't understand that. Available forms are LLIN: REGISTER, NETCARDS, NETS, RECEIVE, ISSUE
         """
     
     testNets= """
            8005551213 > llin register 2001 lf net guy
            8005551213 < Hello net! You are now registered as LGA focal person at AJINGI LGA.
            8005551213 > llin nets 2001 123 456 78 90
-           8005551213 < Received report for LLIN nets: expected=456, actual=78, location=AJINGI, distributed=123, discrepancy=90
+           8005551213 < Received report for LLIN NETS: location=AJINGI, distributed=123, expected=456, actual=78, discrepancy=90
            8005551213 > llin nets 2001 123 456 78 
            8005551213 < Invalid form.  The following fields are required: discrepancy
+           # test some of the different form prefix options
+           # case sensitivity
+           8005551213 > llin NETS 2001 123 456 78 90
+           8005551213 < Received report for LLIN NETS: location=AJINGI, distributed=123, expected=456, actual=78, discrepancy=90
+           # no s
+           8005551213 > llin net 2001 123 456 78 90
+           8005551213 < Received report for LLIN NETS: location=AJINGI, distributed=123, expected=456, actual=78, discrepancy=90
+           # really?  this works?
+           8005551213 > llin Nt 2001 123 456 78 90
+           8005551213 < Received report for LLIN NETS: location=AJINGI, distributed=123, expected=456, actual=78, discrepancy=90
+           # something's gotta fail
+           8005551213 > llin n 2001 123 456 78 90
+           8005551213 < Sorry we didn't understand that. Available forms are LLIN: REGISTER, NETCARDS, NETS, RECEIVE, ISSUE
+           8005551213 > llin bednets 2001 123 456 78 90
+           8005551213 < Sorry we didn't understand that. Available forms are LLIN: REGISTER, NETCARDS, NETS, RECEIVE, ISSUE
+           8005551213 > llin ents 2001 123 456 78 90
+           8005551213 < Sorry we didn't understand that. Available forms are LLIN: REGISTER, NETCARDS, NETS, RECEIVE, ISSUE
+
          """
     
     testNetCards= """
            8005551214 > llin register 200201 lf card guy
            8005551214 < Hello card! You are now registered as LGA focal person at ALBASU CENTRAL Ward.
            8005551214 > llin net cards 200201 123 456 78 
-           8005551214 < Received report for LLIN net cards: settlements=123, people=456, distributed=78, location=ALBASU CENTRAL
+           8005551214 < Received report for LLIN NET CARDS: location=ALBASU CENTRAL, settlements=123, people=456, distributed=78
            8005551214 > llin net cards 200201 123 456  
-           8005551214 < Invalid form.  The following fields are required: coupons
+           8005551214 < Invalid form.  The following fields are required: issued
+           # test some of the different form prefix options
+           # case sensitivity
+           8005551214 > llin NET CARDS 200201 123 456 78
+           8005551214 < Received report for LLIN NET CARDS: location=ALBASU CENTRAL, settlements=123, people=456, distributed=78
+           # no s 
+           8005551214 > llin net card 200201 123 456 78 
+           8005551214 < Received report for LLIN NET CARDS: location=ALBASU CENTRAL, settlements=123, people=456, distributed=78
+           # one word
+           8005551214 > llin netcards 200201 123 456 78 
+           8005551214 < Received report for LLIN NET CARDS: location=ALBASU CENTRAL, settlements=123, people=456, distributed=78
+           8005551214 > llin netcard 200201 123 456 78 
+           8005551214 < Received report for LLIN NET CARDS: location=ALBASU CENTRAL, settlements=123, people=456, distributed=78
+           # he he
+           8005551214 > llin nt cd 200201 123 456 78 
+           8005551214 < Received report for LLIN NET CARDS: location=ALBASU CENTRAL, settlements=123, people=456, distributed=78
+           8005551214 > llin ntcrds 200201 123 456 78 
+           8005551214 < Received report for LLIN NET CARDS: location=ALBASU CENTRAL, settlements=123, people=456, distributed=78
+           # something's gotta fail
+           8005551214 > llin cards 200201 123 456 78 
+           8005551214 < Sorry we didn't understand that. Available forms are LLIN: REGISTER, NETCARDS, NETS, RECEIVE, ISSUE
+           
          """
          
     testUnregisteredSubmissions = """
             tus_1 > llin net cards 200201 123 456 78
-            tus_1 < Received report for LLIN net cards: settlements=123, people=456, distributed=78, location=ALBASU CENTRAL. Please register your phone
+            tus_1 < Received report for LLIN NET CARDS: location=ALBASU CENTRAL, settlements=123, people=456, distributed=78. Please register your phone
             tus_1 > llin my status
             tus_1 < Please register your phone with RapidSMS. 
             tus_2 > llin nets 2001 123 456 78 90
-            tus_2 < Received report for LLIN nets: expected=456, actual=78, location=AJINGI, distributed=123, discrepancy=90. Please register your phone
+            tus_2 < Received report for LLIN NETS: location=AJINGI, distributed=123, expected=456, actual=78, discrepancy=90. Please register your phone
             tus_2 > llin my status
             tus_2 < Please register your phone with RapidSMS. 
          """
            
-         
+    def testGenerateNetFixtures(self): 
+        """ This isn't actually a test.  It just takes advantage
+            of the test harness to spam a bunch of messages to the 
+            nigeria app and spit out the data in a format that can
+            be sucked into a fixture """
+        # this is the number of net reports that will be generated
+        count = 0
+        
+        # the sender will always be the same, for now
+        phone = "55555"
+        
+        expected_actual_match_percent = .8
+        
+        
+        # allow specifying the minimum and maximum dates for message generation
+        min_date = datetime(2009,4,1)
+        max_date = datetime(2009,4,30)
+        min_time = time.mktime(min_date.timetuple())
+        max_time = time.mktime(max_date.timetuple())
+        
+        # these are the locations that will be chosen.  The actual
+        # location will be a distribution point under one of these 
+        # wards
+        wards = [200101, 200102, 200103, 200104, 200201]
+        all_net_strings = []
+        for i in range(count):
+            # this first part generates a net form at a random DP
+            date = datetime.fromtimestamp(random.randint(min_time, max_time))
+            ward = Location.objects.get(code=random.choice(wards))
+            dp = random.choice(ward.children.all())
+            distributed = random.randint(50,500)
+            expected = random.randint(0,2000)
+            # create an actual amount based on the likelihood of match
+            if random.random() < expected_actual_match_percent:
+                actual = expected
+            else:
+                actual = random.randint(0,2000)
+            discrepancy = random.randint(0,distributed/5)
+            net_string = "%s@%s > llin nets %s %s %s %s %s" % (phone, date.strftime("%Y%m%d%H%M"), dp.code, distributed, expected, actual, discrepancy)
+            all_net_strings.append(net_string)
+            # the second part generates a net card form at a random MT
+            date = datetime.fromtimestamp(random.randint(min_time, max_time))
+            ward = Location.objects.get(code=random.choice(wards))
+            dp = random.choice(ward.children.all())
+            mt = random.choice(dp.children.all())
+            settlements = random.randint(3, 50)
+            people = random.randint(50, 600)
+            coupons = random.randint(50, 600)
+            net_card_string = "%s@%s > llin net cards %s %s %s %s" % (phone, date.strftime("%Y%m%d%H%M"), mt.code, settlements, people, coupons )
+            all_net_strings.append(net_card_string)
+            
+        script = "\n".join(all_net_strings)
+        self.runScript(script)
+        dumpdata = Command()
+        filename = os.path.abspath(os.path.join(os.path.dirname(__file__),"fixtures/test_net_data.json"))
+        options = { "indent" : 2 }
+        datadump = dumpdata.handle("nigeria", **options)
+        # uncomment these lines to save the fixture
+        #file = open(filename, "w")
+        #file.write(datadump)
+        #file.close()
+        #print "=== Successfully wrote fixtures to %s ===" % filename
+        
     
     def _testKanoLocations(self):
         #TODO test for DPs and MTs
@@ -121,8 +264,6 @@ class TestApp (TestScript):
         lga = LocationType.objects.get(name="LGA")
         ward = LocationType.objects.get(name="Ward")
         locations = Location.objects.all()
-        # 529 total locations - except we added some others so don't bother
-        #self.assertEqual(529, len(locations))
         # 1 state
         self.assertEqual(1, len(locations.filter(type=state)))
         # 44 lgas
@@ -141,9 +282,9 @@ class TestApp (TestScript):
     def _testForms(self):
         forms = Form.objects.all()
         self.assertEqual(5, len(forms))
-        for form_name in ["register", "issue", "receive", "nets", "net"]:
+        for form_name in ["register", "issue", "receive", "nets", "netcards"]:
             # this will throw an error if it doesn't exist
-            Form.objects.get(type=form_name)
+            Form.objects.get(code__abbreviation=form_name)
         
     def _testRoles(self):
         # add this when we have a fixture for roles
