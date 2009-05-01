@@ -142,54 +142,56 @@ def coupons_daily(req, locid):
         locid = 1
     try: 
         location = Location.objects.get(pk=locid)
-        #_set_stock(location)
         location_type = Location.objects.get(pk=locid).type
         loc_children = []
-        plot_area = 1
-        plot_data = []
-	plottable_data = []
-	# The loop below will be replaced by a neater code when method of returning children field properties are discovered
-        for i, child in enumerate(location.children.all()):
+        bar_data = []
+        pie_data = []
+        index = 0
+        # The loop below will be replaced by a neater code when method of returning children field properties are discovered
+        for child in location.children.all():
             people, coupons, settlements = _get_card_distribution_data(child)
-	    child.people = people
-	    child.settlements = settlements
-	    child.coupons = coupons
-	    type = child.type
-	    if coupons != 0:
-                plottable_data.append([plot_area, coupons])
-                plot_area = plot_area + 3 
-                plot_data.append({'data' : [[plot_area, coupons]], "bars":{"show":"true", "barWidth": 2}, "label":str(child.name)})
- 
-	    loc_children.append(child)
-       
-        overflow_data = [[20,0]]
-        plot_data.append({ 'data': overflow_data, "bars": { "show": "true", "fill": "true", "fillColor":"#FFFFFF","label":"MT 4" }})
+            child.people = people
+            child.settlements = settlements
+            child.coupons = coupons
+            type = child.type
+            if coupons != 0:
+                # you need to add the str() to prevent the leading unicode 
+                # character from showing up, which blows up flot
+                bar_data.append({'data' : [[index, coupons]], "bars":{"show":"true"}, "label":str(child.name)})
+                pie_data.append({ "label": str(child.name),  "data": child.coupons})
+                index += 1
+            else:
+                #hack
+                child.coupons = 100
+            loc_children.append(child)
     except Location.DoesNotExist:
         location = None
-        
+
     #TODO: Generate and Send all plots data from here to the templates
-	
+    
 
     coupons_data_for_dps_mts1 = [[1,100],[5,60],[9,70],[13,40]]
     coupons_data_for_dps_mts2 = [[2,50],[6,60],[10,60],[14,100]]
     coupons_data_for_dps_mts3 = [[3,50],[7,60],[11,60],[15,100]]
 
     overflow_data = [[20,0]]
-
+    bar_options = '{"xaxis":{"min":0,"ticks":[],"tickFormatter":"string"},"yaxis":{"min":0}}'
     coupons_data =  [{ 'data': coupons_data_for_dps_mts1, "bars": { "show": "true"}, "label":"MT 1" },
                      {'data': coupons_data_for_dps_mts2, "bars": { "show": "true" },"label":"MT 2" },
                      { 'data': coupons_data_for_dps_mts3, "bars": { "show": "true" },"label":"MT 3" },
                      { 'data': overflow_data, "bars": { "show": "true", "fill": "true", "fillColor":"#FFFFFF","label":"MT 4" }} ] 
-#    plot_data = [{'data' : plottable_data, "bars":{"show":"true", "barWidth": 2}, "label":"Null"},{ 'data': overflow_data, "bars": { "show": "true", "fill": "true", "fillColor":"#FFFFFF","label":"MT 4" }} ]
-        
+    print coupons_data
+    print bar_data
     return render_to_response(req, "nigeria/coupons_daily.html", {'location': location,
-					 'children' : loc_children, 
-					 'type':type, 
-					 'child':child, 
-					 'coupons_data':coupons_data,
-					 'plots':plot_data
-					 }
-			     )
+                     'children' : loc_children, 
+                     'type':type, 
+                     'child':child, 
+                     'coupons_data':coupons_data,
+                     'bar_data':bar_data,
+                     'bar_options':bar_options,
+                     'pie_data': pie_data
+                     }
+                 )
     
     
 
