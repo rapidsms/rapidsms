@@ -26,14 +26,11 @@ class TokenExistanceValidatorAdmin(admin.ModelAdmin):
 class TokenAdmin(admin.ModelAdmin):
     list_display = ['name', 'abbreviation']
 
-class PatternAdmin(admin.ModelAdmin):
-    list_display = ['name', 'regex']
 
 admin.site.register(Form)
 admin.site.register(Token, TokenAdmin)
 admin.site.register(FormToken)
 admin.site.register(DomainForm)
-admin.site.register(Pattern, PatternAdmin)
 admin.site.register(Domain, DomainAdmin)
 admin.site.register(FormEntry, FormEntryAdmin)
 admin.site.register(TokenEntry, TokenEntryAdmin)

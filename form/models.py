@@ -7,6 +7,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from apps.reporters.models import Reporter
+from apps.patterns.models import Pattern
 from datetime import date
 import re
 
@@ -82,7 +83,7 @@ class Form(models.Model, Validatable, Alertable):
 class Token(models.Model):
     name = models.CharField(max_length=160)
     abbreviation = models.CharField(max_length=20, unique=True)
-    patterns = models.ManyToManyField("Pattern")
+    patterns = models.ManyToManyField(Pattern)
 
     def __unicode__(self):
         return "%s" % (self.abbreviation)
@@ -111,13 +112,6 @@ class DomainForm(models.Model):
 
     def __unicode__(self):
         return "%s: %s" % (str(self.sequence), self.form)
-
-class Pattern(models.Model):
-    name = models.CharField(max_length=160)
-    regex = models.CharField(max_length=160)
-
-    def __unicode__(self):
-        return "%s %s" % (self.name, self.regex)
 
 class Domain(models.Model):
     name = models.CharField(max_length=160, help_text="Name of form domain")
