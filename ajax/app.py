@@ -12,7 +12,33 @@ from django.utils.simplejson import JSONEncoder
 
 
 class App(rapidsms.app.App):
-    """This app has no docstring!"""
+    """This App does nothing by itself. It exists only to serve other Apps, by
+       providing an easy (and standard) way for them to communicate between their
+       WebUI and RapidSMS App object.
+       
+       When RapidSMS starts, this app starts an HTTPServer (port 8001 as default,
+       but configurable via rapidsms.ini) in a worker thread, and watches for any
+       incoming HTTP requests matching */app/method*. These requests, along with
+       their GET parameters and POST form, are passed on to the named app.
+       
+       Examples:
+       
+       method  URL                  app        method             args
+       ======  ===                  ===        ======             ====
+       GET     /breakfast/toast     breakfast  ajax_GET_toast     { }
+       POST    /breakfast/waffles   breakfast  ajax_POST_waffles  { }, { }
+       POST    /breakfast/eggs?x=1  breakfast  ajax_POST_eggs     { "x": 1 }, {}
+       
+       Any data that is returned by the handler method is JSON encoded, and sent
+       back to the WebUI in response. Since the _webui_ app includes jQuery with
+       every view, this makes it very easy for the WebUIs of other apps to query
+       their running App object for state. See the _training_ app for an example.
+       
+       But wait! AJAX can't cross domains, so a request to port 8001 from the WebUI
+       won't work! This is handled by the WebUI bundled with this app, that proxies
+       all requests to /ajax/(.+) to the right place, on the server side. I cannot
+       conceive of a situation where this would be a problem - but keep it in mind,
+       and don't forget to prepend "/ajax/" to your AJAX URLs."""
     
     
     class Server(ThreadingMixIn, HTTPServer):
