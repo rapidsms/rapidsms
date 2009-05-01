@@ -183,8 +183,8 @@ class App(rapidsms.app.App):
                         # this form - so send back the errors,
                         # and note that we've handled this one
                         else:
-                            self.debug("Invalid form.  %s", ". ".join(validation_errors))
-                            message.respond("Invalid form.  %s" % ". ".join(validation_errors), StatusCodes.APP_ERROR)
+                            self.debug("Invalid form. %s", ". ".join(validation_errors))
+                            message.respond("Invalid form. %s" % ". ".join(validation_errors), StatusCodes.APP_ERROR)
                             return
                         
                         # stop processing forms, move
