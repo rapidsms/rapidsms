@@ -80,6 +80,7 @@ class TestScript (TestCase):
      
     def runParsedScript (self, cmds):
         self.router.start()
+        last_msg = ''
         for num, date, dir, txt in cmds:
             if dir == '>':
                 msg = self.backend.message(num, txt)
@@ -88,13 +89,15 @@ class TestScript (TestCase):
                 self.router.run()
             elif dir == '<':
                 msg = self.backend.next_message()
-                self.assertTrue(msg is not None, "message was returned (expecting %s)" % txt)
+                self.assertTrue(msg is not None, 
+                    "message was returned.\nMessage: '%s'\nExpecting: '%s')" % (last_msg, txt))
                 self.assertEquals(msg.peer, num,
                     "Expected to send to %s, but message was sent to %s"
                     % (num, msg.peer))
-                self.assertEquals(msg.text.strip(), txt,
-                    "\nReceived text: %s\nExpected text: %s\n"
-                    % (msg.text,txt))
+                self.assertEquals(msg.text, txt,
+                    "\nMessage: %s\nReceived text: %s\nExpected text: %s\n"
+                    % (last_msg, msg.text,txt))
+            last_msg = txt
         self.router.stop()
 
     def runScript (self, script):

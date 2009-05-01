@@ -57,7 +57,7 @@ class Backend(rapidsms.backends.Backend):
         if nick == self.nick:
             self.info("routing public message from %s", event.source())
             c = Connection(self, event.source().split("!")[0])
-            msg = self.message(c, txt)
+            msg = self.message(c.identity, txt)
             msg.irc_channel = event.target()
             self.route(msg)
 
@@ -66,6 +66,6 @@ class Backend(rapidsms.backends.Backend):
         if event.target() == self.nick:
             self.info("routing private message from %s", event.source())
             c = Connection(self, event.source().split("!")[0])
-            msg = self.message(c, event.arguments()[0])
+            msg = self.message(c.identity, event.arguments()[0])
             msg.irc_channel = c.identity
             self.route(msg)
