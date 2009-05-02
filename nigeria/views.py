@@ -12,6 +12,8 @@ from django.db import models
 from django.core import serializers
 from django.core.paginator import *
 from random import randrange, seed
+from contrib.flotgrapher.grapher import FlotGraph
+
 import time
 import sys
 
@@ -128,18 +130,78 @@ def supply_summary(req, frm, to, range):
 def bednets_summary(req, frm, to, range):
     return render_to_response(req, "nigeria/bednets_summary.html")
 
-def coupons_summary(req, frm, to, range):
-    return render_to_response(req, "nigeria/coupons_summary.html")
-
-
-# Periodical Reporting  by day, week, month for coupons
-def coupons_daily(req, locid):
+def coupons_summary(req, locid=1):
     #Declarations
     coupons_distribution_data_per_ward = []
     coupons_distribution_data_over_time = []  
     child = Location.objects.get(pk=locid).children.all()[0]
-    if not locid:
-        locid = 1
+    try: 
+        location = Location.objects.get(pk=locid)
+        location_type = Location.objects.get(pk=locid).type
+        loc_children = []
+        bar_data = []
+        pie_data = {"settlements" : [], "people" : [], "coupons": []}
+        index = 0
+        # The loop below will be replaced by a neater code when method of returning children field properties are discovered
+        coupon_data = []
+        people_data = []
+        settlements_data = []
+        labels = []
+        for child in location.children.all():
+            people, coupons, settlements = _get_card_distribution_data(child)
+            child.people = people
+            child.settlements = settlements
+            child.coupons = coupons
+            type = child.type
+            if child.people or child.settlements or child.coupons:
+                settlements_data.append([index, child.settlements])
+                people_data.append([index + 1, child.people])
+                coupon_data.append([index + 2, child.coupons])
+                # you need to add the str() to prevent the leading unicode 
+                # character from showing up, which blows up flot
+                labels.append(str(child.name))
+                #bar_data.append({'data' : [[index, coupons]], "bars":{"show":"true"}, "label":str(child.name)})
+                pie_data["coupons"].append({ "label": str(child.name),  "data": child.coupons})
+                pie_data["settlements"].append({ "label": str(child.name),  "data": child.settlements})
+                pie_data["people"].append({ "label": str(child.name),  "data": child.people})
+                index += 4
+            loc_children.append(child)
+    except Location.DoesNotExist:
+        location = None
+    
+    bar_data.append({"data" : settlements_data, "bars": { "show" : "true" }, "label":"settlements"})
+    bar_data.append({"data" : people_data, "bars": { "show" : "true" }, "label":"people"})
+    bar_data.append({"data" : coupon_data, "bars": { "show" : "true" }, "label":"coupons"})
+    
+    ticks = [[index * 4 + 1.5, label] for index, label in enumerate(labels)]
+    
+    return render_to_response(req, "nigeria/coupons_summary.html", {'location': location,
+                     'children' : loc_children, 
+                     'child_type':type, 
+                     'bar_data':bar_data,
+                     'bar_ticks':ticks,
+                     'pie_data':    pie_data
+                     }
+                 )
+    
+#    new_graph = FlotGraph()
+#    new_graph.set_data(bar_data)
+#    test_flot = new_graph.generate_javascript()
+#    return render_to_response(req, "nigeria/flot_test.html", {
+#                     'test_flot':    test_flot
+#                     }
+#                 )
+
+
+
+
+
+# Periodical Reporting  by day, week, month for coupons
+def coupons_daily(req, locid=1):
+    #Declarations
+    coupons_distribution_data_per_ward = []
+    coupons_distribution_data_over_time = []  
+    child = Location.objects.get(pk=locid).children.all()[0]
     try: 
         location = Location.objects.get(pk=locid)
         location_type = Location.objects.get(pk=locid).type
