@@ -347,7 +347,7 @@ def _get_card_distribution_data(location):
         people += child_data[0]
         coupons += child_data[1]
         settlements += child_data[2]
-    return people, coupons, settlements
+    return int(people), int(coupons), int(settlements)
  
 def _get_stock_over_time_strings(locations):
     '''Get a JSON formatted list that flot can plot
