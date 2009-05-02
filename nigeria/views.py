@@ -33,7 +33,7 @@ def index(req, locid=None):
         location = Location.objects.get(id=locid)
     except Location.DoesNotExist:
         location= None
-    print "location: %s" % location
+    #print "location: %s" % location
     return render_to_response(req, "nigeria/index.html",{'location':location })
 
 
@@ -242,8 +242,6 @@ def coupons_daily(req, locid=1):
                      {'data': coupons_data_for_dps_mts2, "bars": { "show": "true" },"label":"MT 2" },
                      { 'data': coupons_data_for_dps_mts3, "bars": { "show": "true" },"label":"MT 3" },
                      { 'data': overflow_data, "bars": { "show": "true", "fill": "true", "fillColor":"#FFFFFF","label":"MT 4" }} ] 
-    print coupons_data
-    print bar_data
     return render_to_response(req, "nigeria/coupons_daily.html", {'location': location,
                      'children' : loc_children, 
                      'type':type, 
