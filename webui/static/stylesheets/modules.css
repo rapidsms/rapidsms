@@ -162,6 +162,20 @@ table {
 				}
 
 
+/* modules can include help text, to explain how
+ * they should be used. this is usually hidden by
+ * rs-module-help.js as default, but should not be
+ * too verbose incase that doesn't work. */
+.module div.help {
+	border: 0.5em solid #ffb;
+	background: #ffc;
+	padding: 1em;
+}
+
+	.module div.help p {
+		margin: 0; }
+
+
 /* modules can optionally contain a small
  * "toolbar", which hangs in the top right */
 .module div.toolbar {
@@ -171,9 +185,11 @@ table {
 	height: 2em;
 	line-height: 2em;
 }
+
 	/* toolbar links (add, see more, do
 	 * other things) TODO: make pretty */
-	.module div.toolbar a {
+	.module div.toolbar a,
+	.module div.toolbar span {
 		display: block;
 		float: right;
 		color: #fff;
@@ -182,31 +198,20 @@ table {
 		background-repeat: no-repeat;
 		background-position: 0 50%;
 		font-size: 80%;
-	}
-
-	.module div.toolbar span {
-		display: block;
-		float: right;
-		color: #fff;
-		padding-left: 21px;
-		font-size: 80%;
+		cursor: pointer;
 	}
 	
-		.module div.toolbar a.add {
-			background-image: url("../icons/16/add.png");
-		}
-		.module div.toolbar a.prev {
-			background-image: url("../icons/16/go-previous.png");
-		}
-		.module div.toolbar a.next {
-			background-image: url("../icons/16/go-next.png");
-		}
-		.module div.toolbar a.first {
-			background-image: url("../icons/16/go-first.png");
-		}
-		.module div.toolbar a.last {
-			background-image: url("../icons/16/go-last.png");
-		}
+		/* various common toolbar icons. should be from the
+		 * famfamfam silk set, to fit in with RapidSMS */
+		.module div.toolbar .add  { background-image: url("../icons/16/add.png");  }
+		.module div.toolbar .help { background-image: url("../icons/16/help.png"); }
+		
+		/* these seem to be from the tango
+		 * set... TODO: use silk! */
+		.module div.toolbar .prev  { background-image: url("../icons/16/go-previous.png"); }
+		.module div.toolbar .next  { background-image: url("../icons/16/go-next.png");     }
+		.module div.toolbar .first { background-image: url("../icons/16/go-first.png");    }
+		.module div.toolbar .last  { background-image: url("../icons/16/go-last.png");     }
 
 .module form { }
 	
@@ -350,7 +355,7 @@ table {
 	/* for fields that need a longer description, help
 	 * text can be added below. roughly analogous to
 	 * django's models.Model.help_text */
-	.module p.help {
+	.module form p.help {
 		margin-top: 0.625em;
 		font-size: 80%;
 		color: #ccc;
@@ -359,7 +364,7 @@ table {
 	
 	/* to wrap any submission or action buttons, and
 	 * receive javascript/ajax notifications in response */
-	.module div.submit {
+	.module form div.submit {
 		margin-top: 2em;
 	}
 	
