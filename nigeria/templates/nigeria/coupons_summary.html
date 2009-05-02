@@ -1,25 +1,16 @@
 {% extends "layout.html" %}
 {% block title %}Daily Coupon Distribution Summary{% endblock %}
 {% block javascripts %}
-<script language="javascript" type="text/javascript" src="/static/nigeria/js/jquery.flot.js"></script>
-<script language="javascript" type="text/javascript" src="/static/nigeria/js/jquery.flot.pie.pack.js"></script>
-<script language="javascript" type="text/javascript" src="/static/nigeria/jquery-ui/jquery-ui-1.7.1.custom.min.js"></script>
 
 <!--[if IE]>
 <script language="javascript" type="text/javascript" src="/static/nigeria/js/excanvas.pack.js"></script>
 <![endif]-->
+<script language="javascript" type="text/javascript" src="/static/nigeria/js/jquery.flot.js"></script>
+<script language="javascript" type="text/javascript" src="/static/nigeria/js/jquery.flot.pie.pack.js"></script>
 
 <script language="javascript">
 
 $(document).ready(function() {
-
-//The following few lines are jquery-ui codes for styling display of some elements on the page.
-
-$("#accordion").accordion({ header: "h3" });
-$("#datepicker").datepicker({showOn: 'button', buttonImage: '/static/nigeria/jquery-ui/images/calendar.gif', buttonImageOnly: true, showButtonPanel: true,changeMonth: true,
-changeYear: true
-
-});
 
      bar_data = {{bar_data|safe}};
      bar_options= {"grid": {"show":"false", "clickable":"true"}, "xaxis":{"ticks":{{bar_ticks|safe}}, "tickFormatter":"string"}}
