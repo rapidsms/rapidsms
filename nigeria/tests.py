@@ -230,7 +230,7 @@ class TestApp (TestScript):
         # these are the locations that will be chosen.  The actual
         # location will be a distribution point under one of these 
         # wards
-        wards = [200101, 200102, 200103, 200104, 200201]
+        wards = [200101, 200102, 200103, 200104, 200105, 200106, 200107, 200108, 200109, 200110, 200201]
         all_net_strings = []
         for i in range(count):
             # this first part generates a net form at a random DP
@@ -265,11 +265,11 @@ class TestApp (TestScript):
         options = { "indent" : 2 }
         datadump = dumpdata.handle("nigeria", **options)
         # uncomment these lines to save the fixture
-        #file = open(filename, "w")
-        #file.write(datadump)
-        #file.close()
-        #print "=== Successfully wrote fixtures to %s ===" % filename
-        
+#        file = open(filename, "w")
+#        file.write(datadump)
+#        file.close()
+#        print "=== Successfully wrote fixtures to %s ===" % filename
+#        
     
     def _testKanoLocations(self):
         #TODO test for DPs and MTs
