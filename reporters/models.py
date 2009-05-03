@@ -168,6 +168,31 @@ class Reporter(models.Model):
     
     
     @classmethod
+    def exists(klass, reporter, connection):
+        """Checks if a reporter has already been entered into the system"""
+        try:
+            # look for a connection and reporter object matching what
+            # was passed in, and if they are already linked then this
+            # reporter already exists
+            existing_conn = PersistantConnection.objects.get\
+                (backend=connection.backend, identity=connection.identity)
+            # this currently checks first and last name, location and role.
+            # we may want to make this more lax
+            filters = {"first_name" : reporter.first_name,
+                       "last_name" : reporter.last_name,
+                       "location" : reporter.location,
+                       "role" : reporter.role } 
+            existing_reps = Reporter.objects.filter(**filters)
+            for existing_rep in existing_reps:
+                if existing_rep == existing_conn.reporter:
+                    return True
+            return False 
+        except PersistantConnection.DoesNotExist:
+            # if we couldn't find a connection then they 
+            # don't exist
+            return False 
+        
+    @classmethod
     def parse_name(klass, flat_name):
         """Given a single string, this function returns a three-string
            tuple containing a suggested alias, first name, and last name,
