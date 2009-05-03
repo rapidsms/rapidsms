@@ -134,9 +134,9 @@ def coupons_summary(req, locid=1):
     #Declarations
     coupons_distribution_data_per_ward = []
     coupons_distribution_data_over_time = []  
-    child = Location.objects.get(pk=locid).children.all()[0]
     try: 
         location = Location.objects.get(pk=locid)
+        parent = location.parent
         location_type = Location.objects.get(pk=locid).type
         loc_children = []
         bar_data = []
@@ -147,6 +147,7 @@ def coupons_summary(req, locid=1):
         people_data = []
         settlements_data = []
         labels = []
+        type = ""
         for child in location.children.all():
             people, coupons, settlements = _get_card_distribution_data(child)
             child.people = people
@@ -178,9 +179,10 @@ def coupons_summary(req, locid=1):
     return render_to_response(req, "nigeria/coupons_summary.html", {'location': location,
                      'children' : loc_children, 
                      'child_type':type, 
+                     'parent':parent, 
                      'bar_data':bar_data,
                      'bar_ticks':ticks,
-                     'pie_data':    pie_data
+                     'pie_data': pie_data
                      }
                  )
     
