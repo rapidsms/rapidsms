@@ -32,6 +32,9 @@ $(document).ready(function() {
 
 <div class = "location_summary">
   <h3>Mobilization Summary for {{location.name}}</h3>
+  {% if parent %}
+  {{location.type}} of <a href="/reports/coupons/summary/{{parent.id}}">{{parent}}</a>
+  {% endif %}
 </div> 
 <div id="data_summary" style="clear:both;margin-top:1em">
     <table width="100%" id="data_heading">
@@ -69,7 +72,7 @@ $(document).ready(function() {
         <tbody>
             {% for child in children %}
                 <tr>
-                    <td>{{child.name}}</td><td>{{child.settlements}}</td><td>{{child.people}}</td><td>{{child.coupons}}</td>
+                    <td><a href="/reports/coupons/summary/{{child.id}}">{{child.name}}</a></td><td>{{child.settlements}}</td><td>{{child.people}}</td><td>{{child.coupons}}</td>
                 </tr>
             {% endfor %}
         </tbody>
