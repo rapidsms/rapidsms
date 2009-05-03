@@ -5,6 +5,7 @@ from models import *
 from rapidsms.message import StatusCodes
 from apps.reporters.models import *
 from apps.form.formslogic import FormsLogic
+import re
 
 class NigeriaFormsLogic(FormsLogic):
     ''' This class will hold the nigeria-specific forms logic.
@@ -17,22 +18,22 @@ class NigeriaFormsLogic(FormsLogic):
                      "nets" : {
                                "class" : NetDistribution,
                                "display" : "nets",
-                               "fields" : {
-                                           "location" : "location", 
-                                           "distributed" : "distributed", 
-                                           "expected" : "expected", 
-                                           "actual" : "actual",
-                                           "discrepancy" : "discrepancy", 
-                                           }
+                               "fields" : (
+                                           ("location", "location"), 
+                                           ("distributed", "distributed"), 
+                                           ("expected", "expected"), 
+                                           ("actual", "actual"),
+                                           ("discrepancy", "discrepancy")
+                                           )
                                },
                      "netcards" : {"class" : CardDistribution, 
                               "display" : "net cards",
-                              "fields" : {
-                                          "location" : "location", 
-                                          "settlements" : "settlements", 
-                                          "people" : "people", 
-                                          "issued" : "distributed",
-                                          }
+                              "fields" : (
+                                          ("location", "location"), 
+                                          ("settlements", "settlements"), 
+                                          ("people", "people"), 
+                                          ("issued", "distributed"),
+                                          )
                               }
                      }
         
@@ -48,7 +49,6 @@ class NigeriaFormsLogic(FormsLogic):
                 " ".join(["<%s>" % t for t in required])
         if form_entry.form.code.abbreviation == "register":
             data = form_entry.to_dict()
-            print "\n\n%r\n\n" % data
 
             # check that ALL FIELDS were provided
             missing = [t for t in required if data[t] is None]
@@ -69,20 +69,38 @@ class NigeriaFormsLogic(FormsLogic):
             # form_entry, for "actions" to pick up again without re-fetching
             form_entry.rep_data = data
             
+            # parse the roles out. 
+            # TODO: how can this be done generically
+            role_code = data.pop("role")
+            role = None
+            try:
+                role = Role.objects.get(code__iexact=role_code)
+            except Role.DoesNotExist:
+                # try to match the pattern
+                for db_role in Role.objects.all():
+                    if db_role.match(role_code):
+                        role = db_role
+                        break
+            if not role:
+                return ["Unknown role code: %s" % role_code]
+            data["role"] = role
+            
+            
             # nothing went wrong. the data structure
             # is ready to spawn a Reporter object
             return None
         elif form_entry.form.code.abbreviation in self._form_lookups.keys():
             # we know all the fields in this form are required, so make sure they're set
             # TODO check the token's required flag
-            required_token_names = self._form_lookups[form_entry.form.code.abbreviation]["fields"].keys()
-            for token in form_entry.tokenentry_set.all():
-                if token.token.abbreviation in required_token_names:
+            required_tokens = [form_token.token for form_token in form_entry.form.form_tokens.all() if form_token.required]
+            for tokenentry in form_entry.tokenentry_set.all():
+                if tokenentry.token in required_tokens:
                     # found it, as long as the data isn't empty remove it
-                    if token.data:
-                        required_token_names.remove(token.token.abbreviation)
-            if required_token_names:
-                errors = "The following fields are required: " + ", ".join(required_token_names)
+                    if tokenentry.data:
+                        required_tokens.remove(tokenentry.token)
+            if required_tokens:
+                req_token_names = [token.abbreviation for token in required_tokens]
+                errors = "The following fields are required: " + ", ".join(req_token_names)
                 return [errors]
             return None
         
@@ -91,13 +109,13 @@ class NigeriaFormsLogic(FormsLogic):
     def actions(self, *args, **kwargs):
         message = args[0]
         form_entry = args[1]
-        print(form_entry.form.code.abbreviation)
         if form_entry.form.code.abbreviation== "register":
 
             data = form_entry.rep_data
             # load the location and role objects via their codes
             data["location"] = Location.objects.get(code__iexact=data["location"])
-            data["role"]     = Role.objects.get(code__iexact=data["role"])
+            # this happens in validation now
+            # data["role"]     = Role.objects.get(code__iexact=data["role"])
             
             # spawn and save the reporter using the
             # data we collected in self.validate
@@ -119,9 +137,9 @@ class NigeriaFormsLogic(FormsLogic):
         elif self._form_lookups.has_key(form_entry.form.code.abbreviation):
             to_use = self._form_lookups[form_entry.form.code.abbreviation]
             form_class = to_use["class"]
-            field_map = to_use["fields"]
+            field_list = to_use["fields"]
             # create and save the model from the form data
-            instance = self._model_from_form(message, form_entry, form_class, field_map, self._foreign_key_lookups)
+            instance = self._model_from_form(message, form_entry, form_class, dict(field_list), self._foreign_key_lookups)
             instance.time = message.date
             
             # if the reporter isn't set then populate the connection object.
@@ -133,7 +151,7 @@ class NigeriaFormsLogic(FormsLogic):
             instance.save()
             response = "Received report for %s %s: " % (form_entry.domain.code.abbreviation.upper(), to_use["display"].upper())
             # this line pulls any attributes that are present into 2-item lists
-            attrs = [[attr_name, str(getattr(instance, attr_name))] for attr_name in field_map.values() if hasattr(instance, attr_name)]
+            attrs = [[attr[1], str(getattr(instance, attr[1]))] for attr in field_list if hasattr(instance, attr[1])]
             # joins the inner list on "=" and the outer on ", " so we get 
             # attr1=value1, attr2=value2
             response = response + ", ".join(["=".join(t) for t in attrs])
