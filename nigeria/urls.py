@@ -23,5 +23,4 @@ urlpatterns = patterns('',
     url(r'^reports/supply/weekly/(?P<locid>\d*)/?$', views.supply_weekly),
     url(r'^reports/supply/monthly/(?P<locid>\d*)/?$', views.supply_monthly),
     url(r'^reports/test/?$', views.index)
-    
 )
