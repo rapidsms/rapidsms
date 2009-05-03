@@ -10,7 +10,7 @@ LOG_CHANNEL = "rapidsms"
 LOG_SIZE    = 8192 # 8192 bytes = 64 kb
 LOG_BACKUPS = 256 # number of logs to keep around
 LOG_FORMAT  = "%(asctime)s %(levelname)s [%(component)s]: %(message)s"
-LOG_LEVEL   = "debug"
+LOG_LEVEL   = "info"
 LOG_FILE    = "/tmp/rapidsms.log"
 
 class Logger (object):
