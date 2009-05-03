@@ -6428,5 +6428,3605 @@
       "latitude": null, 
       "type": 4
     }
+  }, 
+  {
+    "pk": 530, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "2001011", 
+      "name": "AJINGI DP 1", 
+      "parent": 46, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 5
+    }
+  }, 
+  {
+    "pk": 531, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010111", 
+      "name": "AJINGI DP 1 TEAM 1", 
+      "parent": 530, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 532, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010112", 
+      "name": "AJINGI DP 1 TEAM 2", 
+      "parent": 530, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 533, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010113", 
+      "name": "AJINGI DP 1 TEAM 3", 
+      "parent": 530, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 534, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010114", 
+      "name": "AJINGI DP 1 TEAM 4", 
+      "parent": 530, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 535, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "2001012", 
+      "name": "AJINGI DP 2", 
+      "parent": 46, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 5
+    }
+  }, 
+  {
+    "pk": 536, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010121", 
+      "name": "AJINGI DP 2 TEAM 1", 
+      "parent": 535, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 537, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010122", 
+      "name": "AJINGI DP 2 TEAM 2", 
+      "parent": 535, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 538, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010123", 
+      "name": "AJINGI DP 2 TEAM 3", 
+      "parent": 535, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 539, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010124", 
+      "name": "AJINGI DP 2 TEAM 4", 
+      "parent": 535, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 540, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "2001013", 
+      "name": "AJINGI DP 3", 
+      "parent": 46, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 5
+    }
+  }, 
+  {
+    "pk": 541, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010131", 
+      "name": "AJINGI DP 3 TEAM 1", 
+      "parent": 540, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 542, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010132", 
+      "name": "AJINGI DP 3 TEAM 2", 
+      "parent": 540, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 543, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010133", 
+      "name": "AJINGI DP 3 TEAM 3", 
+      "parent": 540, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 544, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010134", 
+      "name": "AJINGI DP 3 TEAM 4", 
+      "parent": 540, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 545, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "2001021", 
+      "name": "BALARE DP 1", 
+      "parent": 47, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 5
+    }
+  }, 
+  {
+    "pk": 546, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010211", 
+      "name": "BALARE DP 1 TEAM 1", 
+      "parent": 545, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 547, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010212", 
+      "name": "BALARE DP 1 TEAM 2", 
+      "parent": 545, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 548, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010213", 
+      "name": "BALARE DP 1 TEAM 3", 
+      "parent": 545, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 549, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010214", 
+      "name": "BALARE DP 1 TEAM 4", 
+      "parent": 545, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 550, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "2001022", 
+      "name": "BALARE DP 2", 
+      "parent": 47, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 5
+    }
+  }, 
+  {
+    "pk": 551, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010221", 
+      "name": "BALARE DP 2 TEAM 1", 
+      "parent": 550, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 552, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010222", 
+      "name": "BALARE DP 2 TEAM 2", 
+      "parent": 550, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 553, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010223", 
+      "name": "BALARE DP 2 TEAM 3", 
+      "parent": 550, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 554, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010224", 
+      "name": "BALARE DP 2 TEAM 4", 
+      "parent": 550, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 555, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "2001023", 
+      "name": "BALARE DP 3", 
+      "parent": 47, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 5
+    }
+  }, 
+  {
+    "pk": 556, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010231", 
+      "name": "BALARE DP 3 TEAM 1", 
+      "parent": 555, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 557, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010232", 
+      "name": "BALARE DP 3 TEAM 2", 
+      "parent": 555, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 558, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010233", 
+      "name": "BALARE DP 3 TEAM 3", 
+      "parent": 555, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 559, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010234", 
+      "name": "BALARE DP 3 TEAM 4", 
+      "parent": 555, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 560, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "2001031", 
+      "name": "CHULA DP 1", 
+      "parent": 48, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 5
+    }
+  }, 
+  {
+    "pk": 561, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010311", 
+      "name": "CHULA DP 1 TEAM 1", 
+      "parent": 560, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 562, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010312", 
+      "name": "CHULA DP 1 TEAM 2", 
+      "parent": 560, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 563, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010313", 
+      "name": "CHULA DP 1 TEAM 3", 
+      "parent": 560, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 564, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010314", 
+      "name": "CHULA DP 1 TEAM 4", 
+      "parent": 560, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 565, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "2001032", 
+      "name": "CHULA DP 2", 
+      "parent": 48, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 5
+    }
+  }, 
+  {
+    "pk": 566, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010321", 
+      "name": "CHULA DP 2 TEAM 1", 
+      "parent": 565, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 567, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010322", 
+      "name": "CHULA DP 2 TEAM 2", 
+      "parent": 565, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 568, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010323", 
+      "name": "CHULA DP 2 TEAM 3", 
+      "parent": 565, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 569, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010324", 
+      "name": "CHULA DP 2 TEAM 4", 
+      "parent": 565, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 570, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "2001033", 
+      "name": "CHULA DP 3", 
+      "parent": 48, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 5
+    }
+  }, 
+  {
+    "pk": 571, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010331", 
+      "name": "CHULA DP 3 TEAM 1", 
+      "parent": 570, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 572, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010332", 
+      "name": "CHULA DP 3 TEAM 2", 
+      "parent": 570, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 573, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010333", 
+      "name": "CHULA DP 3 TEAM 3", 
+      "parent": 570, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 574, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010334", 
+      "name": "CHULA DP 3 TEAM 4", 
+      "parent": 570, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 575, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "2001041", 
+      "name": "DABIN-KANAWA DP 1", 
+      "parent": 49, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 5
+    }
+  }, 
+  {
+    "pk": 576, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010411", 
+      "name": "DABIN-KANAWA DP 1 TEAM 1", 
+      "parent": 575, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 577, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010412", 
+      "name": "DABIN-KANAWA DP 1 TEAM 2", 
+      "parent": 575, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 578, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010413", 
+      "name": "DABIN-KANAWA DP 1 TEAM 3", 
+      "parent": 575, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 579, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010414", 
+      "name": "DABIN-KANAWA DP 1 TEAM 4", 
+      "parent": 575, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 580, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "2001042", 
+      "name": "DABIN-KANAWA DP 2", 
+      "parent": 49, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 5
+    }
+  }, 
+  {
+    "pk": 581, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010421", 
+      "name": "DABIN-KANAWA DP 2 TEAM 1", 
+      "parent": 580, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 582, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010422", 
+      "name": "DABIN-KANAWA DP 2 TEAM 2", 
+      "parent": 580, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 583, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010423", 
+      "name": "DABIN-KANAWA DP 2 TEAM 3", 
+      "parent": 580, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 584, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010424", 
+      "name": "DABIN-KANAWA DP 2 TEAM 4", 
+      "parent": 580, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 585, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "2001043", 
+      "name": "DABIN-KANAWA DP 3", 
+      "parent": 49, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 5
+    }
+  }, 
+  {
+    "pk": 586, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010431", 
+      "name": "DABIN-KANAWA DP 3 TEAM 1", 
+      "parent": 585, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 587, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010432", 
+      "name": "DABIN-KANAWA DP 3 TEAM 2", 
+      "parent": 585, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 588, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010433", 
+      "name": "DABIN-KANAWA DP 3 TEAM 3", 
+      "parent": 585, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 589, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010434", 
+      "name": "DABIN-KANAWA DP 3 TEAM 4", 
+      "parent": 585, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 590, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "2001051", 
+      "name": "DUNDUN DP 1", 
+      "parent": 50, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 5
+    }
+  }, 
+  {
+    "pk": 591, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010511", 
+      "name": "DUNDUN DP 1 TEAM 1", 
+      "parent": 590, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 592, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010512", 
+      "name": "DUNDUN DP 1 TEAM 2", 
+      "parent": 590, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 593, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010513", 
+      "name": "DUNDUN DP 1 TEAM 3", 
+      "parent": 590, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 594, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010514", 
+      "name": "DUNDUN DP 1 TEAM 4", 
+      "parent": 590, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 595, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "2001052", 
+      "name": "DUNDUN DP 2", 
+      "parent": 50, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 5
+    }
+  }, 
+  {
+    "pk": 596, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010521", 
+      "name": "DUNDUN DP 2 TEAM 1", 
+      "parent": 595, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 597, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010522", 
+      "name": "DUNDUN DP 2 TEAM 2", 
+      "parent": 595, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 598, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010523", 
+      "name": "DUNDUN DP 2 TEAM 3", 
+      "parent": 595, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 599, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010524", 
+      "name": "DUNDUN DP 2 TEAM 4", 
+      "parent": 595, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 600, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "2001053", 
+      "name": "DUNDUN DP 3", 
+      "parent": 50, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 5
+    }
+  }, 
+  {
+    "pk": 601, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010531", 
+      "name": "DUNDUN DP 3 TEAM 1", 
+      "parent": 600, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 602, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010532", 
+      "name": "DUNDUN DP 3 TEAM 2", 
+      "parent": 600, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 603, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010533", 
+      "name": "DUNDUN DP 3 TEAM 3", 
+      "parent": 600, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 604, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010534", 
+      "name": "DUNDUN DP 3 TEAM 4", 
+      "parent": 600, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 605, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "2001061", 
+      "name": "GAFASA DP 1", 
+      "parent": 51, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 5
+    }
+  }, 
+  {
+    "pk": 606, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010611", 
+      "name": "GAFASA DP 1 TEAM 1", 
+      "parent": 605, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 607, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010612", 
+      "name": "GAFASA DP 1 TEAM 2", 
+      "parent": 605, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 608, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010613", 
+      "name": "GAFASA DP 1 TEAM 3", 
+      "parent": 605, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 609, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010614", 
+      "name": "GAFASA DP 1 TEAM 4", 
+      "parent": 605, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 610, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "2001062", 
+      "name": "GAFASA DP 2", 
+      "parent": 51, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 5
+    }
+  }, 
+  {
+    "pk": 611, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010621", 
+      "name": "GAFASA DP 2 TEAM 1", 
+      "parent": 610, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 612, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010622", 
+      "name": "GAFASA DP 2 TEAM 2", 
+      "parent": 610, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 613, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010623", 
+      "name": "GAFASA DP 2 TEAM 3", 
+      "parent": 610, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 614, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010624", 
+      "name": "GAFASA DP 2 TEAM 4", 
+      "parent": 610, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 615, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "2001063", 
+      "name": "GAFASA DP 3", 
+      "parent": 51, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 5
+    }
+  }, 
+  {
+    "pk": 616, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010631", 
+      "name": "GAFASA DP 3 TEAM 1", 
+      "parent": 615, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 617, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010632", 
+      "name": "GAFASA DP 3 TEAM 2", 
+      "parent": 615, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 618, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010633", 
+      "name": "GAFASA DP 3 TEAM 3", 
+      "parent": 615, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 619, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010634", 
+      "name": "GAFASA DP 3 TEAM 4", 
+      "parent": 615, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 620, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "2001071", 
+      "name": "GURDUBA DP 1", 
+      "parent": 52, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 5
+    }
+  }, 
+  {
+    "pk": 621, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010711", 
+      "name": "GURDUBA DP 1 TEAM 1", 
+      "parent": 620, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 622, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010712", 
+      "name": "GURDUBA DP 1 TEAM 2", 
+      "parent": 620, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 623, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010713", 
+      "name": "GURDUBA DP 1 TEAM 3", 
+      "parent": 620, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 624, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010714", 
+      "name": "GURDUBA DP 1 TEAM 4", 
+      "parent": 620, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 625, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "2001072", 
+      "name": "GURDUBA DP 2", 
+      "parent": 52, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 5
+    }
+  }, 
+  {
+    "pk": 626, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010721", 
+      "name": "GURDUBA DP 2 TEAM 1", 
+      "parent": 625, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 627, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010722", 
+      "name": "GURDUBA DP 2 TEAM 2", 
+      "parent": 625, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 628, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010723", 
+      "name": "GURDUBA DP 2 TEAM 3", 
+      "parent": 625, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 629, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010724", 
+      "name": "GURDUBA DP 2 TEAM 4", 
+      "parent": 625, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 630, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "2001073", 
+      "name": "GURDUBA DP 3", 
+      "parent": 52, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 5
+    }
+  }, 
+  {
+    "pk": 631, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010731", 
+      "name": "GURDUBA DP 3 TEAM 1", 
+      "parent": 630, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 632, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010732", 
+      "name": "GURDUBA DP 3 TEAM 2", 
+      "parent": 630, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 633, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010733", 
+      "name": "GURDUBA DP 3 TEAM 3", 
+      "parent": 630, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 634, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010734", 
+      "name": "GURDUBA DP 3 TEAM 4", 
+      "parent": 630, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 635, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "2001081", 
+      "name": "KUNKUNRAWA DP 1", 
+      "parent": 53, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 5
+    }
+  }, 
+  {
+    "pk": 636, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010811", 
+      "name": "KUNKUNRAWA DP 1 TEAM 1", 
+      "parent": 635, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 637, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010812", 
+      "name": "KUNKUNRAWA DP 1 TEAM 2", 
+      "parent": 635, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 638, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010813", 
+      "name": "KUNKUNRAWA DP 1 TEAM 3", 
+      "parent": 635, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 639, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010814", 
+      "name": "KUNKUNRAWA DP 1 TEAM 4", 
+      "parent": 635, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 640, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "2001082", 
+      "name": "KUNKUNRAWA DP 2", 
+      "parent": 53, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 5
+    }
+  }, 
+  {
+    "pk": 641, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010821", 
+      "name": "KUNKUNRAWA DP 2 TEAM 1", 
+      "parent": 640, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 642, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010822", 
+      "name": "KUNKUNRAWA DP 2 TEAM 2", 
+      "parent": 640, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 643, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010823", 
+      "name": "KUNKUNRAWA DP 2 TEAM 3", 
+      "parent": 640, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 644, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010824", 
+      "name": "KUNKUNRAWA DP 2 TEAM 4", 
+      "parent": 640, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 645, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "2001083", 
+      "name": "KUNKUNRAWA DP 3", 
+      "parent": 53, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 5
+    }
+  }, 
+  {
+    "pk": 646, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010831", 
+      "name": "KUNKUNRAWA DP 3 TEAM 1", 
+      "parent": 645, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 647, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010832", 
+      "name": "KUNKUNRAWA DP 3 TEAM 2", 
+      "parent": 645, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 648, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010833", 
+      "name": "KUNKUNRAWA DP 3 TEAM 3", 
+      "parent": 645, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 649, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010834", 
+      "name": "KUNKUNRAWA DP 3 TEAM 4", 
+      "parent": 645, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 650, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "2001091", 
+      "name": "TORANKE DP 1", 
+      "parent": 54, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 5
+    }
+  }, 
+  {
+    "pk": 651, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010911", 
+      "name": "TORANKE DP 1 TEAM 1", 
+      "parent": 650, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 652, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010912", 
+      "name": "TORANKE DP 1 TEAM 2", 
+      "parent": 650, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 653, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010913", 
+      "name": "TORANKE DP 1 TEAM 3", 
+      "parent": 650, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 654, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010914", 
+      "name": "TORANKE DP 1 TEAM 4", 
+      "parent": 650, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 655, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "2001092", 
+      "name": "TORANKE DP 2", 
+      "parent": 54, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 5
+    }
+  }, 
+  {
+    "pk": 656, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010921", 
+      "name": "TORANKE DP 2 TEAM 1", 
+      "parent": 655, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 657, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010922", 
+      "name": "TORANKE DP 2 TEAM 2", 
+      "parent": 655, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 658, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010923", 
+      "name": "TORANKE DP 2 TEAM 3", 
+      "parent": 655, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 659, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010924", 
+      "name": "TORANKE DP 2 TEAM 4", 
+      "parent": 655, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 660, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "2001093", 
+      "name": "TORANKE DP 3", 
+      "parent": 54, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 5
+    }
+  }, 
+  {
+    "pk": 661, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010931", 
+      "name": "TORANKE DP 3 TEAM 1", 
+      "parent": 660, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 662, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010932", 
+      "name": "TORANKE DP 3 TEAM 2", 
+      "parent": 660, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 663, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010933", 
+      "name": "TORANKE DP 3 TEAM 3", 
+      "parent": 660, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 664, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20010934", 
+      "name": "TORANKE DP 3 TEAM 4", 
+      "parent": 660, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 665, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "2001101", 
+      "name": "UNGUWAR-BAI DP 1", 
+      "parent": 55, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 5
+    }
+  }, 
+  {
+    "pk": 666, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20011011", 
+      "name": "UNGUWAR-BAI DP 1 TEAM 1", 
+      "parent": 665, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 667, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20011012", 
+      "name": "UNGUWAR-BAI DP 1 TEAM 2", 
+      "parent": 665, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 668, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20011013", 
+      "name": "UNGUWAR-BAI DP 1 TEAM 3", 
+      "parent": 665, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 669, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20011014", 
+      "name": "UNGUWAR-BAI DP 1 TEAM 4", 
+      "parent": 665, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 670, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "2001102", 
+      "name": "UNGUWAR-BAI DP 2", 
+      "parent": 55, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 5
+    }
+  }, 
+  {
+    "pk": 671, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20011021", 
+      "name": "UNGUWAR-BAI DP 2 TEAM 1", 
+      "parent": 670, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 672, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20011022", 
+      "name": "UNGUWAR-BAI DP 2 TEAM 2", 
+      "parent": 670, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 673, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20011023", 
+      "name": "UNGUWAR-BAI DP 2 TEAM 3", 
+      "parent": 670, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 674, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20011024", 
+      "name": "UNGUWAR-BAI DP 2 TEAM 4", 
+      "parent": 670, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 675, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "2001103", 
+      "name": "UNGUWAR-BAI DP 3", 
+      "parent": 55, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 5
+    }
+  }, 
+  {
+    "pk": 676, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20011031", 
+      "name": "UNGUWAR-BAI DP 3 TEAM 1", 
+      "parent": 675, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 677, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20011032", 
+      "name": "UNGUWAR-BAI DP 3 TEAM 2", 
+      "parent": 675, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 678, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20011033", 
+      "name": "UNGUWAR-BAI DP 3 TEAM 3", 
+      "parent": 675, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 679, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20011034", 
+      "name": "UNGUWAR-BAI DP 3 TEAM 4", 
+      "parent": 675, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 680, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "2002011", 
+      "name": "ALBASU CENTRAL DP 1", 
+      "parent": 56, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 5
+    }
+  }, 
+  {
+    "pk": 681, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020111", 
+      "name": "ALBASU CENTRAL DP 1 TEAM 1", 
+      "parent": 680, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 682, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020112", 
+      "name": "ALBASU CENTRAL DP 1 TEAM 2", 
+      "parent": 680, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 683, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020113", 
+      "name": "ALBASU CENTRAL DP 1 TEAM 3", 
+      "parent": 680, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 684, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020114", 
+      "name": "ALBASU CENTRAL DP 1 TEAM 4", 
+      "parent": 680, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 685, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "2002012", 
+      "name": "ALBASU CENTRAL DP 2", 
+      "parent": 56, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 5
+    }
+  }, 
+  {
+    "pk": 686, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020121", 
+      "name": "ALBASU CENTRAL DP 2 TEAM 1", 
+      "parent": 685, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 687, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020122", 
+      "name": "ALBASU CENTRAL DP 2 TEAM 2", 
+      "parent": 685, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 688, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020123", 
+      "name": "ALBASU CENTRAL DP 2 TEAM 3", 
+      "parent": 685, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 689, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020124", 
+      "name": "ALBASU CENTRAL DP 2 TEAM 4", 
+      "parent": 685, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 690, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "2002013", 
+      "name": "ALBASU CENTRAL DP 3", 
+      "parent": 56, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 5
+    }
+  }, 
+  {
+    "pk": 691, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020131", 
+      "name": "ALBASU CENTRAL DP 3 TEAM 1", 
+      "parent": 690, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 692, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020132", 
+      "name": "ALBASU CENTRAL DP 3 TEAM 2", 
+      "parent": 690, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 693, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020133", 
+      "name": "ALBASU CENTRAL DP 3 TEAM 3", 
+      "parent": 690, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 694, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020134", 
+      "name": "ALBASU CENTRAL DP 3 TEAM 4", 
+      "parent": 690, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 695, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "2002021", 
+      "name": "BATAIYA DP 1", 
+      "parent": 57, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 5
+    }
+  }, 
+  {
+    "pk": 696, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020211", 
+      "name": "BATAIYA DP 1 TEAM 1", 
+      "parent": 695, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 697, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020212", 
+      "name": "BATAIYA DP 1 TEAM 2", 
+      "parent": 695, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 698, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020213", 
+      "name": "BATAIYA DP 1 TEAM 3", 
+      "parent": 695, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 699, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020214", 
+      "name": "BATAIYA DP 1 TEAM 4", 
+      "parent": 695, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 700, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "2002022", 
+      "name": "BATAIYA DP 2", 
+      "parent": 57, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 5
+    }
+  }, 
+  {
+    "pk": 701, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020221", 
+      "name": "BATAIYA DP 2 TEAM 1", 
+      "parent": 700, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 702, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020222", 
+      "name": "BATAIYA DP 2 TEAM 2", 
+      "parent": 700, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 703, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020223", 
+      "name": "BATAIYA DP 2 TEAM 3", 
+      "parent": 700, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 704, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020224", 
+      "name": "BATAIYA DP 2 TEAM 4", 
+      "parent": 700, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 705, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "2002023", 
+      "name": "BATAIYA DP 3", 
+      "parent": 57, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 5
+    }
+  }, 
+  {
+    "pk": 706, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020231", 
+      "name": "BATAIYA DP 3 TEAM 1", 
+      "parent": 705, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 707, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020232", 
+      "name": "BATAIYA DP 3 TEAM 2", 
+      "parent": 705, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 708, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020233", 
+      "name": "BATAIYA DP 3 TEAM 3", 
+      "parent": 705, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 709, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020234", 
+      "name": "BATAIYA DP 3 TEAM 4", 
+      "parent": 705, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 710, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "2002031", 
+      "name": "CHAMARANA DP 1", 
+      "parent": 58, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 5
+    }
+  }, 
+  {
+    "pk": 711, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020311", 
+      "name": "CHAMARANA DP 1 TEAM 1", 
+      "parent": 710, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 712, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020312", 
+      "name": "CHAMARANA DP 1 TEAM 2", 
+      "parent": 710, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 713, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020313", 
+      "name": "CHAMARANA DP 1 TEAM 3", 
+      "parent": 710, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 714, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020314", 
+      "name": "CHAMARANA DP 1 TEAM 4", 
+      "parent": 710, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 715, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "2002032", 
+      "name": "CHAMARANA DP 2", 
+      "parent": 58, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 5
+    }
+  }, 
+  {
+    "pk": 716, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020321", 
+      "name": "CHAMARANA DP 2 TEAM 1", 
+      "parent": 715, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 717, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020322", 
+      "name": "CHAMARANA DP 2 TEAM 2", 
+      "parent": 715, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 718, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020323", 
+      "name": "CHAMARANA DP 2 TEAM 3", 
+      "parent": 715, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 719, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020324", 
+      "name": "CHAMARANA DP 2 TEAM 4", 
+      "parent": 715, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 720, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "2002033", 
+      "name": "CHAMARANA DP 3", 
+      "parent": 58, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 5
+    }
+  }, 
+  {
+    "pk": 721, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020331", 
+      "name": "CHAMARANA DP 3 TEAM 1", 
+      "parent": 720, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 722, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020332", 
+      "name": "CHAMARANA DP 3 TEAM 2", 
+      "parent": 720, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 723, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020333", 
+      "name": "CHAMARANA DP 3 TEAM 3", 
+      "parent": 720, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 724, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020334", 
+      "name": "CHAMARANA DP 3 TEAM 4", 
+      "parent": 720, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 725, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "2002041", 
+      "name": "DAHO DP 1", 
+      "parent": 59, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 5
+    }
+  }, 
+  {
+    "pk": 726, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020411", 
+      "name": "DAHO DP 1 TEAM 1", 
+      "parent": 725, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 727, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020412", 
+      "name": "DAHO DP 1 TEAM 2", 
+      "parent": 725, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 728, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020413", 
+      "name": "DAHO DP 1 TEAM 3", 
+      "parent": 725, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 729, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020414", 
+      "name": "DAHO DP 1 TEAM 4", 
+      "parent": 725, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 730, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "2002042", 
+      "name": "DAHO DP 2", 
+      "parent": 59, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 5
+    }
+  }, 
+  {
+    "pk": 731, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020421", 
+      "name": "DAHO DP 2 TEAM 1", 
+      "parent": 730, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 732, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020422", 
+      "name": "DAHO DP 2 TEAM 2", 
+      "parent": 730, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 733, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020423", 
+      "name": "DAHO DP 2 TEAM 3", 
+      "parent": 730, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 734, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020424", 
+      "name": "DAHO DP 2 TEAM 4", 
+      "parent": 730, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 735, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "2002043", 
+      "name": "DAHO DP 3", 
+      "parent": 59, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 5
+    }
+  }, 
+  {
+    "pk": 736, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020431", 
+      "name": "DAHO DP 3 TEAM 1", 
+      "parent": 735, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 737, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020432", 
+      "name": "DAHO DP 3 TEAM 2", 
+      "parent": 735, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 738, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020433", 
+      "name": "DAHO DP 3 TEAM 3", 
+      "parent": 735, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 739, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020434", 
+      "name": "DAHO DP 3 TEAM 4", 
+      "parent": 735, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 740, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "2002051", 
+      "name": "FANDA DP 1", 
+      "parent": 60, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 5
+    }
+  }, 
+  {
+    "pk": 741, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020511", 
+      "name": "FANDA DP 1 TEAM 1", 
+      "parent": 740, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 742, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020512", 
+      "name": "FANDA DP 1 TEAM 2", 
+      "parent": 740, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 743, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020513", 
+      "name": "FANDA DP 1 TEAM 3", 
+      "parent": 740, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 744, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020514", 
+      "name": "FANDA DP 1 TEAM 4", 
+      "parent": 740, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 745, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "2002052", 
+      "name": "FANDA DP 2", 
+      "parent": 60, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 5
+    }
+  }, 
+  {
+    "pk": 746, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020521", 
+      "name": "FANDA DP 2 TEAM 1", 
+      "parent": 745, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 747, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020522", 
+      "name": "FANDA DP 2 TEAM 2", 
+      "parent": 745, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 748, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020523", 
+      "name": "FANDA DP 2 TEAM 3", 
+      "parent": 745, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 749, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020524", 
+      "name": "FANDA DP 2 TEAM 4", 
+      "parent": 745, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 750, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "2002053", 
+      "name": "FANDA DP 3", 
+      "parent": 60, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 5
+    }
+  }, 
+  {
+    "pk": 751, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020531", 
+      "name": "FANDA DP 3 TEAM 1", 
+      "parent": 750, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 752, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020532", 
+      "name": "FANDA DP 3 TEAM 2", 
+      "parent": 750, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 753, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020533", 
+      "name": "FANDA DP 3 TEAM 3", 
+      "parent": 750, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 754, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020534", 
+      "name": "FANDA DP 3 TEAM 4", 
+      "parent": 750, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 755, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "2002061", 
+      "name": "FARAGAI DP 1", 
+      "parent": 61, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 5
+    }
+  }, 
+  {
+    "pk": 756, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020611", 
+      "name": "FARAGAI DP 1 TEAM 1", 
+      "parent": 755, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 757, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020612", 
+      "name": "FARAGAI DP 1 TEAM 2", 
+      "parent": 755, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 758, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020613", 
+      "name": "FARAGAI DP 1 TEAM 3", 
+      "parent": 755, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 759, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020614", 
+      "name": "FARAGAI DP 1 TEAM 4", 
+      "parent": 755, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 760, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "2002062", 
+      "name": "FARAGAI DP 2", 
+      "parent": 61, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 5
+    }
+  }, 
+  {
+    "pk": 761, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020621", 
+      "name": "FARAGAI DP 2 TEAM 1", 
+      "parent": 760, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 762, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020622", 
+      "name": "FARAGAI DP 2 TEAM 2", 
+      "parent": 760, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 763, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020623", 
+      "name": "FARAGAI DP 2 TEAM 3", 
+      "parent": 760, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 764, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020624", 
+      "name": "FARAGAI DP 2 TEAM 4", 
+      "parent": 760, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 765, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "2002063", 
+      "name": "FARAGAI DP 3", 
+      "parent": 61, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 5
+    }
+  }, 
+  {
+    "pk": 766, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020631", 
+      "name": "FARAGAI DP 3 TEAM 1", 
+      "parent": 765, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 767, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020632", 
+      "name": "FARAGAI DP 3 TEAM 2", 
+      "parent": 765, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 768, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020633", 
+      "name": "FARAGAI DP 3 TEAM 3", 
+      "parent": 765, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 769, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020634", 
+      "name": "FARAGAI DP 3 TEAM 4", 
+      "parent": 765, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 770, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "2002071", 
+      "name": "GARARAME DP 1", 
+      "parent": 62, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 5
+    }
+  }, 
+  {
+    "pk": 771, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020711", 
+      "name": "GARARAME DP 1 TEAM 1", 
+      "parent": 770, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 772, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020712", 
+      "name": "GARARAME DP 1 TEAM 2", 
+      "parent": 770, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 773, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020713", 
+      "name": "GARARAME DP 1 TEAM 3", 
+      "parent": 770, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 774, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020714", 
+      "name": "GARARAME DP 1 TEAM 4", 
+      "parent": 770, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 775, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "2002072", 
+      "name": "GARARAME DP 2", 
+      "parent": 62, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 5
+    }
+  }, 
+  {
+    "pk": 776, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020721", 
+      "name": "GARARAME DP 2 TEAM 1", 
+      "parent": 775, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 777, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020722", 
+      "name": "GARARAME DP 2 TEAM 2", 
+      "parent": 775, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 778, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020723", 
+      "name": "GARARAME DP 2 TEAM 3", 
+      "parent": 775, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 779, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020724", 
+      "name": "GARARAME DP 2 TEAM 4", 
+      "parent": 775, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 780, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "2002073", 
+      "name": "GARARAME DP 3", 
+      "parent": 62, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 5
+    }
+  }, 
+  {
+    "pk": 781, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020731", 
+      "name": "GARARAME DP 3 TEAM 1", 
+      "parent": 780, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 782, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020732", 
+      "name": "GARARAME DP 3 TEAM 2", 
+      "parent": 780, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 783, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020733", 
+      "name": "GARARAME DP 3 TEAM 3", 
+      "parent": 780, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 784, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020734", 
+      "name": "GARARAME DP 3 TEAM 4", 
+      "parent": 780, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 785, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "2002081", 
+      "name": "HUNGU DP 1", 
+      "parent": 63, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 5
+    }
+  }, 
+  {
+    "pk": 786, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020811", 
+      "name": "HUNGU DP 1 TEAM 1", 
+      "parent": 785, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 787, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020812", 
+      "name": "HUNGU DP 1 TEAM 2", 
+      "parent": 785, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 788, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020813", 
+      "name": "HUNGU DP 1 TEAM 3", 
+      "parent": 785, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 789, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020814", 
+      "name": "HUNGU DP 1 TEAM 4", 
+      "parent": 785, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 790, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "2002082", 
+      "name": "HUNGU DP 2", 
+      "parent": 63, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 5
+    }
+  }, 
+  {
+    "pk": 791, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020821", 
+      "name": "HUNGU DP 2 TEAM 1", 
+      "parent": 790, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 792, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020822", 
+      "name": "HUNGU DP 2 TEAM 2", 
+      "parent": 790, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 793, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020823", 
+      "name": "HUNGU DP 2 TEAM 3", 
+      "parent": 790, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 794, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020824", 
+      "name": "HUNGU DP 2 TEAM 4", 
+      "parent": 790, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 795, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "2002083", 
+      "name": "HUNGU DP 3", 
+      "parent": 63, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 5
+    }
+  }, 
+  {
+    "pk": 796, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020831", 
+      "name": "HUNGU DP 3 TEAM 1", 
+      "parent": 795, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 797, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020832", 
+      "name": "HUNGU DP 3 TEAM 2", 
+      "parent": 795, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 798, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020833", 
+      "name": "HUNGU DP 3 TEAM 3", 
+      "parent": 795, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 799, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020834", 
+      "name": "HUNGU DP 3 TEAM 4", 
+      "parent": 795, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 800, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "2002091", 
+      "name": "SAYASAYA DP 1", 
+      "parent": 64, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 5
+    }
+  }, 
+  {
+    "pk": 801, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020911", 
+      "name": "SAYASAYA DP 1 TEAM 1", 
+      "parent": 800, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 802, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020912", 
+      "name": "SAYASAYA DP 1 TEAM 2", 
+      "parent": 800, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 803, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020913", 
+      "name": "SAYASAYA DP 1 TEAM 3", 
+      "parent": 800, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 804, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020914", 
+      "name": "SAYASAYA DP 1 TEAM 4", 
+      "parent": 800, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 805, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "2002092", 
+      "name": "SAYASAYA DP 2", 
+      "parent": 64, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 5
+    }
+  }, 
+  {
+    "pk": 806, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020921", 
+      "name": "SAYASAYA DP 2 TEAM 1", 
+      "parent": 805, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 807, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020922", 
+      "name": "SAYASAYA DP 2 TEAM 2", 
+      "parent": 805, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 808, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020923", 
+      "name": "SAYASAYA DP 2 TEAM 3", 
+      "parent": 805, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 809, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020924", 
+      "name": "SAYASAYA DP 2 TEAM 4", 
+      "parent": 805, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 810, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "2002093", 
+      "name": "SAYASAYA DP 3", 
+      "parent": 64, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 5
+    }
+  }, 
+  {
+    "pk": 811, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020931", 
+      "name": "SAYASAYA DP 3 TEAM 1", 
+      "parent": 810, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 812, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020932", 
+      "name": "SAYASAYA DP 3 TEAM 2", 
+      "parent": 810, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 813, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020933", 
+      "name": "SAYASAYA DP 3 TEAM 3", 
+      "parent": 810, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 814, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20020934", 
+      "name": "SAYASAYA DP 3 TEAM 4", 
+      "parent": 810, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 815, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "2002101", 
+      "name": "TSANGAYA DP 1", 
+      "parent": 65, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 5
+    }
+  }, 
+  {
+    "pk": 816, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20021011", 
+      "name": "TSANGAYA DP 1 TEAM 1", 
+      "parent": 815, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 817, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20021012", 
+      "name": "TSANGAYA DP 1 TEAM 2", 
+      "parent": 815, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 818, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20021013", 
+      "name": "TSANGAYA DP 1 TEAM 3", 
+      "parent": 815, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 819, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20021014", 
+      "name": "TSANGAYA DP 1 TEAM 4", 
+      "parent": 815, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 820, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "2002102", 
+      "name": "TSANGAYA DP 2", 
+      "parent": 65, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 5
+    }
+  }, 
+  {
+    "pk": 821, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20021021", 
+      "name": "TSANGAYA DP 2 TEAM 1", 
+      "parent": 820, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 822, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20021022", 
+      "name": "TSANGAYA DP 2 TEAM 2", 
+      "parent": 820, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 823, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20021023", 
+      "name": "TSANGAYA DP 2 TEAM 3", 
+      "parent": 820, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 824, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20021024", 
+      "name": "TSANGAYA DP 2 TEAM 4", 
+      "parent": 820, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 825, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "2002103", 
+      "name": "TSANGAYA DP 3", 
+      "parent": 65, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 5
+    }
+  }, 
+  {
+    "pk": 826, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20021031", 
+      "name": "TSANGAYA DP 3 TEAM 1", 
+      "parent": 825, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 827, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20021032", 
+      "name": "TSANGAYA DP 3 TEAM 2", 
+      "parent": 825, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 828, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20021033", 
+      "name": "TSANGAYA DP 3 TEAM 3", 
+      "parent": 825, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
+  }, 
+  {
+    "pk": 829, 
+    "model": "reporters.location", 
+    "fields": {
+      "code": "20021034", 
+      "name": "TSANGAYA DP 3 TEAM 4", 
+      "parent": 825, 
+      "longitude": null, 
+      "latitude": null, 
+      "type": 6
+    }
   }
 ]
