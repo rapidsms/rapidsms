@@ -6,7 +6,7 @@ import os, re
 from datetime import datetime
 from django.db import models
 
-from apps.modelrelationship.models import *
+from apps.patterns.models import Pattern
 
 # load the rapidsms configuration, for BackendManager
 # to check which backends are currently running
@@ -21,6 +21,15 @@ class Role(models.Model):
     name = models.CharField(max_length=160)
     code = models.CharField(max_length=20, blank=True, null=True,\
         help_text="Abbreviation")
+    patterns = models.ManyToManyField(Pattern)
+    
+    def match(self, token):
+        return self.regex and re.match(self.regex, token, re.IGNORECASE)
+    
+    @property
+    def regex(self):
+        # convenience accessor for joining patterns
+        return Pattern.join(self.patterns)
     
     def __unicode__(self):
         return self.name
@@ -169,7 +178,7 @@ class Reporter(models.Model):
             # this is crappy but sufficient
             r"([a-z]+)",                       # Adam
             r"([a-z]+)\s+([a-z]+)",            # Evan Wheeler
-            r"([a-z]+)\s+[a-z]\.?\s+([a-z]+)", # Mark E. Johnston
+            r"([a-z]+)\s+[a-z]+\.?\s+([a-z]+)",# Mark E. Johnston, Lee Harvey Oswald 
             r"([a-z]+)\s+([a-z]+\-[a-z]+)"     # Erica Kochi-Fabian
         ]
         
@@ -178,7 +187,7 @@ class Reporter(models.Model):
                (by append incrementing digits) until an available alias is found."""
             
             n = 1
-            alias = str
+            alias = str.lower()
             
             # keep on looping until an alias becomes available.
             # --
@@ -186,8 +195,8 @@ class Reporter(models.Model):
             # that we return might be taken before we have time to do anything
             # with it! This should logic should probably be moved to the
             # initializer, to make the find/grab alias loop atomic
-            while klass.objects.filter(alias=alias).count():
-                alias = "%s%d" % (str, n)
+            while klass.objects.filter(alias__iexact=alias).count():
+                alias = "%s%d" % (str.lower(), n)
                 n += 1
             
             return alias

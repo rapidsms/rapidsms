@@ -7,6 +7,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from apps.reporters.models import Reporter
+from apps.patterns.models import Pattern
 from datetime import date
 import re
 
@@ -82,19 +83,15 @@ class Form(models.Model, Validatable, Alertable):
 class Token(models.Model):
     name = models.CharField(max_length=160)
     abbreviation = models.CharField(max_length=20, unique=True)
-    patterns = models.ManyToManyField("Pattern")
+    patterns = models.ManyToManyField(Pattern)
 
     def __unicode__(self):
         return "%s" % (self.abbreviation)
 
     def _get_regex(self):
-        # fix any patterns we just or-ed together so they are the kind of or we want
-        # e.g., (\w+)|(\d+) => (\w+|\d+)
-        # TODO figure out how to handle non-captured matches
-        # e.g., (?:\w+)|(\d+) => (?:\w+)|(\d+) and then zip up tokens correctly
-        regex = '|'.join(self.patterns.values_list('regex', flat=True))
-        return regex.replace(')|(', '|')
-
+        # convenience accessor for joining patterns
+        return Pattern.join(self.patterns)
+        
     regex = property(_get_regex)
 
 class FormToken(models.Model):
@@ -111,13 +108,6 @@ class DomainForm(models.Model):
 
     def __unicode__(self):
         return "%s: %s" % (str(self.sequence), self.form)
-
-class Pattern(models.Model):
-    name = models.CharField(max_length=160)
-    regex = models.CharField(max_length=160)
-
-    def __unicode__(self):
-        return "%s %s" % (self.name, self.regex)
 
 class Domain(models.Model):
     name = models.CharField(max_length=160, help_text="Name of form domain")
