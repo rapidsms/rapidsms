@@ -103,7 +103,6 @@ class TestApp (TestScript):
            # alas, we're not perfect
            test_reg_fail > llin rgstr 20 dl sorry guy
            test_reg_fail < Sorry we didn't understand that. Available forms are LLIN: REGISTER, NETCARDS, NETS, RECEIVE, ISSUE
-           
          """
     
     testRegistrationErrors = """
@@ -223,7 +222,9 @@ class TestApp (TestScript):
         """ This isn't actually a test.  It just takes advantage
             of the test harness to spam a bunch of messages to the 
             nigeria app and spit out the data in a format that can
-            be sucked into a fixture """
+            be sucked into a fixture.  It should be moved to some 
+            data generator at some point, but is being left here 
+            for laziness sake """
         # this is the number of net reports that will be generated
         count = 0
         
