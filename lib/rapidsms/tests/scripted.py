@@ -94,7 +94,7 @@ class TestScript (TestCase):
                 self.assertEquals(msg.peer, num,
                     "Expected to send to %s, but message was sent to %s"
                     % (num, msg.peer))
-                self.assertEquals(msg.text, txt,
+                self.assertEquals(msg.text.strip(), txt.strip(),
                     "\nMessage: %s\nReceived text: %s\nExpected text: %s\n"
                     % (last_msg, msg.text,txt))
             last_msg = txt
