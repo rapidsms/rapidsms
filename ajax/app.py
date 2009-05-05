@@ -80,16 +80,20 @@ class App(rapidsms.app.App):
         def do_POST(self): return self.process()
         
         def process(self):
-            def response(code, output):
+            def response(code, output, json=True):
                 self.send_response(code)
-                self.send_header("content-type", "application/json")
+                mime_type = "application/json" if json else "text/plain"
+                self.send_header("content-type", mime_type)
                 self.end_headers()
                 
-                # send back every response as JSON -- even the
-                # errors -- to avoid having to check the mime
-                # type of the output before displaying it.
-                json = App.MyJsonEncoder().encode(output)
-                self.wfile.write(json)
+                if json:
+                    json = App.MyJsonEncoder().encode(output)
+                    self.wfile.write(json)
+                
+                # otherwise, write the raw response.
+                # it doesn't make much sense to have
+                # error messages encoded as JSON...
+                else: self.wfile.write(output)
                 
                 # HTTP2xx represents success
                 return (code>=200 and code <=299)
@@ -170,9 +174,9 @@ class App(rapidsms.app.App):
  
             # something raised during the request, so
             # return a useless http error to the requester
-            except:
+            except Exception, err:
                 self.server.app.warning(traceback.format_exc())
-                return response(500, traceback.format_exc())
+                return response(500, unicode(err), False)
         
         # this does nothing, except prevent HTTP
         # requests being echoed to the screen
