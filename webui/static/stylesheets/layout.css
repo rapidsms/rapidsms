@@ -192,10 +192,14 @@ div.clear-hack {
 	body.bare #inner {
 		padding: 0; }
 	
+	/* split a section vertically in
+	 * half, with some css hackery */
+	 
 	#inner div.split {
 		padding: 0 0.5em;
 	}
 		
+		/* TODO: explain the margins! */
 		#inner div.split .left {
 			margin-left: -0.5em;
 			float: left;
@@ -208,6 +212,34 @@ div.clear-hack {
 			float: right;
 			border: none;
 			width: 50%;
+		}
+	
+	/* split a section into THREE */
+	
+	#inner div.split-3 {
+		padding: 0 1em;
+	}
+		
+		#inner div.split-3 .left {
+			margin-left: -1em;
+			float: left;
+			border: none;
+			width: 33%;
+		}
+		
+		#inner div.split-3 .mid {
+			margin-right: 1em;
+			margin-left: 1em;
+			float: left;
+			border: none;
+			width: 34%;
+		}
+		
+		#inner div.split-3 .right {
+			margin-right: -1em;
+			float: right;
+			border: none;
+			width: 33%;
 		}
 	
 	/* when an app has something really

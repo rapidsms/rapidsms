@@ -398,3 +398,79 @@ table {
 				color: #d00;
 			}
 
+
+
+
+/* temporary dashboard stuff */
+
+.tmp ul {
+	padding: 0;
+}
+
+	#inner .tmp div.split-3 .left {
+		width: 40%;
+	}
+	
+	#inner .tmp div.split-3 .mid {
+		width: 40%;
+	}
+	
+	#inner .tmp div.split-3 .right {
+		background: #ffe;
+		width: 20%;
+	}
+	
+	.tmp .recent-reporters li {
+		border: 1px solid #aaa;
+		background: #f8f8f8;
+		line-height: 1.4;
+		display: block;
+		padding: 1em;
+		margin: 0 0 1em 0;
+	}
+	
+		.tmp .recent-reporters li > div {
+			padding-bottom: 0.25em;
+			font-weight: bold;
+		}
+
+		.tmp .recent-reporters li > span {
+			display: block;
+			font-size: 90%;
+			color: #aaa;
+		}
+
+.tmp .progress { }
+
+	.tmp .progress .future {
+		color: #eee;
+	}
+	
+	.tmp .progress td {
+		text-align: right; }
+	
+	.tmp .progress td.day {
+		padding-right: 2em; }
+	
+	.tmp .progress td.perc {
+		padding-right: 2em;
+		color: #aaa; }
+	
+	.tmp .progress td.perc:last-child {
+		padding-right: 1em; }
+
+.tmp .stats { }
+
+	.tmp .stats li {
+			display: block;
+			text-align: center;
+			margin-top: 2em;
+	}
+
+		.tmp .stats li:first-child {
+			margin-top: 0; }
+
+		.tmp .stats li div {
+			font-size: 400%;
+			font-weight: bold;
+		}
