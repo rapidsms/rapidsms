@@ -25,7 +25,7 @@ div.module {
  * django admin, although here, we never use
  * <caption>, to keep things simple (they have
  * surprisingly kooky semantics) */
-h2 {
+h2, h3 {
 	background: #74d7e3 url(../images/h2-bg.png) repeat-x;
 	border-bottom: 1px solid #4bd;
 	color: #fff;
@@ -36,6 +36,17 @@ h2 {
 	text-align: left;
 	white-space: nowrap;
 }
+
+	/* subheaders are almost the same. to dull things,
+	 * i took the colors and images from h2, reduced
+	 * saturation by 50%, and increased lightness by
+	 * the same. TODO: ask MK to make this pretty */
+	h3 {
+		border-bottom-color: #8fbcc9;
+		background-image: url("../images/h3-bg.png");
+		background-color: #aad0d4;
+		font-weight: normal;
+	}
 		
 	/* additional, less important info can
 	 * be wrapped in a span to dullify it */
