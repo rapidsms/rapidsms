@@ -15,8 +15,8 @@ from utils import *
 
 class App(rapidsms.app.App):
     
-    def __init__(self, title, router):
-        super(App, self).__init__(title, router) 
+    def __init__(self, router):
+        super(App, self).__init__(router) 
         self.separator = "[,\.\s]+"
         self.token_separator = "[,\.\s]*"
         self.leading_pattern = "[\"'\s]*"

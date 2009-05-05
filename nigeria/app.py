@@ -24,7 +24,7 @@ class App(rapidsms.app.App):
     
     def start(self):
         # initialize the forms app for nigeria
-        self._form_app = form_app.App("Nigeria Forms", self.router)
+        self._form_app = form_app.App(self.router)
         # this tells the form app to add itself as a message handler 
         # which registers the regex and function that this will dispatch to 
         self._form_app.add_message_handler_to(self)
