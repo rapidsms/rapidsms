@@ -251,28 +251,6 @@ class Reporter(models.Model):
         return max(timedates) if timedates else None
 
 
-class BackendManager(models.Manager):
-    def get_query_set(self):
-        
-        # fetch a list of all the backends
-        # that we already have objects for
-        known_backends  = PersistantBackend.raw_objects.values_list("title", flat=True)
-        
-        # and a list of the backends which are
-        # running, which we SHOULD have objects for 
-        running_backends = [be["title"] for be in conf["rapidsms"]["backends"]]
-        
-        # find any running backends which currently
-        # don't have objects, and fill in the gaps
-        for t in running_backends:
-            if not t in known_backends:
-                PersistantBackend(title=t).save()
-        
-        # now that we're sure the backends table is up
-        # to date, continue fetching the queryset as usual
-        return super(BackendManager, self).get_query_set()
-
-
 class PersistantBackend(models.Model):
     """This class exists to provide a primary key for each
        named RapidSMS backend, which can be linked from the
@@ -280,14 +258,9 @@ class PersistantBackend(models.Model):
        (in models which wish to link to a backend), since the
        available backends (and their orders) may change after
        deployment; hence, something persistant is needed."""
-    title       = models.CharField(max_length=30, unique=True)
-    raw_objects = models.Manager()
-    objects     = BackendManager()
+    slug        = models.CharField(max_length=30, unique=True)
+    title       = models.CharField(max_length=30)
     
-    @property
-    def name(self):
-        # this is to be consistent with backend object
-        return self.title
     
     class Meta:
         verbose_name = "Backend"
@@ -303,9 +276,8 @@ class PersistantBackend(models.Model):
             object. In time, this should be moved to the message object itself, since persistance
             should be fairly ubiquitous; but right now, that would couple the framework to this
             individual app. So you can use this for now."""
-        be_title = msg.connection.backend.name
-        return klass.objects.get(title=be_title)
-
+        be_slug = msg.connection.backend.slug
+        return klass.objects.get(slug=be_slug)
 
 
 class PersistantConnection(models.Model):
@@ -359,6 +331,7 @@ class PersistantConnection(models.Model):
             it as the implicit default connection for the Reporter. """
         self.last_seen = datetime.now()
         return self.save()
+    
     
     def prefer(self):
         """Removes the _preferred_ flag from all other PersistantConnection objects
