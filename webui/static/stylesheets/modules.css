@@ -167,7 +167,8 @@ table {
  * rs-module-help.js as default, but should not be
  * too verbose incase that doesn't work. */
 .module div.help {
-	border: 0.5em solid #ffb;
+	border-right: 0.5em solid #ffb;
+	border-left: 0.5em solid #ffb;
 	background: #ffc;
 	padding: 1em;
 }
@@ -346,8 +347,8 @@ table {
 	input.js-add      { background-image: url("../icons/silk/add.png");    }
 	input.js-del      { background-image: url("../icons/silk/delete.png"); }
 	input.js-accept   { background-image: url("../icons/silk/accept.png"); }
-	input.js-unaccept { background-image: url("../icons/silk/accept-dull.png"); }
-	input.js-clear    { background-image: url("../icons/silk-companion/decline.png"); } /* TODO: better icon! */
+	input.js-unaccept { background-image: url("../icons/silk/accept--dull.png"); }
+	input.js-clear    { background-image: url("../icons/silk/decline.png"); } /* TODO: better icon! */
 	
 	/* some options are less interesting than others; like
 	 * None, or Disabled, or Default; so mark them dull */
