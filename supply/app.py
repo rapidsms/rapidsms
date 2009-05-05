@@ -7,8 +7,8 @@ from formslogic import *
 
 class App(rapidsms.app.App):
 
-    def __init__(self, title, router, calling_app=None):
-        super(App, self).__init__(title, router)
+    def __init__(self, router, calling_app=None):
+        super(App, self).__init__(router)
         
     def start(self):
         pass

@@ -25,7 +25,7 @@ div.module {
  * django admin, although here, we never use
  * <caption>, to keep things simple (they have
  * surprisingly kooky semantics) */
-h2 {
+h2, h3 {
 	background: #74d7e3 url(../images/h2-bg.png) repeat-x;
 	border-bottom: 1px solid #4bd;
 	color: #fff;
@@ -36,6 +36,17 @@ h2 {
 	text-align: left;
 	white-space: nowrap;
 }
+
+	/* subheaders are almost the same. to dull things,
+	 * i took the colors and images from h2, reduced
+	 * saturation by 50%, and increased lightness by
+	 * the same. TODO: ask MK to make this pretty */
+	h3 {
+		border-bottom-color: #8fbcc9;
+		background-image: url("../images/h3-bg.png");
+		background-color: #aad0d4;
+		font-weight: normal;
+	}
 		
 	/* additional, less important info can
 	 * be wrapped in a span to dullify it */
@@ -162,6 +173,21 @@ table {
 				}
 
 
+/* modules can include help text, to explain how
+ * they should be used. this is usually hidden by
+ * rs-module-help.js as default, but should not be
+ * too verbose incase that doesn't work. */
+.module div.help {
+	border-right: 0.5em solid #ffb;
+	border-left: 0.5em solid #ffb;
+	background: #ffc;
+	padding: 1em;
+}
+
+	.module div.help p {
+		margin: 0; }
+
+
 /* modules can optionally contain a small
  * "toolbar", which hangs in the top right */
 .module div.toolbar {
@@ -171,9 +197,11 @@ table {
 	height: 2em;
 	line-height: 2em;
 }
+
 	/* toolbar links (add, see more, do
 	 * other things) TODO: make pretty */
-	.module div.toolbar a {
+	.module div.toolbar a,
+	.module div.toolbar span {
 		display: block;
 		float: right;
 		color: #fff;
@@ -182,31 +210,20 @@ table {
 		background-repeat: no-repeat;
 		background-position: 0 50%;
 		font-size: 80%;
-	}
-
-	.module div.toolbar span {
-		display: block;
-		float: right;
-		color: #fff;
-		padding-left: 21px;
-		font-size: 80%;
+		cursor: pointer;
 	}
 	
-		.module div.toolbar a.add {
-			background-image: url("../icons/16/add.png");
-		}
-		.module div.toolbar a.prev {
-			background-image: url("../icons/16/go-previous.png");
-		}
-		.module div.toolbar a.next {
-			background-image: url("../icons/16/go-next.png");
-		}
-		.module div.toolbar a.first {
-			background-image: url("../icons/16/go-first.png");
-		}
-		.module div.toolbar a.last {
-			background-image: url("../icons/16/go-last.png");
-		}
+		/* various common toolbar icons. should be from the
+		 * famfamfam silk set, to fit in with RapidSMS */
+		.module div.toolbar .add  { background-image: url("../icons/silk/add.png");  }
+		.module div.toolbar .help { background-image: url("../icons/silk/help.png"); }
+		
+		/* these seem to be from the tango
+		 * set... TODO: use silk! */
+		.module div.toolbar .prev  { background-image: url("../icons/tango/go-previous.png"); }
+		.module div.toolbar .next  { background-image: url("../icons/tango/go-next.png");     }
+		.module div.toolbar .first { background-image: url("../icons/tango/go-first.png");    }
+		.module div.toolbar .last  { background-image: url("../icons/tango/go-last.png");     }
 
 .module form { }
 	
@@ -299,7 +316,7 @@ table {
 		 * it inserts an error label just after the field (in the dom),
 		 * and positions it directly to the right (with javascript) */
 		.module label.error {
-			background: #fff url("../icons/16/exclamation.png") no-repeat 0 50%;
+			background: #fff url("../icons/silk/exclamation.png") no-repeat 0 50%;
 			margin: 0 0 0 0.25em;
 			padding-left: 16px;
 			min-height: 16px;
@@ -321,7 +338,10 @@ table {
 	 * icons. they're seldom used, so should
 	 * stay out of the way */
 	input.js-add,
-	input.js-del {
+	input.js-del,
+	input.js-accept,
+	input.js-unaccept,
+	input.js-clear {
 		cursor: pointer;
 		border: 0;
 		padding: 0;
@@ -329,10 +349,17 @@ table {
 		height: 16px;
 		overflow: hidden;
 		text-indent: -9999px;
+		background-color: transparent;
+		background-repeat: no-repeat;
 	}
 	
-	input.js-add { background: url("../icons/16/add.png") no-repeat; }
-	input.js-del { background: url("../icons/16/delete.png") no-repeat; }
+	/* from http://www.famfamfam.com/lab/icons/silk/
+	 * (licensed under Creative Commons Attribution) */
+	input.js-add      { background-image: url("../icons/silk/add.png");    }
+	input.js-del      { background-image: url("../icons/silk/delete.png"); }
+	input.js-accept   { background-image: url("../icons/silk/accept.png"); }
+	input.js-unaccept { background-image: url("../icons/silk/accept--dull.png"); }
+	input.js-clear    { background-image: url("../icons/silk/decline.png"); } /* TODO: better icon! */
 	
 	/* some options are less interesting than others; like
 	 * None, or Disabled, or Default; so mark them dull */
@@ -344,7 +371,7 @@ table {
 	/* for fields that need a longer description, help
 	 * text can be added below. roughly analogous to
 	 * django's models.Model.help_text */
-	.module p.help {
+	.module form p.help {
 		margin-top: 0.625em;
 		font-size: 80%;
 		color: #ccc;
@@ -353,7 +380,7 @@ table {
 	
 	/* to wrap any submission or action buttons, and
 	 * receive javascript/ajax notifications in response */
-	.module div.submit {
+	.module form div.submit {
 		margin-top: 2em;
 	}
 	
@@ -371,3 +398,79 @@ table {
 				color: #d00;
 			}
 
+
+
+
+/* temporary dashboard stuff */
+
+.tmp ul {
+	padding: 0;
+}
+
+	#inner .tmp div.split-3 .left {
+		width: 40%;
+	}
+	
+	#inner .tmp div.split-3 .mid {
+		width: 40%;
+	}
+	
+	#inner .tmp div.split-3 .right {
+		background: #ffe;
+		width: 20%;
+	}
+	
+	.tmp .recent-reporters li {
+		border: 1px solid #aaa;
+		background: #f8f8f8;
+		line-height: 1.4;
+		display: block;
+		padding: 1em;
+		margin: 0 0 1em 0;
+	}
+	
+		.tmp .recent-reporters li > div {
+			padding-bottom: 0.25em;
+			font-weight: bold;
+		}
+
+		.tmp .recent-reporters li > span {
+			display: block;
+			font-size: 90%;
+			color: #aaa;
+		}
+
+.tmp .progress { }
+
+	.tmp .progress .future {
+		color: #eee;
+	}
+	
+	.tmp .progress td {
+		text-align: right; }
+	
+	.tmp .progress td.day {
+		padding-right: 2em; }
+	
+	.tmp .progress td.perc {
+		padding-right: 2em;
+		color: #aaa; }
+	
+	.tmp .progress td.perc:last-child {
+		padding-right: 1em; }
+
+.tmp .stats { }
+
+	.tmp .stats li {
+			display: block;
+			text-align: center;
+			margin-top: 2em;
+	}
+
+		.tmp .stats li:first-child {
+			margin-top: 0; }
+
+		.tmp .stats li div {
+			font-size: 400%;
+			font-weight: bold;
+		}

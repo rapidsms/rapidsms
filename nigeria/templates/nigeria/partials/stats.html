@@ -1,0 +1,9 @@
+<div class="module stats">
+	<h2>Quick Totals</h2>
+	<ul>{% for stat in stats %}
+		<li>
+			<div>{{ stat.value }}{% if stat.max %}/{{ stat.max }}{% endif %}</div>
+			{{ stat.caption }}
+		</li>{% endfor %}
+	</ul>
+</div>
