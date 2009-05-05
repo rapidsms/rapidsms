@@ -55,6 +55,38 @@ class App(rapidsms.app.App):
     ]
     
     
+    def __recipient(self, reporter):
+        role = reporter.role
+        loc = reporter.location
+        
+        return {
+            "uid":  reporter.pk,
+            "Name": reporter.full_name(),
+            "Role": role.name if role else "",
+            "Location": loc.name if loc else ""
+        }
+    
+    
+    def ajax_GET_recipients(self, params):
+        return [self.__recipient(rep) for rep in Reporter.objects.all()]
+    
+    
+    def ajax_POST_send_message(self, params, form):
+        rep = Reporter.objects.get(pk=form["uid"])
+        conn = rep.connection()
+        
+        # abort if we don't know where to send the message to
+        # )if the device the reporter registed with has been
+        # taken by someone else, or was created in the WebUI)
+        if conn is None:
+            raise Exception("%s is unreachable (no connection)" % rep)
+        
+        # attempt to send the message
+        # TODO: what could go wrong here?
+        be = self.router.get_backend(conn.backend.slug)
+        return be.message(conn.identity, form["text"]).send()
+    
+    
     def __str(self, key, reporter=None, lang=None):
         
         # if no language was explicitly requested,
@@ -86,6 +118,20 @@ class App(rapidsms.app.App):
            error message to instruct the caller to identify."""
         return msg.respond(self.__str("denied", msg.reporter))
         
+    
+    def start(self):
+        
+        # fetch a list of all the backends
+        # that we already have objects for
+        known_backends = PersistantBackend.objects.values_list("slug", flat=True)
+        
+        # find any running backends which currently
+        # don't have objects, and fill in the gaps
+        for be in self.router.backends:
+            if not be.slug in known_backends:
+                self.info("Creating PersistantBackend object for %s" % be)
+                PersistantBackend(slug=be.slug, title=be.title).save()
+    
     
     def parse(self, msg):
         
@@ -121,7 +167,6 @@ class App(rapidsms.app.App):
         # populates the same property 
         conn.seen()
             
-    
     
     def handle(self, msg):
         matcher = Matcher(msg)
