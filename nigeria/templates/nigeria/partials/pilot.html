@@ -1,0 +1,30 @@
+<div class="module pilot">
+	<h2>Pilot LGAs Summary</h2>
+        {% for lga_data, ward_data in pilots %}
+            
+	<table>
+		<thead>
+			<tr>
+                                {% for lname, linfos in lga_data.items %}
+				    <th colspan="2">{{ lname }}</th>
+                                        {% for linfo in linfos %}
+                                            <th colspan="2">{{ linfo }}</th>
+                                        {% endfor %}
+                                {% endfor %}
+			</tr>
+		</thead>
+		<tbody>
+                                {% for ward in ward_data %}
+                                {% for wname, winfos in ward.items %}
+                                        <tr>
+                                            <td>{{ wname }}</td>
+                                            {% for winfo in winfos %}
+                                                <td>{{ winfo }}</td>
+                                            {% endfor %}
+                                {% endfor %}
+                                {% endfor %}
+                                        </tr>
+		</tbody>
+	</table>
+        {% endfor %}
+</div>

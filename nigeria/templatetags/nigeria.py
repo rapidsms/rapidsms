@@ -43,11 +43,11 @@ def nigeria_stats():
             "value":   PartialTransaction.objects.count()
         },
         {
-            "caption": "Card Reports",
+            "caption": "Net Card Reports",
             "value":   CardDistribution.objects.count()
         },
         {
-            "caption": "Coupons Distributed",
+            "caption": "Net Cards Distributed",
             "value":   sum(CardDistribution.objects.values_list("distributed", flat=True))
         },
 #        {
@@ -65,7 +65,7 @@ def daily_progress():
     
     
     # how high should we aim?
-    report_target    = 100.0
+    report_target    = 432.0 # 48 wards * 9 mobilization teams?
     coupon_target    = 5000.0
     recipient_target = 50000.0
     
@@ -94,10 +94,36 @@ def daily_progress():
         
             data.update({
                 "reports_perc":    int((data["reports"]    / report_target)    * 100) if (data["reports"]    > 0) else 0,
-                "coupons_perc":    int((data["coupons"]    / coupon_target)    * 100) if (data["coupons"]    > 0) else 0,
-                "recipients_perc": int((data["recipients"] / recipient_target) * 100) if (data["recipients"] > 0) else 0,
             })
         
         days.append(data)
     
     return { "days": days }
+
+@register.inclusion_tag("nigeria/partials/pilot.html")
+def pilot_summary():
+    pilot_lga_names = ['DAWAKIN KUDU', 'GARUN MALLAM', 'KURA', 'KANO MUNICIPAL']
+    pilots = []
+    for lga_name in pilot_lga_names:
+        lga = Location.objects.get(name__iexact=lga_name, type__name='LGA')
+        wards = Location.objects.filter(parent__pk=lga.pk)
+        ws = Reporter.objects.filter(location__parent__pk=lga.pk).filter(role__code__iexact='ws')
+
+        lga_data = { lga.name : [str(ws.count()) + " ward supervisors registered for " + str(wards.count()) + " wards",]}
+        lga_wards = []
+        for ward in wards:
+            reports = CardDistribution.objects.all()
+            team_rep = reports.filter(location__parent__parent__pk=ward.pk)
+            point_rep = reports.filter(location__parent__pk=ward.pk)
+            ward_rep = reports.filter(location__pk=ward.pk)
+            ward_reports = ward_rep.count() + point_rep.count() + team_rep.count()
+
+            ward_cards = sum(ward_rep.values_list("distributed", flat=True))
+            team_cards = sum(team_rep.values_list("distributed", flat=True))
+            point_cards = sum(point_rep.values_list("distributed", flat=True))
+            total_cards = ward_cards + team_cards + point_cards
+
+            ward_data = {ward.name: [str(ward_reports) + " reports", str(total_cards) + " net cards distributed"]}
+            lga_wards.append(ward_data)
+        pilots.append([lga_data, lga_wards])
+    return {"pilots" : pilots}
