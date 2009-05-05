@@ -1,0 +1,27 @@
+<div class="module progress">
+	<h2>Daily Distribution Progress</h2>
+	<table>
+		<thead>
+			<tr>
+				<th>#</th>
+				<th colspan="2">Reports</th>
+				<th colspan="2">Recipients</th>
+				<th colspan="2">Coupons</th>
+			</tr>
+		</thead>
+		<tbody>{% for day in days %}
+			<tr{% if day.in_future %} class="future"{% endif %}>
+				<td title="{{ day.date|date }}" class="day">{{ day.number }}</td>
+				
+				<td>{{ day.reports }}</td>
+				<td class="perc">{% ifnotequal day.reports None %}{{ day.reports_perc }}%{% endifnotequal %}</td>
+				
+				<td>{{ day.coupons }}</td>
+				<td class="perc">{% ifnotequal day.coupons None %}{{ day.coupons_perc }}%{% endifnotequal %}</td>
+				
+				<td>{{ day.recipients }}</td>
+				<td class="perc">{% ifnotequal day.recipients None %}{{ day.recipients_perc }}%{% endifnotequal %}</td>
+			</tr>{% endfor %}
+		</tbody>
+	</table>
+</div>

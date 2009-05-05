@@ -1,6 +1,25 @@
 {% extends "layout.html" %}
 {% block title %}Dashboard{% endblock %}
-{% block content %}
 
-Welcome to RapidSMS!
+{% load nigeria %}
+
+{% block content %}
+<div class="tmp">
+
+
+<div class="split-3">
+	<div class="left">
+		{% recent_reporters %}
+	</div>
+	<div class="mid">
+		{% daily_progress %}
+	</div>
+	<div class="right">
+		{% nigeria_stats %}
+	</div>
+	<div class="clear-hack"></div>
+</div>
+
+
+</div>
 {% endblock %}
