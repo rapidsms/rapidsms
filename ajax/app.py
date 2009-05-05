@@ -9,6 +9,7 @@ from SocketServer import ThreadingMixIn
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 
 from django.utils.simplejson import JSONEncoder
+from django.db.models.query import QuerySet
 
 
 class App(rapidsms.app.App):
@@ -52,6 +53,9 @@ class App(rapidsms.app.App):
             # for JSON serialization, prioritize that
             if hasattr(o, "__json__"):
                 return o.__json__()
+            
+            elif type(o) == QuerySet:
+                return list(o)
             
             # otherwise, revert to the usual behavior
             return JSONEncoder.default(self, o)
