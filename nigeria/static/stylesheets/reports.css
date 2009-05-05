@@ -1,6 +1,8 @@
 .field {
-	left: 22em;
-	position: absolute;
+        float:right;
+        position:relative;
+        right:35em;
+        top:-1em;
 }
 .field span {
 	width: 8em;
