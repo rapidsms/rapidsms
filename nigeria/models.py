@@ -17,7 +17,9 @@ class NetDistribution(models.Model):
     
     @staticmethod
     def get_totals(location):
-        all = NetDistribution.objects.all().filter(location=location)
+	'''This is definitely a hack. We really shouldn't use startswith with 
+the locations. Doing it otherwise will require recursion which is way overkill and can be hurting performancewise. We should investigate tree structures.'''
+        all = NetDistribution.objects.all().filter(location__code__startswith=location.code)
         distributed = 0
         expected = 0
         actual= 0
@@ -47,7 +49,7 @@ class CardDistribution(models.Model):
     
     @staticmethod
     def get_totals(location):
-        all = CardDistribution.objects.all().filter(location=location)
+        all = CardDistribution.objects.all().filter(location__code__startswith=location.code)
         settlements = 0
         people = 0
         distributed= 0
