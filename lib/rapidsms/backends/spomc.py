@@ -8,7 +8,7 @@ import spomsky
 import re, time
 
 class Backend(backend.Backend):
-    def configure(self, host="localhost", port=8100):
+    def configure(self, host="localhost", port=8100, **kwargs):
         self.client = spomsky.Client(host, port)
         
     def __callback(self, source, message_text):
@@ -31,7 +31,7 @@ class Backend(backend.Backend):
         if not sent:
         
             # TODO: move this to backend.py, and make it sane
-            str = "%s:%s:%s" % (self.name, destination, message.text)
+            str = "%s:%s:%s" % (self.slug, destination, message.text)
             self.warning("DIDN'T SEND: %s" % (str))
             f = file("/tmp/rapidsms-pending", "a")
             f.write(str + "\n")
