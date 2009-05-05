@@ -203,15 +203,15 @@ table {
 	
 		/* various common toolbar icons. should be from the
 		 * famfamfam silk set, to fit in with RapidSMS */
-		.module div.toolbar .add  { background-image: url("../icons/16/add.png");  }
-		.module div.toolbar .help { background-image: url("../icons/16/help.png"); }
+		.module div.toolbar .add  { background-image: url("../icons/silk/add.png");  }
+		.module div.toolbar .help { background-image: url("../icons/silk/help.png"); }
 		
 		/* these seem to be from the tango
 		 * set... TODO: use silk! */
-		.module div.toolbar .prev  { background-image: url("../icons/16/go-previous.png"); }
-		.module div.toolbar .next  { background-image: url("../icons/16/go-next.png");     }
-		.module div.toolbar .first { background-image: url("../icons/16/go-first.png");    }
-		.module div.toolbar .last  { background-image: url("../icons/16/go-last.png");     }
+		.module div.toolbar .prev  { background-image: url("../icons/tango/go-previous.png"); }
+		.module div.toolbar .next  { background-image: url("../icons/tango/go-next.png");     }
+		.module div.toolbar .first { background-image: url("../icons/tango/go-first.png");    }
+		.module div.toolbar .last  { background-image: url("../icons/tango/go-last.png");     }
 
 .module form { }
 	
@@ -304,7 +304,7 @@ table {
 		 * it inserts an error label just after the field (in the dom),
 		 * and positions it directly to the right (with javascript) */
 		.module label.error {
-			background: #fff url("../icons/16/exclamation.png") no-repeat 0 50%;
+			background: #fff url("../icons/silk/exclamation.png") no-repeat 0 50%;
 			margin: 0 0 0 0.25em;
 			padding-left: 16px;
 			min-height: 16px;
@@ -327,7 +327,9 @@ table {
 	 * stay out of the way */
 	input.js-add,
 	input.js-del,
-	input.js-accept {
+	input.js-accept,
+	input.js-unaccept,
+	input.js-clear {
 		cursor: pointer;
 		border: 0;
 		padding: 0;
@@ -341,9 +343,11 @@ table {
 	
 	/* from http://www.famfamfam.com/lab/icons/silk/
 	 * (licensed under Creative Commons Attribution) */
-	input.js-add    { background-image: url("../icons/16/add.png");    }
-	input.js-del    { background-image: url("../icons/16/delete.png"); }
-	input.js-accept { background-image: url("../icons/16/accept.png"); }
+	input.js-add      { background-image: url("../icons/silk/add.png");    }
+	input.js-del      { background-image: url("../icons/silk/delete.png"); }
+	input.js-accept   { background-image: url("../icons/silk/accept.png"); }
+	input.js-unaccept { background-image: url("../icons/silk/accept-dull.png"); }
+	input.js-clear    { background-image: url("../icons/silk-companion/decline.png"); } /* TODO: better icon! */
 	
 	/* some options are less interesting than others; like
 	 * None, or Disabled, or Default; so mark them dull */
