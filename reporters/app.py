@@ -87,6 +87,20 @@ class App(rapidsms.app.App):
         return msg.respond(self.__str("denied", msg.reporter))
         
     
+    def start(self):
+        
+        # fetch a list of all the backends
+        # that we already have objects for
+        known_backends = PersistantBackend.objects.values_list("slug", flat=True)
+        
+        # find any running backends which currently
+        # don't have objects, and fill in the gaps
+        for be in self.router.backends:
+            if not be.slug in known_backends:
+                self.info("Creating PersistantBackend object for %s" % be)
+                PersistantBackend(slug=be.slug, title=be.title).save()
+    
+    
     def parse(self, msg):
         
         # fetch the persistantconnection object
@@ -121,7 +135,6 @@ class App(rapidsms.app.App):
         # populates the same property 
         conn.seen()
             
-    
     
     def handle(self, msg):
         matcher = Matcher(msg)

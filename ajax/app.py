@@ -63,7 +63,7 @@ class App(rapidsms.app.App):
             # inspect the name of each active app,
             # returning as soon as we find a match
             for app in self.server.app.router.apps:
-                if app.name.lower() == name.lower():
+                if app.slug == name:
                     return app
             
             # no app by that
