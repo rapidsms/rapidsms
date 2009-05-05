@@ -7,14 +7,12 @@ from apps.nigeria.models import *
 class NetDistributionAdmin(admin.ModelAdmin):
     list_display = ['location', 'distributed', 'expected', 'actual', 'discrepancy',\
         'reporter', 'time']
-    list_filter = ['reporter']
     date_hierarchy = 'time'
 
 
 class CardDistributionAdmin(admin.ModelAdmin):
     list_display = ['location', 'settlements', 'people', 'distributed', 'reporter',\
         'time']
-    list_filter = ['reporter']
     date_hierarchy = 'time'
 
 
