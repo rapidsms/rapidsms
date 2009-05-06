@@ -15,18 +15,58 @@ class Component(object):
     def router (self):
         if hasattr(self, "_router"):
             return self._router
-
-    def _get_name(self):
-        if hasattr(self, '_name'):
-            return self._name
-        else:
-            return unicode(type(self).__name__)   
-
-    def _set_name(self, name):
-        self._name = name
-
-    name = property(_get_name, _set_name)
-   
+    
+    @property
+    def title(self):
+        """Returns the verbose name of this component, which can contain any
+           text, to clearly identify it to WebUI users and log viewers. This
+           property may change at any time, so don't """
+        if hasattr(self, "_title"):
+            return self._title
+        
+        # since no title has explicitly
+        # set, fall back to class name
+        return self.__class__.__name__
+    
+    @property
+    def slug(self):
+        """Returns a sanitized version of the title, which can be
+           assumed to be alphanumeric and unique. This is useful
+           for embedding in URLs and Database keys."""
+        
+        if hasattr(self, "_slug"):
+            return self._slug
+        
+        # no explict slug was set, so convert
+        # the title into something URL-safe
+        slug = self.title.lower().strip()
+        slug = re.sub(r"[\s_\-]+", "-", slug)
+        slug = re.sub(r"[^a-z\-]", "", slug)
+        return slug
+    
+    
+    def _configure(self, **kwargs):
+        
+        # before passing the configuration data to the
+        # component, store and remove the common stuff
+        if "title" in kwargs: self._title = kwargs.pop("title")
+        if "slug"  in kwargs: self._slug  = kwargs.pop("slug")
+        
+        try:
+            self.configure(**kwargs)
+        
+        except TypeError, e:
+            # "__init__() got an unexpected keyword argument '...'"
+            if "unexpected keyword" in e.message:
+                missing_keyword = e.message.split("'")[1]
+                raise Exception("Component '%s' does not support a '%s' option."
+                        % (title, missing_keyword))
+            else:
+                raise
+        
+        self.configure(**kwargs)
+    
+    
     def configure (self, **kwargs):
         # overridden by App and Backend subclasses
         pass
