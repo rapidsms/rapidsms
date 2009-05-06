@@ -33,7 +33,7 @@ def index(req, locid=None):
         location = Location.objects.get(id=locid)
     except Location.DoesNotExist:
         location= None
-    print "location: %s" % location
+    #print "location: %s" % location
     return render_to_response(req, "nigeria/index.html",{'location':location })
 
 
@@ -49,16 +49,16 @@ def logistics_summary(req, locid):
     except Location.DoesNotExist:
         location = None
 
-    # get all the transactions that this location was involved in 
-    transactions_from_loc = Transaction.objects.all().filter(shipment__origin=location) 
-    transactions_to_loc = Transaction.objects.all().filter(shipment__destination=location)  
-    transactions = (transactions_from_loc | transactions_to_loc).order_by("-shipment__sent") 
+    # get all the partialtransactions that this location is involved in 
+    transactions_from_loc = PartialTransaction.objects.all().filter(origin=location) 
+    transactions_to_loc = PartialTransaction.objects.all().filter(destination=location)  
+    transactions = (transactions_from_loc | transactions_to_loc).order_by("-date") 
         
     # get any place this location has shipped to or from.  
     # we will use these to generate some plots
     # and pass them forward to the template
     locations_shipped_to = []
-    [locations_shipped_to.append(trans.shipment.destination) for trans in transactions_from_loc if trans.shipment.destination not in locations_shipped_to]
+    [locations_shipped_to.append(trans.destination) for trans in transactions_from_loc if trans.destination not in locations_shipped_to]
     
     # set the stock value in all the children.
     # this is now handled by signals!  see supply/models.py
@@ -134,9 +134,9 @@ def coupons_summary(req, locid=1):
     #Declarations
     coupons_distribution_data_per_ward = []
     coupons_distribution_data_over_time = []  
-    child = Location.objects.get(pk=locid).children.all()[0]
     try: 
         location = Location.objects.get(pk=locid)
+        parent = location.parent
         location_type = Location.objects.get(pk=locid).type
         loc_children = []
         bar_data = []
@@ -147,6 +147,7 @@ def coupons_summary(req, locid=1):
         people_data = []
         settlements_data = []
         labels = []
+        type = ""
         for child in location.children.all():
             people, coupons, settlements = _get_card_distribution_data(child)
             child.people = people
@@ -178,9 +179,10 @@ def coupons_summary(req, locid=1):
     return render_to_response(req, "nigeria/coupons_summary.html", {'location': location,
                      'children' : loc_children, 
                      'child_type':type, 
+                     'parent':parent, 
                      'bar_data':bar_data,
                      'bar_ticks':ticks,
-                     'pie_data':    pie_data
+                     'pie_data': pie_data
                      }
                  )
     
@@ -242,8 +244,6 @@ def coupons_daily(req, locid=1):
                      {'data': coupons_data_for_dps_mts2, "bars": { "show": "true" },"label":"MT 2" },
                      { 'data': coupons_data_for_dps_mts3, "bars": { "show": "true" },"label":"MT 3" },
                      { 'data': overflow_data, "bars": { "show": "true", "fill": "true", "fillColor":"#FFFFFF","label":"MT 4" }} ] 
-    print coupons_data
-    print bar_data
     return render_to_response(req, "nigeria/coupons_daily.html", {'location': location,
                      'children' : loc_children, 
                      'type':type, 

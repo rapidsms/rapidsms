@@ -1,0 +1,75 @@
+/* UNICEF RapidSMS UI
+ * vim:set noet:
+ * --
+ * messaging.css
+ * --
+ * What is this? */
+
+.recipients ul {
+	padding: 0;
+	margin: 0;
+}
+
+	.recipients li {
+		display: block;
+		border-top: 1px solid #eee;
+	}
+	
+		.recipients li.first {
+			border-top: none; }
+		
+		/* remove the generic label "look"
+		 * defined by the core WebUI */			
+		.recipients li label {
+			padding: 0.5em;
+			margin: 0;
+		}
+		
+		.recipients li input {
+			margin: 0; }
+
+
+.recipients tr {
+}
+	
+	.recipients .check {
+		padding: 0 0 0 0.5em;
+		width: 16px;
+	}
+
+	/* everything looks clickable */
+	.recipients tbody tr {
+		cursor: pointer;
+	}
+		
+		/* highlight checked rows, to indicate
+		 * who we'll be blasting the message to */
+		.recipients tbody tr.checked td { }
+			
+			/* dull rows have a background image too, to avoid
+			 * a weird looking gap before anything is checked */
+			.recipients tbody tr         .check { background: url("../../webui/icons/silk/bullet_white.png") no-repeat 0.5em 50%; }
+			.recipients tbody tr.checked .check { background-image: url("../../webui/icons/silk/accept.png"); }
+			
+			/* various statuses for messages during/after send */
+			.recipients tbody tr.busy    .check { background-image: url("../../webui/icons/silk/email_go.png"); }
+			.recipients tbody tr.sent    .check { background-image: url("../../webui/icons/silk/email.png"); }
+			.recipients tbody tr.error   .check { background-image: url("../../webui/icons/silk/email_error.png"); }
+	
+	/* when a filter is in effect, dim all of the text
+	 * in the table *except* for the matching rows */
+	.recipients.filtered tbody {
+		background: #fcfcfc;
+		color: #eee;
+	}
+		
+		/* matching search results are BRIGHT */
+		.recipients.filtered tbody tr.hit {
+			background-color: #fff;
+			color: #000;
+		}
+
+.contents textarea {
+	-moz-box-sizing: border-box;
+	width: 100%;
+}	

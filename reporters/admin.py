@@ -16,6 +16,7 @@ class LocationAdmin(admin.ModelAdmin):
 class ReporterAdmin(admin.ModelAdmin):
     list_display = ['alias', 'first_name', 'last_name', 'location','role']
     search_fields = ['alias','first_name','last_name','groups'] 
+    list_filter = ['role',]
 
 class RoleAdmin(admin.ModelAdmin):
     list_display = ['name','code']
