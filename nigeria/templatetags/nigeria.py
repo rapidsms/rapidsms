@@ -65,9 +65,22 @@ def daily_progress():
     
     
     # how high should we aim?
-    report_target    = 432.0 # 48 wards * 9 mobilization teams?
-    coupon_target    = 5000.0
-    recipient_target = 50000.0
+    # 48 wards * 9 mobilization teams = 482?
+    # but at least 2 lgas are summing teams
+    # and reporting once by ward, so maybe 48 * 4?
+    report_target    = 192.0
+
+    # Dawakin Kudo      99,379
+    # Garum Mallam      51,365
+    # Kano Municipal    161,168
+    # Kura              63,758
+    coupon_target    = 375670.0
+
+    # Dawakin Kudo      248,447
+    # Garun Mallam      128,412
+    # Kano Municipal    402,919
+    # Kura              159,394
+    recipient_target = 939172.0
     
     
     for d in range(0, (end - start).days):
@@ -94,6 +107,8 @@ def daily_progress():
         
             data.update({
                 "reports_perc":    int((data["reports"]    / report_target)    * 100) if (data["reports"]    > 0) else 0,
+                "coupons_perc":    int((data["coupons"]    / coupon_target)    * 100) if (data["coupons"]    > 0) else 0,
+                "recipients_perc":    int((data["recipients"]    / recipient_target)    * 100) if (data["recipients"]    > 0) else 0,
             })
         
         days.append(data)
