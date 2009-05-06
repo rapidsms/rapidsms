@@ -8,7 +8,7 @@ $(document).ready(function(){
 
 function sendMsg() {
 	if ($('#phone').val().length > 0 && $('#message').val().length > 0) {
-		req = url + $('#phone').val() + "/" + $('#message').val();
+		req = url + $('#phone').val() + "/" + escape($('#message').val());
 		$.getJSON(
 			req,
 			function (response) { if (response) {
