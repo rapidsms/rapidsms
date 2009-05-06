@@ -100,8 +100,45 @@ def daily_progress():
     
     return { "days": days }
 
+
 @register.inclusion_tag("nigeria/partials/pilot.html")
 def pilot_summary():
+    
+    # fetch all of the LGAs that we want to display
+    lga_names = ["DAWAKIN KUDU", "GARUN MALLAM", "KURA", "KANO MUNICIPAL"]
+    lgas = LocationType.objects.get(name="LGA").locations.filter(name__in=lga_names)
+    
+    # called to fetch and assemble the
+    # data structure for each pilot ward
+    def __ward_data(ward):
+        locations = ward.descendants(True)
+        reports = CardDistribution.objects.filter(location__in=locations)
+        return {
+            "name":         ward.name,
+            "reports":      reports.count(),
+            "netcards":     sum(reports.values_list("distributed", flat=True)),
+            "beneficiaries": sum(reports.values_list("people", flat=True))
+        }
+    
+    # called to fetch and assemble the
+    # data structure for each pilot LGA
+    def __lga_data(lga):
+        wards = lga.children.all()
+        reporters = Reporter.objects.filter(location__in=wards)
+        supervisors = reporters.filter(role__code__iexact="WS")
+        
+        summary = "%d supervisors (of %d reporters) in %d wards" % (len(supervisors), len(reporters), len(wards))
+        
+        return {
+            "name": lga.name,
+            "summary": summary,
+            "wards": map(__ward_data, wards)
+        }
+    
+    return { "pilot_lgas": map(__lga_data, lgas) }
+
+
+def pilot_summaryx():
     pilot_lga_names = ['DAWAKIN KUDU', 'GARUN MALLAM', 'KURA', 'KANO MUNICIPAL']
     pilots = []
     for lga_name in pilot_lga_names:
@@ -128,6 +165,7 @@ def pilot_summary():
             lga_wards.append(ward_data)
         pilots.append([lga_data, lga_wards])
     return {"pilots" : pilots}
+
 
 @register.inclusion_tag("nigeria/partials/logistics.html")
 def logistics_summary():

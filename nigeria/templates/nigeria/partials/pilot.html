@@ -1,29 +1,26 @@
 <div class="module pilot">
 	<h2>Pilot LGAs Summary</h2>
-        {% for lga_data, ward_data in pilots %}
-	<table>
+	<table>{% for lga in pilot_lgas %}
 		<thead>
+			<tr class="caption">
+				<td colspan="4">
+					<h3>{{ lga.name }} <span>{{ lga.summary }}</span></h3>
+				</td>
+			</tr>
 			<tr>
-                                {% for lname, linfos in lga_data.items %}
-				    <th colspan="2">{{ lname }}</th>
-                                        {% for linfo in linfos %}
-                                            <th colspan="2">{{ linfo }}</th>
-                                        {% endfor %}
-                                {% endfor %}
+				<th>Ward Name</th>
+				<th>Reports</th>
+				<th>Net Cards</th>
+				<th>Beneficiaries</th>
 			</tr>
 		</thead>
-		<tbody>
-                                {% for ward in ward_data %}
-                                    {% for wname, winfos in ward.items %}
-                         <tr>
-                                            <td>{{ wname }}</td>
-                                            {% for winfo in winfos %}
-                                                <td>{{ winfo }}</td>
-                                            {% endfor %}
-                                    {% endfor %}
-                                {% endfor %}
-                         </tr>
+		<tbody>{% for ward in lga.wards %}
+			<tr>
+				<td>{{ ward.name }}</td>
+				<td>{{ ward.reports }}</td>
+				<td>{{ ward.netcards }}</td>
+				<td>{{ ward.beneficiaries }}</td>
+			</tr>{% endfor %}{% endfor %}
 		</tbody>
 	</table>
-        {% endfor %}
 </div>
