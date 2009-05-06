@@ -80,21 +80,12 @@ class Config (object):
         if not "type" in data:
             data["type"] = name
         
-        # apps should set a title in their "config" module,
-        # but in case they don't, recycle their name (again)
-        if not "title" in data:
-            data["title"] = name
-        
         return data
 
     
     def app_section (self, name):
         data = self.component_section(name)
         mod_str = "apps.%s" % (data["type"])
-        
-        # attempt to import the rapidsms app from this
-        # app package, for other apps to peek into
-        #data["class"] = self.__import_class("apps.%s.app.App" % data["type"])
         
         # load the config.py for this app, if possible
         config = self.__import_class("apps.%s.config" % data["type"])
