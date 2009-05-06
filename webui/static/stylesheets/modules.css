@@ -403,6 +403,18 @@ table {
 
 /* temporary dashboard stuff */
 
+.tmp tr.caption td {
+	padding: 0;
+}
+
+.tmp h3 span {
+	font-size: 90%;
+	font-style: italic;
+	display: block;
+	float: right;
+	margin-top: -1em;
+}
+
 .tmp ul {
 	padding: 0;
 }
