@@ -48,13 +48,13 @@ class TestScript (TestCase):
 
     def setUp (self):
         self.router = MockRouter()
-        self.backend = Backend("TestScript", self.router)
+        self.backend = Backend(self.router)
         self.router.add_backend(self.backend)
         if not self.apps:
             raise Exception(
                 "You must define a list of apps in your TestScript class!")
         for app_class in self.apps:
-            app = app_class(app_class.__name__, self.router)
+            app = app_class(self.router)
             self.router.add_app(app)
 
     def tearDown (self):
