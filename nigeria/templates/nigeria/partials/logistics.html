@@ -1,0 +1,37 @@
+<div class="module logistics">
+	<h2>Logistics Summary</h2>
+        {% for lga_summary in summaries %}
+	<table>
+		<thead>
+			<tr>
+                                <th colspan="2">{{ lga_summary.name }}</th>
+			</tr>
+			<tr>
+                                <th colspan="2">Date</th>
+                                <th colspan="2">Counterparty</th>
+                                <th colspan="2">Logistician</th>
+                                <th colspan="2">Number of bales</th>
+                                <th colspan="2">Stock balance</th>
+			</tr>
+		</thead>
+		<tbody>
+                         <tr><td><em>Stock Receipts:</em></td></tr>
+                                {% if lga_summary.receipts%}
+                                    {% for pi in lga_summary.receipts %}
+                                        <tr><td>{{ pi.date}}</td><td>{{ pi.origin }}</td><td>{{ pi.reporter }}</td><td>{{ pi.amount }}</td><td>{{ pi.stock }}</td></tr>
+                                    {% endfor %}
+                                {% else %}
+                                        <tr><td>None</td></tr>
+                                {% endif %}
+                         <tr><td><em>Stock Issues:</em></td></tr>
+                                {% if lga_summary.issues %}
+                                    {% for pr in lga_summary.issues %}
+                                        <tr><td>{{ pi.date }}</td><td>{{ pr.destination }}</td><td>{{ pr.reporter }}</td><td>{{ pr.amount }}</td><td>{{ pr.stock }}</td></tr>
+                                    {% endfor %}
+                                {% else %}
+                                        <tr><td>None</td></tr>
+                                {% endif %}
+		</tbody>
+	</table>
+        {% endfor %}
+</div>

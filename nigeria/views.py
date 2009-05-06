@@ -49,16 +49,16 @@ def logistics_summary(req, locid):
     except Location.DoesNotExist:
         location = None
 
-    # get all the transactions that this location was involved in 
-    transactions_from_loc = Transaction.objects.all().filter(shipment__origin=location) 
-    transactions_to_loc = Transaction.objects.all().filter(shipment__destination=location)  
-    transactions = (transactions_from_loc | transactions_to_loc).order_by("-shipment__sent") 
+    # get all the partialtransactions that this location is involved in 
+    transactions_from_loc = PartialTransaction.objects.all().filter(origin=location) 
+    transactions_to_loc = PartialTransaction.objects.all().filter(destination=location)  
+    transactions = (transactions_from_loc | transactions_to_loc).order_by("-date") 
         
     # get any place this location has shipped to or from.  
     # we will use these to generate some plots
     # and pass them forward to the template
     locations_shipped_to = []
-    [locations_shipped_to.append(trans.shipment.destination) for trans in transactions_from_loc if trans.shipment.destination not in locations_shipped_to]
+    [locations_shipped_to.append(trans.destination) for trans in transactions_from_loc if trans.destination not in locations_shipped_to]
     
     # set the stock value in all the children.
     # this is now handled by signals!  see supply/models.py
