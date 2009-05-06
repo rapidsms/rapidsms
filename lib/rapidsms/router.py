@@ -42,10 +42,9 @@ class Router (component.Receiver):
         
         # create the component with an instance of this router
         # and keep hold of it here, so we can communicate both ways
-        title = conf.pop("title")
-        component = component_class(title, self)
+        component = component_class(self)
         try:
-            component.configure(**conf)
+            component._configure(**conf)
         except TypeError, e:
             # "__init__() got an unexpected keyword argument '...'"
             if "unexpected keyword" in e.message:
@@ -66,10 +65,10 @@ class Router (component.Receiver):
             self.log_last_exception("Failed to add backend: %r" % conf)
             
 
-    def get_backend (self, name):
-        '''gets a backend by name, if it exists'''
+    def get_backend (self, slug):
+        '''gets a backend by slug, if it exists'''
         for backend in self.backends:
-            if backend.name == name:
+            if backend.slug == slug:
                 return backend
         return None
 
@@ -103,7 +102,7 @@ class Router (component.Receiver):
                 
                 # an exception was raised in backend.start()
                 # sleep for 5 seconds, then loop and restart it
-                self.log_last_exception("Error in the %s backend" % backend.name)
+                self.log_last_exception("Error in the %s backend" % backend.slug)
 
                 # don't bother restarting the backend
                 # if the router isn't running any more
@@ -114,7 +113,7 @@ class Router (component.Receiver):
                 # we should probably be doing something more intelligent
                 # here, rather than just hoping five seconds is enough
                 time.sleep(5.0)
-                self.info("Restarting the %s backend" % backend.name)
+                self.info("Restarting the %s backend" % backend.slug)
 
 
     def start_all_apps (self):
@@ -129,7 +128,7 @@ class Router (component.Receiver):
                 app.start()
 
             except Exception:
-                self.log_last_exception("The %s app failed to start" % app.name)
+                self.log_last_exception("The %s app failed to start" % app.slug)
                 raised = True
 
         # if any of the apps raised, we'll return
@@ -168,14 +167,14 @@ class Router (component.Receiver):
                 # worker thread to terminate, or log failure
                 while(backend.thread.is_alive()):
                     if timeout <= 0:
-                        raise RuntimeError, "The %s backend's worker thread did not terminate" % backend.name
+                        raise RuntimeError, "The %s backend's worker thread did not terminate" % backend.slug
 
                     else:
                         time.sleep(step)
                         timeout -= step
 
             except Exception:
-                self.log_last_exception("The %s backend failed to stop" % backend.name)
+                self.log_last_exception("The %s backend failed to stop" % backend.slug)
 
 
     def start (self):
@@ -208,7 +207,7 @@ class Router (component.Receiver):
                 # find the backend named by the message,
                 # reconstruct the object, and send it
                 for backend in self.backends:
-                    if backend.name == be_name:
+                    if backend.slug == be_slug:
                         msg = backend.message(identity, txt)
                         self.info("Sending pending message: %r" % msg)
                         msg.send()
@@ -244,14 +243,14 @@ class Router (component.Receiver):
     
     def incoming(self, message):   
         self.info("Incoming message via %s: %s ->'%s'" %\
-			(message.connection.backend.name, message.connection.identity, message.text))
+			(message.connection.backend.slug, message.connection.identity, message.text))
         
         # loop through all of the apps and notify them of
         # the incoming message so that they all get a
         # chance to do what they will with it                      
         for phase in self.incoming_phases:
             for app in self.__sorted_apps():
-                self.debug('IN' + ' ' + phase + ' ' + app.name)
+                self.debug('IN' + ' ' + phase + ' ' + app.slug)
                 responses = len(message.responses)
                 handled = False
                 try:
@@ -260,11 +259,11 @@ class Router (component.Receiver):
                     self.error("%s failed on %s: %r\n%s", app, phase, e, traceback.print_exc())
                 if phase == 'handle':
                     if handled is True:
-                        self.debug("%s short-circuited handle phase", app.name)
+                        self.debug("%s short-circuited handle phase", app.slug)
                         break
                 elif responses < len(message.responses):
                     self.warning("App '%s' shouldn't send responses in %s()!", 
-                        app.name, phase)
+                        app.slug, phase)
 
         # now send the message's responses
         message.flush_responses()
@@ -277,7 +276,7 @@ class Router (component.Receiver):
 
     def outgoing(self, message):
         self.info("Outgoing message via %s: %s <- '%s'" %\
-			(message.connection.backend.name, message.connection.identity, message.text))
+			(message.connection.backend.slug, message.connection.identity, message.text))
         
         # first notify all of the apps that want to know
         # about outgoing messages so that they can do what
@@ -290,17 +289,17 @@ class Router (component.Receiver):
 			# called with an incoming message is the last app called
 			# with an outgoing message
             for app in reversed(self.__sorted_apps()):
-                self.debug('OUT' + ' ' + phase + ' ' + app.name)
+                self.debug('OUT' + ' ' + phase + ' ' + app.slug)
                 try:
                     continue_sending = getattr(app, phase)(message)
                 except Exception, e:
                     self.error("%s failed on %s: %r\n%s", app, phase, e, traceback.print_exc())
                 if continue_sending is False:
-                    self.info("App '%s' cancelled outgoing message", app.name)
+                    self.info("App '%s' cancelled outgoing message", app.slug)
                     return False
 
         # now send the message out
         message.connection.backend.send(message)
         self.debug("SENT message '%s' to %s via %s" % (message.text,\
-			message.connection.identity, message.connection.backend.name))
+			message.connection.identity, message.connection.backend.slug))
         return True
