@@ -48,10 +48,22 @@ class TestApp (TestScript):
            8005551212 > llin my status
            8005551212 < I think you are dummy user.
            #duplicate submission
-           test_reg_1 > llin register 20 dl dummy user
-           test_reg_1 < Hello dummy! You are now registered as Distribution point team leader at KANO State.
-           test_reg_1 > llin register 20 dl DUMMY USER
-           test_reg_1 < Hello DUMMY! You are now registered as Distribution point team leader at KANO State.
+           test_reg_dup > llin register 20 dl duplicate user
+           test_reg_dup < Hello duplicate! You are now registered as Distribution point team leader at KANO State.
+           # this one should be a duplicate
+           test_reg_dup > llin register 20 dl duplicate user
+           test_reg_dup < Hello again duplicate!  You are already registered as a Distribution point team leader at KANO State.
+           # but all of these should create a new registration
+           test_reg_dup > llin register 20 dl duplicate user withanothername
+           test_reg_dup < Hello duplicate! You are now registered as Distribution point team leader at KANO State.
+           test_reg_dup > llin register 20 dl duplicate userlonger
+           test_reg_dup < Hello duplicate! You are now registered as Distribution point team leader at KANO State.
+           test_reg_dup > llin register 20 dl duplicated user
+           test_reg_dup < Hello duplicated! You are now registered as Distribution point team leader at KANO State.
+           test_reg_dup > llin register 20 sm duplicate user
+           test_reg_dup < Hello duplicate! You are now registered as Stock manager at KANO State.
+           test_reg_dup > llin register 2001 dl duplicate user
+           test_reg_dup < Hello duplicate! You are now registered as Distribution point team leader at AJINGI LGA.
            # case sensitivity
            test_reg_2 > llin REGISTER 20 dl another user
            test_reg_2 < Hello another! You are now registered as Distribution point team leader at KANO State.
@@ -64,34 +76,48 @@ class TestApp (TestScript):
            test_reg_5 > llin register 20 dl mister four name guy
            test_reg_5 < Hello mister! You are now registered as Distribution point team leader at KANO State.
            # some other spellings
-           test_reg_6 > llin regstr 20 dl short user
-           test_reg_6 < Hello short! You are now registered as Distribution point team leader at KANO State.
-           test_reg_6 > llin regs 20 dl short user
-           test_reg_6 < Hello short! You are now registered as Distribution point team leader at KANO State.
-           test_reg_7 > llin registered 20 dl long user
-           test_reg_7 < Hello long! You are now registered as Distribution point team leader at KANO State.
+           test_reg_short > llin regstr 20 dl short user
+           test_reg_short < Hello short! You are now registered as Distribution point team leader at KANO State.
+           test_reg_short_2 > llin regs 20 dl short user
+           test_reg_short_2 < Hello short! You are now registered as Distribution point team leader at KANO State.
+           test_reg_short_3 > llin reg 20 dl short user
+           test_reg_short_3 < Hello short! You are now registered as Distribution point team leader at KANO State.
+           test_reg_long > llin registered 20 dl long user
+           test_reg_long < Hello long! You are now registered as Distribution point team leader at KANO State.
            # extra spaces
            test_reg_8 > llin    register   20   dl    space     guy
            test_reg_8 < Hello space! You are now registered as Distribution point team leader at KANO State.
+           # new tests for more flexible roles
+           test_reg_dl > llin register 20 dl distribution leader
+           test_reg_dl < Hello distribution! You are now registered as Distribution point team leader at KANO State.
+           test_reg_dl_2 > llin register 20 ds distribution leader
+           test_reg_dl_2 < Hello distribution! You are now registered as Distribution point team leader at KANO State.
+           test_reg_dl_3 > llin register 20 dm distribution leader
+           test_reg_dl_3 < Hello distribution! You are now registered as Distribution point team leader at KANO State.
+           test_reg_dl_4 > llin register 20 dp distribution leader
+           test_reg_dl_4 < Hello distribution! You are now registered as Distribution point team leader at KANO State.
+           test_reg_lf > llin register 20 lf lga focal person
+           test_reg_lf < Hello lga! You are now registered as LGA focal person at KANO State.
+           test_reg_lf_2 > llin register 20 lp lga focal person
+           test_reg_lf_2 < Hello lga! You are now registered as LGA focal person at KANO State.
            # alas, we're not perfect
            test_reg_fail > llin rgstr 20 dl sorry guy
            test_reg_fail < Sorry we didn't understand that. Available forms are LLIN: REGISTER, NETCARDS, NETS, RECEIVE, ISSUE
-           
          """
     
     testRegistrationErrors = """
            12345 > llin my status
            12345 < Please register your phone with RapidSMS.
            12345 > llin register 45 DL hello world 
-           12345 < Invalid form.  45 not in list of location codes
+           12345 < Invalid form. 45 not in list of location codes
            12345 > llin my status
            12345 < Please register your phone with RapidSMS.
            12345 > llin register 20 pp hello world 
-           12345 < Invalid form.  pp not in list of role codes
+           12345 < Invalid form. Unknown role code: pp
            12345 > llin my status
            12345 < Please register your phone with RapidSMS.
            12345 > llin register 6803 AL hello world 
-           12345 < Invalid form.  6803 not in list of location codes. AL not in list of role codes
+           12345 < Invalid form. 6803 not in list of location codes. Unknown role code: AL
            12345 > llin my status
            12345 < Please register your phone with RapidSMS.
          """
@@ -130,7 +156,7 @@ class TestApp (TestScript):
            8005551213 > llin nets 2001 123 456 78 90
            8005551213 < Received report for LLIN NETS: location=AJINGI, distributed=123, expected=456, actual=78, discrepancy=90
            8005551213 > llin nets 2001 123 456 78 
-           8005551213 < Invalid form.  The following fields are required: discrepancy
+           8005551213 < Invalid form. The following fields are required: discrepancy
            # test some of the different form prefix options
            # case sensitivity
            8005551213 > llin NETS 2001 123 456 78 90
@@ -157,7 +183,7 @@ class TestApp (TestScript):
            8005551214 > llin net cards 200201 123 456 78 
            8005551214 < Received report for LLIN NET CARDS: location=ALBASU CENTRAL, settlements=123, people=456, distributed=78
            8005551214 > llin net cards 200201 123 456  
-           8005551214 < Invalid form.  The following fields are required: issued
+           8005551214 < Invalid form. The following fields are required: issued
            # test some of the different form prefix options
            # case sensitivity
            8005551214 > llin NET CARDS 200201 123 456 78
@@ -196,7 +222,9 @@ class TestApp (TestScript):
         """ This isn't actually a test.  It just takes advantage
             of the test harness to spam a bunch of messages to the 
             nigeria app and spit out the data in a format that can
-            be sucked into a fixture """
+            be sucked into a fixture.  It should be moved to some 
+            data generator at some point, but is being left here 
+            for laziness sake """
         # this is the number of net reports that will be generated
         count = 0
         
@@ -215,7 +243,7 @@ class TestApp (TestScript):
         # these are the locations that will be chosen.  The actual
         # location will be a distribution point under one of these 
         # wards
-        wards = [200101, 200102, 200103, 200104, 200201]
+        wards = [200101, 200102, 200103, 200104, 200105, 200106, 200107, 200108, 200109, 200110, 200201]
         all_net_strings = []
         for i in range(count):
             # this first part generates a net form at a random DP
@@ -250,11 +278,11 @@ class TestApp (TestScript):
         options = { "indent" : 2 }
         datadump = dumpdata.handle("nigeria", **options)
         # uncomment these lines to save the fixture
-        #file = open(filename, "w")
-        #file.write(datadump)
-        #file.close()
-        #print "=== Successfully wrote fixtures to %s ===" % filename
-        
+#        file = open(filename, "w")
+#        file.write(datadump)
+#        file.close()
+#        print "=== Successfully wrote fixtures to %s ===" % filename
+#        
     
     def _testKanoLocations(self):
         #TODO test for DPs and MTs

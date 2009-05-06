@@ -35,9 +35,9 @@ changeYear: true
 				
 	var opts = '{"grid":{"clickable":true},"xaxis":{"min":0,"ticks":[],"tickFormatter":"string"},"yaxis":{"min":0}}'
 	
-	coupons_data = {{coupons_data|safe}};
-        plots_data = {{plots|safe}};
-	 $.plot($('#cd_dps'), plots_data);
+	    bar_data = {{bar_data|safe}};
+	    bar_options = {{bar_options|safe}};
+	 $.plot($('#cd_dps'), bar_data, bar_options);
 				 
 				 coupons_distribution_over_time_data=
 				 [{label:"MT 1","data":[[1240558443000,121],[1240558529400,314],[1240558615800,675], [1240558702200,975]]},
@@ -106,14 +106,9 @@ changeYear: true
 															{"label": 'MT 2', data: 20},
 															{,"label": 'MT 3', data: 50},
 									]*/
-	 		$.plot($('#cd_pie_chart'),  [
-        { label: "Ajingi",  data: 10},
-        { label: "Bebeji",  data: 30},
-		{ label: "Bunkure",  data: 90},
-		{ label: "DALA",  data: 70},
-		{ label: "Akirun",  data: 80},
-		{ label: "Smaila",  data: 110}
-	], {
+	 		$.plot($('#cd_pie_chart'),  {{pie_data|safe}}
+	 	
+	, {
 		pie: { 
 			show: true, 
 			pieStrokeLineWidth: 1, 

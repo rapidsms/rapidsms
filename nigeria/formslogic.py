@@ -5,6 +5,7 @@ from models import *
 from rapidsms.message import StatusCodes
 from apps.reporters.models import *
 from apps.form.formslogic import FormsLogic
+import re
 
 class NigeriaFormsLogic(FormsLogic):
     ''' This class will hold the nigeria-specific forms logic.
@@ -68,6 +69,23 @@ class NigeriaFormsLogic(FormsLogic):
             # form_entry, for "actions" to pick up again without re-fetching
             form_entry.rep_data = data
             
+            # parse the roles out. 
+            # TODO: how can this be done generically
+            role_code = data.pop("role")
+            role = None
+            try:
+                role = Role.objects.get(code__iexact=role_code)
+            except Role.DoesNotExist:
+                # try to match the pattern
+                for db_role in Role.objects.all():
+                    if db_role.match(role_code):
+                        role = db_role
+                        break
+            if not role:
+                return ["Unknown role code: %s" % role_code]
+            data["role"] = role
+            
+            
             # nothing went wrong. the data structure
             # is ready to spawn a Reporter object
             return None
@@ -96,17 +114,27 @@ class NigeriaFormsLogic(FormsLogic):
             data = form_entry.rep_data
             # load the location and role objects via their codes
             data["location"] = Location.objects.get(code__iexact=data["location"])
-            data["role"]     = Role.objects.get(code__iexact=data["role"])
+            # this happens in validation now
+            # data["role"]     = Role.objects.get(code__iexact=data["role"])
             
             # spawn and save the reporter using the
             # data we collected in self.validate
-            rep = Reporter.objects.create(**data)
+            rep = Reporter(**data)
+            conn = PersistantConnection.from_message(message)
+            # check for duplicate registration.
+            if Reporter.exists(rep, conn):
+                # if they already exist just re-send a confirmation but don't
+                # create a new instance. 
+                message.respond("Hello again %s!  You are already registered as a %s at %s %s."\
+                                % (rep.first_name, rep.role, rep.location, rep.location.type), StatusCodes.OK)
+                return
+            # if they didn't exist then save them
+            rep.save()
 
             # we can assume that the new reporter will be using
             # this device again, so register a connection. this
             # automatically logs them in, so they can start
             # reporting straight away
-            conn = PersistantConnection.from_message(message)
             conn.reporter = rep
             conn.save()
 
