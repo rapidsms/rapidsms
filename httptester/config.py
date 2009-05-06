@@ -3,6 +3,4 @@
 
 title = "Message Tester"
 tab_link = "/http"
-a = "Alpha"
-b = "Beta"
 
