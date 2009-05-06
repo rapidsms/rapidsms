@@ -1,7 +1,6 @@
 <div class="module pilot">
 	<h2>Pilot LGAs Summary</h2>
         {% for lga_data, ward_data in pilots %}
-            
 	<table>
 		<thead>
 			<tr>
@@ -15,15 +14,15 @@
 		</thead>
 		<tbody>
                                 {% for ward in ward_data %}
-                                {% for wname, winfos in ward.items %}
-                                        <tr>
+                                    {% for wname, winfos in ward.items %}
+                         <tr>
                                             <td>{{ wname }}</td>
                                             {% for winfo in winfos %}
                                                 <td>{{ winfo }}</td>
                                             {% endfor %}
+                                    {% endfor %}
                                 {% endfor %}
-                                {% endfor %}
-                                        </tr>
+                         </tr>
 		</tbody>
 	</table>
         {% endfor %}

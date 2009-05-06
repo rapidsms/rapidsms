@@ -111,8 +111,9 @@ def pilot_summary():
 
         lga_data = { lga.name : [str(ws.count()) + " ward supervisors registered for " + str(wards.count()) + " wards",]}
         lga_wards = []
+        reports = CardDistribution.objects.all()
         for ward in wards:
-            reports = CardDistribution.objects.all()
+            # TODO move this functionality onto the model
             team_rep = reports.filter(location__parent__parent__pk=ward.pk)
             point_rep = reports.filter(location__parent__pk=ward.pk)
             ward_rep = reports.filter(location__pk=ward.pk)
@@ -127,3 +128,20 @@ def pilot_summary():
             lga_wards.append(ward_data)
         pilots.append([lga_data, lga_wards])
     return {"pilots" : pilots}
+
+@register.inclusion_tag("nigeria/partials/logistics.html")
+def logistics_summary():
+    lgas = Location.objects.filter(type__name='LGA')
+    partials = PartialTransaction.objects.exclude(status="A") 
+    summaries = []
+    for lga in lgas:
+        lga_data = []
+        lga_data.append(["name",  str(lga)])
+
+        lga_receipts = partials.filter(destination=lga).filter(type="R")
+        lga_data.append(["receipts", lga_receipts])
+
+        lga_issues = partials.filter(origin=lga).filter(type="I")
+        lga_data.append(["issues", lga_issues])
+        summaries.append(dict(lga_data))
+    return {"summaries" : summaries}
