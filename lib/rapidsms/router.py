@@ -84,7 +84,10 @@ class Router (component.Receiver):
     def get_app(self, name):
         '''gets an app by name, if it exists'''
         for app in self.apps:
-            if app.name == name:
+            # this is beyond ugly.  i am horribly ashamed of this line
+            # of code.  I just don't understand how the names are supposed
+            # to work.  Someone please fix this.
+            if name in str(type(app)):
                 return app
         return None
 
