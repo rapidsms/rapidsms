@@ -97,17 +97,15 @@ tr.variant-incorrect { background-color: #FFD6DD; }
 		<div class="module">
           <h2>Shipment Transactions</h2>
 			<table class="shipment_discrepancy" width="100%">
-			<thead><tr><th>Waybill No.</th><th>Date Sent</th><th>Date Received</th><th>From</th><th>To</th><th>Amount Sent</th><th>Amount Received</th></tr></thead>
+			<thead><tr><th>Waybill No.</th><th>Date</th><th>From</th><th>To</th><th>Amount</th></tr></thead>
 			<tbody>
 			{% for transaction in transactions_pager.object_list %}
-				<tr {% ifequal transaction.flag "W" %}class="variant-waybill"{% else %}{% ifequal transaction.flag "A" %}class="variant-amount"{% endifequal %}{% endifequal %}>
-                   <td>{{transaction.shipment.shipment_id}}</td>
-                   <td>{{transaction.shipment.sent|date:"M j, Y h:iA"}}</td>
-                   <td>{{transaction.shipment.received|date:"M j, Y h:iA"}}</td>
-                   <td><a href="/reports/logistics/summary/{{transaction.shipment.origin.id}}/">{{transaction.shipment.origin.name}}</a></td>
-				   <td><a href="/reports/logistics/summary/{{transaction.shipment.destination.id}}/">{{transaction.shipment.destination.name}}</a></td>
-				   <td>{{transaction.amount_sent}}</td>
-                   <td>{{transaction.amount_received}}</td>
+				<tr {% ifequal transaction.flag "I" %}class="variant-waybill"{% else %}{% ifequal transaction.flag "R" %}class="variant-amount"{% endifequal %}{% endifequal %}>
+                   <td>{{transaction.shipment_id}}</td>
+                   <td>{{transaction.date|date:"M j, Y h:iA"}}</td>
+                   <td><a href="/reports/logistics/summary/{{transaction.origin.id}}/">{{transaction.origin.name}}</a></td>
+				   <td><a href="/reports/logistics/summary/{{transaction.destination.id}}/">{{transaction.destination.name}}</a></td>
+				   <td>{{transaction.amount}}</td>
                 </tr>
 			{% endfor %}
 			</tbody>

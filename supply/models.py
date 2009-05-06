@@ -80,10 +80,10 @@ class PartialTransaction(models.Model):
     def get_all_with_stock_updates(location):
         '''Gets all transactions that involve adjusting the 
            stock at the location passed in.  This entails either
-           a CONFIRMED ISSUE transaction FROM the location, or a 
-           CONFIRMED RECEIVE transaction TO the location'''
-        issues = PartialTransaction.objects.all().filter(origin=location).filter(type="I").filter(status="C")
-        receipts = PartialTransaction.objects.all().filter(destination=location).filter(type="R").filter(status="C") 
+           a CONFIRMED/PENDING ISSUE transaction FROM the location, or a 
+           CONFIRMED/PENDING RECEIVE transaction TO the location'''
+        issues = PartialTransaction.objects.all().filter(origin=location).filter(type="I").exclude(status="A")
+        receipts = PartialTransaction.objects.all().filter(destination=location).filter(type="R").exclude(status="A") 
         return issues | receipts 
         
     @staticmethod
