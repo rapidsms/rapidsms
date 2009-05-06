@@ -484,12 +484,12 @@ table {
 
 .tmp .progress { }
 
+	.tmp .progress table {
+		width: 100%; }
+	
 	.tmp .progress .future {
 		color: #eee;
 	}
-	
-	.tmp .progress td {
-		text-align: right; }
 	
 	.tmp .progress td.day {
 		padding-right: 2em; }
@@ -518,6 +518,11 @@ table {
 			font-weight: bold;
 		}
 
+
+.tmp .pilot,
+.tmp .logistics {
+	margin-top: 2em !important;
+}
 
 .tmp .pilot .scroller,
 .tmp .logistics .scroller {
