@@ -7,9 +7,8 @@ from rapidsms.connection import Connection
 import time
 
 class Backend (Receiver):
-    def __init__ (self, title, router):
+    def __init__ (self, router):
         Receiver.__init__(self)
-        self._name = title
         self._router = router
         self._running = False
        
