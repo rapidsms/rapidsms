@@ -1,26 +1,40 @@
 <div class="module pilot">
 	<h2>Pilot LGAs Summary</h2>
-	<table>{% for lga in pilot_lgas %}
-		<thead>
-			<tr class="caption">
-				<td colspan="4">
-					<h3>{{ lga.name }} <span>{{ lga.summary }}</span></h3>
-				</td>
-			</tr>
-			<tr>
-				<th>Ward Name</th>
-				<th>Reports</th>
-				<th>Net Cards</th>
-				<th>Beneficiaries</th>
-			</tr>
-		</thead>
-		<tbody>{% for ward in lga.wards %}
-			<tr>
-				<td>{{ ward.name }}</td>
-				<td>{{ ward.reports }}</td>
-				<td>{{ ward.netcards }}</td>
-				<td>{{ ward.beneficiaries }}</td>
-			</tr>{% endfor %}{% endfor %}
-		</tbody>
-	</table>
+	
+	<div class="scroller">
+		<table>{% for lga in pilot_lgas %}
+			<thead>
+				<tr class="caption">
+					<td colspan="4">
+						<h3>{{ lga.name }}</h3>
+					</td>
+				</tr>
+				<tr>
+					<th>Ward Name</th>
+					<th class="min">Reports</th>
+					<th class="min">Net Cards</th>
+					<th class="min">Beneficiaries</th>
+				</tr>
+			</thead>
+			<tbody>{% for ward in lga.wards %}
+				<tr>
+					<td>{{ ward.name }}</td>
+					<td class="min num">{{ ward.reports }}</td>
+					<td class="min num">{{ ward.netcards }}</td>
+					<td class="min num">{{ ward.beneficiaries }}</td>
+				</tr>{% endfor %}
+				<tr class="totals">
+					<td>Total</td>
+					<td class="min num">{{ lga.reports }}</td>
+					<td class="min num">{{ lga.netcards }}</td>
+					<td class="min num">{{ lga.beneficiaries }}</td>
+				</tr>
+				<tr class="summary">
+					<td colspan="6">
+						{{ lga.summary }}
+					</td>
+				</tr>
+			</tbody>{% endfor %}
+		</table>
+	</div>
 </div>
