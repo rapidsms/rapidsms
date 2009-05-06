@@ -119,13 +119,22 @@ class NigeriaFormsLogic(FormsLogic):
             
             # spawn and save the reporter using the
             # data we collected in self.validate
-            rep = Reporter.objects.create(**data)
+            rep = Reporter(**data)
+            conn = PersistantConnection.from_message(message)
+            # check for duplicate registration.
+            if Reporter.exists(rep, conn):
+                # if they already exist just re-send a confirmation but don't
+                # create a new instance. 
+                message.respond("Hello again %s!  You are already registered as a %s at %s %s."\
+                                % (rep.first_name, rep.role, rep.location, rep.location.type), StatusCodes.OK)
+                return
+            # if they didn't exist then save them
+            rep.save()
 
             # we can assume that the new reporter will be using
             # this device again, so register a connection. this
             # automatically logs them in, so they can start
             # reporting straight away
-            conn = PersistantConnection.from_message(message)
             conn.reporter = rep
             conn.save()
 

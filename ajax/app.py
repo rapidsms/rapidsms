@@ -4,14 +4,43 @@
 import rapidsms
 
 import cgi, urlparse, traceback
-from simplejson import JSONEncoder
 from threading import Thread
 from SocketServer import ThreadingMixIn
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 
+from django.utils.simplejson import JSONEncoder
+from django.db.models.query import QuerySet
+
 
 class App(rapidsms.app.App):
-    """This app has no docstring!"""
+    """This App does nothing by itself. It exists only to serve other Apps, by
+       providing an easy (and standard) way for them to communicate between their
+       WebUI and RapidSMS App object.
+       
+       When RapidSMS starts, this app starts an HTTPServer (port 8001 as default,
+       but configurable via rapidsms.ini) in a worker thread, and watches for any
+       incoming HTTP requests matching */app/method*. These requests, along with
+       their GET parameters and POST form, are passed on to the named app.
+       
+       Examples:
+       
+       method  URL                  app        method             args
+       ======  ===                  ===        ======             ====
+       GET     /breakfast/toast     breakfast  ajax_GET_toast     { }
+       POST    /breakfast/waffles   breakfast  ajax_POST_waffles  { }, { }
+       POST    /breakfast/eggs?x=1  breakfast  ajax_POST_eggs     { "x": 1 }, {}
+       
+       Any data that is returned by the handler method is JSON encoded, and sent
+       back to the WebUI in response. Since the _webui_ app includes jQuery with
+       every view, this makes it very easy for the WebUIs of other apps to query
+       their running App object for state. See the _training_ app for an example.
+       
+       But wait! AJAX can't cross domains, so a request to port 8001 from the WebUI
+       won't work! This is handled by the WebUI bundled with this app, that proxies
+       all requests to /ajax/(.+) to the right place, on the server side. I cannot
+       conceive of a situation where this would be a problem - but keep it in mind,
+       and don't forget to prepend "/ajax/" to your AJAX URLs."""
+    
     
     class Server(ThreadingMixIn, HTTPServer):
         pass
@@ -25,6 +54,9 @@ class App(rapidsms.app.App):
             if hasattr(o, "__json__"):
                 return o.__json__()
             
+            elif type(o) == QuerySet:
+                return list(o)
+            
             # otherwise, revert to the usual behavior
             return JSONEncoder.default(self, o)
 
@@ -35,7 +67,7 @@ class App(rapidsms.app.App):
             # inspect the name of each active app,
             # returning as soon as we find a match
             for app in self.server.app.router.apps:
-                if app.name.lower() == name.lower():
+                if app.slug == name:
                     return app
             
             # no app by that
@@ -48,16 +80,20 @@ class App(rapidsms.app.App):
         def do_POST(self): return self.process()
         
         def process(self):
-            def response(code, output):
+            def response(code, output, json=True):
                 self.send_response(code)
-                self.send_header("content-type", "application/json")
+                mime_type = "application/json" if json else "text/plain"
+                self.send_header("content-type", mime_type)
                 self.end_headers()
                 
-                # send back every response as JSON -- even the
-                # errors -- to avoid having to check the mime
-                # type of the output before displaying it.
-                json = App.MyJsonEncoder().encode(output)
-                self.wfile.write(json)
+                if json:
+                    json = App.MyJsonEncoder().encode(output)
+                    self.wfile.write(json)
+                
+                # otherwise, write the raw response.
+                # it doesn't make much sense to have
+                # error messages encoded as JSON...
+                else: self.wfile.write(output)
                 
                 # HTTP2xx represents success
                 return (code>=200 and code <=299)
@@ -138,9 +174,9 @@ class App(rapidsms.app.App):
  
             # something raised during the request, so
             # return a useless http error to the requester
-            except:
+            except Exception, err:
                 self.server.app.warning(traceback.format_exc())
-                return response(500, traceback.format_exc())
+                return response(500, unicode(err), False)
         
         # this does nothing, except prevent HTTP
         # requests being echoed to the screen
