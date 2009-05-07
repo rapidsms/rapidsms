@@ -157,8 +157,12 @@ class NigeriaFormsLogic(FormsLogic):
             # if it was found.
             if not hasattr(instance, "reporter") or not instance.reporter:
                 instance.connection = message.persistant_connection
+                response = ""
+            # personalize response if we have a registered reporter
+            else:
+                response = "Thank you %s. " % (instance.reporter.first_name)
             instance.save()
-            response = "Received report for %s %s: " % (form_entry.domain.code.abbreviation.upper(), to_use["display"].upper())
+            response = response + "Received report for %s %s: " % (form_entry.domain.code.abbreviation.upper(), to_use["display"].upper())
             # this line pulls any attributes that are present into 2-item lists
             attrs = [[attr[1], str(getattr(instance, attr[1]))] for attr in field_list if hasattr(instance, attr[1])]
             # joins the inner list on "=" and the outer on ", " so we get 
