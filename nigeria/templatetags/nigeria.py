@@ -114,8 +114,10 @@ def daily_progress():
     
     total_netcards = sum(CardDistribution.objects.all().values_list("distributed", flat=True))
     netcards_stats = int(float(total_netcards) / float(coupon_target) * 100) if (total_netcards > 0) else 0
+
     total_beneficiaries = sum(CardDistribution.objects.all().values_list("people", flat=True))
     beneficiaries_stats = int(float(total_beneficiaries) / float(recipient_target) * 100) if (total_beneficiaries > 0) else 0
+
     return { "days": days, 
             "netcards_stats": netcards_stats, 
             "beneficiaries_stats": beneficiaries_stats,
@@ -151,15 +153,15 @@ def pilot_summary():
     def __lga_data(lga):
         projections = {
             "netcards" : {
-                        "DAWAKIN KUDU"   : 99379,
-                        "GARUN MALLAM"   : 51365,
-                        "KANO MUNICIPAL" : 161168,
-                        "KURA"           : 63758 },
+                        "DAWAKIN KUDU"   : 99379.0,
+                        "GARUN MALLAM"   : 51365.0,
+                        "KANO MUNICIPAL" : 161168.0,
+                        "KURA"           : 63758.0 },
             "beneficiaries" : {
-                        "DAWAKIN KUDU"   : 248447,
-                        "GARUN MALLAM"   : 128412,
-                        "KANO MUNICIPAL" : 402919,
-                        "KURA"           : 159394 },
+                        "DAWAKIN KUDU"   : 248447.0,
+                        "GARUN MALLAM"   : 128412.0,
+                        "KANO MUNICIPAL" : 402919.0,
+                        "KURA"           : 159394.0 },
         }
 
         wards = lga.children.all()
@@ -171,14 +173,14 @@ def pilot_summary():
         def __wards_total(key):
             return sum(map(lambda w: w[key], ward_data))
         
-        netcards_stats = int(float(__wards_total("netcards")) / float(projections["netcards"][str(lga.name)]) * 100) if (__wards_total("netcards") > 0) else 0
-        beneficiaries_stats = int(float(__wards_total("beneficiaries")) / float(projections["beneficiaries"][str(lga.name)]) * 100) if (__wards_total("beneficiaries") > 0) else 0
+        def __stats(key):
+            return int(float(__wards_total(key)) / projections[key][str(lga.name)] * 100) if (__wards_total(key) > 0) else 0 
 
         return {
             "name":          lga.name,
             "summary":       summary,
-            "netcards_stats" : netcards_stats,
-            "beneficiaries_stats" : beneficiaries_stats,
+            "netcards_stats" : __stats("netcards"),
+            "beneficiaries_stats" : __stats("beneficiaries"),
             "wards":         ward_data,
             "reports":       __wards_total("reports"),
             "netcards":      __wards_total("netcards"),
