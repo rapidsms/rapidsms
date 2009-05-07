@@ -20,6 +20,7 @@ def get_translation(string, language_code):
     except Language.DoesNotExist:
         pass
     except Translation.DoesNotExist:
-        print "Error: no translations found for %s.  Valid answers are:" % string
-        print "\n".join([str(trans) for trans in Translation.objects.all().filter(language=lang)])
+        #print "Error: no translations found for %s.  Valid answers are:" % string
+        #print "\n".join([str(trans) for trans in Translation.objects.all().filter(language=lang)])
+        pass
     return string
