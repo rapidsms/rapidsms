@@ -11,7 +11,7 @@ import rapidsms
 from rapidsms.message import Message
 
 class HttpServer (BaseHTTPServer.HTTPServer, SocketServer.ThreadingMixIn):
-       
+    
     def handle_request (self, timeout=1.0):
         # don't block on handle_request
         reads, writes, errors = (self,), (), ()
