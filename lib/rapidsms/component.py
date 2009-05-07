@@ -63,10 +63,8 @@ class Component(object):
                         % (title, missing_keyword))
             else:
                 raise
-        
-        self.configure(**kwargs)
-    
-    
+
+
     def configure (self, **kwargs):
         # overridden by App and Backend subclasses
         pass
