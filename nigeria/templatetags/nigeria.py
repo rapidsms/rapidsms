@@ -70,13 +70,13 @@ def daily_progress():
     # and reporting once by ward, so maybe 48 * 4?
     report_target    = 192.0
 
-    # Dawakin Kudo      99,379
+    # Dawakin Kudu      99,379
     # Garum Mallam      51,365
     # Kano Municipal    161,168
     # Kura              63,758
     coupon_target    = 375670.0
 
-    # Dawakin Kudo      248,447
+    # Dawakin Kudu      248,447
     # Garun Mallam      128,412
     # Kano Municipal    402,919
     # Kura              159,394
@@ -110,10 +110,13 @@ def daily_progress():
                 "coupons_perc":    int((data["coupons"]    / coupon_target)    * 100) if (data["coupons"]    > 0) else 0,
                 "recipients_perc":    int((data["recipients"]    / recipient_target)    * 100) if (data["recipients"]    > 0) else 0,
             })
-        
         days.append(data)
     
-    return { "days": days }
+    total_netcards = sum(CardDistribution.objects.all().values_list("distributed", flat=True))
+    netcards_stats = int(float(total_netcards) / float(coupon_target) * 100) if (total_netcards > 0) else 0
+    total_beneficiaries = sum(CardDistribution.objects.all().values_list("people", flat=True))
+    beneficiaries_stats = int(float(total_beneficiaries) / float(recipient_target) * 100) if (total_beneficiaries > 0) else 0
+    return { "days": days, "netcards_stats": netcards_stats, "beneficiaries_stats": beneficiaries_stats }
 
 
 @register.inclusion_tag("nigeria/partials/pilot.html")
@@ -142,6 +145,19 @@ def pilot_summary():
     # called to fetch and assemble the
     # data structure for each pilot LGA
     def __lga_data(lga):
+        projections = {
+            "netcards" : {
+                        "DAWAKIN KUDU"   : 99379,
+                        "GARUN MALLAM"   : 51365,
+                        "KANO MUNICIPAL" : 161168,
+                        "KURA"           : 63758 },
+            "beneficiaries" : {
+                        "DAWAKIN KUDU"   : 248447,
+                        "GARUN MALLAM"   : 128412,
+                        "KANO MUNICIPAL" : 402919,
+                        "KURA"           : 159394 },
+        }
+
         wards = lga.children.all()
         reporters = Reporter.objects.filter(location__in=wards)
         supervisors = reporters.filter(role__code__iexact="WS")
@@ -151,9 +167,14 @@ def pilot_summary():
         def __wards_total(key):
             return sum(map(lambda w: w[key], ward_data))
         
+        netcards_stats = int(float(__wards_total("netcards")) / float(projections["netcards"][str(lga.name)]) * 100) if (__wards_total("netcards") > 0) else 0
+        beneficiaries_stats = int(float(__wards_total("beneficiaries")) / float(projections["beneficiaries"][str(lga.name)]) * 100) if (__wards_total("beneficiaries") > 0) else 0
+
         return {
             "name":          lga.name,
             "summary":       summary,
+            "netcards_stats" : netcards_stats,
+            "beneficiaries_stats" : beneficiaries_stats,
             "wards":         ward_data,
             "reports":       __wards_total("reports"),
             "netcards":      __wards_total("netcards"),

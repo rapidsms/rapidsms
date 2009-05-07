@@ -3,13 +3,18 @@
 	<table>
 		<thead>
 			<tr>
+                                <th colspan="4">Percent of projected demand:</th>
+                                <th colspan="2">{{ netcards_stats }}%</th>
+                                <th colspan="2">{{ beneficiaries_stats }}%</th>
+                        </tr><tr>
 				<th>#</th>
 				<th colspan="2">Reports</th>
 				<th colspan="2">Net Cards</th>
 				<th colspan="2">Beneficiaries</th>
 			</tr>
 		</thead>
-		<tbody>{% for day in days %}
+		<tbody>
+                        {% for day in days %}
 			<tr{% if day.in_future %} class="future"{% endif %}>
 				<td title="{{ day.date|date }}" class="day">{{ day.number }}</td>
 				
