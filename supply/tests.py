@@ -128,20 +128,20 @@ class TestApp (TestScript):
          t_i_formats < Hello mister! You are now registered as Stock manager at KANO State.
          # base case
          t_i_formats > llin issue from 20 to 2027 11111 200 1800
-         t_i_formats < Received report for LLIN ISSUE: origin=KANO, dest=KURA, waybill=11111, amount=200, stock=1800
+         t_i_formats < Thank you mister. Received report for LLIN ISSUE: origin=KANO, dest=KURA, waybill=11111, amount=200, stock=1800
          # casing
          t_i_formats > llin ISSUE from 20 to 2027 11111 200 1800
-         t_i_formats < Received report for LLIN ISSUE: origin=KANO, dest=KURA, waybill=11111, amount=200, stock=1800
+         t_i_formats < Thank you mister. Received report for LLIN ISSUE: origin=KANO, dest=KURA, waybill=11111, amount=200, stock=1800
          # other spellings
          t_i_formats > llin issued from 20 to 2027 11111 200 1800
-         t_i_formats < Received report for LLIN ISSUE: origin=KANO, dest=KURA, waybill=11111, amount=200, stock=1800
+         t_i_formats < Thank you mister. Received report for LLIN ISSUE: origin=KANO, dest=KURA, waybill=11111, amount=200, stock=1800
          t_i_formats > llin ishew from 20 to 2027 11111 200 1800
-         t_i_formats < Received report for LLIN ISSUE: origin=KANO, dest=KURA, waybill=11111, amount=200, stock=1800
+         t_i_formats < Thank you mister. Received report for LLIN ISSUE: origin=KANO, dest=KURA, waybill=11111, amount=200, stock=1800
          t_i_formats > llin is from 20 to 2027 11111 200 1800
-         t_i_formats < Received report for LLIN ISSUE: origin=KANO, dest=KURA, waybill=11111, amount=200, stock=1800
+         t_i_formats < Thank you mister. Received report for LLIN ISSUE: origin=KANO, dest=KURA, waybill=11111, amount=200, stock=1800
          # spaces
          t_i_formats > llin      issue      from   20  to    2027    11111     200  1800
-         t_i_formats < Received report for LLIN ISSUE: origin=KANO, dest=KURA, waybill=11111, amount=200, stock=1800
+         t_i_formats < Thank you mister. Received report for LLIN ISSUE: origin=KANO, dest=KURA, waybill=11111, amount=200, stock=1800
          # fail
          t_i_formats > llin send from 20 to 2027 11111 200 1800
          t_i_formats < Sorry we didn't understand that. Available forms are LLIN: REGISTER, NETCARDS, NETS, RECEIVE, ISSUE
@@ -152,24 +152,24 @@ class TestApp (TestScript):
          t_r_formats < Hello mister! You are now registered as Stock manager at KANO State.
          # base case
          t_r_formats > llin receive from 20 to 2027 11111 200 1800
-         t_r_formats < Received report for LLIN RECEIVE: origin=KANO, dest=KURA, waybill=11111, amount=200, stock=1800
+         t_r_formats < Thank you mister. Received report for LLIN RECEIVE: origin=KANO, dest=KURA, waybill=11111, amount=200, stock=1800
          # casing
          t_r_formats > llin RECEIVE from 20 to 2027 11111 200 1800
-         t_r_formats < Received report for LLIN RECEIVE: origin=KANO, dest=KURA, waybill=11111, amount=200, stock=1800
+         t_r_formats < Thank you mister. Received report for LLIN RECEIVE: origin=KANO, dest=KURA, waybill=11111, amount=200, stock=1800
          # other spellings
          t_r_formats > llin receeved from 20 to 2027 11111 200 1800
-         t_r_formats < Received report for LLIN RECEIVE: origin=KANO, dest=KURA, waybill=11111, amount=200, stock=1800
+         t_r_formats < Thank you mister. Received report for LLIN RECEIVE: origin=KANO, dest=KURA, waybill=11111, amount=200, stock=1800
          t_r_formats > llin recieve from 20 to 2027 11111 200 1800
-         t_r_formats < Received report for LLIN RECEIVE: origin=KANO, dest=KURA, waybill=11111, amount=200, stock=1800
+         t_r_formats < Thank you mister. Received report for LLIN RECEIVE: origin=KANO, dest=KURA, waybill=11111, amount=200, stock=1800
          t_r_formats > llin recv from 20 to 2027 11111 200 1800
-         t_r_formats < Received report for LLIN RECEIVE: origin=KANO, dest=KURA, waybill=11111, amount=200, stock=1800
+         t_r_formats < Thank you mister. Received report for LLIN RECEIVE: origin=KANO, dest=KURA, waybill=11111, amount=200, stock=1800
          t_r_formats > llin rec from 20 to 2027 11111 200 1800
-         t_r_formats < Received report for LLIN RECEIVE: origin=KANO, dest=KURA, waybill=11111, amount=200, stock=1800
+         t_r_formats < Thank you mister. Received report for LLIN RECEIVE: origin=KANO, dest=KURA, waybill=11111, amount=200, stock=1800
          t_r_formats > llin receeev from 20 to 2027 11111 200 1800
-         t_r_formats < Received report for LLIN RECEIVE: origin=KANO, dest=KURA, waybill=11111, amount=200, stock=1800
+         t_r_formats < Thank you mister. Received report for LLIN RECEIVE: origin=KANO, dest=KURA, waybill=11111, amount=200, stock=1800
          # spaces
          t_r_formats > llin     receive     from   20  to     2027    11111     200    1800
-         t_r_formats < Received report for LLIN RECEIVE: origin=KANO, dest=KURA, waybill=11111, amount=200, stock=1800
+         t_r_formats < Thank you mister. Received report for LLIN RECEIVE: origin=KANO, dest=KURA, waybill=11111, amount=200, stock=1800
          # fail
          # should this one fail??
          t_r_formats > llin rcv from 20 to 2027 11111 200 1800
@@ -185,9 +185,9 @@ class TestApp (TestScript):
             8005551111 > llin register 2027 sm mister recipient
             8005551111 < Hello mister! You are now registered as Stock manager at KURA LGA.
             8005552222 > llin issue from 20 to 2027 11111 200 1800
-            8005552222 < Received report for LLIN ISSUE: origin=KANO, dest=KURA, waybill=11111, amount=200, stock=1800
+            8005552222 < Thank you mister. Received report for LLIN ISSUE: origin=KANO, dest=KURA, waybill=11111, amount=200, stock=1800
             8005551111 > llin receive from 20 to 2027 11111 150 500
-            8005551111 < Received report for LLIN RECEIVE: origin=KANO, dest=KURA, waybill=11111, amount=150, stock=500
+            8005551111 < Thank you mister. Received report for LLIN RECEIVE: origin=KANO, dest=KURA, waybill=11111, amount=150, stock=500
             """
         self.runScript(mismatched_amounts)
 
@@ -232,7 +232,7 @@ class TestApp (TestScript):
         # mister recipient realizes his error and resends with correct amount
         amendment = """
             8005551111 > llin receive from 20 to 2027 11111 200 500
-            8005551111 < Received report for LLIN RECEIVE: origin=KANO, dest=KURA, waybill=11111, amount=200, stock=500
+            8005551111 < Thank you mister. Received report for LLIN RECEIVE: origin=KANO, dest=KURA, waybill=11111, amount=200, stock=500
             """
         self.runScript(amendment)
 
