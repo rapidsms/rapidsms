@@ -25,7 +25,9 @@
 					<h1><a title="Return to the Dashboard" href="/">RapidSMS</a></h1>
 				</div>
 				<ul id="tabs">{% for app in apps %}{% if app.tab_link %}
-					<li><a href="{{ app.tab_link }}">{{ app.title }}</a></li>{% endif %}{% endfor %}
+					<li class="app-{{ app.type }}{% if app.active %} active{% endif %}">
+						<a href="{{ app.tab_link }}"><span>{{ app.title }}</span></a>
+					</li>{% endif %}{% endfor %}
 				</ul>
 				{% block page_tabs %}
 				{% endblock %}
