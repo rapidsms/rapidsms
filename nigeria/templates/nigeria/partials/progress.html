@@ -1,8 +1,7 @@
 <div class="module progress">
 	<h2>Daily Distribution Progress</h2>
 	<table>
-		<thead>
-			<tr>
+		<thead><tr>
 				<th>Date</th>
 				<th>Day</th>
 				<th colspan="2">Reports</th>
@@ -10,7 +9,8 @@
 				<th colspan="2">Beneficiaries</th>
 			</tr>
 		</thead>
-		<tbody>{% for day in days %}
+		<tbody>
+                        {% for day in days %}
 			<tr{% if day.in_future %} class="future"{% endif %}>
 				<td><span title="{{ day.date|date }}">{{ day.date|date:"d/m" }}</span></td>
 				<td title="{{ day.date|date }}" class="day min num">{{ day.number }}</td>
@@ -24,6 +24,16 @@
 				<td>{{ day.recipients }}</td>
 				<td class="perc">{% ifnotequal day.recipients None %}{{ day.recipients_perc }}%{% endifnotequal %}</td>
 			</tr>{% endfor %}
+			<tr class="totals">
+                                <td colspan="4">Total</td>
+                                <td colspan="2">{{ total_netcards }}</td>
+                                <td colspan="2">{{ total_beneficiaries }}</td>
+                        </tr> 
+			<tr class="totals">
+                                <td colspan="4">% of projected demand</td>
+                                <td colspan="2">{{ netcards_stats }}%</td>
+                                <td colspan="2">{{ beneficiaries_stats }}%</td>
+                        </tr> 
 		</tbody>
 	</table>
 </div>

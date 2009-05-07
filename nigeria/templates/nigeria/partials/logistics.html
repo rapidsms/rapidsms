@@ -32,7 +32,13 @@
 						{{ lga.transactions|length }} Transactions since May 05 2009.
 					</td>
 				</tr>
-			</tbody>{% endif %}{% endfor %}
+			</tbody>{% else %}
+                                <thead><tr class="warning">
+                                    <td colspan="6">
+                                        <h3><div>{{ lga.name }}</div><em>No shipments</em></span></h3>
+                                    </td></tr></thead>
+                                {% endif %}
+                        {% endfor %}
 		</table>
 	</div>
 </div>
