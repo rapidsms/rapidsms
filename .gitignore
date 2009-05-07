@@ -8,3 +8,5 @@ core.*
 *.sqlite3
 logs/*
 apps/airtime/fixtures/airtime.json
+apps/airtime/fixtures/messsage_counter.json
+apps/airtime/fixtures/coupons-nopassword.json
