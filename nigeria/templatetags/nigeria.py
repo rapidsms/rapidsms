@@ -128,12 +128,16 @@ def pilot_summary():
     def __ward_data(ward):
         locations = ward.descendants(True)
         reports = CardDistribution.objects.filter(location__in=locations)
-        
+        style = "" 
+        if reports.count() == 0:
+            style = "warning" 
+
         return {
             "name":          ward.name,
             "reports":       reports.count(),
             "netcards":      sum(reports.values_list("distributed", flat=True)),
-            "beneficiaries": sum(reports.values_list("people", flat=True)) }
+            "beneficiaries": sum(reports.values_list("people", flat=True)),
+            "class":         style}
     
     # called to fetch and assemble the
     # data structure for each pilot LGA
