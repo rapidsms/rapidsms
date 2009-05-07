@@ -9,7 +9,10 @@ $(document).ready(function() {
 
 stock_loc_data = {{stock_per_loc_plot_data|safe}};
 stock_loc_options = {{stock_per_loc_plot_options|safe}};
-$.plot($("#sl_pl"), stock_loc_data , stock_loc_options );
+
+stock_options = { bar: stock_loc_options, xaxis: {ticks: {{bar_ticks|safe}}, tickFormatter: "string"}, legend: {show: true, container : $('#stock_level_legend')} }
+
+$.plot($("#sl_pl"), stock_loc_data , stock_options );
 
 // add tooltip.  unfortunately this isn't working now
 $("#sl_pl").bind("plotclick", function (event, pos, item) {
@@ -30,10 +33,37 @@ $.plot($('#sl_ot'), data_for_dates, axis_for_dates);
 data_for_child_dates = {{stock_over_time_child_data|safe}};
 axis_for_child_dates =  {{stock_over_time_child_options|safe}};
 
-$.plot($('#sl_ot_children'), data_for_child_dates, axis_for_child_dates);
+options = '{"bars":{"show":false},"points":{"show":true},"grid":{"clickable":false},"xaxis":{"mode":"time","timeformat":"%m/%d/%y"},"yaxis":{"min":0},"legend":{"show":false},"lines":{"show":true}}'
 
+//Hack added here to remind flot to include options from the views eg addition of xaxis, points, and lines options of the plot. This should be removed.
+
+//The hints option added in the axis_for_child_dates_legend options below isnt working yet. Still working on this.
+axis_for_child_dates_legend = {bar: axis_for_child_dates, xaxis: {mode:"time", timeformat:"%m/%d/%y"}, points: {show: true},lines : {show: true}, legend: { show: true, container:  $('#stock_level_over_time_legend')}, selection: {mode: "xy"}, hints:{ hintFormatter:  function hintFormatter( ) {
+                /*var datetime = new Date( datapoint.x );
+
+                var hour = datetime.getHours();
+                var minute = datetime.getMinutes();
+                var second = datetime.getSeconds();
+                var time = ( ( hour < 10 ) ? "0" : "" ) + hour + ":" +
+                           ( ( minute < 10 ) ? "0" : "" ) + minute + ":" +
+                           ( ( second < 10 ) ? "0" : "" ) + second;
+*/
+                return "Hello";/*"<table><tr><td><strong>Time:</strong></td><td>" +
+                       datetime.toDateString() + "<br/>@" + time + "</td></tr>" +
+                       "<tr><td><strong>Value:</strong></td><td>" +
+                       datapoint.y.toFixed(2) + "</td></tr></table>";*/
+              } } }
+
+//Generate the plot here
+$.plot($('#sl_ot_children'), data_for_child_dates, axis_for_child_dates_legend);
+
+
+$('#sl_ot_children').bind( 'plotmousemove', function( e, pos ) {
+          if( !pos.selected ) { return; }
+          plot.highlight( pos.selected );
 });
 
+} );
      function showTooltip(x, y, contents) {
         $('<div id="tooltip">' + contents + '</div>').css( {
             position: 'absolute',
@@ -79,17 +109,32 @@ tr.variant-incorrect { background-color: #FFD6DD; }
       <td>
         <div class="module">
           <h2>Stock Levels Over Time For {{location.name}} Shipment Destinations</h2>
-	  <div id="sl_ot_children" style="height:350px;width:450px;">
+	  <div id="sl_ot_children" style="height:350px;width:650px;">
 	  </div>
         </div>
       </td>
       <td>
-	<div class="module">
+  	    <div class="module">
+	        <h2>Legend</h2>
+	        <div id="stock_level_over_time_legend" style="height:350px;width:150px;"></div>
+	    </div>
+    </td>
+    <td>
+           
+    </td> 
+    </tr>
+    <tr>
+    <td>
+        <div class="module">
           <h2>Current Stock Levels at {{location.name}} Shipment Destinations</h2>
-	  <div id="sl_pl" style="height:350px;width:450px;">
-	  </div>
+          <div id="sl_pl" style="height:350px;width:650px;">
+          </div>
         </div>
-      </td>
+    </td>
+    <td>
+ 	<h2>Legend</h2>
+	<div id="stock_level_legend" style="height:350px;width:200px;"></div>
+    </td> 
     </tr>
     <tr>
       <td colspan="2">

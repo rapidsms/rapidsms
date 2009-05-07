@@ -11,7 +11,7 @@ $(document).ready(function() {
 
      bar_data = {{bar_data|safe}};
      bar_options= {"grid": {"show":"false", "clickable":"true"}, "xaxis":{"ticks":{{bar_ticks|safe}}, "tickFormatter":"string"}}
-    
+     bar_opts_no_legend = {bar : bar_options, legend: {show: false}}
      $.plot($('#cd_bar_chart'), bar_data, bar_options);
      pie_opts = {show: true, showLabel: false}
      grid_opts = { hoverable : true, clickable: true} 
@@ -21,6 +21,8 @@ $(document).ready(function() {
      $.plot($('#cd_settlements_pie'),  {{pie_data.settlements|safe}}, pie_opts_no_legend);
      $.plot($('#cd_people_pie'),  {{pie_data.people|safe}}, pie_opts_no_legend);
      $.plot($('#cd_coupons_pie'),  {{pie_data.coupons|safe}}, pie_opts_legend);
+
+     
 });
     
 </script>
