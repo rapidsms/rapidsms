@@ -17,7 +17,7 @@
 				</tr>
 			</thead>
 			<tbody>{% for ward in lga.wards %}
-				<tr>
+				<tr class={{ ward.class }}>
 					<td>{{ ward.name }}</td>
 					<td class="min num">{{ ward.reports }}</td>
 					<td class="min num">{{ ward.netcards }}</td>
