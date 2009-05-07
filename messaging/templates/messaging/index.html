@@ -6,6 +6,48 @@
 	<div class="left">
 		<div class="module recipients">
 			<h2>Select Recipients</h2>
+			<div class="search">
+				<select name="column">
+					<option value="">Any Column</option>{% for column in columns %}
+					<option>{{ column }}</option>{% endfor %}
+				</select>
+				
+				<select name="operation">
+					<option value="cn">contains</option>
+					<option value="eq">equals</option>
+					<option value="sw">starts with</option>
+					<option value="ew">ends with</option>
+					<option value="lt">is less than</option>
+					<option value="gt">is more than</option>
+				</select>
+				
+				<input type="text" name="search" value="" size="14" />
+			</div>
+			<table>
+				<thead>
+					<tr>{% for column in columns %}
+						<th>{{ column }}</th>{% endfor %}
+					</tr>
+				</thead>
+				<tbody>{% for recipient in recipients %}
+					<tr>{% for col_val in recipient %}
+						<td>{{ col_val }}</td>{% endfor %}
+					</tr>{% endfor %}
+				</tbody>
+				<tfoot>
+					<tr>
+						<td colspan="{{ app.columns|length }}">
+							<div class="paginator">
+								<a href="" class="active">0</a>
+								<a href="">1</a>
+								<a href="">2</a>
+								<a href="">3</a>
+							</div>
+							<a href="">Export</a>
+						</td>
+					</tr>
+				</tfoot>
+			</table>
 		</div>
 	</div>
 	<div class="right">
@@ -14,270 +56,27 @@
 			<textarea cols="40" rows="6"></textarea>
 			<input type="button" value="Send" />
 		</div>
-		<div class="module filter">
-			<h2>Filter Selection</h2>
-			<div class="help">
-				<p>What is mudkips?</p>
-			</div>
-			<div>
-				
-				<select name="column">
-					<option></option>
-				</select>
-				
-				<select name="operation">
-					<option></option>
-					<option value="eq">is</option>
-					<option value="ne">is not</option>
-					<option value="sw">starts with</option>
-					<option value="ew">ends with</option>
-					<option value="cn">contains</option>
-					<option value="dc">does not contain</option>
-					<option value="lt">is less than</option>
-					<option value="gt">is more than</option>
-				</select>
-				
-				<input type="text" name="search" value="" size="8" />
-				
-				<input type="button" class="js-accept"   value="Select"  title="Select all of the highlighted filter results" />
-				<input type="button" class="js-unaccept" value="Deselect" title="Deselect all of the highlighted filter results" />
-				<input type="button" class="js-clear"    value="Clear" title="Clear the filter form" />
-			</div>
-		</div>
 	</div>
 	<div class="clear-hack"></div>
 </div>
 
 <script type="text/javascript">
+	
+	/* expand the search box to fill the remaining space
+	 * to the right. this is pointless but rather pretty */
+	 
 	$(function() {
-		var container = $("div.recipients");
-		if(!container) return False;
-		
-		/* handy function to retrieve the keys
-		 * from an object, ready to jQuery.map */
-		var keys = function(object) {
-			var out = [];
-			for( var key in object)
-				out.push(key);
-			return out
-		};
-		
-		
-		/* --------------- *
-		 * LOAD RECIPIENTS *
-		 * --------------- */
-		 
-		 
-		/* load all recipients via ajax.
-		 * TODO: why not via the view?! */
-		$.getJSON("/ajax/messaging/recipients", function(data) {
-			var filters = {};
+		$("div.module.recipients .search input[name=search]").each(function() {
+			var input = $(this);
 			
-			/* wat */
-			$.each(data, function(n, row) {
-				if(!row["recipients"].length)
-					return true;
-				
-				/* iterate the column names of the first recipient
-				 * in this section, and add them all to the filters
-				 * hash. TODO: find columns in ALL recipients! */
-				for(key in row["recipients"][0])
-					if(key != "uid")
-						filters[key] = true;
-				
-				container.append(
-					
-					/* create a section (title + table) for
-					 * each app which provides recipients */
-					$("<h3></h3>").append(row["app"]["title"]),
-					$("<table></table>").append(
-						
-						/* build table header using the column
-						 * names from the first recipient */
-						$("<thead></thead>").append(
-							$("<tr></tr>").append(
-								
-								/* leave space for
-								 * the checkbox */
-								'<th class="check"></th>' +
-								
-								/* we must create an HTML string containing
-								 * all of the column headers here, and append
-								 * it as a single string, single jQ.append seems
-								 * to only accepts a single parameter (?!) */
-								$.map(keys(row["recipients"][0]), function(key) {
-									if(key != "uid") return "<th>" + key + "</th>";
-								}).join("")
-								
-							) //tr
-						) // thead
-					).
-					append(
-						$("<tbody></tbody>").append(
-							$.map(row["recipients"], function(recip) {
-								return(
-									'<tr uid="' + recip["uid"] + '">' +
-										'<td class="check"></td>' +
-										$.map(keys(recip), function(key) {
-											if(key != "uid")
-												return '<td class="col-' + key + '">' + recip[key] + '</td>'
-										}).join("") +
-									"</tr>"
-								)
-							}).join("")
-						).click(function(ev) {
-							$(ev.target).parent("tr").toggleClass("checked")
-						})// tbody
-					
-					/* attach this app's slug to the table, so we can
-					 * easily pluck it out later when it's time to send */
-					).attr("app", row["app"]["slug"]) //table
-				); // c.append
-			}) // each
+			var box_offset = $(input.parent().children()[0]).offset()["left"];
+			var inp_offset = input.offset()["left"] - box_offset;
+			var inp_width  = input.parent().width() - inp_offset;
 			
-			var select = $("div.filter select[name=column]");
-			for(f in filters) {
-				select.append(
-					$("<option></option>").append(f)
-				)
-			}
-		}); // getjson
-		
-		
-		/* ---------------- *
-		 * POPULATE FILTERS *
-		 * ---------------- */
-		
-		(function() {
-			var recipients = $("div.recipients");
-			var filters = $("div.filter");
-			
-			var clear_filters = function() {
-				$("tr", recipients).removeClass("hit");
-				recipients.removeClass("filtered");
-			};
-			
-			var apply_filters = function() {
-				var col = $("select[name=column]", filters).val();
-				var op  = $("select[name=operation]", filters).val()
-				var q   = $("input[name=search]", filters).val();
-				
-				/* remove any existing filters
-				 * before applying these. SLOW. */
-				clear_filters();
-				
-				if(col && op && q) {
-					recipients.addClass("filtered");
-				
-					/* search the recipients for matching column names,
-					 * and compare each to the search string. where it
-					 * matches, highlight the row to indicate a match */
-					$('td.col-' + col, recipients).each(function() {
-						var td = $(this);
-						var tr = td.parent();
-						var txt = td.text();
-						
-						/* does the text in this cell match the
-						 * query? add class to highlight the row */
-						if(
-							 (op == "eq" && txt == q)                      || // is
-						   (op == "ne" && txt != q)                      || // is not	
-						   (op == "sw" && txt.substr(0, q.length) == q ) || // starts with
-						   (op == "ew" && txt.substr(-q.length)   == q ) || // ends with
-						   (op == "cn" && txt.indexOf(q) != -1         ) || // contains
-						   (op == "dc" && txt.indexOf(q) == -1         ) || // does not contain
-						   (op == "lt" && parseFloat(txt) < parseInt(q)) || // is less than	
-						   (op == "gt" && parseFloat(txt) > parseInt(q))    // is greater than	
-						) tr.addClass("hit");
-					});
-				}
-			};
-			
-			/* update the search every time the form
-			 * is altered. TODO: is this too slow? */
-			$("input[type=text]", filters).keyup(apply_filters);
-			$("select", filters).change(apply_filters);
-			
-			/* add the CHECKED class to all search hits */
-			$("input[type=button][value=Select]", filters).click(function() {
-				$("tr.hit", recipients).addClass("checked");
+			input.css({
+				"-moz-box-sizing": "border-box",
+				"width": inp_width
 			});
-			
-			/* remove the CHECKED class from all hits */
-			$("input[type=button][value=Deselect]", filters).click(function() {
-				$("tr.hit", recipients).removeClass("checked");
-			});
-			
-			/* clear the filter form, and reset recipients view */
-			$("input[type=button][value=Clear]", filters).click(function() {
-				$("select, input[type=text]", filters).val("");
-				clear_filters();
-			});
-		})();
-		
-		
-		/* ----------- *
-		 * SEND BUTTON *
-		 * ----------- */
-		
-		
-		/* attach the magic to the SEND button */
-		$("div.contents input[type=button]").click(function() {
-			var text = $("div.contents textarea")[0].value;
-			
-			/* don't bother submitting anything if no
-			 * message was entered. TODO: rs-validation */
-			if (text == "")
-				return false;
-			
-			/* to send messages one at a time, we'll
-			 * store the closures in a ghetto queue */
-			var queue = [];
-			$.extend(queue, {
-				"next": function() {
-					if(!this.length) return null;
-					return this.shift()();
-				}
-			});
-			
-			/* create a closure to send the message
-			 * for each recipient currently checked */
-			$("tr.checked", container).each(function() {
-				var recipient = $(this);
-				queue.push(function() {
-					recipient.addClass("busy");
-				
-					/* pluck the app name of this recipient
-					 * out of its closest parent table */
-					var slug = recipient.parents("table").attr("app");
-					
-					var next = function(klass, tip) {
-						recipient.
-							addClass(klass).
-							removeClass("busy").
-							attr("title", tip);
-						queue.next();
-					};
-					
-					/* POST the message and recipient uid (it might not
-					 * be a primary key!) back to the app that spanwed it */
-					$.ajax({
-						"type": "POST",
-						"url":  "/ajax/" + slug + "/send_message",
-						"data": {
-							"uid":  recipient.attr("uid"),
-							"text": text,
-						},
-						"success": function() { next("sent",  "The message was sent."); },
-						"error": function(xhr, txt) {
-							next("error", xhr.responseText);
-						}
-					}); // ajax
-				}); // queue
-			}); // each
-			
-			/* start! */
-			queue.next();
 		});
 	});
 </script>

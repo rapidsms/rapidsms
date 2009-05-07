@@ -58,17 +58,30 @@ class App(rapidsms.app.App):
     def __recipient(self, reporter):
         role = reporter.role
         loc = reporter.location
+        loc_str = ""
         
-        return {
-            "uid":  reporter.pk,
-            "Name": reporter.full_name(),
-            "Role": role.name if role else "",
-            "Location": loc.name if loc else ""
-        }
+        if loc is not None:
+            loc_str = loc.name
+            p_loc = loc.parent
+            if p_loc is not None:
+                loc_str = "%s -> %s" % (p_loc.name, loc_str)
+
+        return (
+            reporter.pk,
+            reporter.full_name(),
+            role.name if role else "",
+            loc.name if loc else ""
+        )
     
     
     def ajax_GET_recipients(self, params):
-        return [self.__recipient(rep) for rep in Reporter.objects.all()]
+        return {
+            "columns": ("Name", "Role", "Location"),
+            "recipients": [self.__recipient(rep) for rep in Reporter.objects.all()]
+        }
+    
+    def ajax_GET_recipient_search(self, params):
+        pass
     
     
     def ajax_POST_send_message(self, params, form):
@@ -83,7 +96,7 @@ class App(rapidsms.app.App):
         
         # attempt to send the message
         # TODO: what could go wrong here?
-        be = self.router.get_backend(conn.backend.slug)
+        be = self.router.get_backend("spomc")
         return be.message(conn.identity, form["text"]).send()
     
     
