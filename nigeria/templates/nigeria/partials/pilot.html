@@ -9,13 +9,6 @@
 						<h3>{{ lga.name }}</h3>
 					</td>
 				</tr>
-                                <tr>
-                                        <th>Percent of projected demand:</th>
-                                        <th></th>
-                                        <th>{{ lga.netcards_stats }}%</th>
-                                        <th>{{ lga.beneficiaries_stats }}%</th>
-
-                                </tr>
 				<tr>
 					<th>Ward Name</th>
 					<th class="min">Reports</th>
@@ -36,6 +29,12 @@
 					<td class="min num">{{ lga.netcards }}</td>
 					<td class="min num">{{ lga.beneficiaries }}</td>
 				</tr>
+                                <tr class="totals">
+                                        <td>% of projected demand</td>
+                                        <td></td>
+                                        <td class="min num">{{ lga.netcards_stats }}%</td>
+                                        <td class="min num">{{ lga.beneficiaries_stats }}%</td>
+                                </tr>
 				<tr class="summary">
 					<td colspan="6">
 						{{ lga.summary }}
