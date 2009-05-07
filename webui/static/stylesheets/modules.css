@@ -171,6 +171,24 @@ table {
 					background: #eee;
 					color: #000;
 				}
+				
+				tfoot .paginator a.first,
+				tfoot .paginator a.prev,
+				tfoot .paginator a.next,
+				tfoot .paginator a.last {
+					background-repeat: no-repeat;
+					background-position: 50% 50%;
+					text-indent: -9999px;
+					overflow: hidden;
+					padding-right: 0;
+					padding-left: 0;
+					width: 16px;
+				}
+				
+				tfoot .paginator a.first { background-image: url("../icons/silk/resultset_first.png"); }
+				tfoot .paginator a.prev  { background-image: url("../icons/silk/resultset_previous.png"); }
+				tfoot .paginator a.next  { background-image: url("../icons/silk/resultset_next.png"); }
+				tfoot .paginator a.last  { background-image: url("../icons/silk/resultset_last.png"); }
 
 
 /* modules can include help text, to explain how
