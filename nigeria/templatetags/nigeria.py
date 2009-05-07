@@ -116,7 +116,11 @@ def daily_progress():
     netcards_stats = int(float(total_netcards) / float(coupon_target) * 100) if (total_netcards > 0) else 0
     total_beneficiaries = sum(CardDistribution.objects.all().values_list("people", flat=True))
     beneficiaries_stats = int(float(total_beneficiaries) / float(recipient_target) * 100) if (total_beneficiaries > 0) else 0
-    return { "days": days, "netcards_stats": netcards_stats, "beneficiaries_stats": beneficiaries_stats }
+    return { "days": days, 
+            "netcards_stats": netcards_stats, 
+            "beneficiaries_stats": beneficiaries_stats,
+            "total_netcards": total_netcards,
+            "total_beneficiaries": total_beneficiaries}
 
 
 @register.inclusion_tag("nigeria/partials/pilot.html")

@@ -536,6 +536,10 @@ table {
 		width: 100%;
 	}
 	
+		.tmp .progress .totals {
+			background: #ffc;
+			font-weight: bold;
+		}
 		.tmp .pilot .totals {
 			background: #ffc;
 			font-weight: bold;
