@@ -5,7 +5,29 @@ import rapidsms
 
 class App (rapidsms.app.App):
     def ajax_GET_recipients(self, params):
+        
+        def __app_dict(app):
+            """Fetches the recipient list from a given app, and
+               combines with meta-data, to avoid requiring app
+               authors to include their own every time."""
+            
+            has_search = hasattr(app, "ajax_GET_recipient_search")
+            
+            info = {
+                "search": has_search,
+                "title": app.title,
+                "slug":  app.slug }
+            
+            # the method can overwrite the meta-data, if it wants
+            info.update(app.ajax_GET_recipients(params))
+            
+            return info
+        
         return [
-            {"app": app, "recipients": app.ajax_GET_recipients(params)}
+            __app_dict(app)
             for app in self.router.apps
-            if (app != self) and hasattr(app, "ajax_GET_recipients")]
+            
+            # only include apps that will provide
+            # recipients, to avoid empty sections
+            if hasattr(app, "ajax_GET_recipients")\
+               and (app != self)]
