@@ -8,15 +8,18 @@
                                 <th colspan="2">{{ beneficiaries_stats }}%</th>
                         </tr><tr>
 				<th>#</th>
+				<th>Date</th>
+				<th>Day</th>
 				<th colspan="2">Reports</th>
-				<th colspan="2">Net Cards</th>
+				<th colspan="2" lass="min">Net Cards</th>
 				<th colspan="2">Beneficiaries</th>
 			</tr>
 		</thead>
 		<tbody>
                         {% for day in days %}
 			<tr{% if day.in_future %} class="future"{% endif %}>
-				<td title="{{ day.date|date }}" class="day">{{ day.number }}</td>
+				<td><span title="{{ day.date|date }}">{{ day.date|date:"d/m" }}</span></td>
+				<td title="{{ day.date|date }}" class="day min num">{{ day.number }}</td>
 				
 				<td>{{ day.reports }}</td>
 				<td class="perc">{% ifnotequal day.reports None %}{{ day.reports_perc }}%{% endifnotequal %}</td>
