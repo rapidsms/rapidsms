@@ -6,6 +6,7 @@ from rapidsms.webui.utils import render_to_response
 from apps.httptester.models import Message
 from apps.httptester.forms import MessageForm
 from django.core.urlresolvers import reverse
+from rapidsms.config import app_conf
 import datetime
 import urllib2
 import random
@@ -42,8 +43,16 @@ def index_basic(req):
     return render_to_response(req, template_name, {})
 
 def proxy(req, number, message):
-    # ideally the hostname and port should be read from the rapidsms configuration
-    url = "http://localhost:8080/%s/%s" % (urllib2.quote(number), urllib2.quote(message))
+    # build the url to the http server running
+    # in apps.ajax.app.App via conf hackery
+    conf = app_conf("httptester")
+    url = "http://%s:%s/%s/%s" % (
+        conf["host"], 
+        conf["port"],
+        urllib2.quote(number), 
+        urllib2.quote(message))
+    print url
+    
     f = urllib2.urlopen(url)
     return HttpResponse(f.read())
 

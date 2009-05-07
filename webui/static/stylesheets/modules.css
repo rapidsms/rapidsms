@@ -177,14 +177,16 @@ table {
  * they should be used. this is usually hidden by
  * rs-module-help.js as default, but should not be
  * too verbose incase that doesn't work. */
-.module div.help {
+.module div.help,
+.module div.search {
 	border-right: 0.5em solid #ffb;
 	border-left: 0.5em solid #ffb;
 	background: #ffc;
 	padding: 1em;
 }
 
-	.module div.help p {
+	.module div.help p,
+	.module div.search p {
 		margin: 0; }
 
 
@@ -403,9 +405,48 @@ table {
 
 /* temporary dashboard stuff */
 
+.tmp tr.caption td {
+	padding: 0;
+}
+
+
+/* line-up numbers along their
+ * least-significant digit */
+.tmp td.num {
+	text-align: right; }
+
+
+/* make most columns as small as possible,
+ * allowing a single column to occupy the
+ * rest. otherwise, the browser will guess */
+.tmp .min {
+	white-space: nowrap;
+	width: 1%;
+}
+
+/* space out sections via
+ * their h3 ub-header */
+.tmp thead:first-child h3 { margin-top: 0; }
+.tmp h3 { margin-top: 1em; }
+
 .tmp ul {
 	padding: 0;
 }
+
+
+/* table summaries are like little
+ * footers. not using tfoot, since
+ * this is... a hack */
+.tmp tr.summary { }
+
+	.tmp tr.summary td {
+		background: #eee url("../images/table-footer-bg.png") repeat-x 0 100%;
+		padding: 0.625em;
+		font-size: 80%;
+		text-align: center;
+		color: #aaa;
+	}
+
 
 	#inner .tmp div.split-3 .left {
 		width: 40%;
@@ -440,14 +481,15 @@ table {
 			color: #aaa;
 		}
 
+
 .tmp .progress { }
 
+	.tmp .progress table {
+		width: 100%; }
+	
 	.tmp .progress .future {
 		color: #eee;
 	}
-	
-	.tmp .progress td {
-		text-align: right; }
 	
 	.tmp .progress td.day {
 		padding-right: 2em; }
@@ -458,6 +500,7 @@ table {
 	
 	.tmp .progress td.perc:last-child {
 		padding-right: 1em; }
+
 
 .tmp .stats { }
 
@@ -474,3 +517,43 @@ table {
 			font-size: 400%;
 			font-weight: bold;
 		}
+
+
+.tmp .pilot,
+.tmp .logistics {
+	margin-top: 2em !important;
+}
+
+.tmp .pilot .scroller,
+.tmp .logistics .scroller {
+	overflow-y: scroll;
+	padding-right: 0.5em;
+	height: 60em;
+}
+
+	.tmp .pilot table,
+	.tmp .logistics table {
+		width: 100%;
+	}
+	
+		.tmp .pilot .totals {
+			background: #ffc;
+			font-weight: bold;
+		}
+
+		/* space out the columns a
+		 * bit more than usual */
+		.tmp .logistics tbody td:last-child { padding-right: 0.5em; }
+		.tmp .logistics tbody td { padding-right: 2em; }
+	
+		/* shipping icons */
+		.tmp .logistics td.dir-R { background: url("../icons/silk/package_add.png") no-repeat 50% 50%; }
+		.tmp .logistics td.dir-I { background: url("../icons/silk/package_go.png")  no-repeat 50% 50%; }
+
+			/* hide the text label of the
+			 * transaction (it has a tip) */
+			.tmp .logistics td.dir-R span,
+			.tmp .logistics td.dir-I span {
+				text-indent: -9999px;
+				display: block;
+			}

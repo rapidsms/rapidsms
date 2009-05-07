@@ -65,9 +65,22 @@ def daily_progress():
     
     
     # how high should we aim?
-    report_target    = 432.0 # 48 wards * 9 mobilization teams?
-    coupon_target    = 5000.0
-    recipient_target = 50000.0
+    # 48 wards * 9 mobilization teams = 482?
+    # but at least 2 lgas are summing teams
+    # and reporting once by ward, so maybe 48 * 4?
+    report_target    = 192.0
+
+    # Dawakin Kudo      99,379
+    # Garum Mallam      51,365
+    # Kano Municipal    161,168
+    # Kura              63,758
+    coupon_target    = 375670.0
+
+    # Dawakin Kudo      248,447
+    # Garun Mallam      128,412
+    # Kano Municipal    402,919
+    # Kura              159,394
+    recipient_target = 939172.0
     
     
     for d in range(0, (end - start).days):
@@ -94,54 +107,66 @@ def daily_progress():
         
             data.update({
                 "reports_perc":    int((data["reports"]    / report_target)    * 100) if (data["reports"]    > 0) else 0,
+                "coupons_perc":    int((data["coupons"]    / coupon_target)    * 100) if (data["coupons"]    > 0) else 0,
+                "recipients_perc":    int((data["recipients"]    / recipient_target)    * 100) if (data["recipients"]    > 0) else 0,
             })
         
         days.append(data)
     
     return { "days": days }
 
+
 @register.inclusion_tag("nigeria/partials/pilot.html")
 def pilot_summary():
-    pilot_lga_names = ['DAWAKIN KUDU', 'GARUN MALLAM', 'KURA', 'KANO MUNICIPAL']
-    pilots = []
-    for lga_name in pilot_lga_names:
-        lga = Location.objects.get(name__iexact=lga_name, type__name='LGA')
-        wards = Location.objects.filter(parent__pk=lga.pk)
-        ws = Reporter.objects.filter(location__parent__pk=lga.pk).filter(role__code__iexact='ws')
+    
+    # fetch all of the LGAs that we want to display
+    lga_names = ["DAWAKIN KUDU", "GARUN MALLAM", "KURA", "KANO MUNICIPAL"]
+    lgas = LocationType.objects.get(name="LGA").locations.filter(name__in=lga_names)
+    
+    # called to fetch and assemble the
+    # data structure for each pilot ward
+    def __ward_data(ward):
+        locations = ward.descendants(True)
+        reports = CardDistribution.objects.filter(location__in=locations)
+        
+        return {
+            "name":          ward.name,
+            "reports":       reports.count(),
+            "netcards":      sum(reports.values_list("distributed", flat=True)),
+            "beneficiaries": sum(reports.values_list("people", flat=True)) }
+    
+    # called to fetch and assemble the
+    # data structure for each pilot LGA
+    def __lga_data(lga):
+        wards = lga.children.all()
+        reporters = Reporter.objects.filter(location__in=wards)
+        supervisors = reporters.filter(role__code__iexact="WS")
+        summary = "%d supervisors in %d wards" % (len(supervisors), len(wards))
+        
+        ward_data = map(__ward_data, wards)
+        def __wards_total(key):
+            return sum(map(lambda w: w[key], ward_data))
+        
+        return {
+            "name":          lga.name,
+            "summary":       summary,
+            "wards":         ward_data,
+            "reports":       __wards_total("reports"),
+            "netcards":      __wards_total("netcards"),
+            "beneficiaries": __wards_total("beneficiaries") }
+    
+    return { "pilot_lgas": map(__lga_data, lgas) }
 
-        lga_data = { lga.name : [str(ws.count()) + " ward supervisors registered for " + str(wards.count()) + " wards",]}
-        lga_wards = []
-        reports = CardDistribution.objects.all()
-        for ward in wards:
-            # TODO move this functionality onto the model
-            team_rep = reports.filter(location__parent__parent__pk=ward.pk)
-            point_rep = reports.filter(location__parent__pk=ward.pk)
-            ward_rep = reports.filter(location__pk=ward.pk)
-            ward_reports = ward_rep.count() + point_rep.count() + team_rep.count()
-
-            ward_cards = sum(ward_rep.values_list("distributed", flat=True))
-            team_cards = sum(team_rep.values_list("distributed", flat=True))
-            point_cards = sum(point_rep.values_list("distributed", flat=True))
-            total_cards = ward_cards + team_cards + point_cards
-
-            ward_data = {ward.name: [str(ward_reports) + " reports", str(total_cards) + " net cards distributed"]}
-            lga_wards.append(ward_data)
-        pilots.append([lga_data, lga_wards])
-    return {"pilots" : pilots}
 
 @register.inclusion_tag("nigeria/partials/logistics.html")
 def logistics_summary():
-    lgas = Location.objects.filter(type__name='LGA')
-    partials = PartialTransaction.objects.exclude(status="A") 
-    summaries = []
-    for lga in lgas:
-        lga_data = []
-        lga_data.append(["name",  str(lga)])
 
-        lga_receipts = partials.filter(destination=lga).filter(type="R")
-        lga_data.append(["receipts", lga_receipts])
-
-        lga_issues = partials.filter(origin=lga).filter(type="I")
-        lga_data.append(["issues", lga_issues])
-        summaries.append(dict(lga_data))
-    return {"summaries" : summaries}
+    # called to fetch and assemble the data structure
+    # for each LGA, containing the flow of stock
+    def __lga_data(lga):
+        return {
+            "name":         unicode(lga),
+            "transactions": PartialTransaction.objects.filter(destination=lga, type__in=["R", "I"]).order_by("-date") }
+    
+    # process and return data for ALL LGAs for this report
+    return { "lgas": map(__lga_data, LocationType.objects.get(name="LGA").locations.all()) }
