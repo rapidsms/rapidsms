@@ -22,14 +22,19 @@ def render_to_response(req, template_name, dictionary=None, **kwargs):
     }
     
     def __js_dir(fs_path, web_prefix):
-        """Adds all of the .js files in a given directory to the
-           javascripts array, to be included in the <head>. If the
-           directory does not exist, this function does nothing."""
+        """Adds all of the .js files in a given directory to the javascripts array,
+           to be included in the <head>. Also checks for a single file js with the
+           same name as the directory. (dir_name/*.js and dir_name.js)"""
+        
         if os.path.exists(fs_path):
             rs_dict["javascripts"].extend([
                 "%s/%s" % (web_prefix, fn)
                 for fn in os.listdir(fs_path)
                 if fn[-3:] == ".js"])
+        
+        if os.path.exists("%s.js" % (fs_path)):
+            rs_dict["javascripts"].append(
+                "%s.js" % (web_prefix))
     
     # add all of the global javascript files for all running
     # apps. this is super handy for packaging functionality
@@ -54,7 +59,14 @@ def render_to_response(req, template_name, dictionary=None, **kwargs):
         # this app, and add them to the <head>
         __js_dir(
             "%s/static/javascripts/app" % rs_dict["app_conf"]["path"],
-            "/static/%s/javascripts/app" % rs_dict["app_conf"]["type"])\
+            "/static/%s/javascripts/app" % rs_dict["app_conf"]["type"])
+        
+        # check for a view-specific javascript,
+        # to add LAST, after the dependencies
+        view_name = tb[-2][2]
+        __js_dir(
+            "%s/static/javascripts/page/%s" % (rs_dict["app_conf"]["path"], view_name),
+            "/static/%s/javascripts/page/%s.js" % (rs_dict["app_conf"]["type"], view_name))
     
     # allow the dict argument to
     # be omitted without blowing up
