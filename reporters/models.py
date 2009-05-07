@@ -42,28 +42,6 @@ class LocationType(models.Model):
         return self.name
     
 
-class Location(models.Model):
-    """A location.  Locations have a name, an optional type, and optional geographic information."""
-    name = models.CharField(max_length=160, help_text="Name of location")
-    type = models.ForeignKey(LocationType, blank=True, null=True, help_text="Type of location")
-    code = models.CharField(max_length=15)
-    parent = models.ForeignKey("Location", related_name="children", null=True, blank=True, help_text="The parent location of this")
-    latitude = models.DecimalField(max_digits=8, decimal_places=6, null=True, blank=True, help_text="The physical latitude of this location")
-    longitude = models.DecimalField(max_digits=8, decimal_places=6, null=True, blank=True, help_text="The physical longitude of this location")
-
-
-    def top_children(self):
-        # this is a pretty silly way to provide easy access to the first N children
-        # inside a template
-        count = 10
-        return self.children.all()[0:10]
-
-    def __unicode__(self):
-        return self.name
-
-
-
-
 class RecursiveManager(models.Manager):
     """Provides a method to flatten a recursive model (a model which has a ForeignKey field linked back
        to itself), in addition to the usual models.Manager methods. This Manager queries the database
@@ -84,6 +62,54 @@ class RecursiveManager(models.Manager):
             
             return output
         return pluck()
+
+
+class Location(models.Model):
+    """A location.  Locations have a name, an optional type, and optional geographic information."""
+    name = models.CharField(max_length=160, help_text="Name of location")
+    type = models.ForeignKey(LocationType, related_name="locations", blank=True, null=True, help_text="Type of location")
+    code = models.CharField(max_length=15)
+    parent = models.ForeignKey("Location", related_name="children", null=True, blank=True, help_text="The parent location of this")
+    latitude = models.DecimalField(max_digits=8, decimal_places=6, null=True, blank=True, help_text="The physical latitude of this location")
+    longitude = models.DecimalField(max_digits=8, decimal_places=6, null=True, blank=True, help_text="The physical longitude of this location")
+    objects = RecursiveManager()
+
+    def ancestors(self, include_self=False):
+        """Returns all of the parent locations of this location,
+           optionally including itself in the output. This is
+           very inefficient, so consider caching the output."""
+        locs = [self] if include_self else []
+        loc = self
+        
+        # keep on iterating
+        # until we return
+        while True:
+            locs.append(loc)
+            loc = loc.parent
+            
+            # are we at the top?
+            if loc is None:
+                return locs
+    
+    def descendants(self, include_self=False):
+        """Returns all of the locations which are descended from this location,
+           optionally including itself in the output. This is very inefficient
+           (it recurses once for EACH), so consider caching the output."""
+        locs = [self] if include_self else []
+        
+        for loc in self.children.all():
+            locs.extend(loc.descendants(True))
+        
+        return locs
+        
+    def top_children(self):
+        # this is a pretty silly way to provide easy access to the first N children
+        # inside a template
+        count = 10
+        return self.children.all()[0:10]
+
+    def __unicode__(self):
+        return self.name
 
 
 class ReporterGroup(models.Model):
@@ -114,8 +140,8 @@ class Reporter(models.Model):
     groups     = models.ManyToManyField(ReporterGroup, blank=True)
     
     # here are some fields that don't belong here
-    location   = models.ForeignKey("Location", null=True, blank=True)
-    role       = models.ForeignKey("Role", null=True, blank=True)
+    location   = models.ForeignKey("Location", related_name="reporters", null=True, blank=True)
+    role       = models.ForeignKey("Role", related_name="reporters", null=True, blank=True)
 
     def __unicode__(self):
             return self.connection.identity

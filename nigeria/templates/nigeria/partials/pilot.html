@@ -1,29 +1,40 @@
 <div class="module pilot">
 	<h2>Pilot LGAs Summary</h2>
-        {% for lga_data, ward_data in pilots %}
-	<table>
-		<thead>
-			<tr>
-                                {% for lname, linfos in lga_data.items %}
-				    <th colspan="2">{{ lname }}</th>
-                                        {% for linfo in linfos %}
-                                            <th colspan="2">{{ linfo }}</th>
-                                        {% endfor %}
-                                {% endfor %}
-			</tr>
-		</thead>
-		<tbody>
-                                {% for ward in ward_data %}
-                                    {% for wname, winfos in ward.items %}
-                         <tr>
-                                            <td>{{ wname }}</td>
-                                            {% for winfo in winfos %}
-                                                <td>{{ winfo }}</td>
-                                            {% endfor %}
-                                    {% endfor %}
-                                {% endfor %}
-                         </tr>
-		</tbody>
-	</table>
-        {% endfor %}
+	
+	<div class="scroller">
+		<table>{% for lga in pilot_lgas %}
+			<thead>
+				<tr class="caption">
+					<td colspan="4">
+						<h3>{{ lga.name }}</h3>
+					</td>
+				</tr>
+				<tr>
+					<th>Ward Name</th>
+					<th class="min">Reports</th>
+					<th class="min">Net Cards</th>
+					<th class="min">Beneficiaries</th>
+				</tr>
+			</thead>
+			<tbody>{% for ward in lga.wards %}
+				<tr>
+					<td>{{ ward.name }}</td>
+					<td class="min num">{{ ward.reports }}</td>
+					<td class="min num">{{ ward.netcards }}</td>
+					<td class="min num">{{ ward.beneficiaries }}</td>
+				</tr>{% endfor %}
+				<tr class="totals">
+					<td>Total</td>
+					<td class="min num">{{ lga.reports }}</td>
+					<td class="min num">{{ lga.netcards }}</td>
+					<td class="min num">{{ lga.beneficiaries }}</td>
+				</tr>
+				<tr class="summary">
+					<td colspan="6">
+						{{ lga.summary }}
+					</td>
+				</tr>
+			</tbody>{% endfor %}
+		</table>
+	</div>
 </div>
