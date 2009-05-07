@@ -14,7 +14,8 @@
 		<script type="text/javascript" src="/static/webui/javascripts/rs-validate.js"></script>
 		<script type="text/javascript" src="/static/webui/javascripts/rs-module-help.js"></script>
 		{% endblock %}
-		{% block javascripts %}{% endblock %}
+		{% block javascripts %}{% endblock %}{% for js in javascripts %}
+		<script type="text/javascript" src="{{ js }}"></script>{% endfor %}
 	</head>
 	<body class="{% if bare %}bare{% endif %}">
 		<div id="wrapper">
