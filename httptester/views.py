@@ -51,7 +51,6 @@ def proxy(req, number, message):
         conf["port"],
         urllib2.quote(number), 
         urllib2.quote(message))
-    print url
     
     f = urllib2.urlopen(url)
     return HttpResponse(f.read())
