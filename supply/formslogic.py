@@ -70,6 +70,10 @@ class SupplyFormsLogic(FormsLogic):
         # if it was found.
         if not hasattr(partial, "reporter") or not partial.reporter:
             partial.connection = message.persistant_connection
+            response = ""
+        # personalize response if we have a registered reporter
+        else:
+            response = "Thank you %s. " % (partial.reporter.first_name)
         partial.domain = form_entry.domain
         partial.date = form_entry.date
         partial.type = this_form_lookups["type"]
@@ -111,7 +115,7 @@ class SupplyFormsLogic(FormsLogic):
                 partials_to_amend.update(status = "A")
 
         partial.save()
-        response = "Received report for %s %s: origin=%s, dest=%s, waybill=%s, amount=%s, stock=%s" % (
+        response = response + "Received report for %s %s: origin=%s, dest=%s, waybill=%s, amount=%s, stock=%s" % (
              partial.domain.code.abbreviation.upper(), form_entry.form.code.abbreviation.upper(), partial.origin, partial.destination, partial.shipment_id, partial.amount, partial.stock)  
         message.respond(response, StatusCodes.OK)
         if not partial.reporter:
