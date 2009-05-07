@@ -25,30 +25,35 @@
 			</div>
 			<table>
 				<thead>
-					<tr>{% for column in columns %}
-						<th>{{ column }}</th>{% endfor %}
+					<tr>
+						<th>Name</th>
+						<th>Role</th>
+						<th>Location</th>
 					</tr>
 				</thead>
-				<tbody>{% for recipient in recipients %}
-					<tr>{% for col_val in recipient %}
-						<td>{{ col_val }}</td>{% endfor %}
+				<tbody>{% for reporter in reporters.object_list %}
+					<tr>
+						<td>{{ reporter.full_name }}</td>
+						<td>{{ reporter.role }}</td>
+						<td>{{ reporter.location }}</td>
 					</tr>{% endfor %}
 				</tbody>
 				<tfoot>
 					<tr>
 						<td colspan="{{ app.columns|length }}">
-							<div class="paginator">
-								<a href="" class="active">0</a>
-								<a href="">1</a>
-								<a href="">2</a>
-								<a href="">3</a>
+							<div class="paginator">{% if reporters.has_previous %}
+								<a href="?p=1" class="first">First Page</a>
+								<a href="?p={{ reporters.previous_page_number }}" class="prev">Previous Page</a>{% endif %}{% for page in reporters.paginator.page_range %}
+								<a href="?p={{ page }}"{% ifequal page reporters.number %} class="active"{% endifequal %}>{{ page }}</a>{% endfor %}{% if reporters.has_next %}
+								<a href="?p={{ reporters.next_page_number }}" class="next">Next Page</a>
+								<a href="?p={{ reporters.paginator.num_pages }}" class="last">Last Page</a>{% endif %}
 							</div>
 							<a href="">Export</a>
 						</td>
 					</tr>
 				</tfoot>
 			</table>
-		</div>
+    </div>
 	</div>
 	<div class="right">
 		<div class="module contents">
@@ -78,6 +83,10 @@
 				"width": inp_width
 			});
 		});
+	});
+	
+	$(function() {
+		
 	});
 </script>
 {% endblock %}
