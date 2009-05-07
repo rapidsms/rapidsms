@@ -536,16 +536,44 @@ table {
 		width: 100%;
 	}
 	
+		.tmp .progress .totals {
+			background: #ffc;
+			font-weight: bold;
+		}
 		.tmp .pilot .totals {
 			background: #ffc;
 			font-weight: bold;
 		}
+
+                .tmp .pilot tr.warning td{
+                        color: white;
+                        background: #f99;
+                        border-top: 1px solid red;
+                        border-bottom: 1px solid red;
+                }
 
 		/* space out the columns a
 		 * bit more than usual */
 		.tmp .logistics tbody td:last-child { padding-right: 0.5em; }
 		.tmp .logistics tbody td { padding-right: 2em; }
 	
+                /* style LGAs without shipments differently */
+                .tmp .logistics tr.warning td h3{
+                        color: white;
+                        background: #f99; 
+                        height: 1em;
+                        border-top: 1px solid red;
+                        border-bottom: 1px solid red;
+                }
+                .tmp .logistics tr.warning td h3 div{
+                        float: left;
+                }
+                .tmp .logistics tr.warning td h3 em{
+                        float:right;
+                        font-size:80%;
+                        color: #302010;
+                }
+
 		/* shipping icons */
 		.tmp .logistics td.dir-R { background: url("../icons/silk/package_add.png") no-repeat 50% 50%; }
 		.tmp .logistics td.dir-I { background: url("../icons/silk/package_go.png")  no-repeat 50% 50%; }

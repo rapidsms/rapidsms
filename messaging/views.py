@@ -3,7 +3,7 @@
 
 from django.http import HttpResponse
 from rapidsms.webui.utils import render_to_response
-from apps.messaging.models import *
+#from apps.messaging.models import *
 #from apps.messaging.utils import *
 
 def index(req):

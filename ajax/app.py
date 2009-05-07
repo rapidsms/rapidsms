@@ -135,7 +135,7 @@ class App(rapidsms.app.App):
             # a string, for now)
             try:
                 method = getattr(app, meth_name)
-                params = urlparse.parse_qs(url.query)
+                params = urlparse.urlparse(url.query)
                 args   = [params]
                 
                 # for post requests, we'll also need to parse
