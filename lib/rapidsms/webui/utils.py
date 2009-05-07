@@ -49,11 +49,19 @@ def render_to_response(req, template_name, dictionary=None, **kwargs):
     tb = traceback.extract_stack(limit=2)
     m = re.match(r'^.+/(.+?)/views\.py$', tb[-2][0])
     if m is not None:
+        app_type = m.group(1)
         
         # since we're fetching the app conf, add it to the
         # template dict. it wouldn't be a very good idea to
         # use it, but sometimes, when time is short...
-        rs_dict["app_conf"] = app_conf(m.group(1))
+        rs_dict["app_conf"] = app_conf(app_type)
+        
+        # look up this app in the "apps" list that
+        # we've already added, to make the tab (or
+        # whatever other nav we're using) as active
+        for app in rs_dict["apps"]:
+            if app["type"] == app_type:
+                app["active"] = True
         
         # find all of the javascript assets for
         # this app, and add them to the <head>
