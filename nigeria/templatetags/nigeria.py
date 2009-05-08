@@ -113,10 +113,10 @@ def daily_progress():
         days.append(data)
     
     total_netcards = sum(CardDistribution.objects.all().values_list("distributed", flat=True))
-    netcards_stats = int(float(total_netcards) / float(coupon_target) * 100) if (total_netcards > 0) else 0
+    netcards_stats = int(float(total_netcards) / coupon_target * 100) if (total_netcards > 0) else 0
 
     total_beneficiaries = sum(CardDistribution.objects.all().values_list("people", flat=True))
-    beneficiaries_stats = int(float(total_beneficiaries) / float(recipient_target) * 100) if (total_beneficiaries > 0) else 0
+    beneficiaries_stats = int(float(total_beneficiaries) / recipient_target * 100) if (total_beneficiaries > 0) else 0
 
     return { "days": days, 
             "netcards_stats": netcards_stats, 
@@ -168,7 +168,7 @@ def pilot_summary():
         wards = lga.children.all()
         reporters = Reporter.objects.filter(location__in=wards)
         supervisors = reporters.filter(role__code__iexact="WS")
-        summary = "%d supervisors in %d wards" % (len(supervisors), len(wards))
+        summary = "%d supervisors in %d wards" % (supervisors.count(), wards.count())
         
         ward_data = map(__ward_data, wards)
         def __wards_total(key):
