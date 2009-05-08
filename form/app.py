@@ -20,6 +20,9 @@ class App(rapidsms.app.App):
         self.separator = "[,\.\s]+"
         self.token_separator = "[,\.\s]*"
         self.leading_pattern = "[\"'\s]*"
+        self.separator = "[,\.\s]+"
+        self.token_separator = "[,\.\s]*"
+        self.leading_pattern = "[\"'\s]*"
         self.trailing_pattern = "[\.,\"'\s]*"
         self.form_patterns = [] 
         self.domains_forms_tokens = []
