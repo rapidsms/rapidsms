@@ -2,11 +2,43 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 
-import re
+import os, re
+import datetime
+from subprocess import *
+
 from django import http
 from django.db import models
 from django.utils.text import capfirst
 from django.core.exceptions import FieldError
+from rapidsms.config import conf
+
+
+def database(req):
+    """Returns a SQL dump of the current database, by reading the settings
+       from the config file, and calling the relevant dump program. Currently,
+       only mySQL and SQLite3 are supported."""
+    
+    db = conf("database")
+    if db["engine"] == "mysql":
+        cmd = "mysqldump --user=%(user)s --password=%(password)s %(name)s" % db
+    
+    elif db["engine"] == "sqlite3":
+        cmd = "sqlite3 %(name)s .dump" % db
+    
+    else:
+        return HttpResponse(
+            "Sorry, %s databases are not supported yet.",
+            status=500, content_type="text/plain")
+		
+    # execute the dump command, and wait for it to terminate
+    proc = Popen([cmd], shell=True,stdin=PIPE,stdout=PIPE, stderr=PIPE)
+    sql = proc.communicate()
+
+    # download the file as plain text
+    today = datetime.datetime.now().strftime("%d-%m-%y")
+    resp = http.HttpResponse(sql, mimetype="text/plain")
+    resp["content-disposition"] = "attachment; filename=%s.xls" % today
+    return resp
 
 
 def _get_model(app_label, model_name):
