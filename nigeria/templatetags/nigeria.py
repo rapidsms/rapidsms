@@ -175,14 +175,18 @@ def pilot_summary():
         beneficiaries_stats = int(float(__wards_total("beneficiaries")) / float(projections["beneficiaries"][str(lga.name)]) * 100) if (__wards_total("beneficiaries") > 0) else 0
 
         return {
-            "name":          lga.name,
-            "summary":       summary,
-            "netcards_stats" : netcards_stats,
-            "beneficiaries_stats" : beneficiaries_stats,
-            "wards":         ward_data,
-            "reports":       __wards_total("reports"),
-            "netcards":      __wards_total("netcards"),
-            "beneficiaries": __wards_total("beneficiaries") }
+            "name":                     lga.name,
+            "summary":                  summary,
+            "netcards_projected":       int(projections['netcards'][str(lga.name)]),
+            "netcards_total":           int(__wards_total("netcards")),
+            "beneficiaries_projected":  int(projections['beneficiaries'][str(lga.name)]),
+            "beneficiaries_total":      int(__wards_total("beneficiaries")),
+            "netcards_stats":           netcards_stats,
+            "beneficiaries_stats":      beneficiaries_stats,
+            "wards":                    ward_data,
+            "reports":                  __wards_total("reports"),
+            "netcards":                 __wards_total("netcards"),
+            "beneficiaries":            __wards_total("beneficiaries") }
     
     return { "pilot_lgas": map(__lga_data, lgas) }
 
@@ -199,3 +203,27 @@ def logistics_summary():
     
     # process and return data for ALL LGAs for this report
     return { "lgas": map(__lga_data, LocationType.objects.get(name="LGA").locations.all()) }
+
+@register.inclusion_tag("nigeria/partials/mobilization_summary_charts.html")
+def mobilization_summary_charts():
+    summary = pilot_summary()
+    netcards_projected = []
+    netcards_total = []
+    beneficiaries_projected = []
+    beneficiaries_total = []
+    lga_names = []
+
+    pilot_lgas = summary['pilot_lgas']
+    for lga in pilot_lgas:
+        netcards_projected.append("[%d, %d]" % (pilot_lgas.index(lga) * 3 + 1, lga['netcards_projected']))
+        netcards_total.append("[%d, %d]" % (pilot_lgas.index(lga) * 3 + 2, lga['netcards_total']))
+        beneficiaries_projected.append("[%d, %d]" % (pilot_lgas.index(lga) * 3 + 1, lga['beneficiaries_projected']))
+        beneficiaries_total.append("[%d, %d]" % (pilot_lgas.index(lga) * 3 + 2, lga['beneficiaries_total']))
+        lga_names.append("[%d, '%s']" % (pilot_lgas.index(lga) * 3 + 2, lga['name']))
+    return {
+        "beneficiaries_projected": "[%s]" % ",".join(beneficiaries_projected),
+        "beneficiaries_total": "[%s]" % ",".join(beneficiaries_total),
+        "netcards_projected": "[%s]" % ",".join(netcards_projected),
+        "netcards_total": "[%s]" % ",".join(netcards_total),
+        "lgas": "[%s]" % ",".join(lga_names)
+    }
