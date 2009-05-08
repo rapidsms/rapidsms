@@ -7,7 +7,7 @@ import apps.httptester.views as views
 
 urlpatterns = patterns('',
     url(r'^http$', views.index),
-    url(r'^http/proxy/(?P<number>\d+)/(?P<message>.*)$', views.proxy),
+    url(r'^http/proxy/\+?(?P<number>\d+)/(?P<message>.*)$', views.proxy),
     #url(r'^httpbasic$', views.indexbasic),
     url(r'^httpbasic$', views.index_basic),
     url(r'^httpbasic/(?P<number>\d+)$', views.basic_ui, name='basic_ui'),

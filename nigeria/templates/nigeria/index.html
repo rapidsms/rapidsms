@@ -22,8 +22,8 @@
 <div>		
 {% if location %}
 <h2>Report Summary for {{location.name}} {{location.type}}</h2>
-{% if location.parent %}
-    <a href="/reports/summary/{{location.parent.pk}}/">Go to parent ({{location.parent.name}} {{location.parent.type}})</a>
+{% if location.parent %} 
+    <a href="/reports/summary/{{location.parent.pk}}/">Go to parent ({{location.parent.name}} {{location.parent.type}}) </a>
 {% endif %}
 <table class="datatable"><thead><tr>
 <th scope="col" class="first"><b>State/LGA/Ward</b></th>

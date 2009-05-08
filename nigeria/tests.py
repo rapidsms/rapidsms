@@ -98,8 +98,8 @@ class TestApp (TestScript):
            test_reg_dl_4 < Hello distribution! You are now registered as Distribution point team leader at KANO State.
            test_reg_lf > llin register 20 lf lga focal person
            test_reg_lf < Hello lga! You are now registered as LGA focal person at KANO State.
-           test_reg_lf_2 > llin register 20 lp lga focal person
-           test_reg_lf_2 < Hello lga! You are now registered as LGA focal person at KANO State.
+           test_reg_lf > llin register 20 lp lga focal person
+           test_reg_lf < Hello lga! You are now registered as LGA focal person at KANO State.
            # alas, we're not perfect
            test_reg_fail > llin rgstr 20 dl sorry guy
            test_reg_fail < Sorry we didn't understand that. Available forms are LLIN: REGISTER, NETCARDS, NETS, RECEIVE, ISSUE
