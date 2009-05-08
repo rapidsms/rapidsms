@@ -108,6 +108,43 @@ class Location(models.Model):
         count = 10
         return self.children.all()[0:10]
 
+    def one_contact(self, role, display=False):
+        def __get_one(contacts):
+            if contacts.count() > 0:
+
+                # since we are formatting for display,
+                # loop through all contacts until we
+                # find one that has a name and number
+                if display:
+                    for contact in contacts:
+                        string = __display(contact)
+                        if (len(string) > 4):
+                            return string
+
+                # return the first contact if we are
+                # not formatting for display
+                else:
+                    return contacts[0]
+
+            # return None if no contacts are found
+            # and return an empty string if we are
+            # formatting this for display
+            else:
+                return "" if display else None
+
+        def __display(contact):
+                string = contact.first_name + " " + contact.last_name
+                if contact.connection() is not None:
+                    string = string + " (" + contact.connection().identity + ")"
+                return string
+
+        return __get_one(Reporter.objects.filter(location=self).filter(role__code__iexact=role))
+
+    def contacts(self, role=None):
+        if role is not None:
+            return Reporter.objects.filter(location=self).filter(role__code__iexact=role)
+        return Reporter.objects.filter(location=self)
+
     def __unicode__(self):
         return self.name
 
