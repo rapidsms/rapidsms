@@ -44,7 +44,7 @@ $(function() {
 
 			/* POST the responses back to the method:
 			 * apps.training.app.App.ajax_POST_accept */ 
-			$('<form action="/export/json/xls" method="post"></form>').append(
+			$('<form action="/export/str" method="post"></form>').append(
 				$('<input type="hidden" name="data" value="' + table.dump() + '" />')
 			).appendTo("body").submit();
 		});

@@ -5,5 +5,6 @@ from django.conf.urls.defaults import *
 import apps.export.views as views
 
 urlpatterns = patterns('',
-    url(r'^export/json/xls$', views.json_xls),
+    url(r'^export/str$', views.str_to_excel),
+    url(r'^export/(?P<app_label>.+?)/(?P<model_name>.+?)$', views.model_to_excel),
 )
