@@ -138,20 +138,23 @@ class Config (object):
     __contains__ = has_key
 
 
-def conf(section, key):
-    """Returns a value from the RapidSMS configuration file, as found in the
-       RAPIDSMS_INI environment variable. This introduces mild coupling between
-       the webui and backend, for the sake of convenience."""
+def conf(section, key=None):
+    """Returns a section or value from the RapidSMS configuration file, as found
+       in the RAPIDSMS_INI environment variable. This introduces mild coupling
+       between the WebUI and backend, for the sake of convenience."""
     
     var = "RAPIDSMS_INI"
     if not var in os.environ:
+        
         # "rapidsms.webui.utils.conf should only
         # be called from within a running rapidsms
         # server, where env[RAPIDSMS_INI] is defined"
         raise KeyError(var)
     
     try:
-        return Config(os.environ[var])[section][key]
+        sect = Config(os.environ[var])[section]
+        if key is not None: return sect[key]
+        else:               return sect
     
     # if the section or key (or both) were invalid,
     # just return none. as far as we're concerned,
