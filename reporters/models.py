@@ -127,7 +127,7 @@ class Location(models.Model):
                     return contacts[0]
 
             # return None if no contacts are found
-            # and return an empty string if we are
+            # or return an empty string if we are
             # formatting this for display
             else:
                 return "" if display else None
