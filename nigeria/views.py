@@ -65,7 +65,7 @@ def logistics_summary(req, locid):
     #[_set_stock(child) for child in locations_shipped_to]
     
     # get some JSON strings for the plots
-    stock_per_loc_data, stock_per_loc_options = _get_stock_per_location_strings(locations_shipped_to)
+    stock_per_loc_data, stock_per_loc_options, bar_ticks = _get_stock_per_location_strings(locations_shipped_to)
     stock_over_time_data, stock_over_time_options = _get_stock_over_time_strings([location])
     stock_over_time_child_data, stock_over_time_child_options = _get_stock_over_time_strings(locations_shipped_to)
     
@@ -93,7 +93,8 @@ def logistics_summary(req, locid):
                                'stock_over_time_data' : stock_over_time_data, 
                                'stock_over_time_options' : stock_over_time_options, 
                                'stock_over_time_child_data' : stock_over_time_child_data, 
-                               'stock_over_time_child_options' : stock_over_time_child_options 
+                               'stock_over_time_child_options' : stock_over_time_child_options, 
+                               'bar_ticks' : bar_ticks
                                })
 
 def generate(req):
@@ -141,6 +142,7 @@ def coupons_summary(req, locid=1):
         loc_children = []
         bar_data = []
         pie_data = {"settlements" : [], "people" : [], "coupons": []}
+    
         index = 0
         # The loop below will be replaced by a neater code when method of returning children field properties are discovered
         coupon_data = []
@@ -176,6 +178,7 @@ def coupons_summary(req, locid=1):
     
     ticks = [[index * 4 + 1.5, label] for index, label in enumerate(labels)]
     
+    options = '{"grid":{"clickable":true},"xaxis":{"min":0,"ticks":[],"tickFormatter":"string"},"yaxis":{"min":0}}'
     return render_to_response(req, "nigeria/coupons_summary.html", {'location': location,
                      'children' : loc_children, 
                      'child_type':type, 
@@ -309,17 +312,21 @@ def _get_stock_per_location_strings(locations):
     # loop over all the locations and if they have a stock
     # create a string describing it and add it to the list.
     # count will store the index of each item.  
-    count = 0
     rows = []
-    for location in locations:
+    bar_ticks = []
+    for index, location in enumerate(locations):
         # if the location doesn't have any stock we won't display it
         if location.stock:
-            row = '{"bars":{"show":true},"label":"%s","data":[[%s,%s]]}' % (location.name, count, location.stock.balance)
+            row = '{"bars":{"show":true},"label":"%s","data":[[%s,%s]]}' % (location.name, index, location.stock.balance)
+            bar_ticks.append([index + 0.5, str(location.name[0:2])])
             rows.append(row)
-            count = count + 1
     data = "[%s]" % ", ".join(rows)
-    options = '{"grid":{"clickable":true},"xaxis":{"min":0,"ticks":[],"tickFormatter":"string"},"yaxis":{"min":0}}'
-    return (data, options)
+
+    #Tick line below will be added to introduce ticks for flot plots for this bar chart
+    #ticks = [[index * 4 + 1.5, label] for index, label in enumerate(labels)]
+
+    options = '{"grid":{"clickable":true},"xaxis":{"min":0,"ticks":[],"tickFormatter":"string"},"yaxis":{"min":0},"legend":{show: false}}'
+    return (data, options, bar_ticks)
 
 def _get_distribution_over_time_strings(ward):
     '''Get a JSON formated list for flot plots on the template, 
@@ -372,5 +379,5 @@ def _get_stock_over_time_strings(locations):
             #print "adding update for %s" % location 
             rows.append('{"label":"%s", "data":[%s]}' % (location.name, ",".join(update_strings)))
     data = "[%s]" % (",".join(rows))
-    options = '{"bars":{"show":false},"points":{"show":true},"grid":{"clickable":false},"xaxis":{"mode":"time","timeformat":"%m/%d/%y"},"yaxis":{"min":0},"legend":{"show":true},"lines":{"show":true}}'    
+    options = '{"bars":{"show":false},"points":{"show":true},"grid":{"clickable":false},"xaxis":{"mode":"time","timeformat":"%m/%d/%y"},"yaxis":{"min":0},"legend":{"show":false},"lines":{"show":true}}'    
     return (data, options)
