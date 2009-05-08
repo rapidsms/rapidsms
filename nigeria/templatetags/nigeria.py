@@ -143,6 +143,7 @@ def pilot_summary():
 
         return {
             "name":          ward.name,
+            "contact":       ward.one_contact('WS', True),
             "reports":       reports.count(),
             "netcards":      sum(reports.values_list("distributed", flat=True)),
             "beneficiaries": sum(reports.values_list("people", flat=True)),
@@ -197,7 +198,8 @@ def logistics_summary():
     def __lga_data(lga):
         return {
             "name":         unicode(lga),
-            "transactions": PartialTransaction.objects.filter(destination=lga, type__in=["R", "I"]).order_by("-date") }
+            "transactions": PartialTransaction.objects.filter(destination=lga, type__in=["R", "I"]).order_by("-date"),
+            "logistician": lga.one_contact('SM', True)}
     
     # process and return data for ALL LGAs for this report
     return { "lgas": map(__lga_data, LocationType.objects.get(name="LGA").locations.all()) }

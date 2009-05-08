@@ -564,8 +564,12 @@ table {
                         height: 1em;
                         border-top: 1px solid red;
                         border-bottom: 1px solid red;
+                        text-align: center;
                 }
                 .tmp .logistics tr.warning td h3 div{
+                        float: left;
+                }
+                .tmp .logistics tr.warning td h3 span{
                         float: left;
                 }
                 .tmp .logistics tr.warning td h3 em{
