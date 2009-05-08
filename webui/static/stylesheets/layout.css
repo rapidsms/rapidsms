@@ -85,7 +85,7 @@ div.clear-hack {
 	 * unicef blue stripe of header bg,
 	 * and display logo on the right */
 	#branding h1 {
-		background: url("../images/nigeria_logos.png") no-repeat 100% 50%;
+		background: url("../images/iavi_logo.gif") no-repeat 100% 50%;
 		line-height: 65px;
 		padding-left: 10px;
 		color: #fff;
@@ -102,7 +102,7 @@ div.clear-hack {
 		body.login #branding h1 {
 			text-indent: -9999px; }
 		
-		#branding h1 a {
+		#branding h1 b {
 			height: 65px;
 			display: block;
 			text-indent: -9999px;
