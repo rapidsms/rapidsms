@@ -48,7 +48,7 @@ changeYear: true
 				 
 		//The following options for display of Coupons Distribution Over time. Should be generated from the view
 		//And sent as (coupons_distribution_over_time_data_options)
-				 var coupons_distribution_over_time_data_options = {
+	var coupons_distribution_over_time_data_options = {
           //lines:     { show: true },
           //points:    { show: true },
           //legend:    { noColumns: 2 },
@@ -64,8 +64,8 @@ changeYear: true
           shadowSize: "2",
           grid: { hoverable: true, mouseOverHighlight: 'black' },
 					
-					//This option is supposed to display tip/hint on location of chart element and its value on the chart
-					hints: {
+	//This option is supposed to display tip/hint on location of chart element and its value on the chart but not working yet.
+            hints: {
             show: true,
             showColorBox: true,
             showSeriesLabel: true,
@@ -92,7 +92,6 @@ changeYear: true
           }
         };
 				
-		// var plot = $.plot($('#cd_dps_ot'), coupons_distribution_over_time_data, coupons_distribution_over_time_data_options);
 	
 	var coupons_distribution_discrepancy_data  = [{data: data5, bars: { show: true }, "label":"MT 1"} , 
 													{ data: data6, bars: { show: true },"label":"MT 2" },

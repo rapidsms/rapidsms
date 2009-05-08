@@ -1,9 +1,9 @@
 [
 {"pk": 1, "model": "reporters.reportergroup", "fields": {"title": "Users"}},
 
-{"pk": 1, "model": "reporters.reporter", "fields": {"alias": "takinbo", "first_name": "Tim", "last_name": "Akinbo", "password": "1111", "location": 5 }},
-{"pk": 2, "model": "reporters.reporter", "fields": {"alias": "soloz", "first_name": "Solomon", "last_name": "Adebayo", "password": "1111", "location": 6 }},
-{"pk": 3, "model": "reporters.reporter", "fields": {"alias": "czue", "first_name": "Cory", "last_name": "Zue", "password": "1111", "location": 7 }},
+{"pk": 1, "model": "reporters.reporter", "fields": {"alias": "takinbo", "first_name": "Tim", "last_name": "Akinbo", "location": 5 }},
+{"pk": 2, "model": "reporters.reporter", "fields": {"alias": "soloz", "first_name": "Solomon", "last_name": "Adebayo", "location": 6 }},
+{"pk": 3, "model": "reporters.reporter", "fields": {"alias": "czue", "first_name": "Cory", "last_name": "Zue", "location": 7 }},
 
 {"pk": 1, "model": "nigeria.carddistribution", "fields": {"reporter": 1, "location": 5, "time": "2008-04-20 17:03:03", "settlements": 45, "people": 150, "distributed": 30}},
 {"pk": 2, "model": "nigeria.carddistribution", "fields": {"reporter": 2, "location": 6, "time": "2008-04-20 17:05:03", "settlements": 30, "people": 90, "distributed": 18}},
