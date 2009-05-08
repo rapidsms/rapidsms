@@ -113,9 +113,11 @@ def daily_progress():
         days.append(data)
     
     total_netcards = sum(CardDistribution.objects.all().values_list("distributed", flat=True))
-    netcards_stats = int(float(total_netcards) / float(coupon_target) * 100) if (total_netcards > 0) else 0
+    netcards_stats = int(float(total_netcards) / coupon_target * 100) if (total_netcards > 0) else 0
+
     total_beneficiaries = sum(CardDistribution.objects.all().values_list("people", flat=True))
-    beneficiaries_stats = int(float(total_beneficiaries) / float(recipient_target) * 100) if (total_beneficiaries > 0) else 0
+    beneficiaries_stats = int(float(total_beneficiaries) / recipient_target * 100) if (total_beneficiaries > 0) else 0
+
     return { "days": days, 
             "netcards_stats": netcards_stats, 
             "beneficiaries_stats": beneficiaries_stats,
@@ -141,6 +143,7 @@ def pilot_summary():
 
         return {
             "name":          ward.name,
+            "contact":       ward.one_contact('WS', True),
             "reports":       reports.count(),
             "netcards":      sum(reports.values_list("distributed", flat=True)),
             "beneficiaries": sum(reports.values_list("people", flat=True)),
@@ -151,28 +154,28 @@ def pilot_summary():
     def __lga_data(lga):
         projections = {
             "netcards" : {
-                        "DAWAKIN KUDU"   : 99379,
-                        "GARUN MALLAM"   : 51365,
-                        "KANO MUNICIPAL" : 161168,
-                        "KURA"           : 63758 },
+                        "DAWAKIN KUDU"   : 99379.0,
+                        "GARUN MALLAM"   : 51365.0,
+                        "KANO MUNICIPAL" : 161168.0,
+                        "KURA"           : 63758.0 },
             "beneficiaries" : {
-                        "DAWAKIN KUDU"   : 248447,
-                        "GARUN MALLAM"   : 128412,
-                        "KANO MUNICIPAL" : 402919,
-                        "KURA"           : 159394 },
+                        "DAWAKIN KUDU"   : 248447.0,
+                        "GARUN MALLAM"   : 128412.0,
+                        "KANO MUNICIPAL" : 402919.0,
+                        "KURA"           : 159394.0 },
         }
 
         wards = lga.children.all()
         reporters = Reporter.objects.filter(location__in=wards)
         supervisors = reporters.filter(role__code__iexact="WS")
-        summary = "%d supervisors in %d wards" % (len(supervisors), len(wards))
+        summary = "%d supervisors in %d wards" % (supervisors.count(), wards.count())
         
         ward_data = map(__ward_data, wards)
         def __wards_total(key):
             return sum(map(lambda w: w[key], ward_data))
         
-        netcards_stats = int(float(__wards_total("netcards")) / float(projections["netcards"][str(lga.name)]) * 100) if (__wards_total("netcards") > 0) else 0
-        beneficiaries_stats = int(float(__wards_total("beneficiaries")) / float(projections["beneficiaries"][str(lga.name)]) * 100) if (__wards_total("beneficiaries") > 0) else 0
+        def __stats(key):
+            return int(float(__wards_total(key)) / projections[key][str(lga.name)] * 100) if (__wards_total(key) > 0) else 0 
 
         return {
             "name":                     lga.name,
@@ -181,13 +184,14 @@ def pilot_summary():
             "netcards_total":           int(__wards_total("netcards")),
             "beneficiaries_projected":  int(projections['beneficiaries'][str(lga.name)]),
             "beneficiaries_total":      int(__wards_total("beneficiaries")),
-            "netcards_stats":           netcards_stats,
-            "beneficiaries_stats":      beneficiaries_stats,
             "wards":                    ward_data,
             "reports":                  __wards_total("reports"),
             "netcards":                 __wards_total("netcards"),
-            "beneficiaries":            __wards_total("beneficiaries") }
-    
+            "beneficiaries":            __wards_total("beneficiaries"),
+            "netcards_stats":           __stats("netcards"),
+            "beneficiaries_stats":      __stats("beneficiaries")
+        }
+
     return { "pilot_lgas": map(__lga_data, lgas) }
 
 
@@ -199,7 +203,8 @@ def logistics_summary():
     def __lga_data(lga):
         return {
             "name":         unicode(lga),
-            "transactions": PartialTransaction.objects.filter(destination=lga, type__in=["R", "I"]).order_by("-date") }
+            "transactions": PartialTransaction.objects.filter(destination=lga, type__in=["R", "I"]).order_by("-date"),
+            "logistician": lga.one_contact('SM', True)}
     
     # process and return data for ALL LGAs for this report
     return { "lgas": map(__lga_data, LocationType.objects.get(name="LGA").locations.all()) }

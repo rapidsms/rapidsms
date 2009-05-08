@@ -19,9 +19,13 @@
 			<tbody>{% for ward in lga.wards %}
 				<tr class={{ ward.class }}>
 					<td>{{ ward.name }}</td>
-					<td class="min num">{{ ward.reports }}</td>
-					<td class="min num">{{ ward.netcards }}</td>
-					<td class="min num">{{ ward.beneficiaries }}</td>
+                                        {% if ward.class %}
+                                            <td colspan="3">{{ ward.contact }}</td>
+                                        {% else %}
+                                            <td class="min num">{{ ward.reports }}</td>
+                                            <td class="min num">{{ ward.netcards }}</td>
+                                            <td class="min num">{{ ward.beneficiaries }}</td>
+                                        {% endif %}
 				</tr>{% endfor %}
 				<tr class="totals">
 					<td>Total</td>
