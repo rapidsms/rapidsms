@@ -97,6 +97,10 @@ class Config (object):
                 if not var_name.startswith("_"):
                     data[var_name] = getattr(config, var_name)
         
+        # import the actual module, and add the path to the
+        # config - it might not always be in rapidsms/apps/%s
+        data["path"] = self.__import_class("apps.%s" % data["type"]).__path__[0]
+        
         # return the component with the additional
         # app-specific data included.
         return data
