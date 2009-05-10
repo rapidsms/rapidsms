@@ -52,6 +52,11 @@ class Component(object):
         if "title" in kwargs: self._title = kwargs.pop("title")
         if "slug"  in kwargs: self._slug  = kwargs.pop("slug")
         
+        # HACK: remove any internal stuff that was added by
+        # config.py for the benefit of the webui (which doesn't
+        # have access to the component itself, only the config object)
+        kwargs.pop("path", None)
+        
         try:
             self.configure(**kwargs)
         
@@ -60,7 +65,7 @@ class Component(object):
             if "unexpected keyword" in e.message:
                 missing_keyword = e.message.split("'")[1]
                 raise Exception("Component '%s' does not support a '%s' option."
-                        % (title, missing_keyword))
+                        % (self.title, missing_keyword))
             else:
                 raise
 
