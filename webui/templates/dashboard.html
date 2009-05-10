@@ -1,6 +1,11 @@
 {% extends "layout.html" %}
 {% block title %}Dashboard{% endblock %}
-
+{% block javascripts %}
+<script type="text/javascript" src="/static/webui/javascripts/jquery.flot.js"></script>
+<script type="text/javascript" src="/static/webui/javascripts/jquery.flot.pie.pack.js"></script>
+<!--[if IE]><script type="text/javascript" src="/static/webui/javascripts/excanvas.pack.js"></script>
+<![endif]-->
+{% endblock %}
 {% load nigeria %}
 
 {% block content %}
@@ -9,7 +14,7 @@
 
 <div class="split-3">
 	<div class="left">
-		{% recent_reporters %}
+		{% mobilization_summary_charts %}
 	</div>
 	<div class="mid">
 		{% daily_progress %}
