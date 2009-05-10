@@ -174,8 +174,8 @@ def bednets_summary(req, locid=1):
         location = None
     
     bar_data.append({"data" : discrepancy_data, "bars": { "show" : "true" }, "label":"discrepancy"})
-    bar_data.append({"data" : expected_data, "bars": { "show" : "true" }, "label":"expected"})
-    bar_data.append({"data" : nets_data, "bars": { "show" : "true" }, "label":"nets"})
+    bar_data.append({"data" : expected_data, "bars": { "show" : "true" }, "label":"expected nets distribution"})
+    bar_data.append({"data" : nets_data, "bars": { "show" : "true" }, "label":"nets distributed"})
     
     ticks = [[index * 4 + 1.5, label] for index, label in enumerate(labels)]
     return render_to_response(req, "nigeria/bednets_summary.html", {'location': location,
