@@ -1,0 +1,107 @@
+{% extends "layout.html" %}
+{% block title %}Daily Bednets Distribution Summary{% endblock %}
+{% block javascripts %}
+<!--[if IE]><script language="javascript" type="text/javascript" src="/static/nigeria/js/excanvas.pack.js"></script><![endif]-->
+<script language="javascript" type="text/javascript" src="/static/nigeria/js/jquery.flot.js"></script>
+<script language="javascript" type="text/javascript" src="/static/nigeria/js/jquery.flot.pie.pack.js"></script>
+
+<script language="javascript">
+
+$(document).ready(function() {
+
+     bar_data = {{bar_data|safe}};
+     bar_options= {"grid": {"show":"false", "clickable":"true"}, "xaxis":{"ticks":{{bar_ticks|safe}}, "tickFormatter":"string"}}
+     bar_opts_no_legend = {bar : bar_options, legend: {show: false}}
+     $.plot($('#cd_bar_chart'), bar_data, bar_options);
+     pie_opts = {show: true, showLabel: false}
+     grid_opts = { hoverable : true, clickable: true} 
+     pie_opts_no_legend = { pie : pie_opts, grid: grid_opts, legend: { show: false } } 
+     pie_opts_legend = { pie: pie_opts, grid: grid_opts, legend: {    show: true, container : $('#flot_legend') }}
+     
+     $.plot($('#cd_nets_pie'),  {{pie_data.nets|safe}}, pie_opts_no_legend);
+     $.plot($('#cd_expected_pie'),  {{pie_data.expected|safe}}, pie_opts_no_legend);
+     $.plot($('#cd_discrepancy_pie'),  {{pie_data.discrepancy|safe}}, pie_opts_legend);
+     
+     //{% for key, value in time_data% }
+//	times_plots = [{'lines':{'show':'true'}, data: {{value|safe}}, label:'key'}] 
+        
+
+//The lines below will be used to plot the time-variant data - not working yet.
+/*     time_plots = {{time_data|safe}}
+
+     time_options = {"bars":{"show":false}, "points":{"show":true}, "grid":{"clickable":false},"xaxis":{"mode":"time","timeformat":"%d/%m/%y"},"yaxis":{"min":0},"lines":{"show":true}}
+     time_options_no_legend = {lines: time_options, legend: {show: false}}
+     time_options_legend = {lines: time_options, points:{show:true}, legend:{show: true, container:$('#cd_ot_legend')}}
+     $.plot($('#cd_ot'),  time_plots, time_options_legend);*/
+
+});
+    
+</script>
+
+{% endblock %}
+{% block stylesheets %}
+{% endblock %}
+{% block content %}
+
+<div class = "location_summary">
+  <h3>Bednets Distribution Summary for {{location.name}}</h3>
+  {% if parent %}
+  {{location.type}} of <a href="/reports/coupons/summary/{{parent.id}}">{{parent}}</a>
+  {% endif %}
+</div> 
+<div id="data_summary" style="clear:both;margin-top:1em">
+    <table width="100%" id="data_heading">
+        <tr>
+            <td colspan=4>
+                <h2>Daily Bednets Distribution by {{child_type}}s at {{location.name}}</h2>
+                    <div id="cd_bar_chart" style="height:250px;width:900px;"></div>
+            </td>
+        <tr>
+            <td>
+                <h2>Total Nets Distributed by {{child_type}}</h2>
+                    <div id="cd_nets_pie" style="height:250px;width:250px;"></div>
+            </td>
+            <td>
+                <h2>Coupons Issued by {{child_type}}</h2>
+                    <div id="cd_expected_pie" style="height:250px;width:250px;"></div>
+            </td>
+            <td>
+                <h2>Discrepancies in Nets Distribution by {{child_type}}</h2>
+                    <div id="cd_discrepancy_pie" style="height:250px;width:250px;"></div>
+            </td>
+            <td>
+                <h2>Legend</h2>
+                <div id="flot_legend" style="height:250px;width:150px;"></div>
+            </td>
+        </tr><br/><br/>
+	<tr>
+	     <td colspan=3>
+		  <h2> Bed Nets Distribution over time by {{child_type}} </h2>
+                  <div id="cd_ot" style="height:250px;width:600px;"></div>
+	     </td>
+	     <td>
+		  <h2>Legend</h2>
+		  <div id="cd_ot_legend" style="height:250px;width:150px;"></div>
+	     </td>
+	</tr>
+    </table>
+    <br/>
+    <table width="100%" id="data_heading">
+        <thead>
+            <tr>
+                <th><b>{{child_type}}</b></th><th><b>No. of Settlements</b></th><th><b>Total No. of People</b></th><th><b>Coupons Issued</b></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for child in children %}
+                <tr>
+                    <td><a href="/reports/coupons/summary/{{child.id}}">{{child.name}}</a></td><td>{{child.settlements}}</td><td>{{child.people}}</td><td>{{child.coupons}}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+
+        
+{% endblock %}

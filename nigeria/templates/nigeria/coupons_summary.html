@@ -21,8 +21,19 @@ $(document).ready(function() {
      $.plot($('#cd_settlements_pie'),  {{pie_data.settlements|safe}}, pie_opts_no_legend);
      $.plot($('#cd_people_pie'),  {{pie_data.people|safe}}, pie_opts_no_legend);
      $.plot($('#cd_coupons_pie'),  {{pie_data.coupons|safe}}, pie_opts_legend);
-
      
+     //{% for key, value in time_data% }
+//	times_plots = [{'lines':{'show':'true'}, data: {{value|safe}}, label:'key'}] 
+        
+
+//The lines below will be used to plot the time-variant data - not working yet.
+/*     time_plots = {{time_data|safe}}
+
+     time_options = {"bars":{"show":false}, "points":{"show":true}, "grid":{"clickable":false},"xaxis":{"mode":"time","timeformat":"%d/%m/%y"},"yaxis":{"min":0},"lines":{"show":true}}
+     time_options_no_legend = {lines: time_options, legend: {show: false}}
+     time_options_legend = {lines: time_options, points:{show:true}, legend:{show: true, container:$('#cd_ot_legend')}}
+     $.plot($('#cd_ot'),  time_plots, time_options_legend);*/
+
 });
     
 </script>
@@ -63,6 +74,16 @@ $(document).ready(function() {
                 <div id="flot_legend" style="height:250px;width:150px;"></div>
             </td>
         </tr>
+	<tr>
+	     <td colspan=3>
+		  <h2> Mobilization over time by {{child_type}} </h2>
+                  <div id="cd_ot" style="height:250px;width:600px;"></div>
+	     </td>
+	     <td>
+		  <h2>Legend</h2>
+		  <div id="cd_ot_legend" style="height:250px;width:150px;"></div>
+	     </td>
+	</tr>
     </table>
     <br/>
     <table width="100%" id="data_heading">
