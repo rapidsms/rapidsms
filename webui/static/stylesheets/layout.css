@@ -146,12 +146,24 @@ div.clear-hack {
 				border-right: 1px solid #11bad0;
 				border-left: 1px solid #11bad0;
 			}
+			
+			/* there are unread messages in this tab!
+			 * TODO: is this *just* for the training
+			 * app? f so, move it there! */
+			#tabs li.unread a span {
+				display: block;
+				padding-right: 21px;
+				background: url("../icons/silk/email_open.png") no-repeat 100% 50%;
+			}
 		
 			#tabs li.active a,
 			#page-tabs li.active a,
 			#tabs li.active a:hover,
 			#page-tabs li.active a:hover {
 				background: #55cfde url("../images/tab-bg-active.png") repeat-x;
+				
+				/* border the same color as the
+				 * strip in the header-bg.png */
 				border: 1px solid #cef1f5;
 				border-bottom: 0;
 			
