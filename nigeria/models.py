@@ -57,7 +57,6 @@ class CardDistribution(models.Model):
         time_data = []
         index = 1
         same_day = 0
-        print location.type
         for report in all:
             settlements += report.settlements
             people += report.people
