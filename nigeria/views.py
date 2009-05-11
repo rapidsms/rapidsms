@@ -128,13 +128,69 @@ def generate(req):
 def supply_summary(req, frm, to, range):
     return render_to_response(req, "nigeria/supply_summary.html")
 
-def bednets_summary(req, frm, to, range):
-    return render_to_response(req, "nigeria/bednets_summary.html")
+def bednets_summary(req, locid=1):
+    #Declarations
+    try: 
+        location = Location.objects.get(pk=locid)
+        parent = location.parent
+        location_type = Location.objects.get(pk=locid).type
+        loc_children = []
+        bar_data = []
+        pie_data = {"nets" : [], "expected" : [], "discrepancy": []}
+        time_data = []
+
+        index = 0
+        # The loop below will be replaced by a neater code when method of returning children field properties are discovered
+        nets_data = []
+        discrepancy_data = []
+        expected_data = []
+
+        labels = []
+        type = ""
+
+        for child in location.children.all():
+            #TODO: For generating time-based plots, uncomment this; #people, coupons, settlements, timeinfo = _get_card_distribution_data(child)
+            nets, expected, discrepancy = _get_nets_distribution_data(child)
+            people, coupons, settlements = _get_card_distribution_data(child)
+            child.nets = nets
+            child.expected = coupons * 2
+            child.discrepancy = discrepancy
+            type = child.type
+            if child.nets or child.expected or child.discrepancy:
+                nets_data.append([index, child.nets])
+                expected_data.append([index + 1, child.expected])
+                discrepancy_data.append([index + 2, child.discrepancy])
+                # you need to add the str() to prevent the leading unicode 
+                # character from showing up, which blows up flot
+                labels.append(str(child.name))
+                pie_data["nets"].append({ "label": str(child.name),  "data": child.nets})
+                pie_data["expected"].append({ "label": str(child.name),  "data": child.expected})
+                pie_data["discrepancy"].append({ "label": str(child.name),  "data": child.discrepancy})
+                index += 4
+                
+            #TODO: Generating time-based plots, uncomment this, #    time_data.append(timeinfo)
+            loc_children.append(child)
+    except Location.DoesNotExist:
+        location = None
+    
+    bar_data.append({"data" : discrepancy_data, "bars": { "show" : "true" }, "label":"discrepancy"})
+    bar_data.append({"data" : expected_data, "bars": { "show" : "true" }, "label":"expected"})
+    bar_data.append({"data" : nets_data, "bars": { "show" : "true" }, "label":"nets"})
+    
+    ticks = [[index * 4 + 1.5, label] for index, label in enumerate(labels)]
+    return render_to_response(req, "nigeria/bednets_summary.html", {'location': location,
+                     'children' : loc_children, 
+                     'child_type':type, 
+                     'parent':parent, 
+                     'bar_data':bar_data,
+                     'bar_ticks':ticks,
+                     'pie_data': pie_data,
+                     'time_data':time_data
+                     }
+                 )
 
 def coupons_summary(req, locid=1):
     #Declarations
-    coupons_distribution_data_per_ward = []
-    coupons_distribution_data_over_time = []  
     try: 
         location = Location.objects.get(pk=locid)
         parent = location.parent
@@ -142,7 +198,8 @@ def coupons_summary(req, locid=1):
         loc_children = []
         bar_data = []
         pie_data = {"settlements" : [], "people" : [], "coupons": []}
-    
+        time_data = []
+
         index = 0
         # The loop below will be replaced by a neater code when method of returning children field properties are discovered
         coupon_data = []
@@ -150,7 +207,9 @@ def coupons_summary(req, locid=1):
         settlements_data = []
         labels = []
         type = ""
+
         for child in location.children.all():
+            #TODO: Generating time-based plots, Uncomment #people, coupons, settlements, timeinfo = _get_card_distribution_data(child)
             people, coupons, settlements = _get_card_distribution_data(child)
             child.people = people
             child.settlements = settlements
@@ -168,6 +227,8 @@ def coupons_summary(req, locid=1):
                 pie_data["settlements"].append({ "label": str(child.name),  "data": child.settlements})
                 pie_data["people"].append({ "label": str(child.name),  "data": child.people})
                 index += 4
+                
+                #TODO: For generating time-based plots, uncomment; #time_data.append(timeinfo)
             loc_children.append(child)
     except Location.DoesNotExist:
         location = None
@@ -177,15 +238,14 @@ def coupons_summary(req, locid=1):
     bar_data.append({"data" : coupon_data, "bars": { "show" : "true" }, "label":"coupons"})
     
     ticks = [[index * 4 + 1.5, label] for index, label in enumerate(labels)]
-    
-    options = '{"grid":{"clickable":true},"xaxis":{"min":0,"ticks":[],"tickFormatter":"string"},"yaxis":{"min":0}}'
     return render_to_response(req, "nigeria/coupons_summary.html", {'location': location,
                      'children' : loc_children, 
                      'child_type':type, 
                      'parent':parent, 
                      'bar_data':bar_data,
                      'bar_ticks':ticks,
-                     'pie_data': pie_data
+                     'pie_data': pie_data,
+                     'time_data':time_data
                      }
                  )
     
@@ -204,8 +264,6 @@ def coupons_summary(req, locid=1):
 # Periodical Reporting  by day, week, month for coupons
 def coupons_daily(req, locid=1):
     #Declarations
-    coupons_distribution_data_per_ward = []
-    coupons_distribution_data_over_time = []  
     child = Location.objects.get(pk=locid).children.all()[0]
     try: 
         location = Location.objects.get(pk=locid)
@@ -322,8 +380,6 @@ def _get_stock_per_location_strings(locations):
             rows.append(row)
     data = "[%s]" % ", ".join(rows)
 
-    #Tick line below will be added to introduce ticks for flot plots for this bar chart
-    #ticks = [[index * 4 + 1.5, label] for index, label in enumerate(labels)]
 
     options = '{"grid":{"clickable":true},"xaxis":{"min":0,"ticks":[],"tickFormatter":"string"},"yaxis":{"min":0},"legend":{show: false}}'
     return (data, options, bar_ticks)
@@ -345,17 +401,42 @@ def _get_mobilization_data_per_mobilization_team_string(ward):
     '''Get a JSON formated list for flot plots on the template, 
     based on data in the Net Cards Distribution Data'''
 
+def _get_nets_distribution_data(location):
+    nets = location.net_data["distributed"]
+    expected = location.net_data["expected"]
+    discrepancy = location.net_data["discrepancy"]
+
+    #TODO: This generates data for flots time-sensitive plots for net cards and benets. Not working.
+    #time_info = {}
+    #time_info.update({'lines':{'show':'true'}, 'data':location.card_data["time_info"], 'label':str(location.name)})
+    for child in location.children.all():
+        child_data = _get_nets_distribution_data(child)
+        nets += child_data[0]
+        expected += child_data[1]
+        discrepancy += child_data[2]
+    #    if str(child.type) == 'State' or str(child.type) == 'LGA' or str(child.type) == 'Ward':
+            #The line below added to build the time-sentitive data for plote - not completed.
+    #        time_info.update({'lines':{'show':'true'}, 'data':child_data[3], 'label':str(location.name)})
+    return int(nets), int(expected), int(discrepancy)#, time_info
+
 def _get_card_distribution_data(location):
     people = location.card_data["people"]
     coupons = location.card_data["distributed"]
     settlements = location.card_data["settlements"]
+
+    #This generates data for flots time-sensitive plots for net cards and benets. Not working.
+    #time_info = {}
+    #time_info.update({'lines':{'show':'true'}, 'data':location.card_data["time_info"], 'label':str(location.name)})
     for child in location.children.all():
         child_data = _get_card_distribution_data(child)
         people += child_data[0]
         coupons += child_data[1]
         settlements += child_data[2]
-    return int(people), int(coupons), int(settlements)
- 
+    #    if str(child.type) == 'State' or str(child.type) == 'LGA' or str(child.type) == 'Ward':
+            #The line below added to build the time-sentitive data for plote - not completed.
+    #        time_info.update({'lines':{'show':'true'}, 'data':child_data[3], 'label':str(location.name)})
+    return int(people), int(coupons), int(settlements)#, time_info
+     
 def _get_stock_over_time_strings(locations):
     '''Get a JSON formatted list that flot can plot
        based on the data in the stock table'''

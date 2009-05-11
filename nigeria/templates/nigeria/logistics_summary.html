@@ -14,7 +14,7 @@ stock_options = { bar: stock_loc_options, xaxis: {ticks: {{bar_ticks|safe}}, tic
 
 $.plot($("#sl_pl"), stock_loc_data , stock_options );
 
-// add tooltip.  unfortunately this isn't working now
+// add tooltip.  unfortunately this isn't working yet
 $("#sl_pl").bind("plotclick", function (event, pos, item) {
             if (item) {
                 $("#tooltip").remove();

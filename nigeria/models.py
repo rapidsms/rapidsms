@@ -1,6 +1,7 @@
 # vim: ai sts=4 ts=4 et sw=4
 from django.db import models
 from apps.reporters.models import Location, Reporter, PersistantConnection
+import time as taim
 
 class NetDistribution(models.Model):
     reporter = models.ForeignKey(Reporter, null=True, blank=True)
@@ -53,13 +54,26 @@ class CardDistribution(models.Model):
         settlements = 0
         people = 0
         distributed= 0
+        time_data = []
+        index = 1
+        same_day = 0
+        print location.type
         for report in all:
             settlements += report.settlements
             people += report.people
             distributed += report.distributed
+            #TODO: Complete the commented lines below. This is used to generate the time-sensitive plots for bednets and netcards distribution
+#            if str(location.type) == 'LGA' or str(location.type) == 'State' or str(location.type) == 'Ward' and int(taim.mktime(report.time.timetuple())) != same_day:
+ #               ud_time = str(taim.mktime(report.time.timetuple()))
+  #              time_data.append([ud_time[0:ud_time.find(".")]+"000", int(distributed)])
+            index +=1
+#TODO: Remove the comment below
+            #same_day = int(taim.mktime(report.time.timetuple()))
         return {"settlements":settlements, 
                 "people":people,
                 "distributed":distributed
+   #TODO: uncomment this...and include comma before it.
+                #"time_info":time_data
     }
                 
 
