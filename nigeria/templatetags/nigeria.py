@@ -201,9 +201,11 @@ def logistics_summary():
     # called to fetch and assemble the data structure
     # for each LGA, containing the flow of stock
     def __lga_data(lga):
+        incoming = PartialTransaction.objects.filter(destination=lga, type__in=["R", "I"]).order_by("-date")
+        outgoing = PartialTransaction.objects.filter(origin=lga, type__in=["R", "I"]).order_by("-date")
         return {
             "name":         unicode(lga),
-            "transactions": PartialTransaction.objects.filter(destination=lga, type__in=["R", "I"]).order_by("-date"),
+            "transactions": incoming | outgoing, 
             "logistician": lga.one_contact('SM', True)}
     
     # process and return data for ALL LGAs for this report
