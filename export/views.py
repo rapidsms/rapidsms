@@ -35,9 +35,9 @@ def database(req):
     sql = proc.communicate()
 
     # download the file as plain text
-    today = datetime.datetime.now().strftime("%d-%m-%y")
+    today = datetime.datetime.now().strftime("%d-%m-%Y")
     resp = http.HttpResponse(sql, mimetype="text/plain")
-    resp["content-disposition"] = "attachment; filename=%s.xls" % today
+    resp["content-disposition"] = "attachment; filename=%s.sql" % today
     return resp
 
 
