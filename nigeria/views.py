@@ -5,7 +5,7 @@ from django.http import HttpResponse, HttpResponseNotAllowed, HttpResponseServer
 from django.template import RequestContext
 from apps.reporters.models import Location, LocationType
 from apps.supply.models import Shipment, Transaction, Stock, PartialTransaction
-from apps.nigeria.models import CardDistribution
+from apps.nigeria.models import CardDistribution, NetDistribution
 from rapidsms.webui.utils import render_to_response
 from django.db import models
 # The import here newly added for serializations
@@ -402,9 +402,10 @@ def _get_mobilization_data_per_mobilization_team_string(ward):
     based on data in the Net Cards Distribution Data'''
 
 def _get_nets_distribution_data(location):
-    nets = location.net_data["distributed"]
-    expected = location.net_data["expected"]
-    discrepancy = location.net_data["discrepancy"]
+    data = NetDistribution.net_data(location)
+    nets = data["distributed"]
+    expected = data["expected"]
+    discrepancy = data["discrepancy"]
 
     #TODO: This generates data for flots time-sensitive plots for net cards and benets. Not working.
     #time_info = {}
@@ -420,9 +421,10 @@ def _get_nets_distribution_data(location):
     return int(nets), int(expected), int(discrepancy)#, time_info
 
 def _get_card_distribution_data(location):
-    people = location.card_data["people"]
-    coupons = location.card_data["distributed"]
-    settlements = location.card_data["settlements"]
+    data = CardDistribution.card_data(location)
+    people = data["people"]
+    coupons = data["distributed"]
+    settlements = data["settlements"]
 
     #This generates data for flots time-sensitive plots for net cards and benets. Not working.
     #time_info = {}
