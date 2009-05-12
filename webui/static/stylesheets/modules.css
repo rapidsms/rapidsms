@@ -164,7 +164,8 @@ table {
 			 * to separate from additional views and
 			 * exporting, which lives on the right */
 			tfoot .paginator,
-			tfoot .paginator a {
+			tfoot .paginator a,
+			tfoot .paginator span {
 				float: left; }
 			
 				tfoot .paginator a.active {
@@ -172,12 +173,12 @@ table {
 					color: #000;
 				}
 				
-				tfoot .paginator a.first,
-				tfoot .paginator a.prev,
-				tfoot .paginator a.next,
-				tfoot .paginator a.last {
+				tfoot .paginator .first,
+				tfoot .paginator .prev,
+				tfoot .paginator .next,
+				tfoot .paginator .last {
 					background-repeat: no-repeat;
-					background-position: 50% 50%;
+					background-position: 0 50%;
 					text-indent: -9999px;
 					overflow: hidden;
 					padding-right: 0;
@@ -185,10 +186,18 @@ table {
 					width: 16px;
 				}
 				
-				tfoot .paginator a.first { background-image: url("../icons/silk/resultset_first.png"); }
-				tfoot .paginator a.prev  { background-image: url("../icons/silk/resultset_previous.png"); }
-				tfoot .paginator a.next  { background-image: url("../icons/silk/resultset_next.png"); }
-				tfoot .paginator a.last  { background-image: url("../icons/silk/resultset_last.png"); }
+				/* links look something like:
+				 *  <<  <  1 2 3 4  >  >> */
+				tfoot .paginator .first { background-image: url("../icons/silk/resultset_first.png");    }
+				tfoot .paginator .prev  { background-image: url("../icons/silk/resultset_previous.png"); }
+				tfoot .paginator .next  { background-image: url("../icons/silk/resultset_next.png");     }
+				tfoot .paginator .last  { background-image: url("../icons/silk/resultset_last.png");     }
+				
+				/* when a naviation link is disabled, shift
+				 * the background image over to reveal the
+				 * dull+transparent sprite to the left */
+				tfoot .paginator span.na {
+					background-position: -16px 50%; }
 
 
 /* modules can include help text, to explain how
