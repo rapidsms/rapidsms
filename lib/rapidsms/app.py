@@ -17,17 +17,6 @@ class App(component.Component):
     def __init__(self, router):
         self._router = router
     
-    def __json__(self):
-        """Returns a reasonably useful serialization of this object, in case it ends
-           up being sent over HTTP. Although the slug is currently derrived from the
-           title, the two are deliberately separate here, since the two should become
-           decoupled in the future."""
-        
-        return {
-            "title": self.title,
-            "slug": self.slug
-        }
-    
     def priority(self):
         """Returns the numeric "priority" of this RapidSMS App object,
            which dictates the order in which the app will be notified
