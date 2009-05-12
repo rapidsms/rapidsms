@@ -8,3 +8,4 @@ core.*
 *.sqlite3
 logs/*
 apps/airtime/fixtures/airtime.json
+apps/nigeria/fixtures/airtime.json
