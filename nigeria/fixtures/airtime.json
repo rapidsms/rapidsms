@@ -1,5 +1,0 @@
-[
-{"pk": 1, "model": "nigeria.airtimepins", "fields": {"network": "MTN", "serial_no": "6992183692475241", "pin": "286086561596", "value": 100, "time_loaded": "2009-03-05 11:19:24"}},
-{"pk": 2, "model": "nigeria.airtimepins", "fields": {"network": "MTN", "serial_no": "343824395814330", "pin": "683403405688", "value": 100, "time_loaded": "2009-03-05 11:19:24"}},
-{"pk": 3, "model": "nigeria.airtimepins", "fields": {"network": "MTN", "serial_no": "0522112437781978", "pin": "122035761643", "value": 100, "time_loaded": "2009-03-05 11:19:24"}}
-]
