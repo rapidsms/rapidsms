@@ -297,6 +297,10 @@ div.clear-hack {
 	padding: 0.5em;
 	clear: both;
 	color: #ccc;
+	
+	/* reserve space for at least two lines of
+	 * links @ LH=1.4 (for the copyright info) */
+	min-height: 2.8em;
 }
 	
 	/* float */
