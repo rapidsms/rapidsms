@@ -1,5 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+{% load webui %}
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 	<head>
@@ -45,6 +46,8 @@
 					<a href="http://github.com/unicefinnovation/rapidsms">RapidSMS</a> is free software,
 					available under the <a href="http://www.fsf.org/licensing/licenses/lgpl-3.0.html">LGPL</a>.
 				</p>
+				
+				{% region "footer" %}
 			</div>
 			{% endblock %}
 			{% endif %}
@@ -57,7 +60,6 @@
 				in the [django] section of rapidsms.ini - it
 				should work in settings.py, too, but doesn't yet
 			-->
-			{% load debug %}
 			{% debug_dump %}
 		</div>
 		{% endif %}

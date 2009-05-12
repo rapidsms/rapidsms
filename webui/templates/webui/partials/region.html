@@ -1,0 +1,4 @@
+<div class="region rg-{{ name }}{% if not includes %} empty{% endif %}">{% if includes %}{% for path in includes %}
+	{% include path %}{% endfor %}{% else %}
+	<!-- nothing to include -->{% endif %}
+</div>
