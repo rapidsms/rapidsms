@@ -1,23 +1,21 @@
-	{% extends "layout.html" %}
+{% extends "layout.html" %}
 	
-	{% block title %} Report Summary {% endblock %}
-	
-	{% block stylesheets %}	
-	<link rel="stylesheet" href="/static/nigeria/jquery-treeview/jquery.treeview.css" />
-	<link rel="stylesheet" href="/static/nigeria/stylesheets/reports.css" />
+{% block title %} Report Summary {% endblock %}
 
-	{% endblock %}
-	
-	{% block javascripts %}
-	<script src="/static/nigeria/jquery-treeview/lib/jquery.cookie.js" type="text/javascript"></script>
-	<script src="/static/nigeria/jquery-treeview/jquery.treeview.js" type="text/javascript"></script>
-	
-	<script type="text/javascript" src="/static/nigeria/jquery-treeview/demo/demo.js"></script>
+{% block stylesheets %}	
+<link rel="stylesheet" href="/static/nigeria/jquery-treeview/jquery.treeview.css" />
+<link rel="stylesheet" href="/static/nigeria/stylesheets/reports.css" />
+{% endblock %}
+
+{% block javascripts %}
+<script src="/static/nigeria/jquery-treeview/lib/jquery.cookie.js" type="text/javascript"></script>
+<script src="/static/nigeria/jquery-treeview/jquery.treeview.js" type="text/javascript"></script>
+<script src="/static/nigeria/jquery-treeview/jquery.treeview.async.js" type="text/javascript"></script>
+<script type="text/javascript" src="/static/nigeria/javascripts/treeview.js"></script>
 <script>
 </script>
-
-	{% endblock %}
-	{% block content %}
+{% endblock %}
+{% block content %}
 
 <div>		
 {% if location %}
@@ -25,7 +23,7 @@
 {% if location.parent %} 
     <a href="/reports/summary/{{location.parent.pk}}/">Go to parent ({{location.parent.name}} {{location.parent.type}}) </a>
 {% endif %}
-<table class="datatable"><thead><tr>
+<table class="datatable" width="100%"><thead><tr>
 <th scope="col" class="first"><b>State/LGA/Ward</b></th>
 <th scope="col"><b>Stock <br/> Level</b></th>
 <th scope="col"><b>Net Cards<br/> Distributed</b></th>
@@ -37,38 +35,15 @@
 <th scope="col"><b></b></th>
 </tr></thead></table>
 <ul id="navigation">
-<li class="{% cycle 'odd' 'even' %}">
-  <span>
-    {{location}}
+<li>
+  <span>{{location}}</span>
     <span class="field">
         <span class="datafield"><a href="/reports/logistics/summary/{{location.pk}}">{{location.stock.balance}}</a></span> 
         <span><a href="/reports/coupons/summary/{{location.pk}}/">{{location.card_data.distributed}}</a></span> 
         <span><a href="/reports/bednets/summary/{{location.pk}}/">{{location.net_data.distributed}}</a></span>
     </span>
-  </span>
-  {%for child in location.children.all %} 
-    <ul>
-    <li class="{% cycle 'odd' 'even' %}">
-      <span>
-        <a href="/reports/summary/{{child.pk}}/">{{child.name}}</a> 
-        <span class="field">
-            <span class="datafield"><a href="/reports/logistics/summary/{{child.pk}}/">{{child.stock.balance}}</a></span> 
-            <span><a href="/reports/coupons/summary/{{child.pk}}/">{{ child.card_data.distributed}}</a></span> 
-            <span><a href="/reports/bednets/summary/{{child.pk}}/">{{child.net_data.distributed}}</a></span>
-        </span>
-      </span>  
-{% for subchild in child.children.all %}
-<ul><li class="{% cycle 'odd' 'even' %}"><span><a href="/reports/summary/{{subchild.pk}}/">{{subchild.name}}</a> <span class="field">
-   <span class="datafield"><a href="/reports/logistics/summary/{{subchild.pk}}/">{{subchild.stock.balance}}</a></span> 
-   <span><a href="/reports/coupons/summary/{{subchild.pk}}/">{{subchild.card_data.distributed}}</a></span> 
-   <span><a href="/reports/bednets/summary/{{subchild.pk}}/">{{subchild.net_data.distributed}}</a></span>
-   </span></span>
-</li></ul>
-{%endfor%}
-
-</li>
-</ul>
-{% endfor %}
+	<ul id="lgas">
+	</ul>
 </li>
 </ul>
 {% endif %}

@@ -5,14 +5,14 @@ from django.http import HttpResponse, HttpResponseNotAllowed, HttpResponseServer
 from django.template import RequestContext
 from apps.reporters.models import Location, LocationType
 from apps.supply.models import Shipment, Transaction, Stock, PartialTransaction
-from apps.nigeria.models import CardDistribution
+from apps.nigeria.models import CardDistribution, NetDistribution
 from rapidsms.webui.utils import render_to_response
 from django.db import models
 # The import here newly added for serializations
 from django.core import serializers
 from django.core.paginator import *
 from random import randrange, seed
-from contrib.flotgrapher.grapher import FlotGraph
+from django.utils import simplejson
 
 import time
 import sys
@@ -31,11 +31,59 @@ def index(req, locid=None):
         locid = 1
     try:
         location = Location.objects.get(id=locid)
+        # prepopulate the card and net data dictionaries
+        location.card_data  = { 'distributed': sum(CardDistribution.objects.filter(location__code__startswith=location.code).all().values_list('distributed', flat=True)) }
+        location.net_data   = { 'distributed': sum(NetDistribution.objects.filter(location__code__startswith=location.code).all().values_list('distributed', flat=True)) }
+        location.stock      = { 'balance': sum(Stock.objects.filter(location__code__startswith=location.code).all().values_list('balance', flat=True)) }
+
     except Location.DoesNotExist:
         location= None
-    #print "location: %s" % location
+    
     return render_to_response(req, "nigeria/index.html",{'location':location })
 
+def location_tree(req):
+    location = None
+    locid = 1
+
+    try:
+        locid = req.GET['root']
+    except:
+        pass
+
+    tree = []
+    
+    if locid:
+        if locid == "source":
+            locid = 1
+        try:
+            location = Location.objects.get(id=locid)
+            children = location.children.filter(type__name__in=['LGA', 'Ward']).all()
+            for child in children:
+                try:
+                    stock_balance = Stock.objects.get(location=child).balance
+                except Stock.DoesNotExist:
+                    stock_balance = 0
+
+                cards_distributed = sum(CardDistribution.objects.filter(location__code__startswith=child.code).all().values_list('distributed', flat=True))
+                nets_distributed = sum(NetDistribution.objects.filter(location__code__startswith=child.code).all().values_list('distributed', flat=True))
+
+                text = '''<span>%s</span>
+            <span class="field">
+                <span class="datafield"><a href="/reports/logistics/summary/%d/">%s</a></span>
+                <span><a href="/reports/coupons/summary/%d/">%s</a></span>
+                <span><a href="/reports/bednets/summary/%d/">%s</a></span>
+            </span>'''
+                tree.append({
+                    'text': text % (child.name, child.pk, stock_balance, child.pk, cards_distributed, child.pk, nets_distributed),
+                    'expanded': False,
+                    'id': child.pk,
+                    'hasChildren': True if child.children.filter(type__name__in=['LGA', 'Ward']).all() else False
+                })
+        except Location.DoesNotExist:
+            location = None
+
+    tree_json = simplejson.dumps(tree)
+    return HttpResponse(tree_json, mimetype="application/json")
 
 def logistics_summary(req, locid):
     # Get the location we are going to work with.

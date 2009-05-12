@@ -3,17 +3,13 @@
 
 
 from django import template
+
 register = template.Library()
 
-
 from datetime import datetime, timedelta
-
-
 from apps.reporters.models import *
 from apps.supply.models import *
 from apps.nigeria.models import *
-
-
 
 @register.inclusion_tag("nigeria/partials/recent.html")
 def recent_reporters(number=4):
