@@ -294,11 +294,19 @@ div.clear-hack {
 /* legal junk */
 #footer {
 	border-top: 1px dotted #eee;
-	text-align: right;
 	padding: 0.5em;
 	clear: both;
 	color: #ccc;
 }
-
-	#footer p {
-		margin: 0; }
+	
+	/* float */
+	#footer .rg-footer {
+		padding-top: 1.4em;
+		line-height: 1.4;
+	}
+	
+	#footer p.rights {
+		text-align: right;
+		float: right;
+		margin: 0;
+	}
