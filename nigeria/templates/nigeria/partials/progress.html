@@ -12,8 +12,8 @@
 		<tbody>
                         {% for day in days %}
 			<tr{% if day.in_future %} class="future"{% endif %}>
-				<td><span title="{{ day.date|date }}">{{ day.date|date:"d/m" }}</span></td>
-				<td title="{{ day.date|date }}" class="day min num shrink">{{ day.number }}</td>
+				<td class="min shrink"><span title="{{ day.date|date }}">{{ day.date|date:"d/m" }}</span></td>
+				<td title="{{ day.date|date }}" class="day min num">{{ day.number }}</td>
 				
 				<td>{{ day.reports }}</td>
 				<td class="perc">{% ifnotequal day.reports None %}{{ day.reports_perc }}%{% endifnotequal %}</td>
