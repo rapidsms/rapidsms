@@ -2,9 +2,15 @@
 
 <div class="module logistics">
 	<h2>Logistics Summary</h2>
-	
+        <div class="help">
+            <p>Stock movements into and out of each LGA. 
+                The reporting party (whoever sent the data about the transaction) is in bold.
+                'Bales' tells the amount of the shipment, and 'Stock' tells the current
+                stock balance at the reporting party's location after the amount has been 
+                added or subtracted.</p>
+        </div>
 	<div class="scroller">
-		<table class="export">{% for lga in lgas %}{% if lga.transactions %}
+	 	<table class="export">{% for lga in lgas %}{% if lga.transactions %}
 			<thead>
 				<tr class="caption">
 					<td colspan="6">
@@ -13,23 +19,24 @@
 				</tr>
 				<th>Type</th>
 				<th>Date</th>
-				<th>To/From</th>
+				<th>From &raquo; To</th>
 				<th>Logistician</th>
 				<th><abbr title="Number of Bales Transferred">Bales</abbr></th>
 				<th><abbr title="Post-Transfer Stock Balance">Stock</abbr></th>
 			</thead>
-			<tbody>{% for transaction in lga.transactions %}
+			<tbody>
+                                {% for transaction in lga.transactions%}
 				<tr>
 					<td title="{% ifequal transaction.type "R" %}Incoming (receipt){% else %}Outgoing (issued){% endifequal %}" class="min dir-{{ transaction.type }}"><span>{{ transaction.type }}</span></td>
 					<td class="min"><span title="{{ transaction.date|date }}">{{ transaction.date|date:"d/m" }}</span></td>
-					<td class="min">{{ transaction.origin }}</td>
+					<td class="min">{% ifequal transaction.type "R" %}{{ transaction.origin }} &raquo; <b>{{ transaction.destination }}</b>{% else %}<b>{{ transaction.origin }}</b> &raquo; {{ transaction.destination }}{% endifequal %}</td>
 					<td>{{ transaction.reporter }}</td>
 					<td class="min num">{% ifequal transaction.type "R" %}+{% else %}-{% endifequal %}{{ transaction.amount }}</td>
 					<td class="min num">{{ transaction.stock }}</td>
 				</tr>{% endfor %}
 				<tr class="summary">
 					<td colspan="6">
-						{{ lga.transactions|length }} Transactions since May 05 2009.
+						{{ lga.transactions|length }} Stock transactions since May 05 2009.
 					</td>
 				</tr>
 			</tbody>{% else %}

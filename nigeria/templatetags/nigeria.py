@@ -133,6 +133,7 @@ def pilot_summary():
     def __ward_data(ward):
         locations = ward.descendants(True)
         reports = CardDistribution.objects.filter(location__in=locations)
+        nets_reports = NetDistribution.objects.filter(location__in=locations)
         style = "" 
         if reports.count() == 0:
             style = "warning" 
@@ -141,7 +142,9 @@ def pilot_summary():
             "name":          ward.name,
             "contact":       ward.one_contact('WS', True),
             "reports":       reports.count(),
+            "nets_reports":  nets_reports.count(),
             "netcards":      sum(reports.values_list("distributed", flat=True)),
+            "nets":          sum(nets_reports.values_list("distributed", flat=True)),
             "beneficiaries": sum(reports.values_list("people", flat=True)),
             "class":         style}
     
@@ -173,6 +176,10 @@ def pilot_summary():
         def __stats(key):
             return int(float(__wards_total(key)) / projections[key][str(lga.name)] * 100) if (__wards_total(key) > 0) else 0 
 
+        # This method to return % of nets/netcards issued. It is believed there could be a better method.
+        def __nets_stats(key):
+            return int (float(__wards_total(key)/__wards_total("netcards")) * 100 ) if (__wards_total(key) > 0 ) else 0
+            
         return {
             "name":                     lga.name,
             "summary":                  summary,
@@ -184,7 +191,10 @@ def pilot_summary():
             "reports":                  __wards_total("reports"),
             "netcards":                 __wards_total("netcards"),
             "beneficiaries":            __wards_total("beneficiaries"),
+            "nets_total":               __wards_total("nets"),
+            "nets_reports":             __wards_total("nets_reports"),
             "netcards_stats":           __stats("netcards"),
+            "nets_stats":               __nets_stats("nets"),
             "beneficiaries_stats":      __stats("beneficiaries")
         }
 
@@ -197,19 +207,22 @@ def logistics_summary():
     # called to fetch and assemble the data structure
     # for each LGA, containing the flow of stock
     def __lga_data(lga):
+        incoming = PartialTransaction.objects.filter(destination=lga, type__in=["R", "I"]).order_by("-date")
+        outgoing = PartialTransaction.objects.filter(origin=lga, type__in=["R", "I"]).order_by("-date")
         return {
             "name":         unicode(lga),
-            "transactions": PartialTransaction.objects.filter(destination=lga, type__in=["R", "I"]).order_by("-date"),
+            "transactions": incoming | outgoing, 
             "logistician": lga.one_contact('SM', True)}
     
     # process and return data for ALL LGAs for this report
     return { "lgas": map(__lga_data, LocationType.objects.get(name="LGA").locations.all()) }
 
-@register.inclusion_tag("nigeria/partials/mobilization_summary_charts.html")
+@register.inclusion_tag("nigeria/partials/distribution_summary_charts.html")
 def mobilization_summary_charts():
     summary = pilot_summary()
     netcards_projected = []
     netcards_total = []
+    nets_total = []
     beneficiaries_projected = []
     beneficiaries_total = []
     lga_names = []
@@ -218,6 +231,7 @@ def mobilization_summary_charts():
     for lga in pilot_lgas:
         netcards_projected.append("[%d, %d]" % (pilot_lgas.index(lga) * 3 + 1, lga['netcards_projected']))
         netcards_total.append("[%d, %d]" % (pilot_lgas.index(lga) * 3 + 2, lga['netcards_total']))
+        nets_total.append("[%d, %d]" % (pilot_lgas.index(lga) * 3 + 3, lga['nets_total']))
         beneficiaries_projected.append("[%d, %d]" % (pilot_lgas.index(lga) * 3 + 1, lga['beneficiaries_projected']))
         beneficiaries_total.append("[%d, %d]" % (pilot_lgas.index(lga) * 3 + 2, lga['beneficiaries_total']))
         lga_names.append("[%d, '%s']" % (pilot_lgas.index(lga) * 3 + 2, lga['name']))
@@ -226,5 +240,6 @@ def mobilization_summary_charts():
         "beneficiaries_total": "[%s]" % ",".join(beneficiaries_total),
         "netcards_projected": "[%s]" % ",".join(netcards_projected),
         "netcards_total": "[%s]" % ",".join(netcards_total),
+        "nets_total": "[%s]" % ",".join(nets_total),
         "lgas": "[%s]" % ",".join(lga_names)
     }
