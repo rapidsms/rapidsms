@@ -32,8 +32,8 @@ def index(req, locid=None):
     try:
         location = Location.objects.get(id=locid)
         # prepopulate the card and net data dictionaries
-        location.card_data  = { 'distributed': sum(CardDistribution.objects.filter(location__code__startswith=location.code).all().values_list('distributed', flat=True)) }
-        location.net_data   = { 'distributed': sum(NetDistribution.objects.filter(location__code__startswith=location.code).all().values_list('distributed', flat=True)) }
+        location.card_data  = CardDistribution.card_data_total(location) 
+        location.net_data   = NetDistribution.net_data_total(location)
         location.stock      = { 'balance': sum(Stock.objects.filter(location__code__startswith=location.code).all().values_list('balance', flat=True)) }
 
     except Location.DoesNotExist:
@@ -64,8 +64,8 @@ def location_tree(req):
                 except Stock.DoesNotExist:
                     stock_balance = 0
 
-                cards_distributed = sum(CardDistribution.objects.filter(location__code__startswith=child.code).all().values_list('distributed', flat=True))
-                nets_distributed = sum(NetDistribution.objects.filter(location__code__startswith=child.code).all().values_list('distributed', flat=True))
+                cards_distributed = CardDistribution.card_data_total(child)["distributed"]
+                nets_distributed = NetDistribution.net_data_total(child)["distributed"] 
 
                 text = '''<span>%s</span>
             <span class="field">
@@ -450,7 +450,7 @@ def _get_mobilization_data_per_mobilization_team_string(ward):
     based on data in the Net Cards Distribution Data'''
 
 def _get_nets_distribution_data(location):
-    data = NetDistribution.net_data(location)
+    data = NetDistribution.net_data_total(location)
     nets = data["distributed"]
     expected = data["expected"]
     discrepancy = data["discrepancy"]
@@ -458,18 +458,21 @@ def _get_nets_distribution_data(location):
     #TODO: This generates data for flots time-sensitive plots for net cards and benets. Not working.
     #time_info = {}
     #time_info.update({'lines':{'show':'true'}, 'data':location.card_data["time_info"], 'label':str(location.name)})
-    for child in location.children.all():
-        child_data = _get_nets_distribution_data(child)
-        nets += child_data[0]
-        expected += child_data[1]
-        discrepancy += child_data[2]
+    # Recursion is great but I was thinking that there's not likely going to be a need to use
+    # recursion to get descendants seeing that the location code in construct already
+    # takes that into consideration hence I'm commenting this out. Sorry Evan :)
+    #for child in location.children.all():
+    #    child_data = _get_nets_distribution_data(child)
+    #    nets += child_data[0]
+    #    expected += child_data[1]
+    #    discrepancy += child_data[2]
     #    if str(child.type) == 'State' or str(child.type) == 'LGA' or str(child.type) == 'Ward':
             #The line below added to build the time-sentitive data for plote - not completed.
     #        time_info.update({'lines':{'show':'true'}, 'data':child_data[3], 'label':str(location.name)})
     return int(nets), int(expected), int(discrepancy)#, time_info
 
 def _get_card_distribution_data(location):
-    data = CardDistribution.card_data(location)
+    data = CardDistribution.card_data_total(location)
     people = data["people"]
     coupons = data["distributed"]
     settlements = data["settlements"]
@@ -477,11 +480,12 @@ def _get_card_distribution_data(location):
     #This generates data for flots time-sensitive plots for net cards and benets. Not working.
     #time_info = {}
     #time_info.update({'lines':{'show':'true'}, 'data':location.card_data["time_info"], 'label':str(location.name)})
-    for child in location.children.all():
-        child_data = _get_card_distribution_data(child)
-        people += child_data[0]
-        coupons += child_data[1]
-        settlements += child_data[2]
+    
+    #for child in location.children.all():
+    #    child_data = _get_card_distribution_data(child)
+    #    people += child_data[0]
+    #    coupons += child_data[1]
+    #    settlements += child_data[2]
     #    if str(child.type) == 'State' or str(child.type) == 'LGA' or str(child.type) == 'Ward':
             #The line below added to build the time-sentitive data for plote - not completed.
     #        time_info.update({'lines':{'show':'true'}, 'data':child_data[3], 'label':str(location.name)})
