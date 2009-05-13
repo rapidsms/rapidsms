@@ -22,6 +22,9 @@ class Manager (object):
 
         # wait for incoming messages
         router.start()
+        
+        # TODO: Had to explicitly do this to end the script. Will need a fix.
+        sys.exit(0)
 
     def _skeleton (self, tree):
         return os.path.join(os.path.dirname(__file__), "skeleton", tree)
