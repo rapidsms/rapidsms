@@ -1,0 +1,24 @@
+<script language="javascript">
+$(document).ready(function(){
+	var beneficiaries_data = [{ bars: { show: true }, data: {{beneficiaries_projected|safe}}, label: 'Projected'},
+                     		  { bars: { show: true }, data: {{beneficiaries_total|safe}}, label: 'Actual'}];
+
+
+	var nets_netcards_data = [{ bars: { show: true }, data: {{netcards_projected|safe}}, label: 'Projected'},
+			             { bars: { show: true }, data: {{netcards_total|safe}}, label: 'Actual'},
+			             {bars:{show:true}, data: {{nets_total|safe}}, label:'Nets'}];
+
+
+	var options = { grid: { show: true, clickable: true }, xaxis: { ticks: {{lgas|safe}}, tickFormatter: 'string' }};
+	var options_no_legend = { bar: options, legend: { show: false }};
+	$.plot($('#nets_netcards_distro_chart'), nets_netcards_data, options);
+	$.plot($('#beneficiaries_chart'), beneficiaries_data, options);
+});
+</script>
+<h2>Mobilization and Net Distribution Summaries</h2>
+<div id="nets_netcards_distro_chart" style="width:100%;height:15em;margin-bottom:2em">
+</div>
+
+<h2>Beneficiaries Summary</h2>
+<div id="beneficiaries_chart" style="width:100%;height:15em">
+</div>
