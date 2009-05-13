@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-from django.core.paginator import Paginator, EmptyPage, InvalidPage
 from django.http import HttpResponse, Http404, HttpResponseBadRequest, HttpResponseNotAllowed, HttpResponseServerError
 from django.template import RequestContext
 from django.views.decorators.http import require_GET, require_POST, require_http_methods
@@ -21,37 +20,6 @@ def message(req, msg, link=None):
     })
 
 
-
-
-def paginated(req, query_set, per_page=20):
-
-    # the per_page argument to this function provides
-    # a default, but can be overridden per-request. no
-    # interface for this yet, so it's... an easter egg?
-    if "per-page" in req.GET:
-        try:
-            per_page = int(req.GET["per-page"])
-        
-        # if it was provided, it must be valid. we don't
-        # want links containing extra useless junk like
-        # invalid GET parameters floating around
-        except ValueError:
-            raise ValueError("Invalid per-page parameter: %r" % req.GET["per-page"])
-        
-    try:
-        paginator = Paginator(query_set, per_page)
-        page = int(req.GET.get("page", "1"))
-        objects = paginator.page(page)
-    
-    # have no mercy if the page parameter is not valid. there
-    # should be no links to an invalid page, so coercing it to
-    # assume "page=xyz" means "page=1" would just mask bugs
-    except (ValueError, EmptyPage, InvalidPage):
-        raise ValueError("Invalid Page: %r" % req.GET["page"])
-    
-    return objects
-
-
 @require_GET
 def index(req):
     rep = None
@@ -61,8 +29,7 @@ def index(req):
     return render_to_response(req,
         "reporters/reporters/index.html", {
             "reporters": paginated(req, Reporter.objects.all()),
-            "reporter": rep
-        })
+            "reporter": rep })
 
 
 def update_reporter(req, rep):
