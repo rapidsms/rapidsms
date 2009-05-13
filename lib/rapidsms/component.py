@@ -24,9 +24,9 @@ class Component(object):
         if hasattr(self, "_title"):
             return self._title
         
-        # since no title has explicitly
-        # set, fall back to class name
-        return self.__class__.__name__
+        # since no title has explicitly set, fall back to
+        # name of the file that the class was declared in
+        return str(self.__module__).split(".")[-1]
     
     @property
     def slug(self):
