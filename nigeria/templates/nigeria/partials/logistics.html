@@ -28,8 +28,8 @@
                                 {% for transaction in lga.transactions%}
 				<tr>
 					<td title="{% ifequal transaction.type "R" %}Incoming (receipt){% else %}Outgoing (issued){% endifequal %}" class="min dir-{{ transaction.type }}"><span>{{ transaction.type }}</span></td>
-					<td class="min"><span title="{{ transaction.date|date }}">{{ transaction.date|date:"d/m" }}</span></td>
-					<td class="min">{% ifequal transaction.type "R" %}{{ transaction.origin }} &raquo; <b>{{ transaction.destination }}</b>{% else %}<b>{{ transaction.origin }}</b> &raquo; {{ transaction.destination }}{% endifequal %}</td>
+					<td class="min shrink"><span title="{{ transaction.date|date }}">{{ transaction.date|date:"d/m" }}</span></td>
+					<td class="min shrink">{% ifequal transaction.type "R" %}{{ transaction.origin }} &raquo; <b>{{ transaction.destination }}</b>{% else %}<b>{{ transaction.origin }}</b> &raquo; {{ transaction.destination }}{% endifequal %}</td>
 					<td>{{ transaction.reporter }}</td>
 					<td class="min num">{% ifequal transaction.type "R" %}+{% else %}-{% endifequal %}{{ transaction.amount }}</td>
 					<td class="min num">{{ transaction.stock }}</td>

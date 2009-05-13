@@ -217,7 +217,7 @@ def logistics_summary():
     # process and return data for ALL LGAs for this report
     return { "lgas": map(__lga_data, LocationType.objects.get(name="LGA").locations.all()) }
 
-@register.inclusion_tag("nigeria/partials/distribution_summary_charts.html")
+@register.inclusion_tag("nigeria/partials/mobilization_summary_charts.html")
 def mobilization_summary_charts():
     summary = pilot_summary()
     netcards_projected = []

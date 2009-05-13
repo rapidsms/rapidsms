@@ -12,7 +12,7 @@
 		<tbody>
                         {% for day in days %}
 			<tr{% if day.in_future %} class="future"{% endif %}>
-				<td><span title="{{ day.date|date }}">{{ day.date|date:"d/m" }}</span></td>
+				<td class="min shrink"><span title="{{ day.date|date }}">{{ day.date|date:"d/m" }}</span></td>
 				<td title="{{ day.date|date }}" class="day min num">{{ day.number }}</td>
 				
 				<td>{{ day.reports }}</td>
