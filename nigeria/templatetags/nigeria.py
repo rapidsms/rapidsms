@@ -222,7 +222,7 @@ def logistics_summary():
     return { "lgas": map(__lga_data, LocationType.objects.get(name="LGA").locations.all()) }
 
 @register.inclusion_tag("nigeria/partials/distribution_summary_charts.html")
-def mobilization_summary_charts():
+def distribution_summary_charts():
     summary = pilot_summary()
     netcards_projected = []
     netcards_total = []
