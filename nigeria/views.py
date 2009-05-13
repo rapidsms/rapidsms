@@ -6,6 +6,7 @@ from django.template import RequestContext
 from apps.reporters.models import Location, LocationType
 from apps.supply.models import Shipment, Transaction, Stock, PartialTransaction
 from apps.nigeria.models import CardDistribution, NetDistribution
+from apps.nigeria import constants
 from rapidsms.webui.utils import render_to_response
 from django.db import models
 # The import here newly added for serializations
@@ -57,7 +58,10 @@ def location_tree(req):
             locid = 1
         try:
             location = Location.objects.get(id=locid)
-            children = location.children.filter(type__name__in=['LGA', 'Ward']).all()
+            if location.type.name == "State":
+                children = location.children.filter(type__name='LGA',code__in=constants.KANO_PILOT_LGAS).all()
+            else:
+                children = location.children.filter(type__name='Ward').all()
             for child in children:
                 try:
                     stock_balance = Stock.objects.get(location=child).balance

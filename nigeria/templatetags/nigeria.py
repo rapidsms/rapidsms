@@ -10,6 +10,7 @@ from datetime import datetime, timedelta
 from apps.reporters.models import *
 from apps.supply.models import *
 from apps.nigeria.models import *
+from apps.nigeria import constants
 
 @register.inclusion_tag("nigeria/partials/recent.html")
 def recent_reporters(number=4):
@@ -215,7 +216,7 @@ def logistics_summary():
             "logistician": lga.one_contact('SM', True)}
     
     # process and return data for ALL LGAs for this report
-    return { "lgas": map(__lga_data, LocationType.objects.get(name="LGA").locations.all()) }
+    return { "lgas": map(__lga_data, LocationType.objects.get(name="LGA").locations.filter(code__in=constants.KANO_PILOT_LGAS).all()) }
 
 @register.inclusion_tag("nigeria/partials/distribution_summary_charts.html")
 def distribution_summary_charts():
