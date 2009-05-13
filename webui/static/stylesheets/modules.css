@@ -164,13 +164,40 @@ table {
 			 * to separate from additional views and
 			 * exporting, which lives on the right */
 			tfoot .paginator,
-			tfoot .paginator a {
+			tfoot .paginator a,
+			tfoot .paginator span {
 				float: left; }
 			
 				tfoot .paginator a.active {
 					background: #eee;
 					color: #000;
 				}
+				
+				tfoot .paginator .first,
+				tfoot .paginator .prev,
+				tfoot .paginator .next,
+				tfoot .paginator .last {
+					background-repeat: no-repeat;
+					background-position: 0 50%;
+					text-indent: -9999px;
+					overflow: hidden;
+					padding-right: 0;
+					padding-left: 0;
+					width: 16px;
+				}
+				
+				/* links look something like:
+				 *  <<  <  1 2 3 4  >  >> */
+				tfoot .paginator .first { background-image: url("../icons/silk/resultset_first.png");    }
+				tfoot .paginator .prev  { background-image: url("../icons/silk/resultset_previous.png"); }
+				tfoot .paginator .next  { background-image: url("../icons/silk/resultset_next.png");     }
+				tfoot .paginator .last  { background-image: url("../icons/silk/resultset_last.png");     }
+				
+				/* when a naviation link is disabled, shift
+				 * the background image over to reveal the
+				 * dull+transparent sprite to the left */
+				tfoot .paginator span.na {
+					background-position: -16px 50%; }
 
 
 /* modules can include help text, to explain how
