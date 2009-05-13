@@ -31,7 +31,7 @@
 				</tbody>
 				<tfoot>
 					<tr>
-						<td colspan="{{ app.columns|length }}">
+						<td colspan="3">
 							<div class="paginator">{% if reporters.has_previous %}
 								<a href="{% self_link "page" 1 %}" class="first" title="First page">First Page</a>
 								<a href="{% self_link "page" reporters.previous_page_number %}" class="prev" title="Previous page">Previous Page</a>{% else %}

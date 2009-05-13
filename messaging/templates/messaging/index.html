@@ -1,5 +1,6 @@
 {% extends "messaging/base.html" %}
 {% block title %}Messaging{% endblock %}
+{% load reporters %}
 
 {% block content %}
 <div class="split">
@@ -40,15 +41,18 @@
 				</tbody>
 				<tfoot>
 					<tr>
-						<td colspan="{{ app.columns|length }}">
+						<td colspan="3">
 							<div class="paginator">{% if reporters.has_previous %}
-								<a href="?p=1" class="first">First Page</a>
-								<a href="?p={{ reporters.previous_page_number }}" class="prev">Previous Page</a>{% endif %}{% for page in reporters.paginator.page_range %}
-								<a href="?p={{ page }}"{% ifequal page reporters.number %} class="active"{% endifequal %}>{{ page }}</a>{% endfor %}{% if reporters.has_next %}
-								<a href="?p={{ reporters.next_page_number }}" class="next">Next Page</a>
-								<a href="?p={{ reporters.paginator.num_pages }}" class="last">Last Page</a>{% endif %}
+								<a href="{% self_link "page" 1 %}" class="first" title="First page">First Page</a>
+								<a href="{% self_link "page" reporters.previous_page_number %}" class="prev" title="Previous page">Previous Page</a>{% else %}
+								<span class="first na" title="You are already on the first page">First Page</span>
+								<span class="prev na" title="There are no previous pages">Previous Page</span>{% endif %}{% for page in reporters.paginator.page_range %}
+								<a href="{% self_link "page" page %}"{% ifequal page reporters.number %} class="active"{% endifequal %} title="Page {{ page }}">{{ page }}</a>{% endfor %}{% if reporters.has_next %}
+								<a href="{% self_link "page" reporters.next_page_number %}" class="next" title="Next page">Next Page</a>
+								<a href="{% self_link "page" reporters.paginator.num_pages %}" class="last" title="Last page">Last Page</a>{% else %}
+								<span class="next na" title="There are no more pages">Next Page</span>
+								<span class="last na" title="You are already on the last page">Last Page</span>{% endif %}
 							</div>
-							<a href="">Export</a>
 						</td>
 					</tr>
 				</tfoot>
