@@ -16,10 +16,6 @@ body {
 	margin: 0;
 }
 
-	body.bare {
-		background: #eef; }
-
-
 a {
 	text-decoration: none;
 	color: #33a7d2;
@@ -64,9 +60,6 @@ div.clear-hack {
 	/* no scaling for ie6 */
 	* html #wrapper {
 		width: 960px; }
-	
-	body.bare #wrapper {
-		width: auto; }
 
 
 
@@ -200,9 +193,6 @@ div.clear-hack {
 #inner {
 	padding: 1em;
 }
-
-	body.bare #inner {
-		padding: 0; }
 	
 	/* split a section vertically in
 	 * half, with some css hackery */
