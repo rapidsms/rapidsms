@@ -17,9 +17,8 @@
 		<script type="text/javascript" src="{{ js }}"></script>{% endfor %}
 		{% block javascripts %}{% endblock %}
 	</head>
-	<body class="{% if bare %}bare{% endif %}">
+	<body>
 		<div id="wrapper">
-			{% if not bare %}
 			{% block header %}
 			<div id="header">
 				<div id="branding">
@@ -34,11 +33,9 @@
 				{% endblock %}
 			</div>
 			{% endblock %}
-			{% endif %}
 			<div id="inner">
 				{% block content %}{% endblock %}
 			</div>
-			{% if not bare %}
 			{% block footer %}
 			<div id="footer">
 				<p class="rights">
@@ -50,9 +47,7 @@
 				{% region "footer" %}
 			</div>
 			{% endblock %}
-			{% endif %}
 		</div>
-		{% if not bare %}
 		{% if debug %}
 		<div id="debug-tools">
 			<!--
@@ -62,7 +57,6 @@
 			-->
 			{% debug_dump %}
 		</div>
-		{% endif %}
 		{% endif %}
 	</body>
 </html>
