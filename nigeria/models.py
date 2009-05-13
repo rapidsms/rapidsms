@@ -25,6 +25,17 @@ class NetDistribution(models.Model):
                 "actual": sum(all.values_list("actual", flat=True)),
                 "discrepancy": sum(all.values_list("discrepancy", flat=True))}
 
+    @staticmethod
+    def net_data_total(location):
+        '''For a given location, this function gets all the descendant locations
+        and calculates the totals for card distribution'''
+        all = NetDistribution.objects.all().filter(location__code__startswith=location.code)
+
+        return {"distributed": sum(all.values_list("distributed", flat=True)),
+                "expected": sum(all.values_list("expected", flat=True)),
+                "actual": sum(all.values_list("actual", flat=True)),
+                "discrepancy": sum(all.values_list("discrepancy", flat=True))}
+
     
 class CardDistribution(models.Model):
     reporter = models.ForeignKey(Reporter, null=True, blank=True)
@@ -41,6 +52,16 @@ class CardDistribution(models.Model):
     @staticmethod
     def card_data(location):
         all = CardDistribution.objects.all().filter(location__pk=location.pk)
+
+        return {"distributed": sum(all.values_list("distributed", flat=True)), 
+                "settlements": sum(all.values_list("settlements", flat=True)),
+                "people": sum(all.values_list("people", flat=True))}
+
+    @staticmethod
+    def card_data_total(location):
+        '''For a given location, this function gets all the descendant locations
+        and calculates the totals for card distribution'''
+        all = CardDistribution.objects.all().filter(location__code__startswith=location.code)
 
         return {"distributed": sum(all.values_list("distributed", flat=True)), 
                 "settlements": sum(all.values_list("settlements", flat=True)),
