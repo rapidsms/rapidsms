@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-from django.http import HttpResponse, HttpResponseNotAllowed, HttpResponseServerError
+from django.http import HttpResponse, Http404, HttpResponseBadRequest, HttpResponseNotAllowed, HttpResponseServerError
 from django.template import RequestContext
 from django.views.decorators.http import require_GET, require_POST, require_http_methods
 from django.shortcuts import get_object_or_404
@@ -20,19 +20,23 @@ def message(req, msg, link=None):
     })
 
 
-
-
 @require_GET
 def index(req):
+    rep = None
+    if "edit" in req.GET:
+        rep = get_object_or_404(Reporter, pk=req.GET["edit"])
+    
     return render_to_response(req,
-        "reporters/reporters/index.html")
+        "reporters/reporters/index.html", {
+            "reporters": paginated(req, Reporter.objects.all()),
+            "reporter": rep })
 
 
 def update_reporter(req, rep):
     
     # as default, we will delete all of the connections
     # and groups from this reporter. the loops will drop
-    # any objects that we should NOT DELETE
+    # objects that we SHOULD NOT DELETE from these lists
     del_conns = list(rep.connections.values_list("pk", flat=True))
     del_grps = list(rep.groups.values_list("pk", flat=True))
 
@@ -41,6 +45,10 @@ def update_reporter(req, rep):
     # to make sure each of them are linked to the reporter
     connections = field_bundles(req.POST, "conn-backend", "conn-identity")
     for be_id, identity in connections:
+        
+        # skip this pair if either are missing
+        if not be_id or not identity:
+            continue
         
         # create the new connection - this could still
         # raise a DoesNotExist (if the be_id is invalid),

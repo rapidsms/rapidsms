@@ -15,6 +15,50 @@ from django.template.defaultfilters import date as filter_date, time as filter_t
 from apps.reporters.models import *
 
 
+
+
+class SelfLinkNode(template.Node):
+    def __init__(self, *args):
+        self.args = args
+
+    def render(self, context):
+        
+        # resolve all arguments to their
+        # values in the current context
+        args = [template.resolve_variable(arg, context) for arg in self.args]
+        
+        # the output defaults to exactly the same url as we're
+        # currently viewing, including the GET parameters
+        kwargs = context["request"].GET.copy()
+        
+        # iterate the arguments to this token,
+        # which come in pairs of: K,V,K,V,K,V
+        while len(args):
+            k = args.pop(0)
+            v = args.pop(0)
+            kwargs[k] = v
+        
+        # rebuild the new url: same as we're currently
+        # viewing, with some GET arguments overridden
+        return "%s?%s" % (context["request"].path, kwargs.urlencode())
+
+
+@register.tag
+def self_link(parser, token):
+    args = token.split_contents()
+    tag_name = args.pop(0)
+    
+    # this requires an even number of args, so they
+    # can be converted into a dict without ambiguity
+    if len(args) % 2:
+        raise template.TemplateSyntaxError,\
+            "The {%% %s %%} tag requires an even number of arguments" % (tag_name)
+
+    return SelfLinkNode(*args)
+
+
+
+
 @register.filter()
 def magnitude_ago(value):
     """Given a datetime, returns a string containing the
