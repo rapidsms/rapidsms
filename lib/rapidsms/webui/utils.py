@@ -8,6 +8,7 @@ from django.template import loader
 from django.template import RequestContext
 from django.http import HttpResponse, Http404
 from django.shortcuts import render_to_response as django_r_to_r
+from django.core.paginator import Paginator, EmptyPage, InvalidPage
 
 
 def render_to_response(req, template_name, dictionary=None, **kwargs):
@@ -89,3 +90,32 @@ def render_to_response(req, template_name, dictionary=None, **kwargs):
     
     # pass on the combined dicts to the original function
     return django_r_to_r(template_name, rs_dict, **kwargs)
+
+
+def paginated(req, query_set, per_page=20):
+
+    # the per_page argument to this function provides
+    # a default, but can be overridden per-request. no
+    # interface for this yet, so it's... an easter egg?
+    if "per-page" in req.GET:
+        try:
+            per_page = int(req.GET["per-page"])
+        
+        # if it was provided, it must be valid. we don't
+        # want links containing extra useless junk like
+        # invalid GET parameters floating around
+        except ValueError:
+            raise ValueError("Invalid per-page parameter: %r" % req.GET["per-page"])
+        
+    try:
+        paginator = Paginator(query_set, per_page)
+        page = int(req.GET.get("page", "1"))
+        objects = paginator.page(page)
+    
+    # have no mercy if the page parameter is not valid. there
+    # should be no links to an invalid page, so coercing it to
+    # assume "page=xyz" means "page=1" would just mask bugs
+    except (ValueError, EmptyPage, InvalidPage):
+        raise ValueError("Invalid Page: %r" % req.GET["page"])
+    
+    return objects
