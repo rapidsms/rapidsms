@@ -9,7 +9,6 @@ from django.template import RequestContext
 from django.http import HttpResponse, Http404
 from django.shortcuts import render_to_response as django_r_to_r
 
-
 def render_to_response(req, template_name, dictionary=None, **kwargs):
     """Proxies calls to django.shortcuts.render_to_response, to avoid having
        to include the global variables in every request. This is a giant hack,
