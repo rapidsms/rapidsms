@@ -6,9 +6,12 @@
 <!--[if IE]><script type="text/javascript" src="/static/webui/javascripts/excanvas.pack.js"></script>
 <![endif]-->
 {% endblock %}
+{% load cache %}
 {% load bednets %}
 
 {% block content %}
+{# cache content of dashboard for one hour #}
+{% cache 3600 dashboard %}
 <div class="tmp">
 
 
@@ -37,4 +40,5 @@
 
 
 </div>
+{% endcache %}
 {% endblock %}
