@@ -1,0 +1,161 @@
+[
+    {
+        "pk": 1,
+        "model": "reporters.locationtype",
+        "fields": {
+            "name": "Country"
+        }
+    },
+    {
+        "pk": 2,
+        "model": "reporters.locationtype",
+        "fields": {
+            "name": "State"
+        }
+    },
+    {
+        "pk": 3,
+        "model": "reporters.locationtype",
+        "fields": {
+            "name": "City"
+        }
+    },
+    {
+        "pk": 1,
+        "model": "reporters.location",
+        "fields": {
+            "code": "USA",
+            "name": "United States of America",
+            "parent": null,
+            "type": 1
+        }
+    },
+    {
+        "pk": 2,
+        "model": "reporters.location",
+        "fields": {
+            "code": "NY",
+            "name": "New York",
+            "parent": 1,
+            "type": 2
+        }
+    },
+    {
+        "pk": 3,
+        "model": "reporters.location",
+        "fields": {
+            "code": "NYC",
+            "name": "New York City",
+            "parent": 2,
+            "type": 3
+        }
+    },
+    {
+        "pk": 3,
+        "model": "reporters.reporter",
+        "fields": {
+            "first_name": "Mark",
+            "last_name": "Johnston",
+            "registered_self": false,
+            "alias": "mej",
+            "location": 3
+        }
+    },
+    {
+        "pk": 1,
+        "model": "reporters.reporter",
+        "fields": {
+            "first_name": "Adam",
+            "last_name": "Mckaig",
+            "registered_self": false,
+            "alias": "adammck",
+            "location": 3
+        }
+    },
+    {
+        "pk": 4,
+        "model": "reporters.reporter",
+        "fields": {
+            "first_name": "Merrick",
+            "last_name": "Schaefer",
+            "registered_self": false,
+            "alias": "merrickweb",
+            "location": 3
+        }
+    },
+    {
+        "pk": 2,
+        "model": "reporters.reporter",
+        "fields": {
+            "first_name": "Evan",
+            "last_name": "Wheeler",
+            "registered_self": false,
+            "alias": "ewheeler",
+            "location": 3
+        }
+    },
+    {
+        "pk": 5,
+        "model": "reporters.reporter",
+        "fields": {
+            "first_name": "Cory",
+            "last_name": "Zue",
+            "registered_self": false,
+            "alias": "czue",
+            "location": 3
+        }
+    },
+    {
+        "pk": 1,
+        "model": "reporters.persistantbackend",
+        "fields": {
+            "slug": "spomc",
+            "title": "SPOMC"
+        }
+    },
+    {
+        "pk": 1,
+        "model": "reporters.persistantconnection",
+        "fields": {
+            "reporter": 1,
+            "identity": "1111",
+            "backend": 1
+        }
+    },
+    {
+        "pk": 2,
+        "model": "reporters.persistantconnection",
+        "fields": {
+            "reporter": 2,
+            "identity": "2222",
+            "backend": 1
+        }
+    },
+    {
+        "pk": 3,
+        "model": "reporters.persistantconnection",
+        "fields": {
+            "reporter": 3,
+            "identity": "3333",
+            "backend": 1
+        }
+    },
+    {
+        "pk": 4,
+        "model": "reporters.persistantconnection",
+        "fields": {
+            "reporter": 4,
+            "identity": "4444",
+            "backend": 1
+        }
+    },
+    {
+        "pk": 5,
+        "model": "reporters.persistantconnection",
+        "fields": {
+            "reporter": 5,
+            "identity": "5555",
+            "backend": 1
+        }
+    }
+]
