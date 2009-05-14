@@ -21,6 +21,13 @@
 			{% if not bare %}
 			{% block header %}
 			<div id="header">
+                                <div id="auth">
+                                        {% if user.is_authenticated %}
+                                            <p><a href="/accounts/logout/">Log out {{ user.username }}</a></p>
+                                        {% else %}
+                                            <p><a href="/accounts/login/">Log in</a></p>
+                                        {% endif %}
+                                </div>
 				<div id="branding">
 					<h1><a title="Return to the Dashboard" href="/">RapidSMS</a></h1>
 				</div>

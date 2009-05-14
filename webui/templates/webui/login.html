@@ -2,11 +2,17 @@
 {% block title %}Dashboard{% endblock %}
 {% block content %}
 
-<h1>Please log in to RapidSMS</h1>
-
 {% if form.errors %}
 <p>Oops. Your username and password didn't match. Please try again.</p>
 {% endif %}
+
+{% if user.is_authenticated %}
+<p>Oops. You do not have permission to view this section.</p>
+
+{% else %}
+
+<h1>Please log in to RapidSMS</h1>
+<p>You must have permission to view this section.</p>
 
 <form method="post" action="{% url django.contrib.auth.views.login %}">
 <table>
@@ -24,4 +30,5 @@
 <input type="hidden" name="next" value="{{ next }}" />
 </form>
 
+{% endif %}
 {% endblock %}

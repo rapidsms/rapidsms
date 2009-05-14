@@ -10,7 +10,7 @@ from django.contrib.auth.decorators import login_required
 def check_availability(req):
     return HttpResponse("OK")
 
-@login_required
+#TODO cache in the template, so logged-in username is not cached
 @cache_page(60 * 15)
 def dashboard(req):
 	return render_to_response(req, "dashboard.html")

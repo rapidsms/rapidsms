@@ -69,8 +69,6 @@ div.clear-hack {
 		width: auto; }
 
 
-
-
 /* the header is based roughly upon
  * unicef.org, with rapidsms colors */
 #header {
@@ -81,6 +79,19 @@ div.clear-hack {
 	color: #ccf;
 }
 	
+        /* get the crude login and
+         * logout links into the
+         * upper right corner */
+        #auth p {
+                float: right;
+                margin-top: -21px;
+        }
+
+        #auth p a{
+                color: white;
+        }
+
+
 	/* align in the middle of the
 	 * unicef blue stripe of header bg,
 	 * and display logo on the right */
