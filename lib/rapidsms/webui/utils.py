@@ -92,7 +92,7 @@ def render_to_response(req, template_name, dictionary=None, **kwargs):
     return django_r_to_r(template_name, rs_dict, **kwargs)
 
 
-def paginated(req, query_set, per_page=20):
+def paginated(req, query_set, per_page=20, wrapper=None):
 
     # the per_page argument to this function provides
     # a default, but can be overridden per-request. no
@@ -117,5 +117,11 @@ def paginated(req, query_set, per_page=20):
     # assume "page=xyz" means "page=1" would just mask bugs
     except (ValueError, EmptyPage, InvalidPage):
         raise ValueError("Invalid Page: %r" % req.GET["page"])
+    
+    # if a wrapper function was provided, call it for each
+    # object on the page, and replace the list with the result
+    if wrapper is not None:
+        objects.raw_object_list = objects.object_list
+        objects.object_list = map(wrapper, objects.object_list)
     
     return objects
