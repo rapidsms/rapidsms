@@ -181,7 +181,7 @@ class Reporter(models.Model):
     role       = models.ForeignKey("Role", related_name="reporters", null=True, blank=True)
 
     def __unicode__(self):
-            return self.connection.identity
+        return self.connection().identity
         
 
     # the language that this reporter prefers to
