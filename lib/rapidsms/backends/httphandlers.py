@@ -5,13 +5,11 @@ import BaseHTTPServer, SocketServer
 import select
 import random
 import re
-import urllib
+import urllib, urllib2
 from datetime import datetime
 
 import rapidsms
 from rapidsms.message import Message
-
-msg_store = {}
 
 class RapidBaseHttpHandler(BaseHTTPServer.BaseHTTPRequestHandler):
     def log_error (self, format, *args):
@@ -20,10 +18,18 @@ class RapidBaseHttpHandler(BaseHTTPServer.BaseHTTPRequestHandler):
     def log_message (self, format, *args):
         self.server.backend.debug(format, *args)
 
-     
+    def respond(self, code, msg):
+        self.send_response(code)
+        self.send_header("Content-type", "text/html")
+        self.end_headers()
+        self.wfile.write(msg)
+
+    
 class HttpHandler(RapidBaseHttpHandler):
+    
+    msg_store = {}
+    
     def do_GET(self):
-        global msg_store
         # if the path is just "/" then start a new session
         # and redirect to that session's URL
         if self.path == "/":
@@ -47,8 +53,8 @@ class HttpHandler(RapidBaseHttpHandler):
                 self.send_header("Content-type", "text/html")
                 self.end_headers()
                 
-                if msg_store.has_key(session_id) and len(msg_store[session_id]):
-                        self.wfile.write("{'phone':'%s', 'message':'%s'}" % (session_id, str(msg_store[session_id].pop(0))))
+                if HttpHandler.msg_store.has_key(session_id) and len(HttpHandler.msg_store[session_id]):
+                        self.wfile.write("{'phone':'%s', 'message':'%s'}" % (session_id, str(HttpHandler.msg_store[session_id].pop(0))))
                 return
                 
             # TODO watch out because urllib.unquote will blow up on unicode text 
@@ -66,11 +72,89 @@ class HttpHandler(RapidBaseHttpHandler):
     def do_POST(self):
         # TODO move the actual sending over to here
         return
+    
+    @classmethod
+    def outgoing(klass, msg):
+        #self.log_message("http outgoing message: %s" % message)
+        # the default http backend just stores outgoing messages in
+        # a store and provides access to them via the JSON/AJAX 
+        # interface
+        if HttpHandler.msg_store.has_key(msg.connection.identity):
+            HttpHandler.msg_store[msg.connection.identity].append(msg.text)
+        else:
+            HttpHandler.msg_store[msg.connection.identity] = []
+            HttpHandler.msg_store[msg.connection.identity].append(msg.text)
+                
+class BernsoftHandler(RapidBaseHttpHandler):
+    '''An HttpHandler for the bernsoft gateway, for use in Kenya''' 
+    
+    # This is the format of the post string
+    # TODO: not hard code this
+    url = "http://afritext.bernsoft.com/api/send.php?username=%s&password=%s&destination_number=%s&message=%s"
+    user = "2100"
+    password = "iavitst"
+    
+    def do_GET(self):
+        params = get_params(self)
+        self.handle_params(params)
+        
+    def do_POST(self):
+        params = post_params(self)
+        self.handle_params(params)
+        
+    def handle_params(self, params):
+        if not params:
+            self.respond(500, "Must specify parameters in the URL!")
+            return
+        else:
+            # parameters are: 
+            # text=message%20body
+            # sender=2347067277331
+            # timesent=<format???>
+            text = None
+            sender = None
+            date = None
+            for param in params:
+                if param[0] == "text":
+                    # TODO watch out because urllib.unquote 
+                    # will blow up on unicode text 
+                    text = urllib.unquote(param[1])
+                elif param[0] == "sender":
+                    sender = param[1]
+                elif param[0] == "timesent":
+                    try: 
+                        date = datetime.strptime(param[1], "%Y%m%d%H%M.%S")
+                    except:
+                        self.log_error("bad date format: %s" % param[1])
+                        date = datetime.now()
+            if text and sender: 
+                # respond with the number and text 
+                # only really useful for testing
+                msg = self.server.backend.message(sender, text, date)
+                self.server.backend.route(msg)
+                self.respond(200, "{'phone':'%s', 'message':'%s'}" % (sender, text))
+                return
+            else:
+                self.respond(500, "You must specify a valid number and message")
+                return
 
+    @classmethod
+    def outgoing(klass, message):
+        #self.log_message("Bernsoft outgoing message: %s" % message)
+        print("Bernsoft outgoing message: %s" % message)
+        to_submit = BernsoftHandler.url % (BernsoftHandler.user, BernsoftHandler.password, message.connection.identity, urllib2.quote(message.text))
+        #self.log_message("submitting to url: %s" % to_submit)
+        print("submitting to url: %s" % to_submit)
+        
+        response = "\n".join([line for line in urllib2.urlopen(to_submit)])
+        #self.log_message("Got response: %s" % response)
+        print("Got response: %s" % response)
+        
+        
+        
 class MTechHandler(RapidBaseHttpHandler):
     '''An HttpHandler for the mtech gateway, for use in Nigeria''' 
     def do_GET(self):
-        global msg_store
         querystart = self.path.find("?")
         if querystart == -1:
             self.respond(500, "Must specify parameters in the URL!")
@@ -88,12 +172,6 @@ class MTechHandler(RapidBaseHttpHandler):
             params = map((lambda t: t.split("=")), data.split("&"))
             self.accept_message(params)
     
-    def respond(self, code, msg):
-        self.send_response(code)
-        self.send_header("Content-type", "text/html")
-        self.end_headers()
-        self.wfile.write(msg)
-
     def accept_message(self, params):
         # parameters are: 
         # text=message%20body
@@ -124,4 +202,18 @@ class MTechHandler(RapidBaseHttpHandler):
             self.respond(500, "You must specify a valid number and message")
             return
 
+    def outgoing(self, message):
+        self.log_message("Mtech outgoing message: %s" % message)
+
         
+def get_params(handler):
+    querystart = handler.path.find("?")
+    if querystart == -1:
+        return
+    return map((lambda t: t.split("=")), handler.path[querystart + 1:].split("&"))
+
+def post_params(handler):
+    if handler.rfile:
+        content_len = int(handler.headers["Content-Length"])
+        data = handler.rfile.read(content_len)
+        return map((lambda t: t.split("=")), data.split("&"))
