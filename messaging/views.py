@@ -3,6 +3,7 @@
 
 import re, urllib
 from django.http import HttpResponse, HttpResponseRedirect
+from django.core.exceptions import FieldError
 from django.core.urlresolvers import reverse
 from rapidsms.webui.utils import *
 from apps.reporters.models import *
@@ -26,9 +27,27 @@ def index(req):
     
     return render_to_response(req,
         "messaging/index.html", {
-            "columns": ["Name", "Role", "Location"],
+            "columns": [("alias", "Alias"), ("role__title", "Role"), ("location__name", "Location")],
             "reporters": paginated(req, Reporter.objects.all()) })
 
+
+def search(req):
+
+    # fetch the data, filtering by ALL GET
+    # parameters (raise if any are invalid)
+    try:
+        filters = dict([(str(k), v) for k, v in req.GET.items()])
+        results = Reporter.objects.filter(**filters)
+
+    except FieldError, e:
+        return HttpResponse(e.message,
+        status=500, mimetype="text/plain")
+
+    recips = results.values_list("pk", flat=True)
+
+    return HttpResponse(
+        " ".join(map(str, recips)),
+        content_type="text/plain")
 
 def __redir_to_index():
     return HttpResponseRedirect(
@@ -36,10 +55,12 @@ def __redir_to_index():
 
 
 def all(req):
-    """Add the primary key of every recipient to the recip-checked
-       cookie, which is used to pass around the list of recipients
-       that the user is planning to message. This job can be done
-       in Javascript (and will); this is the HTML-only fallback."""
+    """If this view is requested directly, add the primary key of every
+       recipient to the recip-checked cookie (which is used to pass around
+       the list of recipients that the user is planning to message), and
+       redirect to the index to view it. If the view was requested by AJAX,
+       return only the data that we _would_ have cookied, to allow the client
+       to do it without reloading the page."""
     recips = Reporter.objects.values_list("pk", flat=True)
     
     if req.is_ajax():

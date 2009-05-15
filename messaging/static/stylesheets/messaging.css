@@ -60,13 +60,13 @@
 	
 	/* when a filter is in effect, dim all of the text
 	 * in the table *except* for the matching rows */
-	.recipients.filtered tbody {
+	.recipients tbody.filtered {
 		background: #fcfcfc;
 		color: #eee;
 	}
 		
 		/* matching search results are BRIGHT */
-		.recipients.filtered tbody tr.hit {
+		.recipients tbody.filtered tr.hit {
 			background-color: #fff;
 			color: #000;
 		}

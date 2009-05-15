@@ -11,23 +11,23 @@
 	<div class="left">
 		<div class="module recipients">
 			<h2>Select Recipients</h2>
-			<!--<div class="search">
+			<div class="search">
 				<select name="column">
-					<option value="">Any Column</option>{% for column in columns %}
-					<option>{{ column }}</option>{% endfor %}
+					<option value="">Any Column</option>{% for name, title in columns %}
+					<option value="{{ name }}">{{ title }}</option>{% endfor %}
 				</select>
 				
 				<select name="operation">
-					<option value="cn">contains</option>
-					<option value="eq">equals</option>
-					<option value="sw">starts with</option>
-					<option value="ew">ends with</option>
+					<option value="icontains">contains</option>
+					<option value="iexact">equals</option>
+					<option value="istartswith">starts with</option>
+					<option value="iendswith">ends with</option>
 					<option value="lt">is less than</option>
 					<option value="gt">is more than</option>
 				</select>
 				
 				<input type="text" name="search" value="" size="14" />
-			</div>-->
+			</div>
 			<table>
 				<thead>
 					<tr>
@@ -82,6 +82,7 @@
 
 <script type="text/javascript">
 	$(function() {
+		var search_div  = $("div.module.recipients div.search");
 		var recip_div   = $("div.module.recipients");
 		var content_div = $("div.module.contents");
 	
@@ -174,7 +175,7 @@
 			var row = (typeof(row_or_uid) == "object")
 			        ? $(row_or_uid) : row_via_uid(row_or_uid);
 			
-			$.each(["checked", "error", "sent"], function(n, status) {
+			$.each(["checked", "error", "sent", "hit"], function(n, status) {
 				var in_arr = $.inArray(row.attr("uid"), cookie_recips(status));
 				(in_arr == -1) ? row.removeClass(status) : row.addClass(status);
 			});
@@ -250,6 +251,38 @@
 			update_row(uid);
 			update_buttons();
 		});
+		
+		
+		(function() {
+			var timeout = null;
+			var last_val = null;
+			
+			$("input[name=search]", search_div).bind("keypress change", function(ev) {
+				if(timeout) clearTimeout(timeout);
+				timeout = setTimeout(function() {
+					var val = $(ev.target).val();
+					var filters = {};
+				
+					/* don't search again if nothing
+					 * has changed since the last */
+					if(last_val == val) return false;
+					last_val = val;
+					
+					/* build a query string using the Column and
+					 * Operation <selects> to create django filters */
+					var col = $("select[name=column]", search_div);
+					var op  = $("select[name=operation]", search_div);
+					var key = col.val() + "__" + op.val();
+					filters[key] = val;
+					
+					$.get("{% url messaging-search %}", filters, function(data) {
+						$("tbody", recip_div).addClass("filtered");
+						$.cookie("recip-hit", data);
+						update_all_rows();
+					});
+				}, 1000);
+			});
+		})();
 		
 		
 		/* TODO */
