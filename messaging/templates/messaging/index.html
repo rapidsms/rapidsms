@@ -333,6 +333,49 @@
 		});
 		
 		
+		/* fetches a list of all uids from the server, which is
+		 * (conveniently) in the right format to jam straight into
+		 * the recip-checked cookie, to select ALL recipients. note
+		 * that we use a ghetto cache here, since the fetch can take
+		 * a few seconds on a slow connection */
+		(function() {
+			var ajax_cache = "";
+			
+			var apply = function() {
+				$.cookie("recip-checked", ajax_cache);
+				update_all_rows();
+			};
+			
+			all_link.click(function(ev) {
+				ev.preventDefault();
+				
+				/* if we've already fetched the uids,
+				 * copy them into the cookie immediately */
+				if(ajax_cache) {
+					apply();
+				
+				/* otherwise; fetch them via ajax,
+				 * cache them, and copy the cookie */
+				} else {
+					$.get(ev.target.href, function(data) {
+						ajax_cache = data;
+						apply();
+					});
+				}
+			});
+		})();
+		
+		
+		/* scraps the recip-checked cookie, to select
+		 * NO recipients without reloading the page */
+		none_link.click(function(ev) {
+			ev.preventDefault();
+			
+			$.cookie("recip-checked", null);
+			update_all_rows();
+		});
+		
+		
 		/* every time the message field is changed (by
 		 * typing *OR* otherwise (cut, paste, etc), set
 		 * a timeout to upate the send button AFTER the
