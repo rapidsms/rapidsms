@@ -12,7 +12,7 @@ class App(rapidsms.app.App):
         # make and save messages on their way in and 
         # cast connection as string so pysqlite doesnt complain
         msg = IncomingMessage(identity=message.connection.identity, text=message.text,
-            backend=message.connection.backend.name)
+            backend=message.connection.backend.slug)
         msg.save()
         self.debug(msg)
     
@@ -20,6 +20,6 @@ class App(rapidsms.app.App):
         # make and save messages on their way out and 
         # cast connection as string so pysqlite doesnt complain
         msg = OutgoingMessage(identity=message.connection.identity, text=message.text, 
-            backend=message.connection.backend.name)
+            backend=message.connection.backend.slug)
         msg.save()
         self.debug(msg)
