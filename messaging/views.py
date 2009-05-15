@@ -2,7 +2,7 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 import re, urllib
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from rapidsms.webui.utils import *
 from apps.reporters.models import *
@@ -41,11 +41,17 @@ def all(req):
        that the user is planning to message. This job can be done
        in Javascript (and will); this is the HTML-only fallback."""
     recips = Reporter.objects.values_list("pk", flat=True)
-    flat_recips = "%20".join(map(str, recips))
     
-    resp = __redir_to_index()
-    resp.set_cookie("recip-checked", flat_recips)
-    return resp
+    if req.is_ajax():
+        return HttpResponse(
+            " ".join(map(str, recips)),
+            content_type="text/plain")
+    
+    else:
+        resp = __redir_to_index()
+        flat_recips = "%20".join(map(str, recips))
+        resp.set_cookie("recip-checked", flat_recips)
+        return resp
 
 
 def none(req):
