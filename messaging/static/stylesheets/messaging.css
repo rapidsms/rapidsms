@@ -44,7 +44,9 @@
 		
 		/* highlight checked rows, to indicate
 		 * who we'll be blasting the message to */
-		.recipients tbody tr.checked td { }
+		.recipients tbody tr.checked td {
+			background-color: #fffff8;
+		}
 			
 			/* dull rows have a background image too, to avoid
 			 * a weird looking gap before anything is checked */
