@@ -60,10 +60,9 @@
 								<span class="last na" title="You are already on the last page">Last Page</span>{% endif %}
 							</div>
 							
-							
-							<a href="/reporters/none" class="none" title="Select No Recipients">None</a>
-							<a href="/reporters/all" class="all" title="Select All Recipients">All</a>
-							<a href="/reporters/clear" class="clear" title="Clear Message Statuses">Clear</a>
+							<a href="/messaging/none" class="none" title="Select No Recipients">None</a>
+							<a href="/messaging/all" class="all" title="Select All Recipients">All</a>
+							<a href="/messaging/clear" class="clear" title="Clear Message Statuses">Clear</a>
 						</td>
 					</tr>
 				</tfoot>
@@ -74,7 +73,7 @@
 		<div class="module contents">
 			<h2>Message Contents</h2>
 			<textarea cols="40" rows="6"></textarea>
-			<input type="button" class="send" value="Send {{ num_checked }} Message{% ifnotequal num_checked 1 %}s{% endifnotequal %}" />
+			<input type="button" class="send" value="Send Messages" />
 			<input type="button" class="cancel" value="Cancel" disabled="disabled" />
 		</div>
 	</div>
