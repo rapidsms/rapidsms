@@ -284,14 +284,19 @@
 			 * will call later in serial, to POST each
 			 * message back to messaging/app.py */
 			var queue = $.map(cookie_recips("checked"), function(uid) {
+				var row = row_via_uid(uid);
+				
 				var done = function(klass) {
 					set_cookie_recip(uid, "checked", false);
 					set_cookie_recip(uid, klass, true);
-					update_row(row_via_uid(uid));
+					row.removeClass("busy");
+					update_row(row);
 					next();
 				};
 				
 				return(function() {
+					row.addClass("busy");
+					
 					send_xhr = $.ajax({
 						"type": "POST",
 						"url":  "/ajax/messaging/send_message",
@@ -327,6 +332,7 @@
 		clear_link.click(function(ev) {
 			ev.preventDefault();
 			
+			recip_rows.removeClass("busy");
 			$.cookie("recip-error", null);
 			$.cookie("recip-sent", null);
 			update_all_rows();
