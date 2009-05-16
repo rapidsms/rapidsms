@@ -5,38 +5,58 @@
  * --
  * What is this? */
 
-.recipients ul {
-	padding: 0;
-	margin: 0;
-}
 
-	.recipients li {
-		display: block;
-		border-top: 1px solid #eee;
+/* i'm using a table here, because i've
+ * spent quite enough time trying to make
+ * this damn form align properly with css */
+.search table {
+	width: 100%; }
+	
+	/* make most columns as thin as we
+	 * can, to contain their contents,
+	 * and space them out a little */
+	.search td {
+		padding: 0 0.5em 0 0;
+		border: 0;
+		width: 1%;
 	}
-	
-		.recipients li.first {
-			border-top: none; }
 		
-		/* remove the generic label "look"
-		 * defined by the core WebUI */			
-		.recipients li label {
-			padding: 0.5em;
-			margin: 0;
+		/* allow the search field to fill up
+		 * as much of the width as is available */
+		.search td.search {
+			width: auto; }
+		
+			.search td.search input {
+				box-sizing: border-box;
+				-moz-box-sizing: border-box;
+				-webkit-box-sizing: border-box;
+				width: 100%;
+			}
+		
+		/* manually set the width of the last
+		 * column, to prevent the buttons from
+		 * breaking onto multiple lines */
+		.search td.buttons {
+			padding-right: 0;
+			width: 48px;
 		}
-		
-		.recipients li input {
-			margin: 0; }
+			
+			/* but bunch them all together, because it's
+			 * prettier, and i like punishing people for
+			 * trying to use my software */
+			.search td.buttons input {
+				float: left; }
 
 
-.recipients tr {
-}
+.recipients { }
 	
+	/* the "check" column contains an icon,
+	 * indicating what's going on in the row */
 	.recipients .check {
 		padding: 0 0 0 0.5em;
 		width: 16px;
 	}
-
+	
 	/* everything looks clickable */
 	.recipients tbody tr {
 		cursor: pointer;
@@ -71,7 +91,10 @@
 			color: #000;
 		}
 
+
 .contents textarea {
+	box-sizing: border-box;
 	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
 	width: 100%;
 }	
