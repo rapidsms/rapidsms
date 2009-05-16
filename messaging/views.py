@@ -12,23 +12,43 @@ from apps.reporters.models import *
 def index(req):
     def cookie_recips(status):
         flat = urllib.unquote(req.COOKIES.get("recip-%s" % status, ""))
-        return re.split(r'\s+', flat) if flat != "" else []
+        return map(str, re.split(r'\s+', flat)) if flat != "" else []
     
-    checked = cookie_recips("checked")
-    error   = cookie_recips("error")
-    sent    = cookie_recips("sent")
+    checked  = cookie_recips("checked")
+    error    = cookie_recips("error")
+    sent     = cookie_recips("sent")
+    
+    filtered = False
+    hits     = []
     
     def __reporter(rep):
-        uid = str(rep.pk)
-        rep.is_checked = uid in checked
-        rep.is_error   = uid in error
-        rep.is_sent    = uid in sent
+        rep.is_checked = rep.pk in checked
+        rep.is_error   = rep.pk in error
+        rep.is_sent    = rep.pk in sent
+        rep.is_hit     = rep.pk in hits
         return rep
+    
+    # if the field/cmp/query parameters were provided (ALL
+    # OF THEM), we will mark some of the reporters as HIT
+    if "query" in req.GET or "field" in req.GET or "cmp" in req.GET:
+        if "query" not in req.GET or "field" not in req.GET or "cmp" not in req.GET:
+            return HttpResponse("The query, field, and cmp fields may only be provided or omitted TOGETHER.",
+                status=500, mimetype="text/plain")
+        
+        # search with: field__cmp=query
+        kwargs = { str("%s__%s" % (req.GET["field"], req.GET["cmp"])): req.GET["query"] }
+        hits = Reporter.objects.filter(**kwargs).values_list("pk", flat=True)
+        filtered = True
     
     return render_to_response(req,
         "messaging/index.html", {
+            "query":    req.GET.get("query", ""),
+            "field":    req.GET.get("field", ""),
+            "cmp":      req.GET.get("cmp", ""),
+            "filtered": filtered,
+            
             "columns": [("alias", "Alias"), ("role__title", "Role"), ("location__name", "Location")],
-            "reporters": paginated(req, Reporter.objects.all()) })
+            "reporters": paginated(req, Reporter.objects.all(), wrapper=__reporter) })
 
 
 def search(req):
@@ -41,7 +61,7 @@ def search(req):
 
     except FieldError, e:
         return HttpResponse(e.message,
-        status=500, mimetype="text/plain")
+            status=500, mimetype="text/plain")
 
     recips = results.values_list("pk", flat=True)
 

@@ -11,28 +11,29 @@
 	<div class="left">
 		<div class="module recipients">
 			<h2>Select Recipients</h2>
-			<div class="search">
+			<form class="search" action="" method="get">
+				{% self_link_fields query field cmp  %}
 				<table>
 					<tbody>
 						<tr>
 							<td>
-								<select name="column">
+								<select name="field">
 									<option value="">Any Column</option>{% for name, title in columns %}
-									<option value="{{ name }}">{{ title }}</option>{% endfor %}
+									<option value="{{ name }}"{% ifequal name field %} selected="selected"{% endifequal %}>{{ title }}</option>{% endfor %}
 								</select>
 							</td>
 							<td>
-								<select name="operation">
-									<option value="icontains">contains</option>
-									<option value="iexact">equals</option>
-									<option value="istartswith">starts with</option>
-									<option value="iendswith">ends with</option>
-									<option value="lt">is less than</option>
-									<option value="gt">is more than</option>
+								<select name="cmp">
+									<option value="icontains"{% ifequal cmp "icontains" %} selected="selected"{% endifequal %}>contains</option>
+									<option value="iexact"{% ifequal cmp "iexact" %} selected="selected"{% endifequal %}>equals</option>
+									<option value="istartswith"{% ifequal cmp "istartswith" %} selected="selected"{% endifequal %}>starts with</option>
+									<option value="iendswith"{% ifequal cmp "iendswith" %} selected="selected"{% endifequal %}>ends with</option>
+									<option value="lt"{% ifequal cmp "lt" %} selected="selected"{% endifequal %}>is less than</option>
+									<option value="gt"{% ifequal cmp "gt" %} selected="selected"{% endifequal %}>is more than</option>
 								</select>
 							</td>
 							<td class="search">
-								<input type="text" name="search" value="" />
+								<input type="text" name="query" value="{{ query }}" />
 							</td>
 							<td class="buttons">
 								<input type="button" title="Select All Search Results" value="Add" class="js-button accept" />
@@ -42,7 +43,7 @@
 						</tr>
 					</tbody>
 				</table>
-			</div>
+			</form>
 			<table>
 				<thead>
 					<tr>
@@ -52,8 +53,8 @@
 						<th>Location</th>
 					</tr>
 				</thead>
-				<tbody class="recips">{% for reporter in reporters.object_list %}
-					<tr uid="{{ reporter.pk }}">
+				<tbody class="recips{% if filtered %} filtered{% endif %}">{% for reporter in reporters.object_list %}
+					<tr uid="{{ reporter.pk }}" class="{% if reporter.is_hit %}hit{% endif %}">
 						<td class="check"></td>
 						<td>{{ reporter.full_name }}</td>
 						<td>{{ reporter.role }}</td>
@@ -97,7 +98,7 @@
 
 <script type="text/javascript">
 	$(function() {
-		var search_div  = $("div.module.recipients div.search");
+		var search_form = $("div.module.recipients form.search");
 		var recip_div   = $("div.module.recipients");
 		var content_div = $("div.module.contents");
 		
@@ -273,9 +274,9 @@
 		
 		
 		(function() {
-			var col_field = $("select[name=column]",    search_div);
-			var op_field  = $("select[name=operation]", search_div);
-			var q_field   = $("input[name=search]",     search_div);
+			var col_field = $("select[name=field]", search_form);
+			var op_field  = $("select[name=cmp]",   search_form);
+			var q_field   = $("input[name=query]",  search_form);
 			
 			var last_filters = null;
 			var timeout      = null;
@@ -302,7 +303,7 @@
 			 * perhaps, but not resetting can lead to a weird
 			 * situation where the results do not represent what
 			 * is currently in the search form... */
-			$("input.clear", search_div).click(function(ev) {
+			$("input.clear", search_form).click(function(ev) {
 				remove_filter();
 				
 				/* congratulations on noticing that i am a hack,
@@ -320,7 +321,7 @@
 			/* if the ACCEPT button was clicked, we will
 			 * be adding all hits to the "checked" cookie.
 			 * otherwise, we will be subtracting them */
-			$(".accept, .unaccept", search_div).click(function(ev) {
+			$(".accept, .unaccept", search_form).click(function(ev) {
 				var val = $(ev.target).hasClass("accept");
 				$.each(cookie_recips("hit"), function() {
 					set_cookie_recip(this, "checked", val);
