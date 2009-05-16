@@ -12,21 +12,36 @@
 		<div class="module recipients">
 			<h2>Select Recipients</h2>
 			<div class="search">
-				<select name="column">
-					<option value="">Any Column</option>{% for name, title in columns %}
-					<option value="{{ name }}">{{ title }}</option>{% endfor %}
-				</select>
-				
-				<select name="operation">
-					<option value="icontains">contains</option>
-					<option value="iexact">equals</option>
-					<option value="istartswith">starts with</option>
-					<option value="iendswith">ends with</option>
-					<option value="lt">is less than</option>
-					<option value="gt">is more than</option>
-				</select>
-				
-				<input type="text" name="search" value="" size="14" />
+				<table>
+					<tbody>
+						<tr>
+							<td>
+								<select name="column">
+									<option value="">Any Column</option>{% for name, title in columns %}
+									<option value="{{ name }}">{{ title }}</option>{% endfor %}
+								</select>
+							</td>
+							<td>
+								<select name="operation">
+									<option value="icontains">contains</option>
+									<option value="iexact">equals</option>
+									<option value="istartswith">starts with</option>
+									<option value="iendswith">ends with</option>
+									<option value="lt">is less than</option>
+									<option value="gt">is more than</option>
+								</select>
+							</td>
+							<td class="search">
+								<input type="text" name="search" value="" />
+							</td>
+							<td class="buttons">
+								<input type="button" title="Select All Search Results" value="Add" class="js-button accept" />
+								<input type="button" title="Unselect All Search Results" value="Add" class="js-button unaccept" />
+								<input type="button" title="Clear This Search" value="Add" class="js-button clear" />
+							</td>
+						</tr>
+					</tbody>
+				</table>
 			</div>
 			<table>
 				<thead>
@@ -37,7 +52,7 @@
 						<th>Location</th>
 					</tr>
 				</thead>
-				<tbody>{% for reporter in reporters.object_list %}
+				<tbody class="recips">{% for reporter in reporters.object_list %}
 					<tr uid="{{ reporter.pk }}">
 						<td class="check"></td>
 						<td>{{ reporter.full_name }}</td>
@@ -85,15 +100,17 @@
 		var search_div  = $("div.module.recipients div.search");
 		var recip_div   = $("div.module.recipients");
 		var content_div = $("div.module.contents");
+		
+		var recip_rows  = $("tbody.recips tr", recip_div);
+		var clear_link  = $("tfoot a.clear", recip_div);
+		var all_link    = $("tfoot a.all",   recip_div);
+		var none_link   = $("tfoot a.none",  recip_div);
 	
 		var msg_txta   = $("textarea",     content_div);
 		var send_btn   = $("input.send",   content_div);
 		var cancel_btn = $("input.cancel", content_div);
 		
-		var recip_rows = $("tbody tr",      recip_div);
-		var clear_link = $("tfoot a.clear", recip_div);
-		var all_link   = $("tfoot a.all",   recip_div);
-		var none_link  = $("tfoot a.none",  recip_div);
+		
 		
 		
 		/* these tooltips are attached to the status icon of
@@ -103,7 +120,9 @@
 			"sent":  "OK: Message Sent"
 		};
 		
-		var sending = false;
+		/* this almost-global var holds the xmlhttprequest
+		 * currently sending messages, so it can be easily
+		 * cancelled anywhere in this scope */
 		var send_xhr = null;
 		
 		
@@ -164,7 +183,7 @@
 		 * by their UID, or an empty array if none was found.
 		 * NOTE: the UID could still be valid on another page! */
 		var row_via_uid = function(uid) {
-			return $("tbody tr[uid=" + uid + "]", recip_div);
+			return $("tbody.recips tr[uid=" + uid + "]", recip_div);
 		};
 		
 		
@@ -229,10 +248,10 @@
 		
 		
 		/* when the "checked" class of the row is clicked (each <tr> displays
-		 * a single recipient, and add (or remove) the recipient's UID from
+		 * a single recipient), and add (or remove) the recipient's UID from
 		 * the cookie, to instruct views.py to pre-check this recipient the
 		 * next time we view them, in whatever context */
-		$("td.check", recip_rows).click(function(ev) {
+		recip_rows.click(function(ev) {
 			var row = $(ev.target).parent("tr");
 			var uid = row.attr("uid");
 			
@@ -254,38 +273,111 @@
 		
 		
 		(function() {
-			var timeout = null;
-			var last_val = null;
+			var col_field = $("select[name=column]",    search_div);
+			var op_field  = $("select[name=operation]", search_div);
+			var q_field   = $("input[name=search]",     search_div);
 			
-			$("input[name=search]", search_div).bind("keypress change", function(ev) {
-				if(timeout) clearTimeout(timeout);
-				timeout = setTimeout(function() {
-					var val = $(ev.target).val();
-					var filters = {};
+			var last_filters = null;
+			var timeout      = null;
+			var xhr          = null;
+			
+			
+			/* remove the search filters */
+			var remove_filters = function() {
+				$("tbody.recips", recip_div).removeClass("filtered");
+				$.cookie("recip-hit", null);
+				if(xhr) xhr.abort();
+				update_all_rows();
+			};
+			
+			
+			/* when the CLEAR button is clicked, remove the
+			 * search filters AND reset the form. heavy-handed,
+			 * perhaps, but not resetting can lead to a weird
+			 * situation where the results do not represent what
+			 * is currently in the search form... */
+			$("input.clear", search_div).click(function(ev) {
+				remove_filters();
 				
-					/* don't search again if nothing
-					 * has changed since the last */
-					if(last_val == val) return false;
-					last_val = val;
+				/* congratulations on noticing that i am a hack,
+				 * and this calls the do_search function up to
+				 * THREE TIMES. don't worry, it won't call the
+				 * server, on account of q_field being empty */
+				if(ev.target) {
+					q_field.val("");
+					col_field.val("");
+					op_field.val("");
+				}
+			});
+			
+
+			/* if the ACCEPT button was clicked, we will
+			 * be adding all hits to the "checked" cookie.
+			 * otherwise, we will be subtracting them */
+			$(".accept, .unaccept", search_div).click(function(ev) {
+				var val = $(ev.target).hasClass("accept");
+				$.each(cookie_recips("hit"), function() {
+					set_cookie_recip(this, "checked", val);
+				});
+				
+				/* refresh the classes (and checked-
+				 * ness) of visible recipients */
+				update_all_rows();
+			});
+			
+			
+			var do_search = function(ev) {
+				
+				/* if a previous search is pending, cancel it.
+				 * the results are irrelevant now, and we might
+				 * even save an SQL query (OH YEAH!!!1) */
+				if(timeout) clearTimeout(timeout);
+				if(xhr) xhr.abort();
+				
+				/* schedule the query for a very short time in
+				 * the future, to avoid hitting the server on
+				 * every single keypress */
+				var delay = 200;
+				timeout = setTimeout(function() {
+					var val = q_field.val();
+					var filters = {};
+					
+					/* don't bother searching if no
+					 * query has been entered yet */
+					if(val == "") {
+						remove_filters();
+						return false;
+					}
 					
 					/* build a query string using the Column and
 					 * Operation <selects> to create django filters */
-					var col = $("select[name=column]", search_div);
-					var op  = $("select[name=operation]", search_div);
-					var key = col.val() + "__" + op.val();
+					var key = col_field.val() + "__" + op_field.val();
 					filters[key] = val;
 					
-					$.get("{% url messaging-search %}", filters, function(data) {
-						$("tbody", recip_div).addClass("filtered");
+					/* don't search again if nothing
+					 * has changed since the last */
+					if(last_filters == (key+val)) return false;
+					last_filters = (key+val);
+					
+					xhr = $.get("{% url messaging-search %}", filters, function(data) {
+						$("tbody.recips", recip_div).addClass("filtered");
 						$.cookie("recip-hit", data);
 						update_all_rows();
+						xhr = null;
 					});
-				}, 1000);
-			});
+				}, delay);
+			};
+			
+			/* refresh the search every time any of the fields are
+			 * changed. rather inefficient, but the result of NOT
+			 * updating can be confusing as hell */
+			$(q_field).bind("keypress change", do_search);
+			$(col_field).change(do_search);
+			$(op_field).change(do_search);
 		})();
 		
 		
-		/* TODO */
+		/* TODO: DOCS */
 		send_btn.click(function() {
 			var text = msg_txta.attr("value");
 			
@@ -432,19 +524,47 @@
 
 		/* expand the search box to fill the remaining space
 		 * to the right. this is pointless but rather pretty */
-		$(".search input[name=search]", recip_div).each(function() {
-			var input = $(this);
+		/*$(".search input[name=search]", recip_div).each(function() {
+			var input = $(this);*/
 		
-			var box_offset = $(input.parent().children()[0]).offset()["left"];
+			/*var box_offset = $(input.parent().children()[0]).offset()["left"];
 			var inp_offset = input.offset()["left"] - box_offset;
-			var inp_width  = input.parent().width() - inp_offset;
+			var inp_width  = input.parent().width() - inp_offset;*/
 			
-			input.css({
+			/*input.css({
 				"-moz-box-sizing": "border-box",
 				"width": inp_width
 			});
-		});
+		});*/
 		
+		$(".fill-widthx").each(function() {
+			var element = $(this);
+			var parent = element.parent();
+			
+			/* start with the available inner width of the parent
+			 * element (we must remove the padding manually, since
+			 * jQuery().innerWidth is almost completely useless) */
+			var width = parent.innerWidth() -
+				parseInt(parent.css("padding-left")) -
+				parseInt(parent.css("padding-right"));
+			
+			/* ignore the padding, border, and margin of the element,
+			 * since we don't want to change those, but must take them
+			 * into account (since they occupy horizontal width) */
+			width -= (element.outerWidth(true) - element.innerWidth());
+			
+			/* iterate the siblings, and remove the full width of each.
+			 * note that this doesn't include spacing between them, so
+			 * they must be blocked and floated, to eliminate the spacing
+			 * HACK: ignore the full-width clear hack, for now */
+			element.siblings().not("div.clear-hack").each(function(n, sibling) {
+				width -= $(sibling).outerWidth(true);
+			});
+			
+			/* expand the element to fill as much
+			 * space as _we think_ is available */
+			element.css("width", width);
+		});
 		
 		/* update the dom now, to select cookied
 			* recipients and update the buttons */
