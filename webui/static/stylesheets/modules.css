@@ -207,15 +207,14 @@ table {
  * rs-module-help.js as default, but should not be
  * too verbose incase that doesn't work. */
 .module div.help,
-.module div.search {
+.module form.search {
 	border-right: 0.5em solid #ffb;
 	border-left: 0.5em solid #ffb;
 	background: #ffc;
 	padding: 1em;
 }
 
-	.module div.help p,
-	.module div.search p {
+	.module div.help p {
 		margin: 0; }
 
 

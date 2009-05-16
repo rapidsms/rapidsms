@@ -59,6 +59,29 @@ def self_link(parser, token):
 
 
 
+class SelfLinkFieldsNode(template.Node):
+    def __init__(self, *args):
+        self.omit = args
+        
+    def render(self, context):
+        get = context["request"].GET
+        
+        # render ALL of the GET parameters,
+        # except for those given in args
+        return "".join([
+            '<input type="hidden" name="%s" value="%s" />' % (k, get[k])
+            for k in get.keys()
+            if k not in self.omit
+        ])
+
+@register.tag
+def self_link_fields(parser, token):
+    args = token.split_contents()
+    return SelfLinkFieldsNode(*args[1:])
+
+
+
+
 @register.filter()
 def magnitude_ago(value):
     """Given a datetime, returns a string containing the
