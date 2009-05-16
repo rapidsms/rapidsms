@@ -521,50 +521,6 @@
 		/* ============== *
 		 * INITIALIZATION *
 		 * ============== */
-
-		/* expand the search box to fill the remaining space
-		 * to the right. this is pointless but rather pretty */
-		/*$(".search input[name=search]", recip_div).each(function() {
-			var input = $(this);*/
-		
-			/*var box_offset = $(input.parent().children()[0]).offset()["left"];
-			var inp_offset = input.offset()["left"] - box_offset;
-			var inp_width  = input.parent().width() - inp_offset;*/
-			
-			/*input.css({
-				"-moz-box-sizing": "border-box",
-				"width": inp_width
-			});
-		});*/
-		
-		$(".fill-widthx").each(function() {
-			var element = $(this);
-			var parent = element.parent();
-			
-			/* start with the available inner width of the parent
-			 * element (we must remove the padding manually, since
-			 * jQuery().innerWidth is almost completely useless) */
-			var width = parent.innerWidth() -
-				parseInt(parent.css("padding-left")) -
-				parseInt(parent.css("padding-right"));
-			
-			/* ignore the padding, border, and margin of the element,
-			 * since we don't want to change those, but must take them
-			 * into account (since they occupy horizontal width) */
-			width -= (element.outerWidth(true) - element.innerWidth());
-			
-			/* iterate the siblings, and remove the full width of each.
-			 * note that this doesn't include spacing between them, so
-			 * they must be blocked and floated, to eliminate the spacing
-			 * HACK: ignore the full-width clear hack, for now */
-			element.siblings().not("div.clear-hack").each(function(n, sibling) {
-				width -= $(sibling).outerWidth(true);
-			});
-			
-			/* expand the element to fill as much
-			 * space as _we think_ is available */
-			element.css("width", width);
-		});
 		
 		/* update the dom now, to select cookied
 			* recipients and update the buttons */
