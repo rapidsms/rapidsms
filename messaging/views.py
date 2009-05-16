@@ -40,14 +40,23 @@ def index(req):
         hits = Reporter.objects.filter(**kwargs).values_list("pk", flat=True)
         filtered = True
     
+    # the columns to display in the "field"
+    # field of the search form. this is WAY
+    # ugly, and should be introspected
+    columns = [
+        ("alias", "Alias"),
+        ("first_name", "First Name"),
+        ("last_name", "Last Name"),
+        ("role__title", "Role"),
+        ("location__name", "Location")]
+    
     return render_to_response(req,
         "messaging/index.html", {
-            "query":    req.GET.get("query", ""),
-            "field":    req.GET.get("field", ""),
-            "cmp":      req.GET.get("cmp", ""),
-            "filtered": filtered,
-            
-            "columns": [("alias", "Alias"), ("role__title", "Role"), ("location__name", "Location")],
+            "columns":   columns,
+            "filtered":  filtered,
+            "query":     req.GET.get("query", ""),
+            "field":     req.GET.get("field", ""),
+            "cmp":       req.GET.get("cmp", ""),
             "reporters": paginated(req, Reporter.objects.all(), wrapper=__reporter) })
 
 
