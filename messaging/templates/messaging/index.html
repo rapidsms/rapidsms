@@ -17,8 +17,7 @@
 					<tbody>
 						<tr>
 							<td>
-								<select name="field">
-									<option value="">Any Column</option>{% for name, title in columns %}
+								<select name="field">{% for name, title in columns %}
 									<option value="{{ name }}"{% ifequal name field %} selected="selected"{% endifequal %}>{{ title }}</option>{% endfor %}
 								</select>
 							</td>
