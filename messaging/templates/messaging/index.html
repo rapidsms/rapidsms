@@ -281,10 +281,16 @@
 			var timeout      = null;
 			var xhr          = null;
 			
+			/* HACK: to actually highlight the search 
+			 * results, we must dullify (?!) the others */
+			var add_filter = function() {
+				$("tbody.recips", recip_div).addClass("filtered");
+			}
 			
-			/* remove the search filters */
-			var remove_filters = function() {
+			/* remove the search filter */
+			var remove_filter = function() {
 				$("tbody.recips", recip_div).removeClass("filtered");
+				$.cookie("recip-search", null);
 				$.cookie("recip-hit", null);
 				if(xhr) xhr.abort();
 				update_all_rows();
@@ -297,7 +303,7 @@
 			 * situation where the results do not represent what
 			 * is currently in the search form... */
 			$("input.clear", search_div).click(function(ev) {
-				remove_filters();
+				remove_filter();
 				
 				/* congratulations on noticing that i am a hack,
 				 * and this calls the do_search function up to
@@ -339,41 +345,62 @@
 				 * every single keypress */
 				var delay = 200;
 				timeout = setTimeout(function() {
-					var val = q_field.val();
+					var q_val = q_field.val();
+					var col_v = col_field.val();
+					var op_v  = op_field.val();
 					var filters = {};
 					
 					/* don't bother searching if no
 					 * query has been entered yet */
-					if(val == "") {
-						remove_filters();
+					if(q_val == "") {
+						remove_filter();
 						return false;
 					}
 					
 					/* build a query string using the Column and
 					 * Operation <selects> to create django filters */
-					var key = col_field.val() + "__" + op_field.val();
-					filters[key] = val;
+					var key = col_v + "__" + op_v;
+					filters[key] = q_val;
 					
 					/* don't search again if nothing
 					 * has changed since the last */
-					if(last_filters == (key+val)) return false;
-					last_filters = (key+val);
+					if(last_filters == (key+q_val)) return false;
+					last_filters = (key+q_val);
 					
 					xhr = $.get("{% url messaging-search %}", filters, function(data) {
-						$("tbody.recips", recip_div).addClass("filtered");
+						
+						/* store both the RESULTS of this search, and
+						 * the form values that lead to it - so we can
+						 * repopulate the form if the user skips between
+						 * pages, without re-running the query */
+						$.cookie("recip-search", col_v + "|" + op_v +  "|" + q_val);
 						$.cookie("recip-hit", data);
+						
 						update_all_rows();
+						add_filter();
 						xhr = null;
 					});
 				}, delay);
 			};
 			
+			/* if there are form values saved, then
+			 * load them before we hook up the events
+			 * (to avoid triggering the search again) */
+			var saved_form = $.cookie("recip-search");
+			if(saved_form) {
+				vals = saved_form.split("|");
+				col_field.val(vals[0]);
+				op_field.val(vals[1]);
+				q_field.val(vals[2]);
+				add_filter();
+			}
+			
 			/* refresh the search every time any of the fields are
 			 * changed. rather inefficient, but the result of NOT
 			 * updating can be confusing as hell */
-			$(q_field).bind("keypress change", do_search);
-			$(col_field).change(do_search);
-			$(op_field).change(do_search);
+			q_field.bind("keypress change", do_search);
+			col_field.change(do_search);
+			op_field.change(do_search);
 		})();
 		
 		
