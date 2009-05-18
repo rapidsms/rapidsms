@@ -1,12 +1,13 @@
 from django.db import models
+from apps.patterns.models import Pattern
 
 # some really bare bones models for localization
 class Language(models.Model):
-    code = models.CharField(max_length = 10) # e.g. "en"
+    pattern = models.ForeignKey(Pattern)
     name = models.CharField(max_length = 50) # e.g. "English"
 
     def __unicode__(self):
-        return "%s (%s)" % (self.name, self.code)
+        return "%s (%s)" % (self.name, self.code.name)
 
 class Translation(models.Model):
     language = models.ForeignKey(Language)

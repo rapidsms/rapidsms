@@ -3,24 +3,32 @@
 
 from models import Language, Translation
 from apps.reporters.models import PersistantConnection
-
+import re
 
 DEFAULT_LANGUAGE = "en"
 
-def get_language(connection):
+def get_language_code(connection):
     if connection.reporter:
         if connection.reporter.language:
             return connection.reporter.language
     return DEFAULT_LANGUAGE 
 
+def get_language_from_code(language_code):
+    languages = Language.objects.all()
+    for language in languages:
+        if re.match(language.pattern.regex, language_code, re.IGNORECASE):
+            return language
+    if language_code == DEFAULT_LANGUAGE:
+        # so we don't infinite loop
+        return None
+    return get_language_from_code(DEFAULT_LANGUAGE)
+
 def get_translation(string, language_code):
     try:
-        lang = Language.objects.get(code=language_code)
-        return Translation.objects.get(language=lang, original=string).translation
-    except Language.DoesNotExist:
-        pass
+        language = get_language_from_code(language_code)
+        if language:
+            return Translation.objects.get(language=language, original=string).translation
     except Translation.DoesNotExist:
-        #print "Error: no translations found for %s.  Valid answers are:" % string
-        #print "\n".join([str(trans) for trans in Translation.objects.all().filter(language=lang)])
+        # hopefully the default passed in string will work
         pass
     return string
