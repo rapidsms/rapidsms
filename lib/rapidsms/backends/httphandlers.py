@@ -54,7 +54,7 @@ class HttpHandler(RapidBaseHttpHandler):
                 self.end_headers()
                 
                 if HttpHandler.msg_store.has_key(session_id) and len(HttpHandler.msg_store[session_id]):
-                        self.wfile.write("{'phone':'%s', 'message':'%s'}" % (session_id, str(HttpHandler.msg_store[session_id].pop(0))))
+                    self.wfile.write("{'phone':'%s', 'message':'%s'}" % (session_id, str(HttpHandler.msg_store[session_id].pop(0)).replace("'", r"\'")))
                 return
                 
             # TODO watch out because urllib.unquote will blow up on unicode text 
@@ -64,7 +64,7 @@ class HttpHandler(RapidBaseHttpHandler):
             self.send_response(200)
             self.send_header("Content-type", "text/html")
             self.end_headers()
-            self.wfile.write("{'phone':'%s', 'message':'%s'}" % (session_id, urllib.unquote(text)))
+            self.wfile.write("{'phone':'%s', 'message':'%s'}" % (session_id, urllib.unquote(text).replace("'", r"\'")))
             return
             
         return
