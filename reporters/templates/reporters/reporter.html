@@ -33,12 +33,14 @@
 		<div id="fm-rep-add-groups">
 			<label>Primary Group</label>{% if all_groups %}{% if groups %}{% for group in groups %}
 			<div>
-				<select name="group">{% for my_group in all_groups %}
+				<select name="group">
+					<option></option>{% for my_group in all_groups %}
 					<option value="{{ my_group.pk }}" class="depth-{{ my_group.depth }}"{% ifequal my_group group %} selected="selected"{% endifequal %}>{{ my_group.title }}</option>{% endfor %}
 				</select>
 			</div>{% endfor %}{% else %}
 			<div>
-				<select name="group">{% for my_group in all_groups %}
+				<select name="group">
+					<option></option>{% for my_group in all_groups %}
 					<option value="{{ my_group.pk }}" class="depth-{{ my_group.depth }}">{{ my_group.title }}</option>{% endfor %}
 				</select>
 			</div>{% endif %}{% else %}

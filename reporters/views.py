@@ -106,6 +106,12 @@ def update_reporter(req, rep):
     groups = field_bundles(req.POST, "group")	
     for grp_id, in groups:
         
+        # skip this group if it's empty
+        # (an empty widget is displayed as
+        # default, which may be ignored here)
+        if not grp_id:
+            continue
+        
         # link this group to the reporter
         grp = ReporterGroup.objects.get(pk=grp_id)
         rep.groups.add(grp)
