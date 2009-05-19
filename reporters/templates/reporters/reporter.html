@@ -1,5 +1,8 @@
+{% extends "reporters/index.html" %}
+{% block title %}{% if reporter %}Edit {{ reporter }}{% else %}Add a Reporter{% endif %}{% endblock %}
 {% load reporters %}
 
+{% block right %}
 <div class="module">
 	<h2>{% if reporter %}Edit {{ reporter }}{% else %}Add a Reporter{% endif %}</h2>
 	
@@ -45,7 +48,8 @@
 		</div>
 		
 		<div class="submit">
-			<input type="submit" value="{% if reporter %}Save Changes{% else %}Add Reporter{% endif %}" />
+			<input type="submit" value="{% if reporter %}Save Changes{% else %}Add Reporter{% endif %}" />{% if reporter %}
+			<input type="submit" name="delete" value="Delete {{ reporter }}" />{% endif %}
 		</div>
 	</form>
 </div>
@@ -68,3 +72,4 @@
 		$("#fm-rep-add").rs_validate();
 	});
 </script>
+{% endblock %}
