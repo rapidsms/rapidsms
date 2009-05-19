@@ -178,7 +178,9 @@ def edit_reporter(req, pk):
         return render_to_response(req,
             "reporters/reporter.html", {
             "reporters": paginated(req, Reporter.objects.all()),
+            "all_groups": ReporterGroup.objects.flatten(),
             "connections": rep.connections.all(),
+            "groups": rep.groups.all(),
             "reporter": rep })
     
     @transaction.commit_manually
