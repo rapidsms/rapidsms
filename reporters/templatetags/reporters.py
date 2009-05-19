@@ -173,7 +173,7 @@ def group_form(group=None):
     }
 
 
-@register.inclusion_tag("reporters/partials/groups/widget.html")
+@register.inclusion_tag("reporters/partials/group.html")
 def group_widget(group=None):
     
     groups = ReporterGroup.objects.flatten()
@@ -188,7 +188,7 @@ def group_widget(group=None):
     }
 
 
-@register.inclusion_tag("reporters/partials/connection/widget.html")
+@register.inclusion_tag("reporters/partials/connection.html")
 def connection_widget(connection=None):
     
     backends = PersistantBackend.objects.all()

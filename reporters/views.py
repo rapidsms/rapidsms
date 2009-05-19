@@ -22,14 +22,51 @@ def message(req, msg, link=None):
 
 @require_GET
 def index(req):
-    rep = None
-    if "edit" in req.GET:
-        rep = get_object_or_404(Reporter, pk=req.GET["edit"])
+    data = { }
+    
+    
+    # in the left panel, render the reporters
+    # index or the add/edit a group form
+#    if "group" in req.GET:
+#        if req.GET["group"] != "new":
+#            data["group"] = get_object_or_404(ReporterGroup, pk=req.GET["group"])
+#        else:
+#            data["add_group"] = 1
+#    else:
+#        data["reporters"] = paginated(req, Reporter.objects.all())
+    
+    
+    # in the right panel, render the groups
+    # index, or the add/edit a reporter form
+#    if "reporter" in req.GET:
+#        if req.GET["reporter"] != "new":
+#            data["reporter"] = get_object_or_404(Reporter, pk=req.GET["reporter"])
+#        else:
+#            data["add_reporter"] = 1
+#    else:
+#        data["groups"] = paginated(req, ReporterGroup.objects.all())
     
     return render_to_response(req,
-        "reporters/reporters/index.html", {
-            "reporters": paginated(req, Reporter.objects.all()),
-            "reporter": rep })
+        "reporters/index.html", {
+        "reporters": paginated(req, Reporter.objects.all()),
+        "groups": paginated(req, ReporterGroup.objects.flatten()),
+    })
+
+
+def check_reporter_form(req):
+    
+    # verify that all non-blank
+    # fields were provided
+    missing = [
+        field.verbose_name
+        for field in Reporter._meta.fields
+        if req.POST.get(field.name, "") == ""
+           and field.blank == False]
+    
+    # TODO: add other validation checks,
+    # or integrate proper django forms
+    return {
+        "missing": missing }
 
 
 def update_reporter(req, rep):
@@ -89,10 +126,25 @@ def update_reporter(req, rep):
 def add_reporter(req):
     def get(req):
         return render_to_response(req,
-            "reporters/reporters/add.html")
+            "reporters/reporter.html", {
+            "reporters": paginated(req, Reporter.objects.all()) })
 
     @transaction.commit_manually
     def post(req):
+        
+        # check the form for errors
+        errors = check_reporter_form(req)
+        
+        # if any fields were missing, abort. this is
+        # the only server-side check we're doing, for
+        # now, since we're not using django forms here
+        if errors["missing"]:
+            transaction.rollback()
+            return message(req,
+                "Missing Field(s): %s" %
+                    ", ".join(missing),
+                link="/reporters/add")
+        
         try:
             # create the reporter object from the form
             rep = insert_via_querydict(Reporter, req.POST)
@@ -124,29 +176,56 @@ def edit_reporter(req, pk):
     
     def get(req):
         return render_to_response(req,
-            "reporters/reporters/edit.html", {
+            "reporters/reporter.html", {
+            "reporters": paginated(req, Reporter.objects.all()),
+            "connections": rep.connections.all(),
             "reporter": rep })
     
     @transaction.commit_manually
     def post(req):
-        try:
-            # automagically update the fields of the
-            # reporter object, from the form
-            update_via_querydict(rep, req.POST).save()
-            update_reporter(req, rep)
-            
-            # no exceptions, so no problems
-            # commit everything to the db
-            transaction.commit()
-            
-            # full-page notification
-            return message(req,
-                "Reporter %d updated" % (rep.pk),
-                link="/reporters")
         
-        except Exception, err:
-            transaction.rollback()
-            raise
+        # if DELETE was clicked... delete
+        # the object, then and redirect
+        if req.POST.get("delete", ""):
+            rep.delete()
+            
+            return message(req,
+                "Reporter %d deleted" % (grp.pk),
+                link="/reporters")
+                
+        else:
+            # check the form for errors (just
+            # missing fields, for the time being)
+            errors = check_reporter_form(req)
+            
+            # if any fields were missing, abort. this is
+            # the only server-side check we're doing, for
+            # now, since we're not using django forms here
+            if errors["missing"]:
+                transaction.rollback()
+                return message(req,
+                    "Missing Field(s): %s" %
+                        ", ".join(errors["missing"]),
+                    link="/reporters/%s" % (rep.pk))
+            
+            try:
+                # automagically update the fields of the
+                # reporter object, from the form
+                update_via_querydict(rep, req.POST).save()
+                update_reporter(req, rep)
+                
+                # no exceptions, so no problems
+                # commit everything to the db
+                transaction.commit()
+                
+                # full-page notification
+                return message(req,
+                    "Reporter %d updated" % (rep.pk),
+                    link="/reporters")
+            
+            except Exception, err:
+                transaction.rollback()
+                raise
         
     # invoke the correct function...
     # this should be abstracted away
@@ -154,44 +233,68 @@ def edit_reporter(req, pk):
     elif req.method == "POST": return post(req)
 
 
-
-
-@require_GET
-def index_groups(req):
-    return render_to_response(req,
-        "reporters/groups/index.html", {
-            "groups": ReporterGroup.objects.flatten()
-    })
-
-
 @require_http_methods(["GET", "POST"])
 def add_group(req):
     if req.method == "GET":
         return render_to_response(req,
-            "reporters/groups/add.html", {
-                "groups": ReporterGroup.objects.flatten() })
+            "reporters/group.html", {
+                "all_groups": ReporterGroup.objects.flatten(),
+                "groups": paginated(req, ReporterGroup.objects.flatten()) })
         
     elif req.method == "POST":
+        
+        # create a new group using the flat fields,
+        # then resolve and update the parent group
+        # TODO: resolve foreign keys in i_via_q
         grp = insert_via_querydict(ReporterGroup, req.POST)
+        parent_id = req.POST.get("parent_id", "")
+        if parent_id:
+            grp.parent = get_object_or_404(
+                ReporterGroup, pk=parent_id)
+        
         grp.save()
         
         return message(req,
             "Group %d added" % (grp.pk),
-            link="/reporters/groups/")
+            link="/reporters")
 
 
 @require_http_methods(["GET", "POST"])
 def edit_group(req, pk):
+    grp = get_object_or_404(ReporterGroup, pk=pk)
+    
     if req.method == "GET":
         return render_to_response(req,
-            "reporters/groups/edit.html", {
-                "group": get_object_or_404(ReporterGroup, pk=pk),
-                "groups": ReporterGroup.objects.flatten() })
-        
+            "reporters/group.html", {
+                "all_groups": ReporterGroup.objects.flatten(),
+                "groups": paginated(req, ReporterGroup.objects.flatten()),
+                "group": grp })
+    
     elif req.method == "POST":
-        grp = update_via_querydict(ReporterGroup, req.POST)
-        grp.save()
-        
-        return message(req,
-            "Group %d saved" % (grp.pk),
-            link="/reporters/groups/")
+        # if DELETE was clicked... delete
+        # the object, then and redirect
+        if req.POST.get("delete", ""):
+            grp.delete()
+            
+            return message(req,
+                "Group %d deleted" % (grp.pk),
+                link="/reporters")
+
+        # otherwise, update the flat fields of the group
+        # object, then resolve and update the parent group
+        # TODO: resolve foreign keys in u_via_q
+        else:
+            update_via_querydict(grp, req.POST)
+            parent_id = req.POST.get("parent_id", "")
+            if parent_id:
+                grp.parent = get_object_or_404(
+                    ReporterGroup, pk=parent_id)
+            
+            # if no parent_id was passed, we can assume
+            # that the field was cleared, and remove it
+            else: grp.parent = None
+            grp.save()
+            
+            return message(req,
+                "Group %d saved" % (grp.pk),
+                link="/reporters")
