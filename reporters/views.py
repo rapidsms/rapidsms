@@ -187,10 +187,12 @@ def edit_reporter(req, pk):
         # if DELETE was clicked... delete
         # the object, then and redirect
         if req.POST.get("delete", ""):
+            pk = rep.pk
             rep.delete()
             
+            transaction.commit()
             return message(req,
-                "Reporter %d deleted" % (grp.pk),
+                "Reporter %d deleted" % (pk),
                 link="/reporters")
                 
         else:
@@ -274,10 +276,11 @@ def edit_group(req, pk):
         # if DELETE was clicked... delete
         # the object, then and redirect
         if req.POST.get("delete", ""):
+            pk = grp.pk
             grp.delete()
             
             return message(req,
-                "Group %d deleted" % (grp.pk),
+                "Group %d deleted" % (pk),
                 link="/reporters")
 
         # otherwise, update the flat fields of the group
