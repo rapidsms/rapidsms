@@ -63,12 +63,10 @@ table {
 }	
 
 	tr { }
-	
-		td, th {
-			padding: 0.5em;
-			border-top: 1px solid #eee; 
-		}
-		
+			
+			/* reset the "look" of headers to match
+			 * regular cells, since they can appear
+			 * anywhere (the the col or row scope) */
 			th {
 				font-weight: normal;
 				text-align: left;
@@ -77,12 +75,12 @@ table {
 				thead th {
 					background: #e1e1e1 url(../images/table-header-bg.png) repeat-x 100% 0;
 					border-top: none;
-					color: #444;
+					color: #888;
 				}
 				
 				/* sometimes fake columns are added to the
 				 * table head, to make things line up. hide
-				 * this embarressing fact as best i can. */
+				 * this embarressing fact as best i can */
 				thead td {
 					border-top: none; }
 
@@ -96,12 +94,32 @@ table {
 		
 			/* a 1px border between each line
 			 * TODO: why isn't this on a <tr>? */
-			tbody td, tbody th {}
+			td, th {
+				padding: 0.5em;
+				border-top: 1px solid #eee; 
+			}
+			
+			/* for those lucky browsers which support :last-child,
+			 * (which is all of them, except for IE6), space out the
+			 * columns a bit more, without imposing extra markup on
+			 * the template author */
+			body:last-child td            { padding-right: 1.5em; }
+			body:last-child td:last-child { padding-right: 0.5em; }
 			
 			/* TODO: docs */
 			td a.unknown {
 				color: #66BDDD;
-				font-style: italic; }
+				font-style: italic;
+			}
+			
+			/* some cells have nothing important to say,
+			 * (like "none" or "never"), but are required
+			 * none the less. make them dull, to highlight
+			 * the rows which contain real data */
+			td.na {
+				color: #ccc;
+				font-style: italic;
+			}
 
 		
 	tr.no-data { }
