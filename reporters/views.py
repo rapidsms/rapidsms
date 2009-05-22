@@ -274,10 +274,21 @@ def edit_group(req, pk):
     grp = get_object_or_404(ReporterGroup, pk=pk)
     
     if req.method == "GET":
+        
+        # fetch all groups, to be displayed
+        # flat in the "parent group" field
+        all_groups = ReporterGroup.objects.flatten()
+        
+        # iterate the groups, to mark one of them
+        # as selected (the editing group's parent)
+        for this_group in all_groups:
+            if grp.parent == this_group:
+                this_group.selected = True
+        
         return render_to_response(req,
             "reporters/group.html", {
-                "all_groups": ReporterGroup.objects.flatten(),
                 "groups": paginated(req, ReporterGroup.objects.flatten()),
+                "all_groups": all_groups,
                 "group": grp })
     
     elif req.method == "POST":
