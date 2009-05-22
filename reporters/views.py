@@ -1,11 +1,9 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-from django.http import HttpResponse, Http404, HttpResponseBadRequest, HttpResponseNotAllowed, HttpResponseServerError
-from django.template import RequestContext
-from django.views.decorators.http import require_GET, require_POST, require_http_methods
+from django.views.decorators.http import require_GET, require_http_methods
 from django.shortcuts import get_object_or_404
-from django.db import IntegrityError, transaction
+from django.db import transaction
 
 from rapidsms.webui.utils import *
 from apps.reporters.models import *
@@ -22,30 +20,6 @@ def message(req, msg, link=None):
 
 @require_GET
 def index(req):
-    data = { }
-    
-    
-    # in the left panel, render the reporters
-    # index or the add/edit a group form
-#    if "group" in req.GET:
-#        if req.GET["group"] != "new":
-#            data["group"] = get_object_or_404(ReporterGroup, pk=req.GET["group"])
-#        else:
-#            data["add_group"] = 1
-#    else:
-#        data["reporters"] = paginated(req, Reporter.objects.all())
-    
-    
-    # in the right panel, render the groups
-    # index, or the add/edit a reporter form
-#    if "reporter" in req.GET:
-#        if req.GET["reporter"] != "new":
-#            data["reporter"] = get_object_or_404(Reporter, pk=req.GET["reporter"])
-#        else:
-#            data["add_reporter"] = 1
-#    else:
-#        data["groups"] = paginated(req, ReporterGroup.objects.all())
-    
     return render_to_response(req,
         "reporters/index.html", {
         "reporters": paginated(req, Reporter.objects.all()),
@@ -93,8 +67,12 @@ def update_reporter(req, rep):
         # identity or report is invalid)
         conn, created = PersistantConnection.objects.get_or_create(
             backend=PersistantBackend.objects.get(pk=be_id),
-            identity=identity,
-            reporter=rep)
+            identity=identity)
+        
+        # update the reporter separately, in case the connection
+        # exists, and is already linked to another reporter
+        conn.reporter = rep
+        conn.save()
         
         # if this conn was already
         # linked, don't delete it!
@@ -133,7 +111,13 @@ def add_reporter(req):
     def get(req):
         return render_to_response(req,
             "reporters/reporter.html", {
-            "reporters": paginated(req, Reporter.objects.all()) })
+                
+                # display paginated reporters in the left panel
+                "reporters": paginated(req, Reporter.objects.all()),
+                
+                # list all groups + backends in the edit form
+                "all_groups": ReporterGroup.objects.flatten(),
+                "all_backends": PersistantBackend.objects.all() })
 
     @transaction.commit_manually
     def post(req):
@@ -183,11 +167,19 @@ def edit_reporter(req, pk):
     def get(req):
         return render_to_response(req,
             "reporters/reporter.html", {
-            "reporters": paginated(req, Reporter.objects.all()),
-            "all_groups": ReporterGroup.objects.flatten(),
-            "connections": rep.connections.all(),
-            "groups": rep.groups.all(),
-            "reporter": rep })
+                
+                # display paginated reporters in the left panel
+                "reporters": paginated(req, Reporter.objects.all()),
+                
+                # list all groups + backends in the edit form
+                "all_groups": ReporterGroup.objects.flatten(),
+                "all_backends": PersistantBackend.objects.all(),
+                
+                # split objects linked to the editing reporter into
+                # their own vars, to avoid coding in the template
+                "connections": rep.connections.all(),
+                "groups":      rep.groups.all(),
+                "reporter":    rep })
     
     @transaction.commit_manually
     def post(req):
