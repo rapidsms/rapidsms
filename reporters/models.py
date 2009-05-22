@@ -359,8 +359,8 @@ class PersistantBackend(models.Model):
        (in models which wish to link to a backend), since the
        available backends (and their orders) may change after
        deployment; hence, something persistant is needed."""
-    slug        = models.CharField(max_length=30, unique=True)
-    title       = models.CharField(max_length=30)
+    slug  = models.CharField(max_length=30, unique=True)
+    title = models.CharField(max_length=30)
     
     
     class Meta:
@@ -397,6 +397,7 @@ class PersistantConnection(models.Model):
     
     class Meta:
         verbose_name = "Connection"
+        unique_together = ("backend", "identity")
     
     
     def __unicode__(self):
