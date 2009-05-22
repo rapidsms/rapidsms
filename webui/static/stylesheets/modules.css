@@ -131,6 +131,12 @@ table {
 				color: #aaa;
 			}
 			
+			/* since no-data rows usually only have a single
+			 * <td>, the last-child rule above breaks their
+			 * huge padding. this is a hack to fix it. */
+			body:last-child tr.no-data td:last-child {
+				padding-right: 2em; }
+			
 			tr.no-data td a.add {
 				display: block;
 				padding-top: 0.625em;
