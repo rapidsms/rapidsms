@@ -22,7 +22,7 @@
 		<div id="fm-grp-add-groups">
 			<label>Parent Group</label>
 			<select name="parent_id" size="6">
-				<option value="" selected="selected" class="na">None</option>{% for group in all_groups %}
+				<option value=""{% if not group.parent %} selected="selected"{% endif %} class="na">None</option>{% for group in all_groups %}
 				<option value="{{ group.pk }}" class="depth-{{ group.depth }}"{% if group.selected %} selected="selected"{% endif %}>{{ group.title }}</option>{% endfor %}
 			</select>
 			<p class="help">
