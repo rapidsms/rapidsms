@@ -68,7 +68,7 @@
 		</thead>
 		<tbody>{% if groups.object_list %}{% for group in groups.object_list %}
 			<tr class="depth-{{ group.depth }}">
-				<td><span><a href="/groups/{{ group.pk }}"{% if group.title %}>{{ group.title }}{% else %} class="unknown">Unknown{% endif %}</a></span></td>
+				<td class="indent"><span><a href="/groups/{{ group.pk }}"{% if group.title %}>{{ group.title }}{% else %} class="unknown">Unknown{% endif %}</a></span></td>
 				<td>{{ group.members }}</td>
 			</tr>{% endfor %}{% else %}
 			<tr class="no-data">

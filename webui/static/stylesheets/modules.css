@@ -137,14 +137,14 @@ table {
 				font-size: 80%;
 			}
 	
-	tr.depth-1 th { padding-left: 2em;  }
-	tr.depth-2 th { padding-left: 4em;  }
-	tr.depth-3 th { padding-left: 6em;  }
-	tr.depth-4 th { padding-left: 8em;  }
-	tr.depth-5 th { padding-left: 10em; }
-	tr.depth-6 th { padding-left: 12em; }
-	tr.depth-7 th { padding-left: 14em; }
-	tr.depth-8 th { padding-left: 16em; }
+	tr.depth-1 td.indent { padding-left: 2em;  }
+	tr.depth-2 td.indent { padding-left: 4em;  }
+	tr.depth-3 td.indent { padding-left: 6em;  }
+	tr.depth-4 td.indent { padding-left: 8em;  }
+	tr.depth-5 td.indent { padding-left: 10em; }
+	tr.depth-6 td.indent { padding-left: 12em; }
+	tr.depth-7 td.indent { padding-left: 14em; }
+	tr.depth-8 td.indent { padding-left: 16em; }
 	
 	tfoot {
 		background: #eee url("../images/table-footer-bg.png") repeat-x 0 100%;
