@@ -55,12 +55,9 @@ def render_to_response(req, template_name, dictionary=None, **kwargs):
         # use it, but sometimes, when time is short...
         rs_dict["app_conf"] = settings.RAPIDSMS_APPS[app_type]
         
-        # look up this app in the "apps" list that
-        # we've already added, to make the tab (or
-        # whatever other nav we're using) as active
-        for app in rs_dict["apps"]:
-            if app["type"] == app_type:
-                app["active"] = True
+        # note which app this func was called from, so the tmpl
+        # can mark the tab (or some other type of nav) as active
+        rs_dict["active_tab"] = rs_dict["app_conf"]["type"]
         
         # find all of the javascript assets for
         # this app, and add them to the <head>
