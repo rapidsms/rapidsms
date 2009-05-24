@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-import os
+import os, log
 from ConfigParser import SafeConfigParser
-import log
 
 
 def to_list (item, separator=","):
@@ -173,28 +172,3 @@ class Config (object):
         return self.data.has_key(key)
     
     __contains__ = has_key
-
-
-def conf(section, key=None):
-    """Returns a section or value from the RapidSMS configuration file, as found
-       in the RAPIDSMS_INI environment variable. This introduces mild coupling
-       between the WebUI and backend, for the sake of convenience."""
-    
-    var = "RAPIDSMS_INI"
-    if not var in os.environ:
-        
-        # "rapidsms.webui.utils.conf should only
-        # be called from within a running rapidsms
-        # server, where env[RAPIDSMS_INI] is defined"
-        raise KeyError(var)
-    
-    try:
-        sect = Config(os.environ[var])[section]
-        if key is not None: return sect[key]
-        else:               return sect
-    
-    # if the section or key (or both) were invalid,
-    # just return none. as far as we're concerned,
-    # absence is the same as False or None here
-    except KeyError:
-        return None

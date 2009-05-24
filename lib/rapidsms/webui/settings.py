@@ -96,7 +96,7 @@ if not "RAPIDSMS_INI" in os.environ:
         "which ini file to load settings from")
 
 # load the rapidsms configuration
-from rapidsms.config import Config
+from rapidsms import Config
 RAPIDSMS_CONF = Config(os.environ["RAPIDSMS_INI"])
 
 # since iterating and reading the config of apps is
