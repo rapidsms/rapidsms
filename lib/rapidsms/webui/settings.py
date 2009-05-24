@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-import os, sys
+import os
 
 
 DEBUG = True
@@ -76,6 +76,9 @@ TEMPLATE_DIRS = [
     # Don't forget to use absolute paths, not relative paths.
 ]
 
+
+
+
 # ====================
 # LOAD RAPIDSMS CONFIG
 # ====================
@@ -94,7 +97,13 @@ if not "RAPIDSMS_INI" in os.environ:
 
 # load the rapidsms configuration
 from rapidsms.config import Config
-conf = Config(os.environ["RAPIDSMS_INI"])
+RAPIDSMS_CONF = Config(os.environ["RAPIDSMS_INI"])
+
+# since iterating and reading the config of apps is
+# common, build a handy dict of apps and their configs
+RAPIDSMS_APPS = dict([
+    (app["type"], app)
+    for app in RAPIDSMS_CONF["rapidsms"]["apps"]])
 
 
 
@@ -107,8 +116,8 @@ conf = Config(os.environ["RAPIDSMS_INI"])
 # keys don't correspond exactly to their eventual
 # name in this module (they're missing the prefix
 # in rapidsms.ini); inject them into this module
-if "database" in conf:
-    for key, val in conf["database"].items():
+if "database" in RAPIDSMS_CONF:
+    for key, val in RAPIDSMS_CONF["database"].items():
         vars()["DATABASE_%s" % key.upper()] = val
 
 else:
@@ -116,15 +125,14 @@ else:
     # blow up. TODO: is there a way to
     # run django without a database?
     raise(
-        #ImproperlyConfigured,
-        "Your RapidSMS configuration does not " +\
-        "contain a [database] section, which is required " +\
-        "for the Django webui to function.")
+        "Your RapidSMS configuration does not contain " +\
+        "a [database] section, which is required " +\
+        "for the Django WebUI to function.")
 
 # if there is a "django" section, inject
 # the items as CONSTANTS in this module
-if "django" in conf:
-    for key, val in conf["django"].items():
+if "django" in RAPIDSMS_CONF:
+    for key, val in RAPIDSMS_CONF["django"].items():
         vars()[key.upper()] = val
 
 
@@ -134,12 +142,6 @@ if "django" in conf:
 # INJECT RAPIDSMS APPS
 # ====================
 
-rapidsms_apps = [
-    "apps.%s" % (rs_app["type"])
-    for rs_app in conf["rapidsms"]["apps"]
-]
-
-# TODO: move these?
 INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -147,4 +149,4 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.admin',
     'django.contrib.admindocs'
-] + rapidsms_apps
+] + [app["module"] for app in RAPIDSMS_APPS.values()]

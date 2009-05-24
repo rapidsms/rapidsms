@@ -58,7 +58,7 @@ class Config (object):
                     self.normalized_data[sn].copy()
 
 
-    def __normalize_value(self, value):
+    def __normalize_value (self, value):
         """Casts a string to a bool, int, or float, if it looks like it
            should be one. This is a band-aid over the ini format, which
            assumes all values to be strings. Examples:
@@ -85,7 +85,7 @@ class Config (object):
         return value
     
     
-    def __import_class(self, class_tmpl):
+    def __import_class (self, class_tmpl):
         """Given a full class name (ie, apps.webui.app.App), returns the
            class object. There doesn't seem to be a built-in way of doing
            this without mucking with __import__."""
@@ -122,10 +122,10 @@ class Config (object):
     
     def app_section (self, name):
         data = self.component_section(name)
-        mod_str = "apps.%s" % (data["type"])
+        data["module"] = "apps.%s" % (data["type"])
         
         # load the config.py for this app, if possible
-        config = self.__import_class("apps.%s.config" % data["type"])
+        config = self.__import_class("%s.config" % data["module"])
         if config is not None:
             
             # copy all of the names not starting with underscore (those are
@@ -136,7 +136,7 @@ class Config (object):
         
         # import the actual module, and add the path to the
         # config - it might not always be in rapidsms/apps/%s
-        data["path"] = self.__import_class("apps.%s" % data["type"]).__path__[0]
+        data["path"] = self.__import_class(data["module"]).__path__[0]
         
         # return the component with the additional
         # app-specific data included.
@@ -171,7 +171,7 @@ class Config (object):
         
     def has_key (self, key):
         return self.data.has_key(key)
-
+    
     __contains__ = has_key
 
 

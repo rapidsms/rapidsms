@@ -3,10 +3,8 @@
 
 
 import os, re, traceback
-from rapidsms.config import conf, app_conf
-from django.template import loader
+from rapidsms.webui import settings
 from django.template import RequestContext
-from django.http import HttpResponse, Http404
 from django.shortcuts import render_to_response as django_r_to_r
 from django.core.paginator import Paginator, EmptyPage, InvalidPage
 
@@ -17,8 +15,8 @@ def render_to_response(req, template_name, dictionary=None, **kwargs):
        and there's probably a much better solution."""
     
     rs_dict = {
-        "apps":  conf("rapidsms", "apps"),
-        "debug": conf("django", "debug"),
+        "apps":  settings.RAPIDSMS_APPS.values(),
+        "debug": settings.DEBUG,
         "javascripts": []
     }
     
@@ -40,7 +38,7 @@ def render_to_response(req, template_name, dictionary=None, **kwargs):
     # add all of the global javascript files for all running
     # apps. this is super handy for packaging functionality
     # which affects the whole webui without hard-coding it
-    for app in conf("rapidsms", "apps"):
+    for app in rs_dict["apps"]:
         __js_dir(
             "%s/static/javascripts/global" % app["path"],
             "/static/%s/javascripts/global" % app["type"])
@@ -55,7 +53,7 @@ def render_to_response(req, template_name, dictionary=None, **kwargs):
         # since we're fetching the app conf, add it to the
         # template dict. it wouldn't be a very good idea to
         # use it, but sometimes, when time is short...
-        rs_dict["app_conf"] = app_conf(app_type)
+        rs_dict["app_conf"] = settings.RAPIDSMS_APPS[app_type]
         
         # look up this app in the "apps" list that
         # we've already added, to make the tab (or
