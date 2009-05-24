@@ -8,10 +8,6 @@ from django.db import models
 
 from apps.patterns.models import Pattern
 
-# load the rapidsms configuration, for BackendManager
-# to check which backends are currently running
-from rapidsms.config import Config
-conf = Config(os.environ["RAPIDSMS_INI"])
 
 
 
