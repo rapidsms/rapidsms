@@ -18,26 +18,26 @@ def database(req):
        from the config file, and calling the relevant dump program. Currently,
        only mySQL and SQLite3 are supported."""
     
-    db = settings.RAPIDSMS_CONF["database"]
-    if db["engine"] == "mysql":
-        cmd = "mysqldump --user=%(user)s --password=%(password)s %(name)s" % db
+    conf = vars(settings)
+    if settings.DATABASE_ENGINE == "mysql":
+        cmd = "mysqldump --host=%(DATABASE_HOST)s --user=%(DATABASE_USER)s --password=%(DATABASE_USER)s %(DATABASE_NAME)s" % (conf)
     
-    elif db["engine"] == "sqlite3":
-        cmd = "sqlite3 %(name)s .dump" % db
+    elif settings.DATABASE_ENGINE == "sqlite3":
+        cmd = "sqlite3 %(DATABASE_NAME)s .dump" % (conf)
     
     else:
         return HttpResponse(
-            "Sorry, %s databases are not supported yet.",
+            "Sorry, %(DATABASE_ENGINE)s databases are not supported yet." % (conf),
             status=500, content_type="text/plain")
-		
+	
     # execute the dump command, and wait for it to terminate
-    proc = Popen([cmd], shell=True,stdin=PIPE,stdout=PIPE, stderr=PIPE)
+    proc = Popen([cmd], shell=True, stdin=PIPE, stdout=PIPE, stderr=PIPE)
     sql = proc.communicate()
 
     # download the file as plain text
     today = datetime.datetime.now().strftime("%d-%m-%Y")
     resp = http.HttpResponse(sql, mimetype="text/plain")
-    resp["content-disposition"] = "attachment; filename=%s.sql" % today
+    resp["content-disposition"] = "attachment; filename=%s.sql" % (today)
     return resp
 
 
