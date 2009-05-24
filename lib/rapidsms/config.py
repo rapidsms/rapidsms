@@ -19,6 +19,7 @@ class Config (object):
         self.sources = self.parser.read(paths)
         
         self.raw_data = {}
+        self.normalized_data = {}
         self.data = {}
         
         # first pass: read in the raw data. it's all strings, since
@@ -26,12 +27,21 @@ class Config (object):
         for sn in self.parser.sections():
             items = self.parser.items(sn)
             self.raw_data[sn] = dict(items)
-
-        # second pass: iterate the raw data, creating a second
+        
+        # second pass: cast the values into int or bool where possible
+        # (mostly to avoid storing "false", which evaluates to True)
+        for sn in self.raw_data.keys():
+            self.normalized_data[sn] = {}
+            
+            for key, val in self.raw_data[sn].items():
+                self.normalized_data[sn][key] = \
+                    self.__normalize_value(val)
+        
+        # third pass: iterate the normalized data, creating a
         # dict (self.data) containing the "real" configuration,
         # which may include things (magic, defaults, etc) not
-        # present in the raw_data
-        for sn in self.raw_data.keys():
+        # present in the raw_data or normalized_data
+        for sn in self.normalized_data.keys():
             section_parser = "parse_%s_section" % (sn)
             
             # if this section has a special parser, call
@@ -39,15 +49,42 @@ class Config (object):
             if hasattr(self, section_parser):
                 self.data[sn] = \
                     getattr(self, section_parser)(
-                        self.raw_data[sn])
+                        self.normalized_data[sn])
             
             # no custom section parser, so
             # just copy the raw data as-is
             else:
                 self.data[sn] =\
-                    self.raw_data[sn].copy()
+                    self.normalized_data[sn].copy()
 
 
+    def __normalize_value(self, value):
+        """Casts a string to a bool, int, or float, if it looks like it
+           should be one. This is a band-aid over the ini format, which
+           assumes all values to be strings. Examples:
+           
+           "mudkips"              => "mudkips" (str)
+           "false", "FALSE", "no" => False     (bool)
+           "true", "TRUE", "yes"  => True      (bool)
+           "1.0", "0001.00"       => 1.0       (float)
+           "0", "0000"            => 0         (int)"""
+        
+        # shortcut for string boolean values
+        if   value.lower() in ["false", "no"]: return False
+        elif value.lower() in ["true", "yes"]: return True
+        
+        # attempt to cast this value to an int, then a float. (a sloppy
+        # benchmark of this exception-catching algorithm indicates that
+        # it's faster than checking with a regexp)
+        for func in [int, float]:
+            try: func(value)
+            except: pass
+        
+        # it's just a str
+        # (NOT A UNICODE)
+        return value
+    
+    
     def __import_class(self, class_tmpl):
         """Given a full class name (ie, apps.webui.app.App), returns the
            class object. There doesn't seem to be a built-in way of doing
