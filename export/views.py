@@ -10,7 +10,7 @@ from django import http
 from django.db import models
 from django.utils.text import capfirst
 from django.core.exceptions import FieldError
-from rapidsms.config import conf
+from rapidsms.webui import settings
 
 
 def database(req):
@@ -18,7 +18,7 @@ def database(req):
        from the config file, and calling the relevant dump program. Currently,
        only mySQL and SQLite3 are supported."""
     
-    db = conf("database")
+    db = settings.RAPIDSMS_CONF["database"]
     if db["engine"] == "mysql":
         cmd = "mysqldump --user=%(user)s --password=%(password)s %(name)s" % db
     
