@@ -3,13 +3,13 @@
 
 import urllib, urllib2
 from django.http import HttpResponse
-from rapidsms.config import app_conf
+from rapidsms.webui import settings
 
 def proxy(req, path):
     
     # build the url to the http server running
     # in apps.ajax.app.App via conf hackery
-    conf = app_conf("ajax")
+    conf = settings.RAPIDSMS_APPS["ajax"]
     url = "http://%s:%d/%s?%s" % (
         conf["host"], conf["port"],
         path, req.GET.urlencode())
