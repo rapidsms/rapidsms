@@ -3,6 +3,9 @@
 from django import template
 register = template.Library()
 
+from apps.webui.app import App as webui_app
+from rapidsms.config import app_conf
+
 @register.tag(name="ifhasperm")
 def do_perm_check(parser, token):
     # save everything between the beginning and ending tags
@@ -40,11 +43,19 @@ class PermCheck(template.Node):
             user = self.user.resolve(context)
             # construct the permission we will check for
             permission = app['type'] + '.' + self.perm_string
+            # return an empty string unless there is content to display. 
+            # otherwise 'None' will show up rather than a tab or nothing
+            display = ''
             if user.has_perm(permission): 
                 # return the stuff between the tags
-                return self.nodelist.render(context)
-            else:
-                return ''
+                display = self.nodelist.render(context)
+            elif user.is_anonymous():
+                # for anonymous users, check against anon_perms
+                # defined in the webui section of rapidsms.ini 
+                if app_conf('webui').has_key('anon_perms'):
+                    if permission in app_conf('webui')['anon_perms']:
+                        display =  self.nodelist.render(context)
+            return display
 
         except template.VariableDoesNotExist:
             return ''

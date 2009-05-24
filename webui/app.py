@@ -16,6 +16,21 @@ class App(rapidsms.app.App):
     MSG_BAD_RESPONSE = "FAIL: The RapidSMS WebUI did not respond correctly."
     PING_URL         = "http://localhost:8000/ping"
 
+    def configure(self, anon_perms=None):
+        # permissions for anonymous (not logged-in) users.
+        # bednets and other tabs can be displayed on the dashboard so that visitors will 
+        # know that more functionality exists and that they need login creds to access them
+        # BUT we are able to keep things like 'reporters & groups', 'messaging', 'training',
+        # etc hidden from view
+        #
+        # otherwise django auth/permissions would only allow us to have all-or-none
+        # control of what anonymous users can see.
+        #
+        # anon_perms should be defined in the webui section of rapidsms.ini
+        # like:
+        # anon_perms = ['bednets.can_view', 'ipds.can_view']
+        self.anon_perms = anon_perms
+
     def handle(self, msg):
         if msg.text == "webui":
             try:
