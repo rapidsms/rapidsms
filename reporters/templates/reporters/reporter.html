@@ -21,7 +21,7 @@
 				<input type="text" id="fm-rep-add-last_name" name="last_name"{% if reporter %} value="{{ reporter.last_name }}"{% endif %} />
 				<label for="fm-rep-add-last_name" class="suffix">Last<span class="acc"> Name</span></label>
 			</div>
-		</div>
+		</div>{% if all_backends %}
 		
 		<div id="fm-rep-add-connections">
 			<label>Primary Connection</label>{% if connections %}{% for connection in connections %}
@@ -40,7 +40,7 @@
 				</select>
 				<input type="text" name="conn-identity" />
 			</div>{% endif %}
-		</div>
+		</div>{% endif %}
 		
 		<div id="fm-rep-add-groups">
 			<label>Primary Group</label>{% if all_groups %}{% if groups %}{% for group in groups %}
