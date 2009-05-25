@@ -22,8 +22,8 @@ def message(req, msg, link=None):
 def index(req):
     return render_to_response(req,
         "reporters/index.html", {
-        "reporters": paginated(req, Reporter.objects.all()),
-        "groups": paginated(req, ReporterGroup.objects.flatten()),
+        "reporters": paginated(req, Reporter.objects.all(), prefix="rep"),
+        "groups":    paginated(req, ReporterGroup.objects.flatten(), prefix="grp"),
     })
 
 
