@@ -1,6 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-{% load webui %}
+{% load debug_dump %}
+{% load region %}
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 	<head>
@@ -25,7 +26,7 @@
 					<h1><a title="Return to the Dashboard" href="/">RapidSMS</a></h1>
 				</div>
 				<ul id="tabs">{% for app in apps %}{% if app.tab_link %}
-					<li class="app-{{ app.type }}{% if app.active %} active{% endif %}">
+					<li class="app-{{ app.type }}{% ifequal active_tab app.type %} active{% endifequal %}">
 						<a href="{{ app.tab_link }}"><span>{{ app.title }}</span></a>
 					</li>{% endif %}{% endfor %}
 				</ul>
