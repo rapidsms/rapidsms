@@ -265,7 +265,6 @@ div.clear-hack {
  * add big triggers to the bottom of the page to show or
  * perform some action. this should probably not be here. */
 div.trigger {
-	border-top: 1px dotted #eee;
 	font-size: 80%;
 	text-align: center;
 	padding: 0.625em;
@@ -273,6 +272,13 @@ div.trigger {
 	cursor: pointer;
 	color: #aaa;
 }
+	
+	/* some triggers are more warning that
+	 * something is wrong, so highlight them */
+	div.trigger.warn {
+		background: #fdd;
+		color: #f00;
+	}
 
 
 
