@@ -1,24 +1,21 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-import os
+import os, time
 
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
-ADMINS = (
-    # ('Your Name', 'your_email@domain.com'),
-)
-
+ADMINS = ()
 MANAGERS = ADMINS
 
-# Local time zone for this installation. Choices can be found here:
+
+# default to the system's timezone settings. this can still be
+# overridden in rapidsms.ini [django], by providing one of:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
-# although not all choices may be available on all operating systems.
-# If running in a Windows environment this must be set to the same as your
-# system time zone.
-TIME_ZONE = 'Africa/Lagos'
+TIME_ZONE = time.tzname[0]
+
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
