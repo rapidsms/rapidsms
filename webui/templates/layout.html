@@ -1,6 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-{% load debug_dump %}
 {% load region %}
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
@@ -20,6 +19,7 @@
 	</head>
 	<body>
 		<div id="wrapper">
+			{% region "top" %}
 			{% block header %}
 			<div id="header">
 				<div id="branding">
@@ -48,16 +48,7 @@
 				{% region "footer" %}
 			</div>
 			{% endblock %}
+			{% region "bottom" %}
 		</div>
-		{% if debug %}
-		<div id="debug-tools">
-			<!--
-				disable these tools by setting "debug=false"
-				in the [django] section of rapidsms.ini - it
-				should work in settings.py, too, but doesn't yet
-			-->
-			{% debug_dump %}
-		</div>
-		{% endif %}
 	</body>
 </html>

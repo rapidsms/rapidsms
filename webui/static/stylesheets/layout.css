@@ -260,23 +260,19 @@ div.clear-hack {
 
 
 
-/* the debug tools can be enabled at the
- * bottom of the page via rapidsms.ini,
- * by setting debug=true in [django] */
 
-#debug-tools {
-	padding: 1em;
+/* some apps (just the querylog at the moment, actually)
+ * add big triggers to the bottom of the page to show or
+ * perform some action. this should probably not be here. */
+div.trigger {
+	border-top: 1px dotted #eee;
+	font-size: 80%;
+	text-align: center;
+	padding: 0.625em;
+	background: #f8f8f8;
+	cursor: pointer;
+	color: #aaa;
 }
-
-	.query-log {
-		border: 1px solid #4bd;
-		background: #fff;
-	}
-
-		.query-log td {
-			font: 80% monospace;
-			line-height: 1.4;
-		}
 
 
 

@@ -14,7 +14,7 @@ div.module {
 	position: relative;
 }
 
-#inner div.module:first-child {
+div.module:first-child {
 	margin-top: 0; }
 
 
