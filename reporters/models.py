@@ -2,15 +2,17 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 
-import os, re
+import re
 from datetime import datetime
 from django.db import models
-
-from rapidsms.webui.managers import RecursiveManager
+from rapidsms.webui.managers import *
 from apps.patterns.models import Pattern
+from apps.locations.models import *
 
 
-
+# TODO: remove this. it's a slightly weird version
+#       of ReporterGroup, which can't be nested. i'm
+#       not sure how it happened in the first place.
 
 class Role(models.Model):
     """Basic representation of a role that someone can have.  For example,
@@ -31,98 +33,6 @@ class Role(models.Model):
     def __unicode__(self):
         return self.name
 
-class LocationType(models.Model):
-    """A type of location.  For example 'School' or 'Factory'"""
-    name = models.CharField(max_length=160,help_text="Name of location type")
-        
-    def __unicode__(self):
-        return self.name
-
-
-class Location(models.Model):
-    """A location.  Locations have a name, an optional type, and optional geographic information."""
-    name = models.CharField(max_length=160, help_text="Name of location")
-    type = models.ForeignKey(LocationType, related_name="locations", blank=True, null=True, help_text="Type of location")
-    code = models.CharField(max_length=15)
-    parent = models.ForeignKey("Location", related_name="children", null=True, blank=True, help_text="The parent location of this")
-    latitude = models.DecimalField(max_digits=8, decimal_places=6, null=True, blank=True, help_text="The physical latitude of this location")
-    longitude = models.DecimalField(max_digits=8, decimal_places=6, null=True, blank=True, help_text="The physical longitude of this location")
-    objects = RecursiveManager()
-
-    def ancestors(self, include_self=False):
-        """Returns all of the parent locations of this location,
-           optionally including itself in the output. This is
-           very inefficient, so consider caching the output."""
-        locs = [self] if include_self else []
-        loc = self
-        
-        # keep on iterating
-        # until we return
-        while True:
-            locs.append(loc)
-            loc = loc.parent
-            
-            # are we at the top?
-            if loc is None:
-                return locs
-    
-    def descendants(self, include_self=False):
-        """Returns all of the locations which are descended from this location,
-           optionally including itself in the output. This is very inefficient
-           (it recurses once for EACH), so consider caching the output."""
-        locs = [self] if include_self else []
-        
-        for loc in self.children.all():
-            locs.extend(loc.descendants(True))
-        
-        return locs
-        
-    def top_children(self):
-        # this is a pretty silly way to provide easy access to the first N children
-        # inside a template
-        count = 10
-        return self.children.all()[0:10]
-
-    def one_contact(self, role, display=False):
-        def __get_one(contacts):
-            if contacts.count() > 0:
-
-                # since we are formatting for display,
-                # loop through all contacts until we
-                # find one that has a name and number
-                if display:
-                    for contact in contacts:
-                        string = __display(contact)
-                        if (len(string) > 4):
-                            return string
-
-                # return the first contact if we are
-                # not formatting for display
-                else:
-                    return contacts[0]
-
-            # return None if no contacts are found
-            # or return an empty string if we are
-            # formatting this for display
-            else:
-                return "" if display else None
-
-        def __display(contact):
-                string = contact.first_name + " " + contact.last_name
-                if contact.connection() is not None:
-                    string = string + " (" + contact.connection().identity + ")"
-                return string
-
-        return __get_one(Reporter.objects.filter(location=self).filter(role__code__iexact=role))
-
-    def contacts(self, role=None):
-        if role is not None:
-            return Reporter.objects.filter(location=self).filter(role__code__iexact=role)
-        return Reporter.objects.filter(location=self)
-
-    def __unicode__(self):
-        return self.name
-
 
 class ReporterGroup(models.Model):
     title       = models.CharField(max_length=30, unique=True)
@@ -139,6 +49,8 @@ class ReporterGroup(models.Model):
         return self.title
     
     
+    # TODO: rename to something that indicates
+    #       that it's a counter, not a queryset    
     def members(self):
         return self.reporters.all().count()
 
@@ -156,8 +68,8 @@ class Reporter(models.Model):
     groups     = models.ManyToManyField(ReporterGroup, related_name="reporters", blank=True)
     
     # here are some fields that don't belong here
-    location   = models.ForeignKey("Location", related_name="reporters", null=True, blank=True)
-    role       = models.ForeignKey("Role", related_name="reporters", null=True, blank=True)
+    location   = models.ForeignKey(Location, related_name="reporters", null=True, blank=True)
+    role       = models.ForeignKey(Role, related_name="reporters", null=True, blank=True)
 
     def __unicode__(self):
             return self.connection.identity
