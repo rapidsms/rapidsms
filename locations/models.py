@@ -26,7 +26,7 @@ class Location(models.Model):
     objects = RecursiveManager()
     type = models.ForeignKey(LocationType, related_name="locations", blank=True, null=True)
     name = models.CharField(max_length=100, help_text="Name of location")
-    code = models.CharField(max_length=30)
+    code = models.CharField(max_length=30, unique=True)
     
     parent = models.ForeignKey("Location", related_name="children", null=True, blank=True,
         help_text="The parent of this Location. Although it is not enforced, it" +\
