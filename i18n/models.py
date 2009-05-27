@@ -7,7 +7,7 @@ class Language(models.Model):
     name = models.CharField(max_length = 50) # e.g. "English"
 
     def __unicode__(self):
-        return "%s (%s)" % (self.name, self.code.name)
+        return "%s (%s)" % (self.name, self.pattern.name)
 
 class Translation(models.Model):
     language = models.ForeignKey(Language)
