@@ -35,7 +35,7 @@ class Backend(rapidsms.backends.Backend):
         
         # set the slug based on the handler, so we can have multiple
         # http backends
-        self_slug = "http_%s" % handler  
+        self._slug = "http_%s" % handler  
         
     def run (self):
         while self.running:
