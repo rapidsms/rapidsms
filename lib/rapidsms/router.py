@@ -168,7 +168,7 @@ class Router (component.Receiver):
 
                 # wait up to five seconds for the backend's
                 # worker thread to terminate, or log failure
-                while(backend.thread.is_alive()):
+                while(backend.thread.isAlive()):
                     if timeout <= 0:
                         raise RuntimeError, "The %s backend's worker thread did not terminate" % backend.slug
 

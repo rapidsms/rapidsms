@@ -24,9 +24,12 @@ class Component(object):
         if hasattr(self, "_title"):
             return self._title
         
-        # since no title has explicitly
-        # set, fall back to class name
-        return self.__class__.__name__
+        # since no title was explicitly set, fall back to
+        # name of the module that the class was declared in
+        guess = str(self.__module__).split(".")
+        if guess[-1] == 'app':
+            return guess[-2]
+        return guess[-1]
     
     @property
     def slug(self):
