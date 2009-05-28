@@ -415,6 +415,9 @@ table {
 .tmp td.num {
 	text-align: right; }
 
+.tmp td.shrink {
+        font-size: 75%;
+}
 
 /* make most columns as small as possible,
  * allowing a single column to occupy the

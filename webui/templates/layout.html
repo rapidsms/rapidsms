@@ -1,6 +1,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
+{% load webui %}
+
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 	<head>
 		<title>{% block title %}{% endblock %}{% block title_suffix %} - RapidSMS{% endblock %}</title>
@@ -21,13 +23,21 @@
 			{% if not bare %}
 			{% block header %}
 			<div id="header">
+                                <div id="auth">
+                                        {% if user.is_authenticated %}
+                                            <p><a href="/accounts/logout/">Log out {{ user.username }}</a></p>
+                                        {% else %}
+                                            <p><a href="/accounts/login/">Log in</a></p>
+                                        {% endif %}
+                                </div>
 				<div id="branding">
 					<h1><b>RapidSMS</b></h1>
 				</div>
 				<ul id="tabs">{% for app in apps %}{% if app.tab_link %}
+                                        {% ifhasperm user app "can_view" %}
 					<li class="app-{{ app.type }}{% if app.active %} active{% endif %}">
 						<a href="{{ app.tab_link }}"><span>{{ app.title }}</span></a>
-					</li>{% endif %}{% endfor %}
+					</li>{% endifhasperm %}{% endif %}{% endfor %}
 				</ul>
 				{% block page_tabs %}
 				{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+
+{% if form.errors %}
+<p>Oops. Your username and password didn't match. Please try again.</p>
+{% endif %}
+
+{% if user.is_authenticated %}
+<p>Oops. You do not have permission to view this section.</p>
+
+{% else %}
+
+<h1>Please log in to RapidSMS</h1>
+
+<form method="post" action="{% url django.contrib.auth.views.login %}">
+<table>
+<tr>
+    <td>{{ form.username.label_tag }}</td>
+    <td>{{ form.username }}</td>
+</tr>
+<tr>
+    <td>{{ form.password.label_tag }}</td>
+    <td>{{ form.password }}</td>
+</tr>
+</table>
+
+<input type="submit" value="login" />
+<input type="hidden" name="next" value="{{ next }}" />
+</form>
+
+{% endif %}
+{% endblock %}

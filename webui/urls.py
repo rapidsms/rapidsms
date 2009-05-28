@@ -7,5 +7,7 @@ import apps.webui.views as views
 urlpatterns = patterns('',
     url(r'^$',     views.dashboard),
     url(r'^ping$', views.check_availability),
+    (r'^accounts/login/$', 'django.contrib.auth.views.login', {'template_name': 'webui/login.html'}),
+    (r'^accounts/logout/$', 'django.contrib.auth.views.logout', {'template_name': 'webui/loggedout.html'}),
 )
 

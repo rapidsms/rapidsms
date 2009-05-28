@@ -206,6 +206,14 @@ class Reporter(models.Model):
 	
     class Meta:
         ordering = ["last_name", "first_name"]
+
+        # define a permission for this app to use the @permission_required
+        # decorator in reporter's views
+        # in the admin's auth section, we have a group called 'manager' whose
+        # users have this permission -- and are able to see this section
+        permissions = (
+            ("can_view", "Can view"),
+        )
     
     
     def full_name(self):
