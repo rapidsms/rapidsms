@@ -129,7 +129,7 @@ class App(rapidsms.app.App):
         # don't have objects, and fill in the gaps
         for be in self.router.backends:
             if not be.slug in known_backends:
-                self.info("Creating PersistantBackend object for %s" % be)
+                self.info("Creating PersistantBackend object for %s (%s)" % (be.slug, be.title))
                 PersistantBackend(slug=be.slug, title=be.title).save()
     
     

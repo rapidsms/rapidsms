@@ -372,7 +372,7 @@ class PersistantBackend(models.Model):
     
     
     def __unicode__(self):
-        return self.title
+        return self.slug
     
     
     @classmethod
@@ -383,6 +383,7 @@ class PersistantBackend(models.Model):
             individual app. So you can use this for now."""
         be_slug = msg.connection.backend.slug
         return klass.objects.get(slug=be_slug)
+    
 
 
 class PersistantConnection(models.Model):
