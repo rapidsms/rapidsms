@@ -133,7 +133,7 @@ class BernsoftHandler(RapidBaseHttpHandler):
                 msg = self.server.backend.message(sender, text, date)
                 self.server.backend.route(msg)
                 #self.respond(200, "{'phone':'%s', 'message':'%s'}" % (sender, text))
-                self.respond(200, "OK" % (sender, text))
+                self.respond(200, "OK")
                 return
             else:
                 self.respond(500, "You must specify a valid number and message")
