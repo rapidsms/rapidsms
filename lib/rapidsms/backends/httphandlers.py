@@ -90,8 +90,8 @@ class BernsoftHandler(RapidBaseHttpHandler):
     
     # This is the format of the post string
     # TODO: not hard code this
-    url = "http://afritext.bernsoft.com/api/send.php?username=%s&password=%s&destination_number=%s&message=%s"
-    user = "2100"
+    url = "http://afritext.bernsoft.com/api/send.php?username=%(user)s&password=%(password)s&destination_number=%(to)s&message=%(text)s&thirdparty_message_id=%(id)s"
+    user = "8291"
     password = "iavitst"
     
     def do_GET(self):
@@ -143,7 +143,13 @@ class BernsoftHandler(RapidBaseHttpHandler):
     def outgoing(klass, message):
         #self.log_message("Bernsoft outgoing message: %s" % message)
         print("Bernsoft outgoing message: %s" % message)
-        to_submit = BernsoftHandler.url % (BernsoftHandler.user, BernsoftHandler.password, message.connection.identity, urllib2.quote(message.text))
+        if hasattr(message, "logger_id") and message.logger_id:
+            id = message.logger_id
+        else:
+            id = 0
+        to_submit = BernsoftHandler.url % ( { "user": BernsoftHandler.user, "password" : BernsoftHandler.password, 
+                                             "to" : message.connection.identity, "text" : urllib2.quote(message.text),
+                                             "id" : id})
         #self.log_message("submitting to url: %s" % to_submit)
         print("submitting to url: %s" % to_submit)
         
