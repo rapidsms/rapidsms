@@ -58,7 +58,7 @@ def render_to_response(req, template_name, dictionary=None, **kwargs):
         # note which app this func was called from, so the tmpl
         # can mark the tab (or some other type of nav) as active
         rs_dict["active_tab"] = rs_dict["app_conf"]["type"]
-        
+            
         # find all of the javascript assets for
         # this app, and add them to the <head>
         __js_dir(
@@ -71,6 +71,25 @@ def render_to_response(req, template_name, dictionary=None, **kwargs):
         __js_dir(
             "%s/static/javascripts/page/%s" % (rs_dict["app_conf"]["path"], view_name),
             "/static/%s/javascripts/page/%s.js" % (rs_dict["app_conf"]["type"], view_name))
+        
+        # attempt to import the "__global" function from
+        # the views.py that this method was called from
+        try:
+            mod_str = "%s.views" % rs_dict["app_conf"]["module"]
+            module = __import__(mod_str, {}, {}, ["__global"])
+            
+        except ImportError:
+            pass
+
+        # if the views have a __global function, call it with the
+        # request object, and add the output (a dictionary) to the
+        # rs_dict. note that the 'dictionary' argument to _this_
+        # method is merged AFTER this, overriding the global data.
+        # also note that we do this here, rather than in the try
+        # block above, to avoid masking exceptions raised within
+        if module and hasattr(module, "__global"):
+            global_data = module.__global(req)
+            rs_dict.update(global_data)
     
     # allow the dict argument to
     # be omitted without blowing up
