@@ -10,6 +10,7 @@ def index(req):
     all = []
     [ all.append(msg) for msg in incoming ]
     [ all.append(msg) for msg in outgoing]
-    all.sort(lambda x, y: cmp(x.date, y.date))
+    # sort by date, descending
+    all.sort(lambda x, y: cmp(y.date, x.date))
     return render_to_response(req, template_name, { "messages": all})
 
