@@ -205,6 +205,10 @@ class YoHandler(RapidBaseHttpHandler):
             if text and sender: 
                 # respond with the number and text 
                 # only really useful for testing
+                
+                # messages come in from yo with + instead of spaces, so
+                # change them
+                text = " ".join(text.split("+"))
                 msg = self.server.backend.message(sender, text, date)
                 self.server.backend.route(msg)
                 self.respond(200, "{'phone':'%s', 'message':'%s'}" % (sender, text))
