@@ -170,6 +170,7 @@ class YoHandler(RapidBaseHttpHandler):
                  "sysrid" : "5", 
                  "method" : "acsendsms", 
                  "type" : "1", 
+                 "nostore" : "1", 
                  "ybs_autocreate_authorization" : "c32d86ed21921f3a2c4140ac8e65e188"
                  }
     param_text_outgoing = "sms_content"
