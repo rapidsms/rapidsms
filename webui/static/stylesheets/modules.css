@@ -20,7 +20,6 @@ div.module:first-child {
 
 
 
-
 /* module headers are mostly ripped off from
  * django admin, although here, we never use
  * <caption>, to keep things simple (they have
@@ -35,6 +34,7 @@ h2, h3 {
 	padding: 0.5em;
 	text-align: left;
 	white-space: nowrap;
+	line-height: 1;
 }
 
 	/* subheaders are almost the same. to dull things,
