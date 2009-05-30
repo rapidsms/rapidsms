@@ -7,12 +7,12 @@ from django.db import models
 
 class MessageBase(models.Model):
     text = models.CharField(max_length=140)
-	# TODO save connection title rather than wacky object string?
+    # TODO save connection title rather than wacky object string?
     identity = models.CharField(max_length=150)
     backend = models.CharField(max_length=150)
     
     def __unicode__(self):
-        return "%s (%s) %s:" % (self.identity, self.backend, self.text)
+        return "%s (%s) %s" % (self.identity, self.backend, self.text)
     
     class Meta:
         abstract = True
@@ -21,6 +21,11 @@ class MessageBase(models.Model):
 class IncomingMessage(MessageBase):
     received = models.DateTimeField(auto_now_add=True)
     
+    def __unicode__(self):
+        return "%s %s" % (MessageBase.__unicode__(self), self.received)  
 
 class OutgoingMessage(MessageBase):
     sent = models.DateTimeField(auto_now_add=True)
+    
+    def __unicode__(self):
+        return "%s %s" % (MessageBase.__unicode__(self), self.sent)  
