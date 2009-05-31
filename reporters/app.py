@@ -7,24 +7,6 @@ from rapidsms.parsers import Matcher
 from models import *
 
 
-# this is a temporary hack for the nigeria
-# project, to allow users to ask something
-# along the lines of LLIN MY STATUS as an
-# alternative to "who am i", with as much
-# built-in flexibility as we can manage.
-# 
-# it matches:
-#  llin status blahh
-#  llin my status
-#  lin my status
-#  lin status
-#  my status
-#  status
-#  stat
-#
-LLIN_MY_STATUS = "(?:ll?in )?(?:my )?stat(?:us)?(?:.*)"
-
-
 
 
 class App(rapidsms.app.App):
@@ -144,8 +126,9 @@ class App(rapidsms.app.App):
         # replace it *with* the keyworder, or extract it
         # into a parser of its own
         map = {
+            "register":  ["register (whatever)"],
             "identify":  ["identify (slug)", "this is (slug)", "i am (slug)"],
-            "remind":    ["whoami", "who am i", LLIN_MY_STATUS],
+            "remind":    ["whoami", "who am i"]
             "reporters": ["list reporters", "reporters\\?"],
             "lang":      ["lang (slug)"]
         }
@@ -160,6 +143,27 @@ class App(rapidsms.app.App):
         # no matches, so this message is not
         # for us; allow processing to continue
         return False
+    
+    
+    def register(self, msg, name):
+        try:
+            # parse the name, and create a reporter
+            alias, fn, ln = Reporter.parse_name(name)
+            rep = Reporter(alias=alias, first_name=fn, last_name=ln)
+            rep.save()
+            
+            # attach the reporter to the current connection
+            msg.persistant_connection.reporter = rep
+            msg.persistant_connection.save()
+            
+            msg.respond(
+                self.__str("first-login", rep) % {
+                 "name": rep.full_name() })
+        
+        # something went wrong - at the
+        # moment, we don't care what
+        except:
+            msg.respond("Sorry, I couldn't register you.")
     
     
     def identify(self, msg, alias):
