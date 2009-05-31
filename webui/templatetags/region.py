@@ -9,14 +9,15 @@ from django import template
 register = template.Library()
 
 
-@register.inclusion_tag("webui/partials/region.html")
-def region(name):
+@register.inclusion_tag("webui/partials/region.html", takes_context=True)
+def region(context, name):
     def __path(app):
         return "%s/templates/regions/%s.html" %\
             (app["path"], name)
 
     return {
         "name": name,
+        "request": context["request"],
         "includes": [
             __path(app)
              for app in settings.RAPIDSMS_APPS.values()
