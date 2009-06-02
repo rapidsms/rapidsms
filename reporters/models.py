@@ -5,6 +5,7 @@
 import re
 from datetime import datetime
 from django.db import models
+from django.core.urlresolvers import reverse
 from rapidsms.webui.managers import *
 from apps.patterns.models import Pattern
 from apps.locations.models import *
@@ -330,3 +331,11 @@ class PersistantConnection(models.Model):
         for pc in PersistantConnection.objects.filter(reporter=self.reporter):
             pc.preferred = True if pc == self else False
             pc.save()
+
+    def add_reporter_url(self):
+        """Returns the URL to the "add-reporter" view, prepopulated with this
+           PersistantConnection object. This shouldn't be here, since it couples
+           the Model and view layers, but the folks in #django don't have any
+           better suggestions."""
+        return "%s?connection=%s" % (reverse("add-reporter"), self.pk)
+
