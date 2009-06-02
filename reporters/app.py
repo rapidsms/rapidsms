@@ -128,7 +128,7 @@ class App(rapidsms.app.App):
         map = {
             "register":  ["register (whatever)"],
             "identify":  ["identify (slug)", "this is (slug)", "i am (slug)"],
-            "remind":    ["whoami", "who am i"]
+            "remind":    ["whoami", "who am i"],
             "reporters": ["list reporters", "reporters\\?"],
             "lang":      ["lang (slug)"]
         }
