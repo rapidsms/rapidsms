@@ -109,11 +109,25 @@ def update_reporter(req, rep):
 @require_http_methods(["GET", "POST"])
 def add_reporter(req):
     def get(req):
+        
+        # maybe pre-populate the "connections" field
+        # with a connection object to convert into a
+        # reporter, if provided in the query string
+        connections = []
+        if "connection" in req.GET:
+            connections.append(
+                get_object_or_404(
+                    PersistantConnection,
+                    pk=req.GET["connection"]))
+        
         return render_to_response(req,
             "reporters/reporter.html", {
                 
                 # display paginated reporters in the left panel
                 "reporters": paginated(req, Reporter.objects.all()),
+                
+                # maybe pre-populate connections
+                "connections": connections,
                 
                 # list all groups + backends in the edit form
                 "all_groups": ReporterGroup.objects.flatten(),
