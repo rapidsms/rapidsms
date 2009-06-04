@@ -44,6 +44,11 @@ class Location(models.Model):
     #       methods, now that the locations app has been split from reporters?
     #       even if they can import one another, they can't know if they're
     #       both running at parse time, and can't monkey-patch later.
+    def one_contact(self, role, display=False):
+        return "Mr. Fixme"
+
+    def contacts(self, role=None):
+        return Location.objects.get(pk=2)
     
     def ancestors(self, include_self=False):
         """Returns all of the parent locations of this location,
