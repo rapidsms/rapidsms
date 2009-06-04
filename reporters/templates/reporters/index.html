@@ -1,0 +1,95 @@
+{% extends "layout-split-2.html" %}
+{% load reporters %}
+{% load pagination %}
+{% block title %}Reporters and Groups{% endblock %}
+
+{% block javascripts %}
+<script type="text/javascript" src="/static/reporters/javascripts/clear-form-elements.js"></script>
+<script type="text/javascript" src="/static/reporters/javascripts/cloneable.js"></script>
+{% endblock %}
+
+{% block page_tabs %}
+<ul id="page-tabs">
+	<li class="page"><a href="/reporters">Reporters</a></li>
+	<li class="page"><a href="/reporters/groups">Groups</a></li>
+</ul>
+{% endblock %}
+
+{% block left %}
+<div class="module">
+	<h2>All Reporters</h2>
+	<table>
+		<thead>
+			<tr>
+				<th scope="col">Name</th>
+				<th scope="col">Alias</th>
+				<th scope="col">Last Seen</th>
+			</tr>
+		</thead>
+		<tbody>{% if reporters.object_list %}{% for reporter in reporters.object_list %}
+			<tr>
+				<!--<td><a href="{% self_link "reporter" reporter.pk %}"{% if reporter.full_name %}>{{ reporter.full_name }}{% else %} class="unknown">Unknown{% endif %}</a></td>-->
+				<td><a href="/reporters/{{ reporter.pk }}"{% if reporter.full_name %}>{{ reporter.full_name }}{% else %} class="unknown">Unknown{% endif %}</a></td>
+				<td>{% if reporter.alias %}{{ reporter.alias }}{% else %}<span class="na">n/a</span>{% endif %}</td>
+				<td>{{ reporter.last_seen|last_seen }}</td>
+			</tr>{% endfor %}{% else %}
+			<tr class="no-data">
+				<td colspan="3">
+					No reporters Yet.
+					<a href="/reporters/add" class="add">
+						Add a Reporter
+					</a>
+				</td>
+			</tr>{% endif %}
+		</tbody>
+		<tfoot>
+			<tr>
+				<td colspan="3">
+					{% paginator reporters %}
+				</td>
+			</tr>
+		</tfoot>
+	</table>
+	<div class="toolbar">
+		<a href="/reporters/add" class="add">Add a Reporter</a>
+	</div>
+</div>
+{% endblock %}
+
+{% block right %}
+<div class="module">
+	<h2>All Groups</h2>
+	<table>
+		<thead>
+			<tr>
+				<th scope="col">Title</th>
+				<th scope="col">Members</th>
+			</tr>
+		</thead>
+		<tbody>{% if groups.object_list %}{% for group in groups.object_list %}
+			<tr class="depth-{{ group.depth }}">
+				<td class="indent"><span><a href="/groups/{{ group.pk }}"{% if group.title %}>{{ group.title }}{% else %} class="unknown">Unknown{% endif %}</a></span></td>
+				<td>{{ group.members }}</td>
+			</tr>{% endfor %}{% else %}
+			<tr class="no-data">
+				<td colspan="3">
+					No Groups Yet.
+					<a href="/groups/add" class="add">
+						Add a Group
+					</a>
+				</td>
+			</tr>{% endif %}
+		</tbody>
+		<tfoot>
+			<tr>
+				<td colspan="3">
+					{% paginator groups %}
+				</td>
+			</tr>
+		</tfoot>
+	</table>
+	<div class="toolbar">
+		<a href="/groups/add" class="add">Add a Group</a>
+	</div>
+</div>
+{% endblock %}

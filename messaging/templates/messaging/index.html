@@ -1,48 +1,95 @@
 {% extends "messaging/base.html" %}
 {% block title %}Messaging{% endblock %}
+{% load reporters %}
+
+{% block javascripts %}
+<script type="text/javascript" src="/static/webui/javascripts/jquery.cookie.yc.js"></script>
+{% endblock %}
 
 {% block content %}
 <div class="split">
 	<div class="left">
 		<div class="module recipients">
 			<h2>Select Recipients</h2>
-		</div>
+			<form class="search" action="" method="get">
+				{% self_link_fields query field cmp  %}
+				<table>
+					<tbody>
+						<tr>
+							<td>
+								<select name="field">{% for name, title in columns %}
+									<option value="{{ name }}"{% ifequal name field %} selected="selected"{% endifequal %}>{{ title }}</option>{% endfor %}
+								</select>
+							</td>
+							<td>
+								<select name="cmp">
+									<option value="icontains"{% ifequal cmp "icontains" %} selected="selected"{% endifequal %}>contains</option>
+									<option value="iexact"{% ifequal cmp "iexact" %} selected="selected"{% endifequal %}>equals</option>
+									<option value="istartswith"{% ifequal cmp "istartswith" %} selected="selected"{% endifequal %}>starts with</option>
+									<option value="iendswith"{% ifequal cmp "iendswith" %} selected="selected"{% endifequal %}>ends with</option>
+									<option value="lt"{% ifequal cmp "lt" %} selected="selected"{% endifequal %}>is less than</option>
+									<option value="gt"{% ifequal cmp "gt" %} selected="selected"{% endifequal %}>is more than</option>
+								</select>
+							</td>
+							<td class="search">
+								<input type="text" name="query" value="{{ query }}" />
+							</td>
+							<td class="buttons">
+								<input type="button" title="Select All Search Results" value="Add" class="js-button accept" />
+								<input type="button" title="Unselect All Search Results" value="Add" class="js-button unaccept" />
+								<input type="button" title="Clear This Search" value="Add" class="js-button clear" />
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</form>
+			<table>
+				<thead>
+					<tr>
+						<th></th>
+						<th>Name</th>
+						<th>Role</th>
+						<th>Location</th>
+					</tr>
+				</thead>
+				<tbody class="recips{% if filtered %} filtered{% endif %}">{% for reporter in reporters.object_list %}
+					<tr uid="{{ reporter.pk }}" class="{% if reporter.is_hit %}hit{% endif %}">
+						<td class="check"></td>
+						<td>{{ reporter.full_name }}</td>
+						<td>{{ reporter.role }}</td>
+						<td>{{ reporter.location }}</td>
+					</tr>{% endfor %}
+				</tbody>
+				<tfoot>
+					<tr>
+						<td colspan="4">
+							<div class="paginator">{% if reporters.has_previous %}
+								<a href="{% self_link "page" 1 %}" class="first" title="First page">First Page</a>
+								<a href="{% self_link "page" reporters.previous_page_number %}" class="prev" title="Previous page">Previous Page</a>{% else %}
+								<span class="first na" title="You are already on the first page">First Page</span>
+								<span class="prev na" title="There are no previous pages">Previous Page</span>{% endif %}{% for page in reporters.paginator.page_range %}
+								<a href="{% self_link "page" page %}"{% ifequal page reporters.number %} class="active"{% endifequal %} title="Page {{ page }}">{{ page }}</a>{% endfor %}{% if reporters.has_next %}
+								<a href="{% self_link "page" reporters.next_page_number %}" class="next" title="Next page">Next Page</a>
+								<a href="{% self_link "page" reporters.paginator.num_pages %}" class="last" title="Last page">Last Page</a>{% else %}
+								<span class="next na" title="There are no more pages">Next Page</span>
+								<span class="last na" title="You are already on the last page">Last Page</span>{% endif %}
+							</div>
+							
+							<a href="/messaging/none" class="none" title="Select No Recipients">None</a>
+							<a href="/messaging/all" class="all" title="Select All Recipients">All</a>
+							<a href="/messaging/clear" class="clear" title="Clear Message Statuses">Clear</a>
+						</td>
+					</tr>
+				</tfoot>
+			</table>
+    </div>
 	</div>
 	<div class="right">
 		<div class="module contents">
 			<h2>Message Contents</h2>
 			<textarea cols="40" rows="6"></textarea>
-			<input type="button" value="Send" />
-		</div>
-		<div class="module filter">
-			<h2>Filter Selection</h2>
-			<div class="help">
-				<p>What is mudkips?</p>
-			</div>
-			<div>
-				
-				<select name="column">
-					<option></option>
-				</select>
-				
-				<select name="operation">
-					<option></option>
-					<option value="eq">is</option>
-					<option value="ne">is not</option>
-					<option value="sw">starts with</option>
-					<option value="ew">ends with</option>
-					<option value="cn">contains</option>
-					<option value="dc">does not contain</option>
-					<option value="lt">is less than</option>
-					<option value="gt">is more than</option>
-				</select>
-				
-				<input type="text" name="search" value="" size="8" />
-				
-				<input type="button" class="js-accept"   value="Select"  title="Select all of the highlighted filter results" />
-				<input type="button" class="js-unaccept" value="Deselect" title="Deselect all of the highlighted filter results" />
-				<input type="button" class="js-clear"    value="Clear" title="Clear the filter form" />
-			</div>
+			<input type="button" class="send" value="Send Messages" />
+			<input type="button" class="cancel" value="Cancel" disabled="disabled" />
 		</div>
 	</div>
 	<div class="clear-hack"></div>
@@ -50,235 +97,462 @@
 
 <script type="text/javascript">
 	$(function() {
-		var container = $("div.recipients");
-		if(!container) return False;
+		var search_form = $("div.module.recipients form.search");
+		var recip_div   = $("div.module.recipients");
+		var content_div = $("div.module.contents");
 		
-		/* handy function to retrieve the keys
-		 * from an object, ready to jQuery.map */
-		var keys = function(object) {
-			var out = [];
-			for( var key in object)
-				out.push(key);
-			return out
+		var recip_rows  = $("tbody.recips tr", recip_div);
+		var clear_link  = $("tfoot a.clear", recip_div);
+		var all_link    = $("tfoot a.all",   recip_div);
+		var none_link   = $("tfoot a.none",  recip_div);
+	
+		var msg_txta   = $("textarea",     content_div);
+		var send_btn   = $("input.send",   content_div);
+		var cancel_btn = $("input.cancel", content_div);
+		
+		
+		
+		
+		/* these tooltips are attached to the status icon of
+		 * each row, when we have something unimportant to say */
+		var ICON_TOOLTIPS = {
+			"error": "Error: Message Not Sent",
+			"sent":  "OK: Message Sent"
+		};
+		
+		/* this almost-global var holds the xmlhttprequest
+		 * currently sending messages, so it can be easily
+		 * cancelled anywhere in this scope */
+		var send_xhr = null;
+		
+		
+		
+		
+		/* ======= *
+		 * HELPERS *
+		 * ======= */
+		
+		
+		/* returns an array containing the UID of every recipient
+		 * that is currently cookied with the specified status
+		 * (checked, error, or sent). this is not as simple as it
+		 * should be, because Array.split returns [""] for empty
+		 * strings (?!), and we must forgive superfluous spaces */
+		var cookie_recips = function(status) {
+			var flat_recips = $.trim($.cookie("recip-" + status));
+			return flat_recips ? flat_recips.split(/\s+/) : [];
 		};
 		
 		
-		/* --------------- *
-		 * LOAD RECIPIENTS *
-		 * --------------- */
-		 
-		 
-		/* load all recipients via ajax.
-		 * TODO: why not via the view?! */
-		$.getJSON("/ajax/messaging/recipients", function(data) {
-			var filters = {};
+		/* removes all recipients of the specified status. there
+		 * is no equivalent "select all", because we don't know
+		 * all of the possible UIDs */
+		var clear_cookie_recips = function(status) {
+			$.cookie("recip-" + status, null);
+		};
+		
+		
+		/* iterate the recipients of the specified status, and re-
+		 * write the cookie after adding (value=true) or removing
+		 * (value=false) the reporter of UID */
+		var set_cookie_recip = function(uid, status, value) {
+			var recips = cookie_recips(status);
 			
-			/* wat */
-			$.each(data, function(n, row) {
-				if(!row["recipients"].length)
-					return true;
-				
-				/* iterate the column names of the first recipient
-				 * in this section, and add them all to the filters
-				 * hash. TODO: find columns in ALL recipients! */
-				for(key in row["recipients"][0])
-					if(key != "uid")
-						filters[key] = true;
-				
-				container.append(
-					
-					/* create a section (title + table) for
-					 * each app which provides recipients */
-					$("<h3></h3>").append(row["app"]["title"]),
-					$("<table></table>").append(
-						
-						/* build table header using the column
-						 * names from the first recipient */
-						$("<thead></thead>").append(
-							$("<tr></tr>").append(
-								
-								/* leave space for
-								 * the checkbox */
-								'<th class="check"></th>' +
-								
-								/* we must create an HTML string containing
-								 * all of the column headers here, and append
-								 * it as a single string, single jQ.append seems
-								 * to only accepts a single parameter (?!) */
-								$.map(keys(row["recipients"][0]), function(key) {
-									if(key != "uid") return "<th>" + key + "</th>";
-								}).join("")
-								
-							) //tr
-						) // thead
-					).
-					append(
-						$("<tbody></tbody>").append(
-							$.map(row["recipients"], function(recip) {
-								return(
-									'<tr uid="' + recip["uid"] + '">' +
-										'<td class="check"></td>' +
-										$.map(keys(recip), function(key) {
-											if(key != "uid")
-												return '<td class="col-' + key + '">' + recip[key] + '</td>'
-										}).join("") +
-									"</tr>"
-								)
-							}).join("")
-						).click(function(ev) {
-							$(ev.target).parent("tr").toggleClass("checked")
-						})// tbody
-					
-					/* attach this app's slug to the table, so we can
-					 * easily pluck it out later when it's time to send */
-					).attr("app", row["app"]["slug"]) //table
-				); // c.append
-			}) // each
+			if(value) {
+				if($.inArray(uid, recips) == -1)
+					recips.push(uid);
 			
-			var select = $("div.filter select[name=column]");
-			for(f in filters) {
-				select.append(
-					$("<option></option>").append(f)
-				)
+			} else {
+				recips = $.grep(recips, function(recip_uid) {
+					return recip_uid != uid;
+				});
 			}
-		}); // getjson
+			
+			/* rebuild the flat cookie string from the array. if nothing
+			 * is are going to be stored, delete the cookie (=null) */
+			var flat_recips = recips.join(" ");
+			if(flat_recips == "") flat_recips = null;
+			$.cookie("recip-" + status, flat_recips);
+			
+			/* update the dom */
+			//update_row(uid);
+		};
 		
 		
-		/* ---------------- *
-		 * POPULATE FILTERS *
-		 * ---------------- */
+		/* returns the <tr> containing a recipient identified
+		 * by their UID, or an empty array if none was found.
+		 * NOTE: the UID could still be valid on another page! */
+		var row_via_uid = function(uid) {
+			return $("tbody.recips tr[uid=" + uid + "]", recip_div);
+		};
+		
+		
+		/* updates the class names of the reporter's row (by providing
+		 * either a jQuery object or a UID to fetch), by checking
+		 * for the UID in the various "recip-%s" cookies */
+		var update_row = function(row_or_uid) {
+			var row = (typeof(row_or_uid) == "object")
+			        ? $(row_or_uid) : row_via_uid(row_or_uid);
+			
+			$.each(["checked", "error", "sent", "hit"], function(n, status) {
+				var in_arr = $.inArray(row.attr("uid"), cookie_recips(status));
+				(in_arr == -1) ? row.removeClass(status) : row.addClass(status);
+			});
+			
+			/* update this row's icon's tooltip, depending on
+			 * the css classes it now has, via a "constant" */
+			$("td.check", row).attr("title", ICON_TOOLTIPS[row.attr("class")] || "");
+		};
+		
+		
+		/* calls update_row for each row (note: this
+		 * DOES NOT cover recipients on other pages) */
+		var update_all_rows = function() {
+			recip_rows.each(function() {
+				update_row(this);
+			});
+		};
+		
+		
+		/* updates N in the caption of the "send N messages"
+		 * button, and disable it if we're not ready to send. */
+		var update_buttons = function() {
+			var n = cookie_recips("checked").length;
+			var suffix = (n == 1) ? "" : "s";
+			
+			/* if we're currently busy sending messages, then
+			 * prevent the button from being clicked again */
+			if(send_xhr != null) {
+				var capt = "Sending " + n + " Message" + suffix + "...";
+				send_btn.attr("value", capt).attr("disabled", true);
+
+			/* disable the button unless some recipients are
+			 * selected, and some text has been entered */
+			} else {
+				var capt = "Send " + n + " Message" + suffix;
+				var invalid = (n == 0 || msg_txta.attr("value") == "");
+				send_btn.attr("value", capt).attr("disabled", invalid);
+			}
+			
+			/* the cancel button is only ever enabled
+			 * while we're busy sending messages */
+			cancel_btn.attr("disabled", (send_xhr == null));
+		};
+		
+		
+		
+		
+		/* ====== *
+		 * EVENTS *
+		 * ====== */
+		
+		
+		/* when the "checked" class of the row is clicked (each <tr> displays
+		 * a single recipient), and add (or remove) the recipient's UID from
+		 * the cookie, to instruct views.py to pre-check this recipient the
+		 * next time we view them, in whatever context */
+		recip_rows.click(function(ev) {
+			var row = $(ev.target).parent("tr");
+			var uid = row.attr("uid");
+			
+			/* clear any ERROR or SENT statuses. the button
+			 * is small, and a click is a good enough indication
+			 * that the visitor has seen and understood the icon */
+			if(row.hasClass("error") || row.hasClass("sent")) {
+				set_cookie_recip(uid, "error", false);
+				set_cookie_recip(uid, "sent", false);
+				
+			/* toggle the "checked" cookie, which will
+			 * update the class in update_row */
+			} else set_cookie_recip(uid, "checked", !row.hasClass("checked"));
+			
+			/* update the dom */
+			update_row(uid);
+			update_buttons();
+		});
+		
 		
 		(function() {
-			var recipients = $("div.recipients");
-			var filters = $("div.filter");
+			var col_field = $("select[name=field]", search_form);
+			var op_field  = $("select[name=cmp]",   search_form);
+			var q_field   = $("input[name=query]",  search_form);
 			
-			var clear_filters = function() {
-				$("tr", recipients).removeClass("hit");
-				recipients.removeClass("filtered");
+			var last_filters = null;
+			var timeout      = null;
+			var xhr          = null;
+			
+			/* HACK: to actually highlight the search 
+			 * results, we must dullify (?!) the others */
+			var add_filter = function() {
+				$("tbody.recips", recip_div).addClass("filtered");
+			}
+			
+			/* remove the search filter */
+			var remove_filter = function() {
+				$("tbody.recips", recip_div).removeClass("filtered");
+				$.cookie("recip-search", null);
+				$.cookie("recip-hit", null);
+				if(xhr) xhr.abort();
+				update_all_rows();
 			};
 			
-			var apply_filters = function() {
-				var col = $("select[name=column]", filters).val();
-				var op  = $("select[name=operation]", filters).val()
-				var q   = $("input[name=search]", filters).val();
+			
+			/* when the CLEAR button is clicked, remove the
+			 * search filters AND reset the form. heavy-handed,
+			 * perhaps, but not resetting can lead to a weird
+			 * situation where the results do not represent what
+			 * is currently in the search form... */
+			$("input.clear", search_form).click(function(ev) {
+				remove_filter();
 				
-				/* remove any existing filters
-				 * before applying these. SLOW. */
-				clear_filters();
+				/* congratulations on noticing that i am a hack,
+				 * and this calls the do_search function up to
+				 * THREE TIMES. don't worry, it won't call the
+				 * server, on account of q_field being empty */
+				if(ev.target) {
+					q_field.val("");
+					col_field.val("");
+					op_field.val("");
+				}
+			});
+			
+
+			/* if the ACCEPT button was clicked, we will
+			 * be adding all hits to the "checked" cookie.
+			 * otherwise, we will be subtracting them */
+			$(".accept, .unaccept", search_form).click(function(ev) {
+				var val = $(ev.target).hasClass("accept");
+				$.each(cookie_recips("hit"), function() {
+					set_cookie_recip(this, "checked", val);
+				});
 				
-				if(col && op && q) {
-					recipients.addClass("filtered");
+				/* refresh the classes (and checked-
+				 * ness) of visible recipients */
+				update_all_rows();
+			});
+			
+			
+			var do_search = function(ev) {
 				
-					/* search the recipients for matching column names,
-					 * and compare each to the search string. where it
-					 * matches, highlight the row to indicate a match */
-					$('td.col-' + col, recipients).each(function() {
-						var td = $(this);
-						var tr = td.parent();
-						var txt = td.text();
+				/* if a previous search is pending, cancel it.
+				 * the results are irrelevant now, and we might
+				 * even save an SQL query (OH YEAH!!!1) */
+				if(timeout) clearTimeout(timeout);
+				if(xhr) xhr.abort();
+				
+				/* schedule the query for a very short time in
+				 * the future, to avoid hitting the server on
+				 * every single keypress */
+				var delay = 200;
+				timeout = setTimeout(function() {
+					var q_val = q_field.val();
+					var col_v = col_field.val();
+					var op_v  = op_field.val();
+					var filters = {};
+					
+					/* don't bother searching if no
+					 * query has been entered yet */
+					if(q_val == "") {
+						remove_filter();
+						return false;
+					}
+					
+					/* build a query string using the Column and
+					 * Operation <selects> to create django filters */
+					var key = col_v + "__" + op_v;
+					filters[key] = q_val;
+					
+					/* don't search again if nothing
+					 * has changed since the last */
+					if(last_filters == (key+q_val)) return false;
+					last_filters = (key+q_val);
+					
+					xhr = $.get("{% url messaging-search %}", filters, function(data) {
 						
-						/* does the text in this cell match the
-						 * query? add class to highlight the row */
-						if(
-							 (op == "eq" && txt == q)                      || // is
-						   (op == "ne" && txt != q)                      || // is not	
-						   (op == "sw" && txt.substr(0, q.length) == q ) || // starts with
-						   (op == "ew" && txt.substr(-q.length)   == q ) || // ends with
-						   (op == "cn" && txt.indexOf(q) != -1         ) || // contains
-						   (op == "dc" && txt.indexOf(q) == -1         ) || // does not contain
-						   (op == "lt" && parseFloat(txt) < parseInt(q)) || // is less than	
-						   (op == "gt" && parseFloat(txt) > parseInt(q))    // is greater than	
-						) tr.addClass("hit");
+						/* store both the RESULTS of this search, and
+						 * the form values that lead to it - so we can
+						 * repopulate the form if the user skips between
+						 * pages, without re-running the query */
+						$.cookie("recip-search", col_v + "|" + op_v +  "|" + q_val);
+						$.cookie("recip-hit", data);
+						
+						update_all_rows();
+						add_filter();
+						xhr = null;
 					});
+				}, delay);
+			};
+			
+			/* if there are form values saved, then
+			 * load them before we hook up the events
+			 * (to avoid triggering the search again) */
+			var saved_form = $.cookie("recip-search");
+			if(saved_form) {
+				vals = saved_form.split("|");
+				col_field.val(vals[0]);
+				op_field.val(vals[1]);
+				q_field.val(vals[2]);
+				add_filter();
+			}
+			
+			/* refresh the search every time any of the fields are
+			 * changed. rather inefficient, but the result of NOT
+			 * updating can be confusing as hell */
+			q_field.bind("keypress change", do_search);
+			col_field.change(do_search);
+			op_field.change(do_search);
+		})();
+		
+		
+		/* TODO: DOCS */
+		send_btn.click(function() {
+			var text = msg_txta.attr("value");
+			
+			/* clear any status icons left lingering
+			 * around by the previous message blast */
+			clear_link.click();
+			
+			/* starts the next pending ajax request,
+			 * to send a single message, or resets
+			 * the buttons if none are left */
+			var next = function() {
+				
+				/* if we're done, update the buttons
+				 * to allow the next blast to be sent */
+				if(!queue.length) {
+					send_xhr = null;
+					update_buttons();
+				
+				/* we're not done yet, so call the next 
+				 * queued function to start the ajax */
+				} else {
+					send_xhr = true;
+					update_buttons();
+					return queue.shift()();
 				}
 			};
 			
-			/* update the search every time the form
-			 * is altered. TODO: is this too slow? */
-			$("input[type=text]", filters).keyup(apply_filters);
-			$("select", filters).change(apply_filters);
-			
-			/* add the CHECKED class to all search hits */
-			$("input[type=button][value=Select]", filters).click(function() {
-				$("tr.hit", recipients).addClass("checked");
+			/* create an array of closures, which we
+			 * will call later in serial, to POST each
+			 * message back to messaging/app.py */
+			var queue = $.map(cookie_recips("checked"), function(uid) {
+				var row = row_via_uid(uid);
+				
+				var done = function(klass) {
+					set_cookie_recip(uid, "checked", false);
+					set_cookie_recip(uid, klass, true);
+					row.removeClass("busy");
+					update_row(row);
+					next();
+				};
+				
+				return(function() {
+					row.addClass("busy");
+					
+					send_xhr = $.ajax({
+						"type": "POST",
+						"url":  "/ajax/messaging/send_message",
+						"data": {
+							"uid":  uid,
+							"text": text,
+						},
+						"success": function()    { done("sent"); },
+						"error":   function(xhr) { done("error"); }
+					});
+				});
 			});
 			
-			/* remove the CHECKED class from all hits */
-			$("input[type=button][value=Deselect]", filters).click(function() {
-				$("tr.hit", recipients).removeClass("checked");
-			});
+			/* start sending */
+			next();
+		});
+		
+		
+		/* when cancel is clicked, terminate the current
+		 * xhr request (if one is pending), and reset the
+		 * buttons to allow a revised message to be sent */
+		cancel_btn.click(function() {
+			if(send_xhr)
+				send_xhr.abort();
+			send_xhr = null;
+			update_buttons();
+		});
+		
+		
+		/* clears the statuses of all recipients (by
+		 * destroying the cookies) and update each row
+		 * of recipients (to remov the icon) */
+		clear_link.click(function(ev) {
+			ev.preventDefault();
 			
-			/* clear the filter form, and reset recipients view */
-			$("input[type=button][value=Clear]", filters).click(function() {
-				$("select, input[type=text]", filters).val("");
-				clear_filters();
+			recip_rows.removeClass("busy");
+			$.cookie("recip-error", null);
+			$.cookie("recip-sent", null);
+			update_all_rows();
+		});
+		
+		
+		/* fetches a list of all uids from the server, which is
+		 * (conveniently) in the right format to jam straight into
+		 * the recip-checked cookie, to select ALL recipients. note
+		 * that we use a ghetto cache here, since the fetch can take
+		 * a few seconds on a slow connection */
+		(function() {
+			var ajax_cache = "";
+			
+			var apply = function() {
+				$.cookie("recip-checked", ajax_cache);
+				update_all_rows();
+			};
+			
+			all_link.click(function(ev) {
+				ev.preventDefault();
+				
+				/* if we've already fetched the uids,
+				 * copy them into the cookie immediately */
+				if(ajax_cache) {
+					apply();
+				
+				/* otherwise; fetch them via ajax,
+				 * cache them, and copy the cookie */
+				} else {
+					$.get(ev.target.href, function(data) {
+						ajax_cache = data;
+						apply();
+					});
+				}
 			});
 		})();
 		
 		
-		/* ----------- *
-		 * SEND BUTTON *
-		 * ----------- */
-		
-		
-		/* attach the magic to the SEND button */
-		$("div.contents input[type=button]").click(function() {
-			var text = $("div.contents textarea")[0].value;
+		/* scraps the recip-checked cookie, to select
+		 * NO recipients without reloading the page */
+		none_link.click(function(ev) {
+			ev.preventDefault();
 			
-			/* don't bother submitting anything if no
-			 * message was entered. TODO: rs-validation */
-			if (text == "")
-				return false;
-			
-			/* to send messages one at a time, we'll
-			 * store the closures in a ghetto queue */
-			var queue = [];
-			$.extend(queue, {
-				"next": function() {
-					if(!this.length) return null;
-					return this.shift()();
-				}
-			});
-			
-			/* create a closure to send the message
-			 * for each recipient currently checked */
-			$("tr.checked", container).each(function() {
-				var recipient = $(this);
-				queue.push(function() {
-					recipient.addClass("busy");
-				
-					/* pluck the app name of this recipient
-					 * out of its closest parent table */
-					var slug = recipient.parents("table").attr("app");
-					
-					var next = function(klass, tip) {
-						recipient.
-							addClass(klass).
-							removeClass("busy").
-							attr("title", tip);
-						queue.next();
-					};
-					
-					/* POST the message and recipient uid (it might not
-					 * be a primary key!) back to the app that spanwed it */
-					$.ajax({
-						"type": "POST",
-						"url":  "/ajax/" + slug + "/send_message",
-						"data": {
-							"uid":  recipient.attr("uid"),
-							"text": text,
-						},
-						"success": function() { next("sent",  "The message was sent."); },
-						"error": function(xhr, txt) {
-							next("error", xhr.responseText);
-						}
-					}); // ajax
-				}); // queue
-			}); // each
-			
-			/* start! */
-			queue.next();
+			$.cookie("recip-checked", null);
+			update_all_rows();
 		});
+		
+		
+		/* every time the message field is changed (by
+		 * typing *OR* otherwise (cut, paste, etc), set
+		 * a timeout to upate the send button AFTER the
+		 * event has propagated. this is a hack. */
+		msg_txta.bind("keypress change", function() {
+			setTimeout(update_buttons, 20);
+		});
+		
+		
+		
+		
+		/* ============== *
+		 * INITIALIZATION *
+		 * ============== */
+		
+		/* update the dom now, to select cookied
+			* recipients and update the buttons */
+		update_all_rows();
+		update_buttons();
 	});
 </script>
 {% endblock %}

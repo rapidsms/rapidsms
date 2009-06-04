@@ -14,9 +14,8 @@ div.module {
 	position: relative;
 }
 
-#inner div.module:first-child {
+div.module:first-child {
 	margin-top: 0; }
-
 
 
 
@@ -35,6 +34,7 @@ h2, h3 {
 	padding: 0.5em;
 	text-align: left;
 	white-space: nowrap;
+	line-height: 1;
 }
 
 	/* subheaders are almost the same. to dull things,
@@ -58,17 +58,35 @@ h2, h3 {
 
 
 
+/* this doesn't belong here, but i'm not sure where
+ * else to put it. the reporters app is pretty much
+ * core, so maybe this will _become_ the right place. */
+a.reporter, a.connection {
+	background: no-repeat 0 50% url("../icons/silk/user.png");
+	padding-left: 18px;
+}
+	
+	/* connections look slightly different
+	 * (highlight with red (regular link color with
+	 * huge rotated 180 degrees) to warn that they
+	 * should probably be converted to reporters) */
+	a.connection {
+		background-image: url("../icons/silk/phone.png");
+		color: #d25d33;
+	}
+
+
+
+
 table {
 	border-collapse: collapse;
 }	
 
 	tr { }
-	
-		td, th {
-			padding: 0.5em;
-			border-top: 1px solid #eee; 
-		}
-		
+			
+			/* reset the "look" of headers to match
+			 * regular cells, since they can appear
+			 * anywhere (the the col or row scope) */
 			th {
 				font-weight: normal;
 				text-align: left;
@@ -77,12 +95,12 @@ table {
 				thead th {
 					background: #e1e1e1 url(../images/table-header-bg.png) repeat-x 100% 0;
 					border-top: none;
-					color: #444;
+					color: #888;
 				}
 				
 				/* sometimes fake columns are added to the
 				 * table head, to make things line up. hide
-				 * this embarressing fact as best i can. */
+				 * this embarressing fact as best i can */
 				thead td {
 					border-top: none; }
 
@@ -96,12 +114,32 @@ table {
 		
 			/* a 1px border between each line
 			 * TODO: why isn't this on a <tr>? */
-			tbody td, tbody th {}
+			td, th {
+				padding: 0.5em;
+				border-top: 1px solid #eee; 
+			}
+			
+			/* for those lucky browsers which support :last-child,
+			 * (which is all of them, except for IE6), space out the
+			 * columns a bit more, without imposing extra markup on
+			 * the template author */
+			body:last-child td            { padding-right: 1.5em; }
+			body:last-child td:last-child { padding-right: 0.5em; }
 			
 			/* TODO: docs */
 			td a.unknown {
 				color: #66BDDD;
-				font-style: italic; }
+				font-style: italic;
+			}
+			
+			/* some cells have nothing important to say,
+			 * (like "none" or "never"), but are required
+			 * none the less. make them dull, to highlight
+			 * the rows which contain real data */
+			td.na {
+				color: #ccc;
+				font-style: italic;
+			}
 
 		
 	tr.no-data { }
@@ -113,20 +151,26 @@ table {
 				color: #aaa;
 			}
 			
+			/* since no-data rows usually only have a single
+			 * <td>, the last-child rule above breaks their
+			 * huge padding. this is a hack to fix it. */
+			body:last-child tr.no-data td:last-child {
+				padding-right: 2em; }
+			
 			tr.no-data td a.add {
 				display: block;
 				padding-top: 0.625em;
 				font-size: 80%;
 			}
 	
-	tr.depth-1 th { padding-left: 2em;  }
-	tr.depth-2 th { padding-left: 4em;  }
-	tr.depth-3 th { padding-left: 6em;  }
-	tr.depth-4 th { padding-left: 8em;  }
-	tr.depth-5 th { padding-left: 10em; }
-	tr.depth-6 th { padding-left: 12em; }
-	tr.depth-7 th { padding-left: 14em; }
-	tr.depth-8 th { padding-left: 16em; }
+	tr.depth-1 td.indent { padding-left: 2em;  }
+	tr.depth-2 td.indent { padding-left: 4em;  }
+	tr.depth-3 td.indent { padding-left: 6em;  }
+	tr.depth-4 td.indent { padding-left: 8em;  }
+	tr.depth-5 td.indent { padding-left: 10em; }
+	tr.depth-6 td.indent { padding-left: 12em; }
+	tr.depth-7 td.indent { padding-left: 14em; }
+	tr.depth-8 td.indent { padding-left: 16em; }
 	
 	tfoot {
 		background: #eee url("../images/table-footer-bg.png") repeat-x 0 100%;
@@ -164,13 +208,42 @@ table {
 			 * to separate from additional views and
 			 * exporting, which lives on the right */
 			tfoot .paginator,
-			tfoot .paginator a {
+			tfoot .paginator a,
+			tfoot .paginator span {
 				float: left; }
 			
 				tfoot .paginator a.active {
 					background: #eee;
 					color: #000;
 				}
+				
+				tfoot .paginator .first,
+				tfoot .paginator .prev,
+				tfoot .paginator .next,
+				tfoot .paginator .last {
+					background-repeat: no-repeat;
+					background-position: 0 50%;
+					text-indent: -9999px;
+					overflow: hidden;
+					padding-right: 0;
+					padding-left: 0;
+					width: 16px;
+				}
+				
+				/* links look something like:
+				 *  <<  <  1 2 3 4  >  >> */
+				tfoot .paginator .first { background-image: url("../icons/silk/resultset_first.png");    }
+				tfoot .paginator .prev  { background-image: url("../icons/silk/resultset_previous.png"); }
+				tfoot .paginator .next  { background-image: url("../icons/silk/resultset_next.png");     }
+				tfoot .paginator .last  { background-image: url("../icons/silk/resultset_last.png");     }
+				
+				/* when a naviation link is disabled, shift
+				 * the background image over to reveal the
+				 * dull+transparent sprite to the left */
+				tfoot .paginator span.na {
+					background-position: -16px 50%; }
+
+
 
 
 /* modules can include help text, to explain how
@@ -178,15 +251,14 @@ table {
  * rs-module-help.js as default, but should not be
  * too verbose incase that doesn't work. */
 .module div.help,
-.module div.search {
+.module form.search {
 	border-right: 0.5em solid #ffb;
 	border-left: 0.5em solid #ffb;
 	background: #ffc;
 	padding: 1em;
 }
 
-	.module div.help p,
-	.module div.search p {
+	.module div.help p {
 		margin: 0; }
 
 
@@ -339,11 +411,7 @@ table {
 	 * add+remove buttons look like tiny little
 	 * icons. they're seldom used, so should
 	 * stay out of the way */
-	input.js-add,
-	input.js-del,
-	input.js-accept,
-	input.js-unaccept,
-	input.js-clear {
+	input.js-button {
 		cursor: pointer;
 		border: 0;
 		padding: 0;
@@ -353,15 +421,19 @@ table {
 		text-indent: -9999px;
 		background-color: transparent;
 		background-repeat: no-repeat;
+		
+		/* in case other stylesheets choose to make
+		 * the buttons bigger, center the icons */
+		background-position: 50% 50%;
 	}
 	
 	/* from http://www.famfamfam.com/lab/icons/silk/
 	 * (licensed under Creative Commons Attribution) */
-	input.js-add      { background-image: url("../icons/silk/add.png");    }
-	input.js-del      { background-image: url("../icons/silk/delete.png"); }
-	input.js-accept   { background-image: url("../icons/silk/accept.png"); }
-	input.js-unaccept { background-image: url("../icons/silk/accept--dull.png"); }
-	input.js-clear    { background-image: url("../icons/silk/decline.png"); } /* TODO: better icon! */
+	input.js-button.add      { background-image: url("../icons/silk/add.png");    }
+	input.js-button.del      { background-image: url("../icons/silk/delete.png"); }
+	input.js-button.accept   { background-image: url("../icons/silk/accept.png"); }
+	input.js-button.unaccept { background-image: url("../icons/silk/accept--dull.png"); }
+	input.js-button.clear    { background-image: url("../icons/silk/decline.png"); } /* TODO: better icon! */
 	
 	/* some options are less interesting than others; like
 	 * None, or Disabled, or Default; so mark them dull */

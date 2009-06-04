@@ -7,24 +7,6 @@ from rapidsms.parsers import Matcher
 from models import *
 
 
-# this is a temporary hack for the nigeria
-# project, to allow users to ask something
-# along the lines of LLIN MY STATUS as an
-# alternative to "who am i", with as much
-# built-in flexibility as we can manage.
-# 
-# it matches:
-#  llin status blahh
-#  llin my status
-#  lin my status
-#  lin status
-#  my status
-#  status
-#  stat
-#
-LLIN_MY_STATUS = "(?:ll?in )?(?:my )?stat(?:us)?(?:.*)"
-
-
 
 
 class App(rapidsms.app.App):
@@ -53,38 +35,6 @@ class App(rapidsms.app.App):
     HELP = [
         ("identify", "To identify yourself to RapidSMS, reply: IDENTIFY <alias>")
     ]
-    
-    
-    def __recipient(self, reporter):
-        role = reporter.role
-        loc = reporter.location
-        
-        return {
-            "uid":  reporter.pk,
-            "Name": reporter.full_name(),
-            "Role": role.name if role else "",
-            "Location": loc.name if loc else ""
-        }
-    
-    
-    def ajax_GET_recipients(self, params):
-        return [self.__recipient(rep) for rep in Reporter.objects.all()]
-    
-    
-    def ajax_POST_send_message(self, params, form):
-        rep = Reporter.objects.get(pk=form["uid"])
-        conn = rep.connection()
-        
-        # abort if we don't know where to send the message to
-        # )if the device the reporter registed with has been
-        # taken by someone else, or was created in the WebUI)
-        if conn is None:
-            raise Exception("%s is unreachable (no connection)" % rep)
-        
-        # attempt to send the message
-        # TODO: what could go wrong here?
-        be = self.router.get_backend(conn.backend.slug)
-        return be.message(conn.identity, form["text"]).send()
     
     
     def __str(self, key, reporter=None, lang=None):
@@ -176,8 +126,9 @@ class App(rapidsms.app.App):
         # replace it *with* the keyworder, or extract it
         # into a parser of its own
         map = {
+            "register":  ["register (whatever)"],
             "identify":  ["identify (slug)", "this is (slug)", "i am (slug)"],
-            "remind":    ["whoami", "who am i", LLIN_MY_STATUS],
+            "remind":    ["whoami", "who am i"],
             "reporters": ["list reporters", "reporters\\?"],
             "lang":      ["lang (slug)"]
         }
@@ -192,6 +143,27 @@ class App(rapidsms.app.App):
         # no matches, so this message is not
         # for us; allow processing to continue
         return False
+    
+    
+    def register(self, msg, name):
+        try:
+            # parse the name, and create a reporter
+            alias, fn, ln = Reporter.parse_name(name)
+            rep = Reporter(alias=alias, first_name=fn, last_name=ln)
+            rep.save()
+            
+            # attach the reporter to the current connection
+            msg.persistant_connection.reporter = rep
+            msg.persistant_connection.save()
+            
+            msg.respond(
+                self.__str("first-login", rep) % {
+                 "name": rep.full_name() })
+        
+        # something went wrong - at the
+        # moment, we don't care what
+        except:
+            msg.respond("Sorry, I couldn't register you.")
     
     
     def identify(self, msg, alias):

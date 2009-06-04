@@ -16,10 +16,6 @@ body {
 	margin: 0;
 }
 
-	body.bare {
-		background: #eef; }
-
-
 a {
 	text-decoration: none;
 	color: #33a7d2;
@@ -64,9 +60,6 @@ div.clear-hack {
 	/* no scaling for ie6 */
 	* html #wrapper {
 		width: 960px; }
-	
-	body.bare #wrapper {
-		width: auto; }
 
 
 /* the header is based roughly upon
@@ -96,7 +89,7 @@ div.clear-hack {
 	 * unicef blue stripe of header bg,
 	 * and display logo on the right */
 	#branding h1 {
-		background: url("../images/iavi_logo.png") no-repeat 100% 50%;
+		background: url("../images/unicef.png") no-repeat 100% 50%;
 		line-height: 65px;
 		padding-left: 10px;
 		color: #fff;
@@ -211,9 +204,6 @@ div.clear-hack {
 #inner {
 	padding: 1em;
 }
-
-	body.bare #inner {
-		padding: 0; }
 	
 	/* split a section vertically in
 	 * half, with some css hackery */
@@ -281,23 +271,25 @@ div.clear-hack {
 
 
 
-/* the debug tools can be enabled at the
- * bottom of the page via rapidsms.ini,
- * by setting debug=true in [django] */
 
-#debug-tools {
-	padding: 1em;
+/* some apps (just the querylog at the moment, actually)
+ * add big triggers to the bottom of the page to show or
+ * perform some action. this should probably not be here. */
+div.trigger {
+	font-size: 80%;
+	text-align: center;
+	padding: 0.625em;
+	background: #f8f8f8;
+	cursor: pointer;
+	color: #aaa;
 }
-
-	.query-log {
-		border: 1px solid #4bd;
-		background: #fff;
+	
+	/* some triggers are more warning that
+	 * something is wrong, so highlight them */
+	div.trigger.warn {
+		background: #fdd;
+		color: #f00;
 	}
-
-		.query-log td {
-			font: 80% monospace;
-			line-height: 1.4;
-		}
 
 
 
@@ -305,11 +297,23 @@ div.clear-hack {
 /* legal junk */
 #footer {
 	border-top: 1px dotted #eee;
-	text-align: right;
 	padding: 0.5em;
 	clear: both;
 	color: #ccc;
+	
+	/* reserve space for at least two lines of
+	 * links @ LH=1.4 (for the copyright info) */
+	min-height: 2.8em;
 }
-
-	#footer p {
-		margin: 0; }
+	
+	/* float */
+	#footer .rg-footer {
+		padding-top: 1.4em;
+		line-height: 1.4;
+	}
+	
+	#footer p.rights {
+		text-align: right;
+		float: right;
+		margin: 0;
+	}
