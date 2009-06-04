@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-import os
+import os, log
 from ConfigParser import SafeConfigParser
-import log
 
 
 def to_list (item, separator=","):
@@ -19,6 +18,7 @@ class Config (object):
         self.sources = self.parser.read(paths)
         
         self.raw_data = {}
+        self.normalized_data = {}
         self.data = {}
         
         # first pass: read in the raw data. it's all strings, since
@@ -26,12 +26,21 @@ class Config (object):
         for sn in self.parser.sections():
             items = self.parser.items(sn)
             self.raw_data[sn] = dict(items)
-
-        # second pass: iterate the raw data, creating a second
+        
+        # second pass: cast the values into int or bool where possible
+        # (mostly to avoid storing "false", which evaluates to True)
+        for sn in self.raw_data.keys():
+            self.normalized_data[sn] = {}
+            
+            for key, val in self.raw_data[sn].items():
+                self.normalized_data[sn][key] = \
+                    self.__normalize_value(val)
+        
+        # third pass: iterate the normalized data, creating a
         # dict (self.data) containing the "real" configuration,
         # which may include things (magic, defaults, etc) not
-        # present in the raw_data
-        for sn in self.raw_data.keys():
+        # present in the raw_data or normalized_data
+        for sn in self.normalized_data.keys():
             section_parser = "parse_%s_section" % (sn)
             
             # if this section has a special parser, call
@@ -39,16 +48,43 @@ class Config (object):
             if hasattr(self, section_parser):
                 self.data[sn] = \
                     getattr(self, section_parser)(
-                        self.raw_data[sn])
+                        self.normalized_data[sn])
             
             # no custom section parser, so
             # just copy the raw data as-is
             else:
                 self.data[sn] =\
-                    self.raw_data[sn].copy()
+                    self.normalized_data[sn].copy()
 
 
-    def __import_class(self, class_tmpl):
+    def __normalize_value (self, value):
+        """Casts a string to a bool, int, or float, if it looks like it
+           should be one. This is a band-aid over the ini format, which
+           assumes all values to be strings. Examples:
+           
+           "mudkips"              => "mudkips" (str)
+           "false", "FALSE", "no" => False     (bool)
+           "true", "TRUE", "yes"  => True      (bool)
+           "1.0", "0001.00"       => 1.0       (float)
+           "0", "0000"            => 0         (int)"""
+        
+        # shortcut for string boolean values
+        if   value.lower() in ["false", "no"]: return False
+        elif value.lower() in ["true", "yes"]: return True
+        
+        # attempt to cast this value to an int, then a float. (a sloppy
+        # benchmark of this exception-catching algorithm indicates that
+        # it's faster than checking with a regexp)
+        for func in [int, float]:
+            try: func(value)
+            except: pass
+        
+        # it's just a str
+        # (NOT A UNICODE)
+        return value
+    
+    
+    def __import_class (self, class_tmpl):
         """Given a full class name (ie, apps.webui.app.App), returns the
            class object. There doesn't seem to be a built-in way of doing
            this without mucking with __import__."""
@@ -85,10 +121,10 @@ class Config (object):
     
     def app_section (self, name):
         data = self.component_section(name)
-        mod_str = "apps.%s" % (data["type"])
+        data["module"] = "apps.%s" % (data["type"])
         
         # load the config.py for this app, if possible
-        config = self.__import_class("apps.%s.config" % data["type"])
+        config = self.__import_class("%s.config" % data["module"])
         if config is not None:
             
             # copy all of the names not starting with underscore (those are
@@ -99,7 +135,7 @@ class Config (object):
         
         # import the actual module, and add the path to the
         # config - it might not always be in rapidsms/apps/%s
-        data["path"] = self.__import_class("apps.%s" % data["type"]).__path__[0]
+        data["path"] = self.__import_class(data["module"]).__path__[0]
         
         # return the component with the additional
         # app-specific data included.
@@ -134,42 +170,5 @@ class Config (object):
         
     def has_key (self, key):
         return self.data.has_key(key)
-
+    
     __contains__ = has_key
-
-
-def conf(section, key):
-    """Returns a value from the RapidSMS configuration file, as found in the
-       RAPIDSMS_INI environment variable. This introduces mild coupling between
-       the webui and backend, for the sake of convenience."""
-    
-    var = "RAPIDSMS_INI"
-    if not var in os.environ:
-        # "rapidsms.webui.utils.conf should only
-        # be called from within a running rapidsms
-        # server, where env[RAPIDSMS_INI] is defined"
-        raise KeyError(var)
-    
-    try:
-        return Config(os.environ[var])[section][key]
-    
-    # if the section or key (or both) were invalid,
-    # just return none. as far as we're concerned,
-    # absence is the same as False or None here
-    except KeyError:
-        return None
-
-
-def app_conf(app_type):
-    """Returns the current configuration for a RapidSMS app, by searching the
-       output of conf("rapidsms", "apps") for a matching app_type. This is a
-       hack, until we sort out the configuration file architecture."""
-    
-    # iterate apps, looking out for a
-    # match; return as soon as possible
-    for app in conf("rapidsms", "apps"):
-        if app["type"] == app_type:
-            return app
-    
-    # couldn't find the app
-    return None

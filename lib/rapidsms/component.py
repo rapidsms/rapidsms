@@ -58,6 +58,7 @@ class Component(object):
         # HACK: remove any internal stuff that was added by
         # config.py for the benefit of the webui (which doesn't
         # have access to the component itself, only the config object)
+        kwargs.pop("module", None)
         kwargs.pop("path", None)
         
         try:
