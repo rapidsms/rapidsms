@@ -7,6 +7,22 @@ from rapidsms.parsers import Matcher
 from models import *
 
 
+# this is a temporary hack for the nigeria
+# project, to allow users to ask something
+# along the lines of LLIN MY STATUS as an
+# alternative to "who am i", with as much
+# built-in flexibility as we can manage.
+# 
+# it matches:
+#  llin status blahh
+#  llin my status
+#  lin my status
+#  lin status
+#  my status
+#  status
+#  stat
+#
+LLIN_MY_STATUS = "(?:ll?in )?(?:my )?stat(?:us)?(?:.*)"
 
 
 class App(rapidsms.app.App):
@@ -128,7 +144,7 @@ class App(rapidsms.app.App):
         map = {
             "register":  ["register (whatever)"],
             "identify":  ["identify (slug)", "this is (slug)", "i am (slug)"],
-            "remind":    ["whoami", "who am i"],
+            "remind":    ["whoami", "who am i", LLIN_MY_STATUS],
             "reporters": ["list reporters", "reporters\\?"],
             "lang":      ["lang (slug)"]
         }
