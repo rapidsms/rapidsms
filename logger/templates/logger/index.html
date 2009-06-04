@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+{% block title %}Message Log{% endblock %}
+{% block content %}
+<h2>All Messages</h2> 
+<table width="100%"> 
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>From</th>
+            <th>Backend</th>
+            <th>Message</th>
+            <th>Direction</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for message in messages %}
+            <tr>
+                <td>{{message.date|date:"d-M-Y H:m:s"}}</td>
+                <td>{{message.identity}}</td>
+                <td>{{message.backend}}</td>
+                <td>{{message.text}}</td>
+                <td>{% if message.is_incoming %}&lt&lt&lt
+                    {% else %}&gt&gt&gt
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

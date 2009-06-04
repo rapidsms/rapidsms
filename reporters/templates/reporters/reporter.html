@@ -1,5 +1,7 @@
-{% load reporters %}
+{% extends "reporters/index.html" %}
+{% block title %}{% if reporter %}Edit {{ reporter }}{% else %}Add a Reporter{% endif %}{% endblock %}
 
+{% block right %}
 <div class="module">
 	<h2>{% if reporter %}Edit {{ reporter }}{% else %}Add a Reporter{% endif %}</h2>
 	
@@ -19,33 +21,52 @@
 				<input type="text" id="fm-rep-add-last_name" name="last_name"{% if reporter %} value="{{ reporter.last_name }}"{% endif %} />
 				<label for="fm-rep-add-last_name" class="suffix">Last<span class="acc"> Name</span></label>
 			</div>
-		</div>
+		</div>{% if all_backends %}
 		
 		<div id="fm-rep-add-connections">
 			<label>Primary Connection</label>{% if connections %}{% for connection in connections %}
-			{% connection_widget connection %}{% endfor %}{% else %}
-			{% connection_widget %}{% endif %}
-		</div>
+			<div>
+				<input type="hidden" name="conn-id" value="{{ connection.pk }}" />
+				<select name="conn-backend">
+					<option></option>{% for backend in all_backends %}
+					<option value="{{ backend.pk }}"{% ifequal backend connection.backend %} selected="selected"{% endifequal %}>{{ backend.title }}</option>{% endfor %}
+				</select>
+				<input type="text" name="conn-identity" value="{{ connection.identity }}" />
+			</div>{% endfor %}{% else %}
+			<div>
+				<select name="conn-backend">
+					<option selected="selected"></option>{% for backend in all_backends %}
+					<option value="{{ backend.pk }}"{% if backend.selected %} selected="selected"{% endif %}>{{ backend.title }}</option>{% endfor %}
+				</select>
+				<input type="text" name="conn-identity" />
+			</div>{% endif %}
+		</div>{% endif %}
 		
 		<div id="fm-rep-add-groups">
 			<label>Primary Group</label>{% if all_groups %}{% if groups %}{% for group in groups %}
 			<div>
-				<select name="group">{% for my_group in all_groups %}
+				<select name="group">
+					<option></option>{% for my_group in all_groups %}
 					<option value="{{ my_group.pk }}" class="depth-{{ my_group.depth }}"{% ifequal my_group group %} selected="selected"{% endifequal %}>{{ my_group.title }}</option>{% endfor %}
 				</select>
 			</div>{% endfor %}{% else %}
 			<div>
-				<select name="group">{% for my_group in all_groups %}
+				<select name="group">
+					<option></option>{% for my_group in all_groups %}
 					<option value="{{ my_group.pk }}" class="depth-{{ my_group.depth }}">{{ my_group.title }}</option>{% endfor %}
 				</select>
 			</div>{% endif %}{% else %}
 			<div class="no-data">
-				wat
+				No Groups Yet.
+				<a href="/groups/add" class="add">
+					Add a Group
+				</a>
 			</div>{% endif %}
 		</div>
 		
 		<div class="submit">
-			<input type="submit" value="{% if reporter %}Save Changes{% else %}Add Reporter{% endif %}" />
+			<input type="submit" value="{% if reporter %}Save Changes{% else %}Add Reporter{% endif %}" />{% if reporter %}
+			<input type="submit" name="delete" value="Delete {{ reporter }}" />{% endif %}
 		</div>
 	</form>
 </div>
@@ -68,3 +89,4 @@
 		$("#fm-rep-add").rs_validate();
 	});
 </script>
+{% endblock %}
