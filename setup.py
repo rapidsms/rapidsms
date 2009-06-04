@@ -78,8 +78,8 @@ setup(
     package_dir = {'': 'lib'},
     packages = packages,
     # data_files = data_files,
-    package_data = {'rapidsms': ['skeleton/project/*.ini',\
-                                     'skeleton/project/manage.py']},
+    package_data = {'rapidsms': ['skeleton/project/*.ini',
+                                 'skeleton/project/manage.py']},
     scripts = ["rapidsms"],
     cmdclass={'build_py': build_py},
     long_description = """

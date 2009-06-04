@@ -8,6 +8,8 @@ import spomsky
 import re, time
 
 class Backend(backend.Backend):
+    _title = "SPOMC"
+    
     def configure(self, host="localhost", port=8100, **kwargs):
         self.client = spomsky.Client(host, port)
         

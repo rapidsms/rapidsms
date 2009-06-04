@@ -30,14 +30,20 @@ class Manager (object):
         return os.path.join(os.path.dirname(__file__), "skeleton", tree)
 
     def startproject (self, conf, *args):
-        name = args[0]
-        shutil.copytree(self._skeleton("project"), name)
+	try:
+            name = args[0]
+            shutil.copytree(self._skeleton("project"), name)
+	except IndexError:
+	    print "Oops. Please specify a name for your project."
 
     def startapp (self, conf, *args):
-        name = args[0]
-        target = os.path.join("apps",name)
-        shutil.copytree(self._skeleton("app"), target)
-        print "Don't forget to add '%s' to your rapidsms.ini apps." % name
+	try:
+            name = args[0]
+            target = os.path.join("apps",name)
+            shutil.copytree(self._skeleton("app"), target)
+            print "Don't forget to add '%s' to your rapidsms.ini apps." % name
+	except IndexError:
+	    print "Oops. Please specify a name for your app."
 
 def start (args):
     # if a specific conf has been provided (which it

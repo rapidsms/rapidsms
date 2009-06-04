@@ -1,24 +1,21 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-import os, sys
+import os, time
 
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
-ADMINS = (
-    # ('Your Name', 'your_email@domain.com'),
-)
-
+ADMINS = ()
 MANAGERS = ADMINS
 
-# Local time zone for this installation. Choices can be found here:
+
+# default to the system's timezone settings. this can still be
+# overridden in rapidsms.ini [django], by providing one of:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
-# although not all choices may be available on all operating systems.
-# If running in a Windows environment this must be set to the same as your
-# system time zone.
-TIME_ZONE = 'Africa/Lagos'
+TIME_ZONE = time.tzname[0]
+
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
@@ -67,7 +64,7 @@ TEMPLATE_CONTEXT_PROCESSORS = [
     "django.core.context_processors.debug",
     "django.core.context_processors.i18n",
     "django.core.context_processors.media",
-    "rapidsms.webui.contexts.layout"
+    "django.core.context_processors.request"
 ]
 
 TEMPLATE_DIRS = [
@@ -75,6 +72,9 @@ TEMPLATE_DIRS = [
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
 ]
+
+
+
 
 # ====================
 # LOAD RAPIDSMS CONFIG
@@ -93,8 +93,14 @@ if not "RAPIDSMS_INI" in os.environ:
         "which ini file to load settings from")
 
 # load the rapidsms configuration
-from rapidsms.config import Config
-conf = Config(os.environ["RAPIDSMS_INI"])
+from rapidsms import Config
+RAPIDSMS_CONF = Config(os.environ["RAPIDSMS_INI"])
+
+# since iterating and reading the config of apps is
+# common, build a handy dict of apps and their configs
+RAPIDSMS_APPS = dict([
+    (app["type"], app)
+    for app in RAPIDSMS_CONF["rapidsms"]["apps"]])
 
 
 
@@ -107,8 +113,8 @@ conf = Config(os.environ["RAPIDSMS_INI"])
 # keys don't correspond exactly to their eventual
 # name in this module (they're missing the prefix
 # in rapidsms.ini); inject them into this module
-if "database" in conf:
-    for key, val in conf["database"].items():
+if "database" in RAPIDSMS_CONF:
+    for key, val in RAPIDSMS_CONF["database"].items():
         vars()["DATABASE_%s" % key.upper()] = val
 
 else:
@@ -116,15 +122,14 @@ else:
     # blow up. TODO: is there a way to
     # run django without a database?
     raise(
-        #ImproperlyConfigured,
-        "Your RapidSMS configuration does not " +\
-        "contain a [database] section, which is required " +\
-        "for the Django webui to function.")
+        "Your RapidSMS configuration does not contain " +\
+        "a [database] section, which is required " +\
+        "for the Django WebUI to function.")
 
 # if there is a "django" section, inject
 # the items as CONSTANTS in this module
-if "django" in conf:
-    for key, val in conf["django"].items():
+if "django" in RAPIDSMS_CONF:
+    for key, val in RAPIDSMS_CONF["django"].items():
         vars()[key.upper()] = val
 
 
@@ -134,12 +139,6 @@ if "django" in conf:
 # INJECT RAPIDSMS APPS
 # ====================
 
-rapidsms_apps = [
-    "apps.%s" % (rs_app["type"])
-    for rs_app in conf["rapidsms"]["apps"]
-]
-
-# TODO: move these?
 INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -147,4 +146,4 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.admin',
     'django.contrib.admindocs'
-] + rapidsms_apps
+] + [app["module"] for app in RAPIDSMS_APPS.values()]
