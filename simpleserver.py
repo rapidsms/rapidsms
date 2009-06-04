@@ -4,6 +4,8 @@ import rs_wsgi
 import logging
 
 
+#foo from dan
+
 if __name__ == '__main__':
     import rs_wsgi
     server = wsgiserver.CherryPyWSGIServer(

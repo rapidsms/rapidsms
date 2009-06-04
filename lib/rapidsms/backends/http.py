@@ -11,7 +11,7 @@ import rapidsms
 from rapidsms.message import Message
 
 class HttpServer (BaseHTTPServer.HTTPServer, SocketServer.ThreadingMixIn):
-       
+    
     def handle_request (self, timeout=1.0):
         # don't block on handle_request
         reads, writes, errors = (self,), (), ()
@@ -26,19 +26,21 @@ class Backend(rapidsms.backends.Backend):
         #module = __import__(module_name, {}, {}, [''])
         component_class = getattr(handlers, handler)
         
+        self.handler = component_class
         self.server = HttpServer((host, int(port)), component_class)
         self.type = "HTTP"
         # set this backend in the server instance so it 
         # can callback when a message is received
         self.server.backend = self
         
+        # set the slug based on the handler, so we can have multiple
+        # http backends
+        self._slug = "http_%s" % handler  
+        
     def run (self):
         while self.running:
             if self.message_waiting:
                 msg = self.next_message()
-                if handlers.msg_store.has_key(msg.connection.identity):
-                        handlers.msg_store[msg.connection.identity].append(msg.text)
-                else:
-                        handlers.msg_store[msg.connection.identity] = []
-                        handlers.msg_store[msg.connection.identity].append(msg.text)
+                self.handler.outgoing(msg)
+                
             self.server.handle_request()

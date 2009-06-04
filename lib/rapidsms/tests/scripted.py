@@ -92,9 +92,9 @@ class TestScript (TestCase):
                 self.assertTrue(msg is not None, 
                     "message was returned.\nMessage: '%s'\nExpecting: '%s')" % (last_msg, txt))
                 self.assertEquals(msg.peer, num,
-                    "Expected to send to %s, but message was sent to %s"
-                    % (num, msg.peer))
-                self.assertEquals(msg.text, txt,
+                    "Expected to send to %s, but message was sent to %s\nMessage: '%s'\nReceived: '%s'\nExpecting: '%s'" 
+                    % (num, msg.peer,last_msg, msg.text, txt))
+                self.assertEquals(msg.text.strip(), txt.strip(),
                     "\nMessage: %s\nReceived text: %s\nExpected text: %s\n"
                     % (last_msg, msg.text,txt))
             last_msg = txt
