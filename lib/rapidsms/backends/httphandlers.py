@@ -140,7 +140,7 @@ class BernsoftHandler(RapidBaseHttpHandler):
 
     @classmethod
     def outgoing(klass, message):
-        print("Bernsoft outgoing message: %s" % message)
+        klass.backend.debug("Bernsoft outgoing message: %s" % message)
         if hasattr(message, "logger_id") and message.logger_id:
             id = message.logger_id
         else:
@@ -149,11 +149,11 @@ class BernsoftHandler(RapidBaseHttpHandler):
                                              "to" : message.connection.identity, "text" : urllib2.quote(message.text),
                                              "id" : id})
         #self.log_message("submitting to url: %s" % to_submit)
-        print("submitting to url: %s" % to_submit)
+        klass.backend.debug("submitting to url: %s" % to_submit)
         
         response = "\n".join([line for line in urllib2.urlopen(to_submit)])
         #self.log_message("Got response: %s" % response)
-        print("Got response: %s" % response)
+        klass.backend.debug("Got response: %s" % response)
         
         
         
@@ -220,7 +220,7 @@ class YoHandler(RapidBaseHttpHandler):
 
     @classmethod
     def outgoing(klass, message):
-        print("Yo outgoing message: %s" % message)
+        klass.backend.debug("Yo outgoing message: %s" % message)
         params = YoHandler.outgoing_params.copy()
         params[YoHandler.param_text_outgoing] = urllib2.quote(message.text)
         params[YoHandler.param_phone_outgoing] = urllib2.quote(message.connection.identity)
@@ -237,10 +237,10 @@ class YoHandler(RapidBaseHttpHandler):
         else:
             lines.insert(0,"Error!")
         
-        print("submitting to url: %s" % YoHandler.outgoing_url)
+        klass.backend.debug("submitting to url: %s" % YoHandler.outgoing_url)
         
         response = "\n".join([line for line in lines])
-        print("Got response: %s" % response)
+        klass.backend.debug("Got response: %s" % response)
         
         
         
