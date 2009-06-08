@@ -3,7 +3,7 @@
 
 import unittest
 import tempfile
-from rapidsms.config import Config
+from rapidsms import Config
 
 TEST_INI = """
 [rapidsms]

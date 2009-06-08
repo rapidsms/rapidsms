@@ -306,3 +306,10 @@ class Router (component.Receiver):
         self.debug("SENT message '%s' to %s via %s" % (message.text,\
 			message.connection.identity, message.connection.backend.slug))
         return True
+
+    def get_backend (self, name):
+        backends = [b for b in self.backends if b.name == name]
+        if backends:
+            return backends[0]
+        else:
+            self.error("Unknown backend requested: %s", name)

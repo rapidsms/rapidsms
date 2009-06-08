@@ -83,6 +83,7 @@ class TestScript (TestCase):
         last_msg = ''
         for num, date, dir, txt in cmds:
             if dir == '>':
+                last_received = txt
                 msg = self.backend.message(num, txt)
                 msg.date = date 
                 self.backend.route(msg)  

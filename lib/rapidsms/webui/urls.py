@@ -1,21 +1,21 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-import os
+import os, sys
+from rapidsms.webui import settings
 from django.conf.urls.defaults import *
 
+
+# this list will be populated with the
+# urls from the urls.urlpatterns of each
+# running rapidsms app, then imported by
+# django as if we'd declared them all here
 urlpatterns = []
-
-
-# load the rapidsms configuration
-from rapidsms.config import Config
-conf = Config(os.environ["RAPIDSMS_INI"])
-
 
 # iterate each of the active rapidsms apps (from the ini),
 # and (attempt to) import the urls.py from each. it's okay
 # if this fails, since not all apps have a webui
-for rs_app in conf["rapidsms"]["apps"]:
+for rs_app in settings.RAPIDSMS_APPS.values():
     try:
     
         # import the single "urlpatterns" attribute
@@ -43,14 +43,19 @@ for rs_app in conf["rapidsms"]["apps"]:
                 {"document_root": static_dir }
             ))
     
-    # urls.py couldn't be imported for
-    # this app. no matter, just carry
-    # on importing the others
+    # urls.py couldn't be imported for this app...
+    # was it because importing apps.XXX.urls failed,
+    # or because something INSIDE urls.py raised?
     except ImportError:
-        pass
-    
-    # urls.py was imported, but it didn't
-    # have "urlpatterns" attribute. this
-    # should not happen... but does
-    except AttributeError:
-        pass
+        
+        # extract a backtrace, so we can find
+        # out where the exception was raised
+        tb = sys.exc_info()[2]
+        
+        # if there is a NEXT frame, it means that the __import__
+        # statement in this file didn't fail -- the exception was
+        # raised from within the imported urls.py. it's important
+        # that we allow this error to propagate, to avoid silently
+        # masking the error!
+        if tb.tb_next:
+            raise
