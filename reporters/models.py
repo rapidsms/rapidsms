@@ -2,18 +2,18 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 
-import os, re
+import re
 from datetime import datetime
 from django.db import models
-
+from django.core.urlresolvers import reverse
+from rapidsms.webui.managers import *
 from apps.patterns.models import Pattern
-
-# load the rapidsms configuration, for BackendManager
-# to check which backends are currently running
-from rapidsms.config import Config
-conf = Config(os.environ["RAPIDSMS_INI"])
+from apps.locations.models import *
 
 
+# TODO: remove this. it's a slightly weird version
+#       of ReporterGroup, which can't be nested. i'm
+#       not sure how it happened in the first place.
 
 class Role(models.Model):
     """Basic representation of a role that someone can have.  For example,
@@ -34,120 +34,6 @@ class Role(models.Model):
     def __unicode__(self):
         return self.name
 
-class LocationType(models.Model):
-    """A type of location.  For example 'School' or 'Factory'"""
-    name = models.CharField(max_length=160,help_text="Name of location type")
-        
-    def __unicode__(self):
-        return self.name
-    
-
-class RecursiveManager(models.Manager):
-    """Provides a method to flatten a recursive model (a model which has a ForeignKey field linked back
-       to itself), in addition to the usual models.Manager methods. This Manager queries the database
-       only once (unlike select_related), and sorts them in-memory. Obivously, this efficiency comes
-       at the cost local inefficiency -- O(n^2) -- but that's still preferable to recursively querying
-       the database."""
-    
-    def flatten(self, via_field="parent_id"):
-        all_objects = list(self.all())
-        
-        def pluck(pk=None, depth=0):
-            output = []
-            
-            for object in all_objects:
-                if getattr(object, via_field) == pk:
-                    output += [object] + pluck(object.pk, depth+1)
-                    object.depth = depth
-            
-            return output
-        return pluck()
-
-
-class Location(models.Model):
-    """A location.  Locations have a name, an optional type, and optional geographic information."""
-    name = models.CharField(max_length=160, help_text="Name of location")
-    type = models.ForeignKey(LocationType, related_name="locations", blank=True, null=True, help_text="Type of location")
-    code = models.CharField(max_length=15)
-    parent = models.ForeignKey("Location", related_name="children", null=True, blank=True, help_text="The parent location of this")
-    latitude = models.DecimalField(max_digits=8, decimal_places=6, null=True, blank=True, help_text="The physical latitude of this location")
-    longitude = models.DecimalField(max_digits=8, decimal_places=6, null=True, blank=True, help_text="The physical longitude of this location")
-    objects = RecursiveManager()
-
-    def ancestors(self, include_self=False):
-        """Returns all of the parent locations of this location,
-           optionally including itself in the output. This is
-           very inefficient, so consider caching the output."""
-        locs = [self] if include_self else []
-        loc = self
-        
-        # keep on iterating
-        # until we return
-        while True:
-            locs.append(loc)
-            loc = loc.parent
-            
-            # are we at the top?
-            if loc is None:
-                return locs
-    
-    def descendants(self, include_self=False):
-        """Returns all of the locations which are descended from this location,
-           optionally including itself in the output. This is very inefficient
-           (it recurses once for EACH), so consider caching the output."""
-        locs = [self] if include_self else []
-        
-        for loc in self.children.all():
-            locs.extend(loc.descendants(True))
-        
-        return locs
-        
-    def top_children(self):
-        # this is a pretty silly way to provide easy access to the first N children
-        # inside a template
-        count = 10
-        return self.children.all()[0:10]
-
-    def one_contact(self, role, display=False):
-        def __get_one(contacts):
-            if contacts.count() > 0:
-
-                # since we are formatting for display,
-                # loop through all contacts until we
-                # find one that has a name and number
-                if display:
-                    for contact in contacts:
-                        string = __display(contact)
-                        if (len(string) > 4):
-                            return string
-
-                # return the first contact if we are
-                # not formatting for display
-                else:
-                    return contacts[0]
-
-            # return None if no contacts are found
-            # or return an empty string if we are
-            # formatting this for display
-            else:
-                return "" if display else None
-
-        def __display(contact):
-                string = contact.first_name + " " + contact.last_name
-                if contact.connection() is not None:
-                    string = string + " (" + contact.connection().identity + ")"
-                return string
-
-        return __get_one(Reporter.objects.filter(location=self).filter(role__code__iexact=role))
-
-    def contacts(self, role=None):
-        if role is not None:
-            return Reporter.objects.filter(location=self).filter(role__code__iexact=role)
-        return Reporter.objects.filter(location=self)
-
-    def __unicode__(self):
-        return self.name
-
 
 class ReporterGroup(models.Model):
     title       = models.CharField(max_length=30, unique=True)
@@ -162,6 +48,12 @@ class ReporterGroup(models.Model):
     
     def __unicode__(self):
         return self.title
+    
+    
+    # TODO: rename to something that indicates
+    #       that it's a counter, not a queryset    
+    def members(self):
+        return self.reporters.all().count()
 
 
 class Reporter(models.Model):
@@ -174,11 +66,11 @@ class Reporter(models.Model):
     alias      = models.CharField(max_length=20, unique=True)
     first_name = models.CharField(max_length=30, blank=True)
     last_name  = models.CharField(max_length=30, blank=True)
-    groups     = models.ManyToManyField(ReporterGroup, blank=True)
+    groups     = models.ManyToManyField(ReporterGroup, related_name="reporters", blank=True)
     
     # here are some fields that don't belong here
-    location   = models.ForeignKey("Location", related_name="reporters", null=True, blank=True)
-    role       = models.ForeignKey("Role", related_name="reporters", null=True, blank=True)
+    location   = models.ForeignKey(Location, related_name="reporters", null=True, blank=True)
+    role       = models.ForeignKey(Role, related_name="reporters", null=True, blank=True)
 
     def __unicode__(self):
         return self.connection().identity
@@ -363,8 +255,8 @@ class PersistantBackend(models.Model):
        (in models which wish to link to a backend), since the
        available backends (and their orders) may change after
        deployment; hence, something persistant is needed."""
-    slug        = models.CharField(max_length=30, unique=True)
-    title       = models.CharField(max_length=30)
+    slug  = models.CharField(max_length=30, unique=True)
+    title = models.CharField(max_length=30)
     
     
     class Meta:
@@ -402,6 +294,7 @@ class PersistantConnection(models.Model):
     
     class Meta:
         verbose_name = "Connection"
+        unique_together = ("backend", "identity")
     
     
     def __unicode__(self):
@@ -447,3 +340,11 @@ class PersistantConnection(models.Model):
         for pc in PersistantConnection.objects.filter(reporter=self.reporter):
             pc.preferred = True if pc == self else False
             pc.save()
+
+    def add_reporter_url(self):
+        """Returns the URL to the "add-reporter" view, prepopulated with this
+           PersistantConnection object. This shouldn't be here, since it couples
+           the Model and view layers, but the folks in #django don't have any
+           better suggestions."""
+        return "%s?connection=%s" % (reverse("add-reporter"), self.pk)
+

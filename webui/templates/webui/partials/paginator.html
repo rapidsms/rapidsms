@@ -1,0 +1,13 @@
+{% load self_link %}
+
+<div class="paginator">{% if objects.has_previous %}
+	<a href="{{ first_page_link }}" class="first" title="First page">First Page</a>
+	<a href="{{ prev_page_link }}" class="prev" title="Previous page">Previous Page</a>{% else %}
+	<span class="first na" title="You are already on the first page">First Page</span>
+	<span class="prev na" title="There are no previous pages">Previous Page</span>{% endif %}{% for page in objects.paginator.page_range %}
+	<a href="{% self_link page_param page %}"{% ifequal page objects.number %} class="active"{% endifequal %} title="Page {{ page }}">{{ page }}</a>{% endfor %}{% if objects.has_next %}
+	<a href="{{ next_page_link }}" class="next" title="Next page">Next Page</a>
+	<a href="{{ last_page_link }}" class="last" title="Last page">Last Page</a>{% else %}
+	<span class="next na" title="There are no more pages">Next Page</span>
+	<span class="last na" title="You are already on the last page">Last Page</span>{% endif %}
+</div>
