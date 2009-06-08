@@ -308,7 +308,7 @@ class Router (component.Receiver):
         return True
 
     def get_backend (self, name):
-        backends = [b for b in self.backends if b.name == name]
+        backends = [b for b in self.backends if b.slug == name]
         if backends:
             return backends[0]
         else:
