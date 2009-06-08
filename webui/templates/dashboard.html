@@ -7,38 +7,9 @@
 <![endif]-->
 {% endblock %}
 {% load cache %}
-{% load bednets %}
 
 {% block content %}
 {# cache content of dashboard for one hour #}
 {% cache 3600 dashboard %}
-<div class="tmp">
-
-
-<div class="split-3">
-	<div class="left">
-		{% distribution_summary_charts %}
-	</div>
-	<div class="mid">
-		{% daily_progress %}
-	</div>
-	<div class="right">
-		{% bednets_stats %}
-	</div>
-	<div class="clear-hack"></div>
-</div>
-
-<div class="split">
-	<div class="left">
-		{% pilot_summary %}
-	</div>
-	<div class="right">
-		{% logistics_summary %}
-	</div>
-	<div class="clear-hack"></div>
-</div>
-
-
-</div>
 {% endcache %}
 {% endblock %}
