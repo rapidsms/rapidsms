@@ -6,6 +6,7 @@ import re
 from datetime import datetime
 from django.db import models
 from django.core.urlresolvers import reverse
+from rapidsms.message import Message
 from rapidsms.webui.managers import *
 from patterns.models import Pattern
 from locations.models import *
@@ -248,6 +249,33 @@ class Reporter(models.Model):
         return max(timedates) if timedates else None
 
 
+    @staticmethod
+    def lookup(identifier):
+        """ Look up a reporter from a string (either pk or alias).
+            Returns a reporter or False. """
+        # FIXME this is a crappy rough draft
+        id = identifier
+        reportee = False
+        if id[0].isdigit():
+            try:
+                # look up reporter by pk if identifier is numeric
+                reportee = Reporter.objects.get(pk=id)
+            except Exception, e:
+                print(e)
+        else:
+            try:
+                # look up reporter by alias
+                reportee = Reporter.objects.get(alias__iexact=id)
+            except Exception, e:
+                # TODO look up by name and return suggestions?
+                print(e)
+        return reportee
+
+    def send(self, router, text):
+        """ Send message to reporter via router """
+        be = router.get_backend(self.connection().backend.slug)
+        be.message(self.connection().identity, text).send()
+
 class PersistantBackend(models.Model):
     """This class exists to provide a primary key for each
        named RapidSMS backend, which can be linked from the
@@ -276,7 +304,6 @@ class PersistantBackend(models.Model):
         be_slug = msg.connection.backend.slug
         return klass.objects.get(slug=be_slug)
     
-
 
 class PersistantConnection(models.Model):
     """This class is a persistant version of the RapidSMS Connection
