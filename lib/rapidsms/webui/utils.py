@@ -170,53 +170,22 @@ def self_link(req, **kwargs):
     return "%s?%s" % (req.path, kwargs_enc)
 
 def dashboard(position, path):
-    def get_mod(f):
-        wtf = f.__module__.split('.')
-        mod_str = 'apps.' + wtf[-1] + '.' + '.'.join(wtf[-2:])
-        #print mod_str
-        __import__(mod_str)
-        mod = sys.modules[mod_str]
-        #print mod
-        #print dir(mod)
-        return mod
 
-    def rename(f):
-        mod = get_mod(f)
-
-        lib = getattr(mod, 'register')
-        #print lib.tags
-        lib.tags.update({ position : lib.tags[f.func_name] })
-        print lib.tags
-
-        setattr(mod, position, f)
-        #new_f = getattr(mod, position)
-        #print new_f.func_name
-        #new_f.func_name = position
-        #print new_f
+    def fake_templatetag(f):
+        ''' Adds a fake (rendered -- not curried) templatetag to dashboard 
+            templatetags and returns the original function unchanged so it 
+            can be registered normally as a proper templatetag in its home app. '''
         from django import template
-        register = template.get_library("apps.webui.templatetags.webui")
-        #register.inclusion_tag(position, path)(getattr(mod, position))
-        #register.inclusion_tag(position, path)(f)
-        #register.inclusion_tag(position, path)(position)
-        #register.inclusion_tag(position, path)(lib.tags[position])
-
-        register.tags.update({ position : lib.tags[f.func_name] })
-        #f.func_name = orig 
-        #print('new')
-        #print new_f.func_name
-        #print('orig')
-        #print f.func_name
+        register = template.get_library("apps.webui.templatetags.dashboard")
+        # add the rendered template to dashboard templatetags library
+        register.tags.update({ position : massaman(f, path) })
         return f
 
-    def dash_first(f):
-
-        from django import template
-        register = template.get_library("apps.webui.templatetags.webui")
-        register.tags.update({ position : massaman(f(), path) })
-
-        return f
-
-    def massaman(dict, file_name):
+    def massaman(function, file_name):
+        ''' Returns a rendered template from the output of a function and
+            a template file (for making fake templatetags).
+            Code is poached from the InclusionNode class in __init__.py
+            of django.template '''
         from django.template.loader import get_template, select_template
         from django.template.context import Context
         if not isinstance(file_name, basestring) and is_iterable(file_name):
@@ -224,6 +193,10 @@ def dashboard(position, path):
         else:
             t = get_template(file_name)
         nodelist = t.nodelist
-        return nodelist.render(Context(dict))
+        # make a context object from the output of the function
+        # and return the rendered template with this context -- which is
+        # the resulting dict returned by calling the function
+        # TODO autoescape context
+        return nodelist.render(Context(function()))
     
-    return dash_first 
+    return fake_templatetag
