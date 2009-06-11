@@ -169,16 +169,22 @@ def self_link(req, **kwargs):
     kwargs_enc = new_kwargs.urlencode()
     return "%s?%s" % (req.path, kwargs_enc)
 
-def dashboard(position, path):
+def dashboard(position, path, perm=None):
 
     def fake_templatetag(f):
         ''' Adds a fake (rendered -- not curried) templatetag to dashboard 
             templatetags and returns the original function unchanged so it 
             can be registered normally as a proper templatetag in its home app. '''
         from django import template
-        register = template.get_library("apps.webui.templatetags.dashboard")
+        register = template.get_library("apps.webui.templatetags.webui")
         # add the rendered template to dashboard templatetags library
-        register.tags.update({ position : massaman(f, path) })
+        #print position
+        #print perm
+        if perm is not None:
+            name = position + '-' + perm 
+        else:
+            name = position
+        register.tags.update({ name : massaman(f, path) })
         return f
 
     def massaman(function, file_name):
