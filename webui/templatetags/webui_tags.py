@@ -112,7 +112,7 @@ class DashboardElement(template.Node):
     def __init__(self, position, user):
         self.position = position 
         self.user = template.Variable(user)
-        self.register = template.get_library("apps.webui.templatetags.webui")
+        self.register = template.get_library("apps.webui.templatetags.webui_tags")
         self.possible_tags = []
 
         # we have to hit all apps' templatetags so our dashboard versions
@@ -124,7 +124,7 @@ class DashboardElement(template.Node):
         # is putting a dummy element tag with a position that is never used
         # by a real templatetag
         for app in app_conf.values():
-            module = app["module"] + '.templatetags.' + app["type"]
+            module = app["module"] + '.templatetags.' + app["type"] + '_tags'
             try:
                 lib = template.get_library(module)
                 #print lib.tags.keys()
