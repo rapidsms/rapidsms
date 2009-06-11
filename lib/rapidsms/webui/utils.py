@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
+import sys
 
+import copy
 
 import os, re, traceback
 from rapidsms.webui import settings
@@ -177,3 +179,42 @@ def self_link(req, **kwargs):
     kwargs_enc = new_kwargs.urlencode()
     return "%s?%s" % (req.path, kwargs_enc)
 
+def dashboard(position, path, perm=None):
+    def fake_templatetag(f):
+        ''' Adds a fake (rendered -- not curried) templatetag to dashboard's
+            templatetags and returns the original function unchanged so it
+            can be registered normally as a proper templatetag in its home app. '''
+        from django import template
+        register = template.get_library("webapp.templatetags.webapp-tags")
+        # add the rendered template to dashboard templatetags library
+        name = position
+        if perm is not None:
+            # add permission to the name so we'll have
+            # 'position_name-app.perm_name'
+            name = name + '-' + perm 
+        try:
+            # add the rendered template to dashboard's library of tags
+            register.tags.update({ name : massaman(f, path) })
+        except Exception,e:
+            # if something goes wrong, pass the error along to the dashboard
+            register.tags.update({ name : "Error loading %s. %s" % (f.func_name, e) })
+        return f
+
+    def massaman(function, file_name):
+        ''' Returns a rendered template from the output of a function and
+            a template file (for making fake templatetags).
+            Code is poached from the InclusionNode class in __init__.py
+            of django.template '''
+        from django.template.loader import get_template, select_template
+        from django.template.context import Context
+        if not isinstance(file_name, basestring) and is_iterable(file_name):
+            t = select_template(file_name)
+        else:
+            t = get_template(file_name)
+        nodelist = t.nodelist
+        # make a context object from the output of the function
+        # and return the rendered template with this context -- which is
+        # the resulting dict returned by the function
+        # TODO autoescape context
+        return nodelist.render(Context(function()))
+    return fake_templatetag
