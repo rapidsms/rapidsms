@@ -59,3 +59,104 @@ class PermCheck(template.Node):
 
         except template.VariableDoesNotExist:
             return ''
+
+@register.tag(name="element")
+def get_dashboard_element(parser, token):
+    ''' A templatetag for returning other templatetags! Why? So templatetags
+        used in other apps can be marked for inclusion on the project dashboard
+        without explicitly loading or including those templatetags in the 
+        dashboard template. AND the dashboard can magically change based on the
+        permissions of the user!
+
+        In an app's templatetags file, import the dashboard utility:
+
+            from rapidsms.webui.utils import dashboard 
+
+        Then, for templatetags we'd like to appear on the dashboard,
+        add the dashboard decorator, passing it (1) the position on the dashboard
+        where the templatetag should appear, (2) the template file, and
+        (3) permission the user needs to see the element: 
+
+            @register.inclusion_tag("myapp/partials/mytag.html")
+            @dashboard("my_position", "myapp/partials/mytag.html", "myapp.permission")
+            def my_tag():
+                ...
+                return {"stuff" : stuff, "things", things}
+                
+        We can have whatever positions we want, as long as there is a 
+        corresponding {% element user "my_position" %} tag on the dashboard
+        (avoid hyphens in position names).
+
+        We can also decorate a tag with several dashboard tags so it can
+        appear in different positions based on different permissions.
+
+            @register.inclusion_tag("myapp/partials/mytag.html")
+            @dashboard("my_position", "myapp/partials/mytag.html", "myapp.permission")
+            @dashboard("another_position", "myapp/partials/mytag.html", "myapp.another_permission")
+            def my_tag():
+                ...
+                return {"stuff" : stuff, "things", things}
+
+        This could get confusing if a user has both permissions, so use 
+        groups and permisisons wisely.'''
+
+    try:
+        tag_name, user, position = token.contents.split(None, 2)
+    except ValueError:
+        # make sure we have the correct number of arguments
+        raise template.TemplateSyntaxError, "%r tag requires exactly one arguments" % token.contents.split()[0]
+    return DashboardElement(position[1:-1], user)
+
+class DashboardElement(template.Node):
+    def __init__(self, position, user):
+        self.position = position 
+        self.user = template.Variable(user)
+        self.register = template.get_library("webapp.templatetags.webapp-tags")
+        self.possible_tags = []
+
+        # we have to hit all apps' templatetags so our dashboard versions
+        # get created. also gather all the possible tags for this position
+        #
+        # FIXME the first element is not shown the first time the dashboard
+        # is displayed after runserver begins (because our fake tags haven't
+        # been added to library yet. chicken or egg situation). A workaround
+        # is putting a dummy element tag with a position that is never used
+        # by a real templatetag
+        for app in app_conf.values():
+            module = app["module"] + '.templatetags.' + app["type"] + '-tags'
+            try:
+                lib = template.get_library(module)
+                #print lib.tags.keys()
+                for key in lib.tags.keys():
+                    if key.startswith(self.position):
+                        #print self.position + ' possibility: ' + key 
+                        self.possible_tags.append(key)
+            except Exception, e:
+                # don't worry about apps that don't have templatetags
+                continue
+
+    def render(self, context):
+        user = self.user.resolve(context)
+        rendered = ''
+        try:
+            for tag in self.possible_tags:
+                try:
+                    # break apart tags ('position_name-app.perm_name')
+                    position, perm = tag.split('-')
+                except ValueError:
+                    perm = None
+                    rendered = "Oops. The dashboard decorator requires a permisison."
+
+                if perm is not None:
+                    if user.has_perm(perm):
+                        rendered = self.register.tags[tag]
+                    elif user.is_anonymous():
+                        # lookup default permissions for anonymous users
+                        if app_conf['webapp']:
+                            if perm in app_conf['webapp']['anon_perms']:
+                                rendered = self.register.tags[tag]
+                    else:
+                        rendered = "You do not have permission to view this information. Please login or contact webmaster."
+            return rendered
+        except Exception, e:
+            return e
