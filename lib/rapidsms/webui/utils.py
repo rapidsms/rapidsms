@@ -170,21 +170,24 @@ def self_link(req, **kwargs):
     return "%s?%s" % (req.path, kwargs_enc)
 
 def dashboard(position, path, perm=None):
-
     def fake_templatetag(f):
-        ''' Adds a fake (rendered -- not curried) templatetag to dashboard 
-            templatetags and returns the original function unchanged so it 
+        ''' Adds a fake (rendered -- not curried) templatetag to dashboard's
+            templatetags and returns the original function unchanged so it
             can be registered normally as a proper templatetag in its home app. '''
         from django import template
         register = template.get_library("apps.webui.templatetags.webui")
         # add the rendered template to dashboard templatetags library
-        #print position
-        #print perm
+        name = position
         if perm is not None:
-            name = position + '-' + perm 
-        else:
-            name = position
-        register.tags.update({ name : massaman(f, path) })
+            # add permission to the name so we'll have
+            # 'position_name-app.perm_name'
+            name = name + '-' + perm 
+        try:
+            # add the rendered template to dashboard's library of tags
+            register.tags.update({ name : massaman(f, path) })
+        except Exception,e:
+            # if something goes wrong, pass the error along to the dashboard
+            register.tags.update({ name : "Error loading %s. %s" % (f.func_name, e) })
         return f
 
     def massaman(function, file_name):
@@ -201,8 +204,7 @@ def dashboard(position, path, perm=None):
         nodelist = t.nodelist
         # make a context object from the output of the function
         # and return the rendered template with this context -- which is
-        # the resulting dict returned by calling the function
+        # the resulting dict returned by the function
         # TODO autoescape context
         return nodelist.render(Context(function()))
-    
     return fake_templatetag
