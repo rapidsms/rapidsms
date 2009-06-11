@@ -7,30 +7,30 @@
 <![endif]-->
 {% endblock %}
 {% load cache %}
-{% load dashboard %}
+{% load webui %}
 
 {% block content %}
 <div class="tmp">
 
 <div class="split-3">
 	<div class="left">
-            {% element "top_left" %}
+            {% element user "top_left" %}
 	</div>
 	<div class="mid">
-            {% element "top_mid" %}
+            {% element user "top_mid" %}
 	</div>
 	<div class="right">
-            {% element "top_right" %}
+            {% element user "top_right" %}
 	</div>
 	<div class="clear-hack"></div>
 </div>
 
 <div class="split">
 	<div class="left">
-            {% element "bottom_left" %}
+            {% element user "bottom_left" %}
 	</div>
 	<div class="right">
-            {% element "bottom_right" %}
+            {% element user "bottom_right" %}
 	</div>
 	<div class="clear-hack"></div>
 </div>

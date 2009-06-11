@@ -60,3 +60,79 @@ class PermCheck(template.Node):
 
         except template.VariableDoesNotExist:
             return ''
+
+@register.tag(name="element")
+def get_dashboard_element(parser, token):
+    ''' A templatetag for returning other templatetags! Why? So templatetags
+        used in other apps can be marked for inclusion on the project dashboard
+        without explicitly loading or including those templatetags in the 
+        dashboard template.
+
+        In an app's templatetags file, import the dashboard utility:
+
+            from rapidsms.webui.utils import dashboard 
+
+        Then, for templatetags we'd like to appear on the dashboard,
+        add the dashboard decorator, passing it (1) the position on the dashboard
+        where the templatetag should appear and (2) the template file: 
+
+            @register.inclusion_tag("myapp/partials/mytag.html")
+            @dashboard("my_position", "myapp/partials/mytag.html")
+            def my_tag():
+                ...
+                return {"stuff" : stuff, "things", things}
+                
+        We can have whatever positions we want, as long as there is a 
+        corresponding {% element "my_position" %} tag on the dashboard
+
+    '''
+    try:
+        tag_name, user, position = token.contents.split(None, 2)
+    except ValueError:
+        # make sure we have the correct number of arguments
+        raise template.TemplateSyntaxError, "%r tag requires exactly one arguments" % token.contents.split()[0]
+    return DashboardElement(position[1:-1], user)
+
+class DashboardElement(template.Node):
+    def __init__(self, position, user):
+        self.position = position 
+        self.tag = None
+        self.user = template.Variable(user)
+
+        possible_tags = []
+        for app in app_conf.values():
+            module = app["module"] + '.templatetags.' + app["type"]
+            try:
+                lib = template.get_library(module)
+                for key in lib.tags.keys():
+                    if key.startswith(self.position):
+                        possible_tags.append(key)
+            except Exception, e:
+                # don't worry about apps that don't have templatetags
+                continue
+
+        # see what tags are registered in this position
+        self.register = template.get_library("apps.webui.templatetags.webui")
+        self.tags = []
+        for tag in possible_tags:
+            if self.register.tags.has_key(tag):
+                self.tags.append(tag)
+
+    def render(self, context):
+        user = self.user.resolve(context)
+        rendered = ''
+        try:
+            for tag in self.tags:
+                try:
+                    position, perm = tag.split('-')
+                except Exception, e:
+                    perm = None
+                if perm is not None:
+                    if user.has_perm(perm):
+                        rendered = rendered + self.register.tags[tag]
+                    else:
+                        rendered = rendered + "You are not allowed!!"
+            return rendered
+        except Exception, e:
+            print(e)
+            return rendered 
