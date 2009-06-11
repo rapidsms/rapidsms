@@ -52,7 +52,7 @@ class PermCheck(template.Node):
             elif user.is_anonymous():
                 # for anonymous users, check against anon_perms
                 # defined in the webui section of rapidsms.ini 
-                print app_conf['webui']
+                #print app_conf['webui']
                 if app_conf['webui']:
                     if permission in app_conf['webui']['anon_perms']:
                         display =  self.nodelist.render(context)
@@ -66,7 +66,8 @@ def get_dashboard_element(parser, token):
     ''' A templatetag for returning other templatetags! Why? So templatetags
         used in other apps can be marked for inclusion on the project dashboard
         without explicitly loading or including those templatetags in the 
-        dashboard template.
+        dashboard template. AND the dashboard can magically change based on the
+        permissions of the user!
 
         In an app's templatetags file, import the dashboard utility:
 
@@ -74,18 +75,32 @@ def get_dashboard_element(parser, token):
 
         Then, for templatetags we'd like to appear on the dashboard,
         add the dashboard decorator, passing it (1) the position on the dashboard
-        where the templatetag should appear and (2) the template file: 
+        where the templatetag should appear, (2) the template file, and
+        (3) permission the user needs to see the element: 
 
             @register.inclusion_tag("myapp/partials/mytag.html")
-            @dashboard("my_position", "myapp/partials/mytag.html")
+            @dashboard("my_position", "myapp/partials/mytag.html", "myapp.permission")
             def my_tag():
                 ...
                 return {"stuff" : stuff, "things", things}
                 
         We can have whatever positions we want, as long as there is a 
-        corresponding {% element "my_position" %} tag on the dashboard
+        corresponding {% element user "my_position" %} tag on the dashboard
+        (avoid hyphens in position names).
 
-    '''
+        We can also decorate a tag with several dashboard tags so it can
+        appear in different positions based on different permissions.
+
+            @register.inclusion_tag("myapp/partials/mytag.html")
+            @dashboard("my_position", "myapp/partials/mytag.html", "myapp.permission")
+            @dashboard("another_position", "myapp/partials/mytag.html", "myapp.another_permission")
+            def my_tag():
+                ...
+                return {"stuff" : stuff, "things", things}
+
+        This could get confusing if a user has both permissions, so use 
+        groups and permisisons wisely.'''
+
     try:
         tag_name, user, position = token.contents.split(None, 2)
     except ValueError:
@@ -96,43 +111,53 @@ def get_dashboard_element(parser, token):
 class DashboardElement(template.Node):
     def __init__(self, position, user):
         self.position = position 
-        self.tag = None
         self.user = template.Variable(user)
+        self.register = template.get_library("apps.webui.templatetags.webui")
+        self.possible_tags = []
 
-        possible_tags = []
+        # we have to hit all apps' templatetags so our dashboard versions
+        # get created. also gather all the possible tags for this position
+        #
+        # FIXME the first element is not shown the first time the dashboard
+        # is displayed after runserver begins (because our fake tags haven't
+        # been added to library yet. chicken or egg situation). A workaround
+        # is putting a dummy element tag with a position that is never used
+        # by a real templatetag
         for app in app_conf.values():
             module = app["module"] + '.templatetags.' + app["type"]
             try:
                 lib = template.get_library(module)
+                #print lib.tags.keys()
                 for key in lib.tags.keys():
                     if key.startswith(self.position):
-                        possible_tags.append(key)
+                        #print self.position + ' possibility: ' + key 
+                        self.possible_tags.append(key)
             except Exception, e:
                 # don't worry about apps that don't have templatetags
                 continue
-
-        # see what tags are registered in this position
-        self.register = template.get_library("apps.webui.templatetags.webui")
-        self.tags = []
-        for tag in possible_tags:
-            if self.register.tags.has_key(tag):
-                self.tags.append(tag)
 
     def render(self, context):
         user = self.user.resolve(context)
         rendered = ''
         try:
-            for tag in self.tags:
+            for tag in self.possible_tags:
                 try:
+                    # break apart tags ('position_name-app.perm_name')
                     position, perm = tag.split('-')
-                except Exception, e:
+                except ValueError:
                     perm = None
+                    rendered = "Oops. The dashboard decorator requires a permisison."
+
                 if perm is not None:
                     if user.has_perm(perm):
-                        rendered = rendered + self.register.tags[tag]
+                        rendered = self.register.tags[tag]
+                    elif user.is_anonymous():
+                        # lookup default permissions for anonymous users
+                        if app_conf['webui']:
+                            if perm in app_conf['webui']['anon_perms']:
+                                rendered = self.register.tags[tag]
                     else:
-                        rendered = rendered + "You are not allowed!!"
+                        rendered = "You do not have permission to view this information. Please login or contact webmaster."
             return rendered
         except Exception, e:
-            print(e)
-            return rendered 
+            return e
