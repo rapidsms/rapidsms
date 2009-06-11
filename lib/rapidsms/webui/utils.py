@@ -175,7 +175,7 @@ def dashboard(position, path, perm=None):
             templatetags and returns the original function unchanged so it
             can be registered normally as a proper templatetag in its home app. '''
         from django import template
-        register = template.get_library("apps.webui.templatetags.webui")
+        register = template.get_library("apps.webui.templatetags.webui_tags")
         # add the rendered template to dashboard templatetags library
         name = position
         if perm is not None:
