@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
+import sys
 
+import copy
 
 import os, re, traceback
 from rapidsms.webui import settings
@@ -167,3 +169,61 @@ def self_link(req, **kwargs):
     kwargs_enc = new_kwargs.urlencode()
     return "%s?%s" % (req.path, kwargs_enc)
 
+def dashboard(position, path):
+    def get_mod(f):
+        wtf = f.__module__.split('.')
+        mod_str = 'apps.' + wtf[-1] + '.' + '.'.join(wtf[-2:])
+        #print mod_str
+        __import__(mod_str)
+        mod = sys.modules[mod_str]
+        #print mod
+        #print dir(mod)
+        return mod
+
+    def rename(f):
+        mod = get_mod(f)
+
+        lib = getattr(mod, 'register')
+        #print lib.tags
+        lib.tags.update({ position : lib.tags[f.func_name] })
+        print lib.tags
+
+        setattr(mod, position, f)
+        #new_f = getattr(mod, position)
+        #print new_f.func_name
+        #new_f.func_name = position
+        #print new_f
+        from django import template
+        register = template.get_library("apps.webui.templatetags.webui")
+        #register.inclusion_tag(position, path)(getattr(mod, position))
+        #register.inclusion_tag(position, path)(f)
+        #register.inclusion_tag(position, path)(position)
+        #register.inclusion_tag(position, path)(lib.tags[position])
+
+        register.tags.update({ position : lib.tags[f.func_name] })
+        #f.func_name = orig 
+        #print('new')
+        #print new_f.func_name
+        #print('orig')
+        #print f.func_name
+        return f
+
+    def dash_first(f):
+
+        from django import template
+        register = template.get_library("apps.webui.templatetags.webui")
+        register.tags.update({ position : massaman(f(), path) })
+
+        return f
+
+    def massaman(dict, file_name):
+        from django.template.loader import get_template, select_template
+        from django.template.context import Context
+        if not isinstance(file_name, basestring) and is_iterable(file_name):
+            t = select_template(file_name)
+        else:
+            t = get_template(file_name)
+        nodelist = t.nodelist
+        return nodelist.render(Context(dict))
+    
+    return dash_first 
