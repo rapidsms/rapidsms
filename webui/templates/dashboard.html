@@ -7,43 +7,34 @@
 <![endif]-->
 {% endblock %}
 {% load cache %}
-{% load bednets %}
+{% comment %} {% load bednets %} {% endcomment %}
 
 {% block content %}
 {# cache content of dashboard for one hour #}
+{% comment %}
 {% cache 3600 dashboard %}
 <div class="tmp">
 
 
 <div class="split-3">
 	<div class="left">
-		{% comment %}
 		{% distribution_summary_charts %}
-		{% endcomment %}
 	</div>
 	<div class="mid">
-		{% comment %}
 		{% daily_progress %}
-		{% endcomment %}
 	</div>
 	<div class="right">
-		{% comment %}
 		{% bednets_stats %}
-		{% endcomment %}
 	</div>
 	<div class="clear-hack"></div>
 </div>
 
 <div class="split">
 	<div class="left">
-		{% comment %}
 		{% pilot_summary %}
-		{% endcomment %}
 	</div>
 	<div class="right">
-		{% comment %}
 		{% logistics_summary %}
-		{% endcomment %}
 	</div>
 	<div class="clear-hack"></div>
 </div>
@@ -51,4 +42,5 @@
 
 </div>
 {% endcache %}
+{% endcomment %}
 {% endblock %}

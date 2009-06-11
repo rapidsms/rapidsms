@@ -35,10 +35,10 @@
 					<h1><b>RapidSMS</b></h1>
 				</div>
 				<ul id="tabs">{% for app in apps %}{% if app.tab_link %}
-                                        {% ifhasperm user app "can_view" %}
+                                        {% comment %} {% ifhasperm user app "can_view" %} {% endcomment %}
 					<li class="app-{{ app.type }}{% ifequal active_tab app.type %} active{% endifequal %}">
 						<a href="{{ app.tab_link }}"><span>{{ app.title }}</span></a>
-					</li>{% endifhasperm %}{% endif %}{% endfor %}
+					</li>{% comment %} {% endifhasperm %} {% endcomment %}{% endif %}{% endfor %}
 				</ul>
 				{% block page_tabs %}
 				{% endblock %}
