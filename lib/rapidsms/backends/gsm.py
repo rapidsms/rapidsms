@@ -33,7 +33,7 @@ class Backend(Backend):
             msg = self.modem.next_message()
         
             if msg is not None:
-                        # we got an sms! create RapidSMS Connection and
+                # we got an sms! create RapidSMS Connection and
                 # Message objects, and hand it off to the router
                 c = Connection(self, msg.sender)
                 m = Message(c, msg.text)
@@ -53,7 +53,8 @@ class Backend(Backend):
             backend.Backend.start(self)
 
     def stop(self):
-        backend.Backend.stop(self)
         if self.modem:
             self.modem.disconnect()
+        backend.Backend.stop(self)
+
         
