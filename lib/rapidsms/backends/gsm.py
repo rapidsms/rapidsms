@@ -53,7 +53,7 @@ class Backend(Backend):
             backend.Backend.start(self)
 
     def stop(self):
-        if self.modem:
+        if self.modem is not None:
             self.modem.disconnect()
         backend.Backend.stop(self)
 
