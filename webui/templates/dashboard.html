@@ -6,16 +6,16 @@
 <!--[if IE]><script type="text/javascript" src="/static/webui/javascripts/excanvas.pack.js"></script>
 <![endif]-->
 {% endblock %}
+{% comment %}
 {% load cache %}
-{% comment %} {% load bednets %} {% endcomment %}
+{% load bednets %} 
+{% endcomment %}
 
 {% block content %}
 {# cache content of dashboard for one hour #}
+<div class="tmp">
 {% comment %}
 {% cache 3600 dashboard %}
-<div class="tmp">
-
-
 <div class="split-3">
 	<div class="left">
 		{% distribution_summary_charts %}
@@ -39,8 +39,7 @@
 	<div class="clear-hack"></div>
 </div>
 
-
-</div>
-{% endcache %}
 {% endcomment %}
+</div>
+{% comment %} {% endcache %} {% endcomment %}
 {% endblock %}
