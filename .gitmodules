@@ -1,3 +1,1 @@
-[submodule "lib/pygsm"]
-	path = lib/pygsm
-	url = git@github.com:jwishnie/pygsm.git
+
