@@ -8,7 +8,7 @@ import pygsm
 from rapidsms.message import Message
 from rapidsms.connection import Connection
 from rapidsms.backends import Backend
-
+import backend
 
 class Backend(Backend):
     _title = "pyGSM"
@@ -27,28 +27,33 @@ class Backend(Backend):
     
     
     def run(self):
-        
+        self.debug("GSM RUNNING: %s" % self._running)
         # check for new messages
-        msg = self.modem.next_message()
-        if msg is not None:
+        while self._running:
+            msg = self.modem.next_message()
         
-            # we got an sms! create RapidSMS Connection and
-            # Message objects, and hand it off to the router
-            c = Connection(self, msg.sender)
-            m = Message(c, msg.text)
-            self.router.send(m)
-            
-        # poll for new messages
-        # every two seconds
-        time.sleep(2)
+            if msg is not None:
+                        # we got an sms! create RapidSMS Connection and
+                # Message objects, and hand it off to the router
+                c = Connection(self, msg.sender)
+                m = Message(c, msg.text)
+                self.router.send(m)
+                
+            # poll for new messages
+            # every two seconds
+            time.sleep(2)
     
     
     def start(self):
         self.modem = pygsm.GsmModem(
             *self.modem_args,
             **self.modem_kwargs)
-    
-    
+
+        if self.modem is not None:
+            backend.Backend.start(self)
+
     def stop(self):
+        backend.Backend.stop(self)
         if self.modem:
             self.modem.disconnect()
+        
