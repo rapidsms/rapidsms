@@ -63,7 +63,9 @@ class Reporter(models.Model):
        could lead to multiple objects for the same "person". Usually, this
        model should be created through the WebUI, in advance of the reporter
        using the system - but there are always exceptions to these rules..."""
-    alias      = models.CharField(max_length=20, unique=True)
+    #identity is like phone number. could also be ip, etc.
+    identity   = models.CharField(max_length=64, unique=True)
+
     first_name = models.CharField(max_length=30, blank=True)
     last_name  = models.CharField(max_length=30, blank=True)
     groups     = models.ManyToManyField(ReporterGroup, related_name="reporters", blank=True)
@@ -119,12 +121,12 @@ class Reporter(models.Model):
     def __repr__(self):
         return "%s (%s)" % (
             self.full_name(),
-            self.alias)
+            self.identity)
     
     def __json__(self):
         return {
             "pk":         self.pk,
-            "alias":      self.alias,
+            "identity":   self.identity,
             "first_name": self.first_name,
             "last_name":  self.last_name,
             "str":        unicode(self) }
