@@ -27,7 +27,6 @@ class Backend(Backend):
     
     
     def run(self):
-        self.debug("GSM RUNNING: %s" % self._running)
         # check for new messages
         while self._running:
             msg = self.modem.next_message()
@@ -49,12 +48,19 @@ class Backend(Backend):
             *self.modem_args,
             **self.modem_kwargs)
 
+        # If we got the connection, call superclass to
+        # start the run loop--it just sets self._running to True
+        # and calls run.
         if self.modem is not None:
             backend.Backend.start(self)
 
     def stop(self):
+        # disconnect from modem
         if self.modem is not None:
             self.modem.disconnect()
+
+        # call superclass to stop--sets self._running
+        # to False so that the 'run' loop will exit cleanly.
         backend.Backend.stop(self)
 
         

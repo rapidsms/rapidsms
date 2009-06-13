@@ -172,7 +172,7 @@ class GsmModem(object):
         if reboot:
             # If reboot==True, force a reconnection and full modem reset. SLOW
             self.connect(reconnect=True)
-            self.command("AT+CFUN=1")
+            self.command("AT+CFUN=1") 
         else:
             # else just verify connection
             self.connect()
@@ -181,8 +181,12 @@ class GsmModem(object):
         self.set_modem_config()        
 
         # And check for any waiting messages PRIOR to setting
-        # the CNMI call 
-        self._fetch_stored_messages()
+        # the CNMI call--this is not supported by all modems--
+        # in which case we catch the exception and plow onward
+        try:
+            self._fetch_stored_messages()
+        except errors.GsmError:
+            pass
  
     def reboot(self):
         """Forces a reconnect to the serial port and then a full modem reset to factory 
