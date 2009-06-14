@@ -114,6 +114,13 @@ class Reporter(models.Model):
         return ("%s %s" % (
             self.first_name,
             self.last_name)).strip()
+            
+    def signature(self):
+        if len(self.first_name)==0:
+            if len(self.last_name)==0:
+                return ( "%s" % self.identity )
+            return ( "%s" % self.last_name )
+        return self.full_name()        
     
     def __unicode__(self):
         return self.full_name()
