@@ -4,8 +4,14 @@
 import re
 import rapidsms
 from rapidsms.parsers import Matcher
+from rapidsms.message import Message
 from models import *
 from apps.locations.models import *
+import gettext
+
+_ = gettext.gettext
+
+DEFAULT_VILLAGE="unassociated"
 
 class App(rapidsms.app.App):
     MSG = {
@@ -13,6 +19,7 @@ class App(rapidsms.app.App):
             "period": ". ",
             "denied": "Please join a village by texting us: #join villagename",
             "first-login": "Thank you for joining the village %(village)s",
+            "blast-fail": "Sorry, I couldn't send that message.",
             "register-fail": "Sorry, I couldn't register you.",
             "leave-success": "Good-bye from village %(village)s",
             "leave-fail": "'Leave' failed due to some unknown error.",
@@ -24,6 +31,7 @@ class App(rapidsms.app.App):
             "denied": "Svp join a village by texting us: #join villagename",
             "first-login": "Merci for joining the village %(village)s",
             "register-fail": "Je m'excuse, I couldn't register you.",
+            "blast-fail": "Je m'excuse, I couldn't send that message.",
             "leave-success": "Au revoir from village %(village)s",
             "leave-fail": "'Partez' failed due to some unknown error.",
             "lang-set":    "I will now speak to you in French, where possible." },
@@ -57,6 +65,13 @@ class App(rapidsms.app.App):
     
     
     def start(self):
+        # since the functionality of this app depends on a default group
+        # make sure that this group is created explicitly in this app 
+        # (instead of depending on a fixture)
+        locs = Location.objects.all().filter(name=DEFAULT_VILLAGE)
+        if len(locs)==0: 
+            loc = Location(name=DEFAULT_VILLAGE)
+            loc.save()
         
         # fetch a list of all the backends
         # that we already have objects for
@@ -71,6 +86,7 @@ class App(rapidsms.app.App):
     
     
     def parse(self, msg):
+        print "REPORTER:PARSE"
         # fetch the persistantconnection object
         # for this message's sender (or create
         # one if this is the first time we've
@@ -105,28 +121,34 @@ class App(rapidsms.app.App):
             
     
     def handle(self, msg):
+        print "REPORTER:HANDLE"
         matcher = Matcher(msg)
         
         # TODO: this is sort of a lightweight implementation
         # of the keyworder. it wasn't supposed to be. maybe
         # replace it *with* the keyworder, or extract it
         # into a parser of its own
-        map = {
-            "join":  ["#join (whatever)"], # optionally: join village name m/f age
-            #"*join":  ["join (whatever)"],
+        
+        # swap in and out based on translations
+        # but perhaps we want to accept commands in all known languages?
+        map = [ #search algorithm should be ordered
+            ("join",  ["#join (whatever)"]), # optionally: join village name m/f age
+            ("join",  ["\*join (whatever)"]),
+            ("createvillage",  ["###create (whatever)"]),
             #"#name":  ["add_name (whatever)"],
             #"*name":  ["add_name (whatever)"],
             #"#stats":  ["stats (letters) (numbers)"],
             #"*stats":  ["stats (letters) (numbers)"],
-            "leave":  ["#leave"],
-            #"*leave":  ["leave"],            
-            "lang":  ["#lang (slug)"],
-            #"*lang":  ["lang (slug)"]
-        }
+            ("leave",  ["#leave"]),
+            ("leave",  ["\*leave"]),            
+            ("lang",  ["#lang (slug)"]),
+            ("lang",  ["\*lang (slug)"]),
+            ("blast",  ["(whatever)"])
+        ]
         
         # search the map for a match, dispatch
         # the message to it, and return/stop
-        for method, patterns in map.items():
+        for method, patterns in map:
             if matcher(*patterns) and hasattr(self, method):  
                 getattr(self, method)(msg, *matcher.groups)
                 return True
@@ -134,25 +156,119 @@ class App(rapidsms.app.App):
         # no matches, so this message is not
         # for us; allow processing to continue
         return False
-    
-    
+      
+    # admin utility!
+    def createvillage(self, msg, village=DEFAULT_VILLAGE):
+        #try:
+            # TODO: add administrator authentication
+            print "REPORTER:CREATEVILLAGE"
+            
+            v = Location.objects.all().filter(name=village)
+            if len(v)!=0:
+                msg.respond("village already exists")
+                return
+            loc = Location(name=village)
+            loc.save()
+            
+            msg.respond( ("village %s created") % (village) )
+            return
+            # TODO: remove this for production
+            """except:
+                msg.respond(
+                    self.__str("register-fail", rep) 
+                )
+            """
+            
+    def join(self, msg, village=DEFAULT_VILLAGE):
+    #try:
+        # parse the name, and create a reporter
+        # TODO: check for valid village/group/etc.
+        print "REPORTER:JOIN"
+        #loc = Locations.objects.all().filter(name=village)
+
+        v = Location.objects.all().filter(name=village)
+        if len(v)==0:
+            msg.respond( _("village does not exist") )
+            print "village does not exist"
+            #default join
+            rep = self.join(msg)
+            return rep
+        
+        v = Location.objects.get(name=village)
+        rep = Reporter(location=v, identity=msg.connection.identity)
+        rep.save()
+        
+        # attach the reporter to the current connection
+        msg.persistant_connection.reporter = rep
+        msg.persistant_connection.save()
+        
+        msg.respond( self.__str("first-login", rep) % {"village": village } )
+        return rep
+        # TODO: remove this for production
+        """except:
+            msg.respond(
+                self.__str("register-fail", rep) 
+            )
+        """
+ 
+    def blast(self, msg, txt):
+        if msg.reporter is None:
+            #join default village and send to default village
+            msg.reporter = self.join(msg)
+        #try:
+        # parse the name, and create a reporter
+        # TODO: check for valid village/group/etc.
+        print "REPORTER:BLAST"
+        #find all reporters from the same location
+        sender = msg.reporter
+        if sender.location is None:
+            msg.respond( _("Unrecognized village") )
+            return
+        if len(sender.location.name)==0:
+            #some default behaviour
+            msg.respond( _("You must join a village before sending messages") )
+            return
+        recipients = Reporter.objects.all().filter(location=sender.location)
+        
+        # it makes sense to complete all of the sending
+        # before sending the confirmation sms
+        # iterate every member of the group we are broadcasting
+        # to, and queue up the same message to each of them
+        for recipient in recipients:
+            if recipient.identity != sender.identity:
+                #add signature
+                anouncement = _("%s:to [%s] %s") % ( txt, sender.location, sender.signature() )
+                #todo: limit chars to 1 txt message?
+                conns = PersistantConnection.objects.all().filter(reporter=recipient.identity)
+                for conn in conns:
+                    Message(connection=conn.backend,text=anouncement).send()
+
+        msg.respond( _("success! %s recvd msg: %s" % (sender.location.name,txt) ) )
+        return msg.reporter
+        # TODO: remove this for production
+        """except:
+            msg.respond(
+                self.__str("blast-fail", rep) 
+            )
+        """
+
     def leave(self, msg):
         #try:
-            reporter = Reporter.objects.all().get(identity=msg.connection.identity)
+            print "REPORTER:LEAVE"
             lang = ''
             village = ''
-            if reporter is not None:
+            if msg.reporter is not None:
                 #default to deleting all persistent connections with the same identity
                 #we can always come back later and make sure we are deleting the right backend
-                pcs = PersistantConnection.objects.all().filter(identity=reporter.identity)
+                pcs = PersistantConnection.objects.all().filter(identity=msg.reporter.identity)
                 for pc in pcs:
                     pc.delete()
-                if len(reporter.language) > 0:
-                    lang = reporter.language
-                if reporter.location is not None:
-                    if len(reporter.location.name) > 0:
-                        village = reporter.location.name
-                reporter.delete()
+                if len(msg.reporter.language) > 0:
+                    lang = msg.reporter.language
+                if msg.reporter.location is not None:
+                    if len(msg.reporter.location.name) > 0:
+                        village = msg.reporter.location.name
+                msg.reporter.delete()
             
             msg.respond(
                 self.__str("leave-success", lang=lang) % {
@@ -164,32 +280,14 @@ class App(rapidsms.app.App):
                 msg.respond(
                     self.__str("leave-fail", rep) 
                 )
-            """   
+                """   
     
-    def join(self, msg, village="default-village"):
-        #try:
-            # parse the name, and create a reporter
-            # TODO: check for valid village/group/etc.
-            rep = Reporter(location=Location(name=village), identity=msg.connection.identity)
-            rep.save()
-            
-            # attach the reporter to the current connection
-            msg.persistant_connection.reporter = rep
-            msg.persistant_connection.save()
-            
-            msg.respond( self.__str("first-login", rep) % {"village": village } )
-            return rep
-            # TODO: remove this for production
-            """except:
-                msg.respond(
-                    self.__str("register-fail", rep) 
-                )
-            """
-            
-        
+
+                    
     def lang(self, msg, code):
         # TODO: make this a decorator to be used in all functions
         # so that users don't have to register in order to get going
+        print "REPORTER:LANG"
         err = None
         if msg.reporter is None:
             err = "denied"
@@ -213,3 +311,4 @@ class App(rapidsms.app.App):
         if err is not None:
             response = response + self.__str(err, msg.reporter) + self.__str("period", msg.reporter)       
         msg.respond( response )
+        
