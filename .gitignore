@@ -9,6 +9,7 @@ core.*
 logs/*
 \#*
 .#*
+rapidsms.ini
 apps/airtime/fixtures/airtime.json
 apps/airtime/fixtures/message_counter.json
 apps/nigeria/fixtures/coupons-nopassword.json
