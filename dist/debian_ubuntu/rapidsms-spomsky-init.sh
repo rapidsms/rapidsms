@@ -59,7 +59,7 @@ do_start() {
 }
 
 hard_stop_runserver() {
-    for i in `ps aux | grep -i "mange.py runserver" | grep -v grep | awk '{print $2}' ` ; do
+    for i in `ps aux | grep -i "manage.py runserver" | grep -v grep | awk '{print $2}' ` ; do
         kill -9 $i
     done
     echo "Hard stopped runserver"
