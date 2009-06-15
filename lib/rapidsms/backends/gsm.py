@@ -55,12 +55,14 @@ class Backend(Backend):
             backend.Backend.start(self)
 
     def stop(self):
+        # call superclass to stop--sets self._running
+        # to False so that the 'run' loop will exit cleanly.
+        backend.Backend.stop(self)
+
         # disconnect from modem
         if self.modem is not None:
             self.modem.disconnect()
 
-        # call superclass to stop--sets self._running
-        # to False so that the 'run' loop will exit cleanly.
-        backend.Backend.stop(self)
+
 
         
