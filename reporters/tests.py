@@ -12,8 +12,12 @@ class TestApp (TestScript):
         TestScript.setUp(self)
         
     testJoin = """
-           8005551212 > echo village
-           8005551212 > #join village
+           8005551212 > #join unassociated
+           8005551212 > #lang eng
+           8005551212 > #lang fre
+           8005551212 > #lang wol
+           8005551212 > #lang yul
+           8005551212 > #lang dyu
          """
     
  
