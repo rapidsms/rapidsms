@@ -452,7 +452,6 @@ class GsmModem(object):
            
            If 'retry_515' is True, retry when modem reports a 515 (not ready) error.
            """
-        print 'cmd: %s' % cmd
         try:
             try:
                 self._write(cmd + write_term)
@@ -515,7 +514,6 @@ class GsmModem(object):
         # rest up for a bit (modems are
         # slow, and get confused easily)
         time.sleep(self.cmd_delay)
-        print 'res: %s' % '\n'.join(lines)
         return lines
     
     
