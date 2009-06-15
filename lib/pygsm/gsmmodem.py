@@ -4,11 +4,11 @@
 
 import re, datetime, time
 import errors, message
-import threading
-import StringIO # TODO: replace with list
+import traceback
+import StringIO
 
 # arch: pacman -S python-pyserial
-# ubuntu/debian: apt-get install python-pyserial
+# debian: apt-get install pyserial
 import serial
 
 # Constants
@@ -71,8 +71,7 @@ class GsmModem(object):
     # checked, so go crazy.
     cmd_delay = 0.1
     print_traffic = False
-    modem_lock = threading.RLock()
-
+    
     def __init__(self, *args, **kwargs):
         """Creates, connects to, and boots a GSM Modem. All of the arguments
            are optional (although "port=" should almost always be provided),
@@ -121,10 +120,9 @@ class GsmModem(object):
         # if no connection exists, create it
         # the reconnect flag is irrelevant
         if not hasattr(self, "device") or (self.device is None):
-            with self.modem_lock:
-                self.device = serial.Serial(
-                    *self.device_args,
-                     **self.device_kwargs)
+            self.device = serial.Serial(
+                *self.device_args,
+                **self.device_kwargs)
                 
         # the port already exists, but if we're
         # reconnecting, then kill it and recurse
@@ -142,11 +140,10 @@ class GsmModem(object):
         
         # attempt to close and destroy the device
         if hasattr(self, "device") and (self.device is None):
-            with self.modem_lock:
-                if self.device.isOpen():
-                    self.device.close()
-                    self.device = None
-                    return True
+            if self.device.isOpen():
+                self.device.close()
+                self.device = None
+                return True
         
         # for some reason, the device
         # couldn't be closed. it probably
@@ -202,8 +199,7 @@ class GsmModem(object):
         try:
             if self.print_traffic:
                 print ">> %r" % str
-            with self.modem_lock:
-                self.device.write(str)
+            self.device.write(str)
         
         # if the device couldn't be written to,
         # wrap the error in something that can
@@ -236,28 +232,27 @@ class GsmModem(object):
         if not read_term:
             read_term = "\r\n"
         
-        with self.modem_lock:
-            while(True):
-                buf = self.device.read()
-                buffer.append(buf)
+        while(True):
+            buf = self.device.read()
+            buffer.append(buf)
 
-                # if a timeout was hit, raise an exception including the raw data that
-                # we've already read (in case the calling func was _expecting_ a timeout
-                # (wouldn't it be nice if serial.Serial.read returned None for this?)
-                if buf == "":
-                    __reset_timeout()
-                    raise(errors.GsmReadTimeoutError(buffer))
+            # if a timeout was hit, raise an exception including the raw data that
+            # we've already read (in case the calling func was _expecting_ a timeout
+            # (wouldn't it be nice if serial.Serial.read returned None for this?)
+            if buf == "":
+                __reset_timeout()
+                raise(errors.GsmReadTimeoutError(buffer))
             
-                # if last n characters of the buffer match the read
-                # terminator, return what we've received so far
-                if buffer[-len(read_term)::] == list(read_term):
-                    buf_str = "".join(buffer)
-                    __reset_timeout()
+            # if last n characters of the buffer match the read
+            # terminator, return what we've received so far
+            if buffer[-len(read_term)::] == list(read_term):
+                buf_str = "".join(buffer)
+                __reset_timeout()
                 
-                    if self.print_traffic:
-                        print "<< %r" % buf_str
+                if self.print_traffic:
+                    print "<< %r" % buf_str
                 
-                    return buf_str
+                return buf_str
     
     
     def _wait(self, read_term=None, read_timeout=None):
@@ -514,6 +509,7 @@ class GsmModem(object):
         # rest up for a bit (modems are
         # slow, and get confused easily)
         time.sleep(self.cmd_delay)
+
         return lines
     
     
