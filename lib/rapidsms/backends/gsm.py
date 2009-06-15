@@ -10,6 +10,7 @@ from rapidsms.connection import Connection
 from rapidsms.backends import Backend
 import backend
 
+POLL_INTERVAL=10 # num secs to wait between checking for inbound texts
 class Backend(Backend):
     _title = "pyGSM"
     
@@ -19,12 +20,10 @@ class Backend(Backend):
         self.modem_args = args
         self.modem_kwargs = kwargs
     
-    
     def send(self, message):
         self.modem.send_sms(
             str(message.connection.identity),
             message.text)
-    
     
     def run(self):
         # check for new messages
@@ -39,9 +38,8 @@ class Backend(Backend):
                 self.router.send(m)
                 
             # poll for new messages
-            # every two seconds
-            time.sleep(2)
-    
+            # every POLL_INTERVAL seconds
+            time.sleep(POLL_INTERVAL)
     
     def start(self):
         self.modem = pygsm.GsmModem(
