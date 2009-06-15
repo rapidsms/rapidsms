@@ -16,7 +16,6 @@ import serial
 
 # Constants
 CMGL_STATUS="REC UNREAD" 
-#CMGL_STATUS="REC READ" 
 CMGL_MATCHER=re.compile(r'^\+CMGL: (\d+),"(.+?)","(.+?)",*?,"(.+?)".*?$')
 
 class GsmModem(object):
@@ -568,6 +567,7 @@ class GsmModem(object):
             # (text-mode messages are terminated with ascii char 26
             # "SUBSTITUTE" (ctrl+z)), and return True (message sent)
             except errors.GsmReadTimeoutError, err:
+                print err.pending_data[0]
                 if err.pending_data[0] == ">":
                     self.command(text, write_term=chr(26))
                     return True
@@ -576,6 +576,7 @@ class GsmModem(object):
                 # error was received. i have no idea what
                 # is going on, so allow the error to propagate
                 else:
+                    traceback.print_exc()
                     raise
         
         # for all other errors...
@@ -591,6 +592,7 @@ class GsmModem(object):
             # so DO NOT EVER allow exceptions to propagate
             # (obviously, this sucks. there should be an
             # option, at least, but i'm being cautious)
+            traceback.print_exc()
             return None
     
     
@@ -712,8 +714,7 @@ class GsmModem(object):
            disabled in case you're polling in a separate thread."""
         
         # optionally ping the modem, to give it the chance
-        # to deliver any waiting messages (TODO: fetch
-        # from SIM and device storage, like RubyGSM)
+        # to deliver any waiting messages 
         if fetch:
             # ping for any new, unstored
             self.ping()    
