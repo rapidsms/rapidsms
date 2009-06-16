@@ -68,10 +68,26 @@ class Client(object):
         return "http://%s:%d/%s" % (self.server_host, self.server_port, path)
     
     
+    def __encode(self, dict):
+        
+        # helper function to encode everything
+        # encodable, and ignore everything else
+        def _enc(var):
+            if hasattr(var, "encode"):
+                return var.encode("utf-8")
+            return var
+        
+        # encode each key and value, and pass it
+        # on to the regular urlencode function
+        return urllib.urlencode([
+            (_enc(k), _enc(v))
+            for k, v in dict.items() ])
+    
+    
     def send(self, destination, body):
         
         # build the POST form
-        data = urllib.urlencode({
+        data = self.__encode({
             "version": self.PROTOCOL_VERSION,
             "destination": destination,
             "body": body
@@ -120,7 +136,7 @@ class Client(object):
         self.thread.start()
         
         # build the POST form
-        data = urllib.urlencode({
+        data = self.__encode({
             "version": self.PROTOCOL_VERSION,
             "host": self.client_host,
             "port": self.client_port,
@@ -154,7 +170,7 @@ class Client(object):
         if self.subscription_id:
             
             # build the POST form
-            data = urllib.urlencode({
+            data = self.__encode({
                 "version": self.PROTOCOL_VERSION,
                 "uuid": self.subscription_id
             })
