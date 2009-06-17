@@ -1,4 +1,6 @@
 {% extends "reporters/index.html" %}
+{% load region %}
+
 {% block title %}{% if reporter %}Edit {{ reporter }}{% else %}Add a Reporter{% endif %}{% endblock %}
 
 {% block right %}
@@ -62,7 +64,9 @@
 					Add a Group
 				</a>
 			</div>{% endif %}
-		</div>
+		</div>{% if reporter %}
+		
+		{% region "edit-reporter" %}{% endif %}
 		
 		<div class="submit">
 			<input type="submit" value="{% if reporter %}Save Changes{% else %}Add Reporter{% endif %}" />{% if reporter %}
