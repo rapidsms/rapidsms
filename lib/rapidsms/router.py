@@ -215,11 +215,16 @@ class Router (component.Receiver):
         while self.running:
             try:
                 self.run()
+                
             except KeyboardInterrupt:
+                self.warning("Caught KeyboardInterrupt")
                 break
+                
             except SystemExit:
+                self.warning("Caught SystemExit")
                 break
         
+        self.info("Stopping all backends...")
         self.stop_all_backends()
         self.running = False
 
@@ -235,8 +240,8 @@ class Router (component.Receiver):
         return sorted(self.apps, key=lambda a: a.priority())
     
     def incoming(self, message):   
-        self.info("Incoming message via %s: %s ->'%s'" %\
-			(message.connection.backend.slug, message.connection.identity, message.text))
+        #self.info("Incoming message via %s: %s ->'%s'" %\
+        #    (message.connection.backend.slug, message.connection.identity, message.text))
         
         # loop through all of the apps and notify them of
         # the incoming message so that they all get a
@@ -268,8 +273,8 @@ class Router (component.Receiver):
 
 
     def outgoing(self, message):
-        self.info("Outgoing message via %s: %s <- '%s'" %\
-			(message.connection.backend.slug, message.connection.identity, message.text))
+        #self.info("Outgoing message via %s: %s <- '%s'" %\
+        #    (message.connection.backend.slug, message.connection.identity, message.text))
         
         # first notify all of the apps that want to know
         # about outgoing messages so that they can do what
