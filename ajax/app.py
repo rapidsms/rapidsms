@@ -74,6 +74,17 @@ class App(rapidsms.app.App):
             # name was found
             return None
         
+        def __charset(self, str):
+            """Extracts and returns the character-set argument from an
+               HTTP content-type header, or None if it was not found.
+               
+               __charset("multipart/form-data; charst=UTF-8") == "UTF-8"
+               __charset("application/x-www-form-urlencoded") == None"""
+            
+            x = str.split("charset=", 1)
+            return x[1] if(len(x) == 2) else None
+            
+        
         # handle both GET and POST with
         # the same method
         def do_GET(self):  return self.process()
@@ -141,6 +152,7 @@ class App(rapidsms.app.App):
                 # for post requests, we'll also need to parse
                 # the form data, and hand it to the method
                 if self.command == "POST":
+                    content_type = self.headers["content-type"]
                     form = {}
                 
                     # parse the form data via the CGI lib. this is
@@ -151,19 +163,28 @@ class App(rapidsms.app.App):
                         headers = self.headers,
                         environ = {
                             "REQUEST_METHOD": "POST",
-                            "CONTENT_TYPE": self.headers["content-type"] })
+                            "CONTENT_TYPE": content_type })
+                    
+                    # extract the charset from the content-type header,
+                    # which should have been passed along in views.py
+                    charset = self.__charset(content_type)
                     
                     # convert the fieldstorage object into a dict,
                     # to keep it simple for the handler methods.
                     # TODO: maybe make this a util if it's useful
                     # elsewhere. it isn't, for the time being.
                     for key in storage.keys():
-                        v = storage.getlist(key)
+                        
+                        # convert each of the values with this key into
+                        # unicode, respecting the content-type that the
+                        # request _claims_ to be currently encoded with
+                        val = [
+                            unicode(v, charset)
+                            for v in storage.getlist(key)]
                         
                         # where possible, just store the values as singular,
                         # to avoid CGIs usual post["id"][0] verbosity
-                        if len(v) > 1: form[key] = v
-                        else:          form[key] = v[0]
+                        form[key] = val[0] if(len(val) == 1) else val
                     
                     args.append(form)
                 
