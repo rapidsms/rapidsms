@@ -7,25 +7,39 @@ from rapidsms.webui import settings
 
 def proxy(req, path):
     
-    # build the url to the http server running
-    # in apps.ajax.app.App via conf hackery
+    # build the url to the http server running in apps.ajax.app.App via
+    # conf hackery no encoding worries here, since GET only supports ASCII.
+    # see: http://www.w3.org/TR/REC-html40/interact/forms.html#idx-POST-1
     conf = settings.RAPIDSMS_APPS["ajax"]
     url = "http://%s:%d/%s?%s" % (
         conf["host"], conf["port"],
         path, req.GET.urlencode())
     
     try:
-        # attempt to fetch the requested url from the
-        # backend, and proxy the response back as-sis
-        args = [url]
-        code = 200
+        data = None
+        headers = {}
         
         # if this was a POST, included exactly
         # the same form data in the subrequest
         if req.method == "POST":
-            args.append(req.POST.urlencode())
+            data = req.POST.urlencode()
+            
+            # it doesn't matter if req.POST contains unicode, because .urlencode
+            # will smartly (via djano's smart_str) convert it all back to ASCII
+            # using the same encoding that it was submitted with, but we must
+            # pass along the content-type (containing the charset) to ensure
+            # that it's decoded (again) correctly
+            headers["content-type"] = req.META["CONTENT_TYPE"]
+
+        # attempt to fetch the requested url from the
+        # backend, and proxy the response back as-sis
+        sub_request = urllib2.Request(url, data, headers)
+        sub_response = urllib2.urlopen(sub_request)
         
-        out = urllib2.urlopen(*args)
+        # if no exceptions were raised by urlopen,
+        # we can assume the subrequest succeeded
+        out = sub_response.read()
+        code = 200
     
     # the request was successful, but the server
     # returned an error. as above, proxy it as-is,
