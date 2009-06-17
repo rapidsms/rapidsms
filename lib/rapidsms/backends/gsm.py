@@ -10,7 +10,7 @@ from rapidsms.connection import Connection
 from rapidsms.backends import Backend
 import backend
 
-POLL_INTERVAL=10 # num secs to wait between checking for inbound texts
+POLL_INTERVAL=2 # num secs to wait between checking for inbound texts
 class Backend(Backend):
     _title = "pyGSM"
     
