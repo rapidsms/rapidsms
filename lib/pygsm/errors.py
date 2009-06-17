@@ -61,6 +61,7 @@ class GsmModemError(GsmError):
             149: "PDP authentication failure",
             150: "Invalid mobile class" },
         "CMS": {
+            021: "Call Rejected (out of credit?)",
             301: "SMS service of ME reserved",
             302: "Operation not allowed",
             303: "Operation not supported",
@@ -90,16 +91,17 @@ class GsmModemError(GsmError):
             527: "Please wait, RR or MM is busy. Retry your selection later",
             528: "Location update failure. Emergency calls only",
             529: "PLMN selection failure. Emergency calls only",
-            531: "SMS not send: the <da> is not in FDN phonebook, and FDN lock is enabled (for SMS)" },
-        "UNK": {
-            0: "Unknown error returned by modem"
-            }}
-	
-    def __init__(self, type, code):
+            531: "SMS not send: the <da> is not in FDN phonebook, and FDN lock is enabled (for SMS)" }}
+
+    def __init__(self, type=None, code=None):
         self.type = type
         self.code = code
-    
+
     def __str__(self):
-        return "%s ERROR %d: %s" % (
-            self.type, self.code,
-            self.STRINGS[self.type][self.code])
+        if self.type and self.code:
+            return "%s ERROR %d: %s" % (
+                self.type, self.code,
+                self.STRINGS[self.type][self.code])
+
+        # no type and/or code were provided
+        else: return "Unknown GSM Error"
