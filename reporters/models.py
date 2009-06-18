@@ -109,7 +109,7 @@ class Reporter(models.Model):
         return self.full_name()
     
     def __repr__(self):
-        return "%s (%s)" % (
+        return "%r (%r)" % (
             self.full_name(),
             self.alias)
     
