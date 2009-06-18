@@ -12,10 +12,10 @@ class App(rapidsms.app.App):
     def parse(self, msg):
         # make and save messages on their way in and 
         # cast connection as string so pysqlite doesnt complain
-        persistent_msg = IncomingMessage.objects.create(identity=msg.connection.identity, text=msg.text,
+        message = IncomingMessage.objects.create(identity=msg.connection.identity, text=msg.text,
             backend=msg.connection.backend.slug)
-        msg.persistent_msg = persistent_msg
-        self.debug(persistent_msg)
+        msg.persistent_msg = message
+        self.debug(message)
     
     def outgoing(self, message):
         # make and save messages on their way out and 
