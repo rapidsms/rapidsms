@@ -11,12 +11,13 @@ class BestMatch():
     prefix_map={}
     lock=threading.Lock()
     pp_targets=None # 'pre-processed' targets
+    target_data=dict()
 
     def __init__(self, targets=None, ignore_prefixes=None):
         self.set_targets(targets)
         self.set_ignore_prefixes(ignore_prefixes)
     
-    def match(self,src,anchored=False):
+    def match(self,src,anchored=True,with_data=False):
         """
         Returns a sequence of matched targets.
         The sequence may of 0,1, or more matches
@@ -24,6 +25,9 @@ class BestMatch():
         anchored -- means anchor source string at beginning of line.
                     E.g. matching 'foo' against 'baz bar foo' with not match
                     anchored, but will unanchored.
+
+        with_data -- when True, return a list of tuples of 
+                     (matched target, stored target data)
 
         """
         results=set()
@@ -66,14 +70,21 @@ class BestMatch():
         src_matcher=re.compile(ur'%s%s.*' % \
                                    (anchor, re.escape(src)), \
                                    re.IGNORECASE)
-        print src_matcher.pattern
-
         for pre in self.pp_targets.keys():
             for target,to_match in self.pp_targets[pre]:
                 if src_matcher.match(to_match) is not None:
                     results.add(target)
-
-        return results
+        
+        if with_data:
+            data_results=list()
+            for t in results:
+                data=None
+                if t in self.target_data:
+                    data=self.target_data[t]
+                    data_results.append((t,data))
+            return data_results
+        else:
+            return list(results)
 
     def __process_targets(self):
         # only need to if pp_targets is None
@@ -144,11 +155,20 @@ class BestMatch():
     def add_target(self,val):
         # standard empty cases... should be a method on string...
         if val is None: return
-        val=val.strip()
-        if len(val)==0: return
+
+        # check for something that we interpet as (target,data)
+        target=val
+        data=None
+        if isinstance(val, tuple):
+            target,data=val
+
+        target=target.strip()
+        if len(target)==0: return
 
         with self.lock:
-            self.targets.add(val)
+            self.targets.add(target)
+            self.target_data[target]=data
+
         self.__reset_prepped_targets()
 
     def add_ignore_prefix(self,val):
@@ -192,7 +212,7 @@ if __name__ == "__main__":
 
     src=sys.argv[1]
 
-    targets=['jeff','john','jimmy','mary','mr. smith','mr. smuthers','mrs. smith','mr. smith-edwards*','mr. jones']
+    targets=['jeff','john','jimmy','mary','mr. smith','mr. smuthers','mrs. smith',('mr. smith-edwards*','foo'),'mr. jones']
 #    targets=['mr. smith', 'mr. jones']
     bm=BestMatch(targets,['mr.','mrs.'])
-    print "from: %s\nfound: %s" % (', '.join(targets), ', '.join(bm.match(src,anchored=False)))
+    print "found: %s" %  bm.match(src,with_data=True)
