@@ -9,6 +9,7 @@ import errors, message
 import traceback
 import StringIO
 import threading
+import codecs
 
 # arch: pacman -S python-pyserial
 # debian: apt-get install pyserial
@@ -17,6 +18,7 @@ import serial
 # Constants
 CMGL_STATUS="REC UNREAD" 
 CMGL_MATCHER=re.compile(r'^\+CMGL: (\d+),"(.+?)","(.+?)",*?,"(.+?)".*?$')
+HEX_MATCHER=re.compile(r'^[0-9a-f]+$')
 
 class GsmModem(object):
     """pyGSM is a Python module which uses pySerial to provide a nifty
@@ -72,9 +74,11 @@ class GsmModem(object):
     # before boot. they're not sanity
     # checked, so go crazy.
     cmd_delay = 0.1
-    print_traffic = False
-    modem_lock=threading.RLock()
-
+    retry_delay = 2
+    max_retries = 10
+    modem_lock = threading.RLock()
+    
+    
     def __init__(self, *args, **kwargs):
         """Creates, connects to, and boots a GSM Modem. All of the arguments
            are optional (although "port=" should almost always be provided),
@@ -87,6 +91,9 @@ class GsmModem(object):
            the default proxy-args-to-pySerial behavior. This is useful when testing,
            or wrapping the serial connection with some custom logic."""
 
+        if "logger" in kwargs:
+            self.logger = kwargs.pop("logger")
+        
         # if a ready-made device was provided, store it -- self.connect
         # will see that we're already connected, and do nothing. we'll
         # just assume it quacks like a serial port
@@ -114,25 +121,63 @@ class GsmModem(object):
         # boot the device on init, to fail as
         # early as possible if it can't be opened
         self.boot()
+    
+    
+    LOG_LEVELS = {
+        "traffic": 4,
+        "read":    4,
+        "write":   4,
+        "debug":   3,
+        "warn":    2,
+        "error":   1 }
+    
+    
+    def _log(self, str, type="debug"):
+        """Proxies a log message to this Modem's logger, if one has been set.
+           This is useful for applications embedding pyGSM that wish to show
+           or log what's going on inside.
 
+           The *logger* should be a function with three arguments:
+             modem:   a reference to this GsmModem instance
+             message: the log message (a unicode string)
+             type:    a string contaning one of the keys
+                      of GsmModem.LOG_LEVELS, indicating
+                      the importance of this message.
 
+           GsmModem.__init__ accepts an optional "logger" kwarg, and a minimal
+           (dump to STDOUT) logger is available at GsmModem.logger:
+
+           >>> GsmModem("/dev/ttyUSB0", logger=GsmModem.logger)"""
+        
+        if hasattr(self, "logger"):
+            self.logger(self, str, type)
+    
+    
+    @staticmethod
+    def logger(modem, message, type):
+        print "%8s %s" % (type, message)
+    
+    
     def connect(self, reconnect=False):
         """Creates the connection to the modem via pySerial, optionally
            killing and re-creating any existing connection."""
-
+           
+        self._log("Connecting")
+        
         # if no connection exists, create it
         # the reconnect flag is irrelevant
         if not hasattr(self, "device") or (self.device is None):
             with self.modem_lock:
                 self.device = serial.Serial(
                     *self.device_args,
-                     **self.device_kwargs)
+                    **self.device_kwargs)
                 
         # the port already exists, but if we're
         # reconnecting, then kill it and recurse
         # to recreate it. this is useful when the
         # connection has died, but nobody noticed
         elif reconnect:
+            
             self.disconnect()
             self.connect(False)
 
@@ -141,7 +186,9 @@ class GsmModem(object):
 
     def disconnect(self):
         """Disconnects from the modem."""
-
+        
+        self._log("Disconnecting")
+        
         # attempt to close and destroy the device
         if hasattr(self, "device") and (self.device is None):
             with self.modem_lock:
@@ -160,12 +207,15 @@ class GsmModem(object):
         """initialize the modem configuration with settings needed to process
            commands and send/receive SMS.
         """
+        
         # set some sensible defaults, to make
         # the various modems more consistant
         self.command("ATE0",      raise_errors=False) # echo off
         self.command("AT+CMEE=1", raise_errors=False) # useful error messages
         self.command("AT+WIND=0", raise_errors=False) # disable notifications
-        self.command('AT+CSCS="HEX"'                ) # make sure text comes raw HEX encoded
+        # switch to text mode, and make sure it's a mode that handles
+        # latin characters
+        self.command('AT+CSCS="PCCP437"'            ) # Default on multitechs. We REALLY should support 'GSM'
         self.command("AT+CMGF=1"                    ) # switch to TEXT mode
 
         # enable new message notification
@@ -177,7 +227,9 @@ class GsmModem(object):
     def boot(self, reboot=False):
         """Initializes the modem. Must be called after init and connect,
            but before doing anything that expects the modem to be ready."""
-
+        
+        self._log("Booting")
+        
         if reboot:
             # If reboot==True, force a reconnection and full modem reset. SLOW
             self.connect(reconnect=True)
@@ -196,21 +248,23 @@ class GsmModem(object):
             self._fetch_stored_messages()
         except errors.GsmError:
             pass
- 
+
+
     def reboot(self):
         """Forces a reconnect to the serial port and then a full modem reset to factory
            and reconnect to GSM network. SLOW.
         """
         self.boot(reboot=True)
 
+
     def _write(self, str):
         """Write a string to the modem."""
-        try:
-            if self.print_traffic:
-                print ">> %r" % str
-            with self.modem_lock:
-                self.device.write(str)
         
+        self._log(repr(str), "write")
+
+        try:
+            self.device.write(str)
+
         # if the device couldn't be written to,
         # wrap the error in something that can
         # sensibly be caught at a higher level
@@ -221,6 +275,7 @@ class GsmModem(object):
     def _read(self, read_term=None, read_timeout=None):
         """Read from the modem (blocking) until _terminator_ is hit,
            (defaults to \r\n, which reads a single "line"), and return."""
+        
         buffer = []
 
         # if a different timeout was requested just
@@ -241,31 +296,28 @@ class GsmModem(object):
         # until a newline is hit
         if not read_term:
             read_term = "\r\n"
-        
-        with self.modem_lock:
-            while(True):
-                buf = self.device.read()
-                buffer.append(buf)
 
-                # if a timeout was hit, raise an exception including the raw data that
-                # we've already read (in case the calling func was _expecting_ a timeout
-                # (wouldn't it be nice if serial.Serial.read returned None for this?)
-                if buf == "":
-                    __reset_timeout()
-                    raise(errors.GsmReadTimeoutError(buffer))
-            
-                # if last n characters of the buffer match the read
-                # terminator, return what we've received so far
-                if buffer[-len(read_term)::] == list(read_term):
-                    buf_str = "".join(buffer)
-                    __reset_timeout()
-                
-                    if self.print_traffic:
-                        print "<< %r" % buf_str
-                
-                    return buf_str
-    
-    
+        while(True):
+            buf = self.device.read()
+            buffer.append(buf)
+
+            # if a timeout was hit, raise an exception including the raw data that
+            # we've already read (in case the calling func was _expecting_ a timeout
+            # (wouldn't it be nice if serial.Serial.read returned None for this?)
+            if buf == "":
+                __reset_timeout()
+                raise(errors.GsmReadTimeoutError(buffer))
+
+            # if last n characters of the buffer match the read
+            # terminator, return what we've received so far
+            if buffer[-len(read_term)::] == list(read_term):
+                buf_str = "".join(buffer)
+                __reset_timeout()
+
+                self._log(repr(buf_str), "read")
+                return buf_str
+
+
     def _wait(self, read_term=None, read_timeout=None):
         """Read from the modem (blocking) one line at a time until a response
            terminator ("OK", "ERROR", or "CMx ERROR...") is hit, then return
@@ -341,11 +393,6 @@ class GsmModem(object):
         except ValueError:
             return None
 
-    def _hex_to_unicode(self,htext):
-        return htext.decode('hex').decode('raw_unicode_escape')
-
-    def _unicode_to_hex(self,utext):
-        return utext.encode('raw_unicode_escape').encode('hex')
 
     def _parse_incoming_sms(self, lines):
         """Parse a list of lines (the output of GsmModem._wait), to extract any
@@ -434,7 +481,7 @@ class GsmModem(object):
                 # store the incoming data to be picked up
                 # from the attr_accessor as a tuple (this
                 # is kind of ghetto, and WILL change later)
-                self._add_to_incoming_q(timestamp,sender,text)
+                self._add_incoming(timestamp, sender, text)
 
                 # don't loop! the only reason that this
                 # "while" exists is to jump out early
@@ -448,63 +495,93 @@ class GsmModem(object):
         # interested in (almost all of them!)
         return output_lines
 
-    def _add_to_incoming_q(self,unparsed_timestamp,sender,hex_text):
-        time_sent = self._parse_incoming_timestamp(unparsed_timestamp)
-        unicode_text = self._hex_to_unicode(hex_text)
-        msg = message.IncomingMessage(self, sender, time_sent, unicode_text)
-        self.incoming_queue.append(msg)
 
-    def command(self, cmd, read_term=None, read_timeout=None, write_term="\r", \
-                    raise_errors=True, retry_515=True, max_retries=10, \
-                    retry_delay_secs=2, \
-                    retry_attempt=0):
+    def _add_incoming(self, timestamp, sender, text):
+        # try to decode inbound message
+        try:
+            # HACK ALERT: Multitechs return HEX for any UTF16 data
+            # in a message _despite_ setting the encoding via
+            # CSCS. There's no good way to determine this other
+            # than checking and seeing if it _looks_ like UTF16.
+            #
+            # Unforuntately, Adam's full heuristic fails because
+            # the hex does NOT include the UTF16 BOM! 
+            #
+            # So, I check for divisible by 4 and contains ONLY
+            # 0-9e-f which means if you text the message 'aaaa'
+            # this will catch and garble it!!
+            #
+            if len(text)>0 and (len(text) % 4==0):
+                if HEX_MATCHER.match(text.lower()):
+                    # decode hex UTF16
+                    text = text.decode('hex').decode('utf_16_be')
+            else:
+                # should be normal 7-bit text
+                text=text.decode('cp437')
+
+        except:
+            # I don't think this is possible... it will always 
+            # be interpreted, even if wrong
+            return None
+
+        # create and store the IncomingMessage object
+        time_sent = self._parse_incoming_timestamp(timestamp)
+        msg = message.IncomingMessage(self, sender, time_sent, text)
+        self.incoming_queue.append(msg)
+        return msg
+
+
+    def command(self, cmd, read_term=None, read_timeout=None, write_term="\r", raise_errors=True):
         """Issue a single AT command to the modem, and return the sanitized
            response. Sanitization removes status notifications, command echo,
            and incoming messages, (hopefully) leaving only the actual response
            from the command.
+           
+           If Error 515 (init or command in progress) is returned, the command
+           is automatically retried up to _GsmModem.max_retries_ times."""
 
-           If 'retry_515' is True, retry when modem reports a 515 (not ready) error.
-           """
-        try:
+        # keep looping until the command
+        # succeeds or we hit the limit
+        retries = 0
+        while retries < self.max_retries:
             try:
-                self._write(cmd + write_term)
-                lines = self._wait(
-                    read_term=read_term,
-                    read_timeout=read_timeout)
 
+                # issue the command, and wait for the
+                # response
+                with self.modem_lock:
+                    self._write(cmd + write_term)
+                    lines = self._wait(
+                        read_term=read_term,
+                        read_timeout=read_timeout)
 
-            except errors.GsmModemError, modem_err:
-                if retry_515 and (modem_err.code is not None) \
-                        and modem_err.code==515 and \
-                        (retry_attempt<max_retries):
-                    time.sleep(retry_delay_secs)
-                    return self.command(cmd,read_term=read_term, \
-                                            read_timeout=read_timeout, \
-                                            write_term=write_term, \
-                                            raise_errors=raise_errors, \
-                                            retry_515=retry_515, \
-                                            max_retries=max_retries, \
-                                            retry_delay_secs=retry_delay_secs, \
-                                            retry_attempt=int(retry_attempt)+1)
+                # no exception was raised, so break
+                # out of the enclosing WHILE loop
+                break
 
-                # if haven't caught and entered retry recursion, raise to outer handler
-                raise modem_err
+            # Outer handler: if the command caused an error,
+            # maybe wrap it and return None
+            except errors.GsmError, err:
+                # if GSM Error 515 (init or command in progress) was raised,
+                # lock the thread for a short while, and retry. don't lock
+                # the modem while we're waiting, because most commands WILL
+                # work during the init period - just not _cmd_
+                if getattr(err, "code", None) == 515:
+                    time.sleep(self.retry_delay)
+                    retries += 1
+                    continue
 
+                # if raise_errors is disabled, it doesn't matter
+                # *what* went wrong - we'll just ignore it
+                if not raise_errors:
+                    return None
 
-        # Outer handler: if the command caused an error,
-        # maybe wrap it and return None
-        except errors.GsmError, err:
-            if not raise_errors:
-                return None
-
-            # otherwise, allow the error to propagate upwards
-            # to the app. TODO: this is dangerous! maybe it
-            # should be OFF as default?
-            raise(err)
+                # otherwise, allow errors to propagate upwards,
+                # and hope someone is waiting to catch them
+                else: 
+                    raise(err)
 
         # if the first line of the response echoes the cmd
         # (it shouldn't, if ATE0 worked), silently drop it
-
         if lines[0] == cmd:
             lines.pop(0)
 
@@ -531,7 +608,7 @@ class GsmModem(object):
         return lines
 
 
-    def query(self, cmd):
+    def query(self, cmd, prefix=None):
         """Issues a single AT command to the modem, and returns the relevant
            part of the response. This only works for commands that return a
            single line followed by "OK", but conveniently, this covers almost
@@ -547,7 +624,15 @@ class GsmModem(object):
         # single line followed by "OK". if all looks
         # well, return just the single line
         if(len(out) == 2) and (out[-1] == "OK"):
-            return out[0]
+            if prefix is None:
+                return out[0].strip()
+
+            # if a prefix was provided, check that the
+            # response starts with it, and return the
+            # cropped remainder
+            else:
+                if out[0][:len(prefix)] == prefix:
+                    return out[0][len(prefix):].strip()
 
         # something went wrong, so return the very
         # ambiguous None. it's better than blowing up
@@ -560,48 +645,86 @@ class GsmModem(object):
            and reassembled them upon delivery, but some will silently
            drop them. At the moment, pyGSM does nothing to avoid this,
            so try to keep _text_ under 160 characters."""
-        text=self._unicode_to_hex(text)
-        try:
+
+        old_mode = None
+        with self.modem_lock:
+            # outer try to catch any error and make sure to
+            # get the modem out of 'waiting for data' mode
             try:
+                # try to catch write timeouts
+                try:
+                    # try for casting unicode
+                    try:
+                        text = text.encode("cp437")
+                        print "text: %s" % text
+                    except UnicodeEncodeError as uerr:
+                        # uh-oh, not in standard 'latin' characters
+                        # this message will require UTF16 (big endian)
+                        # TODO: Check for length!!
 
-                # initiate the sms, and give the device a second
-                # to raise an error. unfortunately, we can't just
-                # wait for the "> " prompt, because some modems
-                # will echo it FOLLOWED BY a CMS error
-                result = self.command(
-                    "AT+CMGS=\"%s\"\r" % (recipient),
-                    read_timeout=1)
+                        # fetch and store the current mode (so we can
+                        # restore it later), and override it with UCS2
+                        try:
+                            csmp = self.query("AT+CSMP?", "+CSMP:")
+                        except:
+                            traceback.print_exc()
 
-            # if no error is raised within the timeout period,
-            # and the text-mode prompt WAS received, send the
-            # sms text, wait until it is accepted or rejected
-            # (text-mode messages are terminated with ascii char 26
-            # "SUBSTITUTE" (ctrl+z)), and return True (message sent)
-            except errors.GsmReadTimeoutError, err:
-                if err.pending_data[0] == ">":
-                    self.command(text, write_term=chr(26))
-                    return True
+                        if csmp is not None:
+                            old_mode = csmp.split(",")
+                            mode = old_mode[:]
+                            mode[3] = "8"
 
-                # a timeout was raised, but no prompt nor
-                # error was received. i have no idea what
-                # is going on, so allow the error to propagate
-                else:
-                    raise
+                        # enable hex mode, and set the encoding
+                        # to UCS2 for the full character set
+                        self.command('AT+CSCS="HEX"')
+                        self.command("AT+CSMP=%s" % ",".join(mode))
+                        text = text.encode('utf_16_be').encode('hex')
 
-        # for all other errors...
-        # (likely CMS or CME from device)
-        except:
+                    # initiate the sms, and give the device a second
+                    # to raise an error. unfortunately, we can't just
+                    # wait for the "> " prompt, because some modems
+                    # will echo it FOLLOWED BY a CMS error
+                    result = self.command(
+                        'AT+CMGS=\"%s\"' % (recipient),
+                        read_timeout=1)
 
-            # whatever went wrong, break out of the
-            # message prompt. if this is missed, all
-            # subsequent writes will go into the message!
-            self._write(chr(27))
+                # if no error is raised within the timeout period,
+                # and the text-mode prompt WAS received, send the
+                # sms text, wait until it is accepted or rejected
+                # (text-mode messages are terminated with ascii char 26
+                # "SUBSTITUTE" (ctrl+z)), and return True (message sent)
+                except errors.GsmReadTimeoutError, err:
+                    if err.pending_data[0] == ">":
+                        self.command(text, write_term=chr(26))
+                        return True
 
-            # rule of thumb: pyGSM is meant to be embedded,
-            # so DO NOT EVER allow exceptions to propagate
-            # (obviously, this sucks. there should be an
-            # option, at least, but i'm being cautious)
-            return None
+                    # a timeout was raised, but no prompt nor
+                    # error was received. i have no idea what
+                    # is going on, so allow the error to propagate
+                    else:
+                        raise
+
+                finally:
+                    # if the mode was overridden above, (if this
+                    # message contained unicode), switch it back
+                    if old_mode is not None:
+                        self.command('AT+CSCS="PCCP437"')
+                        self.command("AT+CSMP=%s" % ",".join(old_mode))
+                        
+            # for all other errors...
+            # (likely CMS or CME from device)
+            except Exception as err:
+                traceback.print_exc()
+                # whatever went wrong, break out of the
+                # message prompt. if this is missed, all
+                # subsequent writes will go into the message!
+                self._write(chr(27))
+
+                # rule of thumb: pyGSM is meant to be embedded,
+                # so DO NOT EVER allow exceptions to propagate
+                # (obviously, this sucks. there should be an
+                # option, at least, but i'm being cautious)
+                return None
 
 
     def hardware(self):
@@ -711,7 +834,7 @@ class GsmModem(object):
             msg_text=msg_buf.getvalue().strip()
 
             # now create message
-            self._add_to_incoming_q(timestamp,sender,msg_text)
+            self._add_incoming(timestamp,sender,msg_text)
             num_found+=1
 
         return num_found
