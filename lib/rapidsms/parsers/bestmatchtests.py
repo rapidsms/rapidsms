@@ -22,12 +22,23 @@ resto_targets=[
     'hotel lando','hotel chez lando','burger king','burgerville','burger heaven'
 ]
 
+similar_targets=[
+    'fred','freddy','fredalicious','bob','bobby','barry','bo'
+]
+
 class TestBestMatch(unittest.TestCase):
     
     def setUp(self):
         self.cityM=BestMatch(city_targets)
         self.cmdM=BestMatch(command_targets)    
         self.restoM=BestMatch(resto_targets)    
+        self.simiM=BestMatch(similar_targets)
+
+    def testExactMatch(self):
+        print "EXACT MATCHING"
+        print "Find 'bob'"
+        res=self.simiM.match('bob')
+        self.assertTrue(len(res)==1 and res[0]=='bob')
 
     def testBasicMatch(self):
         print "BASIC MATCHING"

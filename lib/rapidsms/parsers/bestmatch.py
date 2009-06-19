@@ -7,13 +7,12 @@ import threading
 import sys
 
 class BestMatch():
-    targets=set()
-    prefix_map={}
-    lock=threading.Lock()
-    pp_targets=None # 'pre-processed' targets
-    target_data=dict()
-
     def __init__(self, targets=None, ignore_prefixes=None):
+        self.targets=set()
+        self.prefix_map={}
+        self.lock=threading.Lock()
+        self.pp_targets=None # 'pre-processed' targets
+        self.target_data=dict()
         self.set_targets(targets)
         self.set_ignore_prefixes(ignore_prefixes)
     
@@ -52,29 +51,47 @@ class BestMatch():
             anchor=ur'.*'
 
         src_stripped=dict()
-        # match against the prefixes to see if we can cut it down
-        for p,rx in self.prefix_map.items():
-            pre_m=rx.match(src)
-            if pre_m is not None:
-                stripped=pre_m.groups()[0]
-                src_stripped[p]=re.compile(ur'%s%s.*' % \
-                                          (anchor, re.escape(stripped)), \
-                                          re.IGNORECASE)
-                # now see if me can match under that prefix
-                for target,to_match in self.pp_targets[p]:
-                    if src_stripped[p].match(to_match) is not None:
-                        results.add(target)
 
-        # if we couldn't strip down by prefix, check full
-        # source against all targets
+        #
+        # To Do: DUH! Prefix pre-processing is dumb! Just
+        # use a smarter regular expression (duh)
+        #
+
+        exact_match=None
+        # Check full source string against all targets
         src_matcher=re.compile(ur'%s%s.*' % \
                                    (anchor, re.escape(src)), \
                                    re.IGNORECASE)
         for pre in self.pp_targets.keys():
             for target,to_match in self.pp_targets[pre]:
+                # first check for equality 'cause we ALWAYS
+                # return just that if we have it
+                if pre=='' and src==to_match:
+                    exact_match=src
+                    break
                 if src_matcher.match(to_match) is not None:
                     results.add(target)
-        
+
+        # now cut the source down by prefix and try it against
+        # targets that were also cut by that prefix
+        # match against the prefixes to see if we can cut it down
+        if exact_match is None:
+            for p,rx in self.prefix_map.items():
+                pre_m=rx.match(src)
+                if pre_m is not None:
+                    stripped=pre_m.groups()[0]
+                    src_stripped[p]=re.compile(ur'%s%s.*' % \
+                                                   (anchor, re.escape(stripped)), \
+                                                   re.IGNORECASE)
+                    # now see if me can match under that prefix
+                    for target,to_match in self.pp_targets[p]:
+                        if src_stripped[p].match(to_match) is not None:
+                            results.add(target)
+
+        if exact_match is not None:
+            results=list()
+            results.append(exact_match)
+
         if with_data:
             data_results=list()
             for t in results:
@@ -100,6 +117,11 @@ class BestMatch():
         # prefixes like ['Mr.','Dr.','Mr. Doctor.']
         self.pp_targets=dict()
         for t in self.targets:
+            # first add the prefix '' (nothing, exact match)
+            if '' not in self.pp_targets:
+                self.pp_targets['']=set()
+            self.pp_targets[''].add((t,t))
+
             # try to match a prefix
             for p,rx in self.prefix_map.items():
                 if not p in self.pp_targets:
@@ -108,10 +130,6 @@ class BestMatch():
                 if m is not None:
                     left_over=m.groups()[0]
                     self.pp_targets[p].add((t,left_over))
-            # now add actual string
-            if '' not in self.pp_targets:
-                self.pp_targets['']=set()
-            self.pp_targets[''].add((t,t))
 
         return self.pp_targets
 
