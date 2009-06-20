@@ -84,7 +84,6 @@ class HttpHandler(RapidBaseHttpHandler):
                 
                 if HttpHandler.msg_store.has_key(session_id) and len(HttpHandler.msg_store[session_id]):
                     resp=_str("{'phone':'%s', 'message':'%s'}" % (session_id, HttpHandler.msg_store[session_id].pop(0).replace("'", r"\'")))
-                    print (type(resp),resp)
                     self.wfile.write(resp)
                 return
                 
