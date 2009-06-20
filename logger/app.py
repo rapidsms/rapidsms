@@ -7,14 +7,15 @@ import models
 from models import OutgoingMessage, IncomingMessage
 
 class App(rapidsms.app.App):
-    
-    def handle(self, message):
+    # save messages on 'parse' so that 
+    # annotations can be added to persistent message object by other apps
+    def parse(self, msg):
         # make and save messages on their way in and 
         # cast connection as string so pysqlite doesnt complain
-        msg = IncomingMessage(identity=message.connection.identity, text=message.text,
-            backend=message.connection.backend.slug)
-        msg.save()
-        self.debug(msg)
+        message = IncomingMessage.objects.create(identity=msg.connection.identity, text=msg.text,
+            backend=msg.connection.backend.slug)
+        msg.persistent_msg = message
+        self.debug(message)
     
     def outgoing(self, message):
         # make and save messages on their way out and 

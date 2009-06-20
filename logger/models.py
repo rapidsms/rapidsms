@@ -3,13 +3,16 @@
 
 import django
 from django.db import models
-
+from apps.nodegraph.models import NodeSet
 
 class MessageBase(models.Model):
     text = models.CharField(max_length=140)
     # TODO save connection title rather than wacky object string?
     identity = models.CharField(max_length=150)
     backend = models.CharField(max_length=150)
+    # this isn't modular
+    # but it's optional and saves some ridiculous querying for smsforum frontpage
+    domain = models.ForeignKey(NodeSet,null=True)
     
     def __unicode__(self):
         return "%s (%s) %s" % (self.identity, self.backend, self.text)
