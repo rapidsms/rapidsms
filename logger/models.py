@@ -14,6 +14,10 @@ class MessageBase(models.Model):
     def __unicode__(self):
         return "%s (%s) %s" % (self.identity, self.backend, self.text)
     
+    class Meta:
+        abstract = True
+    
+    
     
 class IncomingMessage(MessageBase):
     received = models.DateTimeField(auto_now_add=True)
@@ -37,7 +41,6 @@ class IncomingMessage(MessageBase):
         permissions = (
             ("can_view", "Can view message logs"),
         )
-        abstract = True
     
 class OutgoingMessage(MessageBase):
     sent = models.DateTimeField(auto_now_add=True)
