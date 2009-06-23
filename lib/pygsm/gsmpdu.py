@@ -4,10 +4,8 @@
 
 from __future__ import with_statement
 
-import re, datetime, time
+import re, datetime
 import math
-import sys
-import serial
 import pytz
 import codecs
 import gsmcodecs
