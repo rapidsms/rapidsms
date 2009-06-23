@@ -520,8 +520,8 @@ class GsmModem(object):
                 codec='utf_16'
             else:
                 codec='utf_16_be'
-                decoded_text=text.decode('hex')
-                decoded_text=decoded_text.decode(codec)
+            decoded_text=text.decode('hex')
+            decoded_text=decoded_text.decode(codec)
 
         # create and store the IncomingMessage object
         time_sent = self._parse_incoming_timestamp(timestamp)
