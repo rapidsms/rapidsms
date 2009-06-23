@@ -43,8 +43,7 @@ class RapidBaseHttpHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         self.server.backend.error(format, *args)
 
     def log_message (self, format, *args):
-        #self.server.backend.debug(format, *args)
-        # no thank you! makes a messy console
+        self.server.backend.debug(format, *args)
         pass
 
     def respond(self, code, msg):
