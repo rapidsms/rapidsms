@@ -660,7 +660,7 @@ class GsmModem(object):
                         text = text.encode('utf_16_be').encode('hex')
                     
                     if gsm_mode:
-                        cs='GSM'
+                        enc='0'
                     else:
                         # hex mode
                         enc='8'
