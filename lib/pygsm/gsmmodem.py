@@ -505,23 +505,27 @@ class GsmModem(object):
     def _add_incoming(self, timestamp, sender, text):
         if text is None or len(text)==0:
             self._log("Blank inbound text, ignore")
+
         # try to decode inbound message
-        text=text.decode('hex')
         try:
-            text=decode('gsm')
+            # careful not to overwrite 'text'
+            # keep it clean in case we decode it in the
+            # except block
+            decoded_text=text.decode('hex')
+            decoded_text=decoded_text.decode('gsm')
         except:
-            # is it UCS2?
-            if len(text)>0 and (len(text) % 4)==0:
-                bom=text[0:4]
-                if bom==codecs.BOM_UTF16_LE.encode('hex') or \
-                        bom==codecs.BOM_UTF16_BE.encode('hex'):
-                    text=text.decode('utf_16')
-                else:
-                    text=text.decode('utf_16_be')
+            bom=text[0:4]
+            if bom==codecs.BOM_UTF16_LE.encode('hex') or \
+                    bom==codecs.BOM_UTF16_BE.encode('hex'):
+                codec='utf_16'
+            else:
+                codec='utf_16_be'
+                decoded_text=text.decode('hex')
+                decoded_text=decoded_text.decode(codec)
 
         # create and store the IncomingMessage object
         time_sent = self._parse_incoming_timestamp(timestamp)
-        msg = message.IncomingMessage(self, sender, time_sent, text)
+        msg = message.IncomingMessage(self, sender, time_sent, decoded_text)
         self.incoming_queue.append(msg)
         return msg
 
@@ -648,28 +652,22 @@ class GsmModem(object):
             try:
                 # try to catch write timeouts
                 try:
-                    gsm_mode=True
                     # try for attempting to down-code to gsm char table
                     try:
-                        text = text.encode('gsm').encode('hex')
-                    except UnicodeEncodeError as uerr:
-                        gsm_mode=False
+                        coded_text=text.encode('gsm')
+                        coded_text=coded_text.encode('hex')
+                        enc='0'
+                    except:
                         # uh-oh, not in standard 'latin' characters
                         # this message will require UTF16 (big endian)
-                        # TODO: Check for length!! (must be 70 char or less)
-                        text = text.encode('utf_16_be').encode('hex')
-                    
-                    if gsm_mode:
-                        enc='0'
-                    else:
-                        # hex mode
+                        coded_text=text.encode('utf_16_be')
+                        coded_text=coded_text.encode('hex')
                         enc='8'
-                    
+
                     csmp_code="17,167,0,"+enc
                     self.command("AT+CSMP=%s" % csmp_code)
                     result = self.command(
-                        'AT+CMGS="%s"' % (recipient),
-                        read_timeout=1)
+                        'AT+CMGS="%s"' % (recipient),read_timeout=1)
 
                 # if no error is raised within the timeout period,
                 # and the text-mode prompt WAS received, send the
@@ -678,7 +676,7 @@ class GsmModem(object):
                 # "SUBSTITUTE" (ctrl+z)), and return True (message sent)
                 except errors.GsmReadTimeoutError, err:
                     if err.pending_data[0] == ">":
-                        self.command(text, write_term=chr(26))
+                        self.command(coded_text, write_term=chr(26))
                         return True
 
                     # a timeout was raised, but no prompt nor
