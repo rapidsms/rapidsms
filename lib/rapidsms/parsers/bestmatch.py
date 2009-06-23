@@ -201,7 +201,7 @@ class BestMatch():
         """Returns 'True' if removed, 'False' if not in the set"""
         with self.lock:
             try:
-                targets.remove(val)
+                self.targets.remove(val)
             except KeyError:
                 return False
             
