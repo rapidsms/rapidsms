@@ -72,7 +72,7 @@ class Code(models.Model):
     slug = models.CharField(max_length = 8) # e.g. san, dro, etc.
     
     def __unicode__(self):
-        return "%(set)s - %(name)s" % { 'set':self.set, 'code':self.name }
+        return "%(name)s" % { 'name':self.name }
 
 class MessageTag(models.Model):
     """
@@ -85,16 +85,35 @@ class MessageTag(models.Model):
     def __unicode__(self):
         return "%(message)s: %(tag)s" % { 'message':self.message, 'tag':self.code }
 
+"""
 class MessageAnnotation(models.Model):
-    """
+    ""
     A dynamic way of associating messages with free-form annotations
     without requiring that all messages be annotated
-    """
+    ""
     message = models.ForeignKey(IncomingMessage)
     annotation = models.CharField(max_length=255,blank=True)
 
     def __unicode__(self):
         return "%(message)s: %(annotation)s" % { 'message':self.message, 'annotation':self.annotation }
+"""
+
+class MessageAnnotation(models.Model):
+	""" 
+    Less dynamic (but still) optional way we're doing annotations for now 
+    to make querying easier and more streamlined 
+    """
+    message = models.OneToOneField(IncomingMessage)
+    text = models.CharField(max_length=255, blank=True)
+    code = models.ForeignKey(Code, null=True)
+    flagged = models.BooleanField(null=True)
+
+    def __unicode__(self):
+        return unicode(self.text)
+    
+    def is_empty(self):
+        return len(self.text)==0 and self.code is None and self.flagged is None 
+
 
 
 
