@@ -6,6 +6,29 @@ import re
 import threading
 import sys
 
+class MultiMatch():
+    """ 
+    Simple wrapper around multiple BestMatchers that
+    let's you search through multiple target sets at once.
+
+    E.g., take 'men_best_matcher=BestMatch(target=['bob','jim'])
+    and women_best_matcher=BestMatch(target=['jen','sarah'])
+
+    And you want to search in both at once, do:
+    MultiMatch(men_best_matcher,women_best_matcher).match(aPerson)
+
+    """
+    def __init__(self,*args):
+        self.matchers=[m for m in args if isinstance(m, BestMatch)]
+
+     
+    def match(self,src,**kwargs):
+        """Returns uniqued list of matches for all match sets"""
+        matches=set()
+        for m in self.matchers:
+            matches.update(m.match(src,**kwargs))
+        return list(matches)
+        
 class BestMatch():
     def __init__(self, targets=None, ignore_prefixes=None):
         self.targets=set()
