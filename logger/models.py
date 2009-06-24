@@ -15,7 +15,7 @@ class MessageBase(models.Model):
     domain = models.ForeignKey(NodeSet,null=True)
     
     def __unicode__(self):
-        return "%s (%s) %s" % (self.identity, self.backend, self.text)
+        return u'%s (%s) %s' % (self.identity, self.backend, self.text)
     
     class Meta:
         abstract = True
@@ -36,7 +36,7 @@ class IncomingMessage(MessageBase):
         return True
     
     def __unicode__(self):
-        return "%s %s" % (MessageBase.__unicode__(self), self.received)  
+        return u"%s %s" % (MessageBase.__unicode__(self), self.received)
 
 class OutgoingMessage(MessageBase):
     sent = models.DateTimeField(auto_now_add=True)
@@ -50,4 +50,4 @@ class OutgoingMessage(MessageBase):
         return False
     
     def __unicode__(self):
-        return "%s %s" % (MessageBase.__unicode__(self), self.sent)  
+        return u"%s %s" % (MessageBase.__unicode__(self), self.sent)
