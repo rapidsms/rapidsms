@@ -6,7 +6,7 @@ import re
 import threading
 import sys
 
-class MultiMatch():
+class MultiMatch(object):
     """ 
     Simple wrapper around multiple BestMatchers that
     let's you search through multiple target sets at once.
@@ -18,28 +18,27 @@ class MultiMatch():
     MultiMatch(men_best_matcher,women_best_matcher).match(aPerson)
 
     """
-    def __init__(self,*args):
-        self.matchers=[m for m in args if isinstance(m, BestMatch)]
+    def __init__(self, *args):
+        self.matchers = [m for m in args if isinstance(m, BestMatch)]
 
      
-    def match(self,src,**kwargs):
+    def match(self, src, **kwargs):
         """Returns uniqued list of matches for all match sets"""
-        matches=set()
+        matches = set()
         for m in self.matchers:
-            matches.update(m.match(src,**kwargs))
+            matches.update(m.match(src, **kwargs))
         return list(matches)
         
-class BestMatch():
+class BestMatch(object):
     def __init__(self, targets=None, ignore_prefixes=None):
-        self.targets=set()
-        self.prefix_map={}
-        self.lock=threading.Lock()
-        self.pp_targets=None # 'pre-processed' targets
-        self.target_data=dict()
-        self.set_targets(targets)
-        self.set_ignore_prefixes(ignore_prefixes)
+        self.__targets = dict()
+        self.__ignore_prefixes = list()
+        self.__lock = threading.Lock()
+        self.__set_targets(targets)
+        self.__set_ignore_prefixes(ignore_prefixes)
+        self.__ignore_prefix_pattern = ''
     
-    def match(self,src,anchored=True,with_data=False):
+    def match(self, src, anchored=True, with_data=False, exact_match_trumps=True):
         """
         Returns a sequence of matched targets.
         The sequence may of 0,1, or more matches
@@ -51,195 +50,151 @@ class BestMatch():
         with_data -- when True, return a list of tuples of 
                      (matched target, stored target data)
 
+        exact_match_trumps -- when true and exact match will
+                              return just that match.
+                              e.g. with targets 'bob' and 'bobby'
+                              with exact match on, matching 'bob'
+                              with return ('bob'). With it off
+                              the return will be ('bob','bobby')
+
         """
-        results=set()
-
+        
         # short circuit do-nothing case
-        if src is None or self.targets is None or len(self.targets)==0:
-            return results
+        if src is None or self.__targets is None or len(self.__targets)==0:
+            return []
 
-        src=src.strip()
-
+        src = unicode(src).strip()
         if len(src)==0:
+            return []
+            
+        anchor = ('^' if anchored else '.*')
+
+        # see if the source already has a prefix on it
+        # in which case we strip it and don't try to match other
+        # prefixes
+        has_prefix=False
+        for p in self.__ignore_prefixes:
+            left,pref,right = src.partition(p)
+            if len(left)==0 and \
+                    len(pref)!=0:
+                # we matched a prefix
+                has_prefix=True
+                break
+
+        # now make the matching regex
+        prefixes = (self.__ignore_prefix_pattern \
+                      if not has_prefix \
+                      else '')
+
+        src_matcher = re.compile(ur'%s\s*%s\s*%s.*' % \
+                                   ( 
+                anchor,
+                prefixes,
+                re.escape(src),
+                
+                ),re.IGNORECASE)
+
+        # now look for matches
+        uniq=set()
+        results=[]
+        for t,d in self.__targets.items():
+            if exact_match_trumps and src==t:
+                results = [(t,d)]
+                break
+            if src_matcher.match(t) is not None:    
+                if t not in uniq:
+                    uniq.add(t)
+                    results.append((t,d))
+
+        if len(results)>0 and not with_data:
+            return zip(*results)[0]
+        else:
             return results
-
-        # lock everything so targets can't change underneath us
-        with self.lock:
-            # make sure targets are processed
-            self.__process_targets()
-
-        if anchored:
-            anchor=ur'^'
-        else:
-            anchor=ur'.*'
-
-        src_stripped=dict()
-
-        #
-        # To Do: DUH! Prefix pre-processing is dumb! Just
-        # use a smarter regular expression (duh)
-        #
-
-        exact_match=None
-        # Check full source string against all targets
-        src_matcher=re.compile(ur'%s%s.*' % \
-                                   (anchor, re.escape(src)), \
-                                   re.IGNORECASE)
-        for pre in self.pp_targets.keys():
-            for target,to_match in self.pp_targets[pre]:
-                # first check for equality 'cause we ALWAYS
-                # return just that if we have it
-                if pre=='' and src==to_match:
-                    exact_match=src
-                    break
-                if src_matcher.match(to_match) is not None:
-                    results.add(target)
-
-        # now cut the source down by prefix and try it against
-        # targets that were also cut by that prefix
-        # match against the prefixes to see if we can cut it down
-        if exact_match is None:
-            for p,rx in self.prefix_map.items():
-                pre_m=rx.match(src)
-                if pre_m is not None:
-                    stripped=pre_m.groups()[0]
-                    src_stripped[p]=re.compile(ur'%s%s.*' % \
-                                                   (anchor, re.escape(stripped)), \
-                                                   re.IGNORECASE)
-                    # now see if me can match under that prefix
-                    for target,to_match in self.pp_targets[p]:
-                        if src_stripped[p].match(to_match) is not None:
-                            results.add(target)
-
-        if exact_match is not None:
-            results=list()
-            results.append(exact_match)
-
-        if with_data:
-            data_results=list()
-            for t in results:
-                data=None
-                if t in self.target_data:
-                    data=self.target_data[t]
-                    data_results.append((t,data))
-            return data_results
-        else:
-            return list(results)
-
-    def __process_targets(self):
-        # only need to if pp_targets is None
-        # and we have some targets!
-        if len(self.targets)==0 or \
-                self.pp_targets is not None:
-            return 
-
-        # strip targets of prefixes
-        # NOTE: Each target gets stripped of prefix only ONCE
-        # SO if you have targets that may have
-        # multiple prefixes 'Mr. Doctor. Smith', you need to add compound
-        # prefixes like ['Mr.','Dr.','Mr. Doctor.']
-        self.pp_targets=dict()
-        for t in self.targets:
-            # first add the prefix '' (nothing, exact match)
-            if '' not in self.pp_targets:
-                self.pp_targets['']=set()
-            self.pp_targets[''].add((t,t))
-
-            # try to match a prefix
-            for p,rx in self.prefix_map.items():
-                if not p in self.pp_targets:
-                    self.pp_targets[p]=set()
-                m = rx.match(t)
-                if m is not None:
-                    left_over=m.groups()[0]
-                    self.pp_targets[p].add((t,left_over))
-
-        return self.pp_targets
-
-    def __reset_prepped_targets(self):
-        self.pp_targets=None
 
     #
     # A slew of convenient setters/getters
     #
-    def get_targets(self):
+    def __get_targets(self):
         """Returns match targets as a set"""
-        return self.targets
+        return self.__targets
 
-    def set_targets(self,val):
+    def __set_targets(self,val):
         if val is None or len(val)==0:
-            self.targets=set()
+            self.__targets = dict()
         else:
             for v in val:
                 self.add_target(v)
-        
-        self.__reset_prepped_targets()
-    
-    def get_ignore_prefixes(self):
+    targets=property(__get_targets,__set_targets)
+
+    def __get_ignore_prefixes(self):
         """Return ignore prefixes as a set"""
-        with self.lock:
-            pres=self.prefix_map.keys()
+        with self.__lock:
+            pres=self.__ignore_prefixes
         return pres
 
-    def set_ignore_prefixes(self,val):
+    def __set_ignore_prefixes(self, val):
         """Takes a sequence of prefix strings"""
         # case of full remove
         if val is None or len(val)==0: 
-            with self.lock:
-                self.prefix_map=dict()
+            with self.__lock:
+                self.__ignore_prefixes = list()
                 return
 
-        for v in val:
-            self.add_ignore_prefix(v)
-
-
-    def add_target(self,val):
-        # standard empty cases... should be a method on string...
-        if val is None: return
+        for v in val[:-1]:
+            self.add_ignore_prefix(v,prep=False)
+        # add the last one with sort turned on
+        self.add_ignore_prefix(val[-1:],prep=True)
+    ignore_prefixes=property(__get_ignore_prefixes,__set_ignore_prefixes)
+            
+    def add_target(self, val):
+        if val is None:
+            return
 
         # check for something that we interpet as (target,data)
-        target=val
-        data=None
-        if isinstance(val, tuple):
-            target,data=val
+        target,data = (val if isinstance(val, tuple) else (val, None))
+        target = ('' if target is None else unicode(target).strip())
+        if len(target)==0: 
+            return
 
-        target=target.strip()
-        if len(target)==0: return
+        with self.__lock:
+            self.__targets[target]=data
 
-        with self.lock:
-            self.targets.add(target)
-            self.target_data[target]=data
+    def add_ignore_prefix(self,val,prep=True):
+        val=('' if val is None else val.strip())
+        if len(val)==0:
+            return
 
-        self.__reset_prepped_targets()
+        with self.__lock:
+            self.__ignore_prefixes.append(val)
+            if prep:
+                self.__prep_prefixes()
 
-    def add_ignore_prefix(self,val):
-        with self.lock:
-            if val in self.prefix_map: return
-            self.prefix_map[val]=\
-                re.compile(ur'^%s\s*(.*)' % re.escape(val),\
-                               re.IGNORECASE)
-        self.__reset_prepped_targets()
-
-    def remove_target(self,val):
+    def remove_ignore_prefix(self, val, prep=True):
         """Returns 'True' if removed, 'False' if not in the set"""
-        with self.lock:
+        with self.__lock:
             try:
-                self.targets.remove(val)
+                self.__ignore_prefixes.remove(val)
             except KeyError:
                 return False
-            
-        self.__reset_prepped_targets()
+            if prep:
+                self.__prep_prefixes()
         return True
 
-    def remove_ignore_prefix(self,val):
+    def __prep_prefixes(self):
+        # sort longest to shortest
+        self.__ignore_prefixes.sort(lambda x,y: len(y)-len(x))
+        # and make the regex pattern
+        ppats=[ur'(?:%s)' % re.escape(p) \
+                   for p in self.__ignore_prefixes]
+        self.__ignore_prefix_pattern = '(%s)' % u'|'.join(ppats)
+
+    def remove_target(self, val):
         """Returns 'True' if removed, 'False' if not in the set"""
-        with self.lock:
+        with self.__lock:
             try:
-                del self.prefix_map[val]
+                del self.__targets[unicode(val).strip()]
             except KeyError:
                 return False
-        
-        self.__reset_prepped_targets()
         return True
 
 
@@ -249,11 +204,14 @@ if __name__ == "__main__":
     src='mr'
 
     if len(sys.argv)>1:
-        targ=sys.argv[1]
+        targ = sys.argv[1]
 
-    src=sys.argv[1]
+    src = sys.argv[1]
 
-    targets=['jeff','john','jimmy','mary','mr. smith','mr. smuthers','mrs. smith',('mr. smith-edwards*','foo'),'mr. jones']
+    targets = ['jeff','john','jimmy','mary',
+             'mr. smith','mr. smuthers',
+             'mrs. smith',('mr. smith-edwards*','foo'),
+             'mr. jones']
 #    targets=['mr. smith', 'mr. jones']
-    bm=BestMatch(targets,['mr.','mrs.'])
+    bm = BestMatch(targets,['mr.','mrs.'])
     print "found: %s" %  bm.match(src,with_data=True)
