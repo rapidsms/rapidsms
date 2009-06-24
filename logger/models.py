@@ -13,6 +13,7 @@ class MessageBase(models.Model):
     # this isn't modular
     # but it's optional and saves some ridiculous querying for smsforum frontpage
     domain = models.ForeignKey(NodeSet,null=True)
+    annotation = models.CharField(max_length=255,blank=True)
     
     def __unicode__(self):
         return "%s (%s) %s" % (self.identity, self.backend, self.text)
