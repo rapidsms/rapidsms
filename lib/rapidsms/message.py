@@ -33,7 +33,7 @@ class Message(object):
         self.processed = False
     
     def __unicode__(self):
-        return self.text
+        return unicode(self.text)
 
     @property
     def connection(self):
