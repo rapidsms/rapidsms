@@ -60,7 +60,7 @@ class CodeSet(models.Model):
     An arbitrary set of codes with which messages can be tagged.
     e.g. category, state, flagged
     """
-    name = models.CharField(max_length = 64) 
+    name = models.CharField(max_length = 64, unique=True) 
 
 class Code(models.Model):
     """
@@ -68,8 +68,8 @@ class Code(models.Model):
     e.g. good/bad/ignore, open/inprogress/closed, flagged/not_flagged
     """
     set = models.ForeignKey(CodeSet, null=False)
-    name = models.CharField(max_length = 64) # e.g. sante, les droits humain, etc.
-    slug = models.CharField(max_length = 8) # e.g. san, dro, etc.
+    name = models.CharField(max_length = 64, unique=True) # e.g. sante, les droits humain, etc.
+    slug = models.CharField(max_length = 8, unique=True) # e.g. san, dro, etc.
     
     def __unicode__(self):
         return "%(name)s" % { 'name':self.name }
@@ -85,24 +85,23 @@ class MessageTag(models.Model):
     def __unicode__(self):
         return "%(message)s: %(tag)s" % { 'message':self.message, 'tag':self.code }
 
-"""
 class MessageAnnotation(models.Model):
-    ""
+    """
     A dynamic way of associating messages with free-form annotations
     without requiring that all messages be annotated
-    ""
+    """
     message = models.ForeignKey(IncomingMessage)
-    annotation = models.CharField(max_length=255,blank=True)
+    text = models.CharField(max_length=255,blank=True)
 
     def __unicode__(self):
         return "%(message)s: %(annotation)s" % { 'message':self.message, 'annotation':self.annotation }
-"""
 
+""" 
 class MessageAnnotation(models.Model):
-	""" 
+    "" 
     Less dynamic (but still) optional way we're doing annotations for now 
     to make querying easier and more streamlined 
-    """
+    ""
     message = models.OneToOneField(IncomingMessage)
     text = models.CharField(max_length=255, blank=True)
     code = models.ForeignKey(Code, null=True)
@@ -110,10 +109,7 @@ class MessageAnnotation(models.Model):
 
     def __unicode__(self):
         return unicode(self.text)
-    
-    def is_empty(self):
-        return len(self.text)==0 and self.code is None and self.flagged is None 
-
+"""
 
 
 
