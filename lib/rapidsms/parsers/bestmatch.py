@@ -28,6 +28,7 @@ class MultiMatch(object):
         for m in self.matchers:
             matches.update(m.match(src, **kwargs))
         return list(matches)
+
         
 class BestMatch(object):
     def __init__(self, targets=None, ignore_prefixes=None):
@@ -63,7 +64,7 @@ class BestMatch(object):
         if src is None or self.__targets is None or len(self.__targets)==0:
             return []
 
-        src = unicode(src).strip()
+        src = src.strip()
         if len(src)==0:
             return []
             
@@ -119,11 +120,15 @@ class BestMatch(object):
         return self.__targets
 
     def __set_targets(self,val):
-        if val is None or len(val)==0:
+        # erase existing
+        with self.__lock:
             self.__targets = dict()
-        else:
-            for v in val:
-                self.add_target(v)
+
+        if val is None or len(val)==0:
+            return
+    
+        for v in val:
+            self.add_target(v)
     targets=property(__get_targets,__set_targets)
 
     def __get_ignore_prefixes(self):
@@ -134,16 +139,17 @@ class BestMatch(object):
 
     def __set_ignore_prefixes(self, val):
         """Takes a sequence of prefix strings"""
-        # case of full remove
+        # erase existing
+        with self.__lock:
+            self.__ignore_prefixes = list()
+          
         if val is None or len(val)==0: 
-            with self.__lock:
-                self.__ignore_prefixes = list()
-                return
+            return
 
         for v in val[:-1]:
             self.add_ignore_prefix(v,prep=False)
         # add the last one with sort turned on
-        self.add_ignore_prefix(val[-1:],prep=True)
+        self.add_ignore_prefix(val[-1],prep=True)
     ignore_prefixes=property(__get_ignore_prefixes,__set_ignore_prefixes)
             
     def add_target(self, val):
@@ -152,7 +158,7 @@ class BestMatch(object):
 
         # check for something that we interpet as (target,data)
         target,data = (val if isinstance(val, tuple) else (val, None))
-        target = ('' if target is None else unicode(target).strip())
+        target = ('' if target is None else target.strip())
         if len(target)==0: 
             return
 
