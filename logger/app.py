@@ -22,6 +22,7 @@ class App(rapidsms.app.App):
         # cast connection as string so pysqlite doesnt complain
         msg = OutgoingMessage.objects.create(identity=message.connection.identity, text=message.text, 
                                              backend=message.connection.backend.slug)
-        self.debug(msg)
+        self.debug(msg.text)
         # inject this id into the message object.
         message.logger_id = msg.id;
+

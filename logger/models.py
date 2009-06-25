@@ -17,7 +17,7 @@ class MessageBase(models.Model):
     domain = models.ForeignKey(NodeSet,null=True)
     
     def __unicode__(self):
-        return "%s (%s) %s" % (self.identity, self.backend, self.text)
+        return u'%s (%s) %s' % (self.identity, self.backend, self.text)
     
     class Meta:
         abstract = True
@@ -38,7 +38,7 @@ class IncomingMessage(MessageBase):
         return True
     
     def __unicode__(self):
-        return "%s %s" % (MessageBase.__unicode__(self), self.received)  
+        return u"%s %s" % (MessageBase.__unicode__(self), self.received)
 
 class OutgoingMessage(MessageBase):
     sent = models.DateTimeField(auto_now_add=True)
@@ -52,8 +52,7 @@ class OutgoingMessage(MessageBase):
         return False
     
     def __unicode__(self):
-        return "%s %s" % (MessageBase.__unicode__(self), self.sent)  
-
+        return u"%s %s" % (MessageBase.__unicode__(self), self.sent)
 
 class CodeSet(models.Model):
     """
@@ -72,7 +71,7 @@ class Code(models.Model):
     slug = models.CharField(max_length = 8, unique=True) # e.g. san, dro, etc.
     
     def __unicode__(self):
-        return "%(name)s" % { 'name':self.name }
+        return u"%(name)s" % { 'name':self.name }
 
 class MessageTag(models.Model):
     """
@@ -83,7 +82,7 @@ class MessageTag(models.Model):
     code = models.ForeignKey(Code)
 
     def __unicode__(self):
-        return "%(message)s: %(tag)s" % { 'message':self.message, 'tag':self.code }
+        return u"%(message)s: %(tag)s" % { 'message':self.message, 'tag':self.code }
 
 class MessageAnnotation(models.Model):
     """
@@ -94,7 +93,7 @@ class MessageAnnotation(models.Model):
     text = models.CharField(max_length=255,blank=True)
 
     def __unicode__(self):
-        return "%(message)s: %(annotation)s" % { 'message':self.message, 'annotation':self.annotation }
+        return u"%(message)s: %(annotation)s" % { 'message':self.message, 'annotation':self.annotation }
 
 """ 
 class MessageAnnotation(models.Model):
@@ -110,6 +109,5 @@ class MessageAnnotation(models.Model):
     def __unicode__(self):
         return unicode(self.text)
 """
-
 
 
