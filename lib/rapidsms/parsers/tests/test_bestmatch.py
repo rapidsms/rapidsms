@@ -30,17 +30,11 @@ class TestBestMatch(unittest.TestCase):
     
     def setUp(self):
         self.cityM=BestMatch(city_targets)
-        self.cmdM=BestMatch(command_targets)    
+        self.cmdM=BestMatch(command_targets)
         self.restoM=BestMatch(resto_targets)    
         self.simiM=BestMatch(similar_targets)
-
-    def testExactMatch(self):
-        print "EXACT MATCHING"
-        print "Find 'bob'"
-        res=self.simiM.match('bob')
-        self.assertTrue(len(res)==1 and res[0]=='bob')
-
-    def testBasicMatch(self):
+        
+    def test01BasicMatch(self):
         print "BASIC MATCHING"
         print "Find 'join'"
         res=self.cmdM.match('join')
@@ -76,13 +70,19 @@ class TestBestMatch(unittest.TestCase):
         res=self.cmdM.match('l')
         self.assertTrue(set(res)==set(['later','leave']))
 
-    def testUnAnchored(self):
+    def test02ExactMatch(self):
+        print "EXACT MATCHING"
+        print "Find 'bob'"
+        res=self.simiM.match('bob')
+        self.assertTrue(len(res)==1 and res[0]=='bob')
+
+    def test03UnAnchored(self):
         print "UNANCHORED SEARCH"
         res=self.cityM.match('field',anchored=False)
         print "Unanchored search for 'field': %s" % ','.join(res)
         self.assertTrue(set(res)==set(['springfield','westfield']))
 
-    def testPrefixMatch(self):
+    def test04PrefixMatch(self):
         print "IGNORE PREFIX MATCHING"
         res=self.restoM.match('panisse',anchored=True)
         print "Unprefixed search for 'panisse': %s" % ','.join(res)
@@ -90,6 +90,7 @@ class TestBestMatch(unittest.TestCase):
 
         print "Add prefix 'chez'"
         self.restoM.add_ignore_prefix('chez')
+
         res=self.restoM.match('panisse',anchored=True)
         print "Prefixed search for 'panisse': %s" % ','.join(res)
         self.assertTrue(len(res)==1 and res[0]=='chez panisse')
@@ -100,6 +101,7 @@ class TestBestMatch(unittest.TestCase):
 
         print "Add 'hotel' to prefix list"
         self.restoM.add_ignore_prefix('hotel')
+
         res=self.restoM.match('lando',anchored=True)
         print "Prefixed search for 'lando': %s" % ','.join(res)
         self.assertTrue(set(res)==set(['chez lando','hotel lando']))
@@ -110,9 +112,9 @@ class TestBestMatch(unittest.TestCase):
         print "Prefixed search for 'burger': %s" % ','.join(res)
         self.assertTrue(set(res)==set(resto_targets[-3:]))
 
-    def testWithData(self):
+    def test05WithData(self):
         print "TARGETS WITH DATA"
-        self.cmdM.set_targets(zip(command_targets,command_data))
+        self.cmdM.targets=zip(command_targets,command_data)
 
         print "Retrieve function for data"
         res=self.cmdM.match('j',with_data=True)
@@ -129,6 +131,35 @@ class TestBestMatch(unittest.TestCase):
         print "Retrieve dict"
         res=self.cmdM.match('cr',with_data=True)
         self.assertTrue(res[0][1]['key']=='value')
+
+    def test06AddRemoveTargets(self):
+        print 'Add Buffalo'
+        self.cityM.add_target('buffalo')
+        res = self.cityM.match('buf')
+        self.assertTrue(len(res)==1 and res[0]=='buffalo')
+
+        res = self.cityM.match('new')
+        self.assertTrue(set(res)==set(['newton','newberry','new orleans']))
+
+        print 'Remove Buffalo'
+        self.cityM.remove_target('buffalo')
+        res = self.cityM.match('buf')
+        self.assertTrue(len(res)==0)
+
+        print "Add prefix 'new'"
+        self.cityM.add_ignore_prefix('new')
+        res = self.cityM.match('ton')
+        self.assertTrue(len(res)==1 and res[0]=='newton')
+
+        print "Remove prefix 'new'"
+        self.cityM.remove_ignore_prefix('new')
+        res = self.cityM.match('ton')
+        self.assertTrue(len(res)==0)
+
+        print "Add target with data. (buffalo, rocks)"
+        self.cityM.add_target(('buffalo','rocks'))
+        res = self.cityM.match('buf',with_data=True)
+        self.assertTrue(len(res)==1 and res[0]==('buffalo','rocks'))
 
 if __name__ == '__main__':
     unittest.main()

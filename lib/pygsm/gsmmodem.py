@@ -1,19 +1,23 @@
 #!/usr/bin/env python
-# vim: ai ts=4 sts=4 et sw=4
+# vim: ai ts=4 sts=4 et sw=4 encoding=utf8
 
 
 from __future__ import with_statement
 
+
+# arch: pacman -S python-pyserial
+# debian/ubuntu: apt-get install python-serial
+import serial
+
+# debian/ubuntu: apt-get install python-tz
+import pytz 
+
 import re, datetime, time
 import errors, message
 import traceback
-import StringIO
 import threading
 import codecs
-
-# arch: pacman -S python-pyserial
-# debian: apt-get install pyserial
-import serial
+import gsmcodecs
 
 # Constants
 CMGL_STATUS="REC UNREAD" 
@@ -215,7 +219,7 @@ class GsmModem(object):
         self.command("AT+WIND=0", raise_errors=False) # disable notifications
         # switch to text mode, and make sure it's a mode that handles
         # latin characters
-        self.command('AT+CSCS="PCCP437"'            ) # Default on multitechs. We REALLY should support 'GSM'
+        self.command('AT+CSCS="HEX"'                ) # Default encoding for serial line comm
         self.command("AT+CMGF=1"                    ) # switch to TEXT mode
 
         # enable new message notification
@@ -356,6 +360,7 @@ class GsmModem(object):
 
 
     SCTS_FMT = "%y/%m/%d,%H:%M:%S"
+    
 
     def _parse_incoming_timestamp(self, timestamp):
         """Parse a Service Center Time Stamp (SCTS) string into a Python datetime
@@ -366,7 +371,7 @@ class GsmModem(object):
         # in 15-minute intervals (?!), which is not handled by
         # python's datetime lib. if _this_ timezone does, chop
         # it off, and note the actual offset in minutes
-        tz_pattern = r"\-(\d+)$"
+        tz_pattern = r"[-+](\d+)$"
         m = re.search(tz_pattern, timestamp)
         if m is not None:
             timestamp = re.sub(tz_pattern, "", timestamp)
@@ -380,7 +385,7 @@ class GsmModem(object):
         # a time_struct, and convert it into a datetime object
         try:
             time_struct = time.strptime(timestamp, self.SCTS_FMT)
-            dt = datetime.datetime(*time_struct[:6])
+            dt = datetime.datetime(*time_struct[:6], tzinfo=pytz.utc)
 
             # patch the time to represent LOCAL TIME, since
             # the datetime object doesn't seem to represent
@@ -391,6 +396,7 @@ class GsmModem(object):
         # a format the pyGSM doesn't support. this sucks, but isn't
         # important enough to explode like RubyGSM does
         except ValueError:
+            traceback.print_exc()
             return None
 
 
@@ -497,36 +503,29 @@ class GsmModem(object):
 
 
     def _add_incoming(self, timestamp, sender, text):
+        if text is None or len(text)==0:
+            self._log("Blank inbound text, ignore")
+
         # try to decode inbound message
         try:
-            # HACK ALERT: Multitechs return HEX for any UTF16 data
-            # in a message _despite_ setting the encoding via
-            # CSCS. There's no good way to determine this other
-            # than checking and seeing if it _looks_ like UTF16.
-            #
-            # Unforuntately, Adam's full heuristic fails because
-            # the hex does NOT include the UTF16 BOM! 
-            #
-            # So, I check for divisible by 4 and contains ONLY
-            # 0-9e-f which means if you text the message 'aaaa'
-            # this will catch and garble it!!
-            #
-            if len(text)>0 and (len(text) % 4==0):
-                if HEX_MATCHER.match(text.lower()):
-                    # decode hex UTF16
-                    text = text.decode('hex').decode('utf_16_be')
-            else:
-                # should be normal 7-bit text
-                text=text.decode('cp437')
-
+            # careful not to overwrite 'text'
+            # keep it clean in case we decode it in the
+            # except block
+            decoded_text=text.decode('hex')
+            decoded_text=decoded_text.decode('gsm')
         except:
-            # I don't think this is possible... it will always 
-            # be interpreted, even if wrong
-            return None
+            bom=text[0:4]
+            if bom==codecs.BOM_UTF16_LE.encode('hex') or \
+                    bom==codecs.BOM_UTF16_BE.encode('hex'):
+                codec='utf_16'
+            else:
+                codec='utf_16_be'
+            decoded_text=text.decode('hex')
+            decoded_text=decoded_text.decode(codec)
 
         # create and store the IncomingMessage object
         time_sent = self._parse_incoming_timestamp(timestamp)
-        msg = message.IncomingMessage(self, sender, time_sent, text)
+        msg = message.IncomingMessage(self, sender, time_sent, decoded_text)
         self.incoming_queue.append(msg)
         return msg
 
@@ -653,40 +652,22 @@ class GsmModem(object):
             try:
                 # try to catch write timeouts
                 try:
-                    # try for casting unicode
+                    # try for attempting to down-code to gsm char table
                     try:
-                        text = text.encode("cp437")
-                        print "text: %s" % text
-                    except UnicodeEncodeError as uerr:
+                        coded_text=text.encode('gsm')
+                        coded_text=coded_text.encode('hex')
+                        enc='0'
+                    except:
                         # uh-oh, not in standard 'latin' characters
                         # this message will require UTF16 (big endian)
-                        # TODO: Check for length!!
+                        coded_text=text.encode('utf_16_be')
+                        coded_text=coded_text.encode('hex')
+                        enc='8'
 
-                        # fetch and store the current mode (so we can
-                        # restore it later), and override it with UCS2
-                        try:
-                            csmp = self.query("AT+CSMP?", "+CSMP:")
-                        except:
-                            traceback.print_exc()
-
-                        if csmp is not None:
-                            old_mode = csmp.split(",")
-                            mode = old_mode[:]
-                            mode[3] = "8"
-
-                        # enable hex mode, and set the encoding
-                        # to UCS2 for the full character set
-                        self.command('AT+CSCS="HEX"')
-                        self.command("AT+CSMP=%s" % ",".join(mode))
-                        text = text.encode('utf_16_be').encode('hex')
-
-                    # initiate the sms, and give the device a second
-                    # to raise an error. unfortunately, we can't just
-                    # wait for the "> " prompt, because some modems
-                    # will echo it FOLLOWED BY a CMS error
+                    csmp_code="17,167,0,"+enc
+                    self.command("AT+CSMP=%s" % csmp_code)
                     result = self.command(
-                        'AT+CMGS=\"%s\"' % (recipient),
-                        read_timeout=1)
+                        'AT+CMGS="%s"' % (recipient),read_timeout=1)
 
                 # if no error is raised within the timeout period,
                 # and the text-mode prompt WAS received, send the
@@ -695,7 +676,7 @@ class GsmModem(object):
                 # "SUBSTITUTE" (ctrl+z)), and return True (message sent)
                 except errors.GsmReadTimeoutError, err:
                     if err.pending_data[0] == ">":
-                        self.command(text, write_term=chr(26))
+                        self.command(coded_text, write_term=chr(26))
                         return True
 
                     # a timeout was raised, but no prompt nor
@@ -705,11 +686,7 @@ class GsmModem(object):
                         raise
 
                 finally:
-                    # if the mode was overridden above, (if this
-                    # message contained unicode), switch it back
-                    if old_mode is not None:
-                        self.command('AT+CSCS="PCCP437"')
-                        self.command("AT+CSMP=%s" % ",".join(old_mode))
+                    pass
                         
             # for all other errors...
             # (likely CMS or CME from device)
@@ -801,7 +778,7 @@ class GsmModem(object):
         lines = self._strip_ok(self.command('AT+CMGL="%s"' % CMGL_STATUS))
         # loop through all the lines attempting to match CMGL lines (the header)
         # and then match NOT CMGL lines (the content)
-        # need to seed the loop first
+        # need to seed the loop first 'cause Python no like 'until' loops
         num_found=0
         if len(lines)>0:
             m=CMGL_MATCHER.match(lines[0])
@@ -821,17 +798,17 @@ class GsmModem(object):
 
             # now loop through, popping content until we get
             # the next CMGL or out of lines
-            msg_buf=StringIO.StringIO()
+            msg_text=list()
             while len(lines)>0:
                 m=CMGL_MATCHER.match(lines[0])
                 if m is not None:
                     # got another header, get out
                     break
                 else:
-                    msg_buf.write(lines.pop(0))
+                    msg_text.append(lines.pop(0))
 
             # get msg text
-            msg_text=msg_buf.getvalue().strip()
+            msg_text=''.join(msg_text)
 
             # now create message
             self._add_incoming(timestamp,sender,msg_text)
@@ -909,8 +886,8 @@ if __name__ == "__main__":
             # something useless, as an example
             if msg is not None:
                 print "Got Message: %r" % msg
-                msg.respond("Thanks for those %d characters!" %
-                    len(msg.text))
+                msg.respond("Received: %d characters '%s'" %
+                    (len(msg.text),msg.text))
 
             # no messages? wait a couple
             # of seconds and try again
