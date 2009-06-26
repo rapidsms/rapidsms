@@ -1,4 +1,4 @@
-# vim: ai ts=4 sts=4 et sw=4 encoding=utf8
+# vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
 
 """ Python Character Mapping Codec based on gsm0338 generated from './GSM0338.TXT' with gencodec.py.
     
