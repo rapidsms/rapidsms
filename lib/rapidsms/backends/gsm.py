@@ -14,11 +14,14 @@ POLL_INTERVAL=2 # num secs to wait between checking for inbound texts
 class Backend(Backend):
     _title = "pyGSM"
     
-    
+    def _log(self, modem, msg, level):
+        self.router.log(level, msg)
+
     def configure(self, *args, **kwargs):
         self.modem = None
         self.modem_args = args
         self.modem_kwargs = kwargs
+        self.modem_kwargs['logger'] = self._log
     
     def send(self, message):
         self.modem.send_sms(
