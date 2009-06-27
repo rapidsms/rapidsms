@@ -11,12 +11,11 @@
 # backends=[backend1,backend2,...]  * comma-separated list of backends to load
 
 [rapidsms]
-apps=webui,admin,httptester,logger,smsforum,nodegraph,contacts,locations
-# messeging,bednets,form,patterns,stringcleaning,training,supply,tree,poll,echo,responder
+apps=webui,admin,httptester,smsforum,nodegraph,contacts,logger
+#apps=nodegraph
 backends=http,gsm
+#,gsm
 
-# -- DATABASE
-#
 # Database configuration info.
 #
 # engine={sqlite3,mysql,postgresql,oracle,postgresql_psycopg2}  * defaults to sqlite3
@@ -43,7 +42,7 @@ password=
 
 [log]
 level=debug
-file=/var/log/rapidsms.log
+file=/var/log/rapidsms/rapidsms.log
 
 # -- APPS
 #
@@ -51,28 +50,6 @@ file=/var/log/rapidsms.log
 # must be listed under the section [rapidsms] in "apps". If no configuration is
 # listed for your app it will use the default parameters. However, if you wish to
 # run two apps of the same type, you MUST define configure them explicitly here.
-
-#[alpha]
-#beginning=yes
-#end=no
-
-# -- BACKENDS
-#
-# In this area you can define configurations for individual backends. The backend
-# must be listed under the section [rapidsms] in "backends". If no configuration is
-# listed for your backend it will use the default parameters. However, if you wish to
-# run two backends of the same type, you MUST define configure them explicitly here.
-
-#[irc]
-#nick=rapidsms-default
-#host=
-#port=
-#channels=
-
-#[spomc]
-#type=spomc
-#port=9000
-
 [httptester]
 host=localhost
 port=8080
@@ -81,7 +58,21 @@ port=8080
 anon_perms = ['bednets.can_view']
 #login_redirect_url=/
 
+
+# -- BACKENDS
+#
+# In this area you can define configurations for individual backends. The backend
+# must be listed under the section [rapidsms] in "backends". If no configuration is
+# listed for your backend it will use the default parameters. However, if you wish to
+# run two backends of the same type, you MUST define configure them explicitly here.
 [gsm]
 port=/dev/ttyUSB0
 baudrate=115200
 rtscts=1
+modem_log=/var/log/rapidsms/gsmmodem.log
+modem_log_level=debug
+
+[http]
+port=8080
+
+
