@@ -9,6 +9,7 @@ from rapidsms.message import Message
 from rapidsms.connection import Connection
 from rapidsms.backends import Backend
 import backend
+from rapidsms import log
 
 POLL_INTERVAL=2 # num secs to wait between checking for inbound texts
 LOG_LEVEL_MAP = {
@@ -26,12 +27,27 @@ class Backend(Backend):
     def _log(self, modem, msg, level):
         # convert GsmModem levels to levels understood by
         # the rapidsms logger
-        self.router.log(LOG_LEVEL_MAP[level], msg)
+        level = LOG_LEVEL_MAP[level]
+        
+        if self.modem_logger is not None:
+            self.modem_logger.write(self,level,msg)
+        else:
+            self.router.log(level, msg)
 
     def configure(self, *args, **kwargs):
         self.modem = None
         self.modem_args = args
         self.modem_kwargs = kwargs
+
+        # make a modem log
+        self.modem_logger = None
+        if 'modem_log' in  kwargs:
+            mlog = kwargs.pop('modem_log')
+            level='info'
+            if 'modem_log_level' in kwargs:
+                level=kwargs.pop('modem_log_level')
+            self.modem_logger = log.Logger(level=level, file=mlog, channel='pygsm')
+
         self.modem_kwargs['logger'] = self._log
     
     def send(self, message):
