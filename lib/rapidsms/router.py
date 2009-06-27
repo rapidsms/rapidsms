@@ -14,14 +14,14 @@ import log
 #
 
 _G={
-    'router':None
+    'router': None
 }
 
 def get_router():
-    router=_G['router']
+    router = _G['router']
     if router==None:
-        router=Router()
-        _G['router']=router
+        router = Router()
+        _G['router'] = router
     return router
 
 class Router (component.Receiver):
