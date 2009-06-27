@@ -47,6 +47,21 @@
 			<div id="inner">
 				{% block content %}{% endblock %}
 			</div>
+
+			<!-- TODO: find a pretty place to put this -->
+			<div style="float:right">
+			<form action="/i18n/setlang/" method="post">
+			    <select name="language">
+			    {% for lang in LANGUAGES %}
+			      <option value="{{ lang.0 }}" 
+			      {% ifequal LANGUAGE_CODE lang.0 %}selected{% endifequal %}>
+			      {{ lang.1 }}</option>
+			    {% endfor %}
+			    </select>
+			<input type="submit" value="Go" />
+			</form>
+			</div>
+
 			{% block footer %}
 			<div id="footer">
 				<p class="rights">
