@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# vim: ai ts=4 sts=4 et sw=4
+# vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
 
 import os, time
 
@@ -16,10 +16,13 @@ MANAGERS = ADMINS
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 TIME_ZONE = time.tzname[0]
 
-
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
-LANGUAGE_CODE = 'en-us'
+
+LANGUAGES = (
+   ('fr', ('Francais')),
+   ('en', ('English')),
+)
 
 SITE_ID = 1
 
