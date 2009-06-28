@@ -16,6 +16,7 @@ class App(rapidsms.app.App):
     
     def handle(self, message):
         self.debug("got message %s" % (message))
+        return False
         
     def outgoing(self, message):
         pass
