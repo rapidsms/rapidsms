@@ -4,9 +4,7 @@ Run this function with various tranlsation files (typically *.po from gettext)
 and it will check whether they can be gsm-encoded
 """
 from __future__ import with_statement
-import sys
-import os
-import io
+import sys, os
 import codecs
 
 # hack to get paths working - we should use django's runscript instead
@@ -23,13 +21,14 @@ def check_gsm(arg):
         file_name = os.path.join(CUR_DIR,arg)
         with codecs.open(file_name,'r', encoding='utf-8') as fin:
           for line in fin:
-            line.encode('gsm')
             line_count = line_count+1
-    except UnicodeEncodeError:
-        print "%s does NOT pass gsm encoding!" % arg
-        print "failed on line %d" % line_count
+            line.encode('gsm')
+    except UnicodeEncodeError as e:
+        print "FAILS GSM ENCODING (%s)!" % arg
+        print "Failed on line %d" % line_count
+        print e
         return
-    print "%s passes gsm encoding" % arg
+    print "PASSES gsm encoding (%s)" % arg
 
 def main():
     # parse command line options
