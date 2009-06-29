@@ -520,9 +520,16 @@ class GsmModem(object):
                 codec='utf_16'
             else:
                 codec='utf_16_be'
-            decoded_text=text.decode('hex')
-            decoded_text=decoded_text.decode(codec)
-
+            try:
+                # odd-length string type exception is sometimes thrown when
+                # receiving messages longer than 160 characters
+                decoded_text=text.decode('hex')
+                decoded_text=decoded_text.decode(codec)
+            except TypeError:
+                self._log("TypeError: odd-length string, ignore")
+                # TODO: right now we swallow these kind of rare exceptions
+                # should report back to rapidsms ui properly!!!
+                return None
         # create and store the IncomingMessage object
         time_sent = self._parse_incoming_timestamp(timestamp)
         msg = message.IncomingMessage(self, sender, time_sent, decoded_text)
