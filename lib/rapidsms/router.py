@@ -200,11 +200,11 @@ class Router (component.Receiver):
     specified time with the same arguments.
     """
     def call_at (self, when, callback, *args, **kwargs):
-        if isinstance(object, datetime.timedelta):
-            when = datetime.now() + when
-        if isinstance(object, datetime.datetime):
+        if isinstance(when, datetime.timedelta):
+            when = datetime.datetime.now() + when
+        if isinstance(when, datetime.datetime):
             when = time.mktime(when.timetuple())
-        elif isinstance(object, (int, float)):
+        elif isinstance(when, (int, float)):
             when = time.time() + when
         else:
             self.debug("Call to %s wasn't scheduled with a suitable time: %s",
@@ -283,7 +283,7 @@ class Router (component.Receiver):
                 callback.func_name, args, kwargs)
             result = callback(*args, **kwargs)
             if result:
-                self.call_at(result, callback, args, kwargs)
+                self.call_at(result, callback, *args, **kwargs)
     
     def __sorted_apps(self):
         return sorted(self.apps, key=lambda a: a.priority())
@@ -350,10 +350,3 @@ class Router (component.Receiver):
         self.debug("SENT message '%s' to %s via %s" % (message.text,\
 			message.connection.identity, message.connection.backend.slug))
         return True
-
-    def get_backend (self, name):
-        backends = [b for b in self.backends if b.name == name]
-        if backends:
-            return backends[0]
-        else:
-            self.error("Unknown backend requested: %s", name)
