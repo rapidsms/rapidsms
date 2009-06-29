@@ -135,7 +135,8 @@ class Config (object):
         
         # import the actual module, and add the path to the
         # config - it might not always be in rapidsms/apps/%s
-        data["path"] = self.__import_class(data["module"]).__path__[0]
+        module_obj = self.__import_class(data["module"])
+        if module_obj: data["path"] = module_obj.__path__[0]
         
         # return the component with the additional
         # app-specific data included.

@@ -10,7 +10,7 @@ class TestBackendIRC(unittest.TestCase):
         try:
             import irclib
             from rapidsms.backends.irc import Backend
-            backend = Backend("irc", router)
+            backend = Backend(router)
             backend.configure(host="localhost",nick="test",channels="#test1,#test2")
             self.assertEquals(type(backend), Backend, "IRC backend loads")
             self.assertEquals(backend.nick, "test", "IRC backend has nick set")
