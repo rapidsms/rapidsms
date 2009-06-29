@@ -4,7 +4,7 @@
 import rapidsms
 
 import models
-from models import OutgoingMessage, IncomingMessage
+from models import OutgoingMessage, IncomingMessage, MAX_LATIN_SMS_LEN
 
 class App(rapidsms.app.App):
     # save messages on 'parse' so that 
@@ -12,7 +12,10 @@ class App(rapidsms.app.App):
     def parse(self, msg):
         # make and save messages on their way in and 
         # cast connection as string so pysqlite doesnt complain
-        message = IncomingMessage.objects.create(identity=msg.connection.identity, text=msg.text,
+        text_to_save = msg.text
+        if len(msg.text) > MAX_LATIN_SMS_LEN:
+            text_to_save = msg.text[0:160]
+        message = IncomingMessage.objects.create(identity=msg.connection.identity, text=text_to_save,
             backend=msg.connection.backend.slug)
         msg.persistent_msg = message
         self.debug(message)

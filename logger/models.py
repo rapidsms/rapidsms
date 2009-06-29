@@ -5,8 +5,10 @@ import django
 from django.db import models
 from apps.nodegraph.models import NodeSet
 
+MAX_LATIN_SMS_LEN = 160 
+
 class MessageBase(models.Model):
-    text = models.CharField(max_length=160)
+    text = models.CharField(max_length=MAX_LATIN_SMS_LEN)
     # TODO save connection title rather than wacky object string?
     identity = models.CharField(max_length=150)
     backend = models.CharField(max_length=150)
