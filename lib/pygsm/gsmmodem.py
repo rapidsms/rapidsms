@@ -522,7 +522,7 @@ class GsmModem(object):
                 codec='utf_16_be'
             try:
                 # odd-length string type exception is sometimes thrown when
-                # receiving messages longer than 160 characters
+                # receiving messages that looks like "050032\x80\xec\x0c"
                 decoded_text=text.decode('hex')
                 decoded_text=decoded_text.decode(codec)
             except TypeError:
