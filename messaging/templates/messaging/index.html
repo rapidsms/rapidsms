@@ -2,16 +2,12 @@
 {% block title %}Messaging{% endblock %}
 {% load reporters %}
 
-{% block javascripts %}
-<script type="text/javascript" src="/static/webui/javascripts/jquery.cookie.yc.js"></script>
-{% endblock %}
-
 {% block content %}
 <div class="split">
 	<div class="left">
 		<div class="module recipients">
 			<h2>Select Recipients</h2>
-			<form class="search" action="" method="get">
+			<form class="search" action="" method="get"{% if not show_search %} style="display: none;"{% endif %}>
 				{% self_link_fields query field cmp  %}
 				<table>
 					<tbody>
@@ -53,7 +49,7 @@
 					</tr>
 				</thead>
 				<tbody class="recips{% if filtered %} filtered{% endif %}">{% for reporter in reporters.object_list %}
-					<tr uid="{{ reporter.pk }}" class="{% if reporter.is_hit %}hit{% endif %}">
+					<tr uid="{{ reporter.pk }}" class="{% if reporter.is_hit %}hit{% endif %} {% if reporter.is_checked %} checked{% endif %}">
 						<td class="check"></td>
 						<td>{{ reporter.full_name }}</td>
 						<td>{{ reporter.role }}</td>
@@ -82,6 +78,9 @@
 					</tr>
 				</tfoot>
 			</table>
+			<div class="toolbar">
+				<a class="search" href="{% self_link "search" 1 %}">Search</a>
+			</div>
     </div>
 	</div>
 	<div class="right">
@@ -110,6 +109,7 @@
 		var send_btn   = $("input.send",   content_div);
 		var cancel_btn = $("input.cancel", content_div);
 		
+		var tb_search  = $("div.module.recipients div.toolbar a.search");
 		
 		
 		
@@ -488,6 +488,15 @@
 			$.cookie("recip-error", null);
 			$.cookie("recip-sent", null);
 			update_all_rows();
+		});
+		
+		
+		/* when the "search" link is clicked, slide the
+		 * search form into view like the module-help
+		 * box (from rs-module-help.js) */
+		tb_search.click(function(ev) {
+			search_form.slideToggle();
+			ev.preventDefault();
 		});
 		
 		
