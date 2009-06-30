@@ -289,8 +289,9 @@ table {
 	
 		/* various common toolbar icons. should be from the
 		 * famfamfam silk set, to fit in with RapidSMS */
-		.module div.toolbar .add  { background-image: url("../icons/silk/add.png");  }
-		.module div.toolbar .help { background-image: url("../icons/silk/help.png"); }
+		.module div.toolbar .add    { background-image: url("../icons/silk/add.png");       }
+		.module div.toolbar .help   { background-image: url("../icons/silk/help.png");      }
+		.module div.toolbar .search { background-image: url("../icons/silk/magnifier.png"); }
 		
 		/* these seem to be from the tango
 		 * set... TODO: use silk! */
