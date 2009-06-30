@@ -62,6 +62,9 @@ class CodeSet(models.Model):
     e.g. category, state, flagged
     """
     name = models.CharField(max_length = 64, unique=True) 
+    
+    def __unicode__(self):
+        return unicode(self.name)
 
 class Code(models.Model):
     """
