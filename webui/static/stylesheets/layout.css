@@ -73,35 +73,47 @@ div.clear-hack {
 	position: relative;
 	color: #ccf;
 }
-	
+
+	#branding {
+		padding: 0 10px;
+	}
+
 	/* align in the middle of the
 	 * unicef blue stripe of header bg,
 	 * and display logo on the right */
 	#branding h1 {
-		background: url("../images/unicef.png") no-repeat 100% 50%;
-		line-height: 65px;
-		padding-left: 10px;
+		background: url("../images/unicef-logo.png") no-repeat 100% 50%;
+		height: 65px;
 		color: #fff;
 		margin: 0;
 	}
-	
+
 		/* ie6 can't seem to
 		 * figure this out */
 		* html #branding h1 {
 			width: 940px; }
-		
+
 		/* hide text title on login box;
 		 * it's too long (blows up form) */
 		body.login #branding h1 {
 			text-indent: -9999px; }
-		
+
 		#branding h1 a {
 			height: 65px;
+			width: 245px;
 			display: block;
-			text-indent: -9999px;
-			background: url("../images/rapidsms.png") no-repeat 0 50%;
+			background: url("../images/rapidsms-logo.png") no-repeat 0 50%;
+
+			/* float the RapidSMS logo, in case any
+			 * app would like to append anything */
+			float: left;
 		}
-	
+
+			#branding h1 a span {
+				position: absolute;
+				left: -9999px;
+			}
+
 	#tabs,
 	#page-tabs {
 		position: absolute;

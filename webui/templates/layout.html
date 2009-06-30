@@ -10,6 +10,7 @@
 		<!-- stylesheets -->
 		<link type="text/css" rel="stylesheet" href="/static/webui/stylesheets/layout.css" />
 		<link type="text/css" rel="stylesheet" href="/static/webui/stylesheets/modules.css" />
+		<link type="text/css" rel="stylesheet" href="/static/backends/stylesheets/global.css" />
 		{% block stylesheets %}{% endblock %}
 		
 		<!-- javascripts (global, app, page) -->
@@ -23,7 +24,11 @@
 			{% block header %}
 			<div id="header">
 				<div id="branding">
-					<h1><a title="Return to the Dashboard" href="/">RapidSMS</a></h1>
+					<h1>
+						<a title="Return to the Dashboard" href="/">
+							<span>RapidSMS</span>
+						</a>
+					</h1>
 				</div>
 				<ul id="tabs">{% for app in apps %}{% if app.tab_link %}
 					<li class="app-{{ app.type }}{% ifequal active_tab app.type %} active{% endifequal %}">
