@@ -10,11 +10,99 @@ import pytz
 import codecs
 import gsmcodecs
 
+max_gsm_text_len = 160
+max_csm_gsm_text_len = 152
+max_ucs2_text_len = 70
+max_csm_ucs2_text_len = 67
+max_csm_segments = 255
+
 class SmsParseException(Exception):
     pass
 
+class SmsEncodeExcpetion(Exception):
+    pass
 
-class GsmPdu():
+class GsmPdu(object):
+    pass
+
+class OutboundPdu(GsmPdu):
+    """
+    Formatted outbound PDU. Basically just
+    a struct.
+  
+    Don't instantiate directly! Use 'get_outbound_pdus()'
+    which will return a list of PDUs needed to
+    send the message
+
+    """
+    
+    def __init__(self, text, sender, csm_ref=None, csm_seq=None, csm_total=None):
+        self.sender_number = sender
+        self.text = text
+        self.is_csm = csm_ref is not None
+        self.csm_ref = csm_ref
+        self.csm_seq = csm_seq
+        self.csm_total = csm_total
+        
+        try:
+            self.encoded_text = self.text.encode('gsm')
+            self.encoding = 'gsm'
+        except:
+            self.encoded_text = self.text.encode('utf_16_be')
+            self.encoding='ucs2'
+
+        @property
+        def pdu_str(self):
+            if self.is_csm:
+                max = (max_csm_gsm_text_len if self.encoding=='gsm'
+                       else max_csm_ucs2_text_len)
+            else:
+                max = (max_gsm_text_len if self.encoding=='gsm'
+                       else max_ucs2_text_len)
+            
+            if len(text)>max:
+                raise SmsEncodeError('Text length too great')
+
+            # now put the PDU string together
+            # first octet is SMSC info, 00 means get from stored on SIM
+            pdu=['00'] 
+            # Next is 'SMS-SUBMIT First Octet' -- '11' means submit w/validity. 
+            # '51' means Concatendated SM w/validity
+            pdu.append('51' if self.is_cms else '11') 
+            # Next is 'message' reference. '00' means phone can set this
+            pdu.append('00')
+            # now sender number, first type
+            if self.sender_number[0]=='+':
+                num = self.sender_number[1:]
+                type = '91' # international
+            else:
+                num = self.sender_number
+                type = 'a8' # national number
+            
+            # length
+            num_len = len(num)
+            # twiddle it
+            num = _twiddle(num, False)
+            pdu.append(str(num)) # length
+            pdu.append(type)
+            pdu.append(num)
+            
+            # now protocol ID
+            pdu.append('00')
+            
+            # data coding scheme
+            pdu.append('00' if self.encoding=='gsm' else '08')
+
+            # validity period, just default to 4 days
+            pdu.append('aa')
+
+            # Now the fun part! User data length and User data
+            # If we are a CSM, user data length is encoded text+header
+            # otherwise it's just the text length. So first let's
+            # encode
+            
+                
+class ReceivedGsmPdu(GsmPdu):
     """
     A nice little class to parse a PDU and give you useful
     properties.
@@ -148,10 +236,11 @@ class GsmPdu():
                 # mod'd by 7 to git the number of leftover padding bits
                 padding=((7*udl) - (8*(udhl+1))) % 7
             else:
-                padding=0
+               padding=0
 
             # now decode
             self.text=_unpack_septets(pdu, padding).decode('gsm')
+
         else:
             # we are just good old UCS2
             # problem is, we don't necessarily know the byte order
@@ -295,25 +384,25 @@ def _read_ts(seq):
     # now add the delta--so we have a UTC time adjusted for the inbound info
     return dt_local+datetime.timedelta(hours=tz_offset)
 
+def _to_binary(n):
+    s = ""
+    for i in range(8):
+        s = ("%1d" % (n & 1)) + s
+        n >>= 1
+    return s
+
 def _unpack_septets(seq,padding=0):
-    """
+    """ 
     this function taken from:
     http://offog.org/darcs/misccode/desms.py
 
     Thank you Adam Sampson <ats@offog.org>!
-
     """
-    def tobinary(n):
-        s = ""
-        for i in range(8):
-            s = ("%1d" % (n & 1)) + s
-            n >>= 1
-        return s
 
     # Unpack 7-bit characters
     msgbytes,r = _consume_bytes(seq,len(seq)/2)
     msgbytes.reverse()
-    asbinary = "".join(map(tobinary, msgbytes))
+    asbinary = ''.join(map(_to_binary, msgbytes))
     if padding != 0:
         asbinary = asbinary[:-padding]
     chars = []
@@ -322,6 +411,27 @@ def _unpack_septets(seq,padding=0):
         asbinary = asbinary[:-7]
     return "".join(map(chr, chars))
 
+def _pack_septets(in_bytes, padding=0):
+    bytes=[]
+    bytes.extend(in_bytes)
+    bytes.reverse()
+    asbinary = ''.join([_to_binary(b)[1:] for b in bytes])
+    # add padding
+    for i in range(padding):
+        asbinary+='0'
+    
+    # zero extend last octet if needed
+    extra = len(asbinary) % 8
+    if extra>0:
+        for i in range(8-extra):
+            asbinary='0'+asbinary
+        
+    # convert back to bytes
+    bytes=[]
+    for i in range(0,len(asbinary),8):
+        bytes.append(int(asbinary[i:i+8],2))
+    bytes.reverse()
+    return bytes
 
 if __name__ == "__main__":
     # poor man's unit tests
@@ -334,7 +444,7 @@ if __name__ == "__main__":
         "0791448720003023440C91449703529096000050015132537240310500037A02025C4417D1D52422894EE5B17824BA8EC423F1483C129BC725315464118FCDE011247C4A8B44",
         "07914477790706520414D06176198F0EE361F2321900005001610013334014C324350B9287D12079180D92A3416134480E",
         "0791448720003023440C91449703529096000050016121855140A005000301060190F5F31C447F83C8E5327CEE0221EBE73988FE0691CB65F8DC05028190F5F31C447F83C8E5327CEE028140C8FA790EA2BF41E472193E7781402064FD3C07D1DF2072B90C9FBB402010B27E9E83E86F10B95C86CF5D2064FD3C07D1DF2072B90C9FBB40C8FA790EA2BF41E472193E7781402064FD3C07D1DF2072B90C9FBB402010B27E9E83E8",
-        "0791448720003023440C91449703529096000050016121850240A0050003010602DE2072B90C9FBB402010B27E9E83E86F10B95C86CF5D201008593FCF41F437885C2EC3E72E100884AC9FE720FA1B442E97E1731708593FCF41F437885C2EC3E72E100884AC9FE720FA1B442E97E17317080442D6CF7310FD0D2297CBF0B90B040221EBE73988FE0691CB65F8DC05028190F5F31C447F83C8E5327CEE028140C8FA790EA2BF41",
+         "0791448720003023440C91449703529096000050016121850240A0050003010602DE2072B90C9FBB402010B27E9E83E86F10B95C86CF5D201008593FCF41F437885C2EC3E72E100884AC9FE720FA1B442E97E1731708593FCF41F437885C2EC3E72E100884AC9FE720FA1B442E97E17317080442D6CF7310FD0D2297CBF0B90B040221EBE73988FE0691CB65F8DC05028190F5F31C447F83C8E5327CEE028140C8FA790EA2BF41",
         "0791448720003023440C91449703529096000050016121854240A0050003010603C8E5327CEE0221EBE73988FE0691CB65F8DC05028190F5F31C447F83C8E5327CEE028140C8FA790EA2BF41E472193E7781402064FD3C07D1DF2072B90C9FBB402010B27E9E83E86F10B95C86CF5D201008593FCF41F437885C2EC3E72E10B27E9E83E86F10B95C86CF5D201008593FCF41F437885C2EC3E72E100884AC9FE720FA1B442E97E1",
         "0791448720003023400C91449703529096000050016121858240A0050003010604E62E100884AC9FE720FA1B442E97E17317080442D6CF7310FD0D2297CBF0B90B040221EBE73988FE0691CB65F8DC0542D6CF7310FD0D2297CBF0B90B040221EBE73988FE0691CB65F8DC05028190F5F31C447F83C8E5327CEE028140C8FA790EA2BF41E472193E7781402064FD3C07D1DF2072B90C9FBB402010B27E9E83E86F10B95C86CF5D",
         "0791448720003023400C91449703529096000050016121853340A005000301060540C8FA790EA2BF41E472193E7781402064FD3C07D1DF2072B90C9FBB402010B27E9E83E86F10B95C86CF5D201008593FCF41F437885C2EC3E72E100884AC9FE720FA1B442E97E17317080442D6CF7310FD0D2297CBF0B90B84AC9FE720FA1B442E97E17317080442D6CF7310FD0D2297CBF0B90B040221EBE73988FE0691CB65F8DC05028190",

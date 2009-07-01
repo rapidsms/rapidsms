@@ -53,9 +53,8 @@ def _decode(input,errors='strict'):
             try:
                 out_uni.append(extended_decode_map[run[1]])
             except KeyError:
-                raise UnicodeDecodeError(\
-                    '\\%s not a GSM extended char' % \
-                        run[1].encode('hex'))
+                raise ValueError(\
+                    '\\x%s not a GSM extended char' % run[1].encode('hex'))
             consumed+=2 # we ate two inputs for one out
         else:
             # pass it to the standard encoder
@@ -100,7 +99,7 @@ class IncrementalDecoder(codecs.IncrementalDecoder):
             # last char in run is indicator
             if final:
                 # oops and indicator with nothing after?
-                raise UnicodeDecodeError('String ends on a multi-byte indicator')
+                raise ValueError('String ends on a multi-byte indicator')
             else:
                 # chop it off
                 input=input[:-1]

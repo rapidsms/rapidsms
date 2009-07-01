@@ -371,26 +371,31 @@ class GsmModem(object):
         # in 15-minute intervals (?!), which is not handled by
         # python's datetime lib. if _this_ timezone does, chop
         # it off, and note the actual offset in minutes
-        tz_pattern = r"[-+](\d+)$"
+        tz_pattern = r"([-+])(\d+)$"
         m = re.search(tz_pattern, timestamp)
         if m is not None:
             timestamp = re.sub(tz_pattern, "", timestamp)
-            tz_offset = datetime.timedelta(minutes=int(m.group(0)) * 15)
+            tz_offset = datetime.timedelta(minutes=int(m.group(2)) * 15)
+            if m.group(1)=='-':
+                tz_offset = -tz_offset
 
         # we won't be modifying the output, but
         # still need an empty timedelta to subtract
-        else: tz_offset = datetime.timedelta()
+        else: 
+            tz_offset = datetime.timedelta()
 
         # attempt to parse the (maybe modified) timestamp into
         # a time_struct, and convert it into a datetime object
         try:
             time_struct = time.strptime(timestamp, self.SCTS_FMT)
-            dt = datetime.datetime(*time_struct[:6], tzinfo=pytz.utc)
-
-            # patch the time to represent LOCAL TIME, since
-            # the datetime object doesn't seem to represent
-            # timezones... at all
-            return dt - tz_offset
+            dt = datetime.datetime(*time_struct[:6])
+            dt.replace(tzinfo=pytz.utc)
+           
+            # patch the time to represent UTC, since
+            dt-=tz_offset
+            print 'Date time: %s' % dt
+            return dt
+        
 
         # if the timestamp couldn't be parsed, we've encountered
         # a format the pyGSM doesn't support. this sucks, but isn't

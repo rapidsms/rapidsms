@@ -3,6 +3,7 @@
 
 
 import datetime
+import pytz
 
 
 class IncomingMessage(object):
@@ -18,7 +19,7 @@ class IncomingMessage(object):
         # assume that the message was
         # received right now, since we
         # don't have an incoming buffer
-        self._received = datetime.datetime.now()
+        self._received = datetime.datetime.utcnow().replace(tzinfo=pytz.utc)
 
 
     def __repr__(self):
