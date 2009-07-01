@@ -393,7 +393,6 @@ class GsmModem(object):
            
             # patch the time to represent UTC, since
             dt-=tz_offset
-            print 'Date time: %s' % dt
             return dt
         
 
@@ -702,7 +701,7 @@ class GsmModem(object):
                         
             # for all other errors...
             # (likely CMS or CME from device)
-            except Exception as err:
+            except Exception:
                 traceback.print_exc()
                 # whatever went wrong, break out of the
                 # message prompt. if this is missed, all
