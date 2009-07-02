@@ -441,19 +441,12 @@ class GsmModem(object):
                 pass
 
             # now decode the message
-            msg_pdu = gsmpdu.ReceivedGsmPdu(pdu_line)
-
-            # is this a multi-part (concatenated short message, csm)?
-            if msg_pdu.is_csm:
-                # process pdu will either
-                # return a 'super' pdu with the entire
-                # message (if this is the last segment)
-                # or None if there are more segments coming
-                msg_pdu = self._process_csm(msg_pdu)
-            
-            if msg_pdu is not None:
-                self._add_incoming_pdu(msg_pdu)
-
+            try:
+                pdu = gsmpdu.ReceivedGsmPdu(pdu_line)
+            except:
+                self._log('Error parsing PDU: %s', pdu_line)
+            self._process_incoming_pdu(pdu)
+        
             # jump over the CMT line, and the
             # pdu line, and continue iterating
             n += 2
@@ -462,34 +455,50 @@ class GsmModem(object):
         # interested in (almost all of them!)
         return output_lines
 
+    def _process_incoming_pdu(self, pdu):
+        if pdu is None:
+            return
+
+        # is this a multi-part (concatenated short message, csm)?
+        if pdu.is_csm:
+            # process pdu will either
+            # return a 'super' pdu with the entire
+            # message (if this is the last segment)
+            # or None if there are more segments coming
+           pdu = self._process_csm(pdu)
+            
+        if pdu is not None:
+            self._add_incoming_pdu(pdu)
+
     def _process_csm(self, pdu):
         if not pdu.is_csm:
             return pdu
 
-        # self.multipart is a dict of dicts
+        # self.multipart is a dict of dicts of dicts
         # holding all parts of messages by sender
-        # e.g. { '4155551212' : { 0: [ pdu1, pdu2] } }
+        # e.g. { '4155551212' : { 0: { seq1: pdu1, seq2: pdu2{ } }
         #
         if pdu.address not in self.multipart:
             self.multipart[pdu.address]={}
 
         sender_msgs=self.multipart[pdu.address]
         if pdu.csm_ref not in sender_msgs:
-            sender_msgs[pdu.csm_ref]=[]
+            sender_msgs[pdu.csm_ref]={}
 
         # these are all the pdus in this 
         # sequence we've recived
         received = sender_msgs[pdu.csm_ref]
-        received.append(pdu)
+        received[pdu.csm_seq]=pdu
 
         # do we have them all?
         if len(received)==pdu.csm_total:
-            received.sort(key=lambda x: x.csm_seq)
-            text = ''.join([pdu.text for pdu in received])
+            pdus=received.values()
+            pdus.sort(key=lambda x: x.csm_seq)
+            text = ''.join([p.text for p in pdus])
             
             # now make 'super-pdu' out of the first one
             # to hold the full text
-            super_pdu = received[0]
+            super_pdu = pdus[0]
             super_pdu.csm_seq = 0
             super_pdu.csm_total = 0
             super_pdu.pdu_string = None
@@ -801,14 +810,17 @@ class GsmModem(object):
                     # on +CMGL
                     line = lines.pop(0)
                     line, cmgl, rest = line.partition('+CMGL')
-                    print "CMGL: %s, %s, %s" % (line,cmgl,rest)
                     if len(cmgl)>0:
-                        lines.insert(0,cmgl+rest)
+                        lines.insert(0,'%s%s' % (cmgl,rest))
                     pdu_lines.append(line)
 
-            # now create messages
-            for pdu in pdu_lines:
-                self._add_incoming_pdu(gsmpdu.ReceivedGsmPdu(pdu))
+            # now create and process PDUs
+            for pl in pdu_lines:
+                try:
+                    pdu = gsmpdu.ReceivedGsmPdu(pl)
+                except:
+                    self._log('Error parsing PDU: %s' % pl)
+                self._process_incoming_pdu(pdu)
 
         return len(pdu_lines)
 
