@@ -18,10 +18,11 @@ import traceback
 import threading
 import codecs
 import gsmcodecs
+import gsmpdu
 
 # Constants
-CMGL_STATUS="REC UNREAD" 
-CMGL_MATCHER=re.compile(r'^\+CMGL: (\d+),"(.+?)","(.+?)",*?,"(.+?)".*?$')
+CMGL_STATUS="0" 
+CMGL_MATCHER=re.compile(r'^\+CMGL:.*?$')
 HEX_MATCHER=re.compile(r'^[0-9a-f]+$')
 
 class GsmModem(object):
@@ -217,10 +218,8 @@ class GsmModem(object):
         self.command("ATE0",      raise_errors=False) # echo off
         self.command("AT+CMEE=1", raise_errors=False) # useful error messages
         self.command("AT+WIND=0", raise_errors=False) # disable notifications
-        # switch to text mode, and make sure it's a mode that handles
-        # latin characters
-        self.command('AT+CSCS="HEX"'                ) # Default encoding for serial line comm
-        self.command("AT+CMGF=1"                    ) # switch to TEXT mode
+        self.command("AT+CSMS=1", raise_errors=False) # set SMS mode to phase 2+
+        self.command("AT+CMGF=0"                    ) # make sure in PDU mode
 
         # enable new message notification
         self.command(
@@ -298,7 +297,7 @@ class GsmModem(object):
 
         # the default terminator reads
         # until a newline is hit
-        if not read_term:
+        if read_term is None:
             read_term = "\r\n"
 
         while(True):
@@ -308,17 +307,17 @@ class GsmModem(object):
             # if a timeout was hit, raise an exception including the raw data that
             # we've already read (in case the calling func was _expecting_ a timeout
             # (wouldn't it be nice if serial.Serial.read returned None for this?)
-            if buf == "":
+            if buf == '':
                 __reset_timeout()
                 raise(errors.GsmReadTimeoutError(buffer))
 
             # if last n characters of the buffer match the read
             # terminator, return what we've received so far
-            if buffer[-len(read_term)::] == list(read_term):
-                buf_str = "".join(buffer)
+            if ''.join(buffer[-len(read_term):]) == read_term:
+                buf_str = ''.join(buffer)
                 __reset_timeout()
 
-                self._log(repr(buf_str), "read")
+                self._log(repr(buf_str), 'read')
                 return buf_str
 
 
@@ -360,8 +359,6 @@ class GsmModem(object):
 
 
     SCTS_FMT = "%y/%m/%d,%H:%M:%S"
-    
-
     def _parse_incoming_timestamp(self, timestamp):
         """Parse a Service Center Time Stamp (SCTS) string into a Python datetime
            object, or None if the timestamp couldn't be parsed. The SCTS format does
@@ -394,7 +391,6 @@ class GsmModem(object):
             # patch the time to represent UTC, since
             dt-=tz_offset
             return dt
-        
 
         # if the timestamp couldn't be parsed, we've encountered
         # a format the pyGSM doesn't support. this sucks, but isn't
@@ -402,7 +398,6 @@ class GsmModem(object):
         except ValueError:
             traceback.print_exc()
             return None
-
 
     def _parse_incoming_sms(self, lines):
         """Parse a list of lines (the output of GsmModem._wait), to extract any
@@ -426,20 +421,7 @@ class GsmModem(object):
                 n += 1
                 continue
 
-            # since this line IS a CMT string (an incoming
-            # SMS), parse it and store it to deal with later
-            m = re.match(r'^\+CMT: "(.+?)",.*?,"(.+?)".*?$', lines[n])
-            if m is None:
-
-                # couldn't parse the string, so just move
-                # on to the next line. TODO: log this error
-                n += 1
-                next
-
-            # extract the meta-info from the CMT line,
-            # and the message from the FOLLOWING line
-            sender, timestamp = m.groups()
-            text = lines[n+1].strip()
+            pdu_line = lines[n+1].strip()
 
             # notify the network that we accepted
             # the incoming message (for read receipt)
@@ -458,88 +440,78 @@ class GsmModem(object):
                 # TODO: also log this!
                 pass
 
-            # (i'm using while/break as an alternative to catch/throw
-            # here, since python doesn't have one. we might abort early
-            # if this is part of a multi-part message, but not the last
-            while True:
+            # now decode the message
+            msg_pdu = gsmpdu.ReceivedGsmPdu(pdu_line)
 
-                # multi-part messages begin with ASCII 130 followed
-                # by "@" (ASCII 64). TODO: more docs on this, i wrote
-                # this via reverse engineering and lost my notes
-                if (ord(text[0]) == 130) and (text[1] == "@"):
-                    part_text = text[7:]
-
-                    # ensure we have a place for the incoming
-                    # message part to live as they are delivered
-                    if sender not in self.multipart:
-                        self.multipart[sender] = []
-
-                    # append THIS PART
-                    self.multipart[sender].append(part_text)
-
-                    # abort if this is not the last part
-                    if ord(text[5]) != 173:
-                        break
-
-                    # last part, so switch out the received
-                    # part with the whole message, to be processed
-                    # below (the sender and timestamp are the same
-                    # for all parts, so no change needed there)
-                    text = "".join(self.multipart[sender])
-                    del self.multipart[sender]
-
-                # store the incoming data to be picked up
-                # from the attr_accessor as a tuple (this
-                # is kind of ghetto, and WILL change later)
-                self._add_incoming(timestamp, sender, text)
-
-                # don't loop! the only reason that this
-                # "while" exists is to jump out early
-                break
+            # is this a multi-part (concatenated short message, csm)?
+            if msg_pdu.is_csm:
+                # process pdu will either
+                # return a 'super' pdu with the entire
+                # message (if this is the last segment)
+                # or None if there are more segments coming
+                msg_pdu = self._process_csm(msg_pdu)
+            
+            if msg_pdu is not None:
+                self._add_incoming_pdu(msg_pdu)
 
             # jump over the CMT line, and the
-            # text line, and continue iterating
+            # pdu line, and continue iterating
             n += 2
 
         # return the lines that we weren't
         # interested in (almost all of them!)
         return output_lines
 
+    def _process_csm(self, pdu):
+        if not pdu.is_csm:
+            return pdu
 
-    def _add_incoming(self, timestamp, sender, text):
-        if text is None or len(text)==0:
-            self._log("Blank inbound text, ignore")
+        # self.multipart is a dict of dicts
+        # holding all parts of messages by sender
+        # e.g. { '4155551212' : { 0: [ pdu1, pdu2] } }
+        #
+        if pdu.address not in self.multipart:
+            self.multipart[pdu.address]={}
 
-        # try to decode inbound message
-        try:
-            # careful not to overwrite 'text'
-            # keep it clean in case we decode it in the
-            # except block
-            decoded_text=text.decode('hex')
-            decoded_text=decoded_text.decode('gsm')
-        except:
-            bom=text[0:4]
-            if bom==codecs.BOM_UTF16_LE.encode('hex') or \
-                    bom==codecs.BOM_UTF16_BE.encode('hex'):
-                codec='utf_16'
-            else:
-                codec='utf_16_be'
-            try:
-                # odd-length string type exception is sometimes thrown when
-                # receiving messages that looks like "050032\x80\xec\x0c"
-                decoded_text=text.decode('hex')
-                decoded_text=decoded_text.decode(codec)
-            except TypeError:
-                self._log("TypeError: odd-length string, ignore")
-                # TODO: right now we swallow these kind of rare exceptions
-                # should report back to rapidsms ui properly!!!
-                return None
-        # create and store the IncomingMessage object
-        time_sent = self._parse_incoming_timestamp(timestamp)
-        msg = message.IncomingMessage(self, sender, time_sent, decoded_text)
+        sender_msgs=self.multipart[pdu.address]
+        if pdu.csm_ref not in sender_msgs:
+            sender_msgs[pdu.csm_ref]=[]
+
+        # these are all the pdus in this 
+        # sequence we've recived
+        received = sender_msgs[pdu.csm_ref]
+        received.append(pdu)
+
+        # do we have them all?
+        if len(received)==pdu.csm_total:
+            received.sort(key=lambda x: x.csm_seq)
+            text = ''.join([pdu.text for pdu in received])
+            
+            # now make 'super-pdu' out of the first one
+            # to hold the full text
+            super_pdu = received[0]
+            super_pdu.csm_seq = 0
+            super_pdu.csm_total = 0
+            super_pdu.pdu_string = None
+            super_pdu.text = text
+            super_pdu.encoding = None
+        
+            del sender_msgs[pdu.csm_ref]
+            
+            return super_pdu
+        else:
+            return None
+        
+    def _add_incoming_pdu(self, pdu):
+        if pdu.text is None or len(pdu.text)==0:
+            self._log('Blank inbound text, ignoring')
+            return
+
+        msg = message.IncomingMessage(self,
+                                      pdu.address,
+                                      pdu.sent_ts,
+                                      pdu.text)
         self.incoming_queue.append(msg)
-        return msg
-
 
     def command(self, cmd, read_term=None, read_timeout=None, write_term="\r", raise_errors=True):
         """Issue a single AT command to the modem, and return the sanitized
@@ -649,36 +621,46 @@ class GsmModem(object):
         return None
 
 
-    def send_sms(self, recipient, text):
-        """Sends an SMS to _recipient_ containing _text_. Some networks
-           will automatically chunk long messages into multiple parts,
-           and reassembled them upon delivery, but some will silently
-           drop them. At the moment, pyGSM does nothing to avoid this,
-           so try to keep _text_ under 160 characters."""
+    def send_sms(self, recipient, text, max_messages=255):
+        """
+        Sends an SMS to _recipient_ containing _text_. 
 
-        old_mode = None
+        Method will automatically split long 'text' into
+        multiple SMSs up to max_messages.
+
+        To enforce only a single SMS, set max_messages=1
+
+        Raises 'ValueError' if text will not fit in max_messages
+
+        """
+        pdus = gsmpdu.get_outbound_pdus(text, recipient)
+
+        if len(pdus) > max_messages:
+            raise ValueError(
+                'Max_message is %d and text requires %d messages' %
+                (max_messages, len(pdus))
+                )
+
+        for pdu in pdus:
+            self._send_pdu(pdu)
+
+    def _send_pdu(self, pdu):
         with self.modem_lock:
             # outer try to catch any error and make sure to
             # get the modem out of 'waiting for data' mode
             try:
+                # accesing the property causes the pdu_string
+                # to be generated, so do once and cache
+                pdu_string = pdu.pdu_string
+
                 # try to catch write timeouts
                 try:
-                    # try for attempting to down-code to gsm char table
-                    try:
-                        coded_text=text.encode('gsm')
-                        coded_text=coded_text.encode('hex')
-                        enc='0'
-                    except:
-                        # uh-oh, not in standard 'latin' characters
-                        # this message will require UTF16 (big endian)
-                        coded_text=text.encode('utf_16_be')
-                        coded_text=coded_text.encode('hex')
-                        enc='8'
-
-                    csmp_code="17,167,0,"+enc
-                    self.command("AT+CSMP=%s" % csmp_code)
-                    result = self.command(
-                        'AT+CMGS="%s"' % (recipient),read_timeout=1)
+                    # content length is in bytes, so half PDU minus
+                    # the first blank '00' byte
+                    result = self.command( 
+                        'AT+CMGS=%d' % (len(pdu_string)/2 - 1), 
+                        read_timeout=1
+                        )
 
                 # if no error is raised within the timeout period,
                 # and the text-mode prompt WAS received, send the
@@ -687,7 +669,7 @@ class GsmModem(object):
                 # "SUBSTITUTE" (ctrl+z)), and return True (message sent)
                 except errors.GsmReadTimeoutError, err:
                     if err.pending_data[0] == ">":
-                        self.command(coded_text, write_term=chr(26))
+                        self.command(pdu_string, write_term=chr(26))
                         return True
 
                     # a timeout was raised, but no prompt nor
@@ -786,11 +768,11 @@ class GsmModem(object):
         """Fetch stored messages with CMGL and add to incoming queue
            Return number fetched"""
 
-        lines = self._strip_ok(self.command('AT+CMGL="%s"' % CMGL_STATUS))
+        lines = self._strip_ok(self.command('AT+CMGL=%s' % CMGL_STATUS))
         # loop through all the lines attempting to match CMGL lines (the header)
         # and then match NOT CMGL lines (the content)
         # need to seed the loop first 'cause Python no like 'until' loops
-        num_found=0
+        pdu_lines=[]
         if len(lines)>0:
             m=CMGL_MATCHER.match(lines[0])
 
@@ -804,28 +786,31 @@ class GsmModem(object):
             # matcher object already)
             lines.pop(0)
 
-            # now put the captures into independent vars
-            index, status, sender, timestamp = m.groups()
-
             # now loop through, popping content until we get
             # the next CMGL or out of lines
-            msg_text=list()
             while len(lines)>0:
                 m=CMGL_MATCHER.match(lines[0])
                 if m is not None:
                     # got another header, get out
                     break
                 else:
-                    msg_text.append(lines.pop(0))
+                    # HACK: For some reason on the multitechs the first
+                    # PDU line has the second '+CMGL' response tacked on
+                    # this may be a multitech bug or our bug in 
+                    # reading the responses. For now, split the response
+                    # on +CMGL
+                    line = lines.pop(0)
+                    line, cmgl, rest = line.partition('+CMGL')
+                    print "CMGL: %s, %s, %s" % (line,cmgl,rest)
+                    if len(cmgl)>0:
+                        lines.insert(0,cmgl+rest)
+                    pdu_lines.append(line)
 
-            # get msg text
-            msg_text=''.join(msg_text)
+            # now create messages
+            for pdu in pdu_lines:
+                self._add_incoming_pdu(gsmpdu.ReceivedGsmPdu(pdu))
 
-            # now create message
-            self._add_incoming(timestamp,sender,msg_text)
-            num_found+=1
-
-        return num_found
+        return len(pdu_lines)
 
 
     def next_message(self, ping=True, fetch=True):
@@ -854,8 +839,6 @@ class GsmModem(object):
         # remove the message that has been waiting
         # longest from the queue, and return it
         return self.incoming_queue.pop(0)
-
-
 
 
 if __name__ == "__main__":

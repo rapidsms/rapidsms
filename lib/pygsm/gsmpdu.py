@@ -10,6 +10,7 @@ import pytz
 import codecs
 import gsmcodecs
 import threading
+import traceback
 
 MSG_LIMITS = {
     # 'encoding', (max_normal, max_csm)
@@ -38,25 +39,25 @@ def get_outbound_pdus(text, recipient):
     """
 
     # first figure out the encoding
+    # if 'gsm', encode it to account for
+    # multi-byte char length
     encoding = 'ucs2'
     try:
-        text = text.encode('gsm')
+        encoded_text = text.encode('gsm')
         encoding = 'gsm'
     except:
-        pass
+        encoded_text = text
 
     csm_max = MSG_LIMITS[encoding][1]
-    if len(text)>(MAX_CSM_SEGMENTS*csm_max):
+    if len(encoded_text)>(MAX_CSM_SEGMENTS*csm_max):
         raise ValueError('Message text too long')
 
     # see if we are under the single PDU limit
-    if len(text)<=MSG_LIMITS[encoding][0]:
+    if len(encoded_text)<=MSG_LIMITS[encoding][0]:
         return [OutboundGsmPdu(text, recipient)]
 
-    # ok, we are at least one PDU
-    pdus=[]
-    # how many? text-len / max length, ceiled
-    num = int(math.ceil(len(text)/float(csm_max)))
+    # ok, we are a CSM, so lets figure out
+    # the parts
     
     # get our ref
     with __ref_lock:
@@ -66,15 +67,22 @@ def get_outbound_pdus(text, recipient):
         __csm_refs[recipient]+=1
 
     # make the PDUs
+    num = int(math.ceil(len(encoded_text)/float(MSG_LIMITS[encoding][0])))
+    pdus=[]
     for seq in range(num):
         i = seq*csm_max
+        seg_txt = encoded_text[i:i+csm_max]
+        if encoding=='gsm':
+            # a little silly to encode, decode, then have PDU
+            # re-encode but keeps PDU API clean
+            seg_txt = seg_txt.decode('gsm')
         pdus.append(
             OutboundGsmPdu(
-                text[i:i+csm_max],
+                seg_txt,
                 recipient,
-                csm_ref,
-                seq+1,
-                num
+                csm_ref=csm_ref,
+                csm_seq=seq+1,
+                csm_total=num
                 )
             )
 
@@ -96,17 +104,19 @@ class GsmPdu(object):
         self.address = None
         self.text = None
         self.pdu_string = None
+        self.sent_ts = None
 
     def dump(self):
         """
         Return a useful multiline rep of self
 
         """
-        header='Addressee: %s\nLength: %s' % (self.address, len(self.text))
+        header='Addressee: %s\nLength: %s\nSent %s' % \
+            (self.address, len(self.text), self.sent_ts)
         csm_info=''
         if self.is_csm:
             csm_info='\nCSM: %d of %d for Ref# %d' % (self.csm_seq, self.csm_total,self.csm_ref)
-        return '%s%s\nMessage: \n%s\nPDU: %s\n' % (header,csm_info,self.text,self.pdu_string)
+        return '%s%s\nMessage: \n%s\nPDU: %s' % (header, csm_info,self.text,self.pdu_string)
 
 
 class OutboundGsmPdu(GsmPdu):
@@ -393,7 +403,6 @@ class ReceivedGsmPdu(GsmPdu):
                 codec='utf_16' # which will read the BOM
             else:
                 codec='utf_16_be' # which will assume no BOM and big-endian
-        
             self.text=pdu.decode('hex').decode(codec)
 
         # some phones add a leading <cr> so strip it
@@ -501,27 +510,38 @@ TS_MATCHER=re.compile(r'^(..)(..)(..)(..)(..)(..)(..)$')
 TZ_SIGN_MASK=0x08
 
 def _read_ts(seq):
-    ts=_twiddle(seq)
-    yr,mo,dy,hr,mi,se,tz=[int(g) for g in TS_MATCHER.match(ts).groups()]
 
+    ts=_twiddle(seq)
+    m = TS_MATCHER.match(ts)
+    yr,mo,dy,hr,mi,se=[int(g) for g in m.groups()[:-1]]
+
+    # handle time-zone separately to deal with
+    # the MSB bit for negative
+    tz = int(m.groups()[-1],16)
+    neg = False
+    if tz>0x80:
+        neg = True
+        tz-=0x80
+    # now convert BACK to dec rep,
+    # I know, ridiculous, but that's
+    # the format...
+    tz = int('%02X' % tz)
+    tz_offset = tz/4
+    if neg:
+        tz_offset = -tz_offset
+    tz_delta = datetime.timedelta(hours=tz_offset)
+        
     # year is 2 digit! Yeah! Y2K problem again!!
     if yr<90:
         yr+=2000
     else:
         yr+=1900
 
-    # TZ is 15 minute +/- delta from GMT. Lets figure out
-    # if we are + or -
-    if tz>0x80:
-        tz=-(tz-0x80)
-    tz_offset=tz/4
-
     # python sucks with timezones, 
     # so create UTC not using this offset
     dt_local=datetime.datetime(yr,mo,dy,hr,mi,se, tzinfo=pytz.utc)    
-
     # now add the delta--so we have a UTC time adjusted for the inbound info
-    return dt_local+datetime.timedelta(hours=tz_offset)
+    return dt_local-tz_delta
 
 def _to_binary(n):
     s = ""
@@ -575,6 +595,8 @@ if __name__ == "__main__":
     # poor man's unit tests
     
     pdus = [
+        "07912180958729F6040B814151733717F500009070103281418A09D93728FFDE940303",
+        "07912180958729F6040B814151733717F500009070102230438A02D937",
         "0791227167830001040C912271271640910008906012024514001C002E004020AC00A300680065006C006C006F002000E900EC006B00F0",
         "07917283010010F5040BC87238880900F10000993092516195800AE8329BFD4697D9EC37",
         "0791448720900253040C914497035290960000500151614414400DD4F29C9E769F41E17338ED06",
@@ -588,16 +610,26 @@ if __name__ == "__main__":
         "0791448720003023400C91449703529096000050016121853340A005000301060540C8FA790EA2BF41E472193E7781402064FD3C07D1DF2072B90C9FBB402010B27E9E83E86F10B95C86CF5D201008593FCF41F437885C2EC3E72E100884AC9FE720FA1B442E97E17317080442D6CF7310FD0D2297CBF0B90B84AC9FE720FA1B442E97E17317080442D6CF7310FD0D2297CBF0B90B040221EBE73988FE0691CB65F8DC05028190",
         "0791448720003023440C914497035290960000500161218563402A050003010606EAE73988FE0691CB65F8DC05028190F5F31C447F83C8E5327CEE0281402010",
         ]
+    """
     print
     print '\n'.join([
-        p.dump() for p in get_outbound_pdus(
-            u'\u5c71hellohello hellohello hellohello hellohello hellohello hellohello hellohello hellohello hellohello hellohello hellohello hellohello hellohello hellohello hellohello hellohello', 
-            '+14153773715'
-            )
-        ])
-    
-#    for p in pdus:
-#        print ReceivedGsmPdu(p).dump()
+            p.dump() for p in get_outbound_pdus(
+                u'\u5c71hellohello hellohello hellohello hellohello hellohello hellohello hellohello hellohello hellohello hellohello hellohello hellohello hellohello hellohello hellohello hellohello', 
+                '+14153773715'
+                )
+            ])
+    """
+    for p in pdus:
+        rp = ReceivedGsmPdu(p)
+        print '\n-------- Received ----------'
+        print rp.dump()
+        op = get_outbound_pdus(rp.text, rp.address)[0]
+        print '\nOut ------> \n'
+        print op.dump()
+        print '-----------------------------'
+
+        
+        
 
 
 
