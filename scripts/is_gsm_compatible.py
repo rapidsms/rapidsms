@@ -16,6 +16,7 @@ sys.path.append(os.path.join(os.getcwd(),os.path.join('lib','pygsm')))
 import gsmcodecs
 
 # attempt to interpret the input file in this order
+# standard codecs are listed here: http://docs.python.org/library/codecs.html
 encodings = ['utf-8','cp1252','utf-16']
 line_count = 0
 
