@@ -9,12 +9,77 @@ import math
 import pytz
 import codecs
 import gsmcodecs
+import threading
 
-max_gsm_text_len = 160
-max_csm_gsm_text_len = 152
-max_ucs2_text_len = 70
-max_csm_ucs2_text_len = 67
-max_csm_segments = 255
+MSG_LIMITS = {
+    # 'encoding', (max_normal, max_csm)
+    'gsm': (160,152),
+    'ucs2': (70,67)
+}
+MAX_CSM_SEGMENTS = 255
+
+# used to track csm reference numbers per receiver
+__csm_refs = {}
+__ref_lock = threading.Lock()
+
+def get_outbound_pdus(text, recipient):
+    """
+    Returns a list of PDUs to send the provided
+    text to the given recipient.
+
+    If everything fits in one message, the list
+    will have just one PDU.
+
+    Otherwise is will be a list of Concatenated SM PDUs
+
+    If the message goes beyond the max length for a CSM
+    (it's gotta be _REALLY BIG_), this will raise a 'ValueError'
+
+    """
+
+    # first figure out the encoding
+    encoding = 'ucs2'
+    try:
+        text = text.encode('gsm')
+        encoding = 'gsm'
+    except:
+        pass
+
+    csm_max = MSG_LIMITS[encoding][1]
+    if len(text)>(MAX_CSM_SEGMENTS*csm_max):
+        raise ValueError('Message text too long')
+
+    # see if we are under the single PDU limit
+    if len(text)<=MSG_LIMITS[encoding][0]:
+        return [OutboundGsmPdu(text, recipient)]
+
+    # ok, we are at least one PDU
+    pdus=[]
+    # how many? text-len / max length, ceiled
+    num = int(math.ceil(len(text)/float(csm_max)))
+    
+    # get our ref
+    with __ref_lock:
+        if recipient not in __csm_refs:
+            __csm_refs[recipient]=0
+        csm_ref = __csm_refs[recipient] % 256
+        __csm_refs[recipient]+=1
+
+    # make the PDUs
+    for seq in range(num):
+        i = seq*csm_max
+        pdus.append(
+            OutboundGsmPdu(
+                text[i:i+csm_max],
+                recipient,
+                csm_ref,
+                seq+1,
+                num
+                )
+            )
+
+    return pdus
+
 
 class SmsParseException(Exception):
     pass
@@ -23,9 +88,28 @@ class SmsEncodeExcpetion(Exception):
     pass
 
 class GsmPdu(object):
-    pass
+    def __init__(self):
+        self.is_csm = False
+        self.csm_seq = None
+        self.csm_total = None
+        self.csm_ref = None
+        self.address = None
+        self.text = None
+        self.pdu_string = None
 
-class OutboundPdu(GsmPdu):
+    def dump(self):
+        """
+        Return a useful multiline rep of self
+
+        """
+        header='Addressee: %s\nLength: %s' % (self.address, len(self.text))
+        csm_info=''
+        if self.is_csm:
+            csm_info='\nCSM: %d of %d for Ref# %d' % (self.csm_seq, self.csm_total,self.csm_ref)
+        return '%s%s\nMessage: \n%s\nPDU: %s\n' % (header,csm_info,self.text,self.pdu_string)
+
+
+class OutboundGsmPdu(GsmPdu):
     """
     Formatted outbound PDU. Basically just
     a struct.
@@ -36,71 +120,133 @@ class OutboundPdu(GsmPdu):
 
     """
     
-    def __init__(self, text, sender, csm_ref=None, csm_seq=None, csm_total=None):
-        self.sender_number = sender
+    def __init__(self, text, recipient, csm_ref=None, csm_seq=None, csm_total=None):
+        GsmPdu.__init__(self)
+
+        self.address = recipient
         self.text = text
+        self.gsm_text = None # if we are gsm, put the gsm encoded str here
         self.is_csm = csm_ref is not None
-        self.csm_ref = csm_ref
-        self.csm_seq = csm_seq
-        self.csm_total = csm_total
+        self.csm_ref = ( None if csm_ref is None else int(csm_ref) )
+        self.csm_seq = ( None if csm_seq is None else int(csm_seq) )
+        self.csm_total = ( None if csm_total is None else int(csm_total) )
         
         try:
-            self.encoded_text = self.text.encode('gsm')
-            self.encoding = 'gsm'
+            # following does two things:
+            # 1. Raises exception if text cannot be encoded GSM
+            # 2. measures the number of chars after encoding
+            #    since GSM is partially multi-byte, a string
+            #    in GSM can be longer than the obvious num of chars
+            #    e.g. 'hello' is 5 but 'hello^' is _7_
+            self.gsm_text=self.text.encode('gsm')
+            num_chars=len(self.gsm_text)
         except:
-            self.encoded_text = self.text.encode('utf_16_be')
-            self.encoding='ucs2'
+            num_chars=len(self.text)
 
-        @property
-        def pdu_str(self):
-            if self.is_csm:
-                max = (max_csm_gsm_text_len if self.encoding=='gsm'
-                       else max_csm_ucs2_text_len)
-            else:
-                max = (max_gsm_text_len if self.encoding=='gsm'
-                       else max_ucs2_text_len)
+        if self.is_csm:
+            max = MSG_LIMITS[self.encoding][1]
+        else:
+            max = MSG_LIMITS[self.encoding][0]
             
-            if len(text)>max:
-                raise SmsEncodeError('Text length too great')
+        if num_chars>max:
+            raise SmsEncodeError('Text length too great')
+        
+    @property
+    def encoding(self):
+        return ( 'gsm' if self.is_gsm else 'ucs2' )
 
-            # now put the PDU string together
-            # first octet is SMSC info, 00 means get from stored on SIM
-            pdu=['00'] 
-            # Next is 'SMS-SUBMIT First Octet' -- '11' means submit w/validity. 
-            # '51' means Concatendated SM w/validity
-            pdu.append('51' if self.is_cms else '11') 
-            # Next is 'message' reference. '00' means phone can set this
-            pdu.append('00')
-            # now sender number, first type
-            if self.sender_number[0]=='+':
-                num = self.sender_number[1:]
-                type = '91' # international
-            else:
-                num = self.sender_number
-                type = 'a8' # national number
-            
-            # length
-            num_len = len(num)
-            # twiddle it
-            num = _twiddle(num, False)
-            pdu.append(str(num)) # length
-            pdu.append(type)
-            pdu.append(num)
-            
-            # now protocol ID
-            pdu.append('00')
-            
-            # data coding scheme
-            pdu.append('00' if self.encoding=='gsm' else '08')
+    @property
+    def is_gsm(self):
+        return self.gsm_text is not None
 
-            # validity period, just default to 4 days
-            pdu.append('aa')
-
-            # Now the fun part! User data length and User data
-            # If we are a CSM, user data length is encoded text+header
-            # otherwise it's just the text length. So first let's
-            # encode
+    @property
+    def is_ucs2(self):
+        return not self.is_gsm
+        
+    def __get_pdu_string(self):
+        # now put the PDU string together
+        # first octet is SMSC info, 00 means get from stored on SIM
+        pdu=['00'] 
+        # Next is 'SMS-SUBMIT First Octet' -- '11' means submit w/validity. 
+        # '51' means Concatendated SM w/validity
+        pdu.append('51' if self.is_csm else '11') 
+        # Next is 'message' reference. '00' means phone can set this
+        pdu.append('00')
+        # now recipient number, first type
+        if self.address[0]=='+':
+            num = self.address[1:]
+            type = '91' # international
+        else:
+            num = self.address
+            type = 'A8' # national number
             
+        # length
+        num_len = len(num)
+        # twiddle it
+        num = _twiddle(num, False)
+        pdu.append('%02X' % num_len) # length
+        pdu.append(type)
+        pdu.append(num)
+            
+        # now protocol ID
+        pdu.append('00')
+            
+        # data coding scheme
+        pdu.append('00' if self.is_gsm else '08')
+
+        # validity period, just default to 4 days
+        pdu.append('AA')
+
+        # Now the fun! Make the user data (the text message)
+        # Complications:
+        # 1. If we are a CSM, need the CSM header
+        # 2. If we are a CSM and GSM, need to pad the data
+        padding = 0
+        udh=''
+        if self.is_csm:
+            # data header always starts the same:
+            # length: 5 octets '05'
+            # type: CSM '00'
+            # length of CSM info, 3 octets '03'
+            udh='050003%02X%02X%02X' % (self.csm_ref, self.csm_total, self.csm_seq)
+
+            if self.is_gsm:
+                # padding is number of pits to pad-out beyond
+                # the header to make everything land on a '7-bit' 
+                # boundary rather than 8-bit.
+                # Can calculate as 7 - (UDH*8 % 7), but the UDH
+                # is always 48, so padding is always 1
+                padding = 1
+                
+        # now encode contents
+        encoded_sm = ( 
+            _pack_septets(self.gsm_text, padding=padding)
+            if self.is_gsm 
+            else self.text.encode('utf_16_be') 
+            )
+        encoded_sm = encoded_sm.encode('hex').upper()
+
+        # and get the data length which is in septets
+        # if GSM, and octets otherwise
+        if self.is_gsm:
+            # just take length of encoded gsm text
+            # as each char becomes a septet when encoded
+            udl = len(self.gsm_text)
+            if len(udh)>0:
+                udl+=7 # header is always 7 septets (inc. padding)
+        else:
+            # in this case just the byte length of content + header
+            udl = (len(encoded_sm)+len(udh))/2
+            
+        # now add it all to the pdu
+        pdu.append('%02X' % udl)
+        pdu.append(udh)
+        pdu.append(encoded_sm)
+        return ''.join(pdu)
+    
+    def __set_pdu_string(self, val):
+        pass
+    pdu_string=property(__get_pdu_string, __set_pdu_string)
                 
 class ReceivedGsmPdu(GsmPdu):
     """
@@ -112,34 +258,26 @@ class ReceivedGsmPdu(GsmPdu):
 
     """
     def __init__(self, pdu_str):
+        GsmPdu.__init__(self)
+        
         # hear are the properties that are set below in the 
         # ugly parse code. 
 
-        self.tp_mms=False # more messages to send
-        self.tp_sri=False # status report indication
-        self.sender_number=None # phone number of sender as string
-        self.sent_ts=None # Datetime of when SMSC stamped the message, roughly when sent
-        self.text=None # string of message contents
-        self.pdu=pdu_str # original data as a string
-        self.is_csm=False # is this one of a sequence of concatenated messages?
-        self.csm_ref=0 # reference number
-        self.csm_seq=0 # this chunks sequence num, 1-based
-        self.csm_total=0 # number of chunks total
-        self.encoding=None # either 'gsm' or 'ucs2'
+        self.tp_mms = False # more messages to send
+        self.tp_sri = False # status report indication
+        self.address = None # phone number of sender as string
+        self.sent_ts = None # Datetime of when SMSC stamped the message, roughly when sent
+        self.text = None # string of message contents
+        self.pdu_string = pdu_str.upper() # original data as a string
+        self.is_csm = False # is this one of a sequence of concatenated messages?
+        self.csm_ref = 0 # reference number
+        self.csm_seq = 0 # this chunks sequence num, 1-based
+        self.csm_total = 0 # number of chunks total
+        self.encoding = None # either 'gsm' or 'ucs2'
 
         self.__parse_pdu()
+
     
-    def dump(self):
-        """
-        Return a useful multiline rep of self
-
-        """
-        header='From: %s\nLength: %s' % (self.sender_number, len(self.text))
-        csm_info=''
-        if self.is_csm:
-            csm_info='\nCSM: %d of %d for Ref# %d' % (self.csm_seq, self.csm_total,self.csm_ref)
-        return '%s%s\nMessage: \n%s\n' % (header,csm_info,self.text)
-
     """
     This is truly hideous, just don't look below this line!
     
@@ -148,9 +286,11 @@ class ReceivedGsmPdu(GsmPdu):
     """
 
     def __parse_pdu(self):
+        pdu=self.pdu_string # make copy
+        
         # grab smsc header, and throw away
         # length is held in first octet
-        smsc_len,pdu=_consume_bytes(self.pdu,1)
+        smsc_len,pdu=_consume_bytes(pdu,1)
 
         # consume smsc header
         c,pdu=_consume(pdu, smsc_len)
@@ -164,7 +304,6 @@ class ReceivedGsmPdu(GsmPdu):
         self.tp_mms=deliver_attrs & 0x04 # more messages to send
         self.tp_sri=deliver_attrs & 0x20 # Status report indication
         tp_udhi=deliver_attrs & 0x40 # There is a user data header in the user data portion
-
         # get the sender number. 
         # First the length which is given in 'nibbles' (half octets)
         # so divide by 2 and round up for odd
@@ -178,7 +317,7 @@ class ReceivedGsmPdu(GsmPdu):
         num,pdu=_consume(pdu,sender_len)
 
         # now parse the number
-        self.sender_number=_parse_phone_num(sender_type,num)
+        self.address=_parse_phone_num(sender_type,num)
 
         # now the protocol id
         # we only understand SMS (0)
@@ -325,30 +464,30 @@ def _consume_bytes(seq,num=1):
     return (bytes,seq[_B(num):])
 
 def _twiddle(seq, decode=True):
-    seq=seq.lower() # just in case
+    seq=seq.upper() # just in case
     result=list()
     for i in range(0,len(seq)-1,2):
         result.extend((seq[i+1],seq[i]))
     
-    if decode and result[-1:][0]=='f':
-        # strip trailing 'f'
+    if len(result)<len(seq) and not decode:
+        # encoding odd length
+        result.extend(('F',seq[-1]))
+    elif decode and result[-1:][0]=='F':
+        # strip trailing 'F'
         result.pop()
-    else:
-        # check to see if need to _add_ trailing f
-        # and since we are already twiddled, it 
-        # goes as second to last
-        if len(result) % 2 != 0:
-            # we're odd, so pad with 'f'
-            result.insert(len(result)-1,'f')
 
     return ''.join(result)
 
 def _parse_phone_num(num_type,seq):
+    if num_type[0]=='D':
+        # it's gsm encoded!
+        return _unpack_septets(seq).decode('gsm')
+
     # sender number is encoded in DECIMAL with each octect swapped, and 
     # padded to even length with F
     # so 1 415 555 1212 is: 41 51 55 15 12 f2
     num=_twiddle(seq)
-    
+
     intl_code=''
     if num_type[0]=='9':
         intl_code='+'
@@ -411,9 +550,8 @@ def _unpack_septets(seq,padding=0):
         asbinary = asbinary[:-7]
     return "".join(map(chr, chars))
 
-def _pack_septets(in_bytes, padding=0):
-    bytes=[]
-    bytes.extend(in_bytes)
+def _pack_septets(str, padding=0):
+    bytes=[ord(c) for c in str]
     bytes.reverse()
     asbinary = ''.join([_to_binary(b)[1:] for b in bytes])
     # add padding
@@ -431,7 +569,7 @@ def _pack_septets(in_bytes, padding=0):
     for i in range(0,len(asbinary),8):
         bytes.append(int(asbinary[i:i+8],2))
     bytes.reverse()
-    return bytes
+    return ''.join([chr(b) for b in bytes])
 
 if __name__ == "__main__":
     # poor man's unit tests
@@ -450,9 +588,16 @@ if __name__ == "__main__":
         "0791448720003023400C91449703529096000050016121853340A005000301060540C8FA790EA2BF41E472193E7781402064FD3C07D1DF2072B90C9FBB402010B27E9E83E86F10B95C86CF5D201008593FCF41F437885C2EC3E72E100884AC9FE720FA1B442E97E17317080442D6CF7310FD0D2297CBF0B90B84AC9FE720FA1B442E97E17317080442D6CF7310FD0D2297CBF0B90B040221EBE73988FE0691CB65F8DC05028190",
         "0791448720003023440C914497035290960000500161218563402A050003010606EAE73988FE0691CB65F8DC05028190F5F31C447F83C8E5327CEE0281402010",
         ]
-
-    for p in pdus:
-        print GsmPdu(p).dump()
+    print
+    print '\n'.join([
+        p.dump() for p in get_outbound_pdus(
+            u'\u5c71hellohello hellohello hellohello hellohello hellohello hellohello hellohello hellohello hellohello hellohello hellohello hellohello hellohello hellohello hellohello hellohello', 
+            '+14153773715'
+            )
+        ])
+    
+#    for p in pdus:
+#        print ReceivedGsmPdu(p).dump()
 
 
 
