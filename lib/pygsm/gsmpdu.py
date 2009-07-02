@@ -10,7 +10,6 @@ import pytz
 import codecs
 import gsmcodecs
 import threading
-import traceback
 
 MSG_LIMITS = {
     # 'encoding', (max_normal, max_csm)
@@ -92,7 +91,7 @@ def get_outbound_pdus(text, recipient):
 class SmsParseException(Exception):
     pass
 
-class SmsEncodeExcpetion(Exception):
+class SmsEncodeException(Exception):
     pass
 
 class GsmPdu(object):
@@ -159,7 +158,7 @@ class OutboundGsmPdu(GsmPdu):
             max = MSG_LIMITS[self.encoding][0]
             
         if num_chars>max:
-            raise SmsEncodeError('Text length too great')
+            raise SmsEncodeException('Text length too great')
         
     @property
     def encoding(self):
@@ -385,7 +384,7 @@ class ReceivedGsmPdu(GsmPdu):
                 # mod'd by 7 to git the number of leftover padding bits
                 padding=((7*udl) - (8*(udhl+1))) % 7
             else:
-               padding=0
+                padding=0
 
             # now decode
             try:
@@ -600,7 +599,7 @@ if __name__ == "__main__":
     # poor man's unit tests
     
     pdus = [
-#        "07912180958729F6400B814151733717F500009070208044148AA0050003160201986FF719C47EBBCF20F6DB7D06B1DFEE3388FD769F41ECB7FB0C62BFDD6710FBED3E83D8ECB73B0D62BFDD67109BFD76A741613719C47EBBCF20F6DB7D06BCF61BC466BF41ECF719C47EBBCF20F6D",
+        "07912180958729F6400B814151733717F500009070208044148AA0050003160201986FF719C47EBBCF20F6DB7D06B1DFEE3388FD769F41ECB7FB0C62BFDD6710FBED3E83D8ECB73B0D62BFDD67109BFD76A741613719C47EBBCF20F6DB7D06BCF61BC466BF41ECF719C47EBBCF20F6D",
        # "07912180958729F6440B814151733717F500009070207095828AA00500030E0201986FF719C47EBBCF20F6DB7D06B1DFEE3388FD769F41ECB7FB0C62BFDD6710FBED3E83D8ECB7",
 #        "07912180958729F6040B814151733717F500009070103281418A09D93728FFDE940303",
 #        "07912180958729F6040B814151733717F500009070102230438A02D937",
