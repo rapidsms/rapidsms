@@ -225,36 +225,6 @@ class Router (component.Receiver):
         self.start_all_backends()
         self.start_all_apps()
 
-        # check for any pending messages
-        try:
-            fn = "/tmp/rapidsms-pending"
-            f = file(fn)
-            
-            # trash the file, to prevent
-            # these messages being re-sent
-            msgs = f.readlines()
-            os.unlink(fn)
-            f.close()
-            
-            # iterate the pending messages,
-            for pending_msg in msgs:
-                be_name, identity, txt =\
-                    pending_msg.strip().split(":")
-                
-                # find the backend named by the message,
-                # reconstruct the object, and send it
-                for backend in self.backends:
-                    if backend.slug == be_slug:
-                        msg = backend.message(identity, txt)
-                        self.info("Sending pending message: %r" % msg)
-                        msg.send()
-         
-        # something went bang. not sure what, and don't
-        # particularly care. they'll be re-tried the
-        # next time rapidsms starts up
-        except:
-            pass
-        
         # wait until we're asked to stop
         while self.running:
             try:

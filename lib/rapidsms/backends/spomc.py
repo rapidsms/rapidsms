@@ -5,14 +5,14 @@ from rapidsms.message import Message
 from rapidsms.connection import Connection
 import backend
 import spomsky
-import re, time
+import re
 
 class Backend(backend.Backend):
     _title = "SPOMC"
     
     def configure(self, host="localhost", port=8100, **kwargs):
         self.client = spomsky.Client(host, port)
-        
+    
     def __callback(self, source, message_text):
         # drop the "sms://" protocol from the source
         phone_number = re.compile("[a-z]+://").sub("", source)
@@ -25,20 +25,8 @@ class Backend(backend.Backend):
 
     def send(self, message):
         destination = "%s" % (message.connection.identity)
-        sent = self.client.send(destination, message.text)
+        self.client.send(destination, message.text)
         
-        # if the message wasn't sent, log it to the super
-        # low-tech pending file, to be sent at some point
-        # in the undefined future...
-        if not sent:
-        
-            # TODO: move this to backend.py, and make it sane
-            str = "%s:%s:%s" % (self.slug, destination, message.text)
-            self.warning("DIDN'T SEND: %s" % (str))
-            f = file("/tmp/rapidsms-pending", "a")
-            f.write(str + "\n")
-            f.close()
-    
     def start(self):
         self.client.subscribe(self.__callback)
         backend.Backend.start(self)
