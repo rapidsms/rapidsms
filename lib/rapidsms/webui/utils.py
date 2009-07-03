@@ -45,7 +45,12 @@ def render_to_response(req, template_name, dictionary=None, **kwargs):
     # A NEW KIND OF LUNACY: inspect the stack to find out
     # which rapidsms app this function is being called from
     tb = traceback.extract_stack(limit=2)
-    m = re.match(r'^.+/(.+?)/views\.py$', tb[-2][0])
+    sep = os.sep
+    if sep == '\\':
+        # if windows, the file separator itself needs to be 
+        # escaped again
+        sep = "\\\\"
+    m = re.match(r'^.+%s(.+?)%sviews\.py$' % (sep, sep), tb[-2][0])
     if m is not None:
         app_type = m.group(1)
         
