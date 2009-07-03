@@ -39,11 +39,11 @@ def _decode(input,errors='strict'):
     # standard decoder
     
     # split to see if we have any 'extended' characters
-    runs=str_splitter.split(input)
+    runs = str_splitter.split(input)
 
     # now iterate through handling any 'multibyte' ourselves
-    out_uni=list()
-    consumed=0
+    out_uni = []
+    consumed = 0
     for run in runs:
         if len(run)==0:
             # first char was a marker, but we don't care
@@ -52,15 +52,18 @@ def _decode(input,errors='strict'):
         if len(run)==2 and run[0]==extended_indicator:
             try:
                 out_uni.append(extended_decode_map[run[1]])
+                consumed += 2
+                continue
             except KeyError:
-                raise ValueError(\
-                    '\\x%s not a GSM extended char' % run[1].encode('hex'))
-            consumed+=2 # we ate two inputs for one out
-        else:
-            # pass it to the standard encoder
-            out,cons=codecs.charmap_decode(run,errors,decoding_table)
-            out_uni.append(out)
-            consumed+=cons
+                # second char was not an extended, so
+                # let this pass through and the marker
+                # will be interpreted by the table as a NBSP
+                pass
+
+        # pass it to the standard encoder
+        out,cons=codecs.charmap_decode(run,errors,decoding_table)
+        out_uni.append(out)
+        consumed+=cons
     return (u''.join(out_uni),consumed)
 
 
@@ -69,6 +72,11 @@ class Codec(codecs.Codec):
         return _encode(input,errors)
 
     def decode(self,input,errors='strict'):
+        # strip any trailing '\x00's as the standard
+        # says trailing ones are _not_ @'s and 
+        # are in fact blanks
+        if input[-1]=='\x00':
+            input=input[:-1]
         return _decode(input,errors)
 
 class IncrementalEncoder(codecs.IncrementalEncoder):
@@ -85,6 +93,12 @@ class IncrementalDecoder(codecs.IncrementalDecoder):
         self.last_saw_mark=False
 
     def decode(self, input, final=False):
+        if final:
+            # check for final '\x00' which should not
+            # be interpreted as a '@'
+            if input[-1]=='\x00':
+                input=input[:-1]
+
         # keep track of how many chars we've added or
         # removed to the run to adjust the response from
         # _decode
@@ -95,16 +109,15 @@ class IncrementalDecoder(codecs.IncrementalDecoder):
             input=extended_indicator+input
             consumed_delta-=1 # 'cause we added a char
             self.last_saw_mark=False # reset
-        if input[-1:]==extended_indicator:
-            # last char in run is indicator
-            if final:
-                # oops and indicator with nothing after?
-                raise ValueError('String ends on a multi-byte indicator')
-            else:
-                # chop it off
-                input=input[:-1]
-                consumed_delta+=1 # because we just consumed one char
-                self.last_saw_mark=True
+        if input[-1:]==extended_indicator and not final:
+            # chop it off
+            input=input[:-1]
+            consumed_delta+=1 # because we just consumed one char
+            self.last_saw_mark=True
+
+            # NOTE: if we are final and last mark is 
+            # and extended indicator, it will be interpreted
+            # as NBSP
         return _decode(input,self.errors)[0]
 
     def reset(self):
@@ -162,7 +175,7 @@ uni,gsm=zip(*extended_encode_map.items())
 extended_decode_map=dict(zip(gsm,uni))
 
 # splitter
-str_splitter=re.compile('(%s.)' % extended_indicator)
+str_splitter=re.compile('(%(ind)s[^%(ind)s])' % { 'ind':extended_indicator })
 unicode_splitter=re.compile(u'([%s])' % re.escape(''.join(extended_encode_map.keys())), re.UNICODE)
 
 # the normal 1-char table
@@ -435,9 +448,9 @@ if __name__ == "__main__":
     """
     isoLatin15_alpha=u" !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJLKMNOPQRSTUVWXYZ[\\]^-`abcdefghijklmnopqrstuvwxyz{|}~¡¢£€¥Š§š©ª«¬®¯°±²³Žµ¶·ž¹º»ŒœŸ¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ"
 
-    gsm_alpha=u"@£$¥èéùìòçØøÅåΔ_ΦΓΛΩΠΨΣΘΞ^{}\\[~]|€ÆæßÉ !\"#¤%&'()*+,-./0123456789:;<=>?¡ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÑÜ§¿abcdefghijklmnopqrstuvwxyzäöñüà"
+    gsm_alpha=u"\u00A0@£$¥èéùìòçØøÅåΔ_ΦΓΛΩΠΨΣΘΞ^{}\\[~]|\u00A0\u00A0€ÆæßÉ !\"#¤%&'()*+,-./0123456789:;<=>?¡ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÑÜ§¿abcdefghijklmnopqrstuvwxyzäöñüà\u00A0"
 
-    gsm_alpha_encoded='000102030405060708090b0c0e0f101112131415161718191a1b141b281b291b2f1b3c1b3d1b3e1b401b651c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f404142434445464748494a4b4c4d4e4f505152535455565758595a5b5c5d5e5f606162636465666768696a6b6c6d6e6f707172737475767778797a7b7c7d7e7f'
+    gsm_alpha_encoded='1b000102030405060708090b0c0e0f101112131415161718191a1b141b281b291b2f1b3c1b3d1b3e1b401b1b1b651c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f404142434445464748494a4b4c4d4e4f505152535455565758595a5b5c5d5e5f606162636465666768696a6b6c6d6e6f707172737475767778797a7b7c7d7e7f1b'
 
     gsm_alpha_gsm=gsm_alpha_encoded.decode('hex')
 
@@ -445,6 +458,7 @@ if __name__ == "__main__":
     # some simple tests
     print "Assert GSM alphabet, encoded in GSM is correct (unicode->gsm_str)..."
     encoded=_encode(gsm_alpha)[0].encode('hex')
+    print encoded
     assert(encoded==gsm_alpha_encoded)
     print "Good"
     print
