@@ -6,10 +6,11 @@
 <!--[if IE]><script type="text/javascript" src="/static/webui/javascripts/excanvas.pack.js"></script>
 <![endif]-->
 {% endblock %}
-{% load cache %}
-
 {% block content %}
-{# cache content of dashboard for one hour #}
-{% cache 3600 dashboard %}
-{% endcache %}
+Welcome to RapidSMS! 
+{% if user.is_authenticated %}
+Click on a tab to explore.
+{% else %}                                        
+Please <a href="/accounts/login/">log in</a> to continue.
+{% endif %}  
 {% endblock %}
