@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-import time, datetime, os
+import time, datetime, os, heapq
 import threading
 import traceback
 
@@ -16,6 +16,7 @@ class Router (component.Receiver):
         component.Receiver.__init__(self)
         self.backends = []
         self.apps = []
+        self.events = []
         self.running = False
         self.logger = None
 
@@ -179,6 +180,39 @@ class Router (component.Receiver):
             except Exception:
                 self.log_last_exception("The %s backend failed to stop" % backend.slug)
 
+    """
+    The call_at() method schedules a callback with the router. It takes as its
+    first argument one of several possible objects:
+
+    *   if an int or float, the callback is called that many
+        seconds later.
+    *   if a datetime.datetime object, the callback is called at
+        the time specified.
+    *   if a datetime.timedelta object, the callback is called
+        at the timedelta from now.
+
+    call_at() takes as its second argument the function to be called
+    at the scheduled time. All other positional and keyword arguments
+    are passed directly to the callback when it is called.
+
+    If the callback returns a true value that is one of the time objects
+    understood by call_at(), the callback will be called again at the
+    specified time with the same arguments.
+    """
+    def call_at (self, when, callback, *args, **kwargs):
+        if isinstance(when, datetime.timedelta):
+            when = datetime.datetime.now() + when
+        if isinstance(when, datetime.datetime):
+            when = time.mktime(when.timetuple())
+        elif isinstance(when, (int, float)):
+            when = time.time() + when
+        else:
+            self.debug("Call to %s wasn't scheduled with a suitable time: %s",
+                callback.func_name, when)
+            return
+        self.debug("Scheduling call to %s at %s",
+            callback.func_name, datetime.datetime.fromtimestamp(when).ctime())
+        heapq.heappush(self.events, (when, callback, args, kwargs))
 
     def start (self):
         self.running = True
@@ -191,39 +225,10 @@ class Router (component.Receiver):
         self.start_all_backends()
         self.start_all_apps()
 
-        # check for any pending messages
-        try:
-            fn = "/tmp/rapidsms-pending"
-            f = file(fn)
-            
-            # trash the file, to prevent
-            # these messages being re-sent
-            msgs = f.readlines()
-            os.unlink(fn)
-            f.close()
-            
-            # iterate the pending messages,
-            for pending_msg in msgs:
-                be_name, identity, txt =\
-                    pending_msg.strip().split(":")
-                
-                # find the backend named by the message,
-                # reconstruct the object, and send it
-                for backend in self.backends:
-                    if backend.slug == be_slug:
-                        msg = backend.message(identity, txt)
-                        self.info("Sending pending message: %r" % msg)
-                        msg.send()
-         
-        # something went bang. not sure what, and don't
-        # particularly care. they'll be re-tried the
-        # next time rapidsms starts up
-        except:
-            pass
-        
         # wait until we're asked to stop
         while self.running:
             try:
+                self.call_scheduled()
                 self.run()
             except KeyboardInterrupt:
                 break
@@ -240,6 +245,15 @@ class Router (component.Receiver):
         msg = self.next_message(timeout=1.0)
         if msg is not None:
             self.incoming(msg)
+
+    def call_scheduled(self):
+        while self.events and self.events[0][0] < time.time():
+            when, callback, args, kwargs = heapq.heappop(self.events)
+            self.info("Calling %s(%s, %s)",
+                callback.func_name, args, kwargs)
+            result = callback(*args, **kwargs)
+            if result:
+                self.call_at(result, callback, *args, **kwargs)
     
     def __sorted_apps(self):
         return sorted(self.apps, key=lambda a: a.priority())
@@ -306,10 +320,3 @@ class Router (component.Receiver):
         self.debug("SENT message '%s' to %s via %s" % (message.text,\
 			message.connection.identity, message.connection.backend.slug))
         return True
-
-    def get_backend (self, name):
-        backends = [b for b in self.backends if b.slug == name]
-        if backends:
-            return backends[0]
-        else:
-            self.error("Unknown backend requested: %s", name)

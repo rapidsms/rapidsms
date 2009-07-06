@@ -43,19 +43,19 @@ class TestConfig(unittest.TestCase):
 
     def test_component_section(self):
         cc = self.config.component_section("app1")
-        self.assertEqual(cc, {"type": "app1", "title": "app1"}, 
+        self.assertEqual(cc, {"type": "app1"},
             "default component config incorrect")
         
         cc = self.config.component_section("app2")
-        self.assertEqual(cc, {"type": "app2", "title": "app2", "beginning": "yes", "end": "no"}, 
+        self.assertEqual(cc, {"type": "app2", "beginning": "yes", "end": "no"}, 
             "does not correctly configure component with assumed type var and additional vars")
         
         cc = self.config.component_section("app3")
-        self.assertEqual(cc, {"type": "testapp", "title": "app3"}, 
+        self.assertEqual(cc, {"type": "testapp"}, 
             "does not correctly configure component with explicit type variable and no additional vars")
         
         cc = self.config.component_section("backend1")
-        self.assertEqual(cc, {"type": "testbackend", "title": "backend1", "beginning": "yes", "end": "no"}, 
+        self.assertEqual(cc, {"type": "testbackend", "beginning": "yes", "end": "no"}, 
             "does not correctly configure component with explicit type var and additional vars")
 
     def test_parse_rapidsms_section(self):

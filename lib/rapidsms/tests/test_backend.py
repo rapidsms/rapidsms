@@ -9,11 +9,11 @@ from harness import MockRouter
 class TestBackend(unittest.TestCase):
     def setUp (self):
         self.router = MockRouter()
-        self.backend = Backend("testing", self.router)
+        self.backend = Backend(self.router)
         self.router.add_backend(self.backend)
 
     def test__properties (self):
-        self.assertEquals(self.backend.name, "testing")
+        self.assertEquals(self.backend.title, "backend")
         self.assertEquals(self.backend.router, self.router)
         self.assertFalse(self.backend.running)
 

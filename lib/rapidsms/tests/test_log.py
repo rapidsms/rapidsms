@@ -23,7 +23,7 @@ class TestLog(unittest.TestCase):
                     "%(levelname)s [%(component)s]: %(message)s",
                     False)
         c = Component()
-        c.name = "Testing"
+        c._title = "Testing"
         log.write(c, "debug", "this is a debug message: %d", 1) 
         log.write(c, "info", "this is a info message: %d", 2) 
         log.write(c, "warning", "this is a warning message: %d", 3) 

@@ -11,7 +11,7 @@ from harness import MockRouter
 class TestMessage(unittest.TestCase):
     def setUp (self):
         self.router = MockRouter()
-        self.backend = Backend("testing", self.router)
+        self.backend = Backend(self.router)
         self.connection = Connection(self.backend, "12345")
         self.person = Person()
         self.person.add_connection(self.connection)

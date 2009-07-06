@@ -12,6 +12,11 @@ import rapidsms
 from rapidsms.message import Message
 
 class RapidBaseHttpHandler(BaseHTTPServer.BaseHTTPRequestHandler):
+    '''The base handler for use in the http backends.  This is a
+       simple extension of the python builtin handlers with
+       logging capabilities and a utility method for responding
+       to incoming requiests.'''
+
     def log_error (self, format, *args):
         self.server.backend.error(format, *args)
 
@@ -26,6 +31,8 @@ class RapidBaseHttpHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 
     
 class HttpHandler(RapidBaseHttpHandler):
+    '''The original http handler, used by the httptester app.
+       URLS are /PhoneNumber/Message'''
     
     msg_store = {}
     
@@ -75,6 +82,7 @@ class HttpHandler(RapidBaseHttpHandler):
     
     @classmethod
     def outgoing(klass, msg):
+        '''Used to send outgoing messages through this interface.'''
         #self.log_message("http outgoing message: %s" % message)
         # the default http backend just stores outgoing messages in
         # a store and provides access to them via the JSON/AJAX 
@@ -245,7 +253,7 @@ class YoHandler(RapidBaseHttpHandler):
         
         
 class MTechHandler(RapidBaseHttpHandler):
-    '''An HttpHandler for the mtech gateway, for use in Nigeria''' 
+    '''An HttpHandler for the mtech gateway, for use in Nigeria'''
     def do_GET(self):
         querystart = self.path.find("?")
         if querystart == -1:
@@ -295,16 +303,21 @@ class MTechHandler(RapidBaseHttpHandler):
             return
 
     def outgoing(self, message):
+        '''An HttpHandler for the mtech gateway, for use in Nigeria'''
         self.log_message("Mtech outgoing message: %s" % message)
 
         
 def get_params(handler):
+    '''Pulls the parameters from a query string and returns them in
+       a dictionary'''
     querystart = handler.path.find("?")
     if querystart == -1:
         return
     return map((lambda t: t.split("=")), handler.path[querystart + 1:].split("&"))
 
 def post_params(handler):
+    '''Pulls the parameters from the body of a POST and returns them
+       in a dictionary'''
     if handler.rfile:
         content_len = int(handler.headers["Content-Length"])
         data = handler.rfile.read(content_len)
