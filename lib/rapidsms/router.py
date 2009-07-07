@@ -8,6 +8,22 @@ import traceback
 import component
 import log
 
+#
+# RapidSMS only has one instance of a Router, so use
+# module level 'statics' to access it
+#
+
+_G={
+    'router': None
+}
+
+def get_router():
+    router = _G['router']
+    if router==None:
+        router = Router()
+        _G['router'] = router
+    return router
+
 class Router (component.Receiver):
     incoming_phases = ('parse', 'handle', 'cleanup')
     outgoing_phases = ('outgoing',)
