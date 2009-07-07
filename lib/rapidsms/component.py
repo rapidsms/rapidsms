@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-import Queue, sys, datetime, re, traceback
+import Queue, re, traceback
 import config
 
 Match_True  = re.compile(r'^(?:true|yes|1)$', re.I)

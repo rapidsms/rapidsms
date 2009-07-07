@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-import time, datetime, os, heapq
+import time, datetime, heapq
 import threading
 import traceback
 
@@ -67,7 +67,7 @@ class Router (component.Receiver):
             if "unexpected keyword" in e.message:
                 missing_keyword = e.message.split("'")[1]
                 raise Exception("Component '%s' does not support a '%s' option."
-                        % (title, missing_keyword))
+                        % (component.title, missing_keyword))
             else:
                 raise
         return component
@@ -317,10 +317,10 @@ class Router (component.Receiver):
         for phase in self.outgoing_phases:
             continue_sending = True
             
-			# call outgoing phases in the opposite order of the
-			# incoming phases so that, for example, the first app
-			# called with an incoming message is the last app called
-			# with an outgoing message
+            # call outgoing phases in the opposite order of the
+            # incoming phases so that, for example, the first app
+            # called with an incoming message is the last app called
+            # with an outgoing message
             for app in reversed(self.__sorted_apps()):
                 self.debug('OUT' + ' ' + phase + ' ' + app.slug)
                 try:

@@ -16,7 +16,6 @@ import re, datetime, time
 import errors, message
 import traceback
 import threading
-import codecs
 import gsmcodecs
 import gsmpdu
 
