@@ -9,7 +9,7 @@ from spomsky import Client
 class TestBackendSpomc(unittest.TestCase):
     def test_backend_spomc (self):
         router = MockRouter()
-        backend = Backend("spomc", router)
+        backend = Backend(router)
         backend.configure(host="localhost",port=65000)
         self.assertEquals(type(backend), Backend, "SPOMC backend loads")
         self.assertEquals(type(backend.client), Client, "SPOMC backend has Spomsky client")

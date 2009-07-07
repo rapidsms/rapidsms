@@ -12,11 +12,11 @@ class TestComponent(unittest.TestCase):
         c._router = "(router)"
         self.assertEquals(c.router, "(router)", "router can be set")
 
-    def test_name(self):
+    def test_title(self):
         c = Component()
-        self.assertEquals(c.name, "Component", "Component.name has a default")
-        c.name = "TestComponent"
-        self.assertEquals(c.name, "TestComponent", "Component.name can be set")
+        self.assertEquals(c.title, "component", "Component.title has a default")
+        c._title = "TestComponent"
+        self.assertEquals(c.title, "TestComponent", "Component.title can be set")
 
     def test_config_requires(self):
         c = Component()

@@ -2,26 +2,26 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 from config import Config
-import router
+from router import get_router
 import os, sys, shutil
 
 # the Manager class is a bin for various RapidSMS specific management methods
 class Manager (object):
     def route (self, conf, *args):
-        rtr = router.get_router()
-        rtr.set_logger(conf["log"]["level"], conf["log"]["file"])
-        rtr.info("RapidSMS Server started up")
+        router = get_router()
+        router.set_logger(conf["log"]["level"], conf["log"]["file"])
+        router.info("RapidSMS Server started up")
         
         # add each application from conf
         for app_conf in conf["rapidsms"]["apps"]:
-            rtr.add_app(app_conf)
+            router.add_app(app_conf)
 
         # add each backend from conf
         for backend_conf in conf["rapidsms"]["backends"]:
-            rtr.add_backend(backend_conf)
+            router.add_backend(backend_conf)
 
         # wait for incoming messages
-        rtr.start()
+        router.start()
         
         # TODO: Had to explicitly do this to end the script. Will need a fix.
         sys.exit(0)
