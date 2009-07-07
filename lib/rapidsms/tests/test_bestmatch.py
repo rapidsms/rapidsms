@@ -1,8 +1,8 @@
 #!/usr/bin/env python
-# vim: ai ts=4 sts=4 et sw=4
+# vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
 
 import unittest
-from bestmatch import BestMatch
+from rapidsms.parsers.bestmatch import BestMatch
 
 command_targets = [
     'join','leave','name','create'
