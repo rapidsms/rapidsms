@@ -12,9 +12,7 @@
 
 [rapidsms]
 apps=webui,admin,httptester,smsforum,nodegraph,contacts,logger
-#apps=nodegraph
 backends=http,gsm
-#,gsm
 
 # Database configuration info.
 #
@@ -58,6 +56,9 @@ port=8080
 anon_perms = ['bednets.can_view']
 #login_redirect_url=/
 
+[smsforum]
+default_lang=fr
+admin_cmd_pwd=0000
 
 # -- BACKENDS
 #
