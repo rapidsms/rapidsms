@@ -11,6 +11,28 @@ from datetime import datetime
 import rapidsms
 from rapidsms.message import Message
 
+def _uni(str):
+    """
+    Make inbound a unicode str
+    Decoding from utf-8 if needed
+
+    """
+    try:
+        return unicode(str)
+    except:
+        return unicode(str,'utf-8')
+
+def _str(uni):
+    """
+    Make inbound a string
+    Encoding to utf-8 if needed
+
+    """
+    try:
+        return str(uni)
+    except:
+        return uni.encode('utf-8')
+
 class RapidBaseHttpHandler(BaseHTTPServer.BaseHTTPRequestHandler):
     '''The base handler for use in the http backends.  This is a
        simple extension of the python builtin handlers with
@@ -22,12 +44,13 @@ class RapidBaseHttpHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 
     def log_message (self, format, *args):
         self.server.backend.debug(format, *args)
+        pass
 
     def respond(self, code, msg):
         self.send_response(code)
         self.send_header("Content-type", "text/html")
         self.end_headers()
-        self.wfile.write(msg)
+        self.wfile.write(_str(msg))
 
     
 class HttpHandler(RapidBaseHttpHandler):
@@ -53,7 +76,7 @@ class HttpHandler(RapidBaseHttpHandler):
         if match:
             # send the message
             session_id = match.group(1)
-            text = match.group(2)
+            text = _str(match.group(2))
             
             if text == "json_resp":
                 self.send_response(200)
@@ -61,17 +84,17 @@ class HttpHandler(RapidBaseHttpHandler):
                 self.end_headers()
                 
                 if HttpHandler.msg_store.has_key(session_id) and len(HttpHandler.msg_store[session_id]):
-                    self.wfile.write("{'phone':'%s', 'message':'%s'}" % (session_id, str(HttpHandler.msg_store[session_id].pop(0)).replace("'", r"\'")))
+                    resp=_str("{'phone':'%s', 'message':'%s'}" % (session_id, HttpHandler.msg_store[session_id].pop(0).replace("'", r"\'")))
+                    self.wfile.write(resp)
                 return
                 
-            # TODO watch out because urllib.unquote will blow up on unicode text 
             msg = self.server.backend.message(session_id, urllib.unquote(text))
             self.server.backend.route(msg)
             # respond with the number and text 
             self.send_response(200)
             self.send_header("Content-type", "text/html")
             self.end_headers()
-            self.wfile.write("{'phone':'%s', 'message':'%s'}" % (session_id, urllib.unquote(text).replace("'", r"\'")))
+            self.wfile.write(_str("{'phone':'%s', 'message':'%s'}" % (session_id, urllib.unquote(text).replace("'", r"\'"))))
             return
             
         return
@@ -88,10 +111,10 @@ class HttpHandler(RapidBaseHttpHandler):
         # a store and provides access to them via the JSON/AJAX 
         # interface
         if HttpHandler.msg_store.has_key(msg.connection.identity):
-            HttpHandler.msg_store[msg.connection.identity].append(msg.text)
+            HttpHandler.msg_store[msg.connection.identity].append(_str(msg.text))
         else:
             HttpHandler.msg_store[msg.connection.identity] = []
-            HttpHandler.msg_store[msg.connection.identity].append(msg.text)
+            HttpHandler.msg_store[msg.connection.identity].append(_str(msg.text))
                 
 class MTechHandler(RapidBaseHttpHandler):
     '''An HttpHandler for the mtech gateway, for use in Nigeria'''
@@ -124,20 +147,22 @@ class MTechHandler(RapidBaseHttpHandler):
         text = None
         sender = None
         date = None
-        for param in params:
-            if param[0] == "text":
+        for key,val in params:
+            if key == "text":
                 # TODO watch out because urllib.unquote will blow up on unicode text 
-                text = urllib.unquote(param[1])
-            elif param[0] == "from":
-                sender = param[1]
-            elif param[0] == "sent":
-                date = datetime.strptime(param[1], "%Y%m%d%H%M.%S")
+                text = _str(text)
+                text = urllib.unquote(val)
+                text = _uni(text)
+            elif key == "from":
+                sender = val
+            elif key == "sent":
+                date = datetime.strptime(val, "%Y%m%d%H%M.%S")
         
         if text and sender: 
             # respond with the number and text 
             msg = self.server.backend.message(text, sender, date)
             self.server.backend.route(msg)
-            self.respond(200, "{'phone':'%s', 'message':'%s'}" % (sender, text))
+            self.respond(200, "{'phone':'%s', 'message':'%s'}" % (sender, _str(text)))
             return
         else:
             self.respond(500, "You must specify a valid number and message")
