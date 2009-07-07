@@ -35,6 +35,7 @@ class TestBestMatch(unittest.TestCase):
         self.simiM=BestMatch(similar_targets)
         
     def test01BasicMatch(self):
+        print
         print "BASIC MATCHING"
         print "Find 'join'"
         res=self.cmdM.match('join')
@@ -71,18 +72,22 @@ class TestBestMatch(unittest.TestCase):
         self.assertTrue(set(res)==set(['later','leave']))
 
     def test02ExactMatch(self):
+        print
         print "EXACT MATCHING"
         print "Find 'bob'"
         res=self.simiM.match('bob')
+        print res
         self.assertTrue(len(res)==1 and res[0]=='bob')
 
     def test03UnAnchored(self):
+        print
         print "UNANCHORED SEARCH"
         res=self.cityM.match('field',anchored=False)
         print "Unanchored search for 'field': %s" % ','.join(res)
         self.assertTrue(set(res)==set(['springfield','westfield']))
 
     def test04PrefixMatch(self):
+        print
         print "IGNORE PREFIX MATCHING"
         res=self.restoM.match('panisse',anchored=True)
         print "Unprefixed search for 'panisse': %s" % ','.join(res)
@@ -113,6 +118,7 @@ class TestBestMatch(unittest.TestCase):
         self.assertTrue(set(res)==set(resto_targets[-3:]))
 
     def test05WithData(self):
+        print
         print "TARGETS WITH DATA"
         self.cmdM.targets=zip(command_targets,command_data)
 
@@ -133,6 +139,7 @@ class TestBestMatch(unittest.TestCase):
         self.assertTrue(res[0][1]['key']=='value')
 
     def test06AddRemoveTargets(self):
+        print
         print 'Add Buffalo'
         self.cityM.add_target('buffalo')
         res = self.cityM.match('buf')
@@ -160,6 +167,33 @@ class TestBestMatch(unittest.TestCase):
         self.cityM.add_target(('buffalo','rocks'))
         res = self.cityM.match('buf',with_data=True)
         self.assertTrue(len(res)==1 and res[0]==('buffalo','rocks'))
+
+    def test07Aliases(self):
+        print
+        print "Add 'boston' with aliases 'the hub', 'beantown'"
+        self.cityM.add_target(['boston', 'the hub', 'beantown'])
+        print "Search for Beantown"
+        res = self.cityM.match('beanTown')
+        self.assertTrue(len(res)==1 and res[0]=='boston')
+        
+        print "Search for Boston"
+        res = self.cityM.match('boston')
+        self.assertTrue(len(res)==1 and res[0]=='boston')
+
+        print "Add 'redsox country' as alias"
+        self.cityM.add_alias_for_target('boston', 'redsox country')
+        res = self.cityM.match('redsox')
+        self.assertTrue(len(res)==1 and res[0]=='boston')
+
+        print "Remove 'beantown'"
+        self.cityM.remove_alias_for_target('boston', 'beantown')
+        res = self.cityM.match('beantown')
+        self.assertTrue(len(res)==0)
+
+        print "Test get aliases"
+        self.assertTrue(set(self.cityM.get_aliases_for_target('boston'))==
+                        set(['redsox country', 'the hub']))
+        print self.cityM.targets
 
 if __name__ == '__main__':
     unittest.main()

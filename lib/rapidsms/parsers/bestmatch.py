@@ -33,6 +33,8 @@ class MultiMatch(object):
 class BestMatch(object):
     def __init__(self, targets=None, ignore_prefixes=None):
         self.__targets = dict()
+        self.__data = dict()
+        self.__aliases = dict()
         self.__ignore_prefixes = list()
         self.__lock = threading.Lock()
         self.__set_targets(targets)
@@ -61,7 +63,7 @@ class BestMatch(object):
         """
         
         # short circuit do-nothing case
-        if src is None or self.__targets is None or len(self.__targets)==0:
+        if src is None or len(self.__aliases)==0:
             return []
 
         src = src.strip()
@@ -96,40 +98,57 @@ class BestMatch(object):
                 ),re.IGNORECASE)
 
         # now look for matches
-        uniq=set()
-        results=[]
-        for t,d in self.__targets.items():
-            if exact_match_trumps and src==t:
-                results = [(t,d)]
+        found = set()
+        for a in self.__aliases:
+            if exact_match_trumps and src==a:
+                found = set([a])
                 break
-            if src_matcher.match(t) is not None:    
-                if t not in uniq:
-                    uniq.add(t)
-                    results.append((t,d))
+            if src_matcher.match(a) is not None:    
+                found.add(self.__aliases[a])
 
-        if len(results)>0 and not with_data:
-            return zip(*results)[0]
+        if len(found)>0 and not with_data:
+            return list(found)
         else:
-            return results
+            return [(t,self.__data[t]) for t in found]
+
 
     #
     # A slew of convenient setters/getters
     #
+    def get_aliases_for_target(self, target):
+        return self.__targets[target]
+
+    def add_alias_for_target(self, target, alias):
+        self.__targets[target].add(alias)
+        self.__aliases[alias] = target
+
+    def remove_alias_for_target(self, target, alias):
+        self.__targets[target].remove(alias)
+        del self.__aliases[alias]
+
     def __get_targets(self):
-        """Returns match targets as a set"""
-        return self.__targets
+        """
+        reconstruct a return list equivalent to the full target setting
+        list:
+
+        [([targ, alias*], data)+]
+
+        """
+        return [([i[0]]+list(i[1]),self.__data[i[0]]) for i in self.__targets.items()]
 
     def __set_targets(self,val):
         # erase existing
         with self.__lock:
             self.__targets = dict()
+            self.__data = dict()
+            self.__aliases = dict()
 
         if val is None or len(val)==0:
             return
     
         for v in val:
             self.add_target(v)
-    targets=property(__get_targets,__set_targets)
+    targets = property(__get_targets,__set_targets)
 
     def __get_ignore_prefixes(self):
         """Return ignore prefixes as a set"""
@@ -150,20 +169,51 @@ class BestMatch(object):
             self.add_ignore_prefix(v,prep=False)
         # add the last one with sort turned on
         self.add_ignore_prefix(val[-1],prep=True)
-    ignore_prefixes=property(__get_ignore_prefixes,__set_ignore_prefixes)
+    ignore_prefixes = property(__get_ignore_prefixes,__set_ignore_prefixes)
             
     def add_target(self, val):
+        """ 
+        'val' is the target to add and it may be ANY of the following:
+        
+        target_string
+        (target_string, data) -- in which case the data will be returned with
+                                 the match
+
+        [target, alias, alias, alias] -- in which case the first element in
+                                         the list is the target and others
+                                         are aliases
+
+        ([target, alias...], data) -- combo of above, target, aliases and data
+
+        """
         if val is None:
             return
 
         # check for something that we interpet as (target,data)
         target,data = (val if isinstance(val, tuple) else (val, None))
+
+        # see if it is an iterable, in which case the first is 
+        # the target and the rest are aliases
+        aliases=[]
+        if getattr(target, '__iter__', False):
+            aliases = list(target)
+            target = aliases[0]
+        else:
+            aliases = [target]
+                  
+
+        # check for empty
         target = ('' if target is None else target.strip())
         if len(target)==0: 
             return
 
         with self.__lock:
-            self.__targets[target]=data
+            self.__data[target] = data
+            for a in aliases:
+                self.__aliases[a] = target
+            al_set=set(aliases)
+            al_set.remove(target)
+            self.__targets[target] = al_set
 
     def add_ignore_prefix(self,val,prep=True):
         val=('' if val is None else val.strip())
@@ -196,9 +246,13 @@ class BestMatch(object):
 
     def remove_target(self, val):
         """Returns 'True' if removed, 'False' if not in the set"""
+        targ = val.strip()
         with self.__lock:
             try:
-                del self.__targets[unicode(val).strip()]
+                del self.__data[targ]
+                for k in self.__aliases.keys():
+                    if self.__aliases[k] == targ:
+                        del self.__aliases[targ]
             except KeyError:
                 return False
         return True
