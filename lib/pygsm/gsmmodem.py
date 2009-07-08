@@ -464,7 +464,7 @@ class GsmModem(object):
             # return a 'super' pdu with the entire
             # message (if this is the last segment)
             # or None if there are more segments coming
-           pdu = self._process_csm(pdu)
+            pdu = self._process_csm(pdu)
             
         if pdu is not None:
             self._add_incoming_pdu(pdu)
@@ -854,7 +854,7 @@ class GsmModem(object):
 
 if __name__ == "__main__":
 
-    import sys, re
+    import sys
     if len(sys.argv) >= 2:
 
         # the first argument is SERIAL PORT

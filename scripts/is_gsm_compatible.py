@@ -11,17 +11,17 @@ import getopt
 # hack to get paths working - we should use django's runscript instead
 CUR_DIR = os.getcwd()
 os.chdir('..')
-sys.path.append(os.path.join(os.getcwd(),os.path.join('lib','pygsm')))
+sys.path.append(os.path.join(os.getcwd(),os.path.join('lib')))
 
-import gsmcodecs
+import pygsm.gsmcodecs
 
 # attempt to interpret the input file in this order
 # standard codecs are listed here: http://docs.python.org/library/codecs.html
 encodings = ['utf-8','cp1252','utf-16']
 line_count = 0
 
-def check_gsm_compatible(file):
-    file_name = file.rsplit(os.sep,1)[1]
+def check_gsm_compatible(infile):
+    file_name = infile.rsplit(os.sep,1)[1]
     for enc in encodings:
         try: 
             if can_gsm_encode(enc, file):
@@ -46,9 +46,9 @@ def can_gsm_encode(encoding,file_name):
     try:
         # first assume we are getting utf-8 encoding (linux default)
         with codecs.open(file_name,'r', encoding=encoding) as fin:
-          for line in fin:
-            line_count = line_count+1
-            line.encode('gsm')
+            for line in fin:
+                line_count = line_count+1
+                line.encode('gsm')
         return True
     except UnicodeDecodeError, e:
         """ This happen when the input file is not of type 'encoding' """
@@ -73,8 +73,8 @@ def main():
     if len(args) < 1:
         print "ERROR: I need at least 1 argument"
     for arg in args:
-        file = os.path.join(CUR_DIR,arg)
-        check_gsm_compatible(file) # process() is defined elsewhere
+        infile = os.path.join(CUR_DIR,arg)
+        check_gsm_compatible(infile) # process() is defined elsewhere
 
 if __name__ == "__main__":
     main()
