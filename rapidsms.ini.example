@@ -58,7 +58,7 @@ anon_perms = ['bednets.can_view']
 
 [smsforum]
 default_lang=fr
-admin_cmd_pwd=0000
+#admin_cmd_pwd=0000
 
 # -- BACKENDS
 #
