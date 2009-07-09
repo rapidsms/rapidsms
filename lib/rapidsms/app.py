@@ -32,7 +32,7 @@ class App(component.Component):
             # if the PRIORITY is a string, we can assume that it's a named
             # priority. these should almost always be used over integers,
             # so we can re-jig them in future, if necessary
-            if pt == str:
+            if isinstance(pt,basestring):
                 if p in named:
                     return named[p]
                 
@@ -54,7 +54,7 @@ class App(component.Component):
             # TODO: is there a use-case for non int/string
             # priorities? I can't think of one...
             else:
-                self.warning("Invalid PRIORITY type: %s (use str or int)" % tp)
+                self.warning("Invalid PRIORITY type: %s (use str or int)" % pt)
         
         # if the app doesn't have a priority of its own, or it
         # was invalid (and warned) above, default to "normal"
