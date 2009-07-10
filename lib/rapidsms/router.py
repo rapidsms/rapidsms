@@ -19,10 +19,15 @@ _G={
 
 def get_router():
     router = _G['router']
-    if router==None:
+    if router == None:
         router = Router()
         _G['router'] = router
     return router
+
+def _set_router(router):
+    """ This function's only purpose is to support unit tests (with Mock Router) """
+    if router is not None:
+        _G['router'] = router
 
 class Router (component.Receiver):
     incoming_phases = ('parse', 'handle', 'cleanup')

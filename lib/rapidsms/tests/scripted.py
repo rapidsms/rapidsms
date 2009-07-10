@@ -4,6 +4,7 @@ from harness import MockRouter, EchoApp
 from rapidsms.backends.backend import Backend
 from rapidsms.message import Message
 import unittest, re
+from rapidsms.router import get_router, _set_router as set_router
 try:
     from django.test import TestCase
 except:
@@ -50,19 +51,21 @@ class TestScript (TestCase):
     apps = None
 
     def setUp (self):
-        self.router = MockRouter()
-        self.backend = Backend(self.router)
-        self.router.add_backend(self.backend)
+        set_router(MockRouter())
+        router = get_router()
+        self.backend = Backend(router)
+        router.add_backend(self.backend)
         if not self.apps:
             raise Exception(
                 "You must define a list of apps in your TestScript class!")
         for app_class in self.apps:
-            app = app_class(self.router)
-            self.router.add_app(app)
+            app = app_class(router)
+            router.add_app(app)
 
     def tearDown (self):
-        if self.router.running:
-            self.router.stop() 
+        router = get_router()
+        if router.running:
+            router.stop() 
 
     @classmethod
     def parseScript (cls, script):
@@ -82,7 +85,8 @@ class TestScript (TestCase):
         return cmds
      
     def runParsedScript (self, cmds):
-        self.router.start()
+        router = get_router()
+        router.start()
         last_msg = ''
         for num, date, dir, txt in cmds:
             if dir == '>':
@@ -90,7 +94,7 @@ class TestScript (TestCase):
                 msg = self.backend.message(num, txt)
                 msg.date = date 
                 self.backend.route(msg)  
-                self.router.run()
+                router.run()
             elif dir == '<':
                 msg = self.backend.next_message()
                 self.assertTrue(msg is not None, 
@@ -102,7 +106,7 @@ class TestScript (TestCase):
                     "\nMessage: %s\nReceived text: %s\nExpected text: %s\n"
                     % (last_msg, msg.text,txt))
             last_msg = txt
-        self.router.stop()
+        router.stop()
 
     def runScript (self, script):
         self.runParsedScript(self.parseScript(script))
