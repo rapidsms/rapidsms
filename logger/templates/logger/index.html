@@ -1,12 +1,19 @@
 {% extends "layout.html" %}
+{% load i18n %}
 {% block title %}Message Log{% endblock %}
 {% block content %}
-<h2>All Messages</h2> 
+
+<div class="module">
+
+<h2>All Messages</h2>  
 <table width="100%"> 
     <thead>
         <tr>
             <th>Date</th>
-            <th>From</th>
+            <!-- This is a security feature. DO NOT propagate to rapidsms core. -->
+            {% if user.is_staff %}
+	            <th>From</th>
+     		{% endif %}
             <th>Backend</th>
             <th>Message</th>
             <th>Direction</th>
@@ -16,7 +23,9 @@
         {% for message in messages %}
             <tr>
                 <td>{{message.date|date:"d-M-Y H:m:s"}}</td>
-                <td>{{message.identity}}</td>
+	            {% if user.is_staff %}
+	                <td>{{message.identity}}</td>
+	     		{% endif %}
                 <td>{{message.backend}}</td>
                 <td>{{message.text}}</td>
                 <td>{% if message.is_incoming %}&lt&lt&lt
@@ -27,4 +36,11 @@
         {% endfor %}
     </tbody>
 </table>
+
+<div class="toolbar">
+   	<a href="/logger/csv/in" class="add">{% trans "Export Incoming Messages" %}</a>
+   	<a href="/logger/csv/out" class="add">{% trans "Export Outgoing Messages" %}</a>
+</div>
+
+</div>
 {% endblock %}

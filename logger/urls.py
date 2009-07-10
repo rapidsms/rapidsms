@@ -6,5 +6,7 @@ from django.conf.urls.defaults import *
 import apps.logger.views as views
 
 urlpatterns = patterns('',
-    url(r'^logger/?$', views.index),
+    url(r'^logger/?$',  views.index),
+    url(r'^logger/csv/in?$',     views.csv_in),
+    url(r'^logger/csv/out?$',     views.csv_out),
 )
