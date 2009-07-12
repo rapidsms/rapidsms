@@ -290,6 +290,8 @@ table {
 		/* various common toolbar icons. should be from the
 		 * famfamfam silk set, to fit in with RapidSMS */
 		.module div.toolbar .add  { background-image: url("../icons/silk/add.png");  }
+		.module div.toolbar .history  { background-image: url("../icons/silk/clock.png");  }
+		.module div.toolbar .export { background-image: url("../icons/silk/page_white_excel.png");  }
 		.module div.toolbar .help { background-image: url("../icons/silk/help.png"); }
 		
 		/* these seem to be from the tango
@@ -430,6 +432,8 @@ table {
 	/* from http://www.famfamfam.com/lab/icons/silk/
 	 * (licensed under Creative Commons Attribution) */
 	input.js-button.add      { background-image: url("../icons/silk/add.png");    }
+	input.js-button.history  { background-image: url("../icons/silk/clock.png");    }
+	input.js-button.export   { background-image: url("../icons/silk/page_white_excel.png");    }
 	input.js-button.del      { background-image: url("../icons/silk/delete.png"); }
 	input.js-button.accept   { background-image: url("../icons/silk/accept.png"); }
 	input.js-button.unaccept { background-image: url("../icons/silk/accept--dull.png"); }
