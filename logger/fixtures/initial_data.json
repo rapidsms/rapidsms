@@ -1,0 +1,52 @@
+[
+    {
+        "pk": 1, 
+        "model": "logger.codeset", 
+        "fields": {
+            "name": "TOSTAN_CODE"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "logger.codeset", 
+        "fields": {
+            "name": "FLAGGED_CODE"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "logger.code", 
+        "fields": {
+            "set": 1, 
+            "name": "code1", 
+            "slug": "1"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "logger.code", 
+        "fields": {
+            "set": 1, 
+            "name": "code2", 
+            "slug": "2"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "logger.code", 
+        "fields": {
+            "set": 1, 
+            "name": "code3", 
+            "slug": "3"
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "logger.code", 
+        "fields": {
+            "set": 2, 
+            "name": "flagged", 
+            "slug": "True"
+        }
+    }
+]

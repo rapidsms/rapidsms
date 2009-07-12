@@ -100,19 +100,4 @@ class MessageAnnotation(models.Model):
     def __unicode__(self):
         return u"%(message)s: %(annotation)s" % { 'message':self.message, 'annotation':self.annotation }
 
-""" 
-class MessageAnnotation(models.Model):
-    "" 
-    Less dynamic (but still) optional way we're doing annotations for now 
-    to make querying easier and more streamlined 
-    ""
-    message = models.OneToOneField(IncomingMessage)
-    text = models.CharField(max_length=255, blank=True)
-    code = models.ForeignKey(Code, null=True)
-    flagged = models.BooleanField(null=True)
-
-    def __unicode__(self):
-        return unicode(self.text)
-"""
-
 
