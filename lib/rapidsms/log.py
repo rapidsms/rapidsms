@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# vim: ai ts=4 sts=4 et sw=4
+# vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
 
 import logging
 import logging.handlers
@@ -16,9 +16,9 @@ LOG_FILE    = "/tmp/rapidsms.log"
 class Logger (object):
     """A simple wrapper around the standard python logger."""
     def __init__(self, level=LOG_LEVEL, file=LOG_FILE,
-                       format=LOG_FORMAT, stderr=True):
+                       format=LOG_FORMAT, channel=LOG_CHANNEL, stderr=True):
         # set up a specific logger with our desired output level
-        self.log = logging.getLogger(LOG_CHANNEL)
+        self.log = logging.getLogger(channel)
         self.log.setLevel(getattr(logging, level.upper()))
         formatter = logging.Formatter(format)
         try:
