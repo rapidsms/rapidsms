@@ -1,7 +1,7 @@
 from rapidsms.webui.utils import render_to_response
 from models import *
 from datetime import datetime, timedelta
-from apps.reporting.util import export
+from utilities.export import export
 
 def index(req):
     template_name="logger/index.html"
