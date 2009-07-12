@@ -24,7 +24,7 @@ def check_gsm_compatible(infile):
     file_name = infile.rsplit(os.sep,1)[1]
     for enc in encodings:
         try: 
-            if can_gsm_encode(enc, file):
+            if can_gsm_encode(enc, infile):
                 print "PASSES gsm encoding (%s)" % file_name
                 break
         except UnicodeEncodeError, e:
