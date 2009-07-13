@@ -1,15 +1,11 @@
 #!/usr/bin/env python
-# vim: ai ts=4 sts=4 et sw=4
+# vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
 
-import BaseHTTPServer, SocketServer
-import select
+import BaseHTTPServer
 import random
 import re
-import urllib, urllib2
+import urllib
 from datetime import datetime
-
-import rapidsms
-from rapidsms.message import Message
 
 def _uni(str):
     """
@@ -87,7 +83,12 @@ class HttpHandler(RapidBaseHttpHandler):
                     resp=_str("{'phone':'%s', 'message':'%s'}" % (session_id, HttpHandler.msg_store[session_id].pop(0).replace("'", r"\'")))
                     self.wfile.write(resp)
                 return
-                
+            
+            # get time
+            received = datetime.utcnow()
+            # leave Naive!
+            # received.replace(tzinfo=pytz.utc)
+            
             msg = self.server.backend.message(session_id, urllib.unquote(text))
             self.server.backend.route(msg)
             # respond with the number and text 

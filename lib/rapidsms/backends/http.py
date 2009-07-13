@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# vim: ai ts=4 sts=4 et sw=4
+# vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
 
 import BaseHTTPServer, SocketServer
 import select
@@ -8,7 +8,6 @@ import re
 import urllib
 import httphandlers as handlers
 import rapidsms
-from rapidsms.message import Message
 
 msg_store = {}
 

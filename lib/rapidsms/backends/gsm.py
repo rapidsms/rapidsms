@@ -82,7 +82,11 @@ class Backend(Backend):
                 # we got an sms! create RapidSMS Connection and
                 # Message objects, and hand it off to the router
                 c = Connection(self, msg.sender)
-                m = Message(c, msg.text)
+                m = Message(
+                            connection=c, 
+                            text=msg.text,
+                            date=msg.sent.replace(tzinfo=None)
+                            )
                 self.router.send(m)
                 
             # process all outbound messages

@@ -101,7 +101,7 @@ class BestMatch(object):
         found = set()
         for a in self.__aliases:
             if exact_match_trumps and src==a:
-                found = set([a])
+                found = set([self.__aliases[a]])
                 break
             if src_matcher.match(a) is not None:    
                 found.add(self.__aliases[a])
