@@ -38,8 +38,8 @@ class BestMatch(object):
         self.__ignore_prefixes = list()
         self.__lock = threading.Lock()
         self.__set_targets(targets)
-        self.__set_ignore_prefixes(ignore_prefixes)
         self.__ignore_prefix_pattern = ''
+        self.__set_ignore_prefixes(ignore_prefixes)
     
     def match(self, src, anchored=True, with_data=False, exact_match_trumps=True):
         """
@@ -77,7 +77,9 @@ class BestMatch(object):
         # prefixes
         has_prefix=False
         for p in self.__ignore_prefixes:
-            left,pref,right = src.partition(p)
+            # make sure to lowercase everything for
+            # case insensitive search
+            left,pref,right = src.lower().partition(p.lower())
             if len(left)==0 and \
                     len(pref)!=0:
                 # we matched a prefix
@@ -85,17 +87,23 @@ class BestMatch(object):
                 break
 
         # now make the matching regex
-        prefixes = (self.__ignore_prefix_pattern \
-                      if not has_prefix \
-                      else '')
+        match_prefixes = None
+        if not has_prefix and len(self.__ignore_prefixes)>0:
+            match_prefixes = self.__ignore_prefix_pattern 
 
-        src_matcher = re.compile(ur'%s\s*%s\s*%s.*' % \
-                                   ( 
-                anchor,
-                prefixes,
-                re.escape(src),
-                
-                ),re.IGNORECASE)
+        if match_prefixes is not None:
+            src_matcher = re.compile(ur'%s\s*%s\s*%s.*' % \
+                                         (anchor,
+                                          match_prefixes,
+                                          re.escape(src),
+                                          ),
+                                     re.IGNORECASE | re.U)
+        else:
+            src_matcher = re.compile(ur'%s\s*%s.*' % \
+                                         (anchor,
+                                          re.escape(src),
+                                          ),
+                                     re.IGNORECASE | re.U)
 
         # now look for matches
         found = set()
