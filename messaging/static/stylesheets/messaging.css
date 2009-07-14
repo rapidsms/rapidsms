@@ -125,3 +125,40 @@
 				white-space: normal;
 				width: auto;
 			}
+	
+
+	/* the To/From text isn't very important,
+	 * so shrink it to avoid distracting */
+	.log td.direction {
+		padding: 0.625em;
+		padding-right: 0;
+		text-align: right;
+		font-size: 80%;
+		color: #aaa;
+	}
+	
+	/* make enough space for the direction
+	 * arrow on the right of the link */
+	.log td.tofrom {
+		padding-right: 16px;
+	}
+		
+		/* add the icons */
+		.log tr.incoming td.tofrom { background: url("../icons/incoming.png") no-repeat 100% 50%; }
+		.log tr.outgoing td.tofrom { background: url("../icons/outgoing.png") no-repeat 100% 50%; }
+
+			/* add a flexible space to the right, the same
+			 * as the padding around the entire cell, to line
+			 * up the arrows without resorting to pixel sizes */
+			.log td.tofrom a.reporter,
+			.log td.tofrom a.connection,
+			.log td.tofrom span.rapidsms {
+				padding-right: 0.5em;
+			}
+	
+	/* color the text fields according to the
+	 * direction (incoming=red, outgoing=green) */
+	.log tr.incoming td.text { color: #040; }
+	.log tr.outgoing td.text { color: #400; }
+
+

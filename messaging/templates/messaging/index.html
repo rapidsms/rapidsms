@@ -96,27 +96,21 @@
 			<table>
 				<thead>
 					<tr>
-						<th>From</th>
-						<th>To</th>
-						<th>Date</th>
+						<th colspan="2">To/From</th>
 						<th class="text">Text</th>
 					</tr>
 				</thead>
 				<tbody>{% for msg in message_log.object_list %}{% ifequal msg.direction "in" %}
-					<tr class="incoming">{% if msg.reporter %}
-						<td><a href="" class="reporter{% if msg.reporter.full_name %}">{{ msg.reporter.full_name }}{% else %} unknown">Unknown{% endif %}</a></td>{% else %}
-						<td><a href="" class="connection">{{ msg.connection }}</a></td>{% endif %}
-						<td><span class="rapidsms">RapidSMS</span></td>
-						<td>{{ msg.date|last_seen }}</td>
+					<tr class="incoming">
+						<td class="direction">From:</td>{% if msg.reporter %}
+						<td class="tofrom"><a href="" class="reporter{% if msg.reporter.full_name %}">{{ msg.reporter.full_name }}{% else %} unknown">Unknown{% endif %}</a></td>{% else %}
+						<td class="tofrom"><a href="" class="connection">{{ msg.connection }}</a></td>{% endif %}
 						<td class="text">{{ msg.text }}</td>
 					</tr>{% else %}
 					<tr class="outgoing">
-						<!-- todo: replace this with the webui user that
-						     was logged in when the message was sent -->
-						<td><span class="rapidsms">RapidSMS</span></td>{% if msg.reporter %}
-						<td><a href="" class="reporter{% if msg.reporter.full_name %}">{{ msg.reporter.full_name }}{% else %} unknown">Unknown{% endif %}</a></td>{% else %}
-						<td><a href="" class="connection">{{ msg.connection }}</a></td>{% endif %}
-						<td>{{ msg.date|last_seen }}</td>
+						<td class="direction">To:</td>{% if msg.reporter %}
+						<td class="tofrom"><a href="" class="reporter{% if msg.reporter.full_name %}">{{ msg.reporter.full_name }}{% else %} unknown">Unknown{% endif %}</a></td>{% else %}
+						<td class="tofrom"><a href="" class="connection">{{ msg.connection }}</a></td>{% endif %}
 						<td class="text">{{ msg.text }}</td>
 					</tr>{% endifequal %}{% endfor %}
 				</tbody>
