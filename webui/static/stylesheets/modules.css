@@ -61,7 +61,7 @@ h2, h3 {
 /* this doesn't belong here, but i'm not sure where
  * else to put it. the reporters app is pretty much
  * core, so maybe this will _become_ the right place. */
-a.reporter, a.connection {
+a.reporter, a.connection, span.rapidsms {
 	background: no-repeat 0 50% url("../icons/silk/user.png");
 	padding-left: 18px;
 }
@@ -73,6 +73,15 @@ a.reporter, a.connection {
 	a.connection {
 		background-image: url("../icons/silk/phone.png");
 		color: #d25d33;
+	}
+	
+	/* connections look slightly different
+	 * (highlight with red (regular link color with
+	 * huge rotated 180 degrees) to warn that they
+	 * should probably be converted to reporters) */
+	span.rapidsms {
+		background-image: url("../icons/silk/building.png");
+		color: #aaa;
 	}
 
 
