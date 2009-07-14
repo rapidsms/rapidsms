@@ -245,12 +245,22 @@ class BestMatch(object):
         return True
 
     def __prep_prefixes(self):
+        # check for do nothing case
+        if len(self.__ignore_prefixes)==0:
+            self.__ignore_prefix_pattern=''
+            return
+
         # sort longest to shortest
         self.__ignore_prefixes.sort(lambda x,y: len(y)-len(x))
+        
         # and make the regex pattern
         ppats=[ur'(?:%s)' % re.escape(p) \
                    for p in self.__ignore_prefixes]
-        self.__ignore_prefix_pattern = '(%s)' % u'|'.join(ppats)
+
+        if len(ppats)==1:
+            self.__ignore_prefix_pattern = '%s?' % ppats[0]
+        else:
+            self.__ignore_prefix_pattern = '(%s)?' % u'|'.join(ppats)
 
     def remove_target(self, val):
         """Returns 'True' if removed, 'False' if not in the set"""

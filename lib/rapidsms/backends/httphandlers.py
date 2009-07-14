@@ -40,7 +40,6 @@ class RapidBaseHttpHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 
     def log_message (self, format, *args):
         self.server.backend.debug(format, *args)
-        pass
 
     def respond(self, code, msg):
         self.send_response(code)
