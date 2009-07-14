@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# vim: ai ts=4 sts=4 et sw=4
+# vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
 
 from rapidsms.component import Receiver
 from rapidsms.message import Message
@@ -32,7 +32,11 @@ class Backend (Receiver):
    
     def message(self, identity, text, date=None):
         c = Connection(self, identity)
-        return Message(c, text, date)
+        return Message(
+            connection=c, 
+            text=text, 
+            date=date
+            )
 
     def route(self, msg):
         # send it off to the router
