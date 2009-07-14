@@ -6,6 +6,10 @@
  * What is this? */
 
 
+#inner div.split .left  { width: 40%; }
+#inner div.split .right { width: 60%; }
+
+
 /* i'm using a table here, because i've
  * spent quite enough time trying to make
  * this damn form align properly with css */
@@ -98,3 +102,26 @@
 	-webkit-box-sizing: border-box;
 	width: 100%;
 }	
+
+.log { }
+
+	/* there's a lot of data to fit into such a small table,
+	 * so maximize it horizontally, and reserve as much space as
+	 * possible for the "text" column without wrapping the others */
+	.log table {
+		width: 100%;
+	}
+
+		.log td,
+		.log th {
+			white-space: nowrap;
+			width: 1%;
+		}
+			
+			/* undo that funny-business
+			 * for the last column */
+			.log th.text,
+			.log td.text {
+				white-space: normal;
+				width: auto;
+			}

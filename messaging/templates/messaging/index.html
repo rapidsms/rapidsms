@@ -1,6 +1,7 @@
 {% extends "messaging/base.html" %}
 {% block title %}Messaging{% endblock %}
 {% load reporters %}
+{% load pagination %}
 
 {% block content %}
 <div class="split">
@@ -85,10 +86,48 @@
 	</div>
 	<div class="right">
 		<div class="module contents">
-			<h2>Message Contents</h2>
+			<h2>Send a Message</h2>
 			<textarea cols="40" rows="6"></textarea>
 			<input type="button" class="send" value="Send Messages" />
 			<input type="button" class="cancel" value="Cancel" disabled="disabled" />
+		</div>
+		<div class="module log">
+			<h2>Message Log</h2>
+			<table>
+				<thead>
+					<tr>
+						<th>From</th>
+						<th>To</th>
+						<th>Date</th>
+						<th class="text">Text</th>
+					</tr>
+				</thead>
+				<tbody>{% for msg in message_log.object_list %}{% ifequal msg.direction "in" %}
+					<tr class="incoming">{% if msg.reporter %}
+						<td><a href="" class="reporter{% if msg.reporter.full_name %}">{{ msg.reporter.full_name }}{% else %} unknown">Unknown{% endif %}</a></td>{% else %}
+						<td><a href="" class="connection">{{ msg.connection }}</a></td>{% endif %}
+						<td><span class="rapidsms">RapidSMS</span></td>
+						<td>{{ msg.date|last_seen }}</td>
+						<td class="text">{{ msg.text }}</td>
+					</tr>{% else %}
+					<tr class="outgoing">
+						<!-- todo: replace this with the webui user that
+						     was logged in when the message was sent -->
+						<td><span class="rapidsms">RapidSMS</span></td>{% if msg.reporter %}
+						<td><a href="" class="reporter{% if msg.reporter.full_name %}">{{ msg.reporter.full_name }}{% else %} unknown">Unknown{% endif %}</a></td>{% else %}
+						<td><a href="" class="connection">{{ msg.connection }}</a></td>{% endif %}
+						<td>{{ msg.date|last_seen }}</td>
+						<td class="text">{{ msg.text }}</td>
+					</tr>{% endifequal %}{% endfor %}
+				</tbody>
+				<tfoot>
+					<tr>
+						<td colspan="4">
+							{% paginator message_log %}
+						</td>
+					</tr>
+				</tfoot>
+			</table>
 		</div>
 	</div>
 	<div class="clear-hack"></div>

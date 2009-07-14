@@ -8,6 +8,7 @@ from django.core.exceptions import FieldError
 from django.core.urlresolvers import reverse
 from rapidsms.webui.utils import *
 from apps.reporters.models import *
+from models import combined_message_log, __combined_message_log_row
 
 
 def index(req):
@@ -18,7 +19,7 @@ def index(req):
     checked  = cookie_recips("checked")
     error    = cookie_recips("error")
     sent     = cookie_recips("sent")
-    
+
     show_search = False
     filtered    = False
     hits        = []
@@ -42,11 +43,11 @@ def index(req):
         hits = Reporter.objects.filter(**kwargs).values_list("pk", flat=True)
         show_search = True
         filtered = True
-    
+
     # optionally show the search field as default
     if "search" in req.GET and req.GET["search"]:
         show_search = True
-    
+
     # the columns to display in the "field"
     # field of the search form. this is WAY
     # ugly, and should be introspected
@@ -65,6 +66,7 @@ def index(req):
             "field":       req.GET.get("field", ""),
             "cmp":         req.GET.get("cmp", ""),
             "show_search": show_search,
+            "message_log": paginated(req, combined_message_log(checked), prefix="msg", wrapper=__combined_message_log_row),
             "reporters":   paginated(req, Reporter.objects.all(), wrapper=__reporter) })
 
     # if we just searched via GET (not via AJAX), store the hits
