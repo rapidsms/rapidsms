@@ -94,7 +94,7 @@ class TestBestMatch(unittest.TestCase):
         self.assertTrue(len(res)==0)
 
         print "Add prefix 'chez'"
-        self.restoM.add_ignore_prefix('chez')
+        self.restoM.add_ignore_prefix('Chez')
 
         res=self.restoM.match('panisse',anchored=True)
         print "Prefixed search for 'panisse': %s" % ','.join(res)
@@ -150,7 +150,7 @@ class TestBestMatch(unittest.TestCase):
 
         print 'Remove Buffalo'
         self.cityM.remove_target('buffalo')
-        res = self.cityM.match('buf')
+        res = self.cityM.match('buF')
         self.assertTrue(len(res)==0)
 
         print "Add prefix 'new'"
@@ -165,7 +165,7 @@ class TestBestMatch(unittest.TestCase):
 
         print "Add target with data. (buffalo, rocks)"
         self.cityM.add_target(('buffalo','rocks'))
-        res = self.cityM.match('buf',with_data=True)
+        res = self.cityM.match('BuF',with_data=True)
         self.assertTrue(len(res)==1 and res[0]==('buffalo','rocks'))
 
     def test07Aliases(self):
@@ -174,6 +174,7 @@ class TestBestMatch(unittest.TestCase):
         self.cityM.add_target(['boston', 'the hub', 'beantown'])
         print "Search for Beantown"
         res = self.cityM.match('beanTown')
+        print res
         self.assertTrue(len(res)==1 and res[0]=='boston')
         
         print "Search for Boston"
@@ -193,7 +194,6 @@ class TestBestMatch(unittest.TestCase):
         print "Test get aliases"
         self.assertTrue(set(self.cityM.get_aliases_for_target('boston'))==
                         set(['redsox country', 'the hub']))
-        print self.cityM.targets
 
 if __name__ == '__main__':
     unittest.main()
