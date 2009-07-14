@@ -132,8 +132,8 @@ table {
 			 * (which is all of them, except for IE6), space out the
 			 * columns a bit more, without imposing extra markup on
 			 * the template author */
-			body:last-child td            { padding-right: 1.5em; }
-			body:last-child td:last-child { padding-right: 0.5em; }
+			html:last-child td            { padding-right: 1.5em; }
+			html:last-child td:last-child { padding-right: 0.5em; }
 			
 			/* TODO: docs */
 			td a.unknown {
