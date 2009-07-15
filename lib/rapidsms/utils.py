@@ -25,3 +25,21 @@ def to_aware_utc_dt(dt):
 
     return dt.astimezone(pytz.utc)
 
+
+def timedelta_as_minutes(td):
+    """
+    Returns the value of the entire timedelta as
+    integer minutes, rounded down
+    
+    """
+    return timedelta_as_seconds(td)/60
+
+
+def timedelta_as_seconds(td):
+    '''
+    Returns the value of the entire timedelta as
+    integer seconds, rounded down
+    
+    '''
+    return td.days*86400+td.seconds
+    
