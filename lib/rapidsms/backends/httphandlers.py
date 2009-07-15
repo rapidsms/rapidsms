@@ -93,6 +93,7 @@ class HttpHandler(RapidBaseHttpHandler):
                 urllib.unquote(text),
                 date=received
                 )
+
             self.server.backend.route(msg)
             # respond with the number and text 
             self.send_response(200)
