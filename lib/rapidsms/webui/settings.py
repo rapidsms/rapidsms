@@ -73,6 +73,10 @@ TEMPLATE_DIRS = [
     # Don't forget to use absolute paths, not relative paths.
 ]
 
+# this is the template that is used as the base for all
+# rapidsms pages.  if you want to totally restyle your pages
+# you should change this in your configuration .ini file
+BASE_TEMPLATE = "layout.html"
 
 
 
