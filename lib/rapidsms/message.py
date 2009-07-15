@@ -2,9 +2,6 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 import copy
-
-from rapidsms.connection import Connection
-from rapidsms.person import Person
 from datetime import datetime
 
 

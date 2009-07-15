@@ -13,7 +13,7 @@ class Connection(object):
         #
         # NOTE: The whole 'finding' a backend from a stored 'slug'
         # is _messed_ and probably shouldn't be here, but putting it
-        # here for now at leasts encapsulates it in core where it 
+        # here for now at least encapsulates it in core where it 
         # should be instead of floating around everyone's app
         #
         if isinstance(backend,basestring):

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-from rapidsms.component import Receiver
+from rapidsms.tests.harness import MockRouter, MockBackend
 from rapidsms.message import Message
 from rapidsms.connection import Connection
 import time
