@@ -1,11 +1,23 @@
 #!/usr/bin/env python
-# vim: ai ts=4 sts=4 et sw=4
+# vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
 
 import sys, os
-sys.path.append(os.path.join(os.getcwd(),'lib'))
-    
-import rapidsms
+from os import path
+
+# figure out where all the extra libs (rapidsms and contribs) are
+libs=[os.path.abspath('lib')] # main 'rapidsms/lib'
+for f in os.listdir('contrib'):
+    pkg = path.join('contrib',f)
+    if path.isdir(pkg) and \
+            'lib' in os.listdir(pkg):
+        libs.append(path.abspath(path.join(pkg,'lib')))
+
+# add extra libs to the python sys path
+sys.path.extend(libs)
+
+# import manager now that the path is correct
+from rapidsms import manager
 
 if __name__ == "__main__":
-    rapidsms.manager.start(sys.argv)
-#some test comment
+    manager.start(sys.argv)
+
