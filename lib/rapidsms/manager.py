@@ -2,13 +2,13 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 from config import Config
-from router import Router
+from router import get_router
 import os, sys, shutil
 
 # the Manager class is a bin for various RapidSMS specific management methods
 class Manager (object):
     def route (self, conf, *args):
-        router = Router()
+        router = get_router()
         router.set_logger(conf["log"]["level"], conf["log"]["file"])
         router.info("RapidSMS Server started up")
         
