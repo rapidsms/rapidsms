@@ -17,6 +17,8 @@ class MultiMatch(object):
     And you want to search in both at once, do:
     MultiMatch(men_best_matcher,women_best_matcher).match(aPerson)
 
+    Simply unions the result sets.
+
     """
     def __init__(self, *args):
         self.matchers = [m for m in args if isinstance(m, BestMatch)]
@@ -31,6 +33,89 @@ class MultiMatch(object):
 
         
 class BestMatch(object):
+    """
+    An alternative to the Keyword parser, the BestMatch parser takes 
+    a set of target strings, and matches a Source string to the targets.
+    
+    The match does not have to be exact, the matcher returns all targets
+    that contain the src, or start with the source (default behavior)
+
+    This can be used to perform a best-unique-match (similar to what 'gem'
+    command uses to let you shorten subcommands).
+
+    Basic usage:
+
+    bm=BestMatch(['foo', 'bar', 'baz'])
+    hit = bm.match('f')
+    if len(hit)==1: 
+        print 'we found: %s' % hit[0] 
+    elif len(hit)>1: 
+        print 'which did you mean? we found: %s' % hit
+
+    The matcher has several advanced features:
+    - aliases where each target can have multiple aliases (spellings) 
+    - storing of arbitrary data to be returned on target match
+    - anchored and unanchored searches
+    - ignore prefixes that are stripped before matches
+
+    examples:
+
+    Aliases:
+    To set aliases, simply pass a list to the matcher where you would
+    pass a single target. The first item is the target, the rest
+    are aliases.
+
+    e.g.
+
+    bm = BestMatch([['John Fitzgerald Kennedy', 'JFK', 'Jack Kennedy'], 'Jim'])
+    print bm.match('jfk')
+    >>> ['John Fitzgerald Kennedy']
+
+    Data:
+    To store data:
+    1. pass a tuple where you would have passed a target. 
+    t[0] is the target (or target/alias list) t[1] is the data:
+
+    bm = BestMatch([('bob',25),('jim',35)])
+    
+    2. set 'with_data' to true when performing the match:
+    print bm.match('b')
+    >>> [('bob',25)]
+
+    Anchored v. Unanchored searches
+    By default, searches will assume the match should be anchored at
+    the start of the target. E.g. 'field' will match 'fieldton' but not
+    'springfield'
+
+    Pass 'anchored=False' to 'match()' for unanchored behavior
+
+    bm = BestMatch(['westfield','springfield','fieldton'])
+    print bm.match('field')
+    >>> ['fieldton']
+    print bm.match(field, anchored=False)
+    >>> ['westfield','springfield','fieldton']
+
+    Ignore Prefixes:
+    If searching over a set that contains common prefixes, 
+    ignore prefixes make matching easier by letting you
+    leave them off the source.
+    
+    E.g. Match French resaurants:
+    bm = BestMatch(['chez louis', 'chez panisse', 'chez robert'],
+                   ignore_prefixes=['chez'])
+    print bm.match('p')
+    >>> ['chez panisse']
+
+    src's containing the prefix match as expected:
+    print bm.match('chez')
+    >>> ['chez louis', 'chez panisse', 'chez robert']
+
+    NOTE: All matches are case insensitive!
+    
+    For examples of usage in an app, see: 
+    http://github.com/jwishnie/rapidsms-tostan/blob/41242c7b54d954e16ce7dcf46a0f351bdaa1e8e8/apps/smsforum/app.py
+
+    """
     def __init__(self, targets=None, ignore_prefixes=None):
         self.__targets = dict()
         self.__data = dict()
@@ -245,12 +330,22 @@ class BestMatch(object):
         return True
 
     def __prep_prefixes(self):
+        # check for do nothing case
+        if len(self.__ignore_prefixes)==0:
+            self.__ignore_prefix_pattern=''
+            return
+
         # sort longest to shortest
         self.__ignore_prefixes.sort(lambda x,y: len(y)-len(x))
+        
         # and make the regex pattern
         ppats=[ur'(?:%s)' % re.escape(p) \
                    for p in self.__ignore_prefixes]
-        self.__ignore_prefix_pattern = '(%s)' % u'|'.join(ppats)
+
+        if len(ppats)==1:
+            self.__ignore_prefix_pattern = '%s?' % ppats[0]
+        else:
+            self.__ignore_prefix_pattern = '(%s)?' % u'|'.join(ppats)
 
     def remove_target(self, val):
         """Returns 'True' if removed, 'False' if not in the set"""
