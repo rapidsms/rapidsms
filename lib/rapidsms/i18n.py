@@ -6,31 +6,9 @@ import gettext
 
 
 #RapidSMS Internationalization (i18n)
-
 # 
-
 # Read more about Django i18n: http://docs.djangoproject.com/en/dev/topics/i18n/
 # Read more about Python i18n: http://www.python.org/doc/2.5/lib/node733.html
-
-# A data model for simple interconnected graphs of nodes.
-#
-# There are two types of nodes: Sets and Nodes.
-#
-# The only distinction is:
-# - Sets may contain other nodes (both Sets and Nodes)
-# - Leaves may _not_ contain other nodes (they terminate the graph)
-#
-# Speaking concretely, A graph of Nodes can represent GROUPS of USERS where:
-# - Groups are Sets and can contain other Groups and Users
-#
-# default_language
-# languages
-# web_languages
-# sms_languages
-#
-# Not Supported Yet:
-# - Different default languages for webui and sms
-#   So if you have Set A with itself as the only member (A<A--A contains A) asking for the
 
 # path to GNU gettext 'locale' directory
 LOCALE_PATH=os.path.join('contrib','locale')
