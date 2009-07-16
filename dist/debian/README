@@ -1,0 +1,16 @@
+This directory contains init scripts for running RapidSMS under Debian
+ and Debian derived distros like Ubuntu.
+
+The files are:
+rapidsms-init.sh: start-up script for running a RapidSMS instance with 
+                  PyGSM backend
+
+rapidsms-spomsy-init.sh: start-up script for running a RapidSMS instance
+                         with Spomskyd and Spomc backend.
+
+rapidsms.cron: A cron job (to be placed in /etc/cron.d) that works
+               with the init scripts to restart crashed RapidSMS
+               instances
+
+NOTE: See individual files for installation and usage instructions
+

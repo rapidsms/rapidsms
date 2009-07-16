@@ -1,0 +1,14 @@
+# /etc/cron.d/rapidsms-tostan: check that rapidsms is still allive
+
+# 1. Install the init script in /etc/init.d
+# 2. Put me in /etc/cron.d
+# 3. Make sure I am ownd by root and have mode rw-r--r--
+# 4. Edit the SCRIPT value to point to the init script
+# 5. Modify the first column to pick how often to check for crashes
+#    e.g. */20 means evey 20 minutes
+
+PATH=/usr/sbin:/usr/bin:/sbin:/bin
+SCRIPT=/etc/init.d/rapidsms-tostan
+
+*/20 * * * *   root $SCRIPT check-restart >/dev/null
+

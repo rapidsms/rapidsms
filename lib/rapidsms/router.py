@@ -1,12 +1,33 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-import time, datetime, os, heapq
+import time, datetime, heapq
 import threading
 import traceback
 
 import component
 import log
+
+#
+# RapidSMS only has one instance of a Router, so use
+# module level 'statics' to access it
+#
+
+_G={
+    'router': None
+}
+
+def get_router():
+    router = _G['router']
+    if router == None:
+        router = Router()
+        _G['router'] = router
+    return router
+
+def _set_router(router):
+    """ This function's only purpose is to support unit tests (with Mock Router) """
+    if router is not None:
+        _G['router'] = router
 
 class Router (component.Receiver):
     incoming_phases = ('parse', 'handle', 'cleanup')
@@ -51,7 +72,7 @@ class Router (component.Receiver):
             if "unexpected keyword" in e.message:
                 missing_keyword = e.message.split("'")[1]
                 raise Exception("Component '%s' does not support a '%s' option."
-                        % (title, missing_keyword))
+                        % (component.title, missing_keyword))
             else:
                 raise
         return component
@@ -301,10 +322,10 @@ class Router (component.Receiver):
         for phase in self.outgoing_phases:
             continue_sending = True
             
-			# call outgoing phases in the opposite order of the
-			# incoming phases so that, for example, the first app
-			# called with an incoming message is the last app called
-			# with an outgoing message
+            # call outgoing phases in the opposite order of the
+            # incoming phases so that, for example, the first app
+            # called with an incoming message is the last app called
+            # with an outgoing message
             for app in reversed(self.__sorted_apps()):
                 self.debug('OUT' + ' ' + phase + ' ' + app.slug)
                 try:

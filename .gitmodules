@@ -1,0 +1,3 @@
+[submodule "contrib/pygsm"]
+	path = contrib/pygsm
+	url = git://github.com/rapidsms/pygsm
