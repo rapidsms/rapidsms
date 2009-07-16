@@ -11,7 +11,6 @@ from rapidsms.connection import Connection
 from rapidsms.backends import Backend
 import backend
 from rapidsms import log
-from rapidsms import utils
 
 POLL_INTERVAL=2 # num secs to wait between checking for inbound texts
 LOG_LEVEL_MAP = {
@@ -86,7 +85,7 @@ class Backend(Backend):
                 m = Message(
                             connection=c, 
                             text=msg.text,
-                            date=utils.to_naive_utc_dt(msg.sent)
+                            date=msg.sent.replace(tzinfo=None)
                             )
                 self.router.send(m)
                 
