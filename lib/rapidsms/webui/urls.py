@@ -19,7 +19,7 @@ for rs_app in settings.RAPIDSMS_APPS.values():
     try:
     
         # import the single "urlpatterns" attribute
-        package_name = "apps.%s.urls" % (rs_app["type"])
+        package_name = "%s.urls" % (rs_app["type"])
         module = __import__(package_name, {}, {}, ["urlpatterns"])
 
         # add the explicitly defined urlpatterns
@@ -44,7 +44,7 @@ for rs_app in settings.RAPIDSMS_APPS.values():
             ))
     
     # urls.py couldn't be imported for this app...
-    # was it because importing apps.XXX.urls failed,
+    # was it because importing XXX.urls failed,
     # or because something INSIDE urls.py raised?
     except ImportError:
         
