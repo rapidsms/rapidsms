@@ -22,7 +22,7 @@ from django.utils.translation import ugettext_noop
 
 
 # ugettext is globally available to make tagging strings easy
-def ugettext_from_locale(locale, text):
+def ugettext_from_locale(text, locale=_default):
     """ 
     Used to translate a string given a particulate locale
     
@@ -43,7 +43,7 @@ def ugettext_from_locale(locale, text):
     return translator.ugettext(text)
 
 
-def init(default='en', languages=[[ 'en','English' ]] ,locale=LOCALE_PATH):
+def init(default='en', languages=[[ 'en','English' ]] , path=LOCALE_PATH):
     """ 
     Global initialization function for sms i18n translators
     
@@ -60,7 +60,7 @@ def init(default='en', languages=[[ 'en','English' ]] ,locale=LOCALE_PATH):
         if language:
             t = _Translation(language[0],language[1:])
             try:
-                t.translator = gettext.translation('django',locale,[t.slug,default])
+                t.translator = gettext.translation('django',path,[t.slug,default])
             except IOError, e:
                 if str(e).find("No translation file") != -1:
                     raise Exception("Translation file not found. Please create " +

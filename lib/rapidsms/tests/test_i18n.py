@@ -17,15 +17,15 @@ class TestI18n(unittest.TestCase):
     def test_sms(self):
         # this gets cleaned up once rapidsms unit tests are fixed
         init()
-        self.assertEquals( _t(_default,"You said: %(message)s"), "You said: %(message)s" )
+        self.assertEquals( _t("You said: %(message)s"), "You said: %(message)s" )
 
         # this gets cleaned up once rapidsms unit tests are fixed
         init('fr', [ ['en','English'],['fr','Francais'],['de','Deutsche'] ])
-        self.assertEquals( _t('en',"You said: %(message)s"), "You said: %(message)s" )
-        self.assertEquals( _t('fr',"You said: %(message)s"), "Vous avez dit: %(message)s" )
-        self.assertEquals( _t('de',"You said: %(message)s"), "Ni Dichte: %(message)s" )
+        self.assertEquals( _t("You said: %(message)s", 'en'), "You said: %(message)s" )
+        self.assertEquals( _t("You said: %(message)s", 'fr'), "Vous avez dit: %(message)s" )
+        self.assertEquals( _t("You said: %(message)s", 'de'), "Ni Dichte: %(message)s" )
         # for unknown language codes, revert to default translator
-        self.assertEquals( _t('ru',"You said: %(message)s"), "Vous avez dit: %(message)s" )
+        self.assertEquals( _t("You said: %(message)s", 'ru' ), "Vous avez dit: %(message)s" )
 
     """ 
     Not sure where to put django-dependent unit tests...
