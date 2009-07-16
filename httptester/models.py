@@ -1,15 +1,12 @@
 from django.db import models
 
-# Create your models here.
-class Message(models.Model):
-    phone_number = models.CharField(max_length=15)
-    date = models.DateTimeField('date published')
-    body = models.TextField()
-    outgoing = models.BooleanField(default=False)
+class Permissions(models.Model):
+    '''This is a fake model that has nothing in it, because
+       django expects all app-level permissions to be in
+       a model'''
     
-    def __unicode__(self):
-        type = "incoming"
-        if self.outgoing:
-            type = "outgoing"
-        return self.phone_number + ":  " + self.body +  "(" + type + " at " + self.date.__str__() + ")" 
-
+    class Meta:
+        # the permission required for this tab to display in the UI
+        permissions = (
+            ("can_view", "Can view"),
+        )

@@ -9,11 +9,12 @@
 		<title>{% block title %}{% endblock %}{% block title_suffix %} - RapidSMS{% endblock %}</title>
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		
+		{% block stylesheets %}
 		<!-- stylesheets -->
 		<link type="text/css" rel="stylesheet" href="/static/webapp/stylesheets/layout.css" />
 		<link type="text/css" rel="stylesheet" href="/static/webapp/stylesheets/modules.css" />
-		{% block stylesheets %}{% endblock %}
-		
+		{% block page_stylesheets %}{% endblock %}
+		{% endblock %}
 		<!-- javascripts (global, app, page) -->
 		<script type="text/javascript" src="/static/webapp/javascripts/jquery-1.3.2.min.js"></script>{% for js in javascripts %}
 		<script type="text/javascript" src="{{ js }}"></script>{% endfor %}
@@ -24,15 +25,19 @@
 			{% region "top" %}
 			{% block header %}
 			<div id="header">
-                                <div id="auth">
+                 {% block auth %}
+			                    <div id="auth">
                                         {% if user.is_authenticated %}
                                             <p><a href="/accounts/logout/">Log out {{ user.username }}</a></p>
                                         {% else %}
                                             <p><a href="/accounts/login/">Log in</a></p>
                                         {% endif %}
                                 </div>
+                 {% endblock %}
 				<div id="branding">
+                   {% block branding %}
 					<h1><b>RapidSMS</b></h1>
+                   {% endblock %}
 				</div>
 				<ul id="tabs">{% for app in apps %}{% if app.tab_link %}
                                         {% ifhasperm user app "can_view" %}
@@ -54,7 +59,6 @@
 					<a href="http://github.com/unicefinnovation/rapidsms">RapidSMS</a> is free software,
 					available under the <a href="http://www.fsf.org/licensing/licenses/lgpl-3.0.html">LGPL</a>.
 				</p>
-				
 				{% region "footer" %}
 			</div>
 			{% endblock %}
