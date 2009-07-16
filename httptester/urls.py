@@ -3,7 +3,7 @@
 
 import os
 from django.conf.urls.defaults import *
-import apps.httptester.views as views
+import httptester.views as views
 
 urlpatterns = patterns('',
     url(r'^http$', views.index),

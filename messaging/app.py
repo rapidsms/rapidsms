@@ -3,7 +3,7 @@
 
 
 import rapidsms
-from apps.reporters.models import *
+from reporters.models import *
 
 
 class App (rapidsms.app.App):

@@ -9,7 +9,7 @@ from django import template
 register = template.Library()
 
 
-@register.inclusion_tag("webui/partials/region.html", takes_context=True)
+@register.inclusion_tag("webapp/partials/region.html", takes_context=True)
 def region(context, name):
     def __path(app):
         return "%s/templates/regions/%s.html" %\

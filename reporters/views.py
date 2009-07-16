@@ -9,8 +9,8 @@ from django.shortcuts import get_object_or_404
 from django.db import transaction
 
 from rapidsms.webui.utils import *
-from apps.reporters.models import *
-from apps.reporters.utils import *
+from reporters.models import *
+from reporters.utils import *
 
 
 def message(req, msg, link=None):
