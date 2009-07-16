@@ -1,12 +1,11 @@
 #!/usr/bin/env python
-# vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
+# vim: ai ts=4 sts=4 et sw=4
 
 import copy
 
 from rapidsms.connection import Connection
 from rapidsms.person import Person
 from datetime import datetime
-from rapidsms import utils
 
 
 class StatusCodes:
@@ -18,13 +17,12 @@ class StatusCodes:
     
     
 class Message(object):
-    def __init__(self, connection=None, text=None, person=None, date=None):
+    def __init__(self, connection=None, text=None, person=None, date=datetime.now()):
         if connection == None and person == None:
             raise Exception("Message __init__() must take one of: connection, person")
         self._connection = connection
         self.text = text
-        self.date = ( datetime.utcnow() if date is None
-                      else utils.to_naive_utc_dt(date) )
+        self.date = date
         self.person = person
         self.responses = []
         self.status = StatusCodes.NONE
