@@ -79,7 +79,7 @@ class BestMatch(object):
     bm = BestMatch([('bob',25),('jim',35)])
     
     2. set 'with_data' to true when performing the match:
-    print bm.match('b')
+    print bm.match('b',with_data=True)
     >>> [('bob',25)]
 
     Anchored v. Unanchored searches
