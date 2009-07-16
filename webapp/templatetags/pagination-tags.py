@@ -8,7 +8,7 @@ from django import template
 register = template.Library()
 
 
-@register.inclusion_tag("webui/partials/paginator.html", takes_context=True)
+@register.inclusion_tag("webapp/partials/paginator.html", takes_context=True)
 def paginator(context, objects):
     
     prefix = getattr(objects, "prefix", "")

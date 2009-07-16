@@ -1,4 +1,4 @@
 from django.contrib import admin
-from apps.httptester.models import *
+from httptester.models import *
 
 admin.site.register(Message)

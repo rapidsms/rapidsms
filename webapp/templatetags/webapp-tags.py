@@ -3,7 +3,7 @@
 from django import template
 register = template.Library()
 
-from apps.webui.app import App as webui_app
+from webapp.app import App as webui_app
 from rapidsms.webui.settings import RAPIDSMS_APPS as app_conf
 
 @register.tag(name="ifhasperm")
@@ -52,9 +52,9 @@ class PermCheck(template.Node):
             elif user.is_anonymous():
                 # for anonymous users, check against anon_perms
                 # defined in the webui section of rapidsms.ini 
-                print app_conf['webui']
-                if app_conf['webui']:
-                    if permission in app_conf['webui']['anon_perms']:
+                print app_conf['webapp']
+                if app_conf['webapp']:
+                    if permission in app_conf['webapp']['anon_perms']:
                         display =  self.nodelist.render(context)
             return display
 

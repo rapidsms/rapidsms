@@ -3,8 +3,8 @@
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import RequestContext
 from rapidsms.webui.utils import render_to_response
-from apps.httptester.models import Message
-from apps.httptester.forms import MessageForm
+from httptester.models import Message
+from httptester.forms import MessageForm
 from django.core.urlresolvers import reverse
 from rapidsms.webui import settings
 import datetime
@@ -44,7 +44,7 @@ def index_basic(req):
 
 def proxy(req, number, message):
     # build the url to the http server running
-    # in apps.ajax.app.App via conf hackery
+    # in ajax.app.App via conf hackery
     conf = settings.RAPIDSMS_APPS["httptester"]
     url = "http://%s:%s/%s/%s" % (
         conf["host"], 
