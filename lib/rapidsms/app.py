@@ -63,6 +63,9 @@ class App(component.Component):
     def start (self):
         pass
 
+    def filter (self, message):
+        pass
+
     def parse (self, message):
         pass
 
