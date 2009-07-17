@@ -131,6 +131,7 @@ def paginated(req, query_set, per_page=20, prefix="", wrapper=None):
         page = int(req.GET.get(prefix+"page", "1"))
         paginator = Paginator(query_set, per_page)
         objects = paginator.page(page)
+        objects.page_count = paginator.num_pages
     
     # have no mercy if the page parameter is not valid. there
     # should be no links to an invalid page, so coercing it to
