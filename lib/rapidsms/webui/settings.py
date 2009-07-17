@@ -20,8 +20,8 @@ TIME_ZONE = time.tzname[0]
 # http://www.i18nguy.com/unicode/language-identifiers.html
 
 LANGUAGES = (
-   ('fr', ('Francais')),
-   ('en', ('English')),
+   ('fr', 'Francais'),
+   ('en', 'English'),
 )
 
 SITE_ID = 1
