@@ -9,7 +9,7 @@ import component
 import log
 
 class Router (component.Receiver):
-    incoming_phases = ('parse', 'handle', 'cleanup')
+    incoming_phases = ('filter', 'parse', 'handle', 'cleanup')
     outgoing_phases = ('outgoing',)
 
     def __init__(self):
@@ -245,23 +245,38 @@ class Router (component.Receiver):
         
         # loop through all of the apps and notify them of
         # the incoming message so that they all get a
-        # chance to do what they will with it                      
-        for phase in self.incoming_phases:
-            for app in self.__sorted_apps():
-                self.debug('IN' + ' ' + phase + ' ' + app.slug)
-                responses = len(message.responses)
-                handled = False
-                try:
-                    handled = getattr(app, phase)(message)
-                except Exception, e:
-                    self.error("%s failed on %s: %r\n%s", app, phase, e, traceback.print_exc())
-                if phase == 'handle':
-                    if handled is True:
-                        self.debug("%s short-circuited handle phase", app.slug)
-                        break
-                elif responses < len(message.responses):
-                    self.warning("App '%s' shouldn't send responses in %s()!", 
-                        app.slug, phase)
+        # chance to do what they will with it
+        try:
+            for phase in self.incoming_phases:
+                for app in self.__sorted_apps():
+                    self.debug('IN' + ' ' + phase + ' ' + app.slug)
+                    responses = len(message.responses)
+                    handled = False
+                    try:
+                        handled = getattr(app, phase)(message)
+                    except Exception, e:
+                        self.error("%s failed on %s: %r\n%s", app, phase, e, traceback.print_exc())
+
+                    # during the "filter" phase, apps can return True
+                    # to abort ALL further processing of this message
+                    if phase == 'filter':
+                        if handled is True:
+                            self.warning('Message filtered by "%s" app', app.slug)
+                            raise(StopIteration)
+
+                    elif phase == 'handle':
+                        if handled is True:
+                            self.debug("%s short-circuited handle phase", app.slug)
+                            break
+
+                    elif responses < len(message.responses):
+                        self.warning("App '%s' shouldn't send responses in %s()!", 
+                            app.slug, phase)
+
+        # maybe raised within the loop, when
+        # it's aborted during the filter phase
+        except StopIteration:
+            pass
 
         # now send the message's responses
         message.flush_responses()
