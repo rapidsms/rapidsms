@@ -212,11 +212,13 @@ table {
 			tfoot .paginator span {
 				float: left; }
 			
+				tfoot .paginator .active,
 				tfoot .paginator a.active {
 					background: #eee;
 					color: #000;
 				}
 				
+
 				tfoot .paginator .first,
 				tfoot .paginator .prev,
 				tfoot .paginator .next,
