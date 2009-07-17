@@ -101,13 +101,17 @@ class TestScript (TestCase):
                 last_msg, msg.text, txt = map(smart_str, [last_msg, msg.text, txt])
                 self.assertTrue(msg is not None, 
                     "message was returned.\nMessage: '%s'\nExpecting: '%s')" % (last_msg, txt))
-                self.assertEquals(msg.peer, num,
-                    "Expected to send to %s, but message was sent to %s\nMessage: '%s'\nReceived: '%s'\nExpecting: '%s'" 
-                    % (num, msg.peer,last_msg, msg.text, txt))
-                self.assertEquals(msg.text.strip(), txt.strip(),
-                    "\nMessage: %s\nReceived text: %s\nExpected text: %s\n"
-                    % (last_msg, msg.text,txt))
-            last_msg = txt
+                try:
+                    self.assertEquals(msg.peer, num,
+                        "Expected to send to %s, but message was sent to %s\nMessage: '%s'\nReceived: '%s'\nExpecting: '%s'" 
+                        % (num, msg.peer,last_msg, msg.text, txt))
+                    self.assertEquals(msg.text.strip(), txt.strip(),
+                        "\nMessage: %s\nReceived text: %s\nExpected text: %s\n"
+                        % (last_msg, msg.text,txt))
+                except UnicodeDecodeError:
+                    raise Exception("There has been a problem interpreting non-ascii characters for your display. " +
+                                    "Please use a console with support for utf-8.")            
+                last_msg = txt
         router.stop()
 
     def runScript (self, script):
