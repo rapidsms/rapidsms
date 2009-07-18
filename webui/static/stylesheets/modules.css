@@ -295,6 +295,7 @@ table {
 		.module div.toolbar .history  { background-image: url("../icons/silk/clock.png");  }
 		.module div.toolbar .export { background-image: url("../icons/silk/page_white_excel.png");  }
 		.module div.toolbar .help { background-image: url("../icons/silk/help.png"); }
+		.module div.toolbar .delete { background-image: url("../icons/silk/delete.png"); }
 		
 		/* these seem to be from the tango
 		 * set... TODO: use silk! */
@@ -436,7 +437,7 @@ table {
 	input.js-button.add      { background-image: url("../icons/silk/add.png");    }
 	input.js-button.history  { background-image: url("../icons/silk/clock.png");    }
 	input.js-button.export   { background-image: url("../icons/silk/page_white_excel.png");    }
-	input.js-button.del      { background-image: url("../icons/silk/delete.png"); }
+	input.js-button.delete   { background-image: url("../icons/silk/delete.png"); }
 	input.js-button.accept   { background-image: url("../icons/silk/accept.png"); }
 	input.js-button.unaccept { background-image: url("../icons/silk/accept--dull.png"); }
 	input.js-button.clear    { background-image: url("../icons/silk/decline.png"); } /* TODO: better icon! */
