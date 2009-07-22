@@ -45,6 +45,16 @@ class Manager (object):
 	except IndexError:
 	    print "Oops. Please specify a name for your app."
 
+def import_local_settings (settings, ini, localfile="settings.py"):
+    """Allow a settings.py file in the same directory as rapidsms.ini
+       to modify the imported rapidsms.webui.settings."""
+    local_settings = os.path.join(os.path.dirname(ini), localfile)
+    try:
+        execfile(local_settings, globals(), settings.__dict__)
+    except IOError:
+        # local_settings doesn't exist
+        pass
+
 def start (args):
     # if a specific conf has been provided (which it
     # will be), if we're inside the django reloaded
@@ -76,6 +86,7 @@ def start (args):
         # config from rapidsms.config, in a round-about way.
         # can't do it until env[RAPIDSMS_INI] is defined
         from rapidsms.webui import settings
+        import_local_settings(settings, ini)
 
         # whatever we're doing, we'll need to call
         # django's setup_environ, to configure the ORM
