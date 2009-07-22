@@ -11,7 +11,7 @@
 # backends=[backend1,backend2,...]  * comma-separated list of backends to load
 
 [rapidsms]
-apps=webui,admin,httptester,smsforum,nodegraph,contacts,logger
+apps=webui,admin,httptester,smsforum,nodegraph,contacts,logger,tostan
 backends=http,gsm
 
 # Database configuration info.
