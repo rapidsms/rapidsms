@@ -16,7 +16,7 @@ def check_availability(req):
 def dashboard(req):
 	return render_to_response(req, "dashboard.html")
 
-def login(req, template_name="webui/login.html"):
+def login(req, template_name="webapp/login.html"):
     '''Login to rapidsms'''
     # this view, and the one below, is overridden because 
     # we need to set the base template to use somewhere  
@@ -24,7 +24,7 @@ def login(req, template_name="webui/login.html"):
     req.base_template = settings.BASE_TEMPLATE 
     return django_login(req, **{"template_name" : template_name})
 
-def logout(req, template_name="webui/loggedout.html"):
+def logout(req, template_name="webapp/loggedout.html"):
     '''Logout of rapidsms'''
     req.base_template = settings.BASE_TEMPLATE 
     return django_logout(req, **{"template_name" : template_name})
