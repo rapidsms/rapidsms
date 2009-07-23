@@ -13,7 +13,8 @@
 
 <h1>Please log in to RapidSMS</h1>
 
-<form method="post" action="{% url apps.webui.views.login %}">
+
+<form method="post" action="{% url webapp.views.login %}">
 <table>
 <tr>
     <td>{{ form.username.label_tag }}</td>
