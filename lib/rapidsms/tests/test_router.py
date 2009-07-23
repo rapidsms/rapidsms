@@ -12,8 +12,8 @@ class TestRouter(unittest.TestCase):
     def test_log(self):
         r = Router()
         r.logger = MockLogger()
-        r.log("debug", "test message", 5)
-        self.assertEquals(r.logger[0], (r,"debug","test message",5),
+        r.log("debug", "test message %d", 5)
+        self.assertEquals(r.logger[0], (r,"debug","test message %d",5),
             "log() calls self.logger.write()")
 
     def test_set_logger(self):
