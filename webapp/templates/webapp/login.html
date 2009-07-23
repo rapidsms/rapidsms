@@ -1,5 +1,5 @@
-{% extends base_template %}
-{% block title %}Dashboard{% endblock %}
+{% extends request.base_template %}
+{% block title %}Login{% endblock %}
 {% block content %}
 
 {% if form.errors %}
@@ -13,7 +13,7 @@
 
 <h1>Please log in to RapidSMS</h1>
 
-<form method="post" action="{% url django.contrib.auth.views.login %}">
+<form method="post" action="{% url apps.webui.views.login %}">
 <table>
 <tr>
     <td>{{ form.username.label_tag }}</td>
