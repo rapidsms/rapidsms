@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
+import os
 import unittest
 import tempfile
 from rapidsms import Config
@@ -31,12 +32,11 @@ end=no
 class TestConfig(unittest.TestCase):
     
     def setUp(self):
-        ini = tempfile.NamedTemporaryFile()
+        fd,path = tempfile.mkstemp()
+        ini = os.fdopen( fd ,'w' ) 
         ini.write(TEST_INI)
-        ini.flush()
-        ini.seek(0)
-        self.config = Config(ini.name)
         ini.close()
+        self.config = Config(path)
 
     def test___init__(self):
         pass
