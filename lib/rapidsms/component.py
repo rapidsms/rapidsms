@@ -51,6 +51,7 @@ class Component(object):
         # component, store and remove the common stuff
         if "title" in kwargs: self._title = kwargs.pop("title")
         if "slug"  in kwargs: self._slug  = kwargs.pop("slug")
+        if "type"  in kwargs: self._type  = kwargs.pop("type")
         
         # HACK: remove any internal stuff that was added by
         # config.py for the benefit of the webui (which doesn't

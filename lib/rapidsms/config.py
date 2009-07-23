@@ -10,6 +10,9 @@ def to_list (item, separator=","):
 
 
 class Config (object):
+    app_prefixes = ["apps", "rapidsms.contrib.apps", "rapidsms.apps"]
+    
+    
     def __init__ (self, *paths):
         self.parser = SafeConfigParser()
         
@@ -103,6 +106,32 @@ class Config (object):
             pass
 
 
+    def __import_app (self, app_type):
+        """Iterates the modules in which RapidSMS apps can live (apps,
+           rapidsms.contrib.apps, and rapidsms.apps), attempting to load
+           _app_type_ from each. When an app is found, returns a tuple
+           containing the full module name and the module itself. If no
+           module is found, raises ImportError."""
+           
+        # iterate the places that apps might live,
+        # and attempt to import app_type from each
+        for prefix in self.app_prefixes:
+            mod_str = ".".join([prefix, app_type])
+            module = self.__import_class(mod_str)
+            
+            # we found the app! return it!
+            if module is not None:
+                return mod_str, module
+
+        # the module couldn't be imported. it's probably a
+        # typo in the ini, or a missing app directory. either
+        # way, explode, because this app may be necessary to
+        # run properly (especially during ./rapidsms syncdb)
+        raise ImportError(
+            'Couldn\'t import "%s" from %s' %
+                (app_type, " or ".join(self.app_prefixes)))
+
+
     def component_section (self, name):
         
         # fetch the current config for this section
@@ -118,24 +147,27 @@ class Config (object):
         
         return data
 
-    
+
     def app_section (self, name):
         data = self.component_section(name)
-        data["module"] = "apps.%s" % (data["type"])
+        
+        # attempt to import the module, to locate it (it might be in ./apps,
+        # contrib, or rapidsms/apps) and verify that it imports cleanly
+        data["module"], module = self.__import_app(data["type"])
         
         # load the config.py for this app, if possible
         config = self.__import_class("%s.config" % data["module"])
         if config is not None:
-            
+
             # copy all of the names not starting with underscore (those are
             # private or __magic__) into this component's default config
             for var_name in dir(config):
                 if not var_name.startswith("_"):
                     data[var_name] = getattr(config, var_name)
         
-        # import the actual module, and add the path to the
-        # config - it might not always be in rapidsms/apps/%s
-        data["path"] = self.__import_class(data["module"]).__path__[0]
+        # the module was imported! add it's full path to the
+        # config, since it might not be in rapidsms/apps/%s
+        data["path"] = module.__path__[0]
         
         # return the component with the additional
         # app-specific data included.
@@ -150,8 +182,8 @@ class Config (object):
         
         # "apps" and "backends" are strings of comma-separated
         # component names. first, break them into real lists
-        app_names     = to_list(raw_section["apps"])
-        backend_names = to_list(raw_section["backends"])
+        app_names     = to_list(raw_section.get("apps",     ""))
+        backend_names = to_list(raw_section.get("backends", ""))
         
         # run lists of component names through component_section,
         # to transform into lists of dicts containing more meta-info

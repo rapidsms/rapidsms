@@ -72,15 +72,30 @@ class Router (component.Receiver):
                 return backend
         return None
 
+
     def add_app (self, conf):
         try:
-            app = self.build_component("apps.%s.app.App", conf)
-            self.info("Added app: %r" % conf)
+
+            # find the App class via the config, since apps can be
+            # loaded via arbitrary module strings now (apps.whatever vs
+            # rapidsms.apps.whatever vs rapidsms.contrib.apps.whatever)
+            app_module = __import__("%s.app" % conf["module"], {}, {}, ["App"])
+            app_class = getattr(app_module, "App")
+            app = app_class(self)
+
+            # pass the configuration on to the app. note that
+            # we're not watching for keyword argument any more,
+            # since Component._configure wraps that nicely now
+            app._configure(**conf)
             self.apps.append(app)
-            
+
+            # dump the app config. should this be debug level?
+            self.info("Added app: %r" % (conf))
+
         except:
             self.log_last_exception("Failed to add app: %r" % conf)
-    
+
+
     def start_backend (self, backend):
         while self.running:
             try:
