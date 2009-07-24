@@ -30,7 +30,7 @@ class Router (component.Receiver):
         """Imports and instantiates an module, given a dict with 
            the config key/value pairs to pass along."""
         # break the class name off the end of the module template
-        # i.e. "apps.%s.app.App" -> ("apps.%s.app", "App")
+        # i.e. "%s.app.App" -> ("%s.app", "App")
         module_template, class_name = class_template.rsplit(".",1)
        
         # make a copy of the conf dict so we can delete from it
@@ -75,7 +75,7 @@ class Router (component.Receiver):
 
     def add_app (self, conf):
         try:
-            app = self.build_component("apps.%s.app.App", conf)
+            app = self.build_component("%s.app.App", conf)
             self.info("Added app: %r" % conf)
             self.apps.append(app)
             

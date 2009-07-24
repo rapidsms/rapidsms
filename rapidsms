@@ -5,7 +5,7 @@ import sys, os
 from os import path
 
 # figure out where all the extra libs (rapidsms and contribs) are
-libs=[os.path.abspath('lib')] # main 'rapidsms/lib'
+libs=[os.path.abspath('lib'),os.path.abspath('apps')] # main 'rapidsms/lib'
 for f in os.listdir('contrib'):
     pkg = path.join('contrib',f)
     if path.isdir(pkg) and \

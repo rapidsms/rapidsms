@@ -3,7 +3,7 @@
 
 import os, log
 from ConfigParser import SafeConfigParser
-
+import logging
 
 def to_list (item, separator=","):
     return filter(None, map(lambda x: str(x).strip(), item.split(separator)))
@@ -85,21 +85,25 @@ class Config (object):
     
     
     def __import_class (self, class_tmpl):
-        """Given a full class name (ie, apps.webui.app.App), returns the
+        """Given a full class name (ie, webapp.app.App), returns the
            class object. There doesn't seem to be a built-in way of doing
            this without mucking with __import__."""
         
         # break the class name off the end of  module template
-        # i.e. "apps.ABCD.app.App" -> ("apps.ABC.app", "App")
+        # i.e. "ABCD.app.App" -> ("ABC.app", "App")
         try:
-            module_str, class_str = class_tmpl.rsplit(".",1)
-            module = __import__(module_str, {}, {}, [class_str])
+            split_module = class_tmpl.rsplit(".",1)            
+            module = __import__(split_module[0], {}, {}, split_module[1:])
+            #module = __import__(class_tmpl, {}, {}, [])
             
             # import the requested class or None
-            if hasattr(module, class_str):
-                return getattr(module, class_str)
+            if len(split_module) > 1 and hasattr(module, split_module[-1]):
+                return getattr(module, split_module[-1])
+            else:
+                return module
         
-        except ImportError:
+        except ImportError, e:
+            logging.error("App import error: " + str(e))            
             pass
 
 
@@ -121,7 +125,7 @@ class Config (object):
     
     def app_section (self, name):
         data = self.component_section(name)
-        data["module"] = "apps.%s" % (data["type"])
+        data["module"] = data["type"]
         
         # load the config.py for this app, if possible
         config = self.__import_class("%s.config" % data["module"])
