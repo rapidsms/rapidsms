@@ -1,0 +1,45 @@
+{% extends "locations/base.html" %}
+{% load pagination %}
+
+{% block content %}{% if locations %}
+<div class="module">
+	<h2>All Locations in: <strong>{{ location_type.name }}</strong></h2>
+	<div class="help">
+		<p>
+			/*This module lists all of the questions within the {{ section.title }} section, along with
+			the number of answers that have been received, and the response rate. This data indicates
+			which of the questions are the most popular, and which should be considered for removal
+			from the questionnaire.*/
+			wat
+		</p>
+	</div>
+	<table>
+		<thead>
+			<tr>
+				<th scope="col">Location</th>
+			</tr>
+		</thead>
+		<tbody>{% if locations.object_list %}{% for location in locations.object_list %}
+			<tr>
+				<td><a href="{% url view-location location_type_pk=location_type.pk location_pk=location.pk %}">{{ location.name }}</a></td>
+			</tr>{% endfor %}{% else %}
+			<tr class="no-data">
+				<td colspan="1">
+					No locations Yet.
+					<a href="" class="add">
+						Add a Location
+					</a>
+				</td>
+			</tr>{% endif %}
+		</tbody>
+		<tfoot>
+				<td colspan="1">
+					{% paginator locations %}
+					
+					<a href="">Export to Excel</a>
+					<!--<span>{{ locations.object_list|length }} Locations</span>-->
+				</td>
+		</tfoot>
+	</table>
+</div>{% endif %}
+{% endblock %}
