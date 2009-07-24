@@ -1,0 +1,292 @@
+[
+    {
+        "pk": 1,
+        "model": "locations.locationtype",
+        "fields": {
+            "name": "Country"
+        }
+    },
+    {
+        "pk": 2,
+        "model": "locations.locationtype",
+        "fields": {
+            "name": "Department"
+        }
+    },
+    {
+        "pk": 1, 
+        "model": "locations.location",
+        "fields": {
+            "code": "GT",
+            "name": "Guatemala",
+            "parent": null,
+            "longitude": "-90.5",
+            "latitude": "14.633333",
+            "type": 1
+        }
+    },
+    {
+        "pk": 2,
+        "model": "locations.location",
+        "fields": {
+            "code": "AV",
+            "name": "Alta Verapaz",
+            "parent": 1,
+            "longitude": "-90.333333",
+            "latitude": "15.5",
+            "type": 2
+        }
+    },
+    {
+        "pk": 3,
+        "model": "locations.location",
+        "fields": {
+            "code": "BV",
+            "name": "Baja Verapaz",
+            "parent": 1,
+            "longitude": "-90.318611",
+            "latitude": "15.101389",
+            "type": 2
+        }
+    },
+    {
+        "pk": 4,
+        "model": "locations.location",
+        "fields": {
+            "code": "CM",
+            "name": "Chimaltenango",
+            "parent": 1,
+            "longitude": "-90.81",
+            "latitude": "14.66",
+            "type": 2
+        }
+    },
+    {
+        "pk": 5,
+        "model": "locations.location",
+        "fields": {
+            "code": "CQ",
+            "name": "Chiquimula",
+            "parent": 1,
+            "longitude": "-90.588",
+            "latitude": "14.545",
+            "type": 2
+        }
+    },
+    {
+        "pk": 6,
+        "model": "locations.location",
+        "fields": {
+            "code": "PR",
+            "name": "El Progreso",
+            "parent": 1,
+            "longitude": "-90.068611",
+            "latitude": "14.853889",
+            "type": 2
+        }
+    },
+    {
+        "pk": 7,
+        "model": "locations.location",
+        "fields": {
+            "code": "ES",
+            "name": "Escuintla",
+            "parent": 1,
+            "longitude": "-90.786944",
+            "latitude": "14.297778",
+            "type": 2
+        }
+    },
+    {
+        "pk": 8,
+        "model": "locations.location",
+        "fields": {
+            "code": "GU",
+            "name": "Guatemala",
+            "parent": 1,
+            "longitude": "-90.513056",
+            "latitude": "14.641389",
+            "type": 2
+        }
+    },
+    {
+        "pk": 9,
+        "model": "locations.location",
+        "fields": {
+            "code": "HU",
+            "name": "Huehuetenango",
+            "parent": 1,
+            "longitude": "-91.475833",
+            "latitude": "15.314167",
+            "type": 2
+        }
+    },
+    {
+        "pk": 10,
+        "model": "locations.location",
+        "fields": {
+            "code": "IZ",
+            "name": "Izabal",
+            "parent": 1,
+            "longitude": "-88.6",
+            "latitude": "15.733333",
+            "type": 2
+        }
+    },
+    {
+        "pk": 11,
+        "model": "locations.location",
+        "fields": {
+            "code": "JA",
+            "name": "Jalapa",
+            "parent": 1,
+            "longitude": "-89.981111",
+            "latitude": "14.633889",
+            "type": 2
+        }
+    },
+    {
+        "pk": 12,
+        "model": "locations.location",
+        "fields": {
+            "code": "JU",
+            "name": "Jutiapa",
+            "parent": 1,
+            "longitude": "-89.8925",
+            "latitude": "14.282778",
+            "type": 2
+        }
+    },
+    {
+        "pk": 13,
+        "model": "locations.location",
+        "fields": {
+            "code": "PT",
+            "name": "Pet\u00e9n",
+            "parent": 1,
+            "longitude": "-89.9",
+            "latitude": "16.9",
+            "type": 2
+        }
+    },
+    {
+        "pk": 14,
+        "model": "locations.location",
+        "fields": {
+            "code": "QZ",
+            "name": "Quetzaltenango",
+            "parent": 1,
+            "longitude": "-91.518889",
+            "latitude": "14.845833",
+            "type": 2
+        }
+    },
+    {
+        "pk": 15,
+        "model": "locations.location",
+        "fields": {
+            "code": "QC",
+            "name": "Quich\u00e9",
+            "parent": 1,
+            "longitude": "-91.15",
+            "latitude": "15.03",
+            "type": 2
+        }
+    },
+    {
+        "pk": 16,
+        "model": "locations.location",
+        "fields": {
+            "code": "RE",
+            "name": "Retalhuleu",
+            "parent": 1,
+            "longitude": "-91.6667",
+            "latitude": "14.5333",
+            "type": 2
+        }
+    },
+    {
+        "pk": 17,
+        "model": "locations.location",
+        "fields": {
+            "code": "SA",
+            "name": "Sacatepéquez",
+            "parent": 1,
+            "longitude": "-90.733889",
+            "latitude": "14.556667",
+            "type": 2
+        }
+    },
+    {
+        "pk": 18,
+        "model": "locations.location",
+        "fields": {
+            "code": "SM",
+            "name": "San Marcos",
+            "parent": 1,
+            "longitude": "-91.795556",
+            "latitude": "14.961111",
+            "type": 2
+        }
+    },
+    {
+        "pk": 19,
+        "model": "locations.location",
+        "fields": {
+            "code": "SR",
+            "name": "Santa Rosa",
+            "parent": 1,
+            "longitude": "-90.3",
+            "latitude": "14.278333",
+            "type": 2
+        }
+    },
+    {
+        "pk": 20,
+        "model": "locations.location",
+        "fields": {
+            "code": "SO",
+            "name": "Solol\u00e1",
+            "parent": 1,
+            "longitude": "-91.1875",
+            "latitude": "14.773889",
+            "type": 2
+        }
+    },
+    {
+        "pk": 21,
+        "model": "locations.location",
+        "fields": {
+            "code": "SU",
+            "name": "Suchitep\u00e9quez",
+            "parent": 1,
+            "longitude": "-90.733889",
+            "latitude": "14.556667",
+            "type": 2
+        }
+    },
+    {
+        "pk": 22,
+        "model": "locations.location",
+        "fields": {
+            "code": "TO",
+            "name": "Totonicap\u00e1n",
+            "parent": 1,
+            "longitude": "-91.36",
+            "latitude": "14.9125",
+            "type": 2
+        }
+    },
+    {
+        "pk": 23,
+        "model": "locations.location",
+        "fields": {
+            "code": "ZA",
+            "name": "Zacapa",
+            "parent": 1,
+            "longitude": "-89.528333",
+            "latitude": "14.9725",
+            "type": 2
+        }
+    }
+]
