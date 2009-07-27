@@ -29,8 +29,8 @@ abbr {
 
 p {
 	line-height: 1.4; }
-	
-		
+
+
 /* position accessibility-only parts of labels (which are
  * more verbose than is necessary, sometimes) off-screen:
  *
@@ -122,26 +122,26 @@ div.clear-hack {
 		padding: 0;
 		margin: 0;
 	}
-	
+
 	/* global tabs sit on the right,
 	 * page-specific tabs sit on the
 	 * left, to draw more attention */
 	#tabs      { right: 0; }
 	#page-tabs { left: 0;  }
-	
+
 		#tabs li,
 		#page-tabs li {
 			display: block;
 			float: left;
 			line-height: 28px;
 		}
-		
+
 		/* 5px spacing between each tab, to match
 		 * the top gap, since we're using pixel-
 		 * positioned backgrounds */
 		#tabs li      { margin-right: 5px; }
 		#page-tabs li { margin-left: 5px; }
-	
+
 			#tabs li a,
 			#page-tabs li a {
 				color: #fff;
@@ -151,7 +151,7 @@ div.clear-hack {
 				border-right: 1px solid #11bad0;
 				border-left: 1px solid #11bad0;
 			}
-			
+
 			/* there are unread messages in this tab!
 			 * TODO: is this *just* for the training
 			 * app? f so, move it there! */
@@ -160,28 +160,28 @@ div.clear-hack {
 				padding-right: 21px;
 				background: url("../icons/silk/email_open.png") no-repeat 100% 50%;
 			}
-		
+
 			#tabs li.active a,
 			#page-tabs li.active a,
 			#tabs li.active a:hover,
 			#page-tabs li.active a:hover {
 				background: #55cfde url("../images/tab-bg-active.png") repeat-x;
-				
+
 				/* border the same color as the
 				 * strip in the header-bg.png */
 				border: 1px solid #cef1f5;
 				border-bottom: 0;
-			
+
 				/* nudge the active tab
 				 * north by one pixel */
 				margin-top: -1px;
-			
+
 				/* don't underline links, even when hovering,
 				 * so we don't highlight the fact that this
 				 * is a link (it's already active)  */
 				text-decoration: none;
 			}
-		
+
 			/* brighten up inactive tabs when hovering */
 			#tabs li a:hover,
 			#page-tabs li a:hover {
@@ -205,14 +205,14 @@ div.clear-hack {
 #inner {
 	padding: 1em;
 }
-	
+
 	/* split a section vertically in
 	 * half, with some css hackery */
-	 
+
 	#inner div.split {
 		padding: 0 0.5em;
 	}
-		
+
 		/* TODO: explain the margins! */
 		#inner div.split .left {
 			margin-left: -0.5em;
@@ -220,27 +220,27 @@ div.clear-hack {
 			border: none;
 			width: 50%;
 		}
-		
+
 		#inner div.split .right {
 			margin-right: -0.5em;
 			float: right;
 			border: none;
 			width: 50%;
 		}
-	
+
 	/* split a section into THREE */
-	
+
 	#inner div.split-3 {
 		padding: 0 1em;
 	}
-		
+
 		#inner div.split-3 .left {
 			margin-left: -1em;
 			float: left;
 			border: none;
 			width: 33%;
 		}
-		
+
 		#inner div.split-3 .mid {
 			margin-right: 1em;
 			margin-left: 1em;
@@ -248,14 +248,14 @@ div.clear-hack {
 			border: none;
 			width: 34%;
 		}
-		
+
 		#inner div.split-3 .right {
 			margin-right: -1em;
 			float: right;
 			border: none;
 			width: 33%;
 		}
-	
+
 	/* when an app has something really
 	 * important to say, it can use the
 	 * apps/webui/templates/message.html
@@ -264,7 +264,7 @@ div.clear-hack {
 		text-align: center;
 		padding: 4em 25%;
 	}
-	
+
 		#inner div.message p {
 			margin: 0 0 0.5em 0;
 			font-size: 2em;
@@ -284,7 +284,7 @@ div.trigger {
 	cursor: pointer;
 	color: #aaa;
 }
-	
+
 	/* some triggers are more warning that
 	 * something is wrong, so highlight them */
 	div.trigger.warn {
@@ -301,18 +301,18 @@ div.trigger {
 	padding: 0.5em;
 	clear: both;
 	color: #ccc;
-	
+
 	/* reserve space for at least two lines of
 	 * links @ LH=1.4 (for the copyright info) */
 	min-height: 2.8em;
 }
-	
+
 	/* float */
 	#footer .rg-footer {
 		padding-top: 1.4em;
 		line-height: 1.4;
 	}
-	
+
 	#footer p.rights {
 		text-align: right;
 		float: right;
