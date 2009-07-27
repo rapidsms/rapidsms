@@ -7,32 +7,6 @@ from datetime import datetime
 from django.db import models
 from django.core.urlresolvers import reverse
 from rapidsms.webui.managers import *
-from apps.patterns.models import Pattern
-from apps.locations.models import *
-
-
-# TODO: remove this. it's a slightly weird version
-#       of ReporterGroup, which can't be nested. i'm
-#       not sure how it happened in the first place.
-
-class Role(models.Model):
-    """Basic representation of a role that someone can have.  For example,
-       'supervisor' or 'data entry clerk'"""
-    name = models.CharField(max_length=160)
-    code = models.CharField(max_length=20, blank=True, null=True,\
-        help_text="Abbreviation")
-    patterns = models.ManyToManyField(Pattern, null=True, blank=True)
-    
-    def match(self, token):
-        return self.regex and re.match(self.regex, token, re.IGNORECASE)
-    
-    @property
-    def regex(self):
-        # convenience accessor for joining patterns
-        return Pattern.join(self.patterns)
-    
-    def __unicode__(self):
-        return self.name
 
 
 class ReporterGroup(models.Model):
@@ -63,18 +37,15 @@ class Reporter(models.Model):
        could lead to multiple objects for the same "person". Usually, this
        model should be created through the WebUI, in advance of the reporter
        using the system - but there are always exceptions to these rules..."""
+
     alias      = models.CharField(max_length=20, unique=True)
     first_name = models.CharField(max_length=30, blank=True)
     last_name  = models.CharField(max_length=30, blank=True)
     groups     = models.ManyToManyField(ReporterGroup, related_name="reporters", blank=True)
-    
-    # here are some fields that don't belong here
-    location   = models.ForeignKey(Location, related_name="reporters", null=True, blank=True)
-    role       = models.ForeignKey(Role, related_name="reporters", null=True, blank=True)
 
     def __unicode__(self):
             return self.connection.identity
-        
+
 
     # the language that this reporter prefers to
     # receive their messages in, as a w3c language tag
@@ -131,12 +102,10 @@ class Reporter(models.Model):
             # reporter already exists
             existing_conn = PersistantConnection.objects.get\
                 (backend=connection.backend, identity=connection.identity)
-            # this currently checks first and last name, location and role.
+            # this currently checks first and last name.
             # we may want to make this more lax
             filters = {"first_name" : reporter.first_name,
-                       "last_name" : reporter.last_name,
-                       "location" : reporter.location,
-                       "role" : reporter.role } 
+                       "last_name" : reporter.last_name } 
             existing_reps = Reporter.objects.filter(**filters)
             for existing_rep in existing_reps:
                 if existing_rep == existing_conn.reporter:

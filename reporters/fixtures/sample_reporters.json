@@ -1,64 +1,12 @@
 [
     {
-        "pk": 1,
-        "model": "reporters.locationtype",
-        "fields": {
-            "name": "Country"
-        }
-    },
-    {
-        "pk": 2,
-        "model": "reporters.locationtype",
-        "fields": {
-            "name": "State"
-        }
-    },
-    {
-        "pk": 3,
-        "model": "reporters.locationtype",
-        "fields": {
-            "name": "City"
-        }
-    },
-    {
-        "pk": 1,
-        "model": "reporters.location",
-        "fields": {
-            "code": "USA",
-            "name": "United States of America",
-            "parent": null,
-            "type": 1
-        }
-    },
-    {
-        "pk": 2,
-        "model": "reporters.location",
-        "fields": {
-            "code": "NY",
-            "name": "New York",
-            "parent": 1,
-            "type": 2
-        }
-    },
-    {
-        "pk": 3,
-        "model": "reporters.location",
-        "fields": {
-            "code": "NYC",
-            "name": "New York City",
-            "parent": 2,
-            "type": 3
-        }
-    },
-    {
         "pk": 3,
         "model": "reporters.reporter",
         "fields": {
             "first_name": "Mark",
             "last_name": "Johnston",
             "registered_self": false,
-            "alias": "mej",
-            "location": 3
+            "alias": "mej"
         }
     },
     {
@@ -68,8 +16,7 @@
             "first_name": "Adam",
             "last_name": "Mckaig",
             "registered_self": false,
-            "alias": "adammck",
-            "location": 3
+            "alias": "adammck"
         }
     },
     {
@@ -79,8 +26,7 @@
             "first_name": "Merrick",
             "last_name": "Schaefer",
             "registered_self": false,
-            "alias": "merrickweb",
-            "location": 3
+            "alias": "merrickweb"
         }
     },
     {
@@ -90,8 +36,7 @@
             "first_name": "Evan",
             "last_name": "Wheeler",
             "registered_self": false,
-            "alias": "ewheeler",
-            "location": 3
+            "alias": "ewheeler"
         }
     },
     {
@@ -101,16 +46,15 @@
             "first_name": "Cory",
             "last_name": "Zue",
             "registered_self": false,
-            "alias": "czue",
-            "location": 3
+            "alias": "czue"
         }
     },
     {
         "pk": 1,
         "model": "reporters.persistantbackend",
         "fields": {
-            "slug": "spomc",
-            "title": "SPOMC"
+            "slug": "fixture",
+            "title": "From Fixtures"
         }
     },
     {
