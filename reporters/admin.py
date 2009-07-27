@@ -6,7 +6,6 @@ from django.contrib import admin
 from apps.reporters.models import *
 
 
-admin.site.register(Role)
 admin.site.register(Reporter)
 admin.site.register(ReporterGroup)
 admin.site.register(PersistantBackend)
