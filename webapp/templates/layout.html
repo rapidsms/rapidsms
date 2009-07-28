@@ -39,11 +39,11 @@
 					<h1><b>RapidSMS</b></h1>
                    {% endblock %}
 				</div>
-				<ul id="tabs">{% for app in apps %}{% if app.tab_link %}
+				<ul id="tabs">{% for app in apps %}{% if app.tab_link %}{% if app.hidetab %}{# ignore #}{% else %}
                                         {% ifhasperm user app "can_view" %}
 					<li class="app-{{ app.type }}{% ifequal active_tab app.type %} active{% endifequal %}">
 						<a href="{{ app.tab_link }}"><span>{{ app.title }}</span></a>
-					</li>{% endifhasperm %}{% endif %}{% endfor %}
+					</li>{% endifhasperm %}{% endif %}{% endif %}{% endfor %}
 				</ul>
 				{% block page_tabs %}
 				{% endblock %}
