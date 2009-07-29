@@ -14,12 +14,16 @@ def region(context, name):
     def __path(app):
         return "%s/templates/regions/%s.html" %\
             (app["path"], name)
-
-    return {
+    
+    # start with the current context, which is passed on
+    # to all of the included templates by {% include %},
+    # and override just the bits that we need
+    context.update({
         "name": name,
         "request": context["request"],
         "includes": [
             __path(app)
              for app in settings.RAPIDSMS_APPS.values()
-             if os.path.exists(__path(app))
-        ]}
+             if os.path.exists(__path(app)) ]})
+    
+    return context
