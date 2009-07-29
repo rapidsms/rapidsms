@@ -1,17 +1,17 @@
 {% extends "messaging/base.html" %}
 {% block title %}Messaging{% endblock %}
-{% load reporters-tags %}
-
 {% block javascripts %}
 <script type="text/javascript" src="/static/webapp/javascripts/jquery.cookie.yc.js"></script>
 {% endblock %}
+{% load reporters-tags %}
+{% load pagination-tags %}
 
 {% block content %}
 <div class="split">
 	<div class="left">
 		<div class="module recipients">
 			<h2>Select Recipients</h2>
-			<form class="search" action="" method="get">
+			<form class="search" action="" method="get"{% if not show_search %} style="display: none;"{% endif %}>
 				{% self_link_fields query field cmp  %}
 				<table>
 					<tbody>
@@ -53,7 +53,7 @@
 					</tr>
 				</thead>
 				<tbody class="recips{% if filtered %} filtered{% endif %}">{% for reporter in reporters.object_list %}
-					<tr uid="{{ reporter.pk }}" class="{% if reporter.is_hit %}hit{% endif %}">
+					<tr uid="{{ reporter.pk }}" class="{% if reporter.is_hit %}hit{% endif %} {% if reporter.is_checked %} checked{% endif %}">
 						<td class="check"></td>
 						<td>{{ reporter.full_name }}</td>
 						<td>{{ reporter.role }}</td>
@@ -82,14 +82,49 @@
 					</tr>
 				</tfoot>
 			</table>
+			<div class="toolbar">
+				<a class="search" href="{% self_link "search" 1 %}">Search</a>
+			</div>
     </div>
 	</div>
 	<div class="right">
 		<div class="module contents">
-			<h2>Message Contents</h2>
+			<h2>Send a Message</h2>
 			<textarea cols="40" rows="6"></textarea>
 			<input type="button" class="send" value="Send Messages" />
 			<input type="button" class="cancel" value="Cancel" disabled="disabled" />
+		</div>
+		<div class="module log">
+			<h2>Message Log</h2>
+			<table>
+				<thead>
+					<tr>
+						<th colspan="2">To/From</th>
+						<th class="text">Text</th>
+					</tr>
+				</thead>
+				<tbody>{% for msg in message_log.object_list %}{% ifequal msg.direction "in" %}
+					<tr class="incoming">
+						<td class="direction">From:</td>{% if msg.reporter %}
+						<td class="tofrom"><a href="" class="reporter{% if msg.reporter.full_name %}">{{ msg.reporter.full_name }}{% else %} unknown">Unknown{% endif %}</a></td>{% else %}
+						<td class="tofrom"><a href="" class="connection">{{ msg.connection }}</a></td>{% endif %}
+						<td class="text">{{ msg.text }}</td>
+					</tr>{% else %}
+					<tr class="outgoing">
+						<td class="direction">To:</td>{% if msg.reporter %}
+						<td class="tofrom"><a href="" class="reporter{% if msg.reporter.full_name %}">{{ msg.reporter.full_name }}{% else %} unknown">Unknown{% endif %}</a></td>{% else %}
+						<td class="tofrom"><a href="" class="connection">{{ msg.connection }}</a></td>{% endif %}
+						<td class="text">{{ msg.text }}</td>
+					</tr>{% endifequal %}{% endfor %}
+				</tbody>
+				<tfoot>
+					<tr>
+						<td colspan="4">
+							{% paginator message_log %}
+						</td>
+					</tr>
+				</tfoot>
+			</table>
 		</div>
 	</div>
 	<div class="clear-hack"></div>
@@ -110,6 +145,7 @@
 		var send_btn   = $("input.send",   content_div);
 		var cancel_btn = $("input.cancel", content_div);
 		
+		var tb_search  = $("div.module.recipients div.toolbar a.search");
 		
 		
 		
@@ -488,6 +524,15 @@
 			$.cookie("recip-error", null);
 			$.cookie("recip-sent", null);
 			update_all_rows();
+		});
+		
+		
+		/* when the "search" link is clicked, slide the
+		 * search form into view like the module-help
+		 * box (from rs-module-help.js) */
+		tb_search.click(function(ev) {
+			search_form.slideToggle();
+			ev.preventDefault();
 		});
 		
 		
