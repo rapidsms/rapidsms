@@ -5,7 +5,7 @@
 from django.db import models
 from django.db import connection
 from django.db.backends.util import typecast_timestamp
-from apps.reporters.models import PersistantConnection, PersistantBackend, Reporter
+from reporters.models import PersistantConnection, PersistantBackend, Reporter
 
 
 class IncomingMessage(models.Model):
@@ -87,13 +87,13 @@ def combined_message_log(reporters=None):
     # same thing, except rather more convoluted, since
     # outgoing messages can have more than one recipient
     outgoing_sql = """select
-                          "out", out.id, out.sent, out.text,
+                          "out", outgoing.id, outgoing.sent, outgoing.text,
                           rep2.id, rep2.first_name, rep2.last_name,
                           be2.id, be2.title, be2.slug, con2.id, con2.identity
 
-                        from messaging_outgoingmessage as out
+                        from messaging_outgoingmessage as outgoing
                         left join messaging_recipient as rcp
-                          on out.id=rcp.outgoing_message_id
+                          on outgoing.id=rcp.outgoing_message_id
                         left join reporters_reporter as rep2
                           on rcp.reporter_id=rep2.id
                         left join reporters_persistantconnection as con2
@@ -127,7 +127,12 @@ def combined_message_log(reporters=None):
     # grab both incoming and outgoing messages from the database at
     # once, so we can sensibly paginate the output (later) without
     # fetching everything and manually intersecting the rows.
-    sql = incoming_sql + " union all " + outgoing_sql + " order by inc.received desc"
+    
+    # NOTE: the following line had to be commented out and changed
+    # to the below to run in mysql.  I have not tested the new version
+    # so this may break on sqlite.
+    # sql = incoming_sql + " union all " + outgoing_sql + " order by inc.received desc"
+    sql = incoming_sql + " union all " + outgoing_sql + " order by received desc"
     cursor = connection.cursor()
     cursor.execute(sql)
 
