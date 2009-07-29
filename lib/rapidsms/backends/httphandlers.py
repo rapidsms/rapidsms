@@ -4,7 +4,7 @@
 import BaseHTTPServer
 import random
 import re
-import urllib
+import urllib, urllib2
 from datetime import datetime
 
 def _uni(str):
@@ -33,7 +33,7 @@ class RapidBaseHttpHandler(BaseHTTPServer.BaseHTTPRequestHandler):
     '''The base handler for use in the http backends.  This is a
        simple extension of the python builtin handlers with
        logging capabilities and a utility method for responding
-       to incoming requiests.'''
+       to incoming requests.'''
 
     def log_error (self, format, *args):
         self.server.backend.error(format, *args)
@@ -177,6 +177,115 @@ class MTechHandler(RapidBaseHttpHandler):
         '''An HttpHandler for the mtech gateway, for use in Nigeria'''
         self.log_message("Mtech outgoing message: %s" % message)
 
+
+class End2EndHandler(RapidBaseHttpHandler):
+    '''An HttpHandler for the End2End mobile gateway'''  
+    
+    # This is the format of the post string
+    # http://www.ihredomain.de/smsparser.cgi?snr=%2B491721234567&dnr=%2B491781234567&smsc=%2b491722170000&msg=Anfrage+per+SMS&tdif=15&nc=62F270
+    # snr: originator address code
+    # dnr: number of the solicited SMS-Inbound port
+    # smsc: number of the employed short message service center (optional)
+    # msg: short message text
+    # tdif: difference between actual time and timestamp of message
+    # nc: Networkcode MCC/MNC (optional)
+    
+    param_text = "msg"
+    param_sender = "snr"
+    
+    outgoing_url = "http://gw1.promessaging.com/sms.php"
+    backup_outgoing_url = "http://gw2.promessaging.com/sms.php"
+    # id (customer identification number)
+    # pw (password)
+    # dnr (recipient code)
+    # snr (originator code)
+    # ddt (deferred delivery time)
+    # test flag indicating test mode (SMS will not be send out) (0 or 1)
+    # msg (for transporting a text-message)
+    outgoing_params = {"id" : "please", 
+                       "pw" : "fix", 
+                       "snr" : "me", 
+                       }
+    param_text_outgoing = "msg"
+    param_dst_outgoing = "dnr"
+    param_sender_outgoing = "snr"
+
+
+    def do_GET(self):
+        params = get_params(self)
+        self.handle_params(params)
+        
+    def do_POST(self):
+        params = post_params(self)
+        self.handle_params(params)
+        
+    def handle_params(self, params):
+        if not params:
+            self.respond(500, "Must specify parameters in the URL!")
+            return
+        else:
+            # parameters are: 
+            text = None
+            sender = None
+            date = None
+            for param in params:    
+                if param[0] == End2EndHandler.param_text:
+                    # TODO watch out because urllib.unquote 
+                    # will blow up on unicode text 
+                    text = urllib.unquote(param[1])
+                elif param[0] == End2EndHandler.param_sender:
+                    # TODO watch out because urllib.unquote 
+                    # will blow up on unicode text 
+                    sender = urllib.unquote(param[1])
+                # TODO: deal with timestamps
+            if text and sender: 
+                # messages come in from end2end with + instead of spaces, so
+                # change them
+                text = " ".join(text.split("+"))
+                # route the message
+                msg = self.server.backend.message(sender, text, date)
+                self.server.backend.route(msg)
+                # respond with the number and text 
+                # only really useful for testing
+                self.respond(200, "{'phone':'%s', 'message':'%s'}" % (sender, text))
+                return
+            else:
+                self.respond(500, "You must specify a valid number and message")
+                return
+
+    @classmethod
+    def outgoing(klass, message):
+        klass.backend.debug("End2End outgoing message: %s" % message)
+        params = End2EndHandler.outgoing_params.copy()
+        params[End2EndHandler.param_text_outgoing] = message.text
+        params[End2EndHandler.param_dst_outgoing] = message.connection.identity
+        print params
+        lines = []
+        success = False
+        response = ""
+        for url in [End2EndHandler.outgoing_url, End2EndHandler.backup_outgoing_url]:
+             
+            try:
+                response = urllib2.urlopen(End2EndHandler.outgoing_url, urllib.urlencode(params))
+                for line in response:
+                    if "-ERR" in line:
+                        # fail
+                        klass.backend.error("Error from gateway %s:\n%s" % (url, line))
+                        continue
+                # we didn't fail if we made it out
+                success = True
+                # stop looping over the urls on the first success
+                break
+            except Exception, e:
+                klass.backend.error("problem submitting to: %s" % url)
+                klass.backend.error("Exception is: %s" % e)
+        if success:
+            lines.insert(0,"Success!")
+        else:
+            lines.insert(0,"Error!")
+        
+        klass.backend.debug("Got response: %s" % "\n".join(response))
+        
         
 def get_params(handler):
     '''Pulls the parameters from a query string and returns them in
