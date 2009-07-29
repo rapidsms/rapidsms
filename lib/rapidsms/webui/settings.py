@@ -149,5 +149,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.admin',
-    'django.contrib.admindocs'
+    'django.contrib.admindocs',
+    'django.contrib.markup'
 ] + [app["module"] for app in RAPIDSMS_APPS.values()]
