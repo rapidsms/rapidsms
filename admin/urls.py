@@ -6,5 +6,5 @@ from django.contrib import admin
 admin.autodiscover()
  
 urlpatterns = patterns('',
-    (r'^admin/(.*)', admin.site.root),
+    url(r'^admin/(.*)', admin.site.root, name='django-admin'),
 )
