@@ -74,13 +74,13 @@
 			
 			/* dull rows have a background image too, to avoid
 			 * a weird looking gap before anything is checked */
-			.recipients tbody tr         .check { background: url("../../webui/icons/silk/bullet_white.png") no-repeat 0.5em 50%; }
-			.recipients tbody tr.checked .check { background-image: url("../../webui/icons/silk/accept.png"); }
+			.recipients tbody tr         .check { background: url("../../webapp/icons/silk/bullet_white.png") no-repeat 0.5em 50%; }
+			.recipients tbody tr.checked .check { background-image: url("../../webapp/icons/silk/accept.png"); }
 			
 			/* various statuses for messages during/after send */
-			.recipients tbody tr.busy    .check { background-image: url("../../webui/icons/silk/email_go.png"); }
-			.recipients tbody tr.sent    .check { background-image: url("../../webui/icons/silk/email.png"); }
-			.recipients tbody tr.error   .check { background-image: url("../../webui/icons/silk/email_error.png"); }
+			.recipients tbody tr.busy    .check { background-image: url("../../webapp/icons/silk/email_go.png"); }
+			.recipients tbody tr.sent    .check { background-image: url("../../webapp/icons/silk/email.png"); }
+			.recipients tbody tr.error   .check { background-image: url("../../webapp/icons/silk/email_error.png"); }
 	
 	/* when a filter is in effect, dim all of the text
 	 * in the table *except* for the matching rows */
@@ -144,8 +144,8 @@
 	}
 		
 		/* add the icons */
-		.log tr.incoming td.tofrom { background: url("../icons/incoming.png") no-repeat 100% 50%; }
-		.log tr.outgoing td.tofrom { background: url("../icons/outgoing.png") no-repeat 100% 50%; }
+		.log tr.incoming td.tofrom { background: url("../../webapp/icons/incoming.png") no-repeat 100% 50%; }
+		.log tr.outgoing td.tofrom { background: url("../../webapp/icons/outgoing.png") no-repeat 100% 50%; }
 
 			/* add a flexible space to the right, the same
 			 * as the padding around the entire cell, to line
