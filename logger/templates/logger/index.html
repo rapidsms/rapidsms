@@ -20,7 +20,7 @@
         </tr>
     </thead>
     <tbody>
-        {% for message in messages %}
+        {% for message in messages.object_list %}
             <tr>
                 <td>{{message.date|date:"d-M-Y H:m:s"}}</td>
 	            {% if user.is_staff %}
