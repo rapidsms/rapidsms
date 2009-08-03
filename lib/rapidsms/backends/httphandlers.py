@@ -242,6 +242,15 @@ class End2EndHandler(RapidBaseHttpHandler):
                 # messages come in from end2end with + instead of spaces, so
                 # change them
                 text = " ".join(text.split("+"))
+                
+                # there is an error reporting module in End2End that can forward
+                # errors to an endpoint.  If you configure it to forward here
+                # they will get logged and not included as incoming messages 
+                if text == "Message could not be sent" and sender == "112":
+                    self.log_message("Received error message in End2End gateway: %s" % params)
+                    self.respond(200, "Thanks for the error message!")
+                    return
+                
                 # route the message
                 msg = self.server.backend.message(sender, text, date)
                 self.server.backend.route(msg)
