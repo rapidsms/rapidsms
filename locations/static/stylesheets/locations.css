@@ -1,0 +1,71 @@
+/* UNICEF RapidSMS UI
+ * vim:set noet:
+ * --
+ * locations.css
+ * --
+ * This stylesheet contains the customizations just for
+ * the "Locations" app, to make the google map pretty */
+
+
+
+/* we're going to perform some aligned background-image magic
+ * with the lat+lon fields, so set the width the same as the
+ * "form module p.help" boxes from modules.css (30em @ 80%) */
+div.lat,
+div.lon {
+	width: 24em; }
+
+	/* prevent the background image from bumping
+	 * right up against the lat/lon labels */
+	div.lat label,
+	div.lon label {
+		background: #fff;
+		padding-right: 0.625em;
+	}
+
+	div.lat { background: url("../images/bg-latitude.png")  no-repeat 100% 50%; }
+	div.lon { background: url("../images/bg-longitude.png") no-repeat 100% 50%; }
+
+/* a special link to show or hide the google map
+ * within a module form. this could probably be
+ * more generic, but YAGNI, etc */
+p.toggle-map {
+	background: #4bd url("../icons/silk/world.png") no-repeat 5px 0.625em;
+	line-height: 16px;
+	padding: 0.625em;
+	padding-left: 26px;
+	margin: 0;
+	
+	/* see "form .module p.help"
+	 * from webui/modules.css */
+	font-size: 80%;
+}
+
+	p.toggle-map a {
+		color: #fff; }
+
+
+/* we want to leave a little space (0.5em, like most other gaps
+ * in the form) between the lat/lon fields, and the "SHOW/HIDE
+ * MAP" link, but also want the background images to flow through it.
+ *  i can't think of a way to do this without a spare div, right now */
+div.map-shim-hack {
+	height: 0.5em;
+	width: 24em;
+	overflow: hidden;
+	background: url("../images/bg-shim.png") repeat-y 100% 0;
+}
+
+
+/* wrap the google map in something
+ * vaugely rapidsms-looking */
+div.map {
+	border: 1px solid #4bd;
+}
+
+
+	/* todo: height in ems,
+	 * min-height in pixels */
+	div.map #fm-loc-map {
+		height: 360px;
+	}
