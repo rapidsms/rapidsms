@@ -2,7 +2,7 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 
-import datetime 
+from datetime import datetime, timedelta
 import rapidsms
 from reporters.models import *
 from models import *
@@ -25,7 +25,7 @@ class App (rapidsms.app.App):
             # log the message, along with the identity
             # information provided by reporters.app/parse
             msg = IncomingMessage.objects.create(
-                received=datetime.datetime.now(),
+                received=datetime.now(),
                 text=msg.text,
                 **msg.persistance_dict)
 
@@ -47,7 +47,7 @@ class App (rapidsms.app.App):
         # if this message contains the same text as the _previous_ message sent,
         # and is within 6 hours, we'll recycle it (since it has-many recipients)
         try:
-            time_limit = datetime.datetime.now() - datetime.timedelta(hours=6)
+            time_limit = datetime.now() - timedelta(hours=6)
             msg = OutgoingMessage.objects.filter(
                 sent__gt=time_limit,
                 text=form["text"])[0]
@@ -56,7 +56,7 @@ class App (rapidsms.app.App):
         # this recipient (it might be the first of many)
         except IndexError:
             msg = OutgoingMessage.objects.create(
-                sent=datetime.datetime.now(),
+                sent=datetime.now(),
                 text=form["text"])
 
         # attach this recipient to
@@ -71,15 +71,29 @@ class App (rapidsms.app.App):
         if pconn is None:
             raise Exception("%s is unreachable (no connection)" % rep)
 
+        return self._send_message(pconn, form["text"])
+        
+    def ajax_POST_send_message_to_connection(self, params, form):
+        '''Sends a message using a connection id, instead of
+           a reporter id.'''
+        # todo: this method doesn't deal with logging.  should it?
+        # possibly not, since there is no UI for this on the messaging
+        # tab.  This is just a convenience for other apps.  
+        connection = PersistantConnection.objects.get(pk=form["connection_id"])
+        return self._send_message(connection, form["text"])
+        
+    
+    def _send_message(self, connection, message_body):    
+        '''Attempts to send a message througha given connection'''
         # abort if we can't find a valid backend. PersistantBackend
         # objects SHOULD refer to a valid RapidSMS backend (via their
         # slug), but sometimes backends are removed or renamed.
-        be = self.router.get_backend(pconn.backend.slug)
+        be = self.router.get_backend(connection.backend.slug)
         if be is None:
             raise Exception(
                 "No such backend: %s" %
-                pconn.backend.title)
+                connection.backend.title)
         
         # attempt to send the message
         # TODO: what could go wrong here?
-        return be.message(pconn.identity, form["text"]).send()
+        return be.message(connection.identity, message_body).send()
