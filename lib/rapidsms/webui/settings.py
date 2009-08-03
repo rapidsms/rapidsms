@@ -77,6 +77,10 @@ TEMPLATE_DIRS = [
 # rapidsms pages.  if you want to totally restyle your pages
 # you should change this in your configuration .ini file
 BASE_TEMPLATE = "layout.html"
+# This is a similar concept, but for templating the login
+# and logout screens 
+LOGIN_TEMPLATE = "webapp/login.html"
+LOGGEDOUT_TEMPLATE = "webapp/loggedout.html"
 
 
 
