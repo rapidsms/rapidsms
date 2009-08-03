@@ -30,7 +30,7 @@ div.lon {
  * within a module form. this could probably be
  * more generic, but YAGNI, etc */
 p.toggle-map {
-	background: #4bd url("../icons/silk/world.png") no-repeat 5px 0.625em;
+	background: #cef1f5 url("../icons/silk/world.png") no-repeat 5px 0.625em;
 	line-height: 16px;
 	padding: 0.625em;
 	padding-left: 26px;
@@ -42,7 +42,16 @@ p.toggle-map {
 }
 
 	p.toggle-map a {
-		color: #fff; }
+		display: block;
+		color: #4bd;
+	}
+
+	p.toggle-map span.help {
+		font-weight: bold;
+		display: block;
+		float: right;
+		color: #000;
+	}
 
 
 /* we want to leave a little space (0.5em, like most other gaps
@@ -61,11 +70,23 @@ div.map-shim-hack {
  * vaugely rapidsms-looking */
 div.map {
 	border: 1px solid #4bd;
+	padding: 1px;
 }
 
+	/* don't occupy the full width
+	 * when the map is closed */
+	div.map.closed {
+		width: 24em; }
 
 	/* todo: height in ems,
 	 * min-height in pixels */
 	div.map #fm-loc-map {
+		margin-bottom: 1px;
 		height: 360px;
 	}
+
+	/* i'm hiding the copyright statement because
+	 * it's really ugly when the map is small.
+	 * please don't sue me, googo-tron */
+	div.map div#copyright {
+		display: none; }

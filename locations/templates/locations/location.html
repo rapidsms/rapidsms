@@ -32,62 +32,76 @@
 				<label for="fm-loc-lon" class="suffix">Longitude</label>
 			</div>
 			<div class="map-shim-hack"></div>
-			<div class="map">{% if show_map %}
+			<div class="map {% if show_map %}open{% else %}closed{% endif %}">{% if show_map %}
 				<div id="fm-loc-map"></div>
 
-				<script src="http://maps.google.com/maps?file=api&v=2&key=" type="text/javascript"></script>
+				<script src="http://maps.google.com/maps?file=api&key=" type="text/javascript"></script>
 				<script type="text/javascript">
 					$(function() {
-						if (GBrowserIsCompatible()) {
+						var gm = google.maps;
+						if (gm.BrowserIsCompatible()) {
 							var INITIAL_ZOOM = 7;
 
-							/* initialize the map with the full zoom+pan
-							 * controls */
-							var map = new GMap2($("#fm-loc-map").get(0));
-							map.addControl(new GLargeMapControl());
+							var lat_field = $("#fm-loc-lat");
+							var lon_field = $("#fm-loc-lon");
+
+							/* initialize the map with the full
+							 * map-type, zoom, and pan controls */
+							var map = new gm.Map2($("#fm-loc-map").get(0));
+							map.addControl(new gm.LargeMapControl());
+							map.addControl(new gm.MapTypeControl());
+							map.disableDoubleClickZoom();
 
 							/* when the document is unloaded, allow the gmap
 							 * to release it's resoures (especially for IE6) */
 							$(document.body).unload(function() {
-								if(GBrowserIsCompatible()) {
-									GUnload();
-								}
+								google.maps.Unload();
 							});{% if location %}
 
 							/* we're editing an existing location, so
 							 * add a marker, and center the map over it */
 							var lat = {{ location.latitude }};
 							var lon = {{ location.longitude }};
-							var latlon = new GLatLng(lat, lon);
-							var marker = new GMarker(latlon);
+							var latlon = new gm.LatLng(lat, lon);
+							var marker = new gm.Marker(latlon);
 							map.addOverlay(marker);{% else %}
 
 							/* we're adding a new location, so center
 							 * the map over... guatemala! (what?) */
 							var lat = 15.800;
 							var lon = -90.588;
-							var latlon = new GLatLng(lat, lon);{% endif %}
+							var latlon = new gm.LatLng(lat, lon);{% endif %}
 							map.setCenter(latlon, INITIAL_ZOOM);
 
-							/*$(document).ready(function(){
-									$("#zones a").each(function() {
-											var a = jQuery(this);
-											var longitude = a.attr("longitude");
-											var latitude = a.attr("latitude");
-											if ((latitude != 'None') && (longitude != 'None')) {
-													var latlng = new GLatLng(longitude, latitude);
-													var marker = new GMarker(latlng);
-													map.addOverlay(marker);
-													GEvent.addListener(marker, "click", function() {
-														marker.openInfoWindowHtml(a.parent().html());
-													});
-											};
-									});
-							});*/
+							var update_marker = function() {
+								var latlon = new gm.LatLng(lat_field.val(), lon_field.val());
+								marker.setLatLng(latlon);
+								map.setCenter(latlon);
+							};
+
+							/* whenever the lat or lon fields are changed
+							 * (via paste or keyup), update the marker */
+							$.each([lat_field, lon_field], function() {
+								this.change(update_marker).keyup(update_marker);
+							});
+
+							/* when the map is clicked (but not dragged),
+							 * update the lat/lon fields and the marker */
+							gm.Event.addListener(map, "dblclick", function(clicked_marker, point) {
+								if(point) {
+									lat_field.val(point.lat());
+									lon_field.val(point.lng());
+									update_marker();
+									return false;
+								}
+							});
 						}
 					});
 				</script>
-				<p class="toggle-map"><a href="{% self_link "map" 0 %}">Hide Google Map</a></p>{% else %}
+				<p class="toggle-map">
+					<span class="help">Double-click the map to set the location of the marker</span>
+					<a href="{% self_link "map" 0 %}">Hide Google Map</a>
+				</p>{% else %}
 				<p class="toggle-map"><a href="{% self_link "map" 1 %}">Show Google Map</a></p>{% endif %}
 			</div>
 		</div>
