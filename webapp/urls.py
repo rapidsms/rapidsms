@@ -4,10 +4,13 @@
 from django.conf.urls.defaults import *
 import webapp.views as views
 
+# get the login view from the settings
+from rapidsms.webui import settings
+    
 urlpatterns = patterns('',
     url(r'^$',     views.dashboard),
     url(r'^ping$', views.check_availability),
-    (r'^accounts/login/$', "webapp.views.login"),
-    (r'^accounts/logout/$', "webapp.views.logout"),
+    (r'^accounts/login/$', views.login, {"template_name": settings.LOGIN_TEMPLATE }),
+    (r'^accounts/logout/$', views.logout, {"template_name": settings.LOGGEDOUT_TEMPLATE }),
 )
 
