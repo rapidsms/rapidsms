@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
+
+from __future__ import absolute_import
 from rapidsms.message import Message
 from rapidsms.connection import Connection
-import backend
+from . import backend
 from email import message_from_string
 
 from django.core.mail import *
@@ -89,10 +91,7 @@ class Backend(backend.Backend):
         # another thing to note: this format doesn't like unicode
         text = str(message.text)
         if not "\r\n" in text:
-            print "replacing LFs with CRLFs"
             text = text.replace("\n", "\r\n")
-        else:
-            print "Found CRLFs!"
         email_message = message_from_string(text)
         
         # amazingly these keys are actually not case sensitive
