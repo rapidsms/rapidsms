@@ -1,0 +1,101 @@
+{% extends "locations/base.html" %}
+{% load self_link %}
+
+{% block title %}{% if location %}Edit {{ location }}{% else %}Add a Location{% endif %}{% endblock %}
+
+{% block content %}
+<div class="module location">
+	<h2>{% if location %}Edit {{ location }}{% else %}Add a Location{% endif %}</h2>
+
+	<form method="post" id="fm-loc" action="/loation/{% if location %}{{ location.pk }}{% else %}add{% endif %}">
+		<div>
+			<label for="fm-loc-name">Name</label>
+			<input type="text" class="required" id="fm-loc-name" name="name"{% if location %} value="{{ location.name }}"{% endif %} />
+			<p class="help">what is a name?</p>
+		</div>
+
+		<div>
+			<label for="fm-loc-code">Alias</label>
+			<input type="text" class="required" id="fm-loc-code" name="code"{% if location %} value="{{ location.code }}"{% endif %} />
+			<p class="help">This code must be entered by users over SMS, so it should be as short and simple as possible.</p>
+		</div>
+
+		<div>
+			<label>Physical Location</label>
+
+			<div class="lat">
+				<input type="text" id="fm-loc-lat" name="latitude"{% if location %} value="{{ location.latitude }}"{% endif %} size="14" />
+				<label for="fm-loc-lat" class="suffix">Latitude</label>
+			</div>
+			<div class="lon">
+				<input type="text" id="fm-loc-lon" name="longitude"{% if location %} value="{{ location.longitude }}"{% endif %} size="14" />
+				<label for="fm-loc-lon" class="suffix">Longitude</label>
+			</div>
+			<div class="map-shim-hack"></div>
+			<div class="map">{% if show_map %}
+				<div id="fm-loc-map"></div>
+
+				<script src="http://maps.google.com/maps?file=api&v=2&key=" type="text/javascript"></script>
+				<script type="text/javascript">
+					$(function() {
+						if (GBrowserIsCompatible()) {
+							var INITIAL_ZOOM = 7;
+
+							/* initialize the map with the full zoom+pan
+							 * controls */
+							var map = new GMap2($("#fm-loc-map").get(0));
+							map.addControl(new GLargeMapControl());
+
+							/* when the document is unloaded, allow the gmap
+							 * to release it's resoures (especially for IE6) */
+							$(document.body).unload(function() {
+								if(GBrowserIsCompatible()) {
+									GUnload();
+								}
+							});{% if location %}
+
+							/* we're editing an existing location, so
+							 * add a marker, and center the map over it */
+							var lat = {{ location.latitude }};
+							var lon = {{ location.longitude }};
+							var latlon = new GLatLng(lat, lon);
+							var marker = new GMarker(latlon);
+							map.addOverlay(marker);{% else %}
+
+							/* we're adding a new location, so center
+							 * the map over... guatemala! (what?) */
+							var lat = 15.800;
+							var lon = -90.588;
+							var latlon = new GLatLng(lat, lon);{% endif %}
+							map.setCenter(latlon, INITIAL_ZOOM);
+
+							/*$(document).ready(function(){
+									$("#zones a").each(function() {
+											var a = jQuery(this);
+											var longitude = a.attr("longitude");
+											var latitude = a.attr("latitude");
+											if ((latitude != 'None') && (longitude != 'None')) {
+													var latlng = new GLatLng(longitude, latitude);
+													var marker = new GMarker(latlng);
+													map.addOverlay(marker);
+													GEvent.addListener(marker, "click", function() {
+														marker.openInfoWindowHtml(a.parent().html());
+													});
+											};
+									});
+							});*/
+						}
+					});
+				</script>
+				<p class="toggle-map"><a href="{% self_link "map" 0 %}">Hide Google Map</a></p>{% else %}
+				<p class="toggle-map"><a href="{% self_link "map" 1 %}">Show Google Map</a></p>{% endif %}
+			</div>
+		</div>
+
+		<div class="submit">
+			<input type="submit" value="{% if location %}Save Changes{% else %}Add Location{% endif %}" />{% if location %}
+			<input type="submit" name="delete" value="Delete {{ location }}" />{% endif %}
+		</div>
+	</form>
+</div>
+{% endblock %}
