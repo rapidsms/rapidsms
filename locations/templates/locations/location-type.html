@@ -37,5 +37,8 @@
 				</td>
 		</tfoot>
 	</table>
+	<div class="toolbar">
+		<a href="{% url add-location location_type_pk=location_type.pk %}" class="add">Add a {{ location_type.name }}</a>
+	</div>
 </div>{% endif %}
 {% endblock %}

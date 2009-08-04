@@ -48,3 +48,18 @@ def location(req, location_type_pk, location_pk):
             "location_type": loc_type,
             "location": location,
             "show_map": show_map })
+
+
+@require_GET
+def add_location(req, location_type_pk):
+    loc_type = get_object_or_404(LocationType, pk=location_type_pk)
+
+    # is the map visible?
+    # default to 1 (visible)
+    show_map = int(req.GET.get("map", 1))
+
+    return render_to_response(req,
+        "locations/location.html", {
+            "active_location_type_tab": loc_type.pk,
+            "location_type": loc_type,
+            "show_map": True })

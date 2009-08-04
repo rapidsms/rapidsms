@@ -70,13 +70,25 @@
 							 * the map over... guatemala! (what?) */
 							var lat = 15.800;
 							var lon = -90.588;
-							var latlon = new gm.LatLng(lat, lon);{% endif %}
+							var latlon = new gm.LatLng(lat, lon);
+							var marker = null;{% endif %}
 							map.setCenter(latlon, INITIAL_ZOOM);
 
 							var update_marker = function() {
 								var latlon = new gm.LatLng(lat_field.val(), lon_field.val());
-								marker.setLatLng(latlon);
 								map.setCenter(latlon);
+
+								/* if no marker currently exists,
+								 * create an add it now */
+								if(marker == null) {
+									marker = new gm.Marker(latlon);
+									map.addOverlay(marker);
+
+								/* otherwise, move the
+								 * existing marker */
+								} else {
+									marker.setLatLng(latlon);
+								}
 							};
 
 							/* whenever the lat or lon fields are changed
