@@ -9,6 +9,12 @@ from django.core.urlresolvers import reverse
 class ReporterAdmin(admin.ModelAdmin):
     list_display = ('id','alias','first_name', 'last_name')
     list_filter = []    
+
+
+class PersistantConnectionAdmin(admin.ModelAdmin):
+    list_display = ('id','identity','identity', 'reporter')
+    list_filter = ['reporter','backend']
+
     
 admin.site.register(Reporter, ReporterAdmin)
 
@@ -32,4 +38,4 @@ admin.site.register(Role)
 
 admin.site.register(ReporterGroup, ReporterGroupAdmin)
 admin.site.register(PersistantBackend)
-admin.site.register(PersistantConnection)
+admin.site.register(PersistantConnection, PersistantConnectionAdmin)
