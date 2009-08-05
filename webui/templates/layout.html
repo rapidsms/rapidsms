@@ -18,7 +18,7 @@
 		<script type="text/javascript" src="{{ js }}"></script>{% endfor %}
 		{% block javascripts %}{% endblock %}
 	</head>
-	<body>
+	<body class="app-{{ active_app }} view-{{ active_view }}">
 		<div id="wrapper">
 			{% region "top" %}
 			{% block header %}
@@ -31,7 +31,7 @@
 					</h1>
 				</div>
 				<ul id="tabs">{% for app in apps %}{% if app.tab_link %}
-					<li class="app-{{ app.type }}{% ifequal active_tab app.type %} active{% endifequal %}">
+					<li class="app-{{ app.type }}{% ifequal active_app app.type %} active{% endifequal %}">
 						<a href="{{ app.tab_link }}"><span>{{ app.title }}</span></a>
 					</li>{% endif %}{% endfor %}
 				</ul>
