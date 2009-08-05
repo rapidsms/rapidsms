@@ -45,6 +45,11 @@ def render_to_response(req, template_name, dictionary=None, **kwargs):
     
     # A NEW KIND OF LUNACY: inspect the stack to find out
     # which rapidsms app this function is being called from
+    # --
+    # TODO: we're assuming that this function was called
+    # directly from the view, and looking for it at -2 in
+    # the stack. this could be wrong, if something else is
+    # further abstracting the call (which sounds fun).
     tb = traceback.extract_stack(limit=2)
     m = re.match(r'^.+/(.+?)/views\.py$', tb[-2][0])
     if m is not None:
@@ -57,8 +62,14 @@ def render_to_response(req, template_name, dictionary=None, **kwargs):
         
         # note which app this func was called from, so the tmpl
         # can mark the tab (or some other type of nav) as active
-        rs_dict["active_tab"] = rs_dict["app_conf"]["type"]
-            
+        rs_dict["active_app"] = rs_dict["app_conf"]["type"]
+        
+        # also note which "view" (function) this func was called
+        # from, for a little introspection later in the rendering
+        # process (the view name is added to the css class
+        # of <body> to make per-view styling free)
+        rs_dict["active_view"] = tb[-2][2]
+        
         # find all of the javascript assets for
         # this app, and add them to the <head>
         __js_dir(
@@ -67,10 +78,9 @@ def render_to_response(req, template_name, dictionary=None, **kwargs):
         
         # check for a view-specific javascript,
         # to add LAST, after the dependencies
-        view_name = tb[-2][2]
         __js_dir(
-            "%s/static/javascripts/page/%s" % (rs_dict["app_conf"]["path"], view_name),
-            "/static/%s/javascripts/page/%s.js" % (rs_dict["app_conf"]["type"], view_name))
+            "%s/static/javascripts/page/%s" % (rs_dict["app_conf"]["path"], rs_dict["active_view"]),
+            "/static/%s/javascripts/page/%s.js" % (rs_dict["app_conf"]["type"], rs_dict["active_view"]))
         
         # attempt to import the "__global" function from
         # the views.py that this method was called from
