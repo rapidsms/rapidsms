@@ -106,8 +106,9 @@ class BernsoftHandler(RapidBaseHttpHandler):
         # monitoring URL
         if _is_uptime_check(self):
             self.respond(200, "success")
-        params = get_params(self)
-        self.handle_params(params)
+        else:
+            params = get_params(self)
+            self.handle_params(params)
         
     def do_POST(self):
         params = post_params(self)
@@ -192,8 +193,9 @@ class YoHandler(RapidBaseHttpHandler):
         # monitoring URL
         if _is_uptime_check(self):
             self.respond(200, "success")
-        params = get_params(self)
-        self.handle_params(params)
+        else:
+            params = get_params(self)
+            self.handle_params(params)
         
     def do_POST(self):
         params = post_params(self)
