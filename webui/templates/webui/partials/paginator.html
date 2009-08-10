@@ -1,6 +1,6 @@
 {% load self_link %}
 
-<div class="paginator">{% if objects.has_previous %}
+<div class="paginator" id="{{ dom_id }}">{% if objects.has_previous %}
 	<a href="{{ first_page_link }}" class="first" title="First page">First Page</a>
 	<a href="{{ prev_page_link }}" class="prev" title="Previous page">Previous Page</a>{% else %}
 	<span class="first na" title="You are already on the first page">First Page</span>
