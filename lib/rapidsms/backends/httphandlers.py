@@ -103,6 +103,9 @@ class BernsoftHandler(RapidBaseHttpHandler):
     password = "iavitst"
     
     def do_GET(self):
+        # monitoring URL
+        if _is_uptime_check(self):
+            return "success"
         params = get_params(self)
         self.handle_params(params)
         
@@ -186,6 +189,9 @@ class YoHandler(RapidBaseHttpHandler):
 
 
     def do_GET(self):
+        # monitoring URL
+        if _is_uptime_check(self):
+            return "success"
         params = get_params(self)
         self.handle_params(params)
         
@@ -307,6 +313,15 @@ class MTechHandler(RapidBaseHttpHandler):
         self.log_message("Mtech outgoing message: %s" % message)
 
         
+def _is_uptime_check(handler):
+    '''Determines whether the server is an uptime check
+       which is hackily done by checking if uptimecheck
+       is a passed in parameter'''
+    for param in get_params(handler):
+        if param[0] == "uptimecheck":
+            return True
+    return False
+
 def get_params(handler):
     '''Pulls the parameters from a query string and returns them in
        a dictionary'''
