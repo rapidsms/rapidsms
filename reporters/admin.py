@@ -12,7 +12,7 @@ class ReporterAdmin(admin.ModelAdmin):
 
 
 class PersistantConnectionAdmin(admin.ModelAdmin):
-    list_display = ('id','identity','identity', 'reporter')
+    list_display = ('id','backend','identity', 'reporter')
     list_filter = ['reporter','backend']
 
     
