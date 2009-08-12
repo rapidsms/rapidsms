@@ -5,7 +5,6 @@ import time, datetime, os, heapq
 import threading
 import traceback
 
-import i18n
 import component
 import log
 
@@ -26,9 +25,6 @@ class Router (component.Receiver):
 
     def set_logger(self, level, file):
         self.logger = log.Logger(level, file)
-
-    def set_languages(self, default, languages):
-        i18n.init(default,languages)
 
     def build_component (self, class_template, conf):
         """Imports and instantiates an module, given a dict with 

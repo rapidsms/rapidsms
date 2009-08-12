@@ -4,6 +4,7 @@
 from config import Config
 from router import Router
 import os, sys, shutil
+import i18n
 
 # the Manager class is a bin for various RapidSMS specific management methods
 class Manager (object):
@@ -11,17 +12,7 @@ class Manager (object):
         router = Router()
         router.set_logger(conf["log"]["level"], conf["log"]["file"])
         router.info("RapidSMS Server started up")
-        # Import i18n settings from rapidsms.ini for sms
-        if "i18n" in conf:
-            default = None
-            supported = None
-            if "sms_languages" in conf["i18n"]:
-                supported = conf["i18n"]["sms_languages"]
-            elif "languages" in conf["i18n"]:
-                supported = conf["i18n"]["languages"]
-            if "default_language" in conf["i18n"]:
-                default = conf["i18n"]["default_language"]
-            router.set_languages( default,supported )
+        import_i18n_sms_settings(conf)
         
         # add each application from conf
         for app_conf in conf["rapidsms"]["apps"]:
@@ -55,6 +46,41 @@ class Manager (object):
             print "Don't forget to add '%s' to your rapidsms.ini apps." % name
 	except IndexError:
 	    print "Oops. Please specify a name for your app."
+
+def import_i18n_sms_settings(conf):
+    # Import i18n settings from rapidsms.ini for sms
+    if "i18n" in conf:
+        default = None
+        supported = None
+        if "sms_languages" in conf["i18n"]:
+            supported = conf["i18n"]["sms_languages"]
+        elif "languages" in conf["i18n"]:
+            supported = conf["i18n"]["languages"]
+        if "default_language" in conf["i18n"]:
+            default = conf["i18n"]["default_language"]
+        i18n.init(default,supported)
+
+def import_i18n_web_settings(settings, conf):
+    if "i18n" in conf:
+        # ordering is important here, so we don't 
+        # activate lazy settings too early
+        # this is so we can configure i18n-dependent web ui views 
+        settings.RAPIDSMS_I18N = True
+        from django.conf import settings
+        if "default_language" in conf["i18n"]:  
+            settings.LANGUAGE_CODE = conf["i18n"]["default_language"]
+        
+        def _to_django_setting(language_settings):
+            languages = []
+            for language in language_settings:
+                if len(language) >= 2:
+                    languages.append( (language[0],language[1]) )
+            return tuple(languages)
+        
+        if "web_languages" in conf["i18n"]:
+            settings.LANGUAGES = _to_django_setting( conf["i18n"]["web_languages"] )
+        elif "languages" in conf["i18n"]:
+            settings.LANGUAGES = _to_django_setting( conf["i18n"]["languages"] )
 
 def import_local_settings (settings, ini, localfile="settings.py"):
     """Allow a settings.py file in the same directory as rapidsms.ini
@@ -104,27 +130,7 @@ def start (args):
         os.environ["DJANGO_SETTINGS_MODULE"] = "rapidsms.webui.settings"
         from django.core.management import setup_environ, execute_manager
         setup_environ(settings)
-        if "i18n" in conf:
-            # ordering is important here, so we don't activate lazy settings early
-            settings.RAPIDSMS_I18N = True
-            # this is so we can configure i18n-dependent views in RapidSMS
-            # 'settings' are now instantiated
-            from django.conf import settings
-            #settings.RAPIDSMS_I18N = True
-            if "default_language" in conf["i18n"]:  
-                settings.LANGUAGE_CODE = conf["i18n"]["default_language"]
-            
-            def _to_django_setting(language_settings):
-                languages = []
-                for language in language_settings:
-                    if len(language) >= 2:
-                        languages.append( (language[0],language[1]) )
-                return tuple(languages)
-            
-            if "web_languages" in conf["i18n"]:
-                settings.LANGUAGES = _to_django_setting( conf["i18n"]["web_languages"] )
-            elif "languages" in conf["i18n"]:
-                settings.LANGUAGES = _to_django_setting( conf["i18n"]["languages"] )
+        import_i18n_web_settings(settings, conf)
     else:
         settings = None
 
