@@ -12,5 +12,6 @@ urlpatterns = patterns('',
     url(r'^ping$', views.check_availability),
     (r'^accounts/login/$', views.login, {"template_name": settings.LOGIN_TEMPLATE }),
     (r'^accounts/logout/$', views.logout, {"template_name": settings.LOGGEDOUT_TEMPLATE }),
+    url(r'^i18n/', include('django.conf.urls.i18n')),
 )
 

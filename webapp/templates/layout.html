@@ -1,6 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 {% load region-tags %}
+{% load i18n %}
 
 {% load webapp-tags %}
 
@@ -30,9 +31,9 @@
                  {% block auth %}
 			                    <div id="auth">
                                         {% if user.is_authenticated %}
-                                            <p><a href="/accounts/logout/">Log out {{ user.username }}</a></p>
+                                            <p><a href="/accounts/logout/">{% trans "Log out" %} {{ user.username }}</a></p>
                                         {% else %}
-                                            <p><a href="/accounts/login/">Log in</a></p>
+                                            <p><a href="/accounts/login/">{% trans "Log in" %}</a></p>
                                         {% endif %}
                                 </div>
                  {% endblock %}
@@ -57,7 +58,22 @@
 			<div id="inner">
 				{% block content %}{% endblock %}
 			</div>
+
 			{% block footer %}
+			{% if USE_I18N %}
+				<form action="/i18n/setlang/" method="post" style="float:right">
+				    <select name="language">
+				    {% for lang in LANGUAGES %}
+				      <option value="{{ lang.0 }}" 
+				      {% ifequal LANGUAGE_CODE lang.0 %}selected{% endifequal %}>
+				      {{ lang.1 }}
+				      </option>
+				    {% endfor %}
+				    </select>
+				<input type="submit" class="small" value="Submit"/>
+				</form>
+			{% endif %}
+
 			<div id="footer">
 				<p class="rights">
 					Copyright &copy; 2009 <a href="http://unicefinnovation.org">UNICEF</a> et al.<br />
