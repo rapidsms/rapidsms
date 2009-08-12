@@ -169,6 +169,23 @@ class Config (object):
         output.update(raw_section)
         return output
 
+    def parse_i18n_section (self, raw_section):
+        output = {}
+        if "default_language" in raw_section:
+            output.update( {"default_language" : raw_section["default_language"]} )
+        
+        def _add_language_settings(setting):
+            if setting not in raw_section: return
+            output.update( {setting:[]} )
+            all_language_settings = to_list(raw_section[setting], separator="),(")
+            for language_settings in all_language_settings:
+                language = to_list( language_settings.strip('()') )
+                output[setting].append( language )
+        
+        _add_language_settings("languages")
+        _add_language_settings("web_languages")
+        _add_language_settings("sms_languages")
+        return output
 
     def __getitem__ (self, key):
         return self.data[key]

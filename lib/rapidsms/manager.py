@@ -11,6 +11,17 @@ class Manager (object):
         router = Router()
         router.set_logger(conf["log"]["level"], conf["log"]["file"])
         router.info("RapidSMS Server started up")
+        # Import i18n settings from rapidsms.ini for sms
+        if "i18n" in conf:
+            default = None
+            supported = None
+            if "sms_languages" in conf["i18n"]:
+                supported = conf["i18n"]["sms_languages"]
+            elif "languages" in conf["i18n"]:
+                supported = conf["i18n"]["languages"]
+            if "default_language" in conf["i18n"]:
+                default = conf["i18n"]["default_language"]
+            router.set_languages( default,supported )
         
         # add each application from conf
         for app_conf in conf["rapidsms"]["apps"]:
@@ -93,6 +104,27 @@ def start (args):
         os.environ["DJANGO_SETTINGS_MODULE"] = "rapidsms.webui.settings"
         from django.core.management import setup_environ, execute_manager
         setup_environ(settings)
+        if "i18n" in conf:
+            # ordering is important here, so we don't activate lazy settings early
+            settings.RAPIDSMS_I18N = True
+            # this is so we can configure i18n-dependent views in RapidSMS
+            # 'settings' are now instantiated
+            from django.conf import settings
+            #settings.RAPIDSMS_I18N = True
+            if "default_language" in conf["i18n"]:  
+                settings.LANGUAGE_CODE = conf["i18n"]["default_language"]
+            
+            def _to_django_setting(language_settings):
+                languages = []
+                for language in language_settings:
+                    if len(language) >= 2:
+                        languages.append( (language[0],language[1]) )
+                return tuple(languages)
+            
+            if "web_languages" in conf["i18n"]:
+                settings.LANGUAGES = _to_django_setting( conf["i18n"]["web_languages"] )
+            elif "languages" in conf["i18n"]:
+                settings.LANGUAGES = _to_django_setting( conf["i18n"]["languages"] )
     else:
         settings = None
 
@@ -108,4 +140,9 @@ def start (args):
     elif settings:
         # none of the commands were recognized,
         # so hand off to Django
-        execute_manager(settings)
+        
+        from django.core.management import ManagementUtility
+        # The following is equivalent to django's "execute_manager(settings)"
+        # only without overriding RapidSMS webui settings
+        utility = ManagementUtility()
+        utility.execute()

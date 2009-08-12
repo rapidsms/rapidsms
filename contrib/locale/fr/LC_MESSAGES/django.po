@@ -1,0 +1,30 @@
+# vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
+#
+# FRENCH translations for RapidSMS package.
+# Copyright (C) 2009 RapidSMS
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 0.0\n"
+"Report-Msgid-Bugs-To: rapidsms.org\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: pygettext.py 1.5\n"
+
+######################
+# RapidSMS Echo App  #
+######################
+
+#: .\apps\echo\app.py:14
+#, python-format
+msgid "You said: %(message)s"
+msgstr "Vous avez dit: %(message)s"
+
+###################
+# RapidSMS Web UI #
+###################
+
+msgid "Log in"
+msgstr "Connectez-vous"
+

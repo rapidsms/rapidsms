@@ -1,5 +1,6 @@
-# vim: ai ts=4 sts=4 et sw=4
+# vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
 
+from django.utils.encoding import smart_str
 from harness import MockRouter, EchoApp
 from rapidsms.backends.backend import Backend
 from rapidsms.message import Message
@@ -93,14 +94,23 @@ class TestScript (TestCase):
                 self.router.run()
             elif dir == '<':
                 msg = self.backend.next_message()
+                # smart_str is a django util that prevents dumb terminals
+                # from barfing on strange character sets 
+                # see http://code.djangoproject.com/ticket/10183
+                last_msg, msg.text, txt = map(smart_str, [last_msg, msg.text, txt])
                 self.assertTrue(msg is not None, 
                     "message was returned.\nMessage: '%s'\nExpecting: '%s')" % (last_msg, txt))
-                self.assertEquals(msg.peer, num,
-                    "Expected to send to %s, but message was sent to %s\nMessage: '%s'\nReceived: '%s'\nExpecting: '%s'" 
-                    % (num, msg.peer,last_msg, msg.text, txt))
-                self.assertEquals(msg.text.strip(), txt.strip(),
-                    "\nMessage: %s\nReceived text: %s\nExpected text: %s\n"
-                    % (last_msg, msg.text,txt))
+                try:
+                    assertEqualsErrorMsg1 = "Expected to send to %s, but message was sent to %s\nMessage: '%s'\nReceived: '%s'\nExpecting: '%s'" % \
+                        (num, msg.peer,last_msg, msg.text, txt)
+                    assertEqualsErrorMsg2 = "\nMessage: %s\nReceived text: %s\nExpected text: %s\n" % \
+                        (last_msg, msg.text, txt)
+                except UnicodeDecodeError:
+                    # TODO - track down this problem properly. I have no idea why this works in eclipse.
+                    raise Exception("There has been a problem interpreting non-ascii. " +
+                                    "Try running this in eclipse.")
+                self.assertEquals(msg.peer, num, assertEqualsErrorMsg1)
+                self.assertEquals(msg.text.strip(), txt.strip(),assertEqualsErrorMsg2)
             last_msg = txt
         self.router.stop()
 
