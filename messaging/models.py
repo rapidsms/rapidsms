@@ -6,7 +6,7 @@ from django.db import models
 from django.db import connection
 from django.db.backends.util import typecast_timestamp
 from reporters.models import PersistantConnection, PersistantBackend, Reporter
-
+from datetime import datetime
 
 class IncomingMessage(models.Model):
     reporter   = models.ForeignKey(Reporter, null=True, blank=True)
@@ -178,10 +178,15 @@ def __combined_message_log_row(row):
             identity=row[11],
             id=row[10])
 
+    # If the date object is already a datetime, don't bother
+    # casting it.  Otherwise do.
+    casted_date = row[2]
+    if not isinstance(casted_date, datetime):
+        casted_date = typecast_timestamp(row[2])
     return {
         "direction":  row[0],
         "pk":         row[1],
-        "date":       typecast_timestamp(row[2]),
+        "date":       casted_date,
         "text":       row[3],
         "reporter":   reporter,
         "connection": connection }
