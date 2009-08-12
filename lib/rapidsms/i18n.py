@@ -23,8 +23,7 @@ from django.utils.translation import ugettext_noop
 
 # ugettext is globally available to make tagging strings easy
 def ugettext_from_locale(text, locale=_default):
-    """ 
-    Used to translate a string given a particulate locale
+    """ Used to translate a string given a particulate locale
     
     For example, most modules will import these functions:
         from rapidsms.i18n import ugettext_from_locale as _t
@@ -33,6 +32,11 @@ def ugettext_from_locale(text, locale=_default):
     '_t' will translate strings given a locale
     For example: 
         response = _t(locale, _("Hello %(name)s!") ) % {"name":name}    
+
+    Keyword arguments:
+    text -- the text to translate
+    locale -- the language code to translate to (defaults to 'en')
+
     """
     # TODO: handle mappings from old-style two letter ('en')
     # to new hotness 3-letter codes 'eng'
@@ -44,34 +48,42 @@ def ugettext_from_locale(text, locale=_default):
 
 
 def init(default='en', languages=[[ 'en','English' ]] , path=LOCALE_PATH):
-    """ 
-    Global initialization function for sms i18n translators
+    """ Global initialization function for sms i18n translators
     
     We use the class-based API of GNU Gettext to provide
     multiple dynamic translations
     Do not call this function in runserver, as it will foobar
     the web translations in unpredictable ways.
     
+    Keyword arguments:
+    default -- default language code ('en' by default)
+    languages -- list of lists identifying supported languages
+        of the form [ [ code,name,**aliases ] ] 
+        e.g.  [ [ 'en','English' ],[ 'en','Francais','French' ] ] 
+    path -- path to 'locale' dir used by gettext to find translation files
+
     """
     global _translations, _default
-    if not default: default = 'en'
-    if not languages: languages = [[ 'en','English' ]]
+    _default = default
+    default_from_language = False
+    if not _default: 
+        # if there is only one translation, it's the default
+        if languages and len(languages)==1 and languages[0]:
+            _default = languages[0][0]
+            default_from_language = True
+        else: _default = 'en'
+    if not languages: 
+        # if there is a default and no languages, 
+        # that becomes the default language
+        if _default and not default_from_language:
+            languages = [[ _default,'Default' ]]
+        else:
+            languages = [[ 'en','Default' ]]
     for language in languages:
         if language:
             t = _Translation(language[0],language[1:])
-            try:
-                t.translator = gettext.translation('django',path,[t.slug,default])
-            except IOError, e:
-                if str(e).find("No translation file") != -1:
-                    raise Exception("Translation file not found. Please create " +
-                                    "%s/%s/LC_MESSAGES/django.mo " % (LOCALE_PATH,t.slug) +
-                                    "within your project with the correct translations")
-                else:
-                    raise
+            t.translator = gettext.translation('django',path,[t.slug,_default], fallback=True)
             _translations.update ( {t.slug:t} )
-    _default = default
-    if len(_translations)==1: # if there is only one translation, it's the default
-        _default = _translations.keys()[0]
     if _default not in _translations:
         raise Exception("i18n enabled but no default language specified! " +
                         "Please add default_language=<language_code> to rapidsms.ini")
