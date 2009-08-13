@@ -4,6 +4,7 @@
 
 from django.db import models
 from rapidsms.webui.managers import *
+from apps.reporters.models import Reporter
 
 
 class LocationType(models.Model):
@@ -72,3 +73,13 @@ class Location(models.Model):
             locs.extend(loc.descendants(True))
         
         return locs
+
+
+class ReporterLocation(models.Model):
+    """This model is kind of a hack, to add a _location_ field
+       to the Reporter class without extending it -- in the same
+       way that the Django docs recommend creating a UserProfile
+       rather than patching User."""
+
+    reporter = models.ForeignKey(Reporter, unique=True)
+    location = models.ForeignKey(Location)
