@@ -55,25 +55,25 @@
 				{% endblock %}
 			</div>
 			{% endblock %}
+			
 			<div id="inner">
+				{% if USE_I18N %}
+					<form action="/i18n/setlang/" method="post" style="float:right">
+					    <select name="language">
+					    {% for lang in LANGUAGES %}
+					      <option value="{{ lang.0 }}" 
+					      {% ifequal LANGUAGE_CODE lang.0 %}selected{% endifequal %}>
+					      {{ lang.1 }}
+					      </option>
+					    {% endfor %}
+					    </select>
+					<input type="submit" class="small" value="Submit"/>
+					</form>
+				{% endif %}
 				{% block content %}{% endblock %}
 			</div>
 
 			{% block footer %}
-			{% if USE_I18N %}
-				<form action="/i18n/setlang/" method="post" style="float:right">
-				    <select name="language">
-				    {% for lang in LANGUAGES %}
-				      <option value="{{ lang.0 }}" 
-				      {% ifequal LANGUAGE_CODE lang.0 %}selected{% endifequal %}>
-				      {{ lang.1 }}
-				      </option>
-				    {% endfor %}
-				    </select>
-				<input type="submit" class="small" value="Submit"/>
-				</form>
-			{% endif %}
-
 			<div id="footer">
 				<p class="rights">
 					Copyright &copy; 2009 <a href="http://unicefinnovation.org">UNICEF</a> et al.<br />
