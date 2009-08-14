@@ -185,6 +185,10 @@ class Config (object):
         _add_language_settings("languages")
         _add_language_settings("web_languages")
         _add_language_settings("sms_languages")
+        # add a section for the locale paths
+        if "locale_paths" in raw_section:
+            output["locale_paths"] = to_list(raw_section["locale_paths"], ",")
+        
         return output
 
     def __getitem__ (self, key):

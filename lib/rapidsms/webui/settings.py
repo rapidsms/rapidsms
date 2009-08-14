@@ -133,9 +133,11 @@ if "i18n" in RAPIDSMS_CONF:
         LANGUAGES = _i18n_to_django_setting( RAPIDSMS_CONF["i18n"]["web_languages"] )
     elif "languages" in RAPIDSMS_CONF["i18n"]:
         LANGUAGES = _i18n_to_django_setting( RAPIDSMS_CONF["i18n"]["languages"] )
-
-
-
+    
+    # allow you to specify the static paths for translation files
+    if "locale_paths" in RAPIDSMS_CONF["i18n"]:
+        LOCALE_PATHS = RAPIDSMS_CONF["i18n"]["locale_paths"]
+        
 # ==========================
 # LOAD OTHER DJANGO SETTINGS
 # ==========================
