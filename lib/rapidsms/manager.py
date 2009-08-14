@@ -60,28 +60,6 @@ def import_i18n_sms_settings(conf):
             default = conf["i18n"]["default_language"]
         i18n.init(default,supported)
 
-def import_i18n_web_settings(settings, conf):
-    if "i18n" in conf:
-        # ordering is important here, so we don't 
-        # activate lazy settings too early
-        # this is so we can configure i18n-dependent web ui views 
-        settings.RAPIDSMS_I18N = True
-        from django.conf import settings
-        if "default_language" in conf["i18n"]:  
-            settings.LANGUAGE_CODE = conf["i18n"]["default_language"]
-        
-        def _to_django_setting(language_settings):
-            languages = []
-            for language in language_settings:
-                if len(language) >= 2:
-                    languages.append( (language[0],language[1]) )
-            return tuple(languages)
-        
-        if "web_languages" in conf["i18n"]:
-            settings.LANGUAGES = _to_django_setting( conf["i18n"]["web_languages"] )
-        elif "languages" in conf["i18n"]:
-            settings.LANGUAGES = _to_django_setting( conf["i18n"]["languages"] )
-
 def import_local_settings (settings, ini, localfile="settings.py"):
     """Allow a settings.py file in the same directory as rapidsms.ini
        to modify the imported rapidsms.webui.settings."""
@@ -130,7 +108,6 @@ def start (args):
         os.environ["DJANGO_SETTINGS_MODULE"] = "rapidsms.webui.settings"
         from django.core.management import setup_environ, execute_manager
         setup_environ(settings)
-        import_i18n_web_settings(settings, conf)
     else:
         settings = None
 

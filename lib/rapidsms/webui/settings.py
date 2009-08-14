@@ -2,6 +2,7 @@
 # vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
 
 import os, time
+import i18n
 
 
 DEBUG = True
@@ -114,6 +115,24 @@ RAPIDSMS_APPS = dict([
     (app["type"], app)
     for app in RAPIDSMS_CONF["rapidsms"]["apps"]])
 
+
+# this code bootstraps the i18n logic configuration, if 
+# it is in the settings
+
+def _i18n_to_django_setting(language_settings):
+    languages = []
+    for language in language_settings:
+        if len(language) >= 2:
+            languages.append( (language[0],language[1]) )
+    return tuple(languages)
+    
+# Import i18n settings from rapidsms.ini for sms
+if "i18n" in RAPIDSMS_CONF:
+    RAPIDSMS_I18N = True
+    if "web_languages" in RAPIDSMS_CONF["i18n"]:
+        LANGUAGES = _i18n_to_django_setting( RAPIDSMS_CONF["i18n"]["web_languages"] )
+    elif "languages" in RAPIDSMS_CONF["i18n"]:
+        LANGUAGES = _i18n_to_django_setting( RAPIDSMS_CONF["i18n"]["languages"] )
 
 
 
