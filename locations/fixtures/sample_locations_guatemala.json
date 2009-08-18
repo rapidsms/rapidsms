@@ -3,14 +3,20 @@
         "pk": 1,
         "model": "locations.locationtype",
         "fields": {
-            "name": "Country"
+            "singular": "Country",
+            "plural": "Countries",
+            "is_linkable": 0,
+            "parent": null
         }
     },
     {
         "pk": 2,
         "model": "locations.locationtype",
         "fields": {
-            "name": "Department"
+            "singular": "Department",
+            "plural": "Departments",
+            "is_linkable": 1,
+            "parent": 1
         }
     },
     {

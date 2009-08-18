@@ -8,14 +8,62 @@ from apps.reporters.models import Reporter
 
 
 class LocationType(models.Model):
-    name = models.CharField(max_length=100)
-    
-    
+
+    # django doesn't like to automatically pluralize things
+    # (and neither do i), but it's not a _huge_ inconvenience
+    # to provide them both, since LocationTypes rarely change
+    singular = models.CharField(max_length=100, unique=True)
+    plural   = models.CharField(max_length=100, unique=True)
+
+    # some types of locations (like countries) only
+    # exist to contain other locations, not to actually
+    # link things to. we don't enforce this in the db,
+    # but can use it as a hint to improve the interface
+    is_linkable = models.BooleanField(
+        help_text="Allows other models from being linked to this model " +\
+                  "in the WebUI. Has no effect in the Django admin.")
+
+    # make this recursive, to provide hints on how
+    # to display the linked locations in the webui
+    # (eg: in a deployment with Planet -> Country -> State LocationTypes, we
+    # can assume that a Location being created within a Country will be a State)
+    objects = RecursiveManager()
+    parent = models.ForeignKey("LocationType", related_name="children", null=True, blank=True,
+        help_text="The parent of this LocationType. Provides a structure " +\
+                  "for linked Locations in the WebUI. Has no effect " +\
+                  "in the Django admin.")
+
+
     class Meta:
         verbose_name = "Type"
-    
+
     def __unicode__(self):
-        return self.name
+        return self.title
+
+
+    @classmethod
+    def label(cls, only_linkable=False):
+        """Since most LocationType hierarchies only allow reports to be
+           linked to the lowest-level Locations, and many deployments don't
+           evan _have_ a LoctionType hierarchy (only a single LocationType),
+           we can sometimes do a lot better than "Location" as a label for
+           fields to select a linkable Location."""
+
+        # fetch all relevant LocationTypes
+        if not only_linkable: objects = cls.objects.all()
+        else: objects = cls.objects.filter(is_linkable=1)
+
+        # if there's only one, we can use its title.
+        # otherwise, we'll just have to be generic
+        return objects[0].title if len(objects) == 1 else "Location"
+
+
+    @property
+    def title(self):
+        """Returns the singular form of this LocationType.
+           This is only here for consistency, because most
+           models have a "title" field."""
+        return self.singular
 
 
 class Location(models.Model):
