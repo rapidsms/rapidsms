@@ -5,6 +5,6 @@
 
 {% block page_tabs %}
 <ul id="page-tabs">{% for location_type in location_types %}
-	<li{% ifequal location_type.pk active_location_type_tab %} class="active"{% endifequal %}><a href="{% url view-location-type location_type.pk %}">{{ location_type.name }}</a></li>{% endfor %}
+	<li{% ifequal location_type.pk active_location_type_tab %} class="active"{% endifequal %}><a href="{% url view-location-type location_type.pk %}">{{ location_type.plural }}</a></li>{% endfor %}
 </ul>
 {% endblock %}
