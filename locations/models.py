@@ -41,6 +41,20 @@ class LocationType(models.Model):
         return self.title
 
 
+    class ManyLocationTypesStub(object):
+        """This class only exists to serve the LocationType.label method, which
+           usually returns a single LocationType, which is embedded into a
+           template where a description is required -- but sometimes, we have
+           to be generic. This little stub allows us to do so (by using, for
+           example, {{ location_type.plural }}, without worrying about whether
+           it will output "OTPs", "States", or just "Locations"). This is an
+           object, rather than a dict, so the attrs can be accessed just like
+           Django model fields would."""
+
+        def __init__(self):
+            self.singular = "Location"
+            self.plural   = "Locations"
+
     @classmethod
     def label(cls, only_linkable=False):
         """Since most LocationType hierarchies only allow reports to be
@@ -55,7 +69,7 @@ class LocationType(models.Model):
 
         # if there's only one, we can use its title.
         # otherwise, we'll just have to be generic
-        return objects[0].title if len(objects) == 1 else "Location"
+        return objects[0] if len(objects) == 1 else cls.ManyLocationTypesStub()
 
 
     @property
