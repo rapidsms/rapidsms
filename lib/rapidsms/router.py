@@ -214,7 +214,7 @@ class Router (component.Receiver):
                 
                 # find the backend named by the message,
                 # reconstruct the object, and send it
-                for backend in self.backends:
+                for backend in self.backends.values():
                     if backend.slug == be_slug:
                         msg = backend.message(identity, txt)
                         self.info("Sending pending message: %r" % msg)
