@@ -6,7 +6,8 @@
             "singular": "Country",
             "plural": "Countries",
             "is_linkable": 0,
-            "parent": null
+            "parent": null,
+            "marker": 0
         }
     },
     {
@@ -16,7 +17,8 @@
             "singular": "Department",
             "plural": "Departments",
             "is_linkable": 1,
-            "parent": 1
+            "parent": 1,
+            "marker": 6
         }
     },
     {

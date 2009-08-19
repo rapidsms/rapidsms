@@ -7,6 +7,19 @@ from rapidsms.webui.managers import *
 from apps.reporters.models import Reporter
 
 
+MARKER_CHOICES = (
+    ("0",       "Red"),
+    ("1",    "Orange"),
+    ("2",    "Yellow"),
+    ("3",     "Green"),
+    ("4", "Turquoise"),
+    ("5",      "Cyan"),
+    ("6",      "Blue"),
+    ("7",    "Indigo"),
+    ("8",    "Purple"),
+    ("9",      "Pink"))
+
+
 class LocationType(models.Model):
 
     # django doesn't like to automatically pluralize things
@@ -14,6 +27,10 @@ class LocationType(models.Model):
     # to provide them both, since LocationTypes rarely change
     singular = models.CharField(max_length=100, unique=True)
     plural   = models.CharField(max_length=100, unique=True)
+
+    # require a marker to be chosen, so the types
+    # don't all end up the same color on the maps
+    marker = models.CharField(max_length=10, choices=MARKER_CHOICES)
 
     # some types of locations (like countries) only
     # exist to contain other locations, not to actually
