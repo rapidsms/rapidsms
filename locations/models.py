@@ -28,6 +28,9 @@ class LocationType(models.Model):
     singular = models.CharField(max_length=100, unique=True)
     plural   = models.CharField(max_length=100, unique=True)
 
+    slug = models.CharField(max_length=100, unique=True,
+        help_text="An URL-safe alternative to the <em>plural</em> field.")
+
     # require a marker to be chosen, so the types
     # don't all end up the same color on the maps
     marker = models.CharField(max_length=10, choices=MARKER_CHOICES)

@@ -5,6 +5,7 @@
         "fields": {
             "singular": "Country",
             "plural": "Countries",
+            "slug": "countries",
             "is_linkable": 0,
             "parent": null,
             "marker": 0
@@ -16,6 +17,7 @@
         "fields": {
             "singular": "Department",
             "plural": "Departments",
+            "slug": "departments",
             "is_linkable": 1,
             "parent": 1,
             "marker": 6
