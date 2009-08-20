@@ -11,24 +11,23 @@ urlpatterns = patterns('',
     # mini dashboard for this app
     url(r'^locations$',
         views.dashboard,
-        name="locations-home"),
+        name="locations_dashboard"),
 
     # view all locations of a location_type
-    url(r'^location-types/(?P<location_type_pk>\d+)$',
-        views.location_type,
-        name="view-location-type"),
+    url(r'^locations/(?P<location_type_slug>[a-z]+)$',
+        views.view_location_type,
+        name="view_location_type"),
+
+    # view and/or edit a single location
+    url(r'^locations/(?P<location_type_slug>[a-z]+)/(?P<location_pk>\d+)$',
+        views.edit_location,
+        name="edit_location"),
 
     # add a location of a defined type (note that
     # there's no url to define a location of an
     # arbitrary type. since location types rarely
     # change, i'm leaving that to the django admin)
-    url(r'^location-types/(?P<location_type_pk>\d+)/locations/add$',
+    url(r'^locations/(?P<location_type_slug>[a-z]+)/add$',
         views.add_location,
-        name="add-location"),
-
-    # to view all of the data linked to a location,
-    # which may have come from _any_ rapidsms app
-    url(r'^location-types/(?P<location_type_pk>\d+)/locations/(?P<location_pk>\d+)$',
-        views.location,
-        name="view-location"),
+        name="add_location")
 )
