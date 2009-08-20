@@ -467,9 +467,17 @@ table {
 	.module form p.help {
 		margin-top: 0.625em;
 		font-size: 80%;
-		color: #ccc;
+		color: #aaa;
 		width: 30em;
 	}
+
+		/* highlight examples (usually examples of text that
+		 * should be sent over SMS, but could be anything) */
+		.module form p.help span.example {
+			font-family: monospace;
+			background: #f8f8f8;
+			color: #888;
+		}
 
 	/* to wrap any submission or action buttons, and
 	 * receive javascript/ajax notifications in response */
