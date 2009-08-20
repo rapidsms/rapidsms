@@ -115,8 +115,8 @@ class Location(models.Model):
         help_text="The parent of this Location. Although it is not enforced, it" +\
                   "is expected that the parent will be of a different LocationType")
     
-    latitude  = models.DecimalField(max_digits=8, decimal_places=6, blank=True, null=True, help_text="The physical latitude of this location")
-    longitude = models.DecimalField(max_digits=8, decimal_places=6, blank=True, null=True, help_text="The physical longitude of this location")
+    latitude  = models.DecimalField(max_digits=13, decimal_places=10, blank=True, null=True, help_text="The physical latitude of this location")
+    longitude = models.DecimalField(max_digits=13, decimal_places=10, blank=True, null=True, help_text="The physical longitude of this location")
     
     
     def __unicode__(self):
