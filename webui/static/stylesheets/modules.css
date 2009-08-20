@@ -150,6 +150,15 @@ table {
 				font-style: italic;
 			}
 
+			/* some tables use the first column as a kind
+			 * of index (a number, shortcode, etc), which
+			 * can be visibly separated */
+			td.number,
+			th.number {
+				border-right: 1px dotted #eee;
+				padding-right: 0.5em;
+				text-align: right;
+			}
 
 	tr.no-data { }
 
