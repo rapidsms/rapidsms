@@ -121,6 +121,174 @@ class HttpHandler(RapidBaseHttpHandler):
             HttpHandler.msg_store[msg.connection.identity] = []
             HttpHandler.msg_store[msg.connection.identity].append(_str(msg.text))
                 
+class BernsoftHandler(RapidBaseHttpHandler):
+    '''An HttpHandler for the bernsoft gateway, for use in Kenya''' 
+    
+    # This is the format of the post string
+    # TODO: not hard code this
+    outgoing_url = "http://afritext.bernsoft.com/api/send.php?username=%(user)s&password=%(password)s&destination_number=%(to)s&message=%(text)s&thirdparty_message_id=%(id)s"
+    user = "<YOUR_USERNAME>"
+    password = "<YOUR_PASSWORD>"
+    
+    def do_GET(self):
+        # monitoring URL
+        if _is_uptime_check(self):
+            self.respond(200, "success")
+        else:
+            params = get_params(self)
+            self.handle_params(params)
+        
+    def do_POST(self):
+        params = post_params(self)
+        self.handle_params(params)
+        
+    def handle_params(self, params):
+        if not params:
+            self.respond(500, "Must specify parameters in the URL!")
+            return
+        else:
+            # parameters are: 
+            # text=message%20body
+            # sender=2347067277331
+            # timesent=<format???>
+            text = None
+            sender = None
+            date = None
+            for param in params:
+                if param[0] == "text":
+                    # TODO watch out because urllib.unquote 
+                    # will blow up on unicode text 
+                    text = urllib.unquote(param[1])
+                elif param[0] == "sender":
+                    sender = param[1]
+                elif param[0] == "timesent":
+                    try: 
+                        date = datetime.strptime(param[1], "%Y%m%d%H%M.%S")
+                    except:
+                        self.log_error("bad date format: %s" % param[1])
+                        date = datetime.now()
+            if text and sender: 
+                # respond with "ok" so bernsoft knows
+                # we got it correctly
+                msg = self.server.backend.message(sender, text, date)
+                self.server.backend.route(msg)
+                self.respond(200, "OK")
+                return
+            else:
+                self.respond(500, "You must specify a valid number and message")
+                return
+
+    @classmethod
+    def outgoing(klass, message):
+        klass.backend.debug("Bernsoft outgoing message: %s" % message)
+        if hasattr(message, "logger_id") and message.logger_id:
+            id = message.logger_id
+        else:
+            id = 0
+        to_submit = BernsoftHandler.outgoing_url % ( { "user": BernsoftHandler.user, "password" : BernsoftHandler.password, 
+                                             "to" : message.connection.identity, "text" : urllib2.quote(message.text),
+                                             "id" : id})
+        #self.log_message("submitting to url: %s" % to_submit)
+        klass.backend.debug("submitting to url: %s" % to_submit)
+        
+        response = "\n".join([line for line in urllib2.urlopen(to_submit)])
+        #self.log_message("Got response: %s" % response)
+        klass.backend.debug("Got response: %s" % response)
+        
+        
+        
+class YoHandler(RapidBaseHttpHandler):
+    '''An HttpHandler for the yo gateway, for use in Uganda''' 
+    
+    # This is the format of the post string
+    
+    yo_secret = "<SECRET>" 
+    param_text = "smsContent"
+    param_sender = "msisdn"
+    
+    outgoing_url = "http://switch1.yo.co.ug/ybs_p/task.php"
+    outgoing_params = {"ybsacctno" : "<ACCOUNT_NUMBER>", 
+                 "sysrid" : "5", 
+                 "method" : "acsendsms", 
+                 "type" : "1", 
+                 "nostore" : "1", 
+                 "ybs_autocreate_authorization" : "<AUTHORIZATION_CODE>"
+                 }
+    param_text_outgoing = "sms_content"
+    param_phone_outgoing = "destinations"
+
+
+    def do_GET(self):
+        # monitoring URL
+        if _is_uptime_check(self):
+            self.respond(200, "success")
+        else:
+            params = get_params(self)
+            self.handle_params(params)
+        
+    def do_POST(self):
+        params = post_params(self)
+        self.handle_params(params)
+        
+    def handle_params(self, params):
+        if not params:
+            self.respond(500, "Must specify parameters in the URL!")
+            return
+        else:
+            # parameters are: 
+            # smsContent=message%20body
+            # msisdn=2347067277331 (sender)
+            text = None
+            sender = None
+            date = None
+            for param in params:    
+                if param[0] == YoHandler.param_text:
+                    # TODO watch out because urllib.unquote 
+                    # will blow up on unicode text 
+                    text = urllib.unquote(param[1])
+                elif param[0] == YoHandler.param_sender:
+                    sender = param[1]
+            if text and sender: 
+                # respond with the number and text 
+                # only really useful for testing
+                
+                # messages come in from yo with + instead of spaces, so
+                # change them
+                text = " ".join(text.split("+"))
+                msg = self.server.backend.message(sender, text, date)
+                self.server.backend.route(msg)
+                self.respond(200, "{'phone':'%s', 'message':'%s'}" % (sender, text))
+                return
+            else:
+                self.respond(500, "You must specify a valid number and message")
+                return
+
+    @classmethod
+    def outgoing(klass, message):
+        klass.backend.debug("Yo outgoing message: %s" % message)
+        params = YoHandler.outgoing_params.copy()
+        params[YoHandler.param_text_outgoing] = urllib2.quote(message.text)
+        params[YoHandler.param_phone_outgoing] = urllib2.quote(message.connection.identity)
+        lines = []
+        ok = False
+        for line in urllib2.urlopen(YoHandler.outgoing_url, urllib.urlencode(params)): 
+            if "ybs_autocreate_status=OK" in line:
+                ok = True
+            elif "ybs_autocreate_status=ERROR" in line:
+                ok = False
+            lines.append(line)
+        if ok:
+            lines.insert(0,"Success!")
+        else:
+            lines.insert(0,"Error!")
+        
+        klass.backend.debug("submitting to url: %s" % YoHandler.outgoing_url)
+        
+        response = "\n".join([line for line in lines])
+        klass.backend.debug("Got response: %s" % response)
+        
+        
+        
 class MTechHandler(RapidBaseHttpHandler):
     '''An HttpHandler for the mtech gateway, for use in Nigeria'''
     def do_GET(self):
@@ -296,6 +464,18 @@ class End2EndHandler(RapidBaseHttpHandler):
         klass.backend.debug("Got response: %s" % "\n".join(response))
         
         
+def _is_uptime_check(handler):
+    '''Determines whether the server is an uptime check
+       which is hackily done by checking if uptimecheck
+       is a passed in parameter'''
+    params = get_params(handler)
+    if not params:
+        return False
+    for param in params:
+        if param[0] == "uptimecheck":
+            return True
+    return False
+
 def get_params(handler):
     '''Pulls the parameters from a query string and returns them in
        a dictionary'''
