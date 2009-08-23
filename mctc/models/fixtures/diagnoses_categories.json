@@ -1,0 +1,149 @@
+[
+  {
+    "pk": 7, 
+    "model": "mctc.diagnosiscategory", 
+    "fields": {
+      "name": "Acute Respiratory Infections (460-466)"
+    }
+  }, 
+  {
+    "pk": 9, 
+    "model": "mctc.diagnosiscategory", 
+    "fields": {
+      "name": "Asthma"
+    }
+  }, 
+  {
+    "pk": 15, 
+    "model": "mctc.diagnosiscategory", 
+    "fields": {
+      "name": "Dehydration**  "
+    }
+  }, 
+  {
+    "pk": 8, 
+    "model": "mctc.diagnosiscategory", 
+    "fields": {
+      "name": "HIV"
+    }
+  }, 
+  {
+    "pk": 20, 
+    "model": "mctc.diagnosiscategory", 
+    "fields": {
+      "name": "Helminths (otherwise unspecified)"
+    }
+  }, 
+  {
+    "pk": 5, 
+    "model": "mctc.diagnosiscategory", 
+    "fields": {
+      "name": "Influenza"
+    }
+  }, 
+  {
+    "pk": 2, 
+    "model": "mctc.diagnosiscategory", 
+    "fields": {
+      "name": "Intestinal Infectious Diseases (excludes helminthiasis) (001-009)"
+    }
+  }, 
+  {
+    "pk": 1, 
+    "model": "mctc.diagnosiscategory", 
+    "fields": {
+      "name": "Malaria"
+    }
+  }, 
+  {
+    "pk": 12, 
+    "model": "mctc.diagnosiscategory", 
+    "fields": {
+      "name": "Malnutrition"
+    }
+  }, 
+  {
+    "pk": 10, 
+    "model": "mctc.diagnosiscategory", 
+    "fields": {
+      "name": "Measles"
+    }
+  }, 
+  {
+    "pk": 11, 
+    "model": "mctc.diagnosiscategory", 
+    "fields": {
+      "name": "Meningitis"
+    }
+  }, 
+  {
+    "pk": 17, 
+    "model": "mctc.diagnosiscategory", 
+    "fields": {
+      "name": "Otitis Externa"
+    }
+  }, 
+  {
+    "pk": 16, 
+    "model": "mctc.diagnosiscategory", 
+    "fields": {
+      "name": "Otitis Media"
+    }
+  }, 
+  {
+    "pk": 4, 
+    "model": "mctc.diagnosiscategory", 
+    "fields": {
+      "name": "Pneumonia (480-488)"
+    }
+  }, 
+  {
+    "pk": 3, 
+    "model": "mctc.diagnosiscategory", 
+    "fields": {
+      "name": "Pulmonary Tuberculosis"
+    }
+  }, 
+  {
+    "pk": 21, 
+    "model": "mctc.diagnosiscategory", 
+    "fields": {
+      "name": "Schistosomiasis "
+    }
+  }, 
+  {
+    "pk": 14, 
+    "model": "mctc.diagnosiscategory", 
+    "fields": {
+      "name": "Sepsis"
+    }
+  }, 
+  {
+    "pk": 19, 
+    "model": "mctc.diagnosiscategory", 
+    "fields": {
+      "name": "Skin Infection"
+    }
+  }, 
+  {
+    "pk": 6, 
+    "model": "mctc.diagnosiscategory", 
+    "fields": {
+      "name": "Streptococcal Pharyngitis"
+    }
+  }, 
+  {
+    "pk": 13, 
+    "model": "mctc.diagnosiscategory", 
+    "fields": {
+      "name": "Trauma"
+    }
+  }, 
+  {
+    "pk": 18, 
+    "model": "mctc.diagnosiscategory", 
+    "fields": {
+      "name": "Urinary Tract Infection"
+    }
+  }
+]
