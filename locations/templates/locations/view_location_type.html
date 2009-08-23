@@ -77,13 +77,15 @@
 		<thead>
 			<tr>
 				<th scope="col" title="Location Code"></th>
-				<th scope="col">Location</th>
+				<th scope="col">Location</th>{% for verbose_name, relation in relations %}
+				<th scope="col">{{ verbose_name }}</th>{% endfor %}
 			</tr>
 		</thead>
 		<tbody>{% if locations.object_list %}{% for location in locations.object_list %}
 			<tr>
 				<td class="number">{{ location.code }}</td>
-				<td><a href="{% url edit_location location_type_slug=location_type.slug location_pk=location.pk %}">{{ location.name }}</a></td>
+				<td><a href="{% url edit_location location_type_slug=location_type.slug location_pk=location.pk %}">{{ location.name }}</a></td>{% for objects in location.related_objects %}
+				<td>{{ objects.count }}</td>{% endfor %}
 			</tr>{% endfor %}{% else %}
 			<tr class="no-data">
 				<td colspan="2">

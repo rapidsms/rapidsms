@@ -5,6 +5,8 @@
 from django.views.decorators.http import require_GET, require_http_methods
 from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse
+
+from rapidsms.webui.related import related_objects, with_related_objects
 from rapidsms.webui.utils import render_to_response, paginated
 from apps.reporters.utils import insert_via_querydict, update_via_querydict
 from apps.locations.models import *
@@ -43,11 +45,12 @@ def view_location_type(req, location_type_slug):
     # since we're going to plot them ALL on the
     # google map whether or not they're visible
     all_locations = list(loc_type.locations.all().order_by("code"))
-    
+
     return render_to_response(req,
         "locations/view_location_type.html", {
             "active_location_type_tab": loc_type.pk,
-            "locations": paginated(req, all_locations, prefix="loc"),
+            "locations": paginated(req, all_locations, prefix="loc", wrapper=with_related_objects),
+            "relations": related_objects(Location),
             "all_locations": all_locations,
             "location_type": loc_type })
 
