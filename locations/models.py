@@ -105,16 +105,17 @@ class Location(models.Model):
        used to represent a large area such as a city or state. It is recursive
        via the _parent_ field, which can be used to create a hierachy (Country
        -> State -> County -> City) in combination with the _type_ field."""
-    
+
     objects = RecursiveManager()
     type = models.ForeignKey(LocationType, related_name="locations", blank=True, null=True)
     name = models.CharField(max_length=100, help_text="Name of location")
     code = models.CharField(max_length=30, unique=True)
-    
+
     parent = models.ForeignKey("Location", related_name="children", null=True, blank=True,
         help_text="The parent of this Location. Although it is not enforced, it" +\
                   "is expected that the parent will be of a different LocationType")
-    
+    parent.rel.verbose_name = "Children" # defaults to "Locations"
+
     latitude  = models.DecimalField(max_digits=13, decimal_places=10, blank=True, null=True, help_text="The physical latitude of this location")
     longitude = models.DecimalField(max_digits=13, decimal_places=10, blank=True, null=True, help_text="The physical longitude of this location")
     
@@ -165,3 +166,4 @@ class ReporterLocation(models.Model):
 
     reporter = models.ForeignKey(Reporter, unique=True)
     location = models.ForeignKey(Location)
+    location.rel.verbose_name = "Reporters"
