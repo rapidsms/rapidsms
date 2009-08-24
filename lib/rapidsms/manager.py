@@ -13,11 +13,11 @@ class Manager (object):
         router.info("RapidSMS Server started up")
         
         # add each application from conf
-        for app_conf in conf["rapidsms"]["apps"]:
+        for app_conf in conf["rapidsms"]["apps"].values():
             router.add_app(app_conf)
 
         # add each backend from conf
-        for backend_conf in conf["rapidsms"]["backends"]:
+        for backend_conf in conf["rapidsms"]["backends"].values():
             router.add_backend(backend_conf)
 
         # wait for incoming messages
