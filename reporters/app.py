@@ -14,8 +14,8 @@ class App(rapidsms.app.App):
     MSG = {
         "en": {
             "bad-alias":   "Sorry, I don't know anyone by that name.",
-            "first-login": "Hello, %(name)s! This is the first time I've met you.",
-            "login":       "Hello, %(name)s! It has been %(days)d days since I last heard from you.",
+            "first-login": "Nice to meet you, %(name)s. Your alias is %(alias)s.",
+            "login":       "Hello, %(name)s. It has been %(days)d days since I last heard from you.",
             "reminder":    "I think you are %(name)s.",
             "dont-know":   "Please register your phone with RapidSMS.",
             "list":        "I have %(num)d %(noun)s: %(items)s",
@@ -132,7 +132,7 @@ class App(rapidsms.app.App):
         # replace it *with* the keyworder, or extract it
         # into a parser of its own
         map = {
-            "register":  ["register (whatever)"],
+            "register":  ["(?:join|register|reg) (whatever)"],
             "identify":  ["identify (slug)", "this is (slug)", "i am (slug)"],
             "remind":    ["whoami", "who am i"],
             "reporters": ["list reporters", "reporters\\?"],
