@@ -2,6 +2,7 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 
+import re
 from django.db import models
 from rapidsms.webui.managers import *
 from apps.reporters.models import Reporter
@@ -114,7 +115,6 @@ class Location(models.Model):
     parent = models.ForeignKey("Location", related_name="children", null=True, blank=True,
         help_text="The parent of this Location. Although it is not enforced, it" +\
                   "is expected that the parent will be of a different LocationType")
-    parent.rel.verbose_name = "Children" # defaults to "Locations"
 
     latitude  = models.DecimalField(max_digits=13, decimal_places=10, blank=True, null=True, help_text="The physical latitude of this location")
     longitude = models.DecimalField(max_digits=13, decimal_places=10, blank=True, null=True, help_text="The physical longitude of this location")
@@ -122,8 +122,46 @@ class Location(models.Model):
     
     def __unicode__(self):
         return self.name
-    
-    
+
+    # see the FOLLOW app, for now,
+    # although this will be expanded
+    @classmethod
+    def __search__(cls, who, terms):
+
+        # if we're searching for a single term, it
+        # could be a location code, so try that first
+        if len(terms) == 1:
+            try:
+                return cls.objects.get(
+                    code__iexact=terms[0])
+
+            # no matter if it didn't work.
+            # it could still be a name
+            except cls.DoesNotExist:
+                pass
+
+        # re-join the terms into a single string, and search
+        # for a location with this name (we wont't worry about
+        # other delimiters for now, but might need to come back)
+        try:
+            return cls.objects.get(
+                name__iexact=" ".join(terms))
+
+        # if this doesn't work, the terms
+        # are not a valid location name
+        except cls.DoesNotExist, cls.MultipleObjectsReturned:
+            return None
+
+    def save(self, *args, **kwargs):
+        # override the default save behavior, to remove extra spaces from
+        # the _name_ property. It's not important enough to bother the end-
+        # user with, but self.__search__ assumes that a single space is the
+        # only delimiter -- so we just do it here, transparently.
+        self.name = re.sub(r"\s+", " ", self.name)
+
+        # then save the model as usual
+        models.Model.save(self, *args, **kwargs)
+
     # TODO: how can we port the Location.contacts and Location.one_contact
     #       methods, now that the locations app has been split from reporters?
     #       even if they can import one another, they can't know if they're
