@@ -8,8 +8,8 @@ from django.db import models
 from django.core.urlresolvers import reverse
 from rapidsms.message import Message
 from rapidsms.webui.managers import *
-from apps.patterns.models import Pattern
-from apps.locations.models import *
+from patterns.models import Pattern
+from locations.models import *
 
 
 # TODO: remove this. it's a slightly weird version

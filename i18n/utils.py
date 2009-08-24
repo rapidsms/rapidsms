@@ -2,7 +2,7 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 from models import Language, Translation
-from apps.reporters.models import PersistantConnection
+from reporters.models import PersistantConnection
 import re
 
 DEFAULT_LANGUAGE = "en"

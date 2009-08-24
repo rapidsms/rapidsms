@@ -2,7 +2,6 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 import rapidsms
-from apps.httptester.models import Message
 import datetime
 
 class App(rapidsms.app.App):
