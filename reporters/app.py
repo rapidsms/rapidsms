@@ -183,6 +183,10 @@ class App(rapidsms.app.App):
             return True
 
 
+        # before updating the connection, take note
+        # of the last time that we saw this reporter
+        ls = rep.last_seen()
+
         # assign the reporter to this message's connection
         # (it may currently be assigned to someone else)
         msg.persistant_connection.reporter = rep
@@ -192,7 +196,6 @@ class App(rapidsms.app.App):
 
         # send a welcome message back to the now-registered reporter,
         # depending on how long it's been since their last visit
-        ls = rep.last_seen()
         if ls is not None:
             msg.respond(
                 self.__str("login", rep) % {
