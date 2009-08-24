@@ -36,6 +36,14 @@ class Logger (object):
             self.log.addHandler(stderr_handler)
         
     def write(self, sender, level, msg, *args):
+
+        # if an encoded unicode string containing non-ascii characters is
+        # passed to the logger, it blows up. this shouldn't happen, but
+        # does, so we decode the strings here (assuming they're utf-8),
+        # which causes logger.StreamHandler.emit to encode it properly
+        if type(msg) == str:
+            msg = unicode(msg, "utf-8")
+
         level = getattr(logging, level.upper())
         kwargs = {"extra":{"component":sender.title}}
         self.log.log(level, msg, *args, **kwargs)
