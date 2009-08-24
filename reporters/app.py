@@ -21,6 +21,7 @@ class App(rapidsms.app.App):
             "list":        "I have %(num)d %(noun)s: %(items)s",
             "empty-list":  "I don't have any %(noun)s.",
             "lang-set":    "I will now speak to you in English, where possible.",
+            "no-join":     "Sorry, but registering yourself over SMS is disabled.",
             "denied":      "Sorry, you must identify yourself before you can do that." },
 
         # worst german translations _ever_
@@ -68,6 +69,10 @@ class App(rapidsms.app.App):
         """Responds to an incoming message with a localizable
            error message to instruct the caller to identify."""
         return msg.respond(self.__str("denied", msg.reporter))
+
+
+    def configure(self, allow_join, **kwargs):
+        self.allow_join = allow_join
 
 
     def start(self):
@@ -147,10 +152,18 @@ class App(rapidsms.app.App):
 
 
     def register(self, msg, name):
+
+        # abort if self-registration isn't allowed
+        if not self.allow_join:
+            msg.respond(self.__str("no-join"))
+            return True
+
         try:
             # parse the name, and create a reporter
             alias, fn, ln = Reporter.parse_name(name)
-            rep = Reporter(alias=alias, first_name=fn, last_name=ln)
+            rep = Reporter(
+                first_name=fn, last_name=ln,
+                alias=alias, registered_self=True)
             rep.save()
 
             # attach the reporter to the current connection
