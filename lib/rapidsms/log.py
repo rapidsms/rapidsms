@@ -1,14 +1,15 @@
 #!/usr/bin/env python
-# vim: ai ts=4 sts=4 et sw=4
+# vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
 
 import logging
 import logging.handlers
 import random          
 import sys
+import os
 
 LOG_CHANNEL = "rapidsms"
-LOG_SIZE    = 8192 # 8192 bytes = 64 kb
-LOG_BACKUPS = 256 # number of logs to keep around
+LOG_SIZE    = 1024*1024*5 # 5 MB
+LOG_BACKUPS = 20 # number of logs to keep around
 LOG_FORMAT  = "%(asctime)s %(levelname)s [%(component)s]: %(message)s"
 LOG_LEVEL   = "info"
 LOG_FILE    = "/tmp/rapidsms.log"
@@ -16,12 +17,17 @@ LOG_FILE    = "/tmp/rapidsms.log"
 class Logger (object):
     """A simple wrapper around the standard python logger."""
     def __init__(self, level=LOG_LEVEL, file=LOG_FILE,
-                       format=LOG_FORMAT, stderr=True):
+                       format=LOG_FORMAT, channel=LOG_CHANNEL, stderr=True):
         # set up a specific logger with our desired output level
-        self.log = logging.getLogger(LOG_CHANNEL)
+        self.log = logging.getLogger(channel)
         self.log.setLevel(getattr(logging, level.upper()))
         formatter = logging.Formatter(format)
         try:
+            # make the log dir if doesn't exists
+            log_dir = os.path.dirname(file)
+            if not os.path.exists(log_dir):
+                os.makedirs(log_dir)
+
             # add the log message handler and formatter to the log
             file_handler = logging.handlers.RotatingFileHandler(
                 file, maxBytes=LOG_SIZE, backupCount=LOG_BACKUPS)

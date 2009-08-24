@@ -4,7 +4,10 @@ from harness import MockRouter, EchoApp
 from rapidsms.backends.backend import Backend
 from rapidsms.message import Message
 import unittest, re
-from django.test import TestCase
+try:
+    from django.test import TestCase
+except:
+    from unittest import TestCase
 from datetime import datetime
 
 class MetaTestScript (type):
@@ -25,7 +28,7 @@ class TestScript (TestCase):
     and allows you to define unit tests for your RapidSMS apps
     in the form of a 'conversational' script:
     
-        from apps.myapp.app import App as MyApp
+        from myapp.app import App as MyApp
         from rapidsms.tests.scripted import TestScript
 
         class TestMyApp (TestScript):

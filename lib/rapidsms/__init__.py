@@ -18,7 +18,7 @@ def get_rapidsms_version ():
         import commands
         try:
             # see http://stackoverflow.com/questions/62264/#72874
-            version = commands.getoutput("git describe --tags")
+            version = commands.getoutput("git describe --tags --always")
         except:
             # otherwise, give up!
             version = "unknown"

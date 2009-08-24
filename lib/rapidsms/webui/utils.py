@@ -47,7 +47,12 @@ def render_to_response(req, template_name, dictionary=None, **kwargs):
     # A NEW KIND OF LUNACY: inspect the stack to find out
     # which rapidsms app this function is being called from
     tb = traceback.extract_stack(limit=2)
-    m = re.match(r'^.+/(.+?)/views\.py$', tb[-2][0])
+    sep = os.sep
+    if sep == '\\':
+        # if windows, the file separator itself needs to be 
+        # escaped again
+        sep = "\\\\"
+    m = re.match(r'^.+%s(.+?)%sviews\.py$' % (sep, sep), tb[-2][0])
     if m is not None:
         app_type = m.group(1)
         
@@ -102,6 +107,11 @@ def render_to_response(req, template_name, dictionary=None, **kwargs):
     # the TEMPLATE_CONTEXT_PROCESSORS working
     if "context_instance" not in kwargs:
         kwargs["context_instance"] = RequestContext(req)
+    
+    # add the template information to the dictionary, 
+    # if necessary
+    if not "base_template" in rs_dict:
+        rs_dict["base_template"] = settings.BASE_TEMPLATE
     
     # pass on the combined dicts to the original function
     return django_r_to_r(template_name, rs_dict, **kwargs)
@@ -175,7 +185,7 @@ def dashboard(position, path, perm=None):
             templatetags and returns the original function unchanged so it
             can be registered normally as a proper templatetag in its home app. '''
         from django import template
-        register = template.get_library("apps.webui.templatetags.webui_tags")
+        register = template.get_library("webapp.templatetags.webapp-tags")
         # add the rendered template to dashboard templatetags library
         name = position
         if perm is not None:

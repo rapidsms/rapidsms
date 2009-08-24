@@ -9,17 +9,14 @@ class TestApp(unittest.TestCase):
 
     def setUp(self):
         self.router = MockRouter()
-        self.name = "test"
 
     def test___init__(self):
-        app = App(self.name, self.router)
+        app = App(self.router)
         self.assertEqual(self.router, app.router,
             "failed to set router")
-        self.assertEqual(self.name, app.name,
-            "failed to set name")
 
     def test_api(self):
-        app = App(self.name, self.router)
+        app = App(self.router)
         api_methods = (
             'start',
             'parse',
