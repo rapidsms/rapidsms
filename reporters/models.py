@@ -92,6 +92,28 @@ class Reporter(models.Model):
             "last_name":  self.last_name,
             "str":        unicode(self) }
 
+    # see the FOLLOW app, for now,
+    # although this will be expanded
+    @classmethod
+    def __search__(cls, who, terms):
+        try:
+            if len(terms) == 1:
+                try:
+                    return cls.objects.get(
+                        pk=int(terms[0]))
+
+                except ValueError:
+                    return cls.objects.get(
+                        alias__iexact=terms[0])
+
+            elif len(terms) == 2:
+                return cls.objects.get(
+                    first_name__iexact=terms[0],
+                    last_name__iexact=terms[1])
+
+        except cls.DoesNotExist:
+            return None
+
 
     @classmethod
     def exists(klass, reporter, connection):
