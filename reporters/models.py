@@ -19,9 +19,37 @@ class ReporterGroup(models.Model):
     class Meta:
         verbose_name = "Group"
 
-    
+
     def __unicode__(self):
         return self.title
+
+
+    # see the FOLLOW app, for now,
+    # although this will be expanded
+    @classmethod
+    def __search__(cls, who, terms):
+
+        # re-join the terms into a single string, and search
+        # for a group with this title (we wont't worry about
+        # other delimiters for now, but might need to come back)
+        try:
+            return cls.objects.get(
+                title__iexact=" ".join(terms))
+
+        # if this doesn't work, the terms
+        # are not a valid location name
+        except cls.DoesNotExist, cls.MultipleObjectsReturned:
+            return None
+
+
+    def __message__(self, *args, **kwargs):
+        """Sends a message to every Reporter in this ReporterGroup."""
+
+        for rep in self.reporters.all():
+            try:
+                rep.__message__(*args, **kwargs)
+            except:
+                pass
 
 
     # TODO: rename to something that indicates
@@ -65,6 +93,11 @@ class Reporter(models.Model):
     # themself (via the app.py backend), this flag should be set
     # indicate that they probably shouldn't be trusted
     registered_self = models.BooleanField()
+
+
+    # this belongs in Meta, but Django won't
+    # let us put _unapproved_ things there
+    followable = True
 
 
     class Meta:
