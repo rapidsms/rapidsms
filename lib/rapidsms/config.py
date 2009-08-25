@@ -17,7 +17,7 @@ class LazyAppConf(collections.Mapping):
        required (much like a Django QuerySet).
 
        This is almost completely useless, except it allows us to prepare the
-       Config opject (full of LazyAppConf instances) while building the Django
+       Config object (full of LazyAppConf instances) while building the Django
        settings (rapidsms.webui.settings), _and_ allow app configs to hit the
        database. If the configs were regular (eager) dicts, Django would refuse
        to hit the database, because "You haven't set the DATABASE_ENGINE setting
