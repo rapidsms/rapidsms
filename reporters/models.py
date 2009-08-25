@@ -342,6 +342,38 @@ class PersistantConnection(models.Model):
         return obj
 
 
+    @property
+    def dict(self):
+        """Returns a handy dictionary containing the most personal persistance
+           information that we have about this connection. this is useful when
+           creating an object that we would like to link to a reporter, but can
+           fall back to a connection if we haven't identified them yet.
+
+           For example:
+
+               class SomeObject(models.Model):
+                   connection = models.ForeignKey(PersistantConnection, null=True)
+                   reporter   = models.ForeignKey(Reporter, null=True)
+                   stuff      = models.CharField()
+
+                # this object will be linked to a Reporter, if
+                # one exists - otherwise, a PersistantConnection
+                SomeObject(stuff="hello", **connection.dict)
+
+           Don't forget to verify that _one_ of reporter or connection is not
+           None before saving. See logger.models.ModelBase for an example."""
+
+        if self.reporter:
+            return { "reporter": self.reporter }
+
+        elif self.pk:
+            return { "connection": self }
+
+        else:
+            raise(Exception,
+                "This PersistantConnection must be saved " +\
+                "before it can be linked to another object.")
+
     def seen(self):
         """"Updates the last_seen field of this object to _now_, and saves.
             Unless the linked Reporter has an explict preferred connection

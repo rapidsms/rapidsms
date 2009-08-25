@@ -99,20 +99,10 @@ class App(rapidsms.app.App):
         msg.persistant_connection = conn
         msg.reporter = conn.reporter
 
-        # store a handy dictionary, containing the most useful persistance
-        # information that we have. this is useful when creating an object
-        # linked to _something_, like so:
-        # 
-        #   class SomeObject(models.Model):
-        #     reporter   = models.ForeignKey(Reporter, null=True)
-        #     connection = models.ForeignKey(PersistantConnection, null=True)
-        #     stuff      = models.CharField()
-        #
-        #   # this object will be linked to a reporter,
-        #   # if one exists - otherwise, a connection
-        #   SomeObject(stuff="hello", **msg.persistance_dict)
-        if msg.reporter: msg.persistance_dict = { "reporter": msg.reporter }
-        else:            msg.persistance_dict = { "connection": msg.persistant_connection }
+        # store a handy dictionary containing the most personal persistance
+        # information that we have about this connection, for other apps to
+        # easily link back to it. See PersistantConnection for more docs.
+        if msg.reporter: msg.persistance_dict = conn.dict
         
         # log, whether we know who the sender is or not
         if msg.reporter: self.info("Identified: %s as %r" % (conn, msg.reporter))
