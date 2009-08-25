@@ -88,12 +88,7 @@ class HttpHandler(RapidBaseHttpHandler):
             # leave Naive!
             # received.replace(tzinfo=pytz.utc)
             
-            msg = self.server.backend.message(
-                session_id, 
-                urllib.unquote(text),
-                date=received
-                )
-
+            msg = self.server.backend.message(session_id, urllib.unquote(text))
             self.server.backend.route(msg)
             # respond with the number and text 
             self.send_response(200)

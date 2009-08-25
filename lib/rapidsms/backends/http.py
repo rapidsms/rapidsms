@@ -3,6 +3,7 @@
 
 import BaseHTTPServer, SocketServer
 import select
+import urllib
 import httphandlers as handlers
 import rapidsms
 

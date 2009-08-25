@@ -74,7 +74,7 @@ class Client(object):
         data = urllib.urlencode({
             "version": self.PROTOCOL_VERSION,
             "destination": destination,
-            "body": body
+            "body": body.encode('utf-8')
         })
         
         try:

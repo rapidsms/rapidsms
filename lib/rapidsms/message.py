@@ -2,9 +2,6 @@
 # vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
 
 import copy
-
-from rapidsms.connection import Connection
-from rapidsms.person import Person
 from datetime import datetime
 from rapidsms import utils
 
@@ -35,7 +32,7 @@ class Message(object):
         self.processed = False
     
     def __unicode__(self):
-        return self.text
+        return unicode(self.text)
 
     @property
     def connection(self):
