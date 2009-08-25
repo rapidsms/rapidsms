@@ -8,8 +8,6 @@ from rapidsms.parsers import Matcher
 from models import *
 
 
-
-
 class App(rapidsms.app.App):
     MSG = {
         "en": {
@@ -21,8 +19,8 @@ class App(rapidsms.app.App):
             "list":        "I have %(num)d %(noun)s: %(items)s",
             "empty-list":  "I don't have any %(noun)s.",
             "lang-set":    "I will now speak to you in English, where possible.",
-            "no-join":     "Sorry, but registering yourself over SMS is disabled.",
-            "denied":      "Sorry, you must identify yourself before you can do that." },
+            "denied":      "Sorry, you must identify yourself before you can do that.",
+            "disabled":    "Sorry, but that functionality is disabled." },
 
         # worst german translations _ever_
         # just an example. all of this stuff
@@ -71,8 +69,9 @@ class App(rapidsms.app.App):
         return msg.respond(self.__str("denied", msg.reporter))
 
 
-    def configure(self, allow_join, **kwargs):
+    def configure(self, allow_join, allow_list, **kwargs):
         self.allow_join = allow_join
+        self.allow_list = allow_list
 
 
     def start(self):
@@ -155,7 +154,7 @@ class App(rapidsms.app.App):
 
         # abort if self-registration isn't allowed
         if not self.allow_join:
-            msg.respond(self.__str("no-join"))
+            msg.respond(self.__str("disabled"))
             return True
 
         try:
@@ -172,7 +171,8 @@ class App(rapidsms.app.App):
 
             msg.respond(
                 self.__str("first-login", rep) % {
-                 "name": rep.full_name() })
+                    "name": rep.full_name(),
+                    "alias": rep.alias })
 
         # something went wrong - at the
         # moment, we don't care what
@@ -219,7 +219,8 @@ class App(rapidsms.app.App):
         else:
             msg.respond(
                 self.__str("first-login", rep) % {
-                    "name": unicode(rep) })
+                    "name": unicode(rep),
+                    "alias": rep.alias })
 
         # re-call this app's prepare, so other apps can
         # get hold of the reporter's info right away
@@ -244,36 +245,39 @@ class App(rapidsms.app.App):
 
 
     def reporters(self, msg):
-        if msg.reporter is not None:
 
-            # collate all reporters, with their full name,
-            # username, and current connection. TODO: this
-            # sucks, don't use __unicode__ and __repr__!
-            items = [
-                "%r (%s)" % (rep, rep.connection())
-                for rep in Reporter.objects.all()
-                if rep.connection()]
-
-            if items:
-                msg.respond(
-                    self.__str("list", msg.reporter) % {
-                        "items": ", ".join(items),
-                        "noun":  "reporters",
-                        "num":    len(items), })
-
-            else:
-                # there are no reportes to list!
-                msg.respond(
-                    self.__str("empty-list", msg.reporter) % {
-                        "noun": "reporters" })
+        # abort if listing reporters isn't allowed
+        # (it can get rather long and expensive)
+        if not self.allow_join:
+            msg.respond(self.__str("disabled"))
+            return True
 
         # not identified yet; reject, so
         # we don't allow random people to
         # query our reporters list
-        else:
-            msg.respond(
-                self.__str(
-                    "denied", msg.reporter))
+        if msg.reporter is None:
+            msg.respond(self.__str("denied"))
+            return True
+
+        # collate all reporters, with their full name,
+        # username, and current connection.
+        items = [
+            "%s (%s) %s" % (
+                rep.full_name(),
+                rep.alias,
+                rep.connection().identity)
+            for rep in Reporter.objects.all()
+            if rep.connection()]
+
+        # respond with the concatenated list.
+        # no need to check for empty _items_. there will
+        # always be at least one reporter, because only
+        # identified reporters can trigger this handler
+        msg.respond(
+            self.__str("list", msg.reporter) % {
+                "items": ", ".join(items),
+                "noun":  "reporters",
+                "num":    len(items) })
 
 
     def lang(self, msg, code):

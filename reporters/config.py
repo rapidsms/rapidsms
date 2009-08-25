@@ -4,3 +4,4 @@
 title      = "Reporters and Groups"
 tab_link   = "/reporters"
 allow_join = True
+allow_list = True
