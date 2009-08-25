@@ -23,6 +23,10 @@ class ReporterGroup(models.Model):
     def __unicode__(self):
         return self.title
 
+    def __repr__(self):
+        return '<%s: %s>' %\
+            (type(self).__name__, self.title)
+
 
     # see the FOLLOW app, for now,
     # although this will be expanded
@@ -71,9 +75,6 @@ class Reporter(models.Model):
     last_name  = models.CharField(max_length=30, blank=True)
     groups     = models.ManyToManyField(ReporterGroup, related_name="reporters", blank=True)
 
-    def __unicode__(self):
-            return self.connection.identity
-
 
     # the language that this reporter prefers to
     # receive their messages in, as a w3c language tag
@@ -113,9 +114,16 @@ class Reporter(models.Model):
         return self.full_name()
 
     def __repr__(self):
-        return "%r (%r)" % (
-            self.full_name(),
-            self.alias)
+        fn = self.full_name()
+        n = type(self).__name__
+        
+        if fn == "":
+            return '<%s: %s>' %\
+                (n, self.alias)
+
+        else:
+            return '<%s: %s (%s)>' %\
+                (n, fn, self.alias)
 
     def __json__(self):
         return {
@@ -283,6 +291,10 @@ class PersistantBackend(models.Model):
     def __unicode__(self):
         return self.title
 
+    def __repr__(self):
+        return '<%s: %s via %s>' %\
+            (type(self).__name__, self.slug)
+
 
     @classmethod
     def from_message(klass, msg):
@@ -318,6 +330,10 @@ class PersistantConnection(models.Model):
         return "%s:%s" % (
             self.backend,
             self.identity)
+
+    def __repr__(self):
+        return '<%s: %s via %s>' %\
+            (type(self).__name__, self.identity, self.backend.slug)
 
     def __json__(self):
         return {
