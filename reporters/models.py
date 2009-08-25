@@ -64,7 +64,9 @@ class Reporter(models.Model):
        could lead to multiple objects for the same "person". Usually, this
        model should be created through the WebUI, in advance of the reporter
        using the system - but there are always exceptions to these rules..."""
-    alias      = models.CharField(max_length=20, unique=True)
+    #identity is like phone number. could also be ip, etc.
+    identity   = models.CharField(max_length=64, unique=True)
+
     first_name = models.CharField(max_length=30, blank=True)
     last_name  = models.CharField(max_length=30, blank=True)
     groups     = models.ManyToManyField(ReporterGroup, related_name="reporters", blank=True)
@@ -72,11 +74,7 @@ class Reporter(models.Model):
     # here are some fields that don't belong here
     location   = models.ForeignKey(Location, related_name="reporters", null=True, blank=True)
     role       = models.ForeignKey(Role, related_name="reporters", null=True, blank=True)
-
-    def __unicode__(self):
-        return self.connection().identity
         
-
     # the language that this reporter prefers to
     # receive their messages in, as a w3c language tag
     #
@@ -90,13 +88,12 @@ class Reporter(models.Model):
     #   klingon  = tlh
     #
     language = models.CharField(max_length=10, blank=True)
-	
+    
     # although it's impossible to enforce, if a user registers
     # themself (via the app.py backend), this flag should be set
     # indicate that they probably shouldn't be trusted
     registered_self = models.BooleanField()
-	
-	
+
     class Meta:
         ordering = ["last_name", "first_name"]
 
@@ -113,6 +110,13 @@ class Reporter(models.Model):
         return ("%s %s" % (
             self.first_name,
             self.last_name)).strip()
+            
+    def signature(self):
+        if len(self.first_name)==0:
+            if len(self.last_name)==0:
+                return ( "%s" % self.identity )
+            return ( "%s" % self.last_name )
+        return self.full_name()        
     
     def __unicode__(self):
         return self.full_name()
@@ -120,12 +124,12 @@ class Reporter(models.Model):
     def __repr__(self):
         return "%s (%s)" % (
             self.full_name(),
-            self.alias)
+            self.identity)
     
     def __json__(self):
         return {
             "pk":         self.pk,
-            "alias":      self.alias,
+            "identity":   self.identity,
             "first_name": self.first_name,
             "last_name":  self.last_name,
             "str":        unicode(self) }

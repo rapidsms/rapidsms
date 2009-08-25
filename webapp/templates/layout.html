@@ -36,14 +36,14 @@
                  {% endblock %}
 				<div id="branding">
                    {% block branding %}
-					<h1><b>RapidSMS</b></h1>
+					<a href="/"><h1><b>RapidSMS</b></h1></a>
                    {% endblock %}
 				</div>
 				<ul id="tabs">{% for app in apps %}{% if app.tab_link %}
-                                        {% ifhasperm user app "can_view" %}
+                                        {% comment %} {% ifhasperm user app "can_view" %} {% endcomment %}
 					<li class="app-{{ app.type }}{% ifequal active_tab app.type %} active{% endifequal %}">
 						<a href="{{ app.tab_link }}"><span>{{ app.title }}</span></a>
-					</li>{% endifhasperm %}{% endif %}{% endfor %}
+					</li>{% comment %} {% endifhasperm %} {% endcomment %}{% endif %}{% endfor %}
 				</ul>
 				{% block page_tabs %}
 				{% endblock %}
@@ -52,6 +52,21 @@
 			<div id="inner">
 				{% block content %}{% endblock %}
 			</div>
+
+			<!-- TODO: find a pretty place to put this -->
+			<div style="float:right">
+			<form action="/i18n/setlang/" method="post">
+			    <select name="language">
+			    {% for lang in LANGUAGES %}
+			      <option value="{{ lang.0 }}" 
+			      {% ifequal LANGUAGE_CODE lang.0 %}selected{% endifequal %}>
+			      {{ lang.1 }}</option>
+			    {% endfor %}
+			    </select>
+			<input type="submit" value="Go" />
+			</form>
+			</div>
+
 			{% block footer %}
 			<div id="footer">
 				<p class="rights">
