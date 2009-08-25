@@ -12,7 +12,7 @@
 
 [rapidsms]
 apps=webapp,admin,httptester,smsforum,nodegraph,contacts,logger,tostan
-backends=http,gsm
+backends=http
 
 # Database configuration info.
 #
@@ -27,7 +27,7 @@ backends=http,gsm
 engine=mysql
 name=rapidsms_tostan
 user=root
-password=
+password=root
 #host=
 #port=
 
