@@ -33,6 +33,9 @@ class Role(models.Model):
     
     def __unicode__(self):
         return self.name
+    
+    def __str__(self):
+        return unicode(self).encode('utf-8')
 
 
 class ReporterGroup(models.Model):
@@ -49,6 +52,8 @@ class ReporterGroup(models.Model):
     def __unicode__(self):
         return self.title
     
+    def __str__(self):
+        return unicode(self).encode('utf-8')
     
     # TODO: rename to something that indicates
     #       that it's a counter, not a queryset    
