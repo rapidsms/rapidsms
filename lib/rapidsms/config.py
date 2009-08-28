@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-import os, log, collections
+import os, log
 from ConfigParser import SafeConfigParser
 import logging
 
@@ -9,7 +9,7 @@ def to_list (item, separator=","):
     return filter(None, map(lambda x: str(x).strip(), item.split(separator)))
 
 
-class LazyAppConf(collections.Mapping):
+class LazyAppConf(object):
     """RapidSMS apps can provide an optional config.py, which is like a per-app
        version of Django's settings.py. The settings defined there are available
        to both the RapidSMS router and the Django WebUI. This class acts very
@@ -21,7 +21,10 @@ class LazyAppConf(collections.Mapping):
        settings (rapidsms.webui.settings), _and_ allow app configs to hit the
        database. If the configs were regular (eager) dicts, Django would refuse
        to hit the database, because "You haven't set the DATABASE_ENGINE setting
-       yet"."""
+       yet".
+       
+       Unfortunately, for Python2.5 compatibility, this must be cast to a real
+       dict before being iterated or passed as **kwargs."""
 
     def __init__(self, config, app_name):
         self.app_name = app_name
@@ -38,21 +41,17 @@ class LazyAppConf(collections.Mapping):
     def __repr__(self):
         return repr(self._dict())
 
-    # so long as these three methods are defined,
-    # collections.Mapping takes care of the rest.
-    # from the outside, it looks just like a dict
-    def __len__(self):
-        return len(self._dict())
+    # these two methods are enough to cast to a dict in
+    # python 2.5. in python 2.6, use collections.mapping.
+    def keys(self):
+        return self._dict().keys()
 
     def __getitem__(self, key):
         return self._dict()[key]
 
-    def __iter__(self):
-        return iter(self._dict())
-
 
 class Config (object):
-    app_prefixes = ["apps", "rapidsms.contrib.apps", "rapidsms.apps"]
+    app_prefixes = ["rapidsms.contrib.apps", "rapidsms.apps"]
     
     
     def __init__ (self, *paths):
@@ -159,6 +158,13 @@ class Config (object):
            containing the full module name and the module itself. If no
            module is found, raises ImportError."""
            
+        try:
+            module = self.__import_class(app_type)
+            return app_type, module
+
+        except ImportError:
+            pass
+
         # iterate the places that apps might live,
         # and attempt to import app_type from each
         for prefix in self.app_prefixes:
@@ -205,27 +211,31 @@ class Config (object):
         # done in the first place to avoid this entire mess)
         data["type"] = name
 
-        # attempt to import the module, to locate it (it might be in ./apps,
-        # contrib, or rapidsms/apps) and verify that it imports cleanly
-        data["module"], module = self.__import_app(data["type"])
-        
-        # load the config.py for this app, if possible
-        config = self.__import_class("%s.config" % data["module"])
-        if config is not None:
+        try:
+            # attempt to import the module, to locate it (it might be in ./apps,
+            # contrib, or rapidsms/apps) and verify that it imports cleanly
+            data["module"], module = self.__import_app(data["type"])
+            
+            # load the config.py for this app, if possible
+            config = self.__import_class("%s.config" % data["module"])
+            if config is not None:
 
-            # copy all of the names not starting with underscore (those are
-            # private or __magic__) into this component's default config
-            for var_name in dir(config):
-                if not var_name.startswith("_"):
-                    data[var_name] = getattr(config, var_name)
-        
-        # the module was imported! add it's full path to the
-        # config, since it might not be in rapidsms/apps/%s
-        data["path"] = module.__path__[0]
-        
-        # return the component with the additional
-        # app-specific data included.
-        return data
+                # copy all of the names not starting with underscore (those are
+                # private or __magic__) into this component's default config
+                for var_name in dir(config):
+                    if not var_name.startswith("_"):
+                        data[var_name] = getattr(config, var_name)
+            
+            # the module was imported! add it's full path to the
+            # config, since it might not be in rapidsms/apps/%s
+            data["path"] = module.__path__[0]
+            
+            # return the component with the additional
+            # app-specific data included.
+            return data
+
+        except Exception, e:
+            print(e)
 
 
     def backend_section (self, name):
