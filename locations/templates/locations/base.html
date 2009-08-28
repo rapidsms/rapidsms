@@ -1,0 +1,15 @@
+{% extends "layout-split-2.html" %}
+
+{% block stylesheets %}<link type="text/css" rel="stylesheet" href="/static/locations/stylesheets/locations.css" />{% endblock %}
+{% block title %}Locations{% endblock %}
+
+{% block page_tabs %}{% comment %}
+<!-- i know, this is nuts. what i'm doing here is only listing the location
+     types if there are more than one of them, by checking that FIRST and LAST
+     aren't both true. when there's only a single LocationType, we're trying
+     our hardest to hide the fact that "OTP" or "Department" (or whatever) is
+     an abstraction at all (it vastly simplifies the WebUI) -->{% endcomment %}
+<ul id="page-tabs">{% for location_type in location_types %}{% if forloop.first and forloop.last %}{% else %}
+	<li{% ifequal location_type.pk active_location_type_tab %} class="active"{% endifequal %}><a href="{% url view_location_type location_type.plural|lower %}">{{ location_type.plural }}</a></li>{% endif %}{% endfor %}
+</ul>
+{% endblock %}

@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-
 import re
 from datetime import datetime, timedelta
 import rapidsms
@@ -72,9 +71,17 @@ class App (rapidsms.app.App):
         if pconn is None:
             raise Exception("%s is unreachable (no connection)" % rep)
 
+        # abort if we can't find a valid backend. PersistantBackend
+        # objects SHOULD refer to a valid RapidSMS backend (via their
+        # slug), but sometimes backends are removed or renamed.
+        be = self.router.get_backend(pconn.backend.slug)
+        if be is None:
+            raise Exception(
+                "No such backend: %s" %
+                pconn.backend.title)
+        
         # attempt to send the message
         # TODO: what could go wrong here?
-        be = self.router.get_backend(pconn.backend.slug)
         return be.message(pconn.identity, form["text"]).send()
 
     def start(self):

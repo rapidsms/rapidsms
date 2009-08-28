@@ -32,7 +32,6 @@ class ReporterGroupAdmin(admin.ModelAdmin):
     list_display = ('id','title','parent', 'description', reportergroup_members)
     list_filter = ['parent']
 
-admin.site.register(Role)
 admin.site.register(Reporter, ReporterAdmin)
 admin.site.register(ReporterGroup, ReporterGroupAdmin)
 admin.site.register(PersistantBackend)

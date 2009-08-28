@@ -2,7 +2,7 @@
 	var defaults = {
 		"showErrors": function(errors_map, errors_list) {
 			this.defaultShowErrors();
-	
+
 			/* after showing the error labels, wrap the message
 			 * with a span, which we can use as a CSS hook */
 			jQuery(this.currentForm)
@@ -15,7 +15,7 @@
 		"errorPlacement": function(error, invalid_field) {
 			invalid_field.after(error);
 			var pos = invalid_field.position();
-	
+
 			/* HACK: absolutely position the error label, to
 			 * line up with the right-hand side of the field */
 			error.css({
@@ -52,7 +52,7 @@
 			var submit = form.find(".submit");
 			var errors = submit.find(".errors");
 			var n = validator.numberOfInvalids();
-	
+
 			/* if this is the first time we've displayed
 			 * errors for this form, there will be nowhere
 			 * to put the summary - so create one! */
@@ -60,7 +60,7 @@
 				submit.prepend('<div class="errors"></div>');
 				errors = submit.find(".errors");
 			}
-	
+
 			/* if there are any errors to display (this function
 			 * is called even when there are none), add a summary
 			 * to the errors container, and slide it into view */
@@ -69,7 +69,7 @@
 					"There were " + n + " problem(s) with your submission.<br>Please fix them and try again." :
 					"There was 1 problem with your submission.<br>Please fix it and try again.";
 				errors.html("<p>" + txt + "</p>").show();
-		
+
 			/* no errors, so hide the errors
 			 * container while submitting */
 			} else { errors.hide(); }
@@ -82,7 +82,7 @@
 			error_label.remove();
 		}
 	};
-	
+
 	jQuery.fn.rs_validate = function(options) {
 		if(options == undefined) options = {}
 		this.validate(jQuery.merge(defaults, options));
