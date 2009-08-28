@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-import os, log, collections
+import os, log
 from ConfigParser import SafeConfigParser
 
 
@@ -9,7 +9,7 @@ def to_list (item, separator=","):
     return filter(None, map(lambda x: str(x).strip(), item.split(separator)))
 
 
-class LazyAppConf(collections.Mapping):
+class LazyAppConf(object):
     """RapidSMS apps can provide an optional config.py, which is like a per-app
        version of Django's settings.py. The settings defined there are available
        to both the RapidSMS router and the Django WebUI. This class acts very
@@ -21,7 +21,10 @@ class LazyAppConf(collections.Mapping):
        settings (rapidsms.webui.settings), _and_ allow app configs to hit the
        database. If the configs were regular (eager) dicts, Django would refuse
        to hit the database, because "You haven't set the DATABASE_ENGINE setting
-       yet"."""
+       yet".
+       
+       Unfortunately, for Python2.5 compatibility, this must be cast to a real
+       dict before being iterated or passed as **kwargs."""
 
     def __init__(self, config, app_name):
         self.app_name = app_name
@@ -38,17 +41,13 @@ class LazyAppConf(collections.Mapping):
     def __repr__(self):
         return repr(self._dict())
 
-    # so long as these three methods are defined,
-    # collections.Mapping takes care of the rest.
-    # from the outside, it looks just like a dict
-    def __len__(self):
-        return len(self._dict())
+    # these two methods are enough to cast to a dict in
+    # python 2.5. in python 2.6, use collections.mapping.
+    def keys(self):
+        return self._dict().keys()
 
     def __getitem__(self, key):
         return self._dict()[key]
-
-    def __iter__(self):
-        return iter(self._dict())
 
 
 class Config (object):
