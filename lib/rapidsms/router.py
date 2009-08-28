@@ -30,7 +30,7 @@ def _set_router(router):
         _G['router'] = router
 
 class Router (component.Receiver):
-    incoming_phases = ('parse', 'handle', 'cleanup')
+    incoming_phases = ('filter', 'parse', 'handle', 'cleanup')
     outgoing_phases = ('outgoing',)
 
     def __init__(self):
@@ -94,24 +94,29 @@ class Router (component.Receiver):
                 return backend
         return None
 
+
     def add_app (self, conf):
         try:
-            app = self.build_component("%s.app.App", conf)
-            self.info("Added app: %r" % conf)
+
+            # find the App class via the config, since apps can be
+            # loaded via arbitrary module strings now (apps.whatever vs
+            # rapidsms.apps.whatever vs rapidsms.contrib.apps.whatever)
+            app_module = __import__("%s.app" % conf["module"], {}, {}, ["App"])
+            app_class = getattr(app_module, "App")
+            app = app_class(self)
+
+            # pass the configuration on to the app. note that
+            # we're not watching for keyword argument any more,
+            # since Component._configure wraps that nicely now
+            app._configure(**dict(conf))
             self.apps.append(app)
-            
+
+            # dump the app config. should this be debug level?
+            self.info("Added app: %r" % (conf))
+
         except:
             self.log_last_exception("Failed to add app: %r" % conf)
-    
-    def get_app(self, name):
-        '''gets an app by name, if it exists'''
-        for app in self.apps:
-            # this is beyond ugly.  i am horribly ashamed of this line
-            # of code.  I just don't understand how the names are supposed
-            # to work.  Someone please fix this.
-            if name in str(type(app)):
-                return app
-        return None
+
 
     def start_backend (self, backend):
         while self.running:
@@ -246,16 +251,51 @@ class Router (component.Receiver):
         self.start_all_backends()
         self.start_all_apps()
 
+        # check for any pending messages
+        try:
+            fn = "/tmp/rapidsms-pending"
+            f = file(fn)
+            
+            # trash the file, to prevent
+            # these messages being re-sent
+            msgs = f.readlines()
+            os.unlink(fn)
+            f.close()
+            
+            # iterate the pending messages,
+            for pending_msg in msgs:
+                be_name, identity, txt =\
+                    pending_msg.strip().split(":")
+                
+                # find the backend named by the message,
+                # reconstruct the object, and send it
+                for backend in self.backends.values():
+                    if backend.slug == be_slug:
+                        msg = backend.message(identity, txt)
+                        self.info("Sending pending message: %r" % msg)
+                        msg.send()
+         
+        # something went bang. not sure what, and don't
+        # particularly care. they'll be re-tried the
+        # next time rapidsms starts up
+        except:
+            pass
+        
         # wait until we're asked to stop
         while self.running:
             try:
                 self.call_scheduled()
                 self.run()
+                
             except KeyboardInterrupt:
+                self.warning("Caught KeyboardInterrupt")
                 break
+                
             except SystemExit:
+                self.warning("Caught SystemExit")
                 break
         
+        self.info("Stopping all backends...")
         self.stop_all_backends()
         self.running = False
 
@@ -280,28 +320,43 @@ class Router (component.Receiver):
         return sorted(self.apps, key=lambda a: a.priority())
     
     def incoming(self, message):   
-        self.info("Incoming message via %s: %s ->'%s'" %\
-			(message.connection.backend.slug, message.connection.identity, message.text))
+        #self.info("Incoming message via %s: %s ->'%s'" %\
+        #    (message.connection.backend.slug, message.connection.identity, message.text))
         
         # loop through all of the apps and notify them of
         # the incoming message so that they all get a
-        # chance to do what they will with it                      
-        for phase in self.incoming_phases:
-            for app in self.__sorted_apps():
-                self.debug('IN' + ' ' + phase + ' ' + app.slug)
-                responses = len(message.responses)
-                handled = False
-                try:
-                    handled = getattr(app, phase)(message)
-                except Exception, e:
-                    self.error("%s failed on %s: %r\n%s", app, phase, e, traceback.print_exc())
-                if phase == 'handle':
-                    if handled is True:
-                        self.debug("%s short-circuited handle phase", app.slug)
-                        break
-                elif responses < len(message.responses):
-                    self.warning("App '%s' shouldn't send responses in %s()!", 
-                        app.slug, phase)
+        # chance to do what they will with it
+        try:
+            for phase in self.incoming_phases:
+                for app in self.__sorted_apps():
+                    self.debug('IN' + ' ' + phase + ' ' + app.slug)
+                    responses = len(message.responses)
+                    handled = False
+                    try:
+                        handled = getattr(app, phase)(message)
+                    except Exception, e:
+                        self.error("%s failed on %s: %r\n%s", app, phase, e, traceback.print_exc())
+
+                    # during the "filter" phase, apps can return True
+                    # to abort ALL further processing of this message
+                    if phase == 'filter':
+                        if handled is True:
+                            self.warning('Message filtered by "%s" app', app.slug)
+                            raise(StopIteration)
+
+                    elif phase == 'handle':
+                        if handled is True:
+                            self.debug("%s short-circuited handle phase", app.slug)
+                            break
+
+                    elif responses < len(message.responses):
+                        self.warning("App '%s' shouldn't send responses in %s()!", 
+                            app.slug, phase)
+
+        # maybe raised within the loop, when
+        # it's aborted during the filter phase
+        except StopIteration:
+            pass
 
         # now send the message's responses
         message.flush_responses()
@@ -313,8 +368,8 @@ class Router (component.Receiver):
 
 
     def outgoing(self, message):
-        self.info("Outgoing message via %s: %s <- '%s'" %\
-			(message.connection.backend.slug, message.connection.identity, message.text))
+        #self.info("Outgoing message via %s: %s <- '%s'" %\
+        #    (message.connection.backend.slug, message.connection.identity, message.text))
         
         # first notify all of the apps that want to know
         # about outgoing messages so that they can do what

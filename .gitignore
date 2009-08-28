@@ -1,6 +1,7 @@
 __version__.py
 *.pyc
 *.swp
+*~
 local.ini
 core.*
 .project
