@@ -2,6 +2,7 @@
 # vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
 
 import os, time
+import i18n
 
 
 DEBUG = True
@@ -31,6 +32,11 @@ SITE_ID = 1
 USE_I18N = True
 
 LOGIN_REDIRECT_URL = '/'
+
+USE_DJANGO_STATIC_SERVER = True
+
+# Django i18n searches for translation files (django.po) within this dir
+LOCALE_PATHS=['contrib/locale']
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
@@ -83,6 +89,10 @@ TEMPLATE_DIRS = [
 # rapidsms pages.  if you want to totally restyle your pages
 # you should change this in your configuration .ini file
 BASE_TEMPLATE = "layout.html"
+# This is a similar concept, but for templating the login
+# and logout screens 
+LOGIN_TEMPLATE = "webapp/login.html"
+LOGGEDOUT_TEMPLATE = "webapp/loggedout.html"
 
 
 
@@ -113,8 +123,28 @@ RAPIDSMS_APPS = dict([
     for app in RAPIDSMS_CONF["rapidsms"]["apps"]])
 
 
+# this code bootstraps the i18n logic configuration, if 
+# it is in the settings
 
-
+def _i18n_to_django_setting(language_settings):
+    languages = []
+    for language in language_settings:
+        if len(language) >= 2:
+            languages.append( (language[0],language[1]) )
+    return tuple(languages)
+    
+# Import i18n settings from rapidsms.ini for sms
+if "i18n" in RAPIDSMS_CONF:
+    RAPIDSMS_I18N = True
+    if "web_languages" in RAPIDSMS_CONF["i18n"]:
+        LANGUAGES = _i18n_to_django_setting( RAPIDSMS_CONF["i18n"]["web_languages"] )
+    elif "languages" in RAPIDSMS_CONF["i18n"]:
+        LANGUAGES = _i18n_to_django_setting( RAPIDSMS_CONF["i18n"]["languages"] )
+    
+    # allow you to specify the static paths for translation files
+    if "locale_paths" in RAPIDSMS_CONF["i18n"]:
+        LOCALE_PATHS = RAPIDSMS_CONF["i18n"]["locale_paths"]
+        
 # ==========================
 # LOAD OTHER DJANGO SETTINGS
 # ==========================
@@ -155,5 +185,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.admin',
-    'django.contrib.admindocs'
+    'django.contrib.admindocs',
+    'django.contrib.markup'
 ] + [app["module"] for app in RAPIDSMS_APPS.values()]

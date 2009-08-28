@@ -1,22 +1,27 @@
-""" Translation Checker
+""" 
+Translation Checker
 
-Run this function with various utf-8 tranlsation files (typically *.po from gettext)
-and it will check whether they can be gsm-encoded
+Run this function over translation text files (typically django.po)
+and it will check whether they are safe for sms (gsm or UCS-2)
 """
+
 from __future__ import with_statement
-import sys, os
+import os
+import sys
 import codecs
 import getopt
 
-# hack to get paths working - we should use django's runscript instead
+# hack to get paths working - should use django's runscript instead
 CUR_DIR = os.getcwd()
 os.chdir('..')
+# TODO - change this directory to wherever pygsm ends up
 sys.path.append(os.path.join(os.getcwd(),os.path.join('lib')))
-
 import pygsm.gsmcodecs
 
-# attempt to interpret the input file in this order
+# attempt to interpret the input file as encodings in this order
 # standard codecs are listed here: http://docs.python.org/library/codecs.html
+# NOTE: There is no way to accurately identify the character encoding of 
+# an unidentified text file, so we just make a best guess
 encodings = ['utf-8','cp1252','utf-16']
 line_count = 0
 
@@ -25,7 +30,7 @@ def check_gsm_compatible(infile):
     for enc in encodings:
         try: 
             if can_gsm_encode(enc, infile):
-                print "PASSES gsm encoding (%s)" % file_name
+                print "PASSES gsm encoding (%s). File parsed as %s" % (file_name,enc)
                 break
         except UnicodeEncodeError, e:
             print "FAILS GSM ENCODING (%s)! (file was read as type %s)" % (file_name,enc)
@@ -35,11 +40,15 @@ def check_gsm_compatible(infile):
     return
 
 def can_gsm_encode(encoding,file_name): 
-    """ Attempts the gsm conversion and return true if everything is good
-        Returns false if 'encoding' was the wrong encoding for the given file
-        Raises UnicodeEncodeError if there is a non-gsm character in the given file
-        Enc: the encoding of the input file
-        File_name: the file to process
+    """ 
+    Tests to see whether this message is gsm-compatible (text-message-worthy)
+   
+    Returns true if the file could be encoded in gsm with no exceptions thrown
+    Returns false if 'encoding' was the wrong encoding for the given file
+    Raises UnicodeEncodeError if there is a non-gsm character in the given file
+    encoding: the encoding of the input file
+    file_name: the file to process
+
     """
     global line_count
     line_count = 0
@@ -55,9 +64,8 @@ def can_gsm_encode(encoding,file_name):
         print "  Cannot parse file as " + encoding
         return False
 
-
-# generic wrapper for python scripts
 def main():
+    """ Generic wrapper for python scripts """
     try:
         opts, args = getopt.getopt(sys.argv[1:], "h", ["help"])
     except getopt.error, msg:

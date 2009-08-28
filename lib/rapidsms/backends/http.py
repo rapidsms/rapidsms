@@ -29,7 +29,9 @@ class Backend(rapidsms.backends.Backend):
         # set this backend in the server instance so it 
         # can callback when a message is received
         self.server.backend = self
-        
+        # also set it in the handler class so we can callback
+        self.handler.backend = self
+
         # set the slug based on the handler, so we can have multiple
         # http backends
         self._slug = "http_%s" % handler  

@@ -1,4 +1,4 @@
-# vim: ai ts=4 sts=4 et sw=4
+# vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
 
 from django.utils.encoding import smart_str
 from harness import MockRouter, EchoApp
@@ -98,6 +98,9 @@ class TestScript (TestCase):
                 router.run()
             elif dir == '<':
                 msg = self.backend.next_message()
+                # smart_str is a django util that prevents dumb terminals
+                # from barfing on strange character sets 
+                # see http://code.djangoproject.com/ticket/10183
                 last_msg, msg.text, txt = map(smart_str, [last_msg, msg.text, txt])
                 self.assertTrue(msg is not None, 
                     "message was returned.\nMessage: '%s'\nExpecting: '%s')" % (last_msg, txt))

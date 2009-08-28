@@ -25,23 +25,24 @@ for rs_app in settings.RAPIDSMS_APPS.values():
         # add the explicitly defined urlpatterns
         urlpatterns += module.urlpatterns
 
-        # does urls.py have a sibling "static" dir?
-        mod_dir = os.path.dirname(module.__file__)
-        static_dir = "%s/static" % mod_dir
-        if os.path.exists(static_dir):
-
-            # found a static dir, so automatically serve those files
-            # via django. this is frowned upon in production, since
-            # the server isn't tough (or fast), but there are so many
-            # places that static files can come from, i'm not sure how
-            # we would auto-configure that in apache. maybe we could
-            # extend manager.py, to output an http conf mapping all
-            # of this stuff for apache?
-            urlpatterns += patterns("", url(
-                "^static/%s/(?P<path>.*)$" % rs_app["type"],
-                "django.views.static.serve",
-                {"document_root": static_dir }
-            ))
+        if settings.USE_DJANGO_STATIC_SERVER:
+            # does urls.py have a sibling "static" dir?
+            mod_dir = os.path.dirname(module.__file__)
+            static_dir = "%s/static" % mod_dir        
+            if os.path.exists(static_dir):
+    
+                # found a static dir, so automatically serve those files
+                # via django. this is frowned upon in production, since
+                # the server isn't tough (or fast), but there are so many
+                # places that static files can come from, i'm not sure how
+                # we would auto-configure that in apache. maybe we could
+                # extend manager.py, to output an http conf mapping all
+                # of this stuff for apache?
+                urlpatterns += patterns("", url(
+                    "^static/%s/(?P<path>.*)$" % rs_app["type"],
+                    "django.views.static.serve",
+                    {"document_root": static_dir }
+                ))
     
     # urls.py couldn't be imported for this app...
     # was it because importing XXX.urls failed,

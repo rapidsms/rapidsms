@@ -4,6 +4,7 @@
 from config import Config
 from router import get_router
 import os, sys, shutil
+import i18n
 
 # the Manager class is a bin for various RapidSMS specific management methods
 class Manager (object):
@@ -11,6 +12,7 @@ class Manager (object):
         router = get_router()
         router.set_logger(conf["log"]["level"], conf["log"]["file"])
         router.info("RapidSMS Server started up")
+        import_i18n_sms_settings(conf)
         
         # add each application from conf
         for app_conf in conf["rapidsms"]["apps"]:
@@ -44,6 +46,19 @@ class Manager (object):
             print "Don't forget to add '%s' to your rapidsms.ini apps." % name
 	except IndexError:
 	    print "Oops. Please specify a name for your app."
+
+def import_i18n_sms_settings(conf):
+    # Import i18n settings from rapidsms.ini for sms
+    if "i18n" in conf:
+        default = None
+        supported = None
+        if "sms_languages" in conf["i18n"]:
+            supported = conf["i18n"]["sms_languages"]
+        elif "languages" in conf["i18n"]:
+            supported = conf["i18n"]["languages"]
+        if "default_language" in conf["i18n"]:
+            default = conf["i18n"]["default_language"]
+        i18n.init(default,supported)
 
 def import_local_settings (settings, ini, localfile="settings.py"):
     """Allow a settings.py file in the same directory as rapidsms.ini
@@ -108,4 +123,9 @@ def start (args):
     elif settings:
         # none of the commands were recognized,
         # so hand off to Django
-        execute_manager(settings)
+        
+        from django.core.management import ManagementUtility
+        # The following is equivalent to django's "execute_manager(settings)"
+        # only without overriding RapidSMS webui settings
+        utility = ManagementUtility()
+        utility.execute()
