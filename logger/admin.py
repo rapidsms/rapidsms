@@ -4,6 +4,18 @@
 from django.contrib import admin
 from models import OutgoingMessage, IncomingMessage, Code
 
+
+class OutgoingMessageAdmin(admin.ModelAdmin):
+    list_display = ['identity', 'backend', 'text', 'sent']
+    list_filter = ['identity', 'backend', 'text', 'sent']
+    date_hierarchy = 'sent'
+
+class IncomingMessageAdmin(admin.ModelAdmin):
+    list_display = ['identity', 'backend', 'text', 'received']
+    list_filter = ['identity', 'backend', 'text', 'received']
+    date_hierarchy = 'received'
+
+
 admin.site.register(Code)
-admin.site.register(IncomingMessage)
-admin.site.register(OutgoingMessage)
+admin.site.register(OutgoingMessage, OutgoingMessageAdmin)
+admin.site.register(IncomingMessage, IncomingMessageAdmin)

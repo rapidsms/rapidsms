@@ -1,6 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 {% load region-tags %}
+{% load i18n %}
 
 {% load webapp-tags %}
 
@@ -13,8 +14,10 @@
 		<!-- stylesheets -->
 		<link type="text/css" rel="stylesheet" href="/static/webapp/stylesheets/layout.css" />
 		<link type="text/css" rel="stylesheet" href="/static/webapp/stylesheets/modules.css" />
+        <link type="text/css" rel="stylesheet" href="/static/backends/stylesheets/global.css" />
 		{% block page_stylesheets %}{% endblock %}
 		{% endblock %}
+
 		<!-- javascripts (global, app, page) -->
 		<script type="text/javascript" src="/static/webapp/javascripts/jquery-1.3.2.min.js"></script>{% for js in javascripts %}
 		<script type="text/javascript" src="{{ js }}"></script>{% endfor %}
@@ -28,28 +31,45 @@
                  {% block auth %}
 			                    <div id="auth">
                                         {% if user.is_authenticated %}
-                                            <p><a href="/accounts/logout/">Log out {{ user.username }}</a></p>
+                                            <p><a href="/accounts/logout/">{% trans "Log out" %} {{ user.username }}</a></p>
                                         {% else %}
-                                            <p><a href="/accounts/login/">Log in</a></p>
+                                            <p><a href="/accounts/login/">{% trans "Log in" %}</a></p>
                                         {% endif %}
                                 </div>
                  {% endblock %}
 				<div id="branding">
                    {% block branding %}
-					<a href="/"><h1><b>RapidSMS</b></h1></a>
+					<h1>
+					    <a title="Return to the Dashboard" href="/">
+                            <span>RapidSMS</span>
+                        </a>
                    {% endblock %}
 				</div>
-				<ul id="tabs">{% for app in apps %}{% if app.tab_link %}
-                                        {% comment %} {% ifhasperm user app "can_view" %} {% endcomment %}
+				<ul id="tabs">{% for app in apps %}{% if app.tab_link %}{% if app.hidetab %}{# ignore #}{% else %}
+                                        {% ifhasperm user app "can_view" %}
 					<li class="app-{{ app.type }}{% ifequal active_tab app.type %} active{% endifequal %}">
 						<a href="{{ app.tab_link }}"><span>{{ app.title }}</span></a>
-					</li>{% comment %} {% endifhasperm %} {% endcomment %}{% endif %}{% endfor %}
+					</li>{% endifhasperm %}{% endif %}{% endif %}{% endfor %}
 				</ul>
 				{% block page_tabs %}
 				{% endblock %}
 			</div>
 			{% endblock %}
+			
 			<div id="inner">
+				{% if USE_I18N %}
+					<form action="/i18n/setlang/" method="post" style="float:right">
+					    <select name="language">
+					    {% for lang in LANGUAGES %}
+					      <option value="{{ lang.0 }}" 
+					      {% ifequal LANGUAGE_CODE lang.0 %}selected{% endifequal %}>
+					      {{ lang.1 }}
+					      </option>
+					    {% endfor %}
+					    </select>
+					<input type="submit" class="small" value="Submit"/>
+					</form>
+				{% endif %}
 				{% block content %}{% endblock %}
 			</div>
 

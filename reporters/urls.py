@@ -8,8 +8,9 @@ import reporters.views as views
 
 urlpatterns = patterns('',
     url(r'^reporters$',             views.index),
-    url(r'^reporters/add$',         views.add_reporter,  name="add-reporter"),
-    url(r'^reporters/(?P<pk>\d+)$', views.edit_reporter, name="view-reporter"),
+    # these are being hijacked by hq/reporters
+    #url(r'^reporters/add$',         views.add_reporter,  name="add-reporter"),
+    #url(r'^reporters/(?P<pk>\d+)$', views.edit_reporter, name="view-reporter"),
     
     url(r'^groups/$',            views.index),
     url(r'^groups/add$',         views.add_group),
