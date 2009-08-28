@@ -5,7 +5,7 @@
 import re
 from django.db import models
 from rapidsms.webui.managers import *
-from apps.reporters.models import Reporter
+from reporters.models import Reporter
 
 
 MARKER_CHOICES = (
@@ -118,10 +118,16 @@ class Location(models.Model):
 
     latitude  = models.DecimalField(max_digits=13, decimal_places=10, blank=True, null=True, help_text="The physical latitude of this location")
     longitude = models.DecimalField(max_digits=13, decimal_places=10, blank=True, null=True, help_text="The physical longitude of this location")
-    
-    
+
+
+    # this belongs in Meta, but Django won't
+    # let us put _unapproved_ things there
+    followable = True
+
+
     def __unicode__(self):
         return self.name
+
 
     # see the FOLLOW app, for now,
     # although this will be expanded
