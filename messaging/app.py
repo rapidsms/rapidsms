@@ -18,7 +18,7 @@ class App (rapidsms.app.App):
     PRIORITY = "lowest"
 
 
-    def handle(self, msg):
+    def catch(self, msg):
         if not msg.responses:
 
             # log the message, along with the identity
