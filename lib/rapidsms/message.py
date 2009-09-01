@@ -27,6 +27,12 @@ class Message(object):
         self.responses = []
         self.status = StatusCodes.NONE
         
+        # store the text AGAIN, somewhere that it really shouldn't
+        # be messed with. some apps may choose to fudge with the
+        # message text, so it's important to be able to recall
+        # what the message started looking like
+        self._raw_text = copy.copy(self.text)
+
         # a message is considered "unprocessed" until
         # rapidsms has dispatched it to all apps, and
         # flushed the responses out
@@ -34,6 +40,11 @@ class Message(object):
     
     def __unicode__(self):
         return self.text
+
+    @property
+    def raw_text(self):
+        """Returns the message text in its original state."""
+        return self._raw_text
 
     @property
     def connection(self):
