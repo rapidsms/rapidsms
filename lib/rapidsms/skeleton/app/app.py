@@ -1,6 +1,7 @@
 import rapidsms
 
-class App (rapidsms.app.App):
+
+class App (rapidsms.App):
     def start (self):
         """Configure your app in the start phase."""
         pass

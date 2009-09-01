@@ -8,6 +8,7 @@ import backends
 from router import Router
 from message import Message
 from config import Config
+from app import App
 
 def get_rapidsms_version ():
     try:
