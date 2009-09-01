@@ -183,7 +183,7 @@ class Config (object):
         # from raw_data (or default to an empty dict),
         # then copy it, so we don't alter the original
         data = self.raw_data.get(name, {}).copy()
-
+        
         # "type" is ONLY VALID FOR BACKENDS now. it's not [easily] possible
         # to run multple django apps of the same type side-by-side, so i'm
         # warning here to avoid confusion (and allow apps to be lazy loaded)
@@ -209,10 +209,12 @@ class Config (object):
         if config is not None:
 
             # copy all of the names not starting with underscore (those are
-            # private or __magic__) into this component's default config
+            # private or __magic__) into this component's default config,
+            # unless they're already present (ini overrides config.py)
             for var_name in dir(config):
                 if not var_name.startswith("_"):
-                    data[var_name] = getattr(config, var_name)
+                    if not var_name in data:
+                        data[var_name] = getattr(config, var_name)
         
         # the module was imported! add it's full path to the
         # config, since it might not be in rapidsms/apps/%s
