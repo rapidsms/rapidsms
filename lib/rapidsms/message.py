@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-import copy
+from copy import copy
 
 from rapidsms.connection import Connection
 from rapidsms.person import Person
@@ -31,7 +31,7 @@ class Message(object):
         # be messed with. some apps may choose to fudge with the
         # message text, so it's important to be able to recall
         # what the message started looking like
-        self._raw_text = copy.copy(self.text)
+        self._raw_text = copy(self.text)
 
         # a message is considered "unprocessed" until
         # rapidsms has dispatched it to all apps, and
@@ -86,9 +86,16 @@ class Message(object):
         """Send the given text back to the original caller of this
            message on the same route that it came in on"""
         if self.connection:
-            response = copy.copy(self)
+            response = copy(self)
             response.text = text
             response.status = status
+            
+            # also update the _raw_text in the copy, since
+            # even though it's unlike that any app will alter
+            # the outgoing text, they may expect the text to
+            # be present there (perhaps for... logging...)
+            response._raw_text = copy(text)
+            
             self.responses.append(response)
             return True
         else: 
