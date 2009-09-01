@@ -72,6 +72,9 @@ class App(component.Component):
     def handle (self, message):
         pass
 
+    def catch (self, message):
+        pass
+
     def cleanup (self, message):
         pass
 

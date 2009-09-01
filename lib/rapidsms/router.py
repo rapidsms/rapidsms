@@ -9,7 +9,7 @@ import component
 import log
 
 class Router (component.Receiver):
-    incoming_phases = ('filter', 'parse', 'handle', 'cleanup')
+    incoming_phases = ('filter', 'parse', 'handle', 'catch', 'cleanup')
     outgoing_phases = ('outgoing',)
 
     def __init__(self):
@@ -279,9 +279,9 @@ class Router (component.Receiver):
                             self.warning('Message filtered by "%s" app', app.slug)
                             raise(StopIteration)
 
-                    elif phase == 'handle':
+                    elif phase == 'handle' or phase == 'catch':
                         if handled is True:
-                            self.debug("%s short-circuited handle phase", app.slug)
+                            self.debug("%s short-circuited %s phase", app.slug, phase)
                             break
 
                     elif responses < len(message.responses):
