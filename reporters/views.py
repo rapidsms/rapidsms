@@ -1,13 +1,27 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
+
 from django.views.decorators.http import require_GET, require_http_methods
 from django.shortcuts import get_object_or_404
 from django.db import transaction
 
+from rapidsms.webui import settings
 from rapidsms.webui.utils import *
 from apps.reporters.models import *
 from apps.reporters.utils import *
+
+# is the LOCATIONS app running? if so, we'll
+# add widgets to link each reporter to a Location
+use_locations = ("locations" in settings.RAPIDSMS_APPS)
+
+if use_locations:
+    from apps.locations.models import *
+
+
+def __global(req):
+    return {
+        "use_locations": use_locations }
 
 
 def message(req, msg, link=None):
@@ -104,6 +118,12 @@ def update_reporter(req, rep):
     # which were NOT in the form we just received
     rep.connections.filter(pk__in=del_conns).delete()
     rep.groups.filter(pk__in=del_grps).delete()
+    
+    
+    if use_locations and "location" in req.POST:
+        loc = Location.objects.get(pk=req.POST["location"])
+        ReporterLocation.objects.get_or_create(
+            reporter=rep, location=loc)
 
 
 @require_http_methods(["GET", "POST"])
@@ -119,19 +139,28 @@ def add_reporter(req):
                 get_object_or_404(
                     PersistantConnection,
                     pk=req.GET["connection"]))
-        
+
+        context = {
+            # display paginated reporters in the left panel
+            "reporters": paginated(req, Reporter.objects.all()),
+            
+            # list all groups + backends in the edit form
+            "all_groups": ReporterGroup.objects.flatten(),
+            "all_backends": PersistantBackend.objects.all(),
+            
+            # maybe pre-populate connections, if
+            # one if present in the query string
+            "connections": connections }
+
+        # populate the "location" field if
+        # we're running the locations app
+        if use_locations:
+            context["locations_label"] = LocationType.label(only_linkable=True).singular
+            context["all_locations"]   = Location.objects.filter(type__is_linkable=1)
+
         return render_to_response(req,
-            "reporters/reporter.html", {
-                
-                # display paginated reporters in the left panel
-                "reporters": paginated(req, Reporter.objects.all()),
-                
-                # maybe pre-populate connections
-                "connections": connections,
-                
-                # list all groups + backends in the edit form
-                "all_groups": ReporterGroup.objects.flatten(),
-                "all_backends": PersistantBackend.objects.all() })
+            "reporters/reporter.html",
+            context)
 
     @transaction.commit_manually
     def post(req):
@@ -179,21 +208,29 @@ def edit_reporter(req, pk):
     rep = get_object_or_404(Reporter, pk=pk)
     
     def get(req):
+        context = {
+            # display paginated reporters in the left panel
+            "reporters": paginated(req, Reporter.objects.all()),
+            
+            # list all groups + backends in the edit form
+            "all_groups": ReporterGroup.objects.flatten(),
+            "all_backends": PersistantBackend.objects.all(),
+            
+            # split objects linked to the editing reporter into
+            # their own vars, to avoid coding in the template
+            "connections": rep.connections.all(),
+            "groups":      rep.groups.all(),
+            "reporter":    rep }
+
+        # populate the "location" field if
+        # we're running the locations app
+        if use_locations:
+            context["locations_label"] = LocationType.label(only_linkable=True).singular
+            context["all_locations"]   = Location.objects.filter(type__is_linkable=1)
+            
         return render_to_response(req,
-            "reporters/reporter.html", {
-                
-                # display paginated reporters in the left panel
-                "reporters": paginated(req, Reporter.objects.all()),
-                
-                # list all groups + backends in the edit form
-                "all_groups": ReporterGroup.objects.flatten(),
-                "all_backends": PersistantBackend.objects.all(),
-                
-                # split objects linked to the editing reporter into
-                # their own vars, to avoid coding in the template
-                "connections": rep.connections.all(),
-                "groups":      rep.groups.all(),
-                "reporter":    rep })
+            "reporters/reporter.html",
+            context)
     
     @transaction.commit_manually
     def post(req):

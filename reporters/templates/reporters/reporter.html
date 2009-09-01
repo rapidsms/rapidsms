@@ -64,9 +64,22 @@
 					Add a Group
 				</a>
 			</div>{% endif %}
-		</div>{% if reporter %}
+		</div>{% if use_locations and all_locations %}
 		
-		{% region "edit-reporter" %}{% endif %}
+		<div>
+			<label>{{ locations_label }}</label>
+			<div>
+				<select name="location">
+					<option></option>{% for location in all_locations %}
+					<option value="{{ location.pk }}" title="{{ location.type.singular }} of {{ location.name }}">{{ location.name }}</option>{% endfor %}
+				</select>
+				<p class="help">
+					Optionally link a <em>default</em> Location to reports received
+					from this Reporter. Can be updated over SMS by sending:
+					<span class="example">I AM AT [CODE]</span>.
+				</p>
+			</div>
+		</div>{% endif %}
 		
 		<div class="submit">
 			<input type="submit" value="{% if reporter %}Save Changes{% else %}Add Reporter{% endif %}" />{% if reporter %}
