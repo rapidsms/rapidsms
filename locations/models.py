@@ -76,6 +76,7 @@ class LocationType(models.Model):
             self.singular = "Location"
             self.plural   = "Locations"
 
+
     @classmethod
     def label(cls, only_linkable=False):
         """Since most LocationType hierarchies only allow reports to be
@@ -158,7 +159,9 @@ class Location(models.Model):
         except cls.DoesNotExist, cls.MultipleObjectsReturned:
             return None
 
+
     def save(self, *args, **kwargs):
+
         # override the default save behavior, to remove extra spaces from
         # the _name_ property. It's not important enough to bother the end-
         # user with, but self.__search__ assumes that a single space is the
@@ -168,37 +171,39 @@ class Location(models.Model):
         # then save the model as usual
         models.Model.save(self, *args, **kwargs)
 
+
     # TODO: how can we port the Location.contacts and Location.one_contact
     #       methods, now that the locations app has been split from reporters?
     #       even if they can import one another, they can't know if they're
     #       both running at parse time, and can't monkey-patch later.
-    
+
     def ancestors(self, include_self=False):
         """Returns all of the parent locations of this location,
            optionally including itself in the output. This is
            very inefficient, so consider caching the output."""
         locs = [self] if include_self else []
         loc = self
-        
+
         # keep on iterating
         # until we return
         while True:
             locs.append(loc)
             loc = loc.parent
-            
+
             # are we at the top?
             if loc is None:
                 return locs
-    
+
+
     def descendants(self, include_self=False):
         """Returns all of the locations which are descended from this location,
            optionally including itself in the output. This is very inefficient
            (it recurses once for EACH), so consider caching the output."""
         locs = [self] if include_self else []
-        
+
         for loc in self.children.all():
             locs.extend(loc.descendants(True))
-        
+
         return locs
 
 
@@ -208,6 +213,6 @@ class ReporterLocation(models.Model):
        way that the Django docs recommend creating a UserProfile
        rather than patching User."""
 
-    reporter = models.ForeignKey(Reporter, unique=True)
+    reporter = models.OneToOneField(Reporter)
     location = models.ForeignKey(Location)
     location.rel.verbose_name = "Reporters"
