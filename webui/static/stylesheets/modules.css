@@ -14,6 +14,10 @@ div.module {
 	position: relative;
 }
 
+	div.module div.module {
+		border: 1px solid #8fbcc9;
+	}
+
 div.module:first-child {
 	margin-top: 0; }
 

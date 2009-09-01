@@ -2,7 +2,8 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 
-from django.db import models
+from django.db import models, connection
+from django.db.backends.util import typecast_timestamp
 from django.core.exceptions import ValidationError
 from apps.reporters.models import *
 
@@ -59,3 +60,45 @@ class OutgoingMessage(MessageBase):
     reporter   = models.ForeignKey(Reporter, null=True, related_name="outgoing_messages")
     sent       = models.DateTimeField(auto_now_add=True)
     prep = "to"
+
+
+def combined_message_log(reporter):
+
+    # this wacky sql allows us to fetch a single queryset
+    # containing both incoming and outgoing messages, which
+    # we can display in a single paginated block. it's taken
+    # (sort-of) from the messaging app, which provides a lot
+    # of overlapping functionality that should be abstracted
+    sql = """select
+              "in", inc.id, inc.received, inc.text
+              from logger_incomingmessage as inc
+              where inc.reporter_id=%s
+            union all select
+              "out", out.id, out.sent, out.text
+              from logger_outgoingmessage as out
+              where out.reporter_id=%s
+            order by inc.received desc""" %\
+        (reporter.pk, reporter.pk)
+
+    # fetch the blob of messages
+    cursor = connection.cursor()
+    cursor.execute(sql)
+
+    # (from messaging/models.py)
+    # TODO: return a paginatable iterator by overloading the Django
+    # QuerySet with the contents of this query, optionally adding
+    # a LIMIT statement to slice BEFORE hitting the database
+    return cursor.fetchall()
+
+
+def combined_message_log_row(row):
+
+    # order of fields output by combined_message_log:
+    #   [0] direction     [1] message_id
+    #   [2] message_date  [3] message_text
+
+    return {
+        "direction": row[0],
+        "pk":        row[1],
+        "date":      typecast_timestamp(row[2]),
+        "text":      row[3] }

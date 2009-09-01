@@ -1,4 +1,6 @@
 {% extends "reporters/index.html" %}
+{% load pagination %}
+{% load reporters %}
 {% load region %}
 
 {% block title %}{% if reporter %}Edit {{ reporter }}{% else %}Add a Reporter{% endif %}{% endblock %}
@@ -79,7 +81,37 @@
 					<span class="example">I AM AT [CODE]</span>.
 				</p>
 			</div>
-		</div>{% endif %}
+		</div>{% endif %}{% if use_logger and message_log.object_list %}
+		
+		<div class="module log">
+			<h3>Message Log</h3>
+			<div>
+			<table>
+				<thead>
+					<tr>
+						<th class="direction">Direction</th>
+						<th class="text">Text</th>
+						<th>Date/Time</th>
+					</tr>
+				</thead>
+				<tbody>{% for msg in message_log.object_list %}
+					<tr class="{% ifequal msg.direction "in" %}incoming{% else %}outgoing{% endifequal %}">
+						<td class="direction">{% ifequal msg.direction "in" %}Incoming{% else %}Outgoing{% endifequal %}</td>
+						<td class="text">{{ msg.text }}</td>
+						<td>{{ msg.date|last_seen }}</td>
+					</tr>{% endfor %}
+				</tbody>
+				<tfoot>
+					<tr>
+						<td colspan="3">
+							{% paginator message_log %}
+						</td>
+					</tr>
+				</tfoot>
+			</table>
+			</div>
+		</div>
+		{% endif %}
 		
 		<div class="submit">
 			<input type="submit" value="{% if reporter %}Save Changes{% else %}Add Reporter{% endif %}" />{% if reporter %}

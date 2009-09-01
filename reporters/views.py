@@ -11,17 +11,25 @@ from rapidsms.webui.utils import *
 from apps.reporters.models import *
 from apps.reporters.utils import *
 
+
 # is the LOCATIONS app running? if so, we'll
 # add widgets to link each reporter to a Location
 use_locations = ("locations" in settings.RAPIDSMS_APPS)
-
 if use_locations:
     from apps.locations.models import *
 
 
+# likewise, is the logger app running? we'll
+# add a mini message log just for this reporter
+use_logger = ("logger" in settings.RAPIDSMS_APPS)
+if use_logger:
+    from apps.logger.models import *
+
+
 def __global(req):
     return {
-        "use_locations": use_locations }
+        "use_locations": use_locations,
+        "use_logger": use_logger }
 
 
 def message(req, msg, link=None):
@@ -227,7 +235,10 @@ def edit_reporter(req, pk):
         if use_locations:
             context["locations_label"] = LocationType.label(only_linkable=True).singular
             context["all_locations"]   = Location.objects.filter(type__is_linkable=1)
-            
+
+        if use_logger:
+            context["message_log"] = paginated(req, combined_message_log(rep), prefix="msg", wrapper=combined_message_log_row)
+
         return render_to_response(req,
             "reporters/reporter.html",
             context)
