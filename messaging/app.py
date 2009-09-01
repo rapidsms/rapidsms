@@ -18,8 +18,12 @@ class App (rapidsms.app.App):
     PRIORITY = "lowest"
 
 
+    def configure(self, catch_all, **kwargs):
+        self.catch_all = catch_all
+
+
     def catch(self, msg):
-        if not msg.responses:
+        if self.catch_all and not msg.responses:
 
             # log the message, along with the identity
             # information provided by reporters.app/parse
