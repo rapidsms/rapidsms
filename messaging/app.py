@@ -2,9 +2,11 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 
-import datetime
+import datetime, re
 import rapidsms
+from rapidsms.search import find_objects
 from models import *
+import utils
 
 
 class App (rapidsms.App):
@@ -15,11 +17,39 @@ class App (rapidsms.App):
        Also, this app receives outgoing messages from the WebUI (via the
        AJAX app), and relays them to the router."""
 
-    PRIORITY = "lowest"
+
+    DIRECT_MSG_RE = re.compile(r"^(?:@|at\.)\s*(\S+)\s*(.+)$", re.I)
 
 
     def configure(self, catch_all, **kwargs):
         self.catch_all = catch_all
+
+
+    def handle(self, msg):
+
+        # is this a direct message?
+        # ~> @adammck What is mudkips?
+        match = self.DIRECT_MSG_RE.match(msg.text)
+        if match is not None:
+            models = utils.messagable_models()
+            to_msg = find_objects(models, match.group(1))
+
+            text = "%s: %s" % (
+                msg.reporter or msg.connection,
+                match.group(2))
+
+            # send the message to each object returned
+            # by the search. might be one reporter (via
+            # their username), or 100 (via their location)
+            for obj in to_msg:
+                obj.__message__(self.router, text)
+
+            if to_msg:
+                msg.respond(
+                    u"Your message was sent to: %s" %
+                    (", ".join(map(unicode, to_msg))))
+
+            return True
 
 
     def catch(self, msg):

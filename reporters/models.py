@@ -15,6 +15,10 @@ class ReporterGroup(models.Model):
     description = models.TextField(blank=True)
     objects     = RecursiveManager()
 
+    # this belongs in Meta, but Django won't
+    # let us put _unapproved_ things there
+    followable = True
+
 
     class Meta:
         verbose_name = "Group"
@@ -154,6 +158,30 @@ class Reporter(models.Model):
 
         except cls.DoesNotExist:
             return None
+
+
+    def __message__(self, router, text):
+        """Sends a message to this Reporter, via _router_."""
+
+        # abort if we don't know where to send the message to
+        # (if the device the reporter registed with has been
+        # taken by someone else, or was created in the WebUI)
+        pconn = self.connection()
+        if pconn is None:
+            raise Exception("%s is unreachable (no connection)" % self)
+
+        # abort if we can't find a valid backend. PersistantBackend
+        # objects SHOULD refer to a valid RapidSMS backend (via their
+        # slug), but sometimes backends are removed or renamed.
+        be = router.get_backend(pconn.backend.slug)
+        if be is None:
+            raise Exception(
+                "No such backend: %s" %
+                pconn.backend.title)
+
+        # attempt to send the message
+        # TODO: what could go wrong here?
+        return [be.message(pconn.identity, text).send()]
 
 
     @classmethod
