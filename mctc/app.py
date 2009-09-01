@@ -1,9 +1,9 @@
+#!/usr/bin/env python
+# vim: ai ts=4 sts=4 et sw=4
+
 from django.db import models
 from django.utils.translation import ugettext
 
-def _(txt): return txt
-
-from django.contrib.auth.models import User, Group
 
 import rapidsms
 from rapidsms.parsers.keyworder import Keyworder
@@ -23,7 +23,19 @@ import re, time, datetime
 find_diagnostic_re = re.compile('( -[\d\.]+)' ,re.I)
 find_lab_re =  re.compile('(/[A-Z]+)([\+-])(\d*:?)', re.I)
 
+
+def _(txt):
+    """Function stub, to make internationalizing the outgoing
+       strings easier later on. It currently does nothing."""
+    return txt
+
+
 def authenticated (func):
+    """Returns a decorator function for wrapping Keyworder handlers,
+       to ensure that the sender has registered a Provider object (the
+       check is performed in App.parse). If no Provider is found, an
+       error message is returned, and the phase is short-circuited."""
+
     def wrapper (self, message, *args):
         if message.sender:
             return func(self, message, *args)
@@ -33,16 +45,14 @@ def authenticated (func):
             return True
     return wrapper
 
+
 class HandlerFailed (Exception):
     pass
+
 
 class App (rapidsms.app.App):
     MAX_MSG_LEN = 140
     keyword = Keyworder()
-
-    def start (self):
-        """Configure your app in the start phase."""
-        pass
 
     def parse (self, message):
         provider = Provider.by_mobile(message.peer)
@@ -66,7 +76,7 @@ class App (rapidsms.app.App):
             # didn't find a matching function
             # make sure we tell them that we got a problem
             #message.respond(_("Unknown or incorrectly formed command: %(msg)s... Please re-check your message") % {"msg":message.text[:10]})
-            self.int2dom(message, _("Unknown or incorrectly formed command: %(msg)s... Please re-check your message") % {"msg":message.text[:10]})
+            #self.int2dom(message, _("Unknown or incorrectly formed command: %(msg)s... Please re-check your message") % {"msg":message.text[:10]})
             return False
         try:
             handled = func(self, message, *captures)
@@ -736,6 +746,12 @@ class App (rapidsms.app.App):
         return observed, choices
 
     def int2dom(self, message, text, mobile=None):
+        """Forwards a message back to the sender, or optionally to _mobile_
+           via the same RapidSMS backend that the message arrived on. The
+           method name is shorthand for "international to domestic", since
+           all numbers are converted from Kenyan/international (prefix of
+           +254) to domestic (prefix of 0)."""
+
         if mobile is None:
             mobile = message.peer
         mobile = mobile.replace("+254","0")
