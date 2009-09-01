@@ -13,8 +13,8 @@ class App(rapidsms.App):
 
     def handle(self, msg):
         IncomingMessage.objects.create(
-            text=msg.text, **self._who(msg))
+            text=msg.raw_text, **self._who(msg))
 
     def outgoing(self, msg):
         OutgoingMessage.objects.create(
-            text=msg.text, **self._who(msg))
+            text=msg.raw_text, **self._who(msg))

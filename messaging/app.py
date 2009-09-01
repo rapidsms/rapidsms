@@ -59,7 +59,7 @@ class App (rapidsms.App):
             # information provided by reporters.app/parse
             msg = IncomingMessage.objects.create(
                 received=datetime.datetime.now(),
-                text=msg.text,
+                text=msg.raw_text,
                 **msg.persistance_dict)
 
             self.info("Message %d captured" % (msg.pk))
