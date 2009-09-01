@@ -8,7 +8,7 @@ from rapidsms.parsers import Matcher
 from models import *
 
 
-class App(rapidsms.app.App):
+class App(rapidsms.App):
     MSG = {
         "en": {
             "bad-alias":   "Sorry, I don't know anyone by that name.",
@@ -102,8 +102,8 @@ class App(rapidsms.app.App):
         # store a handy dictionary containing the most personal persistance
         # information that we have about this connection, for other apps to
         # easily link back to it. See PersistantConnection for more docs.
-        if msg.reporter: msg.persistance_dict = conn.dict
-        
+        msg.persistance_dict = conn.dict
+
         # log, whether we know who the sender is or not
         if msg.reporter: self.info("Identified: %s as %r" % (conn, msg.reporter))
         else:            self.info("Unidentified: %s" % (conn))

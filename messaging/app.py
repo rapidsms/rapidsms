@@ -7,7 +7,7 @@ import rapidsms
 from models import *
 
 
-class App (rapidsms.app.App):
+class App (rapidsms.App):
     """When an incoming message is received, this application is notified
        last, to grab and log the message as a "free-text" message, to be
        displayed in the WebUI with no automatic response from RapidSMS.
@@ -82,7 +82,7 @@ class App (rapidsms.app.App):
             raise Exception(
                 "No such backend: %s" %
                 pconn.backend.title)
-        
+
         # attempt to send the message
         # TODO: what could go wrong here?
         return be.message(pconn.identity, form["text"]).send()

@@ -7,7 +7,7 @@ from apps.reporters.models import PersistantConnection
 from models import OutgoingMessage, IncomingMessage
 
 
-class App(rapidsms.app.App):
+class App(rapidsms.App):
     def _who(self, msg):
         return PersistantConnection.from_message(msg).dict
 

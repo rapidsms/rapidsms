@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-import rapidsms
-import urllib2
 
-class App(rapidsms.app.App):
+import urllib2
+import rapidsms
+
+
+class App(rapidsms.App):
     """When the message "webui" is received, attempts to fetch
        the PING_URL via urllib2, and responds to indicate whether
        it was successful. The view doesn't really verify much right
