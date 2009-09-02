@@ -1,6 +1,6 @@
 from rapidsms.tests.scripted import TestScript
-from apps.reporters.models import *
-import apps.reporters.app as reporter_app
+from reporters.models import *
+import reporters.app as reporter_app
 from app import App
 
 class TestApp (TestScript):

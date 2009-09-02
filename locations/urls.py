@@ -3,7 +3,7 @@
 
 
 from django.conf.urls.defaults import *
-import apps.locations.views as views
+import locations.views as views
 
 
 urlpatterns = patterns('',

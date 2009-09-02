@@ -3,7 +3,7 @@
 
 
 import rapidsms
-from apps.reporters.models import PersistantConnection
+from reporters.models import PersistantConnection
 from models import OutgoingMessage, IncomingMessage
 
 
