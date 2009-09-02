@@ -12,6 +12,10 @@ try:
         if path.isdir(pkg) and \
                 'lib' in os.listdir(pkg):
             libs.append(path.abspath(path.join(pkg,'lib')))
+        # hack in contrib/apps
+        # TODO dont be so hacky about it
+        if pkg == 'contrib/apps':
+            libs.append(path.abspath(pkg))
 except:
     # could be several reasons:
     # no 'contrib' dir, 'contrib' not a dir

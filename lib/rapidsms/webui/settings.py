@@ -192,4 +192,4 @@ INSTALLED_APPS = [
 # decided to standardize the app imports anyway (iirc,
 # ./apps will be added to the python PATH), this will
 # resolve itself fairly soon -- as soon as i pull
-] + ["apps.%s" % app for app in RAPIDSMS_APPS.keys()]
+] + ["%s" % app for app in RAPIDSMS_APPS.keys()]
