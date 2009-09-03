@@ -14,9 +14,9 @@ try:
             libs.append(path.abspath(path.join(pkg,'lib')))
         # hack in contrib/apps
         # TODO dont be so hacky about it
-        if pkg == 'contrib/apps':
+        if pkg == os.path.join('contrib','apps'):
             libs.append(path.abspath(pkg))
-except:
+except Exception, e:
     # could be several reasons:
     # no 'contrib' dir, 'contrib' not a dir
     # 'contrib' not readable, in any case
