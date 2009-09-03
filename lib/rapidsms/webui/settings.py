@@ -2,7 +2,7 @@
 # vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
 
 import os, time
-import i18n
+from rapidsms import i18n
 
 
 DEBUG = True
