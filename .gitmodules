@@ -4,7 +4,7 @@
 	url = git://github.com/rapidsms/pygsm.git
 [submodule "contrib/apps"]
 	path = contrib/apps
-	url = git@github.com:ewheeler/rapidsms-contrib-apps.git
+	url = git://github.com/ewheeler/rapidsms-contrib-apps.git
 [submodule "apps"]
 	path = apps
-	url = git@github.com:ewheeler/rapidsms-community-apps.git
+	url = git://github.com/ewheeler/rapidsms-community-apps.git
