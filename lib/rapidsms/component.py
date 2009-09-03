@@ -27,7 +27,8 @@ class Component(object):
         # since no title has explicitly set, fall back to
         # name of the file that the class was declared in
         return str(self.__module__).split(".")[-1]
-    
+
+
     @property
     def slug(self):
         """Returns a sanitized version of the title, which can be
@@ -43,31 +44,33 @@ class Component(object):
         slug = re.sub(r"[\s_\-]+", "-", slug)
         slug = re.sub(r"[^a-z\-]", "", slug)
         return slug
-    
-    
+
+
     def _configure(self, **kwargs):
         
-        # before passing the configuration data to the
-        # component, store and remove the common stuff
-        if "title" in kwargs: self._title = kwargs.pop("title")
-        if "slug"  in kwargs: self._slug  = kwargs.pop("slug")
-        if "type"  in kwargs: self._type  = kwargs.pop("type")
-        
-        # HACK: remove any internal stuff that was added by
-        # config.py for the benefit of the webui (which doesn't
-        # have access to the component itself, only the config object)
-        kwargs.pop("module", None)
-        kwargs.pop("path", None)
-        
+        # store the entire configuration as an attr,
+        # since most of the time, that's all we need
+        self.config = kwargs
+
         try:
             self.configure(**kwargs)
-        
+
         except TypeError, e:
-            # "__init__() got an unexpected keyword argument '...'"
-            if "unexpected keyword" in e.message:
-                missing_keyword = e.message.split("'")[1]
-                raise Exception("Component '%s' does not support a '%s' option."
-                        % (self.title, missing_keyword))
+            # if the configure method didn't handle all of the arguments,
+            # the "... got an unexpected keyword argument '...'" exception
+            # will be raised. components should accept any arguments (for
+            # now), so re-raise with a very explicit exception
+            if "unexpected keyword" in str(e):
+                missing_keyword = str(e).split("'")[1]
+
+                raise Exception((
+                    'The "%s" component rejected the "%s" option. All components '  +\
+                    'should accept arbitrary keyword arguments (via **kwargs) for ' +\
+                    'the time being, to ensure that they continue to function as '  +\
+                    'the RapidSMS APIs change. Sorry.') % (self.title, missing_keyword))
+
+            # something else went wrong. allow it
+            # to propagate, to avoid masking errors
             else:
                 raise
 
