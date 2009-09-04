@@ -5,6 +5,7 @@
 import rapidsms
 from reporters.models import PersistantConnection
 from models import OutgoingMessage, IncomingMessage
+from smsforum.app import MAX_LATIN_SMS_LEN
 
 
 class App(rapidsms.app.App):
@@ -25,7 +26,7 @@ class App(rapidsms.app.App):
         # make and save messages on their way out and 
         # cast connection as string so pysqlite doesnt complain
         msg = OutgoingMessage.objects.create(
-            text=message.text, **self._who(msg))
+            text=message.text, **self._who(message))
         self.debug(msg.text)
         # inject this id into the message object.
         message.logger_id = msg.id;

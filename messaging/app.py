@@ -16,7 +16,8 @@ class App (rapidsms.app.App):
        Also, this app receives outgoing messages from the WebUI (via the
        AJAX app), and relays them to the router."""
 
-    PRIORITY = "lowest"
+    #TODO whats this?
+    #PRIORITY = "lowest"
 
 
     def handle(self, msg):
@@ -116,7 +117,7 @@ class App (rapidsms.app.App):
         if len(fail) > 0:
             response = response + "No user found for %s." % (', '.join(fail))
         # respond with successes and failures
-        return self._send_message(pconn, form["text"])
+        return self._send_message(message.connection, response)
         
     def ajax_POST_send_message_to_connection(self, params, form):
         '''Sends a message using a connection id, instead of
