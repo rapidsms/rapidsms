@@ -34,9 +34,9 @@ class MockRouter (Router):
     def add_backend (self, backend):
         self.backends.append(backend)
 
-    def add_app (self, app):
-        app.configure()
-        self.apps.append(app)
+#    def add_app (self, app):
+#        app.configure()
+#        self.apps.append(app)
 
     def start (self):
         self.running = True
