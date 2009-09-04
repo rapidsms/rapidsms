@@ -32,11 +32,7 @@ class Backend (Receiver):
    
     def message(self, identity, text, date=None):
         c = Connection(self, identity)
-        return Message(
-            connection=c, 
-            text=text, 
-            date=date
-            )
+        return Message(connection=c, text=text, date=date)
 
     def route(self, msg):
         # send it off to the router
