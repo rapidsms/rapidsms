@@ -1,0 +1,43 @@
+{% extends "reporters/index.html" %}
+{% block title %}{% if group %}Edit {{ group }}{% else %}Add a Group{% endif %}{% endblock %}
+
+{% block left %}
+<div class="module">
+	<h2>{% if group %}Edit {{ group }}{% else %}Add a Group{% endif %}</h2>
+	
+	<form method="post" id="fm-grp-add" action="/groups/{% if group %}{{ group.pk }}{% else %}add{% endif %}">
+		<div>
+			<label for="fm-grp-add-title">Title</label>
+			<input type="text" class="required" id="fm-grp-add-title" name="title"{% if group %} value="{{ group.title }}"{% endif %} />
+		</div>
+		<div>
+			<label for="fm-grp-add-desc">Description</label>
+			<textarea id="fm-grp-add-desc" name="description" rows="6" cols="40">{% if group %}{{ group.description }}{% endif %}</textarea>
+			<p class="help">
+				If provided, the text is displayed to users attempting to send a
+				bulk message to this group, to ensure they understand what it is.
+			</p>
+		</div>
+		<div id="fm-grp-add-groups">
+			<label>Parent Group</label>
+			<select name="parent_id" size="6">
+				<option value=""{% if not group.parent %} selected="selected"{% endif %} class="na">None</option>{% for group in all_groups %}
+				<option value="{{ group.pk }}" class="depth-{{ group.depth }}"{% if group.selected %} selected="selected"{% endif %}>{{ group.title }}</option>{% endfor %}
+			</select>
+			<p class="help">
+				The other Group that <em>{% if group %}{{ group.title }}{% else %}this group{% endif %}</em> is contained by.
+			</p>
+		</div>
+		<div class="submit">
+			<input type="submit" value="{% if group %}Save Changes{% else %}Add Group{% endif %}" />{% if group %}
+			<input type="submit" name="delete" value="Delete {{ group }}" />{% endif %}
+		</div>
+	</form>
+</div>
+
+<script type="text/javascript">
+	$(function() {
+		$("#fm-grp-add").rs_validate();
+	});
+</script>
+{% endblock %}

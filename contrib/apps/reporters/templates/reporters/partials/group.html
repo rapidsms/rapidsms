@@ -1,0 +1,6 @@
+<div>
+	<select name="group_id">
+		<option selected="selected" class="na">None</option>{% for group in groups %}
+		<option value="{{ group.pk }}" class="depth-{{ group.depth }}"{% if group.selected %} selected="selected"{% endif %}>{{ group.title }}</option>{% endfor %}
+	</select>
+</div>

@@ -1,0 +1,121 @@
+/* UNICEF RapidSMS UI
+ * vim:set noet:
+ * --
+ * locations.css
+ * --
+ * This stylesheet contains the customizations just for
+ * the "Locations" app, to make the google maps embedded
+ * in the dashboard and add/edit forms pretty */
+
+
+
+
+/* we're going to perform some aligned background-image magic
+ * with the lat+lon fields, so set the width the same as the
+ * "form module p.help" boxes from modules.css (30em @ 80%) */
+form div.lat,
+form div.lon {
+	width: 24em; }
+
+	/* prevent the background image from bumping
+	 * right up against the lat/lon labels */
+	form div.lat label,
+	form div.lon label {
+		background: #fff;
+		padding-right: 0.625em;
+	}
+
+	form div.lat { background: url("../images/bg-latitude.png")  no-repeat 100% 50%; }
+	form div.lon { background: url("../images/bg-longitude.png") no-repeat 100% 50%; }
+
+/* a special link to show or hide the google map
+ * within a module form. this could probably be
+ * more generic, but YAGNI, etc */
+form p.toggle-map {
+	background: #cef1f5 url("../icons/silk/world.png") no-repeat 5px 0.625em;
+	line-height: 16px;
+	padding: 0.625em;
+	padding-left: 26px;
+	margin: 0;
+	
+	/* see "form .module p.help"
+	 * from webui/modules.css */
+	font-size: 80%;
+}
+
+	form p.toggle-map a {
+		display: block;
+		color: #4bd;
+	}
+
+	form p.toggle-map span.help {
+		font-weight: bold;
+		display: block;
+		float: right;
+		color: #000;
+	}
+
+
+/* we want to leave a little space (0.5em, like most other gaps
+ * in the form) between the lat/lon fields, and the "SHOW/HIDE
+ * MAP" link, but also want the background images to flow through it.
+ *  i can't think of a way to do this without a spare div, right now */
+form div.map-shim-hack {
+	height: 0.5em;
+	width: 24em;
+	overflow: hidden;
+	background: url("../images/bg-shim.png") repeat-y 100% 0;
+}
+
+
+/* wrap both of the google maps in
+ * something vaugely rapidsms-looking */
+div.map {
+	border: 1px solid #4bd;
+	padding: 1px;
+}
+
+	/* don't occupy the full width
+	 * when the map is closed */
+	form div.map.closed {
+		width: 24em; }
+
+	/* todo: height in ems,
+	 * min-height in pixels */
+	form div.map #fm-loc-map {
+		margin-bottom: 1px;
+		height: 360px;
+	}
+	
+	/* map markers can contain a caption,
+	 * (via labeledmarker.js). center them
+	 * over the bulging top of the icon */
+	div.map div.caption {
+		margin-top: -29px;
+		margin-left: -9px;
+		width: 20px;
+		height: 34px;
+		overflow: hidden;
+		text-align: center;
+		font-weight: bold;
+		font-size: 7pt;
+		color: #000;
+	}
+
+
+body.app-locations div#map {
+	background: #cef1f5;
+	height: 50em;
+}
+
+	body.app-locations div#map p.show-map {
+		text-align: center;
+		width: 80%;
+		margin: 0 auto;
+		padding: 0.5em;
+		color: #4bd;
+	}
+
+body.app-locations div#markers {
+	display: none;
+}

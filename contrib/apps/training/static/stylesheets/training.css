@@ -1,0 +1,49 @@
+/* UNICEF RapidSMS UI
+ * vim:set noet:
+ * --
+ * training.css
+ * --
+ * Tweak the layout for the training UI. not
+ * much here right now; may stay that way */
+
+.training table,
+.templates table {
+	width: 100%;
+}
+
+/* if the webui is 80em wide (the default), these
+ * two first columns will occupy 50% of the width.
+ * if not... ugly, but they're about the right size */
+.training th.sender { width: 10em; }
+.training th.text   { width: 27em; }
+
+.training table div {
+	font-family: monospace;
+	white-space: pre-wrap;
+	line-height: 1.4;
+}
+
+/* reserve just enough space in the
+ * last column for two js buttons */
+.training td.actions {
+	padding-left: 0;
+	width: 32px;
+}
+
+/* fill the remaining space with the response
+ * text field. TODO: check CSS[2,3] compatibility */
+.training input.response,
+.templates tbody input {
+	-moz-box-sizing: border-box;
+	width: 100%;
+}
+
+
+.templates th.key  { width: 4em; }
+.templates th.gap  { width: 1em; }
+.templates th.text { width: 22em; }
+
+/* center the "save changes" button. perhaps
+ * this should be the default tfoot behavior? */
+.templates tfoot {
+	text-align: center; }

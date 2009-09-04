@@ -1,0 +1,13 @@
+{% extends base_template %}
+
+{% block content %}
+<div class="split">
+	<div class="left">
+		{% block left %}{% endblock %}
+	</div>
+	<div class="right">
+		{% block right %}{% endblock %}
+	</div>
+	<div class="clear-hack"></div>
+</div>
+{% endblock %}

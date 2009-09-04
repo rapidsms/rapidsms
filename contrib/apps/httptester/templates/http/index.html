@@ -1,0 +1,53 @@
+{% extends base_template %}
+{% block title %}Web Message Tester{% endblock %}
+{% block content %}
+<style>
+	/* incoming/outgoing indicator [raq/laq]uo */
+	.tester table td.dir {
+		font-weight: bold;
+		width: 1%;
+	}
+
+	/* colorize cells to indicate direction */
+	.tester tr.in  td.dir { color: #f00; }
+	.tester tr.in         { background: #fff8ff; }
+	.tester tr.out td.dir { color: #0f0; }
+	.tester tr.out        { background: #f8ffff; }
+
+	.tester tr td.date    { color: #bbb; font-size: 70%; width: 8em; float: right; border-top: 0px;}
+	.tester tr td.info    { color: #bbb; font-size: 70%; width: 8em; float: left;}
+	.tester tr td.msg     { font-size: 90%; float: left; width: 40em;}
+</style>
+<div class="tester">
+	<h2>All Previous Messages</h2>
+	<table>
+		<tbody>{% if msgs %}{% for m in msgs %}
+			<tr>
+			<tr class="{% if m.outgoing %}out{% else %}in{% endif %}{% if forloop.first %} first{% endif %}{% if forloop.last %} last{% endif %}">
+                <td class="date">{{ifchanged }}
+			{{ m.date|date:"j M"}}
+			{{endifchanged}}
+			{{ m.date|date:"H:i:s" }}
+			</td>
+
+			<td class="dir"{% if m.outgoing %} title="Outgoing">&raquo;{% else %} title="Incoming">&laquo;{% endif %}</td>
+				<td class="msg">{{ m.body }}</td>
+				<td class="info">{{ m.body|length}} characters</td>
+				
+			</tr>{% endfor %}{% else %}
+			<tr class="no-data">
+				<td colspan="2">
+					No Messages Yet.
+				</td>
+			</tr>{% endif %}
+		</tbody>
+	</table>
+</div>
+
+<form action="" method="post">
+From 'Phone Number': {{number}}
+{{form.as_table}}
+<input type="hidden" name="phone_number" value="{{number}}">
+<input type="submit" value="Send 'SMS'" />
+</form>
+{% endblock %}

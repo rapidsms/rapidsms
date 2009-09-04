@@ -1,0 +1,84 @@
+{% extends "training/base.html" %}
+{% block title %}Training{% endblock %}
+
+{% block content %}
+<div class="module training">
+	<h2>Pending Messages</h2>
+	<div class="help">
+		<p>
+			While this page is being watched, outgoing error messages will be caught
+			and displayed here before being sent, providing the opportunity to edit
+			and add to them. This is useful during live training sessions, to provide
+			personal assistance to users having trouble.
+		</p>
+	</div>
+	<table>
+		<thead>
+			<tr>
+				<th scope="col" class="sender">Sender</th>
+				<th scope="col" class="text">Incoming Text</th>
+				<th scope="col" class="response">Response(s)</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="no-data">
+				<td colspan="4">
+					No messages are pending.
+				</td>
+			</tr>
+		</tbody>
+		<tfoot>
+			<tr>
+				<td colspan="4">
+					<a href="">
+						Export to Excel
+					</a>
+				</td>
+			</tr>
+		</tfoot>
+	</table>
+</div>
+
+<div class="module templates">
+	<h2>Response Templates</h2>
+	<div class="help">
+		<p>
+			If you find yourself sending the same advice often, you can store templates
+			in these fields. To copy a template into a response field, select the field,
+			and press the <strong>control + N</strong> hotkey</strong>.
+		</p>
+	</div>
+	<table>
+		<thead>
+			<tr>
+				<th scope="col" class="key">Key</th>
+				<th scope="col" class="text">Text</th>
+				<th class="gap"></th>
+				
+				<th scope="col" class="key">Key</th>
+				<th scope="col" class="text">Text</th>
+				<th class="gap"></th>
+				
+				<th scope="col" class="key">Key</th>
+				<th scope="col" class="text">Text</th>
+			</tr>
+		</thead>
+		<tbody>{% for tmpl in templates %}
+				{% cycle "<tr>" "" "" %}
+				<td>ctrl+<strong>{{ tmpl.key }}</strong></td>
+				<td><input type="text" name="template" id="tmpl-{{ tmpl.key }}" value="{{ tmpl.text }}" maxlength="140" /></td>
+				{% cycle "<td></td>" "<td></td>" "</tr>" %}{% endfor %}
+		</tbody>
+		<tfoot>
+			<tr>
+				<td colspan="8">
+					<a href="">
+						Export to Excel
+					</a>
+				</td>
+			</tr>
+		</tfoot>
+	</table>
+</div>
+{% endblock %}

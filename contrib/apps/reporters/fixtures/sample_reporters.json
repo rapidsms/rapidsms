@@ -1,0 +1,105 @@
+[
+    {
+        "pk": 3,
+        "model": "reporters.reporter",
+        "fields": {
+            "first_name": "Mark",
+            "last_name": "Johnston",
+            "registered_self": false,
+            "alias": "mej"
+        }
+    },
+    {
+        "pk": 1,
+        "model": "reporters.reporter",
+        "fields": {
+            "first_name": "Adam",
+            "last_name": "Mckaig",
+            "registered_self": false,
+            "alias": "adammck"
+        }
+    },
+    {
+        "pk": 4,
+        "model": "reporters.reporter",
+        "fields": {
+            "first_name": "Merrick",
+            "last_name": "Schaefer",
+            "registered_self": false,
+            "alias": "merrickweb"
+        }
+    },
+    {
+        "pk": 2,
+        "model": "reporters.reporter",
+        "fields": {
+            "first_name": "Evan",
+            "last_name": "Wheeler",
+            "registered_self": false,
+            "alias": "ewheeler"
+        }
+    },
+    {
+        "pk": 5,
+        "model": "reporters.reporter",
+        "fields": {
+            "first_name": "Cory",
+            "last_name": "Zue",
+            "registered_self": false,
+            "alias": "czue"
+        }
+    },
+    {
+        "pk": 1,
+        "model": "reporters.persistantbackend",
+        "fields": {
+            "slug": "fixture",
+            "title": "From Fixtures"
+        }
+    },
+    {
+        "pk": 1,
+        "model": "reporters.persistantconnection",
+        "fields": {
+            "reporter": 1,
+            "identity": "1111",
+            "backend": 1
+        }
+    },
+    {
+        "pk": 2,
+        "model": "reporters.persistantconnection",
+        "fields": {
+            "reporter": 2,
+            "identity": "2222",
+            "backend": 1
+        }
+    },
+    {
+        "pk": 3,
+        "model": "reporters.persistantconnection",
+        "fields": {
+            "reporter": 3,
+            "identity": "3333",
+            "backend": 1
+        }
+    },
+    {
+        "pk": 4,
+        "model": "reporters.persistantconnection",
+        "fields": {
+            "reporter": 4,
+            "identity": "4444",
+            "backend": 1
+        }
+    },
+    {
+        "pk": 5,
+        "model": "reporters.persistantconnection",
+        "fields": {
+            "reporter": 5,
+            "identity": "5555",
+            "backend": 1
+        }
+    }
+]

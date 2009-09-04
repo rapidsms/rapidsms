@@ -1,0 +1,164 @@
+/* UNICEF RapidSMS UI
+ * vim:set noet:
+ * --
+ * messaging.css
+ * --
+ * What is this? */
+
+
+#inner div.split .left  { width: 40%; }
+#inner div.split .right { width: 60%; }
+
+
+/* i'm using a table here, because i've
+ * spent quite enough time trying to make
+ * this damn form align properly with css */
+.search table {
+	width: 100%; }
+	
+	/* make most columns as thin as we
+	 * can, to contain their contents,
+	 * and space them out a little */
+	.search td {
+		padding: 0 0.5em 0 0;
+		border: 0;
+		width: 1%;
+	}
+		
+		/* allow the search field to fill up
+		 * as much of the width as is available */
+		.search td.search {
+			width: auto; }
+		
+			.search td.search input {
+				box-sizing: border-box;
+				-moz-box-sizing: border-box;
+				-webkit-box-sizing: border-box;
+				width: 100%;
+			}
+		
+		/* manually set the width of the last
+		 * column, to prevent the buttons from
+		 * breaking onto multiple lines */
+		.search td.buttons {
+			padding-right: 0;
+			width: 48px;
+		}
+			
+			/* but bunch them all together, because it's
+			 * prettier, and i like punishing people for
+			 * trying to use my software */
+			.search td.buttons input {
+				float: left; }
+
+
+.recipients { }
+	
+	/* the "check" column contains an icon,
+	 * indicating what's going on in the row */
+	.recipients .check {
+		padding: 0 0 0 0.5em;
+		width: 16px;
+	}
+	
+	/* everything looks clickable */
+	.recipients tbody tr {
+		cursor: pointer;
+	}
+		
+		/* highlight checked rows, to indicate
+		 * who we'll be blasting the message to */
+		.recipients tbody tr.checked td {
+			background-color: #fffff8;
+		}
+			
+			/* dull rows have a background image too, to avoid
+			 * a weird looking gap before anything is checked */
+			.recipients tbody tr         .check { background: url("../../webapp/icons/silk/bullet_white.png") no-repeat 0.5em 50%; }
+			.recipients tbody tr.checked .check { background-image: url("../../webapp/icons/silk/accept.png"); }
+			
+			/* various statuses for messages during/after send */
+			.recipients tbody tr.busy    .check { background-image: url("../../webapp/icons/silk/email_go.png"); }
+			.recipients tbody tr.sent    .check { background-image: url("../../webapp/icons/silk/email.png"); }
+			.recipients tbody tr.error   .check { background-image: url("../../webapp/icons/silk/email_error.png"); }
+	
+	/* when a filter is in effect, dim all of the text
+	 * in the table *except* for the matching rows */
+	.recipients tbody.filtered {
+		background: #fcfcfc;
+		color: #eee;
+	}
+		
+		/* matching search results are BRIGHT */
+		.recipients tbody.filtered tr.hit {
+			background-color: #fff;
+			color: #000;
+		}
+
+
+.contents textarea {
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	width: 100%;
+}	
+
+.log { }
+
+	/* there's a lot of data to fit into such a small table,
+	 * so maximize it horizontally, and reserve as much space as
+	 * possible for the "text" column without wrapping the others */
+	.log table {
+		width: 100%;
+	}
+
+		.log td,
+		.log th {
+			white-space: nowrap;
+			width: 1%;
+		}
+			
+			/* undo that funny-business
+			 * for the last column */
+			.log th.text,
+			.log td.text {
+				white-space: normal;
+				width: auto;
+			}
+	
+
+	/* the To/From text isn't very important,
+	 * so shrink it to avoid distracting */
+	.log td.direction {
+		padding: 0.625em;
+		padding-right: 0;
+		text-align: right;
+		font-size: 80%;
+		color: #aaa;
+	}
+	
+	/* make enough space for the direction
+	 * arrow on the right of the link */
+	.log td.tofrom {
+		padding-right: 16px;
+	}
+		
+		/* add the icons */
+		.log tr.incoming td.tofrom { background: url("../../webapp/icons/incoming.png") no-repeat 100% 50%; }
+		.log tr.outgoing td.tofrom { background: url("../../webapp/icons/outgoing.png") no-repeat 100% 50%; }
+
+			/* add a flexible space to the right, the same
+			 * as the padding around the entire cell, to line
+			 * up the arrows without resorting to pixel sizes */
+			.log td.tofrom a.reporter,
+			.log td.tofrom a.connection,
+			.log td.tofrom span.rapidsms {
+				padding-right: 0.5em;
+			}
+	
+	/* color the text fields according to the
+	 * direction (incoming=red, outgoing=green) */
+	.log tr.incoming td.text { color: #040; }
+	.log tr.outgoing td.text { color: #400; }
+
+
