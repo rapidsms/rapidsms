@@ -12,6 +12,6 @@ urlpatterns = patterns('',
     
     # serve the static files for this HTTP app
     # TODO: this should be automatic, via WEBUI
-    (r'^static/http/(?P<path>.*)$', "django.views.static.serve",
+    (r'^static/httptester/(?P<path>.*)$', "django.views.static.serve",
         {"document_root": os.path.dirname(__file__) + "/static"})
 )
