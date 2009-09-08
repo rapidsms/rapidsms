@@ -19,10 +19,18 @@ class Backend(BackendBase):
     _title = "pyGSM"
 
 
-    def configure(self, *args, **kwargs):
-        self.modem = None
-        self.modem_args = args
+    def configure(self, **kwargs):
+
+        # strip any config settings that
+        # obviously aren't for the modem
+        for arg in ["title", "name"]:
+            if arg in kwargs:
+                kwargs.pop(arg)
+
+        # store the rest to pass on to the
+        # GsmModem() when RapidSMS starts
         self.modem_kwargs = kwargs
+        self.modem = None
 
 
     def send(self, message):
@@ -42,18 +50,24 @@ class Backend(BackendBase):
 
         # convert the "real" signal
         # strength into a 0-4 scale
-        if   csq == 99: level = 0
-        elif csq >= 35: level = 4
-        elif csq >= 25: level = 3
-        elif csq >= 15: level = 2
+        if   not csq:   level = 0
+        elif csq >= 30: level = 4
+        elif csq >= 20: level = 3
+        elif csq >= 10: level = 2
         else:           level = 1
 
-        return {
-            "_signal": level,
-            "_title": self.title,
-            "Sent": self.sent_messages,
-            "Received": self.received_messages
-        }
+        vars = {
+            "_signal":  level,
+            "_title":   self.title,
+            "Messages Sent": self.sent_messages,
+            "Messages Received": self.received_messages }
+
+        # pygsm can return the name of the network
+        # operator since b19cf3. add it if we can
+        if hasattr(self.modem, "network"):
+            vars["Network Operator"] = self.modem.network
+
+        return vars
 
 
     def run(self):
@@ -63,7 +77,7 @@ class Backend(BackendBase):
 
             if msg is not None:
                 self.received_messages += 1
-                
+
                 # we got an sms! create RapidSMS Connection and
                 # Message objects, and hand it off to the router
                 c = Connection(self, msg.sender)
@@ -81,10 +95,9 @@ class Backend(BackendBase):
     def start(self):
         self.sent_messages = 0
         self.received_messages = 0
-        
+
         self.modem = pygsm.GsmModem(
             logger=self.gsm_log,
-            *self.modem_args,
             **self.modem_kwargs)
 
         # If we got the connection, call superclass to
