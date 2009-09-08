@@ -7,6 +7,7 @@ from datetime import datetime
 from django.db import models
 from django.core.urlresolvers import reverse
 from rapidsms.webui.managers import *
+from apps.persistance.models import Backend
 
 
 class ReporterGroup(models.Model):
@@ -170,9 +171,9 @@ class Reporter(models.Model):
         if pconn is None:
             raise Exception("%s is unreachable (no connection)" % self)
 
-        # abort if we can't find a valid backend. PersistantBackend
-        # objects SHOULD refer to a valid RapidSMS backend (via their
-        # slug), but sometimes backends are removed or renamed.
+        # abort if we can't find a valid backend. persistance.models.Backend
+        # objects SHOULD refer to a valid RapidSMS backend (via their slug),
+        # but sometimes backends are removed or renamed.
         be = router.get_backend(pconn.backend.slug)
         if be is None:
             raise Exception(
@@ -300,40 +301,6 @@ class Reporter(models.Model):
         return max(timedates) if timedates else None
 
 
-class PersistantBackend(models.Model):
-    """This class exists to provide a primary key for each
-       named RapidSMS backend, which can be linked from the
-       other modules. We can't use a char field with OPTIONS
-       (in models which wish to link to a backend), since the
-       available backends (and their orders) may change after
-       deployment; hence, something persistant is needed."""
-
-    slug  = models.CharField(max_length=30, unique=True)
-    title = models.CharField(max_length=30)
-
-
-    class Meta:
-        verbose_name = "Backend"
-
-
-    def __unicode__(self):
-        return self.title
-
-    def __repr__(self):
-        return '<%s: %s via %s>' %\
-            (type(self).__name__, self.slug)
-
-
-    @classmethod
-    def from_message(klass, msg):
-        """"Fetch a PersistantBackend object from the data buried in a rapidsms.message.Message
-            object. In time, this should be moved to the message object itself, since persistance
-            should be fairly ubiquitous; but right now, that would couple the framework to this
-            individual app. So you can use this for now."""
-        be_slug = msg.connection.backend.slug
-        return klass.objects.get(slug=be_slug)
-
-
 class PersistantConnection(models.Model):
     """This class is a persistant version of the RapidSMS Connection
        class, to keep track of the various channels of communication
@@ -343,7 +310,7 @@ class PersistantConnection(models.Model):
        to do so in future, a PersistantConnection should be created,
        so they can be recognized by their backend + identity pair."""
 
-    backend   = models.ForeignKey(PersistantBackend, related_name="connections")
+    backend   = models.ForeignKey(Backend, related_name="connections")
     identity  = models.CharField(max_length=30)
     reporter  = models.ForeignKey(Reporter, related_name="connections", blank=True, null=True)
     last_seen = models.DateTimeField(blank=True, null=True)
@@ -374,7 +341,7 @@ class PersistantConnection(models.Model):
     @classmethod
     def from_message(klass, msg):
         obj, created = klass.objects.get_or_create(
-            backend  = PersistantBackend.from_message(msg),
+            backend  = Backend.from_message(msg),
             identity = msg.connection.identity)
 
         if created:

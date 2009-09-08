@@ -6,10 +6,13 @@ from django.views.decorators.http import require_GET, require_http_methods
 from django.shortcuts import get_object_or_404
 from django.db import transaction
 
+# TODO: WTF is happening here? update these
+# imports to name what they need explicitly
 from rapidsms.webui import settings
 from rapidsms.webui.utils import *
 from apps.reporters.models import *
 from apps.reporters.utils import *
+from apps.persistance.models import Backend
 
 
 # is the LOCATIONS app running? if so, we'll
@@ -88,7 +91,7 @@ def update_reporter(req, rep):
         # or an IntegrityError or ValidationError (if the
         # identity or report is invalid)
         conn, created = PersistantConnection.objects.get_or_create(
-            backend=PersistantBackend.objects.get(pk=be_id),
+            backend=Backend.objects.get(pk=be_id),
             identity=identity)
         
         # update the reporter separately, in case the connection
@@ -154,7 +157,7 @@ def add_reporter(req):
             
             # list all groups + backends in the edit form
             "all_groups": ReporterGroup.objects.flatten(),
-            "all_backends": PersistantBackend.objects.all(),
+            "all_backends": Backend.objects.all(),
             
             # maybe pre-populate connections, if
             # one if present in the query string
@@ -222,7 +225,7 @@ def edit_reporter(req, pk):
             
             # list all groups + backends in the edit form
             "all_groups": ReporterGroup.objects.flatten(),
-            "all_backends": PersistantBackend.objects.all(),
+            "all_backends": Backend.objects.all(),
             
             # split objects linked to the editing reporter into
             # their own vars, to avoid coding in the template

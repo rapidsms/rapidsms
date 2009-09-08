@@ -1,0 +1,128 @@
+#!/usr/bin/env python
+# vim: ai ts=4 sts=4 et sw=4
+
+
+from django.db import models
+from rapidsms.webui import settings
+
+
+class AppManager(models.Manager):
+    def get_query_set(self):
+        if not hasattr(self, "_updated"):
+
+            # fetch a list of all the apps
+            # that we already have objects for
+            known_apps = App.raw_objects.values_list(
+                "module", flat=True)
+
+            # find any running apps which currently
+            # don't have objects, and fill in the gaps
+            for conf in settings.RAPIDSMS_APPS.values():
+                module = conf["module"]
+
+                if not module in known_apps:
+                    App.raw_objects.create(
+                        title=conf["title"],
+                        module=module)
+
+            # add an attr to this class, to limit
+            # this update to once per process
+            self._updated = True
+
+        # now that we're sure the persistantapp table is up
+        # to date, continue fetching the queryset as usual
+        return super(AppManager, self).get_query_set()
+
+
+class App(models.Model):
+    """This model exists to provide a primary key for other models (in any
+       app) to link to with a foreign key, rather than storing module strings
+       themselves. The Django ContentType stuff doesn't quite work here, since
+       not all RapidSMS apps are valid Django apps. It would be nice to fill
+       in the gaps and inherit from it at some point in the future.
+
+       Instances of this model are created by AppManager on-demand, so even
+       when the database is empty, App.objects.all() can still be used to
+       iterate the running apps."""
+
+    title  = models.CharField(max_length=30, blank=True)
+    module = models.CharField(max_length=30, unique=True)
+    active = models.BooleanField()
+
+    objects     = AppManager()
+    raw_objects = models.Manager()
+
+
+    def __unicode__(self):
+        return self.title
+
+    def __repr__(self):
+        return '<%s: %s>' %\
+            (type(self).__name__, self.module)
+
+
+    @classmethod
+    def from_app(cls, app):
+        return cls.objects.get(
+            module=app.conf["module"])
+
+
+class BackendManager(models.Manager):
+    def get_query_set(self):
+        if not hasattr(self, "_updated"):
+
+            # fetch a list of all the backends
+            # that we already have objects for
+            known_backends = Backend.raw_objects.values_list(
+                "slug", flat=True)
+
+            # find any running backends which currently
+            # don't have objects, and fill in the gaps
+            for conf in settings.RAPIDSMS_BACKENDS.values():
+                print conf
+                slug = conf["slug"]
+
+                if not slug in known_backends:
+                    App.raw_objects.create(
+                        title=conf["title"],
+                        slug=slug)
+
+            # add an attr to this class, to limit
+            # this update to once per process
+            self._updated = True
+
+        # now that we're sure the persistantbackend table is
+        # up to date, continue fetching the queryset as usual
+        return super(BackendManager, self).get_query_set()
+
+
+class Backend(models.Model):
+    """This model exists to provide a primary key for each RapidSMS backend,
+       for other models (in any app) to link to with a foreign key. We can't
+       use a char field with OPTIONS, since the available backends (and their
+       order) may change after deployment."""
+
+    title = models.CharField(max_length=30, blank=True)
+    slug  = models.CharField(max_length=30, unique=True)
+
+    objects     = BackendManager()
+    raw_objects = models.Manager()
+
+
+    def __unicode__(self):
+        return self.title
+
+    def __repr__(self):
+        return '<%s: %s via %s>' %\
+            (type(self).__name__, self.slug)
+
+
+    @classmethod
+    def from_message(cls, msg):
+        return cls.from_backend(
+            msg.connection.backend)
+
+    @classmethod
+    def from_backend(cls, backend):
+        return cls.objects.get(
+            slug=backend.slug)
