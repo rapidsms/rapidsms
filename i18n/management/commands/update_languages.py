@@ -29,5 +29,5 @@ class Command(NoArgsCommand):
                 # is present in this locale, but not the database
                 for lang_code in locale.languages():
                     if not lang_code in known_lang_codes:
-                        print "Adding language %s" % lang
                         lang = Language.objects.create(code=lang_code)
+                        print "Added language %s" % lang

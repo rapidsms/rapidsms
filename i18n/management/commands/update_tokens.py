@@ -30,5 +30,5 @@ class Command(NoArgsCommand):
                 # in the app's locale, but not the database (yet)
                 for token_slug in locale.tokens():
                     if not token_slug in known_token_slugs:
-                        print "Adding token %s" % (token)
                         token = app.token_set.create(slug=token_slug)
+                        print "Added token %s" % (token)
