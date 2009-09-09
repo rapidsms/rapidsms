@@ -3,13 +3,16 @@
 
 
 LOCALE = {
-    "en": {
-        "a": "Alpha",
-        "b": "Beta",
-        "g": "Gamma"
+    "dog": {
+        "en": "Dog",
+        "fr": "Chien",
+        "de": "Hund"
     },
-    "fr": {
-        "a": "ahplA",
-        "b": "ateB"
+    "cat": {
+        "en": "Cat",
+        "fr": "Chat"
+    },
+    "monkey": {
+        "en": "Monkey"
     }
 }

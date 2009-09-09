@@ -4,7 +4,8 @@
 
 import re
 import rapidsms
-from models import *
+from apps.persistance.models import PersistantApp
+from models import Language, Token, String
 
 
 class InternationalApp(rapidsms.App):
@@ -27,46 +28,86 @@ class InternationalApp(rapidsms.App):
         return x
 
 
-    def _str(self, language, key, *args, **kwargs):
-        lang = self._resolve_language(language)
-        str = String.resolve(lang, self, key)
-        return str.string.format(*args, **kwargs)
+    def _i18n_string(self, lang_code, token_slug):
 
+        # fetch the persistant app object for this
+        # app, since the tokens are linked to it
+        persistant_app = PersistantApp.resolve(self)
+        if persistant_app is None:
 
-class App(rapidsms.App):
-    PATTERN = "^trans\s+(?P<lang_code>\S+)\s+(?P<app_type>\S+)\s+(?P<token_slug>\S+)$"
+            # this shouldn't ever happen, so log and abort
+            self.warning("PersistantApp does not exist")
+            return None
 
-    def handle(self, msg):
-
-        # abort if this incoming message wasn't
-        # for this app. otherwise, parse it crudely
-        m = re.match(self.PATTERN, msg.text, re.IGNORECASE)
-        if m is None:
-            return False
-
-        lang_code, app_type, token_slug = m.groups()
-
-        # if a full module string wasn't provided, assume
-        # that the caller meant one in the "apps." module
-        # (this will be unnecessary once the patch(es) to
-        # add "apps" to the python path from the trunk is
-        # merged into this branch)
-        if app_type.find(".") == -1:
-            app_mod_str = "apps.%s" % (app_type)
-        
-        # otherwise, use the dotted app_type as-is
-        # (for things like rapidsms.contrib.whatever)
-        else:
-            app_mod_str = app_type
-
-        # return the string in the requested language
-        # without formatting - this is just for debugging
+        # we accept a few different language-aware
+        # objects, so resolve this elsewhere. the
+        # output is always a language code
+        #language = Language.objects.get(
+        #    code=self._language(lang))
         try:
-            s = String.resolve(lang_code, app_mod_str, token_slug)
-            msg.respond("%s: %s [%s]" % (s.token, s.string, s.language.code))
+            language = Language.objects.get(
+                code=lang_code)
 
-        except String.UnknownApp:
-            msg.respond("Unknown app: %s" % app_type)
-        
-        except String.NoneExist:
-            msg.respond("Unknown token: %s" % token_slug)
+        # if the langauage code doesn't exist, (which shouldn't
+        # happen, since the code passed to this method should be
+        # sourced from previously-validated Language objects),
+        # warn and fall back to the system default
+        except Language.DoesNotExist:
+            self.warning(
+                "No such language: %s" %\
+                (lang_code))
+
+            # fall back to the system default.
+            # it's better than nothing at all
+            language = Language.default()
+
+        # fetch the token object via its slug,
+        # which should be defined in locale.py
+        try:
+            token = persistant_app.token_set.get(
+                slug=token_slug)
+
+        # token objects don't auto-spawn any more, so this
+        # could happen because of a typo or something. warn,
+        # but let the calling method deal with it
+        except Token.DoesNotExist:
+            self.warning("No such token: %s" % (token_slug))
+            return None
+
+        # attempt to fetch the translation of the token in the
+        # requested language, and warn/abort if none were found
+        string = token.translation(language)
+        if string is None:
+            self.warning(
+                "No strings for token: %s in language: %s (or fallbacks)" %\
+                (token_slug, lang_code))
+            return None
+
+        return string
+
+
+    def _str(self, lang_code, token_slug, *args, **kwargs):
+
+        # fetch the String (or StringStub) via the i18n helper
+        # method, which will return in the closest language that
+        # it can, and warn if nothing could be found
+        string = self._i18n_string(lang_code, token_slug)
+
+        # if *nothing* relevant was found, return the token
+        # itself, to at least give the caller some kind of
+        # idea what was meant. using the base translation
+        # as the key wins here. gettext: 1, adammck: 0.
+        if string is None:
+            return "{%s}" % (token_slug)
+
+        # we got a string! woo. format it (to replace the
+        # placeholders) and return it ready to msg.respond
+        return string.string.format(*args, **kwargs)
+
+
+
+
+class App(InternationalApp):
+    def handle(self, msg):
+        msg.respond(self._str("de", "monkey"))
+        return True

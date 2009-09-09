@@ -3,10 +3,8 @@
 
 
 from django.contrib import admin
-from models import *
+from models import Language, Token
 
 
-admin.site.register(PersistantApp)
 admin.site.register(Language)
 admin.site.register(Token)
-admin.site.register(String)
