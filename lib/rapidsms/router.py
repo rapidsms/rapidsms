@@ -264,7 +264,7 @@ class Router (component.Receiver):
         try:
             for phase in self.incoming_phases:
                 for app in self.__sorted_apps():
-                    self.debug('IN' + ' ' + phase + ' ' + app.slug)
+                    self.debug('IN' + ' ' + phase + ' ' + app.config["type"])
                     responses = len(message.responses)
                     handled = False
                     try:
@@ -281,12 +281,12 @@ class Router (component.Receiver):
 
                     elif phase == 'handle' or phase == 'catch':
                         if handled is True:
-                            self.debug("%s short-circuited %s phase", app.slug, phase)
+                            self.debug("%s short-circuited %s phase", app.config["type"], phase)
                             break
 
                     elif responses < len(message.responses):
                         self.warning("App '%s' shouldn't send responses in %s()!", 
-                            app.slug, phase)
+                            app.config["type"], phase)
 
         # maybe raised within the loop, when
         # it's aborted during the filter phase

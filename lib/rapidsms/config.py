@@ -231,6 +231,7 @@ class Config (object):
         # from raw_data (or default to an empty dict),
         # then copy it, so we don't alter the original
         data = self.raw_data.get(name, {}).copy()
+        data["name"] = name
 
         # although "name" and "type" are deliberately distinct (to enable multiple
         # backends of the same type to run concurrently), it's cumbersome to have

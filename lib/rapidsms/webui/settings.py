@@ -96,8 +96,9 @@ if not "RAPIDSMS_INI" in os.environ:
 from rapidsms import Config
 RAPIDSMS_CONF = Config(os.environ["RAPIDSMS_INI"])
 
-# since iterating and reading the config of apps is
-# common, build a handy dict of apps and their configs
+# since iterating and reading the config of apps and backends
+# is common, build a handy dict of both, with their configs
+RAPIDSMS_BACKENDS = RAPIDSMS_CONF["rapidsms"]["backends"]
 RAPIDSMS_APPS = RAPIDSMS_CONF["rapidsms"]["apps"]
 
 
