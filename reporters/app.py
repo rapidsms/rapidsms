@@ -6,6 +6,7 @@ import re
 import rapidsms
 from rapidsms.parsers import Matcher
 from models import *
+from apps.locations.models import *
 
 
 class App(rapidsms.App):
@@ -148,12 +149,50 @@ class App(rapidsms.App):
             return True
 
         try:
-            # parse the name, and create a reporter
-            alias, fn, ln = Reporter.parse_name(name)
-            rep = Reporter(
-                first_name=fn, last_name=ln,
-                alias=alias, registered_self=True)
-            rep.save()
+        
+            langfield = "en"
+            
+            # use language codes from internalization model. e.g Internalization.object.get().valuelist(codes);
+            langcodes = ["en","fr","ki","de"]
+            allwords = name.split()
+              
+             # find the language code in the list of codes is not there then its not a language code ignone it.
+             #if International.objects.filter(allWords[allWords.length]).count():
+            if allwords[-1] in langcodes:
+	            langfield = allwords.pop(-1)
+	            name = " ".join(allwords)
+
+            alias = None
+            IsNumber = False
+            
+            # Determine if name is a First,Last Name OR a code (number, national id in Rwanda)
+            m = re.match("^(\d+)$", name.replace(" ", ""), re.IGNORECASE)
+            if m is not None:
+                MatchCode = m.groups()
+                IsNumber = True
+                alias = MatchCode[0] #Reporter.parse_code(name)  
+            else:
+                # parse the name, and create a reporter
+                alias, fn, ln = Reporter.parse_name(name)
+               
+            if not IsNumber:
+                rep = Reporter(
+                    first_name=fn, last_name=ln,
+                    alias=alias, registered_self=True)
+                rep.save()                
+                
+            if IsNumber:
+                if Reporter.IsCodeUnique(alias):
+                    rep = Reporter(alias=alias, registered_self=True)
+                    rep.save()
+                else:
+                    rep = Reporter.objects.get(alias__iexact=alias) #not sure about syntax.
+                    rep.language = langfield 
+                    rep.save()
+                    
+            if hasattr(msg, "location"):
+               repln = ReporterLocation( reporter = rep, location = msg.location)
+               repln.save()      
 
             # attach the reporter to the current connection
             msg.persistant_connection.reporter = rep
@@ -168,8 +207,8 @@ class App(rapidsms.App):
         # moment, we don't care what
         except:
             msg.respond("Sorry, I couldn't register you.")
-
-
+            raise    
+ 
     def identify(self, msg, alias):
         try:
 

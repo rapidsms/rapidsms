@@ -1,32 +1,56 @@
 from rapidsms.tests.scripted import TestScript
 from app import App
+import apps.reporters.app as reporters_app
 from models import *
-from apps.modelrelationship.models import *
-from django.contrib.contenttypes.models import ContentType
-
+from apps.reporters.models import Reporter, PersistantConnection, PersistantBackend
     
 class TestApp (TestScript):
-    apps = (App,)
-
+    apps = (App, reporters_app.App)
+    # the test_backend script does the loading of the dummy backend that allows reporters
+    # to work properly in tests
+    fixtures = ['test_backend', 'test_tree']
     
-    def setUp(self):
-        TestScript.setUp(self)
-            
-
-    def testModel(self):
-        loc_type = ContentType.objects.get(name="location")
-        state = Location(name="Kano")
-        state.save()
-        lga = Location(name="Kano LGA")
-        lga.parent=state
-        lga.save()
-        lga_back = Location.objects.get(name="Kano LGA")
-        self.assertEqual(state, lga_back.parent)
-        # also change it and make sure it updates instead of adds
-        state2 = Location(name="Abuja")
-        state2.save()
-        lga_back.parent = state2
-        lga_back.save()
-        lga_back_again = Location.objects.get(name="Kano LGA")
-        self.assertEqual(state2, lga_back_again.parent)
+    testTrigger = """
+           8005551212 > test
+           8005551212 < hello
+         """        
+    
+    testPin = """
+           8005551211 > pin
+           8005551211 < Please enter your 4-digit PIN
+           8005551211 > 1234
+           8005551211 < Thanks for entering.
+         """
+         
+    testPinFailure = """
+           8005551213 > pin
+           8005551213 < Please enter your 4-digit PIN
+           8005551213 > abcd
+           8005551213 < "abcd" is not a valid answer. You must enter a 4-digit decimal number
+           8005551213 > 123
+           8005551213 < "123" is not a valid answer. You must enter a 4-digit decimal number
+           8005551213 > 123d
+           8005551213 < "123d" is not a valid answer. You must enter a 4-digit decimal number
+           8005551213 > 12345
+           8005551213 < "12345" is not a valid answer. You must enter a 4-digit decimal number
+           8005551213 > 
+           8005551213 < "" is not a valid answer. You must enter a 4-digit decimal number
+           8005551213 > 0000
+           8005551213 < Thanks for entering.
+         """
+         
+    
         
+#More tests
+    def TestReports(self):
+	backend = PersistantBackend.objects.get(title="TestScript")
+        reporter = Reporter.objects.create(alias='0004', language='en')
+        connection = PersistantConnection.objects.create(backend=backend,identity="loc_en",reporter=reporter)
+        script = """
+              8005551214 > join Ivan kavuma fr
+              8005551213 < " "
+            """        
+        self.runScript(script) 
+        
+        
+         

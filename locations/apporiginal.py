@@ -30,14 +30,6 @@ class App(rapidsms.App):
             # (or None), and attach it to msg for other
             # apps to deal with
             text = m.group(2).strip()
-
-            #split the text by space to find if it has a village
-            # locCode,village = text.split()
-
-           # location = self.__find_location(locCode)
-           # location.village = village
-            
-            #msg.location = location
             msg.location = self.__find_location(text)
 
             # strip the location tag from the message,

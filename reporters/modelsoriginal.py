@@ -207,16 +207,7 @@ class Reporter(models.Model):
             # don't exist
             return False 
 
-    @classmethod
-    def IsCodeUnique(klass,alias): 
-        """ Check if the code is not used before."""
-
-        if klass.objects.filter(alias__iexact=alias).count():  
-            return False
-        else:
-            return True 
    
-        
         
     @classmethod
     def parse_name(klass, flat_name):

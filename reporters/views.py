@@ -236,8 +236,8 @@ def edit_reporter(req, pk):
             context["locations_label"] = LocationType.label(only_linkable=True).singular
             context["all_locations"]   = Location.objects.filter(type__is_linkable=1)
 
-        if use_logger:
-            context["message_log"] = paginated(req, combined_message_log(rep), prefix="msg", wrapper=combined_message_log_row)
+        #if use_logger:
+            #context["message_log"] = paginated(req, combined_message_log(rep), prefix="msg", wrapper=combined_message_log_row)
 
         return render_to_response(req,
             "reporters/reporter.html",
