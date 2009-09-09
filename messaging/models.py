@@ -5,7 +5,7 @@
 from django.db import models
 from django.db import connection
 from django.db.backends.util import typecast_timestamp
-from apps.persistance.models import Backend
+from apps.persistance.models import PersistantBackend
 from apps.reporters.models import PersistantConnection, Reporter
 
 
@@ -82,7 +82,7 @@ def combined_message_log(reporters=None):
                           on inc.reporter_id=rep1.id
                         left join reporters_persistantconnection as con1
                           on inc.connection_id=con1.id
-                        left join persistance_backend as be1
+                        left join persistance_persistantbackend as be1
                           on con1.backend_id=be1.id"""
     
     # same thing, except rather more convoluted, since
@@ -99,7 +99,7 @@ def combined_message_log(reporters=None):
                           on rcp.reporter_id=rep2.id
                         left join reporters_persistantconnection as con2
                           on rcp.connection_id=con2.id
-                        left join persistance_backend as be2
+                        left join persistance_persistantbackend as be2
                           on con2.backend_id=be2.id"""
 
 
@@ -164,7 +164,7 @@ def __combined_message_log_row(row):
     # linked to a reporter. combined_message_log can't filter
     # by connections (yet), but they must be displayed
     if row[7] is not None:
-        backend = Backend(
+        backend = PersistantBackend(
             title=row[8],
             slug=row[9],
             id=row[7])

@@ -7,7 +7,7 @@ from datetime import datetime
 from django.db import models
 from django.core.urlresolvers import reverse
 from rapidsms.webui.managers import *
-from apps.persistance.models import Backend
+from apps.persistance.models import PersistantBackend
 
 
 class ReporterGroup(models.Model):
@@ -310,7 +310,7 @@ class PersistantConnection(models.Model):
        to do so in future, a PersistantConnection should be created,
        so they can be recognized by their backend + identity pair."""
 
-    backend   = models.ForeignKey(Backend, related_name="connections")
+    backend   = models.ForeignKey(PersistantBackend, related_name="connections")
     identity  = models.CharField(max_length=30)
     reporter  = models.ForeignKey(Reporter, related_name="connections", blank=True, null=True)
     last_seen = models.DateTimeField(blank=True, null=True)
@@ -341,7 +341,7 @@ class PersistantConnection(models.Model):
     @classmethod
     def from_message(klass, msg):
         obj, created = klass.objects.get_or_create(
-            backend  = Backend.from_message(msg),
+            backend  = PersistantBackend.from_message(msg),
             identity = msg.connection.identity)
 
         if created:

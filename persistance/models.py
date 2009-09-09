@@ -12,7 +12,7 @@ class AppManager(models.Manager):
 
             # fetch a list of all the apps
             # that we already have objects for
-            known_apps = App.raw_objects.values_list(
+            known_apps = PersistantApp.raw_objects.values_list(
                 "module", flat=True)
 
             # find any running apps which currently
@@ -21,7 +21,7 @@ class AppManager(models.Manager):
                 module = conf["module"]
 
                 if not module in known_apps:
-                    App.raw_objects.create(
+                    PersistantApp.raw_objects.create(
                         title=conf["title"],
                         module=module)
 
@@ -34,15 +34,15 @@ class AppManager(models.Manager):
         return super(AppManager, self).get_query_set()
 
 
-class App(models.Model):
+class PersistantApp(models.Model):
     """This model exists to provide a primary key for other models (in any
        app) to link to with a foreign key, rather than storing module strings
        themselves. The Django ContentType stuff doesn't quite work here, since
        not all RapidSMS apps are valid Django apps. It would be nice to fill
        in the gaps and inherit from it at some point in the future.
 
-       Instances of this model are created by AppManager on-demand, so even
-       when the database is empty, App.objects.all() can still be used to
+       Instances of this model are created by AppManager on-demand, so even when
+       the database is empty, PersistantApp.objects.all() can still be used to
        iterate the running apps."""
 
     title  = models.CharField(max_length=30, blank=True)
@@ -62,9 +62,30 @@ class App(models.Model):
 
 
     @classmethod
-    def from_app(cls, app):
-        return cls.objects.get(
-            module=app.conf["module"])
+    def resolve(cls, app):
+        """Resolves a RapidSMS app or module string into a PersistantApp
+           instance, or returns None if nothing could be found. This is useful
+           for swapping _something_ for a linkable object."""
+
+        try:
+
+            # if it's already a persistant app,
+            # (maybe a double call), return as-is
+            if isinstance(app, cls):
+                return app
+
+            # if it looks like a rapidsms app
+            elif hasattr(app, "config"):
+                return cls.objects.get(
+                    module=app.config["module"])
+
+            # otherwise, assume it's a module string
+            else:
+                return PersistantApp.objects.get(
+                    module=app)
+
+        except cls.DoesNotExist:
+            return None
 
 
 class BackendManager(models.Manager):
@@ -73,18 +94,17 @@ class BackendManager(models.Manager):
 
             # fetch a list of all the backends
             # that we already have objects for
-            known_backends = Backend.raw_objects.values_list(
+            known_backends = PersistantBackend.raw_objects.values_list(
                 "slug", flat=True)
-
+            
             # find any running backends which currently
             # don't have objects, and fill in the gaps
             for conf in settings.RAPIDSMS_BACKENDS.values():
-                print conf
-                slug = conf["slug"]
+                slug = conf["name"]
 
                 if not slug in known_backends:
-                    App.raw_objects.create(
-                        title=conf["title"],
+                    PersistantBackend.raw_objects.create(
+                        title=conf.get("title", ""),
                         slug=slug)
 
             # add an attr to this class, to limit
@@ -96,7 +116,7 @@ class BackendManager(models.Manager):
         return super(BackendManager, self).get_query_set()
 
 
-class Backend(models.Model):
+class PersistantBackend(models.Model):
     """This model exists to provide a primary key for each RapidSMS backend,
        for other models (in any app) to link to with a foreign key. We can't
        use a char field with OPTIONS, since the available backends (and their
@@ -110,12 +130,11 @@ class Backend(models.Model):
 
 
     def __unicode__(self):
-        return self.title
+        return self.title or self.slug
 
     def __repr__(self):
         return '<%s: %s via %s>' %\
             (type(self).__name__, self.slug)
-
 
     @classmethod
     def from_message(cls, msg):
