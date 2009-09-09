@@ -104,7 +104,7 @@ class App (rapidsms.App):
         if pconn is None:
             raise Exception("%s is unreachable (no connection)" % rep)
 
-        # abort if we can't find a valid backend. PersistantBackend
+        # abort if we can't find a valid backend. persistant Backend
         # objects SHOULD refer to a valid RapidSMS backend (via their
         # slug), but sometimes backends are removed or renamed.
         be = self.router.get_backend(pconn.backend.slug)

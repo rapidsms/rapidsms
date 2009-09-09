@@ -10,6 +10,6 @@
      our hardest to hide the fact that "OTP" or "Department" (or whatever) is
      an abstraction at all (it vastly simplifies the WebUI) -->{% endcomment %}
 <ul id="page-tabs">{% for location_type in location_types %}{% if forloop.first and forloop.last %}{% else %}
-	<li{% ifequal location_type.pk active_location_type_tab %} class="active"{% endifequal %}><a href="{% url view_location_type location_type.plural|lower %}">{{ location_type.plural }}</a></li>{% endif %}{% endfor %}
+	<li{% ifequal location_type.pk active_location_type_tab %} class="active"{% endifequal %}><a href="{% url view_location_type location_type.slug %}">{{ location_type.plural }}</a></li>{% endif %}{% endfor %}
 </ul>
 {% endblock %}

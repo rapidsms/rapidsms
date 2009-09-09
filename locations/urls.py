@@ -14,12 +14,12 @@ urlpatterns = patterns('',
         name="locations_dashboard"),
 
     # view all locations of a location_type
-    url(r'^locations/(?P<location_type_slug>[a-z]+)$',
+    url(r'^locations/(?P<location_type_slug>[a-z\-]+)$',
         views.view_location_type,
         name="view_location_type"),
 
     # view and/or edit a single location
-    url(r'^locations/(?P<location_type_slug>[a-z]+)/(?P<location_pk>\d+)$',
+    url(r'^locations/(?P<location_type_slug>[a-z\-]+)/(?P<location_pk>\d+)$',
         views.edit_location,
         name="edit_location"),
 
@@ -27,7 +27,7 @@ urlpatterns = patterns('',
     # there's no url to define a location of an
     # arbitrary type. since location types rarely
     # change, i'm leaving that to the django admin)
-    url(r'^locations/(?P<location_type_slug>[a-z]+)/add$',
+    url(r'^locations/(?P<location_type_slug>[a-z\-]+)/add$',
         views.add_location,
         name="add_location")
 )

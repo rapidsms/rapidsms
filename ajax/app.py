@@ -206,15 +206,10 @@ class App(rapidsms.App):
             pass
 
 
-    def configure(self, host=None, port=None):
-        self.host = host
-        self.port = port
-
-
     def start(self):
         # create the webserver, through which the
         # AJAX requests from the WebUI will arrive
-        self.server = self.Server((self.host, self.port), self.RequestHandler)
+        self.server = self.Server((self.config["host"], self.config["port"]), self.RequestHandler)
         self.server.app = self
 
         # start the server in a separate thread, and daemonize it

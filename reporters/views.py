@@ -6,10 +6,13 @@ from django.views.decorators.http import require_GET, require_http_methods
 from django.shortcuts import get_object_or_404
 from django.db import transaction
 
+# TODO: WTF is happening here? update these
+# imports to name what they need explicitly
 from rapidsms.webui import settings
 from rapidsms.webui.utils import *
 from apps.reporters.models import *
 from apps.reporters.utils import *
+from apps.persistance.models import PersistantBackend
 
 
 # is the LOCATIONS app running? if so, we'll

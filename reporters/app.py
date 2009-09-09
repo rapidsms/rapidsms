@@ -5,6 +5,7 @@
 import re
 import rapidsms
 from rapidsms.parsers import Matcher
+from persistance.models import *
 from models import *
 from apps.locations.models import *
 
@@ -73,20 +74,6 @@ class App(rapidsms.App):
     def configure(self, allow_join, allow_list, **kwargs):
         self.allow_join = allow_join
         self.allow_list = allow_list
-
-
-    def start(self):
-
-        # fetch a list of all the backends
-        # that we already have objects for
-        known_backends = PersistantBackend.objects.values_list("slug", flat=True)
-
-        # find any running backends which currently
-        # don't have objects, and fill in the gaps
-        for be in self.router.backends:
-            if not be.slug in known_backends:
-                self.info("Creating PersistantBackend object for %s" % be)
-                PersistantBackend(slug=be.slug, title=be.title).save()
 
 
     def parse(self, msg):
