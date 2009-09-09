@@ -23,12 +23,13 @@ class Command(NoArgsCommand):
                 # unlike Languages, tokens are linked to individual
                 # apps. fetch all of the tokens linked to this app
                 # that we already have objects for
-                known_token_slugs = app.token_set\
-                    .values_list("slug", flat=True)
+                known_token_slugs = list(app.token_set\
+                    .values_list("slug", flat=True))
 
                 # create a Token object for each token that exists
                 # in the app's locale, but not the database (yet)
                 for token_slug in locale.tokens():
                     if not token_slug in known_token_slugs:
                         token = app.token_set.create(slug=token_slug)
+                        known_token_slugs.append(token_slug)
                         print "Added token %s" % (token)

@@ -16,8 +16,8 @@ class Command(NoArgsCommand):
 
         # fetch all of the language codes
         # that we already have objects for
-        known_lang_codes = Language.objects\
-            .values_list("code", flat=True)
+        known_lang_codes = list(Language.objects\
+            .values_list("code", flat=True))
 
         # iterate each app, and for
         # those that have a locale...
@@ -30,4 +30,5 @@ class Command(NoArgsCommand):
                 for lang_code in locale.languages():
                     if not lang_code in known_lang_codes:
                         lang = Language.objects.create(code=lang_code)
+                        known_lang_codes.append(lang_code)
                         print "Added language %s" % lang
