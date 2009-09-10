@@ -6,7 +6,7 @@ from rapidsms.connection import Connection
 
 class Backend(rapidsms.backends.Backend):
     def configure(self, host="irc.freenode.net", port=6667,
-                        nick=None, channels=["#rapidsms"]):
+                        nick=None, channels=["#rapidsms"], *kwargs):
         self.host = host
         self.port = port
         self.nick = self.config_requires("nick",nick)[:16] # 16 char limit for IRC nicks
