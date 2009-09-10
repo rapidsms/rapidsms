@@ -4,31 +4,65 @@
 
 import re
 import rapidsms
+from rapidsms.webui import settings
 from apps.persistance.models import PersistantApp
 from models import Language, Token, String
 
 
-class InternationalApp(rapidsms.App):
-    def _resolve_language(self, x):
-
-        # if (something that quacks like) a Reporter was provided,
-        # we'll use their chosen language. note: it might be blank
-        # or null, in which case, we'll fall back later
-        if hasattr(x, "language"):
-            return x.language
-
-        # if (something that quacks like) a rapidsms.Message
-        # extended by the reporters app was provided, pluck
-        # out the associated language
-        elif hasattr(x, "reporter"):
-            return x.reporter.language
-
-        # assume that anything else can quack like a
-        # string, and be evaluated as a language code
-        return x
+# is the REPORTERS app running? if so, we'll provide a
+# handler for reporters to set their preferred language.
+# this app (i18n) is useful without reporters, so i'm
+# trying to make this dependancy entirely optional
+from rapidsms.webui.settings import RAPIDSMS_APPS
+use_reporters = ("i18n" in RAPIDSMS_APPS)
+if use_reporters:
+    from apps.reporters.models import Reporter
+    from models import ReporterLanguage
 
 
-    def _i18n_string(self, lang_code, token_slug):
+class InternationalApp(object):
+    def _language(self, x):
+
+        # if the argument is already
+        # a Language, return it as-is
+        if isinstance(x, Language):
+            return x
+
+        # if we're integrating with the reporters
+        # app, we can accept a lot more things to
+        # inspect for a language...
+        if use_reporters:
+
+            # if a Reporter was provided, we'll use their chosen
+            # language, which is stored way inside ReporterLanguage
+            if isinstance(x, Reporter):
+                try:
+                    return x.reporterlanguage.language
+
+                # if the reporter doesn't have a reporterlanguage associated
+                # yet (they're not auto spawned, which sucks), leave this
+                # reporter's language as the system default
+                except ReporterLanguage.DoesNotExist:
+                    return Language.default()
+
+            # if (something that quacks like) a rapidsms.Message
+            # extended by the reporters app was provided, pluck
+            # out the reporter and recurse to catch it above
+            elif hasattr(x, "reporter"):
+                return self._language(msg.reporter)
+
+        try:
+            # assume that anything else is a language code.
+            # some apps might find it useful to hard-code it
+            return Language.objects.get(code=x)
+
+        # if the language code was unknown (quite possible if we're
+        # resolving a hard-coded string), return None (unknown)
+        except (Language.DoesNotExist):
+            return None
+
+
+    def _i18n_string(self, token_slug, lang_code=None):
 
         # fetch the persistant app object for this
         # app, since the tokens are linked to it
@@ -42,23 +76,26 @@ class InternationalApp(rapidsms.App):
         # we accept a few different language-aware
         # objects, so resolve this elsewhere. the
         # output is always a language code
-        #language = Language.objects.get(
-        #    code=self._language(lang))
-        try:
-            language = Language.objects.get(
-                code=lang_code)
+        if lang_code is not None:
+            language = self._language(
+                lang_code)
 
-        # if the langauage code doesn't exist, (which shouldn't
-        # happen, since the code passed to this method should be
-        # sourced from previously-validated Language objects),
-        # warn and fall back to the system default
-        except Language.DoesNotExist:
-            self.warning(
-                "No such language: %s" %\
-                (lang_code))
+            # if the langauage code doesn't exist, (which shouldn't
+            # happen, since the code passed to this method should be
+            # sourced from previously-validated Language objects),
+            # warn and fall back to the system default
+            if language is None:
+                self.warning(
+                    "No such language: %r" %\
+                    (lang_code))
 
-            # fall back to the system default.
-            # it's better than nothing at all
+                # fall back to the system default.
+                # it's better than nothing at all
+                language = Language.default()
+
+        # or if the lang_code was omitted,
+        # fall back to the system default
+        else:
             language = Language.default()
 
         # fetch the token object via its slug,
@@ -71,7 +108,9 @@ class InternationalApp(rapidsms.App):
         # could happen because of a typo or something. warn,
         # but let the calling method deal with it
         except Token.DoesNotExist:
-            self.warning("No such token: %s" % (token_slug))
+            self.warning(
+                "No such token: %s" %\
+                (token_slug))
             return None
 
         # attempt to fetch the translation of the token in the
@@ -86,12 +125,12 @@ class InternationalApp(rapidsms.App):
         return string
 
 
-    def _str(self, lang_code, token_slug, *args, **kwargs):
+    def _str(self, token_slug, lang_code=None, **kwargs):
 
         # fetch the String (or StringStub) via the i18n helper
         # method, which will return in the closest language that
         # it can, and warn if nothing could be found
-        string = self._i18n_string(lang_code, token_slug)
+        string = self._i18n_string(token_slug, lang_code)
 
         # if *nothing* relevant was found, return the token
         # itself, to at least give the caller some kind of
@@ -102,12 +141,53 @@ class InternationalApp(rapidsms.App):
 
         # we got a string! woo. format it (to replace the
         # placeholders) and return it ready to msg.respond
-        return string.string.format(*args, **kwargs)
+        return string.string % kwargs
 
 
 
 
-class App(InternationalApp):
+class App(rapidsms.App, InternationalApp):
+    SET_LANG_RE = re.compile(r"^(?:speak|language|lang)(?:\s+(.+))?$", re.I)
+
     def handle(self, msg):
-        msg.respond(self._str("de", "monkey"))
-        return True
+
+        # if we're integrating with the reporters app, allow
+        # reporters to get and set their preferred language
+        if use_reporters:
+            match = self.SET_LANG_RE.match(msg.text)
+            if match is not None:
+
+                # if the caller isn't identified, we don't have anything to
+                # attach (or fetch) their preference to (or from), so abort
+                # with an error in the system default language
+                if not hasattr(msg, "reporter") or msg.reporter is None:
+                    msg.respond(self._str("must-identify"))
+                    return True
+
+                # if a language code was provided...
+                lang_code = match.group(1)
+                if lang_code is not None:
+                    try:
+
+                        # resolve the language (from the code), and store
+                        # it along with the reporter, so future messages
+                        # can be transparently internationalized for them
+                        lang = Language.objects.get(code__iexact=lang_code)
+                        msg.reporter.reporterlanguage = lang
+                        msg.reporter.save()
+
+                        # respond with a notification that we will now
+                        # (attempt to) communicate in the chosen language
+                        msg.respond(self._str(
+                            "lang-set",
+                            msg.reporter))
+
+                    except Language.DoesNotExist:
+                        msg.respond(self._str("invalid-lang"), code=lang_code.upper())
+
+                # if the language was not provided (just the
+                # prefix), respond with the current setting
+                else:
+                    msg.respond(self._str(
+                        "lang-reminder",
+                        msg.reporter))

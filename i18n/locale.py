@@ -3,16 +3,16 @@
 
 
 LOCALE = {
-    "dog": {
-        "en": "Dog",
-        "fr": "Chien",
-        "de": "Hund"
+    "lang-reminder": {
+        "en": "I am trying to speak to you in English."
     },
-    "cat": {
-        "en": "Cat",
-        "fr": "Chat"
+    "lang-set": {
+        "en": "I will try to speak to you in English, from now on."
     },
-    "monkey": {
-        "en": "Monkey"
+    "must-identify": {
+        "en": "Please identify yourself first."
+    },
+    "invalid-lang": {
+        "en": "%(code)s is not a valid language code."
     }
 }
