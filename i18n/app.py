@@ -125,7 +125,7 @@ class InternationalApp(object):
         return string
 
 
-    def _str(self, token_slug, lang_code=None, **kwargs):
+    def _str(self, token_slug, lang_code=None, *args):
 
         # fetch the String (or StringStub) via the i18n helper
         # method, which will return in the closest language that
@@ -141,7 +141,7 @@ class InternationalApp(object):
 
         # we got a string! woo. format it (to replace the
         # placeholders) and return it ready to msg.respond
-        return string.string % kwargs
+        return string.string % args
 
 
 

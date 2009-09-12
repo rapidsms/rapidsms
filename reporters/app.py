@@ -13,8 +13,9 @@ from models import *
 from apps.i18n.app import InternationalApp
 
 
-
 class App(rapidsms.App, InternationalApp):
+    #kw = Keyworder()
+
 
     def _deny(self, msg):
         return msg.respond(
@@ -61,7 +62,6 @@ class App(rapidsms.App, InternationalApp):
         map = {
             "register":  ["(?:join|register|reg) (whatever)"],
             "identify":  ["identify (slug)", "this is (slug)", "i am (slug)"],
-            "remind":    ["whoami", "who am i"],
             "reporters": ["list reporters", "reporters\\?"]
         }
 
@@ -75,6 +75,10 @@ class App(rapidsms.App, InternationalApp):
         # no matches, so this message is not
         # for us; allow processing to continue
         return False
+
+
+
+    #kw.prefix = ["join", "register", "reg"]
 
 
     def register(self, msg, name):
@@ -135,9 +139,9 @@ class App(rapidsms.App, InternationalApp):
             msg.persistant_connection.save()
 
             msg.respond(
-                self._str("first-login", rep),
-                    name=rep.full_name(),
-                    alias=rep.alias)
+                self._str("first-login", rep,
+                    rep.full_name(),
+                    rep.alias))
 
         # something went wrong - at the
         # moment, we don't care what
@@ -175,35 +179,18 @@ class App(rapidsms.App, InternationalApp):
             msg.respond(
                 self._str(
                     "login", rep,
-                    name=unicode(rep)))
+                    unicode(rep)))
 
         # or a slightly different welcome message
         else:
             msg.respond(
                 self._str("first-login", rep,
-                    name=unicode(rep),
-                    alias=rep.alias))
+                    unicode(rep),
+                    rep.alias))
 
         # re-call this app's prepare, so other apps can
         # get hold of the reporter's info right away
         self.parse(msg)
-
-
-    def remind(self, msg):
-
-        # if a reporter object was attached to the
-        # message by self.parse, respond with a reminder
-        if msg.reporter is not None:
-            msg.respond(
-                self._str("reminder", msg.reporter,
-                    name=unicode(msg.reporter)))
-
-        # if not, we have no idea
-        # who the message was from
-        else:
-            msg.respond(self._str(
-                "please-identify",
-                msg.reporter))
 
 
     def reporters(self, msg):

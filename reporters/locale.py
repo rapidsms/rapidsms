@@ -9,13 +9,13 @@ LOCALE = {
         "en": "Sorry, I don't know anyone by that name"
     },
     "first-login": {
-        "en": "Nice to meet you, %(name)s. Your alias is %(alias)s"
+        "en": "Nice to meet you, %s. Your alias is %s"
     },
     "login": {
-        "en": "Welcome back, %(name)s."
+        "en": "Welcome back, %s."
     },
     "reminder": {
-        "en": "I think you are %(name)s."
+        "en": "I think you are %s."
     },
     "please-identify": {
         "en": "Please register your phone with RapidSMS."
