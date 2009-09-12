@@ -26,7 +26,7 @@ class App(rapidsms.app.App):
                 self[key] = None
             return dict.__getitem__(self,key)
 
-    def configure (self, cfg="apps/ezsms/ezsms.cfg"):
+    def configure (self, cfg="apps/ezsms/ezsms.cfg", **kwargs):
         self.file = cfg
 
     def start(self):
