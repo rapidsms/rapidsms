@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+{% block title %}{{ app_conf.title }}{% endblock %}
+
+{% block content %}{% for app in persistant_apps %}{% if app.tokens %}
+<div class="module">
+	<h2>Translations for {{ app.title }}</h2>
+	<table>
+		<thead>
+			<tr>
+				<th scope="col">Slug</th>{% for language in languages %}
+				<th scope="col">{% if language.title %}{{ language.title }}{% else %}{{ language.code|upper }}{% endif %}</th>{% endfor %}
+			</tr>
+		</thead>
+		<tbody>{% for token in app.tokens %}
+			<tr>
+				<td>{{ token.slug }}</td>{% for language in languages %}
+				<td>{{ string.string }}</td>{% endfor %}
+			</tr>{% endfor %}
+		</tbody>
+		<tfoot>
+			<tr>
+				<td colspan="3">
+					<span>lol what</span>
+				</td>
+			</tr>
+		</tfoot>
+	</table>
+</div>{% endif %}{% endfor %}
+{% endblock %}
