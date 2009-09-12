@@ -8,7 +8,7 @@ from utilities.dbmessagelog.httplog.models import *
 from datetime import datetime
 
 class Backend(Backend):
-    def configure(self, interval=2, timeout=10):
+    def configure(self, interval=2, timeout=10, **kwargs):
         self.interval = interval
         self.timeout = timeout
 
