@@ -20,7 +20,7 @@ class HttpServer (BaseHTTPServer.HTTPServer, SocketServer.ThreadingMixIn):
             BaseHTTPServer.HTTPServer.handle_request(self)
 
 class Backend(rapidsms.backends.Backend):
-    def configure(self, host="localhost", port=8080, handler="HttpHandler"):
+    def configure(self, host="localhost", port=8080, handler="HttpHandler", **kwargs):
         
         #module_name = "httphandlers"
         #module = __import__(module_name, {}, {}, [''])
