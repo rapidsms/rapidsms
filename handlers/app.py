@@ -153,12 +153,9 @@ class App(rapidsms.App):
             for mod in filter(None, modules)]
 
 
-    def __init__(self):
-        self.handlers = []
-
-
     def start(self):
         """Spiders all RapidSMS apps, and registers all available handlers."""
+        self.handlers = []
 
         for conf in settings.RAPIDSMS_APPS.values():
             module = self._try_import(conf["module"])
