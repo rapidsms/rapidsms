@@ -14,12 +14,12 @@ def try_import(module_name):
 
           # import a module from the python
           # stdlib. this should always work
-          >>> _try_import("csv") # doctest: +ELLIPSIS
+          >>> try_import("csv") # doctest: +ELLIPSIS
           <module 'csv' from '...'>
 
           # attempt to import a module that
           # doesn't exist; no exception raised
-          >>> _try_import("spam.spam.spam") is None
+          >>> try_import("spam.spam.spam") is None
           True
     """
 
@@ -140,6 +140,32 @@ def get_class(module, superclass=None):
         raise(AttributeError("Module %s contains no %s." %
             (module.__name__, desc)))
 
+
+def get_module_path(module_name):
+    """
+        Imports *module_name*, and returns the absolute path to its directory.
+        Raises AttributeError if the module is a Python file (*.py).
+
+          # distutils is a directory in the stdlib
+          # this probably won't work on \\windows\
+          >>> get_module_path("distutils") # doctest: +ELLIPSIS
+          '/.../python.../distutils'
+
+          # csv is a single .py in the stdlib
+          >>> get_module_path("csv")
+          Traceback (most recent call last):
+          ...
+          AttributeError: Module named "csv" is not a directory
+    """
+    try:
+        __import__(module_name)
+        return sys.modules[module_name].__path__
+
+    # wrap with a better message
+    except AttributeError:
+        raise(AttributeError(
+            'Module named "%s" is not a directory' %
+                (module_name)))
 
 if __name__ == "__main__":
     import doctest
