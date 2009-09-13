@@ -218,28 +218,36 @@ class Reporter(models.Model):
             return True 
    
         
-        
+
     @classmethod
-    def parse_name(klass, flat_name):
-        """Given a single string, this function returns a three-string
-           tuple containing a suggested alias, first name, and last name,
-           via some quite crude pattern matching."""
+    def parse_name(cls, flat_name):
+        """
+            Returns a three-string tuple containing a suggested alias, first
+            name, and last name, by performing some crude pattern matching on
+            *flat_name*. For example:
 
-        patterns = [
-            # try a few common name formats.
-            # this is crappy but sufficient
-            r"([a-z]+)",                       # Adam
-            r"([a-z]+)\s+([a-z]+)",            # Evan Wheeler
-            r"([a-z]+)\s+[a-z]+\.?\s+([a-z]+)",# Mark E. Johnston
-            r"([a-z]+)\s+([a-z]+\-[a-z]+)"     # Erica Kochi-Fabian
-        ]
+              >>> Reporter.parse_name("Adam Mckaig")
+              ('amckaig', 'Adam', 'Mckaig')
 
-        def unique(str):
-            """Checks an alias for uniqueness; if it is already taken, alter it
-               (by append incrementing digits) until an available alias is found."""
+              >>> Reporter.parse_name('XYZZY ^__^')
+              ('xyzzy', 'XYZZY', '')
 
-            n = 1
-            alias = str.lower()
+              >>> Reporter.parse_name('12345')
+              ('12345', '', '')
+
+              # if an alias is already taken, incrementing
+              # digits are appended until one is available
+
+              >>> Reporter.objects.create(alias='ewheeler')
+              <Reporter: ewheeler>
+
+              >>> Reporter.parse_name('Evan Wheeler')
+              ('ewheeler2', 'Evan', 'Wheeler')
+        """
+
+        def unique(alias):
+            try_alias = alias
+            n = 2
 
             # keep on looping until an alias becomes available.
             # --
@@ -247,35 +255,39 @@ class Reporter(models.Model):
             # that we return might be taken before we have time to do anything
             # with it! This should logic should probably be moved to the
             # initializer, to make the find/grab alias loop atomic
-            while klass.objects.filter(alias__iexact=alias).count():
-                alias = "%s%d" % (str.lower(), n)
+            while cls.objects.filter(alias__iexact=try_alias).count():
+                try_alias = "%s%d" % (alias, n)
                 n += 1
 
-            return alias
+            return try_alias
+
+        patterns = [
+            # try a few common name formats.
+            # this is crappy but sufficient
+            r"([a-z]+)\s+([a-z]+)",            # Evan Wheeler
+            r"([a-z]+)\s+[a-z]+\.?\s+([a-z]+)",# Mark E. Johnston
+            r"([a-z]+)\s+([a-z]+\-[a-z]+)"     # Erica Kochi-Fabian
+        ]
 
         # try each pattern, returning as
         # soon as we find something that fits
         for pat in patterns:
-            m = re.match("^%s$" % pat, flat_name, re.IGNORECASE)
+
+            m = re.match(pat, flat_name, re.I)
             if m is not None:
-                g = m.groups()
+                first_name, last_name = m.groups()
 
-                # return single names as-is
-                # they might already be aliases
-                if len(g) == 1:
-                    alias = unique(g[0].lower())
-                    return (alias, g[0], "")
+                # generate an alias from the first letter of the first
+                # name, and the letters (no dots or dashes) from the last
+                alias = (first_name[0] + re.sub(r"[^a-zA-Z]", "", last_name)).lower()
+                return (unique(alias), first_name.title(), last_name.title())
 
-                else:
-                    # return only the letters from
-                    # the first and last names
-                    alias = unique(g[0][0] + re.sub(r"[^a-zA-Z]", "", g[1]))
-                    return (alias.lower(), g[0], g[1])
-
-        # we have no idea what is going on,
-        # so just return the whole thing
-        alias = unique(re.sub(r"[^a-zA-Z]", "", flat_name))
-        return (alias.lower(), flat_name, "")
+        # flat_name doesn't look like a full name, so generate an alias
+        # from the alphanumerics (some aliases are entirely numeric),
+        # and a name from just the letters (there might not be any)
+        alias = unique(re.sub(r"[^a-zA-Z0-9]", "", flat_name).lower())
+        name = re.sub(r"[^a-zA-Z]", "", flat_name)
+        return (alias, name, "")
 
 
     def connection(self):
