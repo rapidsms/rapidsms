@@ -4,6 +4,7 @@
 
 import os, re, traceback
 from rapidsms.djangoproject import settings
+from rapidsms.utils.modules import try_import, get_module_path
 from django.template import RequestContext
 from django.shortcuts import render_to_response as django_r_to_r
 from django.core.paginator import Paginator, EmptyPage, InvalidPage
@@ -38,10 +39,10 @@ def render_to_response(req, template_name, dictionary=None, **kwargs):
     # add all of the global javascript files for all running
     # apps. this is super handy for packaging functionality
     # which affects the whole webui without hard-coding it
-    for app in rs_dict["apps"]:
+    for module_name in settings.RAPIDSMS_APPS.keys():
         __js_dir(
-            "%s/static/javascripts/global" % app["path"],
-            "/static/%s/javascripts/global" % app["type"])
+            "%s/static/javascripts/global" % module_name,
+            "/static/%s/javascripts/global" % get_module_path(module_name))
     
     # A NEW KIND OF LUNACY: inspect the stack to find out
     # which rapidsms app this function is being called from
@@ -53,16 +54,17 @@ def render_to_response(req, template_name, dictionary=None, **kwargs):
     tb = traceback.extract_stack(limit=2)
     m = re.match(r'^.+/(.+?)/views\.py$', tb[-2][0])
     if m is not None:
-        app_type = m.group(1)
-        
+        app_name = m.group(1)
+        path = get_module_path(app_name)
+
         # since we're fetching the app conf, add it to the
         # template dict. it wouldn't be a very good idea to
         # use it, but sometimes, when time is short...
-        rs_dict["app_conf"] = settings.RAPIDSMS_APPS[app_type]
+        rs_dict["app_conf"] = settings.RAPIDSMS_APPS[app_name]
         
         # note which app this func was called from, so the tmpl
         # can mark the tab (or some other type of nav) as active
-        rs_dict["active_app"] = rs_dict["app_conf"]["type"]
+        rs_dict["active_app"] = app_name
         
         # also note which "view" (function) this func was called
         # from, for a little introspection later in the rendering
@@ -73,23 +75,18 @@ def render_to_response(req, template_name, dictionary=None, **kwargs):
         # find all of the javascript assets for
         # this app, and add them to the <head>
         __js_dir(
-            "%s/static/javascripts/app" % rs_dict["app_conf"]["path"],
-            "/static/%s/javascripts/app" % rs_dict["app_conf"]["type"])
+            "%s/static/javascripts/app" % path,
+            "/static/%s/javascripts/app" % path)
         
         # check for a view-specific javascript,
         # to add LAST, after the dependencies
         __js_dir(
-            "%s/static/javascripts/page/%s" % (rs_dict["app_conf"]["path"], rs_dict["active_view"]),
-            "/static/%s/javascripts/page/%s.js" % (rs_dict["app_conf"]["type"], rs_dict["active_view"]))
+            "%s/static/javascripts/page/%s" % (path, rs_dict["active_view"]),
+            "/static/%s/javascripts/page/%s.js" % (app_name, rs_dict["active_view"]))
         
         # attempt to import the "__global" function from
         # the views.py that this method was called from
-        try:
-            mod_str = "%s.views" % rs_dict["app_conf"]["module"]
-            module = __import__(mod_str, {}, {}, ["__global"])
-            
-        except ImportError:
-            pass
+        module = try_import("%s.views" % app_name)
 
         # if the views have a __global function, call it with the
         # request object, and add the output (a dictionary) to the

@@ -17,11 +17,11 @@ urlpatterns = []
 # iterate each of the active rapidsms apps (from the ini),
 # and (attempt to) import the urls.py from each. it's okay
 # if this fails, since not all apps have a webui
-for rs_app in settings.RAPIDSMS_APPS.values():
+for rs_app in settings.RAPIDSMS_APPS.keys():
     try:
     
         # import the single "urlpatterns" attribute
-        package_name = "%s.urls" % (rs_app["module"])
+        package_name = "%s.urls" % (rs_app)
         module = __import__(package_name, {}, {}, ["urlpatterns"])
 
         # add the explicitly defined urlpatterns
@@ -40,7 +40,7 @@ for rs_app in settings.RAPIDSMS_APPS.values():
             # extend manager.py, to output an http conf mapping all
             # of this stuff for apache?
             urlpatterns += patterns("", url(
-                "^static/%s/(?P<path>.*)$" % rs_app["type"],
+                "^static/%s/(?P<path>.*)$" % rs_app,
                 "django.views.static.serve",
                 {"document_root": static_dir }
             ))
