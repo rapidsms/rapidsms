@@ -3,7 +3,7 @@
 
 
 import os, re, traceback
-from rapidsms.webui import settings
+from rapidsms.djangoproject import settings
 from django.template import RequestContext
 from django.shortcuts import render_to_response as django_r_to_r
 from django.core.paginator import Paginator, EmptyPage, InvalidPage

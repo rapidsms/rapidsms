@@ -67,7 +67,7 @@ class Component(object):
                     'The "%s" component rejected the "%s" option. All components '  +\
                     'should accept arbitrary keyword arguments (via **kwargs) for ' +\
                     'the time being, to ensure that they continue to function as '  +\
-                    'the RapidSMS APIs change. Sorry.') % (self.title, missing_keyword))
+                    'the RapidSMS APIs change. Sorry.') % (self, missing_keyword))
 
             # something else went wrong. allow it
             # to propagate, to avoid masking errors

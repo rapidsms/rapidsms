@@ -25,7 +25,7 @@ class TestScript (TestCase):
     and allows you to define unit tests for your RapidSMS apps
     in the form of a 'conversational' script:
     
-        from apps.myapp.app import App as MyApp
+        from myapp.app import App as MyApp
         from rapidsms.tests.scripted import TestScript
 
         class TestMyApp (TestScript):

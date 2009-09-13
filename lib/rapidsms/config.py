@@ -3,6 +3,7 @@
 
 import os, log
 from ConfigParser import SafeConfigParser
+from rapidsms.utils.modules import try_import
 
 
 def to_list (item, separator=","):
@@ -18,8 +19,8 @@ class LazyAppConf(object):
 
        This is almost completely useless, except it allows us to prepare the
        Config opject (full of LazyAppConf instances) while building the Django
-       settings (rapidsms.webui.settings), _and_ allow app configs to hit the
-       database. If the configs were regular (eager) dicts, Django would refuse
+       settings (rapidsms.djangoproject.settings), _and_ allow app configs to hit
+       the database. If the configs were regular (eager) dicts, Django would refuse
        to hit the database, because "You haven't set the DATABASE_ENGINE setting
        yet".
        
@@ -51,7 +52,7 @@ class LazyAppConf(object):
 
 
 class Config (object):
-    app_prefixes = ["apps", "rapidsms.contrib.apps", "rapidsms.apps"]
+    app_prefixes = ["", "apps", "rapidsms.contrib.apps", "rapidsms.apps"]
     
     
     def __init__ (self, *paths):
@@ -126,51 +127,6 @@ class Config (object):
         # it's just a str
         # (NOT A UNICODE)
         return value
-    
-    
-    def __import_class (self, class_tmpl):
-        """Given a full class name (ie, apps.webui.app.App), returns the
-           class object. There doesn't seem to be a built-in way of doing
-           this without mucking with __import__."""
-        
-        # break the class name off the end of  module template
-        # i.e. "apps.ABCD.app.App" -> ("apps.ABC.app", "App")
-        try:
-            module_str, class_str = class_tmpl.rsplit(".",1)
-            module = __import__(module_str, {}, {}, [class_str])
-            
-            # import the requested class or None
-            if hasattr(module, class_str):
-                return getattr(module, class_str)
-        
-        except ImportError:
-            pass
-
-
-    def __import_app (self, app_type):
-        """Iterates the modules in which RapidSMS apps can live (apps,
-           rapidsms.contrib.apps, and rapidsms.apps), attempting to load
-           _app_type_ from each. When an app is found, returns a tuple
-           containing the full module name and the module itself. If no
-           module is found, raises ImportError."""
-           
-        # iterate the places that apps might live,
-        # and attempt to import app_type from each
-        for prefix in self.app_prefixes:
-            mod_str = ".".join([prefix, app_type])
-            module = self.__import_class(mod_str)
-            
-            # we found the app! return it!
-            if module is not None:
-                return mod_str, module
-
-        # the module couldn't be imported. it's probably a
-        # typo in the ini, or a missing app directory. either
-        # way, explode, because this app may be necessary to
-        # run properly (especially during ./rapidsms syncdb)
-        raise ImportError(
-            'Couldn\'t import "%s" from %s' %
-                (app_type, " or ".join(self.app_prefixes)))
 
 
     def lazy_app_section (self, name):
@@ -202,10 +158,10 @@ class Config (object):
 
         # attempt to import the module, to locate it (it might be in ./apps,
         # contrib, or rapidsms/apps) and verify that it imports cleanly
-        data["module"], module = self.__import_app(data["type"])
+        module = try_import(data["type"])
         
         # load the config.py for this app, if possible
-        config = self.__import_class("%s.config" % data["module"])
+        config = try_import("%s.config" % module.__name__)
         if config is not None:
 
             # copy all of the names not starting with underscore (those are

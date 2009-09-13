@@ -57,7 +57,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
 )
 
-ROOT_URLCONF = "rapidsms.webui.urls"
+ROOT_URLCONF = "rapidsms.djangoproject.urls"
 
 TEMPLATE_CONTEXT_PROCESSORS = [
     "django.core.context_processors.auth",
@@ -146,10 +146,6 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.admindocs'
 
-# by using the key names as the python module path, we 
-# avoid actually fetching the lazy app confs. this is
-# inconsistant with my fork (adammck), but since we've
-# decided to standardize the app imports anyway (iirc,
-# ./apps will be added to the python PATH), this will
-# resolve itself fairly soon -- as soon as i pull
-] + ["apps.%s" % app for app in RAPIDSMS_APPS.keys()]
+# by using the key names as the python module path,
+# we avoid actually fetching the lazy app confs
+] + RAPIDSMS_APPS.keys()

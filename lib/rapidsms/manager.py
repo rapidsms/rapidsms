@@ -11,13 +11,19 @@ class Manager (object):
         router = Router()
         router.set_logger(conf["log"]["level"], conf["log"]["file"])
         router.info("RapidSMS Server started up")
-        
+
+        # even though we have the original rapidsms conf, iterate
+        # the running apps through the django settings, since app
+        # dependencies will be managed there (by depends.py). also,
+        # i'm trying to ignore the .ini file so hard that it dies
+        from rapidsms.djangoproject.settings import RAPIDSMS_APPS, RAPIDSMS_BACKENDS
+
         # add each application from conf
-        for app_conf in conf["rapidsms"]["apps"].values():
+        for app_conf in RAPIDSMS_APPS.values():
             router.add_app(app_conf)
 
         # add each backend from conf
-        for backend_conf in conf["rapidsms"]["backends"].values():
+        for backend_conf in RAPIDSMS_BACKENDS.values():
             router.add_backend(backend_conf)
 
         # wait for incoming messages
@@ -66,11 +72,11 @@ def start (args):
         # import the webui settings, which builds the django
         # config from rapidsms.config, in a round-about way.
         # can't do it until env[RAPIDSMS_INI] is defined
-        from rapidsms.webui import settings
+        from rapidsms.djangoproject import settings
 
         # whatever we're doing, we'll need to call
         # django's setup_environ, to configure the ORM
-        os.environ["DJANGO_SETTINGS_MODULE"] = "rapidsms.webui.settings"
+        os.environ["DJANGO_SETTINGS_MODULE"] = "rapidsms.djangoproject.settings"
         from django.core.management import setup_environ, execute_manager
         setup_environ(settings)
     else:

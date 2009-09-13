@@ -8,6 +8,10 @@ import traceback
 import component
 import log
 
+from utils.modules import try_import, get_class
+import rapidsms
+
+
 class Router (component.Receiver):
     incoming_phases = ('filter', 'parse', 'handle', 'catch', 'cleanup')
     outgoing_phases = ('outgoing',)
@@ -19,6 +23,9 @@ class Router (component.Receiver):
         self.running = False
         self.logger = None
 
+    def __str__(self):
+        return "Router"
+
     def log(self, level, msg, *args):
         self.logger.write(self, level, msg, *args)
 
@@ -29,7 +36,7 @@ class Router (component.Receiver):
         """Imports and instantiates an module, given a dict with 
            the config key/value pairs to pass along."""
         # break the class name off the end of the module template
-        # i.e. "apps.%s.app.App" -> ("apps.%s.app", "App")
+        # i.e. "%s.app.App" -> ("%s.app", "App")
         module_template, class_name = class_template.rsplit(".",1)
        
         # make a copy of the conf dict so we can delete from it
@@ -74,26 +81,24 @@ class Router (component.Receiver):
 
 
     def add_app (self, conf):
-        try:
 
-            # find the App class via the config, since apps can be
-            # loaded via arbitrary module strings now (apps.whatever vs
-            # rapidsms.apps.whatever vs rapidsms.contrib.apps.whatever)
-            app_module = __import__("%s.app" % conf["module"], {}, {}, ["App"])
-            app_class = getattr(app_module, "App")
-            app = app_class(self)
+        # try to import the .app module from this app. it's okay if the
+        # module doesn't exist, but all other exceptions will propagate
+        app_module = try_import("%s.app" % conf["type"])
 
-            # pass the configuration on to the app. note that
-            # we're not watching for keyword argument any more,
-            # since Component._configure wraps that nicely now
-            app._configure(**dict(conf))
-            self.apps.append(app)
+        if app_module is None:
+            return None
 
-            # dump the app config. should this be debug level?
-            self.info("Added app: %r" % (conf))
+        # find the app class (regardless of its name). it should be
+        # the only subclass of rapidsms.App defined the app module
+        app_class = get_class(app_module, rapidsms.App)
 
-        except:
-            self.log_last_exception("Failed to add app: %r" % conf)
+        # instantiate and configure the app instance.
+        # TODO: app.configure must die, because the webui (in a separate
+        # process) can't access the app instances, only the flat modules
+        app = app_class(self)
+        app._configure(**dict(conf))
+        self.apps.append(app)
 
 
     def start_backend (self, backend):
@@ -189,42 +194,12 @@ class Router (component.Receiver):
         self.running = True
 
         # dump some debug info for now
-        self.info("BACKENDS: %r" % (self.backends))
-        self.info("APPS: %r" % (self.apps))
+        #self.info("BACKENDS: %r" % (self.backends))
+        #self.info("APPS: %r" % (self.apps))
         self.info("SERVING FOREVER...")
         
         self.start_all_backends()
         self.start_all_apps()
-
-        # check for any pending messages
-        try:
-            fn = "/tmp/rapidsms-pending"
-            f = file(fn)
-            
-            # trash the file, to prevent
-            # these messages being re-sent
-            msgs = f.readlines()
-            os.unlink(fn)
-            f.close()
-            
-            # iterate the pending messages,
-            for pending_msg in msgs:
-                be_name, identity, txt =\
-                    pending_msg.strip().split(":")
-                
-                # find the backend named by the message,
-                # reconstruct the object, and send it
-                for backend in self.backends.values():
-                    if backend.slug == be_slug:
-                        msg = backend.message(identity, txt)
-                        self.info("Sending pending message: %r" % msg)
-                        msg.send()
-         
-        # something went bang. not sure what, and don't
-        # particularly care. they'll be re-tried the
-        # next time rapidsms starts up
-        except:
-            pass
         
         # wait until we're asked to stop
         while self.running:
@@ -264,7 +239,7 @@ class Router (component.Receiver):
         try:
             for phase in self.incoming_phases:
                 for app in self.__sorted_apps():
-                    self.debug('IN' + ' ' + phase + ' ' + app.config["type"])
+                    self.debug("IN %s phase %s" % (phase, app))
                     responses = len(message.responses)
                     handled = False
                     try:
@@ -281,7 +256,7 @@ class Router (component.Receiver):
 
                     elif phase == 'handle' or phase == 'catch':
                         if handled is True:
-                            self.debug("%s short-circuited %s phase", app.config["type"], phase)
+                            self.debug("%s short-circuited %s phase" % (app, phase))
                             break
 
                     elif responses < len(message.responses):
@@ -317,13 +292,14 @@ class Router (component.Receiver):
 			# called with an incoming message is the last app called
 			# with an outgoing message
             for app in reversed(self.__sorted_apps()):
-                self.debug('OUT' + ' ' + phase + ' ' + app.slug)
+                self.debug("OUT %s phase %s" % (phase, app))
+                
                 try:
                     continue_sending = getattr(app, phase)(message)
                 except Exception, e:
                     self.error("%s failed on %s: %r\n%s", app, phase, e, traceback.print_exc())
                 if continue_sending is False:
-                    self.info("App '%s' cancelled outgoing message", app.slug)
+                    self.info("App '%s' cancelled outgoing message", app)
                     return False
 
         # now send the message out
