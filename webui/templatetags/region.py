@@ -3,7 +3,7 @@
 
 
 import os
-from rapidsms.webui import settings
+from rapidsms.djangoproject import settings
 
 from django import template
 register = template.Library()

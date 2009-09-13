@@ -6,7 +6,7 @@ import re
 from datetime import datetime
 from django.db import models
 from django.core.urlresolvers import reverse
-from rapidsms.webui.managers import *
+from rapidsms.djangoproject.managers import *
 
 
 class ReporterGroup(models.Model):

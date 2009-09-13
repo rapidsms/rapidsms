@@ -2,7 +2,7 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 
-from rapidsms.webui.utils import self_link
+from rapidsms.djangoproject.utils import self_link
 
 from django import template
 register = template.Library()

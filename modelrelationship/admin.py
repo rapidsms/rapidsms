@@ -3,7 +3,7 @@
 
 from django.contrib import admin
 from django.contrib.contenttypes import generic
-from apps.modelrelationship.models import *
+from modelrelationship.models import *
 
 class EdgeParentInline(generic.GenericTabularInline):
     ct_field='parent_type'

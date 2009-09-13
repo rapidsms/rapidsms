@@ -2,6 +2,9 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 
+from rapidsms.utils.modules import try_import
+
+
 class Locale(object):
     def __init__(self, src):
         self.src = src
@@ -50,10 +53,8 @@ def app_locale(persistant_app):
        or None if dict couldn't be imported for whatever reason. Does nothing
        to check the validity of the dict, so be careful."""
 
-    try:
-        module_str = "%s.locale" % (persistant_app.module)
-        module = __import__(module_str, {}, {}, ["LOCALE"])
-        return Locale(module.LOCALE)
+    module_str = "%s.locale" % (persistant_app.module)
+    module = try_import(module_str)
 
-    except (ImportError, AttributeError):
-        return None
+    if module is not None and hasattr(module, "LOCALE"):
+        return Locale(module.LOCALE)

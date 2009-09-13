@@ -2,7 +2,7 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 from django.contrib import admin
-from apps.supply.models import *
+from supply.models import *
 
 class StockAdmin(admin.ModelAdmin):
     list_display = ['location', 'domain', 'balance']

@@ -3,8 +3,8 @@
 
 
 from django.core.management.base import NoArgsCommand
-from apps.persistance.models import PersistantBackend
-from rapidsms.webui import settings
+from persistance.models import PersistantBackend
+from rapidsms.djangoproject import settings
 
 
 class Command(NoArgsCommand):

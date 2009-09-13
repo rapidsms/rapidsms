@@ -3,7 +3,8 @@
 
 
 from django.db import models
-from rapidsms.webui import settings
+from rapidsms.djangoproject import settings
+import rapidsms
 
 
 class PersistantApp(models.Model):
@@ -22,7 +23,7 @@ class PersistantApp(models.Model):
 
 
     def __unicode__(self):
-        return self.title
+        return self.title or self.module
 
     def __repr__(self):
         return '<%s: %s>' %\
@@ -42,10 +43,10 @@ class PersistantApp(models.Model):
             if isinstance(app, cls):
                 return app
 
-            # if its a module (a django/rapidsms app)
-            elif hasattr(app, "__module__"):
+            # if its a rapidsms app
+            elif isinstance(app, rapidsms.App):
                 return cls.objects.get(
-                    module=app.__module__)
+                    module=app.get_name())
 
             # otherwise, assume it's a module string
             else:

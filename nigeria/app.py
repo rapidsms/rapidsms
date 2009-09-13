@@ -11,10 +11,10 @@ from rapidsms.parsers.keyworder import *
 
 from models import *
 from formslogic import *
-import apps.form.app as form_app
-import apps.supply.app as supply_app
+import form.app as form_app
+import supply.app as supply_app
 
-from apps.form.models import Domain
+from form.models import Domain
 
 
 class App(rapidsms.app.App):

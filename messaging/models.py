@@ -5,8 +5,8 @@
 from django.db import models
 from django.db import connection
 from django.db.backends.util import typecast_timestamp
-from apps.persistance.models import PersistantBackend
-from apps.reporters.models import PersistantConnection, Reporter
+from persistance.models import PersistantBackend
+from reporters.models import PersistantConnection, Reporter
 
 
 class IncomingMessage(models.Model):

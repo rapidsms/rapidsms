@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 
 from datetime import datetime, date
 
-from apps.mctc.models.general import Provider
+from mctc.models.general import Provider
 
 # since there's only ever going to be a limited number of message
 # on a strict one to one basis, lets just define them here,

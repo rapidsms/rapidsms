@@ -3,9 +3,9 @@
 
 
 from django.core.management.base import NoArgsCommand
-from apps.persistance.models import PersistantApp
-from apps.i18n.models import Token
-from apps.i18n.utils import app_locale
+from persistance.models import PersistantApp
+from i18n.models import Token
+from i18n.utils import app_locale
 
 
 class Command(NoArgsCommand):

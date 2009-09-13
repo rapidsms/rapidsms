@@ -3,8 +3,8 @@
 
 
 from django.db import models
-from rapidsms.webui import settings
-from apps.persistance.models import PersistantApp
+from rapidsms.djangoproject import settings
+from persistance.models import PersistantApp
 from languages import LANGUAGES
 from utils import app_locale
 
@@ -13,7 +13,7 @@ class Language(models.Model):
     """This class represents a single language (obviously) that the SMS strings
        are available in. It isn't related to the WebUI in any way right now. The
        codes are stored as a W3C language tag, which is automatically resolved
-       into a description via apps.i18n.languages.LANGUAGES.
+       into a description via i18n.languages.LANGUAGES.
        
        The W3C language tag spec:
          http://www.w3.org/International/articles/language-tags/Overview.en.php
@@ -183,7 +183,7 @@ class StringStub(object):
 # if the reporters app happens to also be running, we
 # can provide some optional integration (see: app.py)
 if "reporters" in settings.RAPIDSMS_APPS:
-    from apps.reporters.models import Reporter
+    from reporters.models import Reporter
 
     class ReporterLanguage(models.Model):
         """This model links a reporter with a language, to indicate that where

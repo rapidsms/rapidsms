@@ -8,25 +8,25 @@ from django.db import transaction
 
 # TODO: WTF is happening here? update these
 # imports to name what they need explicitly
-from rapidsms.webui import settings
-from rapidsms.webui.utils import *
-from apps.reporters.models import *
-from apps.reporters.utils import *
-from apps.persistance.models import PersistantBackend
+from rapidsms.djangoproject import settings
+from rapidsms.djangoproject.utils import *
+from reporters.models import *
+from reporters.utils import *
+from persistance.models import PersistantBackend
 
 
 # is the LOCATIONS app running? if so, we'll
 # add widgets to link each reporter to a Location
 use_locations = ("locations" in settings.RAPIDSMS_APPS)
 if use_locations:
-    from apps.locations.models import *
+    from locations.models import *
 
 
 # likewise, is the logger app running? we'll
 # add a mini message log just for this reporter
 use_logger = ("logger" in settings.RAPIDSMS_APPS)
 if use_logger:
-    from apps.logger.models import *
+    from logger.models import *
 
 
 def __global(req):

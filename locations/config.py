@@ -2,7 +2,7 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 
-from apps.locations.models import LocationType
+from locations.models import LocationType
 
 
 # if there is only than one location type available, the main tab will

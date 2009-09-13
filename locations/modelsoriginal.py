@@ -4,8 +4,8 @@
 
 import re
 from django.db import models
-from rapidsms.webui.managers import *
-from apps.reporters.models import Reporter
+from rapidsms.djangoproject.managers import *
+from reporters.models import Reporter
 
 
 MARKER_CHOICES = (

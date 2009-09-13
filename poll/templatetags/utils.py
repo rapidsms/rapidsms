@@ -1,5 +1,5 @@
 from django.template import Library
-from apps.poll.models import *
+from poll.models import *
 register = Library()
 
 # UTIL -----------------------------------------------------

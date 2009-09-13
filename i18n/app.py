@@ -4,8 +4,8 @@
 
 import re
 import rapidsms
-from rapidsms.webui import settings
-from apps.persistance.models import PersistantApp
+from rapidsms.djangoproject import settings
+from persistance.models import PersistantApp
 from models import Language, Token, String
 
 
@@ -13,10 +13,10 @@ from models import Language, Token, String
 # handler for reporters to set their preferred language.
 # this app (i18n) is useful without reporters, so i'm
 # trying to make this dependancy entirely optional
-from rapidsms.webui.settings import RAPIDSMS_APPS
+from rapidsms.djangoproject.settings import RAPIDSMS_APPS
 use_reporters = ("i18n" in RAPIDSMS_APPS)
 if use_reporters:
-    from apps.reporters.models import Reporter
+    from reporters.models import Reporter
     from models import ReporterLanguage
 
 
@@ -70,7 +70,7 @@ class InternationalApp(object):
         if persistant_app is None:
 
             # this shouldn't ever happen, so log and abort
-            self.warning("PersistantApp does not exist")
+            self.warning("PersistantApp does not exist for %r" % (self))
             return None
 
         # we accept a few different language-aware

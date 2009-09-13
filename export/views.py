@@ -10,7 +10,7 @@ from django import http
 from django.db import models
 from django.utils.text import capfirst
 from django.core.exceptions import FieldError
-from rapidsms.webui import settings
+from rapidsms.djangoproject import settings
 
 
 def database(req):

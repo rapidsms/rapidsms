@@ -5,12 +5,12 @@
 import re
 import rapidsms
 from rapidsms.parsers import Matcher
-from apps.persistance.models import *
-from apps.locations.models import *
+from persistance.models import *
+from locations.models import *
 from models import *
 
 
-from apps.i18n.app import InternationalApp
+from i18n.app import InternationalApp
 
 
 class App(rapidsms.App, InternationalApp):
@@ -22,9 +22,12 @@ class App(rapidsms.App, InternationalApp):
             self._str(msg, "must-identify"))
 
 
-    def configure(self, allow_join, allow_list, **kwargs):
-        self.allow_join = allow_join
-        self.allow_list = allow_list
+    #def configure(self, allow_join, allow_list, **kwargs):
+    #    self.allow_join = allow_join
+    #    self.allow_list = allow_list
+    def configure(self, **kwargs):
+        self.allow_join = True
+        self.allow_list = False
 
 
     def parse(self, msg):

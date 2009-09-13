@@ -6,10 +6,10 @@ from django.views.decorators.http import require_GET, require_http_methods
 from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse
 
-from rapidsms.webui.related import related_objects, with_related_objects
-from rapidsms.webui.utils import render_to_response, paginated
-from apps.reporters.utils import insert_via_querydict, update_via_querydict
-from apps.locations.models import *
+from rapidsms.djangoproject.related import related_objects, with_related_objects
+from rapidsms.djangoproject.utils import render_to_response, paginated
+from reporters.utils import insert_via_querydict, update_via_querydict
+from models import *
 
 
 def __global(req):

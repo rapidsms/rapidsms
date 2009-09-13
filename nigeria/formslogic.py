@@ -3,8 +3,8 @@
 
 from models import *
 from rapidsms.message import StatusCodes
-from apps.reporters.models import *
-from apps.form.formslogic import FormsLogic
+from reporters.models import *
+from form.formslogic import FormsLogic
 import re
 
 class NigeriaFormsLogic(FormsLogic):

@@ -3,7 +3,7 @@
 
 
 from django.contrib import admin
-from apps.reporters.models import *
+from reporters.models import *
 
 
 admin.site.register(Reporter)

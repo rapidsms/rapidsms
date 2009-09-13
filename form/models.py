@@ -6,8 +6,8 @@ from django.contrib.auth import models as auth_models
 from django.core.exceptions import ObjectDoesNotExist 
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
-from apps.reporters.models import Reporter
-from apps.patterns.models import Pattern
+from reporters.models import Reporter
+from patterns.models import Pattern
 from datetime import date
 import re
 
