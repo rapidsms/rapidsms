@@ -48,7 +48,7 @@ class TestScript (TestCase):
 
     def setUp (self):
         self.router = MockRouter()
-        self.backend = Backend(self.router)
+        self.backend = Backend(self.router, "mock")
         self.router.add_backend(self.backend)
         if not self.apps:
             raise Exception(

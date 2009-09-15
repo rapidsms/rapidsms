@@ -6,6 +6,8 @@ import component
 
 
 class App(component.Component):
+    """
+    """
 
     NAMED_PRIORITIES = {
         "first":   1,
@@ -17,12 +19,12 @@ class App(component.Component):
         "last":   99 }
 
 
-    def __init__(self, router):
+    def __init__(self, router=None):
         self._router = router
 
 
     def __str__(self):
-        return self.get_title()
+        return self.title
 
 
     def __repr__(self):
@@ -33,64 +35,66 @@ class App(component.Component):
     @staticmethod
     def _name(module_name):
         """
-            Returns the last interesting part of *module_name* (which can also
-            be a class name), to uniquely identify it without leaving variations
-            of "app" all over the place. This method attempts to handle all of
-            the various ways that RapidSMS apps can be named. For example:
+        Returns the last interesting part of *module_name* (which can also be a
+        class name), to uniquely identify it without leaving variations of "app"
+        all over the place. This method attempts to handle all of the various
+        ways that RapidSMS apps can be named. For example:
 
-              >>> App._name("apps.alpha.app")
-              'alpha'
+          >>> App._name("apps.alpha.app")
+          'alpha'
 
-              >>> App._name("rapidsms.contrib.apps.beta")
-              'beta'
+          >>> App._name("rapidsms.contrib.apps.beta")
+          'beta'
 
-              >>> App._name("somewhere.else.GAMMA")
-              'gamma'
-              
-              >>> App._name("DeltaApp")
-              'delta'
-
-            The uniqueness of the output is not guaranteed or checked, but can
-            be assumed, since ambiguous app names lead to much larger explosions
-            during the router startup.
+          >>> App._name("somewhere.else.gamma.App")
+          'gamma'
         """
 
-        # find all of the interesting (non-"app") parts
-        # of the module name, and grab the last, which
-        best_part = filter(
+        parts = filter(
             lambda x: x not in ["App", "app", "apps"],
-            module_name.split("."))[-1]
+            module_name.split("."))
 
-        # apps may (in the future!) be named
-        # SomethingApp so chop that part off
-        if best_part.endswith("App"):
-            best_part = best_part[:-3]
-
-        # keep everything lower-case, to avoid
-        # ambiguity between 'alpha' and 'Alpha',
-        # which are clearly the same app
-        return best_part.lower()
+        return parts[-1]
 
 
-    @classmethod
-    def get_name(cls):
+    @property
+    def name(self):
         """
-            Returns the name of this class, which can be assumed to be unique.
-        """
-        
-        return App._name(
-            cls.__module__)
+        Returns the name of the module which this app was defined within. To be
+        findable by Router.add_app, this module name will be importable as-is,
+        making it unambiguous within this project, and usable as an identifier.
 
+        # pretend we're in myproject/whatever/app.py
+        >>> __name__ = "myproject.whatever.app"
 
-    @classmethod
-    def get_title(cls):
-        """
-            Returns the title of this class, which is not guaranteed to be
-            unique, consistant between calls, or in any particular format.
-            It should be used for display purposes only.
+        >>> class MockApp(App): pass
+        >>> MockApp(None).name
+        'whatever'
         """
 
-        return cls.get_name().title()
+        return App._name(self.__module__)
+
+
+    @property
+    def title(self):
+        """
+        Returns the title of this app, which isn't guaranteed to be unique,
+        consistant between calls, or in any particular format -- it should be
+        used for display purposes only.
+
+        >>> __name__ = "myproject.whatever.app"
+        >>> class MockApp(App):
+        ...     pass
+
+        >>> MockApp().title
+        'Whatever'
+        """
+
+        if hasattr(self, "_title"):
+            return self._title
+
+        module_name = type(self).__module__
+        return self._name(module_name).title()
 
 
     def priority(self):

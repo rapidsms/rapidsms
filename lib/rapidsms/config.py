@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-import os, log
+
+import os, sys, log
 from ConfigParser import SafeConfigParser
-from rapidsms.utils.modules import try_import
+from utils.modules import try_import
 
 
 def to_list (item, separator=","):
@@ -52,9 +53,6 @@ class LazyAppConf(object):
 
 
 class Config (object):
-    app_prefixes = ["", "apps", "rapidsms.contrib.apps", "rapidsms.apps"]
-    
-    
     def __init__ (self, *paths):
         self.parser = SafeConfigParser()
 
@@ -139,29 +137,18 @@ class Config (object):
         # from raw_data (or default to an empty dict),
         # then copy it, so we don't alter the original
         data = self.raw_data.get(name, {}).copy()
-        
+
         # "type" is ONLY VALID FOR BACKENDS now. it's not [easily] possible
         # to run multple django apps of the same type side-by-side, so i'm
-        # warning here to avoid confusion (and allow apps to be lazy loaded)
+        # raising here to avoid confusion (and allow apps to be lazy loaded)
         if "type" in data:
-            raise DeprecationWarning(
+            raise Exception(
                 'The "type" option is not supported for apps. It does ' +\
                 'nothing, since running multple apps of the same type ' +\
                 'is not currently possible.')
 
-        # ...that said, the terms _type_ and _name_ are still mixed up
-        # in various places, so we must support both. another naming
-        # upheaval is probably needed to clear this up (or perhaps we
-        # should just scrap the shitty INI format, like we should have
-        # done in the first place to avoid this entire mess)
-        data["type"] = name
-
-        # attempt to import the module, to locate it (it might be in ./apps,
-        # contrib, or rapidsms/apps) and verify that it imports cleanly
-        module = try_import(data["type"])
-        
         # load the config.py for this app, if possible
-        config = try_import("%s.config" % module.__name__)
+        config = try_import("%s.config" % name)
         if config is not None:
 
             # copy all of the names not starting with underscore (those are
@@ -171,11 +158,7 @@ class Config (object):
                 if not var_name.startswith("_"):
                     if not var_name in data:
                         data[var_name] = getattr(config, var_name)
-        
-        # the module was imported! add it's full path to the
-        # config, since it might not be in rapidsms/apps/%s
-        data["path"] = module.__path__[0]
-        
+
         # return the component with the additional
         # app-specific data included.
         return data
@@ -187,7 +170,6 @@ class Config (object):
         # from raw_data (or default to an empty dict),
         # then copy it, so we don't alter the original
         data = self.raw_data.get(name, {}).copy()
-        data["name"] = name
 
         # although "name" and "type" are deliberately distinct (to enable multiple
         # backends of the same type to run concurrently), it's cumbersome to have
@@ -196,8 +178,8 @@ class Config (object):
             data["type"] = name
 
         return data
-    
-    
+
+
     def parse_rapidsms_section (self, raw_section):
         
         # "apps" and "backends" are strings of comma-separated

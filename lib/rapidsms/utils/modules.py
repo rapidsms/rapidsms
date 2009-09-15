@@ -159,13 +159,14 @@ def get_module_path(module_name):
     """
     try:
         __import__(module_name)
-        return sys.modules[module_name].__path__
+        return sys.modules[module_name].__path__[0]
 
     # wrap with a better message
     except AttributeError:
         raise(AttributeError(
             'Module named "%s" is not a directory' %
                 (module_name)))
+
 
 if __name__ == "__main__":
     import doctest

@@ -35,14 +35,14 @@ def render_to_response(req, template_name, dictionary=None, **kwargs):
         if os.path.exists("%s.js" % (fs_path)):
             rs_dict["javascripts"].append(
                 "%s.js" % (web_prefix))
-    
+
     # add all of the global javascript files for all running
     # apps. this is super handy for packaging functionality
     # which affects the whole webui without hard-coding it
     for module_name in settings.RAPIDSMS_APPS.keys():
         __js_dir(
-            "%s/static/javascripts/global" % module_name,
-            "/static/%s/javascripts/global" % get_module_path(module_name))
+            "%s/static/javascripts/global" % get_module_path(module_name),
+            "/static/%s/javascripts/global" % module_name)
     
     # A NEW KIND OF LUNACY: inspect the stack to find out
     # which rapidsms app this function is being called from
@@ -76,7 +76,7 @@ def render_to_response(req, template_name, dictionary=None, **kwargs):
         # this app, and add them to the <head>
         __js_dir(
             "%s/static/javascripts/app" % path,
-            "/static/%s/javascripts/app" % path)
+            "/static/%s/javascripts/app" % app_name)
         
         # check for a view-specific javascript,
         # to add LAST, after the dependencies

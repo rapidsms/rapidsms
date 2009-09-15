@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-import time, datetime, os
+import time, datetime, os, sys
 import threading
 import traceback
 
@@ -9,10 +9,16 @@ import component
 import log
 
 from utils.modules import try_import, get_class
-import rapidsms
+from backends.backend import Backend as BackendBase
+from app import App as AppBase
 
 
 class Router (component.Receiver):
+    """
+    >>> "wat"
+    'wat'
+    """
+
     incoming_phases = ('filter', 'parse', 'handle', 'catch', 'cleanup')
     outgoing_phases = ('outgoing',)
 
@@ -32,73 +38,70 @@ class Router (component.Receiver):
     def set_logger(self, level, file):
         self.logger = log.Logger(level, file)
 
-    def build_component (self, class_template, conf):
-        """Imports and instantiates an module, given a dict with 
-           the config key/value pairs to pass along."""
-        # break the class name off the end of the module template
-        # i.e. "%s.app.App" -> ("%s.app", "App")
-        module_template, class_name = class_template.rsplit(".",1)
-       
-        # make a copy of the conf dict so we can delete from it
-        conf = conf.copy()
 
-        # resolve the component name into a real class
-        module_name = module_template % (conf.pop("type"))
-        module = __import__(module_name, {}, {}, [''])
-        component_class = getattr(module, class_name)
-        
-        # create the component with an instance of this router
-        # and keep hold of it here, so we can communicate both ways
-        component = component_class(self)
-        try:
-            component._configure(**conf)
-        except TypeError, e:
-            # "__init__() got an unexpected keyword argument '...'"
-            if "unexpected keyword" in e.message:
-                missing_keyword = e.message.split("'")[1]
-                raise Exception("Component '%s' does not support a '%s' option."
-                        % (title, missing_keyword))
-            else:
-                raise
-        return component
+    def add_backend (self, name, conf={}):
+        """
+        Finds a RapidSMS backend class (given its module name), instantiates and
+        (optionally) configures it, and adds it to the list of backends that are
+        polled for incoming messages. Returns the configured instance, or raises
+        ImportError if the module was invalid.
+        """
 
-    def add_backend (self, conf):
-        try:
-            backend = self.build_component("rapidsms.backends.%s.Backend", conf)
-            self.info("Added backend: %r" % conf)
-            self.backends.append(backend)
-            
-        except:
-            self.log_last_exception("Failed to add backend: %r" % conf)
-            
+        # backends live in rapidsms/backends/*.py
+        # import it early to check that it's valid
+        module_name = "rapidsms.backends.%s" % conf.pop("type")
+        __import__(module_name)
+
+        # find the backend class (regardless of its name). it should
+        # be the only subclass of rapidsms.Backend defined the module
+        cls = get_class(sys.modules[module_name], BackendBase)
+
+        # instantiate and configure the backend instance.
+        # (FYI, i think it's okay to configure backends at
+        # startup, since the webui isn't affected by them.
+        # (except in a purely informative ("you're running
+        # _these_ backends") sense))
+        backend = cls(self, name)
+        backend._configure(**conf)
+        self.backends.append(backend)
+
+        return backend
+
 
     def get_backend (self, slug):
         '''gets a backend by slug, if it exists'''
         for backend in self.backends:
-            if backend.slug == slug:
+            if backend.name == slug:
                 return backend
         return None
 
 
-    def add_app (self, conf):
+    def add_app(self, name, conf={}):
+        """
+        Finds a RapidSMS app class (given its module name), instantiates and
+        (optionally) configures it, and adds it to the list of apps that are
+        notified of incoming messages. Returns the instance, or None if the app
+        module could not be imported.
+        """
 
         # try to import the .app module from this app. it's okay if the
         # module doesn't exist, but all other exceptions will propagate
-        app_module = try_import("%s.app" % conf["type"])
-
-        if app_module is None:
+        module = try_import("%s.app" % name)
+        if module is None:
             return None
 
         # find the app class (regardless of its name). it should be
         # the only subclass of rapidsms.App defined the app module
-        app_class = get_class(app_module, rapidsms.App)
+        cls = get_class(module, AppBase)
 
         # instantiate and configure the app instance.
         # TODO: app.configure must die, because the webui (in a separate
         # process) can't access the app instances, only the flat modules
-        app = app_class(self)
+        app = cls(self)
         app._configure(**dict(conf))
         self.apps.append(app)
+
+        return app
 
 
     def start_backend (self, backend):
@@ -228,11 +231,34 @@ class Router (component.Receiver):
     
     def __sorted_apps(self):
         return sorted(self.apps, key=lambda a: a.priority())
-    
-    def incoming(self, message):   
-        #self.info("Incoming message via %s: %s ->'%s'" %\
-        #    (message.connection.backend.slug, message.connection.identity, message.text))
-        
+
+    def incoming(self, message):
+        """
+        Incoming phases:
+
+        Filter:
+          The first phase, before any actual work is done. This is the only
+          phase that can entirely abort further processing of the incoming
+          message, which it does by returning True. (TODO: use an exception
+          instead, since this is an exceptional circumstance)
+
+        Parse:
+          Don't do INSERTs or UPDATEs in here!
+
+        Handle:
+          Respond to messages here.
+
+        Catch:
+          Provide a default message. Only a single installed app should have a
+          "catch" phase, since app ordering shouldn't be important.
+
+        Cleanup:
+          An opportunity to clean up anything started during earlier phases.
+        """
+
+        self.info("Incoming message via %s: %s ->'%s'" %\
+            (message.connection.backend, message.connection.identity, message.text))
+
         # loop through all of the apps and notify them of
         # the incoming message so that they all get a
         # chance to do what they will with it
@@ -278,8 +304,8 @@ class Router (component.Receiver):
 
 
     def outgoing(self, message):
-        #self.info("Outgoing message via %s: %s <- '%s'" %\
-        #    (message.connection.backend.slug, message.connection.identity, message.text))
+        self.info("Outgoing message via %s: %s <- '%s'" %\
+            (message.connection.backend, message.connection.identity, message.text))
         
         # first notify all of the apps that want to know
         # about outgoing messages so that they can do what
@@ -307,3 +333,8 @@ class Router (component.Receiver):
         self.debug("SENT message '%s' to %s via %s" % (message.text,\
 			message.connection.identity, message.connection.backend.slug))
         return True
+
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()

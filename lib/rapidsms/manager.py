@@ -19,12 +19,12 @@ class Manager (object):
         from rapidsms.djangoproject.settings import RAPIDSMS_APPS, RAPIDSMS_BACKENDS
 
         # add each application from conf
-        for app_conf in RAPIDSMS_APPS.values():
-            router.add_app(app_conf)
+        for name, conf in RAPIDSMS_APPS.items():
+            router.add_app(name, conf)
 
         # add each backend from conf
-        for backend_conf in RAPIDSMS_BACKENDS.values():
-            router.add_backend(backend_conf)
+        for name, conf in RAPIDSMS_BACKENDS.items():
+            router.add_backend(name, conf)
 
         # wait for incoming messages
         router.start()
