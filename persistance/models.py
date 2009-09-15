@@ -46,7 +46,7 @@ class PersistantApp(models.Model):
             # if its a rapidsms app
             elif isinstance(app, rapidsms.App):
                 return cls.objects.get(
-                    module=app.get_name())
+                    module=app.name)
 
             # otherwise, assume it's a module string
             else:
@@ -86,4 +86,4 @@ class PersistantBackend(models.Model):
         # the conf during syncdb, but when testing, the conf is ignored
         # and a MockBackend is used instead. hence get_or_create.
         return cls.objects.get_or_create(
-            slug=backend.slug)[0]
+            slug=backend.name)[0]

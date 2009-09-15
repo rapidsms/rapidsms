@@ -21,14 +21,12 @@ class Command(NoArgsCommand):
 
         # find any running backends which currently
         # don't have objects, and fill in the gaps
-        for conf in settings.RAPIDSMS_BACKENDS.values():
-            slug = conf["name"] # hack!
+        for name in settings.RAPIDSMS_BACKENDS.keys():
 
-            if not slug in known_backend_slugs:
+            if not name in known_backend_slugs:
                 backend = PersistantBackend.objects.create(
-                    title=conf.get("title", ""),
-                    slug=slug)
+                    slug=name)
 
                 # log what we did to the console
                 print "Added persistant backend %s" % backend
-                known_backend_slugs.append(slug)
+                known_backend_slugs.append(name)

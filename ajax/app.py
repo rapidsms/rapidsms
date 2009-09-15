@@ -64,11 +64,11 @@ class App(rapidsms.App):
 
     class RequestHandler(BaseHTTPRequestHandler):
         def __find_app(self, name):
-
+        
             # inspect the name of each active app,
             # returning as soon as we find a match
             for app in self.server.app.router.apps:
-                if app.slug == name:
+                if app.name == name:
                     return app
 
             # no app by that

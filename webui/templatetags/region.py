@@ -4,6 +4,7 @@
 
 import os
 from rapidsms.djangoproject import settings
+from rapidsms.utils.modules import try_import
 
 from django import template
 register = template.Library()
@@ -11,10 +12,11 @@ register = template.Library()
 
 @register.inclusion_tag("webui/partials/region.html", takes_context=True)
 def region(context, name):
-    def __path(app):
+    def __path(module_name):
+        module = try_import(module_name)
         return "%s/templates/regions/%s.html" %\
-            (app["path"], name)
-    
+            (module.__path__[0], name)
+
     # start with the current context, which is passed on
     # to all of the included templates by {% include %},
     # and override just the bits that we need
@@ -22,8 +24,8 @@ def region(context, name):
         "name": name,
         "request": context["request"],
         "includes": [
-            __path(app)
-             for app in settings.RAPIDSMS_APPS.values()
-             if os.path.exists(__path(app)) ]})
+            __path(module_name)
+             for module_name in settings.RAPIDSMS_APPS.keys()
+             if os.path.exists(__path(module_name)) ]})
     
     return context
