@@ -36,7 +36,7 @@ class ReporterGroup(models.Model):
     # see the FOLLOW app, for now,
     # although this will be expanded
     @classmethod
-    def __search__(cls, who, terms):
+    def __search__(cls, terms):
 
         # re-join the terms into a single string, and search
         # for a group with this title (we wont't worry about
@@ -141,14 +141,14 @@ class Reporter(models.Model):
     # see the FOLLOW app, for now,
     # although this will be expanded
     @classmethod
-    def __search__(cls, who, terms):
+    def __search__(cls, terms):
         try:
             if len(terms) == 1:
                 try:
                     return cls.objects.get(
                         pk=int(terms[0]))
 
-                except ValueError:
+                except (ValueError, cls.DoesNotExist):
                     return cls.objects.get(
                         alias__iexact=terms[0])
 

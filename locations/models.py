@@ -133,7 +133,7 @@ class Location(models.Model):
     # see the FOLLOW app, for now,
     # although this will be expanded
     @classmethod
-    def __search__(cls, who, terms):
+    def __search__(cls, terms):
 
         # if we're searching for a single term, it
         # could be a location code, so try that first
@@ -156,7 +156,7 @@ class Location(models.Model):
 
         # if this doesn't work, the terms
         # are not a valid location name
-        except cls.DoesNotExist, cls.MultipleObjectsReturned:
+        except (cls.DoesNotExist, cls.MultipleObjectsReturned):
             return None
 
 
