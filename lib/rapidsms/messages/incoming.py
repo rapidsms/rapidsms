@@ -6,6 +6,7 @@ from copy import copy
 from datetime import datetime
 from base import MessageBase
 from outgoing import OutgoingMessage
+from error import ErrorMessage
 
 
 class IncomingMessage(MessageBase):
@@ -59,7 +60,7 @@ class IncomingMessage(MessageBase):
             self.responses.pop(0).send()
 
 
-    def respond(self, text, cls=OutgoingMessage):
+    def respond(self, text, cls=OutgoingMessage, **kwargs):
         """
         Instantiates a new OutgoingMessage object bound to the same connection
         as this object containing *text*, and queues it for delivery when the
@@ -68,7 +69,19 @@ class IncomingMessage(MessageBase):
         Optionally, the class (*cls*) of the outgoing message can be given, to
         give a hint about the contents of the message, which can be introspected
         by other apps during the outgoing phase(s).
+
+        Any additional keyword arguments given are passed along to the outgoing
+        message class initialize. See OutgoingMessage.__init__ for more on that.
+        You really should. It's rather exciting.
         """
 
-        response = cls(self.connection, text)
+        response = cls(self.connection, text, **kwargs)
         self.responses.append(response)
+
+
+    def error(self, text, **kwargs):
+        """
+        docs plz.
+        """
+
+        return self.respond(text, ErrorMessage, **kwargs)

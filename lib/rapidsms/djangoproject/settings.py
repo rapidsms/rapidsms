@@ -75,7 +75,6 @@ TEMPLATE_DIRS = [
 
 
 
-
 # ====================
 # LOAD RAPIDSMS CONFIG
 # ====================
@@ -133,10 +132,14 @@ if "django" in RAPIDSMS_CONF:
 
 
 
-
 # ====================
 # INJECT RAPIDSMS APPS
 # ====================
+
+LOCALE_PATHS = [
+    "apps/%s/locale" % app_name
+    for app_name in RAPIDSMS_APPS.keys()
+]
 
 INSTALLED_APPS = [
     'django.contrib.auth',
