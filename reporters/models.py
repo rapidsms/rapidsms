@@ -116,7 +116,7 @@ class Reporter(models.Model):
             self.last_name)).strip()
 
     def __unicode__(self):
-        return self.full_name()
+        return self.full_name() or self.alias
 
     def __repr__(self):
         fn = self.full_name()
@@ -178,7 +178,7 @@ class Reporter(models.Model):
         if be is None:
             raise Exception(
                 "No such backend: %s" %
-                pconn.backend.title)
+                pconn.backend)
 
         # attempt to send the message
         # TODO: what could go wrong here?

@@ -52,7 +52,7 @@
 				<tbody class="recips{% if filtered %} filtered{% endif %}">{% for reporter in reporters.object_list %}
 					<tr uid="{{ reporter.pk }}" class="{% if reporter.is_hit %}hit{% endif %} {% if reporter.is_checked %} checked{% endif %}">
 						<td class="check"></td>
-						<td>{{ reporter.full_name }}</td>
+						<td>{{ reporter }}</td>
 						<td>{{ reporter.role }}</td>
 						<td>{{ reporter.location }}</td>
 					</tr>{% endfor %}
