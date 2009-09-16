@@ -33,14 +33,14 @@
 				<input type="hidden" name="conn-id" value="{{ connection.pk }}" />
 				<select name="conn-backend">
 					<option></option>{% for backend in all_backends %}
-					<option value="{{ backend.pk }}"{% ifequal backend connection.backend %} selected="selected"{% endifequal %}>{{ backend.title }}</option>{% endfor %}
+					<option value="{{ backend.pk }}"{% ifequal backend connection.backend %} selected="selected"{% endifequal %}>{{ backend }}</option>{% endfor %}
 				</select>
 				<input type="text" name="conn-identity" value="{{ connection.identity }}" />
 			</div>{% endfor %}{% else %}
 			<div>
 				<select name="conn-backend">
 					<option selected="selected"></option>{% for backend in all_backends %}
-					<option value="{{ backend.pk }}"{% if backend.selected %} selected="selected"{% endif %}>{{ backend.title }}</option>{% endfor %}
+					<option value="{{ backend.pk }}"{% if backend.selected %} selected="selected"{% endif %}>{{ backend }}</option>{% endfor %}
 				</select>
 				<input type="text" name="conn-identity" />
 			</div>{% endif %}
@@ -66,14 +66,14 @@
 					Add a Group
 				</a>
 			</div>{% endif %}
-		</div>{% if use_locations and all_locations %}
+		</div>{% if all_locations %}
 		
 		<div>
 			<label>{{ locations_label }}</label>
 			<div>
-				<select name="location">
+				<select name="location_id">
 					<option></option>{% for location in all_locations %}
-					<option value="{{ location.pk }}" title="{{ location.type.singular }} of {{ location.name }}">{{ location.name }}</option>{% endfor %}
+					<option value="{{ location.pk }}" title="{{ location.type.singular }} of {{ location.name }}"{% ifequal location reporter.location %} selected="selected"{% endifequal %}>{{ location.name }}</option>{% endfor %}
 				</select>
 				<p class="help">
 					Optionally link a <em>default</em> Location to reports received
@@ -81,7 +81,7 @@
 					<span class="example">I AM AT [CODE]</span>.
 				</p>
 			</div>
-		</div>{% endif %}{% if use_logger and message_log.object_list %}
+		</div>{% endif %}{% if message_log.object_list %}
 		
 		<div class="module log">
 			<h3>Message Log</h3>

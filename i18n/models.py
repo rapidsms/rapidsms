@@ -21,7 +21,7 @@ class Language(models.Model):
        The IANA language tag registry reference:
          http://www.iana.org/assignments/language-subtag-registry"""
 
-    code = models.CharField(max_length=10, unique=True)
+    code = models.CharField(max_length=4, unique=True)
 
 
     def __unicode__(self):
@@ -30,6 +30,22 @@ class Language(models.Model):
     def __repr__(self):
         return '<%s: %s (%s)>' %\
             (type(self).__name__, self.title, self.code)
+
+    @classmethod
+    def __search__(cls, terms):
+
+        # country codes are only ever a single term,
+        # and never longer than four characters, so
+        # don't waste time looking for anything else
+        if len(terms) > 1 or len(terms[0]) > 4:
+            return None
+
+        try:
+            return cls.objects.get(
+                code__iexact=terms[0])
+
+        except cls.DoesNotExist:
+            return None
 
 
     @property
