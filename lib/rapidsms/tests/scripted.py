@@ -90,10 +90,10 @@ class TestScript (TestCase):
             elif dir == '<':
                 msg = self.backend.next_message()
                 self.assertTrue(msg is not None, 
-                    "message was returned.\nMessage: '%s'\nExpecting: '%s')" % (last_msg, txt))
+                    "message was ignored.\nMessage: '%s'\nExpecting: '%s'" % (last_msg, txt))
                 self.assertEquals(msg.peer, num,
-                    "Expected to send to %s, but message was sent to %s"
-                    % (num, msg.peer))
+                    "Expected to respond to %s, but message was sent to %s.\nMessage: '%s'"
+                    % (num, msg.peer, last_msg))
                 self.assertEquals(msg.text, txt,
                     "\nMessage: %s\nReceived text: %s\nExpected text: %s\n"
                     % (last_msg, msg.text,txt))
