@@ -5,8 +5,8 @@
 import time
 import pygsm
 
-from rapidsms.message import Message
 from rapidsms.connection import Connection
+from rapidsms.messages.incoming import IncomingMessage
 from rapidsms.backends import Backend as BackendBase
 
 
@@ -78,11 +78,10 @@ class Backend(BackendBase):
             if msg is not None:
                 self.received_messages += 1
 
-                # we got an sms! create RapidSMS Connection and
-                # Message objects, and hand it off to the router
-                c = Connection(self, msg.sender)
-                m = Message(c, msg.text)
-                self.router.send(m)
+                # we got an sms! hand it off to the
+                # router to be dispatched to the apps
+                x = self.message(msg.sender, msg.text)
+                self.router.send(x)
 
             # wait for POLL_INTERVAL seconds before continuing
             # (in a slightly bizarre way, to ensure that we abort
@@ -100,9 +99,9 @@ class Backend(BackendBase):
             logger=self.gsm_log,
             **self.modem_kwargs)
 
-        # If we got the connection, call superclass to
-        # start the run loop--it just sets self._running to True
-        # and calls run.
+        # If we connected successfully to the modem, call
+        # superclass to start the run loop -- it just sets
+        # self._running to True and calls run.
         if self.modem is not None:
             BackendBase.start(self)
 

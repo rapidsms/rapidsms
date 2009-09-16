@@ -2,7 +2,7 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 from rapidsms.component import Receiver
-from rapidsms.message import Message
+from rapidsms.messages.incoming import IncomingMessage
 from rapidsms.connection import Connection
 import time
 
@@ -35,9 +35,10 @@ class Backend (Receiver):
     def stop(self):
         self._running = False
    
-    def message(self, identity, text, date=None):
-        c = Connection(self, identity)
-        return Message(c, text, date)
+    def message(self, identity, text, received_at=None):
+        return IncomingMessage(
+            Connection(self, identity),
+            text, received_at)
 
     def route(self, msg):
         # send it off to the router

@@ -2,7 +2,6 @@
 
 from harness import MockRouter, EchoApp
 from rapidsms.backends.backend import Backend
-from rapidsms.message import Message
 import unittest, re
 from django.test import TestCase
 from datetime import datetime
@@ -84,7 +83,7 @@ class TestScript (TestCase):
         for num, date, dir, txt in cmds:
             if dir == '>':
                 msg = self.backend.message(num, txt)
-                msg.date = date 
+                msg.received_at = date 
                 self.backend.route(msg)  
                 self.router.run()
             elif dir == '<':

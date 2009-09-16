@@ -8,7 +8,6 @@ import re
 import urllib
 import httphandlers as handlers
 import rapidsms
-from rapidsms.message import Message
 
 class HttpServer (BaseHTTPServer.HTTPServer, SocketServer.ThreadingMixIn):
        

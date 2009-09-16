@@ -1,7 +1,6 @@
 import irclib
 
 import rapidsms
-from rapidsms.message import Message
 from rapidsms.connection import Connection
 
 class Backend(rapidsms.backends.Backend):

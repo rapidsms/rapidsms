@@ -3,7 +3,6 @@
 
 import time
 from rapidsms.backends import Backend
-from rapidsms.message import Message
 from utilities.dbmessagelog.httplog.models import * 
 from datetime import datetime
 
