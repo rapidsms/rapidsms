@@ -20,7 +20,7 @@ class Client(object):
     
     class RequestHandler(BaseHTTPRequestHandler):
         def do_POST(self):
-            
+
             # parse the form data (what
             # the hell *is* this junk?)
             form = cgi.FieldStorage(
@@ -29,23 +29,28 @@ class Client(object):
                 environ = {
                     "REQUEST_METHOD": "POST",
                     "CONTENT_TYPE": self.headers["content-type"] })
-            
+
+            # if either field was empty, it won't even be 
+            # in the form (??). default to an empty string
+            body   = form["body"].value   if ("body" in form)   else ""
+            source = form["source"].value if ("source" in form) else ""
+
             # if a callback has been registered (via
             # Client#subscribe), call it along with
             # the source (phone number), and contents
             if hasattr(self.server.spomsky_client, "callback"):
                 self.server.spomsky_client.callback(
-                    form["source"].value, form["body"].value)
-            
+                    source, body)
+
             # always respond positively
             self.send_response(200)
             self.end_headers()
-        
+
         # Does nothing except prevent HTTP
         # requests being echoed to the screen
         def log_request(*args):
             pass
-    
+
     def __init__(self, server_host="localhost", server_port=8100, client_host="localhost", client_port=None):
     
         # copy the arguments into
