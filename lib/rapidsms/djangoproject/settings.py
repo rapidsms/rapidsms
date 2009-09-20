@@ -137,8 +137,9 @@ if "django" in RAPIDSMS_CONF:
 # ====================
 
 LOCALE_PATHS = [
-    "apps/%s/locale" % app_name
-    for app_name in RAPIDSMS_APPS.keys()
+    "apps/rwanda/locale"
+    #"apps/%s/locale" % app_name
+    #for app_name in RAPIDSMS_APPS.keys()
 ]
 
 INSTALLED_APPS = [

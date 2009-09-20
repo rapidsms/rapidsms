@@ -15,8 +15,11 @@ class BaseHandler(object):
         self.router = router
         self.msg = msg
 
-    def respond(self, text):
-        self.msg.respond(text)
+    def _national_id(self):
+        return re.sub("[^0-9]", "", self.msg.text) + self.msg.connection.identity[-4:]
+
+    def respond(self, text, **kwargs):
+        return self.msg.respond(text, **kwargs)
 
 
 class PatternHandler(BaseHandler):
@@ -46,7 +49,7 @@ class KeywordHandler(BaseHandler):
     @classmethod
     def _keyword(cls):
         if hasattr(cls, "keyword"):
-            prefix = r"^(?:%s)(?:\s+(.+))?$" % (cls.keyword)
+            prefix = r"^(?:%s)(?:[\s,;:]+(.+))?$" % (cls.keyword)
             return re.compile(prefix, re.IGNORECASE)
 
     @classmethod

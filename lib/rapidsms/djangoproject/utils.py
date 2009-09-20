@@ -16,7 +16,7 @@ def render_to_response(req, template_name, dictionary=None, **kwargs):
        and there's probably a much better solution."""
     
     rs_dict = {
-        "apps":  settings.RAPIDSMS_APPS.values(),
+        "apps": settings.RAPIDSMS_APPS,
         "debug": settings.DEBUG,
         "javascripts": []
     }

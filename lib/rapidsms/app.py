@@ -162,6 +162,9 @@ class App(component.Component):
     def outgoing (self, message):
         pass
 
+    def pre_send (self, message):
+        pass
+
     def stop (self):
         pass
 
