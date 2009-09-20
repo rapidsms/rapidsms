@@ -19,14 +19,17 @@ class OutgoingMessage(MessageBase):
 
         self._connection = connection
         self.sent_at = None
-        self.language = "rw"
-        
-        #try:
-        #    from rapidsms.djangoproject import settings
-        #    self.language = settings.LANGUAGE_CODE
-        #
-        #except EnvironmentError:
-        #    self.language = None
+
+        # default to LANGUAGE_CODE from django settings (which can
+        # be set in the [django] section of rapidsms.ini, or english,
+        # if no LANGUAGE_CODE is set anywhere
+        try:
+            from rapidsms.djangoproject import settings
+            self.language = settings.LANGUAGE_CODE
+
+        except:
+            self.language = "en"
+
 
 
     def append(self, template, **kwargs):
