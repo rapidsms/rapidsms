@@ -15,6 +15,6 @@ class App(rapidsms.App):
         IncomingMessage.objects.create(
             text=msg.raw_text, **self._who(msg))
 
-    def outgoing(self, msg):
+    def pre_send(self, msg):
         OutgoingMessage.objects.create(
-            text=msg.raw_text, **self._who(msg))
+            text=msg.text, **self._who(msg))
