@@ -11,18 +11,26 @@ class OutgoingMessage(MessageBase):
     """
     """
 
-    def __init__(self, connection, template, **kwargs):
+    def __init__(self, connection=None, template=None, **kwargs):
+        self._parts = []
+        
+        if template is not None:
+            self.append(template, **kwargs)
+
         self._connection = connection
-        self.template = template
-        self.kwargs = kwargs
         self.sent_at = None
+        self.language = "rw"
+        
+        #try:
+        #    from rapidsms.djangoproject import settings
+        #    self.language = settings.LANGUAGE_CODE
+        #
+        #except EnvironmentError:
+        #    self.language = None
 
-        try:
-            from rapidsms.djangoproject import settings
-            self.language = settings.LANGUAGE_CODE
 
-        except EnvironmentError:
-            self.language = None
+    def append(self, template, **kwargs):
+        self._parts.append((template, kwargs))
 
 
     def __repr__(self):
@@ -30,11 +38,18 @@ class OutgoingMessage(MessageBase):
             (self.language, self.text)
 
 
+    def _render_part(self, template, **kwargs):
+        t = translation(self.language)
+        tmpl = t.gettext(template)
+        return tmpl % kwargs
+
+
     @property
     def text(self):
-        t = translation(self.language)
-        tmpl = t.gettext(self.template)
-        return tmpl % self.kwargs
+        return " ".join([
+            self._render_part(template, **kwargs)
+            for template, kwargs in self._parts
+        ])
 
 
     @property

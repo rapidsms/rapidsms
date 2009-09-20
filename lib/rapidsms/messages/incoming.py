@@ -60,7 +60,7 @@ class IncomingMessage(MessageBase):
             self.responses.pop(0).send()
 
 
-    def respond(self, text, cls=OutgoingMessage, **kwargs):
+    def respond(self, text=None, cls=OutgoingMessage, **kwargs):
         """
         Instantiates a new OutgoingMessage object bound to the same connection
         as this object containing *text*, and queues it for delivery when the
@@ -75,8 +75,9 @@ class IncomingMessage(MessageBase):
         You really should. It's rather exciting.
         """
 
-        response = cls(self.connection, text, **kwargs)
-        self.responses.append(response)
+        msg = cls(self.connection, text, **kwargs)
+        self.responses.append(msg)
+        return msg
 
 
     def error(self, text, **kwargs):
