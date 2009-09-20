@@ -194,19 +194,3 @@ class StringStub(object):
     def __repr__(self):
         return '<%s: %s>' %\
             (type(self).__name__, self.token)
-
-
-# if the reporters app happens to also be running, we
-# can provide some optional integration (see: app.py)
-if "reporters" in settings.RAPIDSMS_APPS:
-    from reporters.models import Reporter
-
-    class ReporterLanguage(models.Model):
-        """This model links a reporter with a language, to indicate that where
-           possible, RapidSMS should speak to them in their chosen language. It
-           isn't quite as slick as monkey-patching or extending the __bases__ of
-           the Reporter class, but the separation allows both apps to optionally
-           depend upon one another."""
-
-        reporter = models.OneToOneField(Reporter, primary_key=True)
-        language = models.ForeignKey(Language)

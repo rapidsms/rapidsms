@@ -17,7 +17,6 @@ from rapidsms.djangoproject.settings import RAPIDSMS_APPS
 use_reporters = ("i18n" in RAPIDSMS_APPS)
 if use_reporters:
     from reporters.models import Reporter
-    from models import ReporterLanguage
 
 
 class InternationalApp(object):
@@ -28,27 +27,18 @@ class InternationalApp(object):
         if isinstance(x, Language):
             return x
 
+        if hasattr(x, "language"):
+            return x.language
+
         # if we're integrating with the reporters
         # app, we can accept a lot more things to
         # inspect for a language...
         if use_reporters:
 
-            # if a Reporter was provided, we'll use their chosen
-            # language, which is stored way inside ReporterLanguage
-            if isinstance(x, Reporter):
-                try:
-                    return x.reporterlanguage.language
-
-                # if the reporter doesn't have a reporterlanguage associated
-                # yet (they're not auto spawned, which sucks), leave this
-                # reporter's language as the system default
-                except ReporterLanguage.DoesNotExist:
-                    return Language.default()
-
             # if (something that quacks like) a rapidsms.Message
             # extended by the reporters app was provided, pluck
             # out the reporter and recurse to catch it above
-            elif hasattr(x, "reporter"):
+            if hasattr(x, "reporter"):
                 return self._language(msg.reporter)
 
         try:
@@ -146,8 +136,8 @@ class InternationalApp(object):
 
 
 
-class App(rapidsms.App, InternationalApp):
-    SET_LANG_RE = re.compile(r"^(?:speak|language|lang)(?:\s+(.+))?$", re.I)
+class App(rapidsms.App):
+    SET_LANG_RE = re.compile(r"^(?:i\s+speak|speak|language|lang)(?:\s+(.+))?$", re.I)
 
     def handle(self, msg):
 

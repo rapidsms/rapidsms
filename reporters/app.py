@@ -55,6 +55,13 @@ class App(rapidsms.App, InternationalApp):
         conn.seen()
 
 
+    def outgoing(self, msg):
+        conn = PersistantConnection.from_message(msg)
+
+        if conn and conn.reporter:
+            msg.language = conn.reporter.language
+
+
     def handle(self, msg):
         matcher = Matcher(msg)
 
@@ -63,7 +70,6 @@ class App(rapidsms.App, InternationalApp):
         # replace it *with* the keyworder, or extract it
         # into a parser of its own
         map = {
-            "register":  ["(?:join|register|reg) (whatever)"],
             "identify":  ["identify (slug)", "this is (slug)", "i am (slug)"],
             "reporters": ["list reporters", "reporters\\?"]
         }
