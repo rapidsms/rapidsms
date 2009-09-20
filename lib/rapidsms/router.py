@@ -20,7 +20,7 @@ class Router (component.Receiver):
     """
 
     incoming_phases = ('filter', 'parse', 'handle', 'catch', 'cleanup')
-    outgoing_phases = ('outgoing',)
+    outgoing_phases = ('outgoing', 'pre_send')
 
     def __init__(self):
         component.Receiver.__init__(self)
