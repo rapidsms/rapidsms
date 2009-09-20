@@ -129,12 +129,8 @@ def update_reporter(req, rep):
     # which were NOT in the form we just received
     rep.connections.filter(pk__in=del_conns).delete()
     rep.groups.filter(pk__in=del_grps).delete()
-    
-    
-    if use_locations and "location" in req.POST:
-        loc = Location.objects.get(pk=req.POST["location"])
-        ReporterLocation.objects.get_or_create(
-            reporter=rep, location=loc)
+
+    rep.save()
 
 
 @require_http_methods(["GET", "POST"])
@@ -239,8 +235,8 @@ def edit_reporter(req, pk):
             context["locations_label"] = LocationType.label(only_linkable=True).singular
             context["all_locations"]   = Location.objects.filter(type__is_linkable=1)
 
-        #if use_logger:
-            #context["message_log"] = paginated(req, combined_message_log(rep), prefix="msg", wrapper=combined_message_log_row)
+        if use_logger:
+            context["message_log"] = paginated(req, combined_message_log(rep), prefix="msg", wrapper=combined_message_log_row)
 
         return render_to_response(req,
             "reporters/reporter.html",

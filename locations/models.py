@@ -5,7 +5,7 @@
 import re
 from django.db import models
 from rapidsms.djangoproject.managers import *
-from reporters.models import Reporter
+from rapidsms.djangoproject import settings
 
 
 MARKER_CHOICES = (
@@ -160,6 +160,17 @@ class Location(models.Model):
             return None
 
 
+    def __message__(self, *args, **kwargs):
+        """Sends a message to every Reporter in this Location."""
+
+        for rep in self.reporter_set.all():
+            try:
+                rep.__message__(*args, **kwargs)
+
+            except:
+                pass
+
+
     def save(self, *args, **kwargs):
 
         # override the default save behavior, to remove extra spaces from
@@ -207,12 +218,16 @@ class Location(models.Model):
         return locs
 
 
-class ReporterLocation(models.Model):
-    """This model is kind of a hack, to add a _location_ field
-       to the Reporter class without extending it -- in the same
-       way that the Django docs recommend creating a UserProfile
-       rather than patching User."""
+# if the reporters app happens to be be running, monkey-patch
+# a LOCATION field onto Reporter. any apps that need location-
+# aware reporters can just depend upon both of them, without
+# locations _or_ reporters depending upon one another
+if "reporters" in settings.RAPIDSMS_APPS.keys():
+    from reporters.models import Reporter
 
-    reporter = models.OneToOneField(Reporter)
-    location = models.ForeignKey(Location)
-    location.rel.verbose_name = "Reporters"
+    Reporter.add_to_class(
+        "location",
+        models.ForeignKey(
+            Location,
+            null=True,
+            blank=True))

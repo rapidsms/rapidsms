@@ -8,4 +8,3 @@ from locations.models import *
 
 admin.site.register(LocationType)
 admin.site.register(Location)
-admin.site.register(ReporterLocation)
