@@ -21,8 +21,8 @@ class App (rapidsms.App):
     DIRECT_MSG_RE = re.compile(r"^(?:@|at\.)\s*(\S+)\s*(.+)$", re.I)
 
 
-    def configure(self, catch_all, **kwargs):
-        self.catch_all = catch_all
+    def configure(self, **kwargs):
+        self.catch_all = False
 
 
     def handle(self, msg):
@@ -32,7 +32,7 @@ class App (rapidsms.App):
         match = self.DIRECT_MSG_RE.match(msg.text)
         if match is not None:
             models = utils.messagable_models()
-            to_msg = find_objects(models, match.group(1))
+            to_msg = find_objects(match.group(1), models)
 
             text = "%s: %s" % (
                 msg.reporter or msg.connection,
@@ -42,11 +42,19 @@ class App (rapidsms.App):
             # by the search. might be one reporter (via
             # their username), or 100 (via their location)
             for obj in to_msg:
-                obj.__message__(self.router, text)
+                try:
+                    obj.__message__(self.router, text)
+
+                # something went bang, but don't let that
+                # prevent the other messages from being sent
+                except:
+                    self.log_last_exception(
+                        "Message couldn't be sent to %s" %
+                        obj)
 
             if to_msg:
                 msg.respond(
-                    u"Your message was sent to: %s" %
+                    u"Your message was sent to: %s." %
                     (", ".join(map(unicode, to_msg))))
 
             return True
@@ -111,7 +119,7 @@ class App (rapidsms.App):
         if be is None:
             raise Exception(
                 "No such backend: %s" %
-                pconn.backend.title)
+                pconn.backend.slug)
 
         # attempt to send the message
         # TODO: what could go wrong here?

@@ -30,14 +30,14 @@
 						</a>
 					</h1>
 				</div>
-				<ul id="tabs">{% for app in apps %}{% if app.tab_link %}
-					<li class="app-{{ app.type }}{% ifequal active_app app.type %} active{% endifequal %}">
-						<a href="{{ app.tab_link }}"><span>{{ app.title }}</span></a>
+				<ul id="tabs">{% for name, conf in apps.items %}{% if conf.tab_link %}
+					<li class="app-{{ name }}{% ifequal active_app name %} active{% endifequal %}">
+						<a href="{{ conf.tab_link }}"><span>{{ conf.title }}</span></a>
 					</li>{% endif %}{% endfor %}
 				</ul>
-				{% block page_tabs %}
-				{% endblock %}
 			</div>
+			{% endblock %}
+			{% block page_tabs %}
 			{% endblock %}
 			<div id="inner">
 				{% block content %}{% endblock %}

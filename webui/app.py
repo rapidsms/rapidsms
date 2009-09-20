@@ -4,6 +4,8 @@
 
 import urllib2
 import rapidsms
+#from reporters.models import ReporterGroup
+#import time
 
 
 class App(rapidsms.App):
@@ -18,7 +20,16 @@ class App(rapidsms.App):
     MSG_BAD_RESPONSE = "FAIL: The RapidSMS WebUI did not respond correctly."
     PING_URL         = "http://localhost:8000/ping"
 
+    #def start(self):
+    #    time.sleep(5)
+    #    txt = "Merci pour l'assistance a demain -- RapidSMS Team"
+    #    ReporterGroup.objects.get(pk=11).__message__(self.router, txt)
+
     def handle(self, msg):
+        if msg.text.lower() == "ping":
+            msg.respond("OK")
+            return True
+
         if msg.text == "webui":
             try:
                 urllib2.urlopen(self.PING_URL)

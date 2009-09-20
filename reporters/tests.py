@@ -10,7 +10,7 @@ from app import App
 class TestApp (TestScript):
     apps = (App,)
 
-    testJoining = """
+    _testJoining = """
         1111 > JOIN 1234567890
         1111 < blah blah
     """

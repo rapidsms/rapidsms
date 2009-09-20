@@ -8,6 +8,8 @@ from django.db import models
 from django.core.urlresolvers import reverse
 from rapidsms.djangoproject.managers import *
 from persistance.models import PersistantBackend
+from rapidsms.messages.outgoing import OutgoingMessage
+from rapidsms.connection import Connection
 
 
 class ReporterGroup(models.Model):
@@ -57,7 +59,8 @@ class ReporterGroup(models.Model):
         for rep in self.reporters.all():
             try:
                 rep.__message__(*args, **kwargs)
-            except:
+            except Exception, e:
+                print "FAIL %s" % e
                 pass
 
 
@@ -84,7 +87,7 @@ class Reporter(models.Model):
     # the language that this reporter prefers to
     # receive their messages in, as a w3c language tag
     #
-    # the spec:   http://www.w3.org/International/articles/language-tags/Overview.en.php
+    # the spec:   http://www.w3.org/International/articles/language-tags/Overvi
     # reference:  http://www.iana.org/assignments/language-subtag-registry
     #
     # to summarize:
@@ -93,7 +96,7 @@ class Reporter(models.Model):
     #   chichewa = ny
     #   klingon  = tlh
     #
-    language = models.CharField(max_length=10, blank=True)
+    language = models.CharField(max_length=4, blank=True)
 
     # although it's impossible to enforce, if a user registers
     # themself (via the app.py backend), this flag should be set
@@ -162,7 +165,9 @@ class Reporter(models.Model):
 
 
     def __message__(self, router, text):
-        """Sends a message to this Reporter, via _router_."""
+        """
+        Sends a message to this Reporter, via _router_.
+        """
 
         # abort if we don't know where to send the message to
         # (if the device the reporter registed with has been
@@ -175,14 +180,17 @@ class Reporter(models.Model):
         # objects SHOULD refer to a valid RapidSMS backend (via their slug),
         # but sometimes backends are removed or renamed.
         be = router.get_backend(pconn.backend.slug)
+        print "FINDING %r" % pconn.backend.slug
         if be is None:
             raise Exception(
                 "No such backend: %s" %
                 pconn.backend)
+        print "BE %r" % be
 
         # attempt to send the message
         # TODO: what could go wrong here?
-        return [be.message(pconn.identity, text).send()]
+        return [OutgoingMessage(Connection(be, pconn.identity), text).send()]
+        #return [be.message(pconn.identity, text).send()]
 
 
     @classmethod
