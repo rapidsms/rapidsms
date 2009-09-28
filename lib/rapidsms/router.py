@@ -32,8 +32,12 @@ class Router (component.Receiver):
     def __str__(self):
         return "Router"
 
-    def log(self, level, msg, *args):
-        self.logger.write(self, level, msg, *args)
+
+    def log(self, *args):
+        if self.logger is not None:
+            self.logger.write(
+                self, *args)
+
 
     def set_logger(self, level, file):
         self.logger = log.Logger(level, file)
