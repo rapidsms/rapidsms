@@ -8,6 +8,7 @@ import re
 import urllib
 import httphandlers as handlers
 import rapidsms
+from rapidsms.backends.base import BackendBase
 
 class HttpServer (BaseHTTPServer.HTTPServer, SocketServer.ThreadingMixIn):
        
@@ -18,7 +19,7 @@ class HttpServer (BaseHTTPServer.HTTPServer, SocketServer.ThreadingMixIn):
         if reads:
             BaseHTTPServer.HTTPServer.handle_request(self)
 
-class Backend(rapidsms.backends.Backend):
+class Backend(BackendBase):
     def configure(self, host="localhost", port=8080, handler="HttpHandler", **kwargs):
         
         #module_name = "httphandlers"

@@ -8,7 +8,7 @@ import os, sys, shutil
 # the Manager class is a bin for various RapidSMS specific management methods
 class Manager (object):
     def route (self, conf, *args):
-        router = Router()
+        router = Router.instance()
         router.set_logger(conf["log"]["level"], conf["log"]["file"])
         router.info("RapidSMS Server started up")
 
@@ -24,7 +24,7 @@ class Manager (object):
 
         # add each backend from conf
         for name, conf in RAPIDSMS_BACKENDS.items():
-            router.add_backend(name, conf)
+            router.add_backend(conf.pop("type"), name, conf)
 
         # wait for incoming messages
         router.start()

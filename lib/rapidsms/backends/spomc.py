@@ -3,11 +3,11 @@
 
 
 import re, time
-import backend
 import spomsky
+from rapidsms.backends.base import BackendBase
 
 
-class Backend(backend.Backend):
+class Backend(BackendBase):
     _title = "SPOMC"
 
 
@@ -38,10 +38,10 @@ class Backend(backend.Backend):
 
     def start(self):
         self.client.subscribe(self.__callback)
-        backend.Backend.start(self)
+        BackendBase.start(self)
 
 
     def stop(self):
-        backend.Backend.stop(self)
+        BackendBase.stop(self)
         self.client.unsubscribe()
         self.info("Shutting down...")

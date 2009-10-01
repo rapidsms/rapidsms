@@ -7,7 +7,6 @@ import app
 import backends
 
 
-from router import Router
 from config import Config
 from app import App
 

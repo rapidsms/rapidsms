@@ -7,7 +7,7 @@ import pygsm
 
 from rapidsms.connection import Connection
 from rapidsms.messages.incoming import IncomingMessage
-from rapidsms.backends import Backend as BackendBase
+from rapidsms.backends.base import BackendBase
 
 
 class Backend(BackendBase):

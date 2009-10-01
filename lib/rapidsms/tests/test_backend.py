@@ -10,7 +10,8 @@ class TestBackend(unittest.TestCase):
     def setUp (self):
         self.router = MockRouter()
         self.backend = Backend(self.router, "testing")
-        self.router.add_backend(self.backend)
+        #self.router.add_backend(self.backend)
+        self.router.backends.append(self.backend)
 
     def test__properties (self):
         self.assertEquals(self.backend.name, "testing")

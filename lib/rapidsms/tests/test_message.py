@@ -15,7 +15,8 @@ class TestMessage(unittest.TestCase):
         self.connection = Connection(self.backend, "12345")
         self.person = Person()
         self.person.add_connection(self.connection)
-        self.router.add_backend(self.backend)
+        #self.router.add_backend(self.backend)
+        self.router.backends.append(self.backend)
 
     def test__init__ (self): 
         msg = Message(self.connection, "this is a test")

@@ -9,7 +9,7 @@ import component
 import log
 
 from utils.modules import try_import, get_class
-from backends.backend import Backend as BackendBase
+from backends.base import BackendBase
 from app import App as AppBase
 
 
@@ -22,14 +22,41 @@ class Router (component.Receiver):
     incoming_phases = ('filter', 'parse', 'handle', 'catch', 'cleanup')
     outgoing_phases = ('outgoing', 'pre_send')
 
-    def __init__(self):
+
+    __instance = None
+
+    @classmethod
+    def instance(cls):
+        if not cls.__instance:
+            cls.__instance = cls(
+                prevent=False)
+
+        return cls.__instance
+
+
+    def __init__(self, prevent=True):
+
+        # since router didn't used to be a singleton, there may be dark places
+        # that it's still spawned the usual way. unless specifically asked not
+        # to, i'm going to explode here, to avoid violating the expectation that
+        # there is only a single router. later, we can remove the argument.
+        if prevent:
+            raise Exception(
+                "Router is a singleton. " +\
+                "Use Router.instance() instead.")
+
+        # otherwise, initialize as usual
         component.Receiver.__init__(self)
         self.backends = []
         self.apps = []
         self.running = False
         self.logger = None
 
+
     def __str__(self):
+
+        # there's only ever a single
+        # router, so no ambiguity here
         return "Router"
 
 
@@ -43,17 +70,17 @@ class Router (component.Receiver):
         self.logger = log.Logger(level, file)
 
 
-    def add_backend (self, name, conf={}):
+    def add_backend (self, type, name, conf={}):
         """
-        Finds a RapidSMS backend class (given its module name), instantiates and
-        (optionally) configures it, and adds it to the list of backends that are
-        polled for incoming messages. Returns the configured instance, or raises
-        ImportError if the module was invalid.
+        Finds a RapidSMS backend class (given its module name (the "type" of the
+        backend)), instantiates and (optionally) configures it, and adds it to
+        the list of backends that are polled for incoming messages. Returns the
+        configured instance, or raises ImportError if the module was invalid.
         """
 
         # backends live in rapidsms/backends/*.py
         # import it early to check that it's valid
-        module_name = "rapidsms.backends.%s" % conf.pop("type")
+        module_name = "rapidsms.backends.%s" % type
         __import__(module_name)
 
         # find the backend class (regardless of its name). it should
@@ -317,10 +344,10 @@ class Router (component.Receiver):
         for phase in self.outgoing_phases:
             continue_sending = True
             
-			# call outgoing phases in the opposite order of the
-			# incoming phases so that, for example, the first app
-			# called with an incoming message is the last app called
-			# with an outgoing message
+            # call outgoing phases in the opposite order of the
+            # incoming phases so that, for example, the first app
+            # called with an incoming message is the last app called
+            # with an outgoing message
             for app in reversed(self.__sorted_apps()):
                 self.debug("OUT %s phase %s" % (phase, app))
                 
@@ -333,9 +360,9 @@ class Router (component.Receiver):
                     return False
 
         # now send the message out
-        message.connection.backend.send(message)
+        self.get_backend(message.connection.backend.name).send(message)
         self.debug("SENT message '%s' to %s via %s" % (message.text,\
-			message.connection.identity, message.connection.backend.slug))
+            message.connection.identity, message.connection.backend))
         return True
 
 

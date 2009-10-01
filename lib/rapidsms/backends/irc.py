@@ -2,8 +2,9 @@ import irclib
 
 import rapidsms
 from rapidsms.connection import Connection
+from rapidsms.backends.base import BackendBase
 
-class Backend(rapidsms.backends.Backend):
+class Backend(BackendBase):
     def configure(self, host="irc.freenode.net", port=6667,
                         nick=None, channels=["#rapidsms"], *kwargs):
         self.host = host

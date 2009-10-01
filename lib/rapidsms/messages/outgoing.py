@@ -70,6 +70,7 @@ class OutgoingMessage(MessageBase):
         currently no way to send messages asynchronously.
         """
 
-        self.sent = self.connection.backend.router.outgoing(self)
+        from rapidsms.router import Router
+        self.sent = Router.instance().outgoing(self)
         if self.sent: self.sent_at = datetime.now()
         return self.sent

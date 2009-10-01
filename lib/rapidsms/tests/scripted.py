@@ -1,7 +1,8 @@
 # vim: ai ts=4 sts=4 et sw=4
 
+from rapidsms.router import Router
 from harness import MockRouter, EchoApp
-from rapidsms.backends.backend import Backend
+from rapidsms.backends.base import BackendBase
 import unittest, re
 from django.test import TestCase
 from datetime import datetime
@@ -46,9 +47,10 @@ class TestScript (TestCase):
     apps = None
 
     def setUp (self):
-        self.router = MockRouter()
-        self.backend = Backend(self.router, "mock")
-        self.router.add_backend(self.backend)
+        self.router = Router.instance()
+        self.backend = BackendBase(self.router, "mock")
+        #self.router.add_backend(self.backend)
+        self.router.backends.append(self.backend)
         if not self.apps:
             raise Exception(
                 "You must define a list of apps in your TestScript class!")

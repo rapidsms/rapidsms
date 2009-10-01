@@ -147,7 +147,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.admin',
-    'django.contrib.admindocs'
+    'django.contrib.admindocs',
+    'rapidsms'
 
 # by using the key names as the python module path,
 # we avoid actually fetching the lazy app confs
