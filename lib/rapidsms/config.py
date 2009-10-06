@@ -11,47 +11,6 @@ def to_list (item, separator=","):
     return filter(None, map(lambda x: str(x).strip(), item.split(separator)))
 
 
-class LazyAppConf(object):
-    """RapidSMS apps can provide an optional config.py, which is like a per-app
-       version of Django's settings.py. The settings defined there are available
-       to both the RapidSMS router and the Django WebUI. This class acts very
-       much like a dict, but doesn't build the app config until it's really
-       required (much like a Django QuerySet).
-
-       This is almost completely useless, except it allows us to prepare the
-       Config opject (full of LazyAppConf instances) while building the Django
-       settings (rapidsms.djangoproject.settings), _and_ allow app configs to hit
-       the database. If the configs were regular (eager) dicts, Django would refuse
-       to hit the database, because "You haven't set the DATABASE_ENGINE setting
-       yet".
-       
-       Unfortunately, for Python2.5 compatibility, this must be cast to a real
-       dict before being iterated or passed as **kwargs."""
-
-    def __init__(self, config, app_name):
-        self.app_name = app_name
-        self.config = config
-        self._cache = None
-
-    def _dict(self):
-        if self._cache is None:
-            self._cache = self.config.app_section(self.app_name)
-        return self._cache
-
-    # not strictly necessary, but avoids logging the useless
-    # "Added app: <rapidsms.config.LazyAppConf object at 0x......c>"
-    def __repr__(self):
-        return repr(self._dict())
-
-    # these two methods are enough to cast to a dict in
-    # python 2.5. in python 2.6, use collections.mapping.
-    def keys(self):
-        return self._dict().keys()
-
-    def __getitem__(self, key):
-        return self._dict()[key]
-
-
 class Config (object):
     def __init__ (self, *paths):
         self.parser = SafeConfigParser()
@@ -127,10 +86,6 @@ class Config (object):
         return value
 
 
-    def lazy_app_section (self, name):
-        return LazyAppConf(self, name)
-
-
     def app_section (self, name):
 
         # fetch the current config for this app
@@ -138,9 +93,8 @@ class Config (object):
         # then copy it, so we don't alter the original
         data = self.raw_data.get(name, {}).copy()
 
-        # "type" is ONLY VALID FOR BACKENDS now. it's not [easily] possible
-        # to run multple django apps of the same type side-by-side, so i'm
-        # raising here to avoid confusion (and allow apps to be lazy loaded)
+        # "type" is ONLY VALID FOR BACKENDS now, so i'm
+        # raising here to clarify why it doesn't work
         if "type" in data:
             raise Exception(
                 'The "type" option is not supported for apps. It does ' +\
@@ -181,15 +135,15 @@ class Config (object):
 
 
     def parse_rapidsms_section (self, raw_section):
-        
+
         # "apps" and "backends" are strings of comma-separated
         # component names. first, break them into real lists
         app_names     = to_list(raw_section.get("apps",     ""))
         backend_names = to_list(raw_section.get("backends", ""))
-        
+
         # run lists of component names through [app|backend]_section,
         # to transform into dicts of dicts containing more meta-info
-        return { "apps":     dict((n, self.lazy_app_section(n)) for n in app_names),
+        return { "apps":     dict((n, self.app_section(n)) for n in app_names),
                  "backends": dict((n, self.backend_section(n)) for n in backend_names) }
 
 
