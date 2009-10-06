@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-import time, datetime, os, sys
+import time, datetime, os, sys, Queue
 import threading
 import traceback
 
@@ -13,7 +13,7 @@ from backends.base import BackendBase
 from app import App as AppBase
 
 
-class Router (component.Receiver):
+class Router (object):
     """
     >>> "wat"
     'wat'
@@ -46,11 +46,18 @@ class Router (component.Receiver):
                 "Use Router.instance() instead.")
 
         # otherwise, initialize as usual
-        component.Receiver.__init__(self)
         self.backends = []
         self.apps = []
-        self.running = False
         self.logger = None
+
+        self.running = False
+        """TODO: Docs"""
+
+        self.accepting = False
+        """TODO: Docs"""
+
+        self._queue = Queue.Queue()
+        """Pending incoming messages, populated by Router.incoming_message."""
 
 
     def __str__(self):
@@ -60,14 +67,43 @@ class Router (component.Receiver):
         return "Router"
 
 
-    def log(self, *args):
+    def log(self, level, msg, *args):
         if self.logger is not None:
-            self.logger.write(
-                self, *args)
+            self.logger.write(self,
+                level, msg, *args)
+
+
+    def log_last_exception(self, msg=None, level="error"):
+        """
+        Logs an exception, to allow rescuing of unexpected errors (in backends
+        and apps) without discarding the debug information or halting the entire
+        process.
+        """
+        
+        # fetch the traceback for this exception, as
+        # it would usually be dumped to the STDERR
+        str = traceback.format_exc()
+        
+        # prepend the error message, if one was provided
+        # (sometimes the exception alone is enough, but
+        # the called *should* provide more info)
+        if msg is not None:
+            str = "%s\n--\n%s" % (msg, str)
+        
+        # pass the message on it on to the logger
+        self.log(level, str)
+        
+        # during testing...
+        print "BOOM: %s" % str
 
 
     def set_logger(self, level, file):
         self.logger = log.Logger(level, file)
+
+
+    # -------------
+    # CONFIGURATION
+    # -------------
 
 
     def add_backend (self, type, name, conf={}):
@@ -135,8 +171,13 @@ class Router (component.Receiver):
         return app
 
 
+    # -------
+    # STARTUP
+    # -------
+
+
     def start_backend (self, backend):
-        while self.running:
+        while True:
             try:
                 backend.start()
 
@@ -184,8 +225,8 @@ class Router (component.Receiver):
 
 
     def start_all_backends (self):
-        """Starts all backends registed via Router.add_backend,
-           by calling self.start_backend in a new thread for each."""
+        """
+        Starts all backends registed via Router.add_backend, by calling self.start_backend in a new thread for each."""
 
         for backend in self.backends:
             worker = threading.Thread(
@@ -224,44 +265,133 @@ class Router (component.Receiver):
                 self.log_last_exception("The %s backend failed to stop" % backend.slug)
 
 
-    def start (self):
-        self.running = True
+    def start(self):
+        """
+        Starts polling the backends for incoming messages, and blocks until a
+        KeyboardInterrupt or SystemExit is raised, or Router.stop is called.
+        """
 
         # dump some debug info for now
         #self.info("BACKENDS: %r" % (self.backends))
         #self.info("APPS: %r" % (self.apps))
-        self.info("SERVING FOREVER...")
-        
+        self.log("info", "Starting %s..." % self)
+
         self.start_all_backends()
         self.start_all_apps()
-        
-        # wait until we're asked to stop
+        self.running = True
+
+        # now that everything is started,
+        # we are ready to accept messages
+        self.accepting = True
+
         while self.running:
             try:
-                self.run()
-                
+
+                # fetch the next pending incoming message, if one is available
+                # immediately. this increments the number of "tasks" on the
+                # queue, which MUST be decremented later to avoid a deadlock
+                # during graceful shutdown (it calls _queue.join to wait for all
+                # pending messages to be processed before stopping the backends 
+                # and terminating). see help(Queue.Queue.task_done) for more.
+                msg = self._queue.get(block=False)
+
+                # process the message (which currently (20091005) blocks until
+                # the outgoing responses are all sent), and ensure that the task
+                # counter is decremented
+                try:     self.incoming(msg)
+                finally: self._queue.task_done()
+
+            # if there were no messages waiting, wait a very short (in human
+            # terms) time before looping to check again. do this here (rather
+            # than every time) to avoid delaying shutdown or the next message
+            except Queue.Empty:
+                time.sleep(0.1)
+
+            # stopped via ctrl+c
             except KeyboardInterrupt:
-                self.warning("Caught KeyboardInterrupt")
+                self.log("warning", "Caught KeyboardInterrupt")
                 break
-                
+
+            # stopped via sys.exit
             except SystemExit:
-                self.warning("Caught SystemExit")
+                self.log("warning", "Caught SystemExit")
                 break
-        
-        self.info("Stopping all backends...")
+
+        # refuse to accept any new messages. the backend(s) might
+        # have to throw them away, but at least they can pass the
+        # refusal upstream to the device/gateway where possible
+        self.accepting = False
+
+        self.log("info", "Stopping all backends...")
         self.stop_all_backends()
         self.running = False
 
-    def stop (self):
-        self.running = False
+
+    # ------------------
+    # MESSAGE PROCESSING
+    # ------------------
+
+
+    def incoming_message(self, msg):
+        """
+        Adds 'msg' to the incoming message queue and returns True, or False if
+        this router is not currently accepting new messages (either because the
+        queue is full, or we are shutting down).
+
+        Adding a message to the queue is no guarantee that it will be processed
+        any time soon (although the queue is regularly polled while Router.start
+        is blocking), or responded to at all.
+        """
+
+        if not self.accepting:
+            return False
+
+        try:
+            self._queue.put(msg)
+            return True
+
+        # if the queue is of a limited size, it may raise the Full
+        # exception. there's no sense exploding (especially since
+        # we have a bunch of pending messages), so just refuse to
+        # accept it. hopefully the backend can in turn refuse it
+        except Queue.Full:
+            return False
+
+
+    def stop(self, graceful=False):
+        """
+        Stops the router, which unblocks the Router.start method as soon as
+        possible. This may leave unprocessed messages in the incoming or
+        outgoing queues.
         
-    def run(self):
-        msg = self.next_message(timeout=1.0)
-        if msg is not None:
-            self.incoming(msg)
-    
+        If the optional argument 'graceful' is True, this router does its best
+        to avoid leaving unprocessed messages around, by refusing to accept new
+        incoming messages and blocking (by calling Router.join) until all
+        currently pending messages are processed --then stopping.
+        """
+
+        if graceful:
+            self.accepting = False
+            self.join()
+
+        self.running = False
+
+
+
+    def join(self):
+        """
+        Blocks until the incoming message queue is empty. This method can
+        potentially block forever, if it is called while this Router is
+        accepting incoming messages.
+        """
+
+        self._queue.join()
+        return True
+
+
     def __sorted_apps(self):
         return sorted(self.apps, key=lambda a: a.priority())
+
 
     def incoming(self, message):
         """
@@ -287,7 +417,7 @@ class Router (component.Receiver):
           An opportunity to clean up anything started during earlier phases.
         """
 
-        self.info("Incoming message via %s: %s ->'%s'" %\
+        self.log("info", "Incoming message via %s: %s ->'%s'" %\
             (message.connection.backend, message.connection.identity, message.text))
 
         # loop through all of the apps and notify them of
@@ -296,7 +426,7 @@ class Router (component.Receiver):
         try:
             for phase in self.incoming_phases:
                 for app in self.__sorted_apps():
-                    self.debug("IN %s phase %s" % (phase, app))
+                    self.log("debug", "IN %s phase %s" % (phase, app))
                     responses = len(message.responses)
                     handled = False
                     try:
@@ -313,7 +443,7 @@ class Router (component.Receiver):
 
                     elif phase == 'handle' or phase == 'catch':
                         if handled is True:
-                            self.debug("%s short-circuited %s phase" % (app, phase))
+                            self.log("debug", "%s short-circuited %s phase" % (app, phase))
                             break
 
                     elif responses < len(message.responses):
@@ -334,8 +464,9 @@ class Router (component.Receiver):
         message.processed = True
 
 
+
     def outgoing(self, message):
-        self.info("Outgoing message via %s: %s <- '%s'" %\
+        self.log("info", "Outgoing message via %s: %s <- '%s'" %\
             (message.connection.backend, message.connection.identity, message.text))
         
         # first notify all of the apps that want to know
@@ -349,7 +480,7 @@ class Router (component.Receiver):
             # called with an incoming message is the last app called
             # with an outgoing message
             for app in reversed(self.__sorted_apps()):
-                self.debug("OUT %s phase %s" % (phase, app))
+                self.log("debug", "OUT %s phase %s" % (phase, app))
                 
                 try:
                     continue_sending = getattr(app, phase)(message)
@@ -361,7 +492,7 @@ class Router (component.Receiver):
 
         # now send the message out
         self.get_backend(message.connection.backend.name).send(message)
-        self.debug("SENT message '%s' to %s via %s" % (message.text,\
+        self.log("debug", "SENT message '%s' to %s via %s" % (message.text,\
             message.connection.identity, message.connection.backend))
         return True
 

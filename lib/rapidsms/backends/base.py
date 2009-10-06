@@ -2,15 +2,14 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 
-import time
-from Queue import Queue
+import time, Queue
 from rapidsms.component import Component
 from rapidsms.messages.incoming import IncomingMessage
 
 
-class BackendBase (Component):
+class BackendBase(Component):
     def __init__ (self, router, name):
-        self._queue = Queue()
+        self._queue = Queue.Queue()
         self._running = False
         self._router = router
         self._name = name
@@ -92,5 +91,4 @@ class BackendBase (Component):
 
 
     def route(self, msg):
-        # send it off to the router
-        self.router.send(msg)
+        return self.router.incoming_message(msg)

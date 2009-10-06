@@ -117,42 +117,9 @@ class Component(object):
     error    = _logging_method('error')
     critical = _logging_method('critical')
     
-    def log_last_exception(self, msg=None, level="error"):
-        """Logs an exception, to allow rescuing of unexpected
-        errors without discarding the debug information or
-        killing the entire process."""
-        
-        # fetch the traceback for this exception, as
-        # it would usually be dumped to the STDERR
-        str = traceback.format_exc()
-        
-        # prepend the error message, if one was provided
-        # (sometimes the exception alone is enough, but
-        # the called *should* provide more info)
-        if msg is not None:
-            str = "%s\n--\n%s" % (msg, str)
-        
-        # pass the message on it on to the logger
-        self.log(level, str)
-
-
-class Receiver(Component):
-    def __init__(self):
-        # do we want to put a limit on the queue size?
-        # and what do we do if the queue gets full?
-        self._queue = Queue.Queue()
-
-    @property
-    def message_waiting (self):
-        return self._queue.qsize()
- 
-    def next_message (self, timeout=0.0):
-        try:
-            return self._queue.get(bool(timeout), timeout)
-        except Queue.Empty:
-            return None
-
-    def send(self, message):
-        # block until we can add to the queue.
-        # it shouldn't be that long.
-        self._queue.put(message, True)
+    def log_last_exception(self, *args, **kwargs):
+        """
+        TODO: docs
+        """
+        return self.router.log_last_exception(
+            *args, **kwargs)

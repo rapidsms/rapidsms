@@ -47,29 +47,5 @@ class TestComponent(unittest.TestCase):
         self.assertTrue(callable(Component.error), "Component has error log method")
         self.assertTrue(callable(Component.critical), "Component has critical log method")
 
-class TestReceiver(unittest.TestCase):
-    def test_message_waiting(self):
-        r = Receiver()
-        r.send("message 1")
-        self.assertEquals(r.message_waiting, 1, "1 message is waiting")
-
-    def test_next_message (self):
-        r = Receiver()
-        self.assertEquals(r.next_message(), None, "no message waiting")
-        r.send("message 2")
-        self.assertEquals(r.next_message(), "message 2", "got a message")
-        self.assertEquals(r.next_message(), None, "message was removed")
-
-        def send_a_message_later (secs):
-            time.sleep(secs)
-            r.send("message 3")
-        
-        thread = threading.Thread(target=send_a_message_later, args=(0.5,))
-        thread.start()
-        self.assertEquals(r.next_message(5.0), "message 3", "block and wait")        
-
-        thread = threading.Thread(target=send_a_message_later, args=(5.0,))
-        thread.start()
-        self.assertEquals(r.next_message(0.5), None, "next_msg doesn't block too long")        
 if __name__ == "__main__":
     unittest.main()

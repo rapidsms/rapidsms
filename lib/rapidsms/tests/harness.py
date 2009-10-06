@@ -27,17 +27,6 @@ class MockLogger (list):
 
 # a subclass of Router with all the moving parts replaced
 class MockRouter (Router):
-    def __init__ (self):
-        Router.__init__(self, prevent=False)
-        self.logger = MockLogger()
-
-    def add_backend (self, backend):
-        self.backends.append(backend)
-
-    def add_app (self, app):
-        app._configure()
-        self.apps.append(app)
-
     def start (self):
         self.running = True
         self.start_all_backends()
@@ -48,14 +37,15 @@ class MockRouter (Router):
         self.stop_all_backends()
 
 class MockBackend (BackendBase):
-    def start (self):
-        self._running = True
+    def start(self):
         self.outgoing = []
+        BackendBase.start(self)
 
-    def run (self):
-        while self.running:
-            msg = self.next_message(0.25)
-            if msg is not None: self.outgoing.append(msg) 
+    def send(self, msg):
+        self.outgoing.append(msg)
+
+    def next_outgoing_message(self):
+        return self.outgoing.pop(0)
  
 # a subclass of App with all the moving parts replaced
 class MockApp (App):
