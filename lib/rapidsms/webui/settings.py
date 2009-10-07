@@ -98,9 +98,7 @@ RAPIDSMS_CONF = Config(os.environ["RAPIDSMS_INI"])
 
 # since iterating and reading the config of apps is
 # common, build a handy dict of apps and their configs
-RAPIDSMS_APPS = dict([
-    (app["type"], app)
-    for app in RAPIDSMS_CONF["rapidsms"]["apps"]])
+RAPIDSMS_APPS = RAPIDSMS_CONF["rapidsms"]["apps"]
 
 
 
@@ -146,4 +144,11 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.admin',
     'django.contrib.admindocs'
-] + [app["module"] for app in RAPIDSMS_APPS.values()]
+
+# by using the key names as the python module path, we 
+# avoid actually fetching the lazy app confs. this is
+# inconsistant with my fork (adammck), but since we've
+# decided to standardize the app imports anyway (iirc,
+# ./apps will be added to the python PATH), this will
+# resolve itself fairly soon -- as soon as i pull
+] + ["apps.%s" % app for app in RAPIDSMS_APPS.keys()]

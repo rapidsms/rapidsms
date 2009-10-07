@@ -70,10 +70,11 @@ class Client(object):
     
     def __encode(self, dict):
         
-        # helper function to encode everything
-        # encodable, and ignore everything else
+        # helper function to encode unicode into
+        # ascii (which can be safely sent across
+        # the wire), and ignore everything else
         def _enc(var):
-            if hasattr(var, "encode"):
+            if type(var) == unicode:
                 return var.encode("utf-8")
             return var
         

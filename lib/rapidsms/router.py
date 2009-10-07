@@ -86,7 +86,7 @@ class Router (component.Receiver):
             # pass the configuration on to the app. note that
             # we're not watching for keyword argument any more,
             # since Component._configure wraps that nicely now
-            app._configure(**conf)
+            app._configure(**dict(conf))
             self.apps.append(app)
 
             # dump the app config. should this be debug level?
@@ -214,7 +214,7 @@ class Router (component.Receiver):
                 
                 # find the backend named by the message,
                 # reconstruct the object, and send it
-                for backend in self.backends:
+                for backend in self.backends.values():
                     if backend.slug == be_slug:
                         msg = backend.message(identity, txt)
                         self.info("Sending pending message: %r" % msg)
