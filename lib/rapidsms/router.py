@@ -1,16 +1,17 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-import time, datetime, os, sys, Queue
-import threading
-import traceback
 
-import component
-import log
+import os, sys, threading, traceback, time, datetime, Queue
 
-from utils.modules import try_import, get_class
-from backends.base import BackendBase
-from app import App as AppBase
+from django.dispatch import Signal
+
+from .utils.modules import try_import, get_class
+from .backends.base import BackendBase
+from .app import App as AppBase
+from .log import Logger
+
+
 
 
 class Router (object):
@@ -21,6 +22,12 @@ class Router (object):
 
     incoming_phases = ('filter', 'parse', 'handle', 'catch', 'cleanup')
     outgoing_phases = ('outgoing', 'pre_send')
+
+    
+    pre_start  = Signal(providing_args=["router"])
+    post_start = Signal(providing_args=["router"])
+    pre_stop   = Signal(providing_args=["router"])
+    post_stop  = Signal(providing_args=["router"])
 
 
     __instance = None
@@ -92,13 +99,10 @@ class Router (object):
         
         # pass the message on it on to the logger
         self.log(level, str)
-        
-        # during testing...
-        print "BOOM: %s" % str
 
 
     def set_logger(self, level, file):
-        self.logger = log.Logger(level, file)
+        self.logger = Logger(level, file)
 
 
     # -------------
@@ -276,8 +280,10 @@ class Router (object):
         #self.info("APPS: %r" % (self.apps))
         self.log("info", "Starting %s..." % self)
 
+        self.pre_start.send(self)
         self.start_all_backends()
         self.start_all_apps()
+        self.post_start.send(self)
         self.running = True
 
         # now that everything is started,
@@ -495,8 +501,3 @@ class Router (object):
         self.log("debug", "SENT message '%s' to %s via %s" % (message.text,\
             message.connection.identity, message.connection.backend))
         return True
-
-
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod()

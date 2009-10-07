@@ -12,6 +12,7 @@ class Command(NoArgsCommand):
 
 
     def handle_noargs(self, **options):
+        verbosity = int(options.get("verbosity", 1))
 
         # fetch all of the backends (identified by their
         # name) that we already have instances for
@@ -21,11 +22,12 @@ class Command(NoArgsCommand):
         # find any running backends which currently
         # don't have instances, and fill in the gaps
         for name in settings.RAPIDSMS_BACKENDS.keys():
-
             if not name in known_backend_names:
+                known_backend_names.append(name)
                 backend = Backend.objects.create(
                     name=name)
 
-                # log what we did to the console
-                print "Added persistant backend %s" % backend
-                known_backend_names.append(name)
+                # log at the same level as syncdb's "created table..."
+                # messages, to stay silent when called with -v 0
+                if verbosity >= 1:
+                    print "Added persistant backend %s" % backend

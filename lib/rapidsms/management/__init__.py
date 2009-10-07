@@ -3,18 +3,16 @@
 
 
 from django.core.management import call_command
-from django.db.models import signals
+from ..rapidsms import router
 
 
-def update_backends(**kwargs):
-    call_command("update_backends")
-
-#def update_apps(**kwargs):
-#    call_command("update_apps")
+def update_persistance(**kwargs):
+    call_command("update_backends", verbosity=0)
+    call_command("update_apps", verbosity=0)
 
 
-# update the backends and apps every time rapidsms
-# starts, so we have an accurate representation of
-# the router in the database at all times
-signals.post_syncdb.connect(update_backends)
-#signals.post_syncdb.connect(update_apps)
+# the app and backend configuration can change at any
+# time, but it doesn't really matter until the router
+# is reloaded, so synchronize everyting during startup
+router.pre_start.connect(
+    update_persistance)

@@ -7,28 +7,6 @@ import os, sys, shutil
 
 # the Manager class is a bin for various RapidSMS specific management methods
 class Manager (object):
-    def route (self, conf, *args):
-        router = Router.instance()
-        router.set_logger(conf["log"]["level"], conf["log"]["file"])
-        router.info("RapidSMS Server started up")
-
-        # even though we have the original rapidsms conf, iterate
-        # the running apps through the django settings, since app
-        # dependencies will be managed there (by depends.py). also,
-        # i'm trying to ignore the .ini file so hard that it dies
-        from rapidsms.djangoproject.settings import RAPIDSMS_APPS, RAPIDSMS_BACKENDS
-
-        # add each application from conf
-        for name, conf in RAPIDSMS_APPS.items():
-            router.add_app(name, conf)
-
-        # add each backend from conf
-        for name, conf in RAPIDSMS_BACKENDS.items():
-            router.add_backend(conf.pop("type"), name, conf)
-
-        # wait for incoming messages
-        router.start()
-
     def _skeleton (self, tree):
         return os.path.join(os.path.dirname(__file__), "skeleton", tree)
 
@@ -79,6 +57,7 @@ def start (args):
         os.environ["DJANGO_SETTINGS_MODULE"] = "rapidsms.djangoproject.settings"
         from django.core.management import setup_environ, execute_manager
         setup_environ(settings)
+
     else:
         settings = None
 
@@ -90,7 +69,8 @@ def start (args):
 
     if hasattr(Manager, args[1]):
         handler = getattr(Manager(), args[1])
-        handler(conf, *args[2:])
+        handler(*args[2:])
+
     elif settings:
         # none of the commands were recognized,
         # so hand off to Django
