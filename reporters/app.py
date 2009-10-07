@@ -8,20 +8,19 @@ from rapidsms.parsers import Matcher
 from models import *
 
 
-
-
 class App(rapidsms.app.App):
     MSG = {
         "en": {
             "bad-alias":   "Sorry, I don't know anyone by that name.",
-            "first-login": "Hello, %(name)s! This is the first time I've met you.",
-            "login":       "Hello, %(name)s! It has been %(days)d days since I last heard from you.",
+            "first-login": "Nice to meet you, %(name)s. Your alias is %(alias)s.",
+            "login":       "Hello, %(name)s. It has been %(days)d days since I last heard from you.",
             "reminder":    "I think you are %(name)s.",
             "dont-know":   "Please register your phone with RapidSMS.",
             "list":        "I have %(num)d %(noun)s: %(items)s",
             "empty-list":  "I don't have any %(noun)s.",
             "lang-set":    "I will now speak to you in English, where possible.",
-            "denied":      "Sorry, you must identify yourself before you can do that." },
+            "denied":      "Sorry, you must identify yourself before you can do that.",
+            "disabled":    "Sorry, but that functionality is disabled." },
 
         # worst german translations _ever_
         # just an example. all of this stuff
@@ -70,6 +69,11 @@ class App(rapidsms.app.App):
         return msg.respond(self.__str("denied", msg.reporter))
 
 
+    def configure(self, allow_join, allow_list, **kwargs):
+        self.allow_join = allow_join
+        self.allow_list = allow_list
+
+
     def start(self):
 
         # fetch a list of all the backends
@@ -95,20 +99,10 @@ class App(rapidsms.app.App):
         msg.persistant_connection = conn
         msg.reporter = conn.reporter
 
-        # store a handy dictionary, containing the most useful persistance
-        # information that we have. this is useful when creating an object
-        # linked to _something_, like so:
-        # 
-        #   class SomeObject(models.Model):
-        #     reporter   = models.ForeignKey(Reporter, null=True)
-        #     connection = models.ForeignKey(PersistantConnection, null=True)
-        #     stuff      = models.CharField()
-        #
-        #   # this object will be linked to a reporter,
-        #   # if one exists - otherwise, a connection
-        #   SomeObject(stuff="hello", **msg.persistance_dict)
-        if msg.reporter: msg.persistance_dict = { "reporter": msg.reporter }
-        else:            msg.persistance_dict = { "connection": msg.persistant_connection }
+        # store a handy dictionary containing the most personal persistance
+        # information that we have about this connection, for other apps to
+        # easily link back to it. See PersistantConnection for more docs.
+        if msg.reporter: msg.persistance_dict = conn.dict
         
         # log, whether we know who the sender is or not
         if msg.reporter: self.info("Identified: %s as %r" % (conn, msg.reporter))
@@ -127,7 +121,7 @@ class App(rapidsms.app.App):
         # replace it *with* the keyworder, or extract it
         # into a parser of its own
         map = {
-            "register":  ["register (whatever)"],
+            "register":  ["(?:join|register|reg) (whatever)"],
             "identify":  ["identify (slug)", "this is (slug)", "i am (slug)"],
             "remind":    ["whoami", "who am i"],
             "reporters": ["list reporters", "reporters\\?"],
@@ -147,10 +141,18 @@ class App(rapidsms.app.App):
 
 
     def register(self, msg, name):
+
+        # abort if self-registration isn't allowed
+        if not self.allow_join:
+            msg.respond(self.__str("disabled"))
+            return True
+
         try:
             # parse the name, and create a reporter
             alias, fn, ln = Reporter.parse_name(name)
-            rep = Reporter(alias=alias, first_name=fn, last_name=ln)
+            rep = Reporter(
+                first_name=fn, last_name=ln,
+                alias=alias, registered_self=True)
             rep.save()
 
             # attach the reporter to the current connection
@@ -159,7 +161,8 @@ class App(rapidsms.app.App):
 
             msg.respond(
                 self.__str("first-login", rep) % {
-                 "name": rep.full_name() })
+                    "name": rep.full_name(),
+                    "alias": rep.alias })
 
         # something went wrong - at the
         # moment, we don't care what
@@ -183,6 +186,10 @@ class App(rapidsms.app.App):
             return True
 
 
+        # before updating the connection, take note
+        # of the last time that we saw this reporter
+        ls = rep.last_seen()
+
         # assign the reporter to this message's connection
         # (it may currently be assigned to someone else)
         msg.persistant_connection.reporter = rep
@@ -192,7 +199,6 @@ class App(rapidsms.app.App):
 
         # send a welcome message back to the now-registered reporter,
         # depending on how long it's been since their last visit
-        ls = rep.last_seen()
         if ls is not None:
             msg.respond(
                 self.__str("login", rep) % {
@@ -203,7 +209,8 @@ class App(rapidsms.app.App):
         else:
             msg.respond(
                 self.__str("first-login", rep) % {
-                    "name": unicode(rep) })
+                    "name": unicode(rep),
+                    "alias": rep.alias })
 
         # re-call this app's prepare, so other apps can
         # get hold of the reporter's info right away
@@ -228,36 +235,39 @@ class App(rapidsms.app.App):
 
 
     def reporters(self, msg):
-        if msg.reporter is not None:
 
-            # collate all reporters, with their full name,
-            # username, and current connection. TODO: this
-            # sucks, don't use __unicode__ and __repr__!
-            items = [
-                "%r (%s)" % (rep, rep.connection())
-                for rep in Reporter.objects.all()
-                if rep.connection()]
-
-            if items:
-                msg.respond(
-                    self.__str("list", msg.reporter) % {
-                        "items": ", ".join(items),
-                        "noun":  "reporters",
-                        "num":    len(items), })
-
-            else:
-                # there are no reportes to list!
-                msg.respond(
-                    self.__str("empty-list", msg.reporter) % {
-                        "noun": "reporters" })
+        # abort if listing reporters isn't allowed
+        # (it can get rather long and expensive)
+        if not self.allow_join:
+            msg.respond(self.__str("disabled"))
+            return True
 
         # not identified yet; reject, so
         # we don't allow random people to
         # query our reporters list
-        else:
-            msg.respond(
-                self.__str(
-                    "denied", msg.reporter))
+        if msg.reporter is None:
+            msg.respond(self.__str("denied"))
+            return True
+
+        # collate all reporters, with their full name,
+        # username, and current connection.
+        items = [
+            "%s (%s) %s" % (
+                rep.full_name(),
+                rep.alias,
+                rep.connection().identity)
+            for rep in Reporter.objects.all()
+            if rep.connection()]
+
+        # respond with the concatenated list.
+        # no need to check for empty _items_. there will
+        # always be at least one reporter, because only
+        # identified reporters can trigger this handler
+        msg.respond(
+            self.__str("list", msg.reporter) % {
+                "items": ", ".join(items),
+                "noun":  "reporters",
+                "num":    len(items) })
 
 
     def lang(self, msg, code):

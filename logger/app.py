@@ -1,25 +1,20 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-import rapidsms
 
-import models
+import rapidsms
+from apps.reporters.models import PersistantConnection
 from models import OutgoingMessage, IncomingMessage
 
+
 class App(rapidsms.app.App):
-    
-    def handle(self, message):
-        # make and save messages on their way in and 
-        # cast connection as string so pysqlite doesnt complain
-        msg = IncomingMessage(identity=message.connection.identity, text=message.text,
-            backend=message.connection.backend.name)
-        msg.save()
-        self.debug(msg)
-    
-    def outgoing(self, message):
-        # make and save messages on their way out and 
-        # cast connection as string so pysqlite doesnt complain
-        msg = OutgoingMessage(identity=message.connection.identity, text=message.text, 
-            backend=message.connection.backend.name)
-        msg.save()
-        self.debug(msg)
+    def _who(self, msg):
+        return PersistantConnection.from_message(msg).dict
+
+    def handle(self, msg):
+        IncomingMessage.objects.create(
+            text=msg.text, **self._who(msg))
+
+    def outgoing(self, msg):
+        OutgoingMessage.objects.create(
+            text=msg.text, **self._who(msg))

@@ -19,9 +19,41 @@ class ReporterGroup(models.Model):
     class Meta:
         verbose_name = "Group"
 
-    
+
     def __unicode__(self):
         return self.title
+
+    def __repr__(self):
+        return '<%s: %s>' %\
+            (type(self).__name__, self.title)
+
+
+    # see the FOLLOW app, for now,
+    # although this will be expanded
+    @classmethod
+    def __search__(cls, who, terms):
+
+        # re-join the terms into a single string, and search
+        # for a group with this title (we wont't worry about
+        # other delimiters for now, but might need to come back)
+        try:
+            return cls.objects.get(
+                title__iexact=" ".join(terms))
+
+        # if this doesn't work, the terms
+        # are not a valid location name
+        except cls.DoesNotExist, cls.MultipleObjectsReturned:
+            return None
+
+
+    def __message__(self, *args, **kwargs):
+        """Sends a message to every Reporter in this ReporterGroup."""
+
+        for rep in self.reporters.all():
+            try:
+                rep.__message__(*args, **kwargs)
+            except:
+                pass
 
 
     # TODO: rename to something that indicates
@@ -42,9 +74,6 @@ class Reporter(models.Model):
     first_name = models.CharField(max_length=30, blank=True)
     last_name  = models.CharField(max_length=30, blank=True)
     groups     = models.ManyToManyField(ReporterGroup, related_name="reporters", blank=True)
-
-    def __unicode__(self):
-            return self.connection.identity
 
 
     # the language that this reporter prefers to
@@ -67,6 +96,11 @@ class Reporter(models.Model):
     registered_self = models.BooleanField()
 
 
+    # this belongs in Meta, but Django won't
+    # let us put _unapproved_ things there
+    followable = True
+
+
     class Meta:
         ordering = ["last_name", "first_name"]
 
@@ -80,9 +114,16 @@ class Reporter(models.Model):
         return self.full_name()
 
     def __repr__(self):
-        return "%r (%r)" % (
-            self.full_name(),
-            self.alias)
+        fn = self.full_name()
+        n = type(self).__name__
+        
+        if fn == "":
+            return '<%s: %s>' %\
+                (n, self.alias)
+
+        else:
+            return '<%s: %s (%s)>' %\
+                (n, fn, self.alias)
 
     def __json__(self):
         return {
@@ -91,6 +132,28 @@ class Reporter(models.Model):
             "first_name": self.first_name,
             "last_name":  self.last_name,
             "str":        unicode(self) }
+
+    # see the FOLLOW app, for now,
+    # although this will be expanded
+    @classmethod
+    def __search__(cls, who, terms):
+        try:
+            if len(terms) == 1:
+                try:
+                    return cls.objects.get(
+                        pk=int(terms[0]))
+
+                except ValueError:
+                    return cls.objects.get(
+                        alias__iexact=terms[0])
+
+            elif len(terms) == 2:
+                return cls.objects.get(
+                    first_name__iexact=terms[0],
+                    last_name__iexact=terms[1])
+
+        except cls.DoesNotExist:
+            return None
 
 
     @classmethod
@@ -228,6 +291,10 @@ class PersistantBackend(models.Model):
     def __unicode__(self):
         return self.title
 
+    def __repr__(self):
+        return '<%s: %s via %s>' %\
+            (type(self).__name__, self.slug)
+
 
     @classmethod
     def from_message(klass, msg):
@@ -264,6 +331,10 @@ class PersistantConnection(models.Model):
             self.backend,
             self.identity)
 
+    def __repr__(self):
+        return '<%s: %s via %s>' %\
+            (type(self).__name__, self.identity, self.backend.slug)
+
     def __json__(self):
         return {
             "pk": self.pk,
@@ -286,6 +357,38 @@ class PersistantConnection(models.Model):
         # a parameter to return the tuple
         return obj
 
+
+    @property
+    def dict(self):
+        """Returns a handy dictionary containing the most personal persistance
+           information that we have about this connection. this is useful when
+           creating an object that we would like to link to a reporter, but can
+           fall back to a connection if we haven't identified them yet.
+
+           For example:
+
+               class SomeObject(models.Model):
+                   connection = models.ForeignKey(PersistantConnection, null=True)
+                   reporter   = models.ForeignKey(Reporter, null=True)
+                   stuff      = models.CharField()
+
+                # this object will be linked to a Reporter, if
+                # one exists - otherwise, a PersistantConnection
+                SomeObject(stuff="hello", **connection.dict)
+
+           Don't forget to verify that _one_ of reporter or connection is not
+           None before saving. See logger.models.ModelBase for an example."""
+
+        if self.reporter:
+            return { "reporter": self.reporter }
+
+        elif self.pk:
+            return { "connection": self }
+
+        else:
+            raise(Exception,
+                "This PersistantConnection must be saved " +\
+                "before it can be linked to another object.")
 
     def seen(self):
         """"Updates the last_seen field of this object to _now_, and saves.

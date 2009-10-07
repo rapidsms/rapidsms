@@ -1,0 +1,110 @@
+{% extends "locations/base.html" %}
+{% load pagination %}
+{% load self_link %}
+
+{% block left %}
+<div class="map">
+	<div id="map"></div>
+
+	<script src="http://maps.google.com/maps?file=api&key=" type="text/javascript"></script>
+	<script src="/static/locations/javascripts/labeledmarker.yc.js" type="text/javascript"></script>
+	<script type="text/javascript">
+		$(function() {
+			var gm = google.maps;
+			if(gm.BrowserIsCompatible()) {
+				var INITIAL_ZOOM = 7;
+
+				/* initialize the map with the full
+				 * map-type, zoom, and pan controls */
+				var map = new gm.Map2($("#map").get(0));
+				map.addControl(new gm.LargeMapControl());
+				map.addControl(new gm.MapTypeControl());
+				map.disableDoubleClickZoom();
+
+				/* when the document is unloaded, allow the gmap
+				 * to release it's resoures (especially for IE6) */
+				$(document.body).unload(function() {
+					google.maps.Unload();
+				});
+
+				/* we're adding a new location, so center
+				 * the map over... guatemala! (what?) */
+				var lat = 15.800;
+				var lon = -90.588;
+				var latlon = new gm.LatLng(lat, lon);
+				map.setCenter(latlon, INITIAL_ZOOM);
+
+				var sprite = function(offset) {
+					var icon = new GIcon(G_DEFAULT_ICON);
+					icon.sprite = {
+						"image": "/static/locations/images/markers.png",
+						"top": offset * 34
+					};
+
+					return icon;
+				};
+
+				/* iterate each of the markers (ALL locations),
+				 * and add a sprite to the map for each one */
+				$("#markers div").each(function() {
+					var loc = $(this);
+					var point = new GLatLng(loc.attr("lat"), loc.attr("lng"));
+					var marker = new LabeledMarker(point, { "labelText": loc.attr("code"), "labelClass": "caption", "icon": sprite(loc.attr("marker")) });
+					marker.bindInfoWindow(this);
+					map.addOverlay(marker);
+				});
+			}
+		});
+	</script>
+	
+	<div id="markers">{% for location in all_locations %}
+		<div code="{{ location.code }}" marker="{{ location.type.marker }}" lat="{{ location.latitude }}" lng="{{ location.longitude }}">
+			<strong>{{ location.name }}</strong>
+		</div>{% endfor %}
+	</div>
+</div>
+{% endblock %}
+
+{% block right %}
+<div class="module">
+	<h2>All {{ location_type.plural }}</h2>
+	<div class="help">
+		<p>
+			wat
+		</p>
+	</div>
+	<table>
+		<thead>
+			<tr>
+				<th scope="col" title="Location Code"></th>
+				<th scope="col">Location</th>{% for verbose_name, relation in relations %}
+				<th scope="col">{{ verbose_name }}</th>{% endfor %}
+			</tr>
+		</thead>
+		<tbody>{% if locations.object_list %}{% for location in locations.object_list %}
+			<tr>
+				<td class="number">{{ location.code }}</td>
+				<td><a href="{% url edit_location location_type_slug=location_type.slug location_pk=location.pk %}">{{ location.name }}</a></td>{% for objects in location.related_objects %}
+				<td>{{ objects.count }}</td>{% endfor %}
+			</tr>{% endfor %}{% else %}
+			<tr class="no-data">
+				<td colspan="2">
+					No {{ location_type.plural }} Yet.
+					<a href="" class="add">
+						Add a {{ location_type.plural }}
+					</a>
+				</td>
+			</tr>{% endif %}
+		</tbody>
+		<tfoot>
+				<td colspan="2">
+					{% paginator locations %}
+					<a href="">Export to Excel</a>
+				</td>
+		</tfoot>
+	</table>
+	<div class="toolbar">
+		<a href="{% url add_location location_type_slug=location_type.slug %}" class="add">Add a {{ location_type.singular }}</a>
+	</div>
+</div>
+{% endblock %}

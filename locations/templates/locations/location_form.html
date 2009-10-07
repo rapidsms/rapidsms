@@ -7,7 +7,7 @@
 <div class="module location">
 	<h2>{% if location %}Edit {{ location }}{% else %}Add a Location{% endif %}</h2>
 
-	<form method="post" id="fm-loc" action="/loation/{% if location %}{{ location.pk }}{% else %}add{% endif %}">
+	<form method="post" id="fm-loc" action="{{ save_url }}">
 		<div>
 			<label for="fm-loc-name">Name</label>
 			<input type="text" class="required" id="fm-loc-name" name="name"{% if location %} value="{{ location.name }}"{% endif %} />
