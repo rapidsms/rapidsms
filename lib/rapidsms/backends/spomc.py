@@ -28,7 +28,7 @@ class Backend(BackendBase):
 
         # pass it off to the router for dispatch
         x = self.message(phone_number, message_text)
-        self.router.send(x)
+        self.router.incoming_message(x)
 
 
     def send(self, message):
@@ -44,4 +44,3 @@ class Backend(BackendBase):
     def stop(self):
         BackendBase.stop(self)
         self.client.unsubscribe()
-        self.info("Shutting down...")

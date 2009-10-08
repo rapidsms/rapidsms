@@ -126,7 +126,7 @@ class Backend(BackendBase):
                 # we got an sms! hand it off to the
                 # router to be dispatched to the apps
                 x = self.message(msg.sender, msg.text)
-                self.router.send(x)
+                self.router.incoming_message(x)
 
             # wait for POLL_INTERVAL seconds before continuing
             # (in a slightly bizarre way, to ensure that we abort
