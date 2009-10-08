@@ -290,8 +290,8 @@ class Router (object):
         # we are ready to accept messages
         self.accepting = True
 
-        while self.running:
-            try:
+        try:
+            while self.running:
 
                 # fetch the next pending incoming message, if one is available
                 # immediately. this increments the number of "tasks" on the
@@ -299,29 +299,28 @@ class Router (object):
                 # during graceful shutdown (it calls _queue.join to wait for all
                 # pending messages to be processed before stopping the backends 
                 # and terminating). see help(Queue.Queue.task_done) for more.
-                msg = self._queue.get(block=False)
+                try:
+                    msg = self._queue.get(block=False)
 
-                # process the message (which currently (20091005) blocks until
-                # the outgoing responses are all sent), and ensure that the task
-                # counter is decremented
-                try:     self.incoming(msg)
-                finally: self._queue.task_done()
+                    # process the message (which currently (20091005) blocks
+                    # until the outgoing responses are all sent), and ensure
+                    # that the task counter is decremented
+                    self.incoming(msg)
+                    self._queue.task_done()
 
-            # if there were no messages waiting, wait a very short (in human
-            # terms) time before looping to check again. do this here (rather
-            # than every time) to avoid delaying shutdown or the next message
-            except Queue.Empty:
-                time.sleep(0.1)
+                # if there were no messages waiting, wait a very short (in human
+                # terms) time before looping to check again. do this here (rather
+                # than every time) to avoid delaying shutdown or the next message
+                except Queue.Empty:
+                    time.sleep(0.1)
 
-            # stopped via ctrl+c
-            except KeyboardInterrupt:
-                self.log("warning", "Caught KeyboardInterrupt")
-                break
+        # stopped via ctrl+c
+        except KeyboardInterrupt:
+            self.log("warning", "Caught KeyboardInterrupt")
 
-            # stopped via sys.exit
-            except SystemExit:
-                self.log("warning", "Caught SystemExit")
-                break
+        # stopped via sys.exit
+        except SystemExit:
+            self.log("warning", "Caught SystemExit")
 
         # refuse to accept any new messages. the backend(s) might
         # have to throw them away, but at least they can pass the
