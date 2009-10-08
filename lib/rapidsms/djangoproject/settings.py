@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-import os, time
+import os, time, tempfile
 
 
 DEBUG = True
@@ -73,6 +73,12 @@ TEMPLATE_DIRS = [
     # Don't forget to use absolute paths, not relative paths.
 ]
 
+
+# since we might hit the database from any thread during testing, the in-memory
+# sqlite database isn't sufficient. it spawns a separate virtual database for
+# each thread, and syncdb is only called for the first. this leads to confusing
+# "no such table" errors. so i'm defaulting to a temporary file instead.
+TEST_DATABASE_NAME = os.path.join(tempfile.gettempdir(), "rapidsms.test.sqlite3")
 
 
 # ====================
