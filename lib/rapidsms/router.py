@@ -12,8 +12,6 @@ from .app import App as AppBase
 from .log import Logger
 
 
-
-
 class Router (object):
     """
     >>> "wat"
@@ -500,3 +498,11 @@ class Router (object):
         self.log("debug", "SENT message '%s' to %s via %s" % (message.text,\
             message.connection.identity, message.connection.backend))
         return True
+
+
+# a single instance of the router singleton is available globally,
+# like the db connection. it shouldn't be necessary to muck with
+# this very often (since most interaction with the Router happens
+# within an App or Backend, which have their own .router property),
+# but when it is, it should be done via this process global
+router = Router.instance()

@@ -15,15 +15,6 @@ from app import App
 from messages import OutgoingMessage as Message
 
 
-# a single instance of the router singleton is available globally,
-# like the db connection. it shouldn't be necessary to muck with
-# this very often (since most interaction with the Router happens
-# within an App or Backend, which have their own .router property),
-# but when it is, it should be done via this process global
-from .router import Router
-router = Router.instance()
-
-
 def get_rapidsms_version ():
     try:
         # do we have a static version set from an install?

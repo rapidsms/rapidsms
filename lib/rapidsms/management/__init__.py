@@ -3,7 +3,7 @@
 
 
 from django.core.management import call_command
-from ..rapidsms import router
+from ..rapidsms.router import router
 
 
 def update_persistance(**kwargs):
