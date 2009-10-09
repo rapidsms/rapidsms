@@ -33,6 +33,3 @@ class TestLog(unittest.TestCase):
         self.tmp.seek(0)
         output = self.tmp.read()
         self.assertEquals(output, expected_output.lstrip(), "got expected output")
-
-if __name__ == "__main__":
-    unittest.main()

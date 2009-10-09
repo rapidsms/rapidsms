@@ -2,7 +2,7 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 import unittest
-from rapidsms.component import Component, Receiver
+from rapidsms.component import Component
 import threading, time
 
 class TestComponent(unittest.TestCase):
@@ -46,6 +46,3 @@ class TestComponent(unittest.TestCase):
         self.assertTrue(callable(Component.warning), "Component has warning log method")
         self.assertTrue(callable(Component.error), "Component has error log method")
         self.assertTrue(callable(Component.critical), "Component has critical log method")
-
-if __name__ == "__main__":
-    unittest.main()

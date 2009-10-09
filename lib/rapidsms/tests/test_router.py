@@ -3,7 +3,7 @@
 
 import unittest, threading
 from rapidsms.router import Router
-from rapidsms.backends.backend import Backend
+from rapidsms.backends.base import BackendBase
 from rapidsms.tests.harness import MockApp, MockLogger
 
 class TestRouter(unittest.TestCase):
@@ -68,6 +68,3 @@ class TestRouter(unittest.TestCase):
    
     def test_outgoing(self):
         pass
-
-if __name__ == "__main__":
-    unittest.main()

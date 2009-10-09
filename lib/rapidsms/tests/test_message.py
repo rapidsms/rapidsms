@@ -68,6 +68,3 @@ class TestMessage(unittest.TestCase):
         waiting = self.backend.next_message()
         self.assertEquals(waiting.text, "and again?", "the backend got the message (3)")
         self.router.stop()
-
-if __name__ == "__main__":
-    unittest.main()

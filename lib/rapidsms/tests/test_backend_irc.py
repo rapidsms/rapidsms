@@ -19,6 +19,3 @@ class TestBackendIRC(unittest.TestCase):
                               "IRC backend has channels correctly set")
         except ImportError:
             pass
-
-if __name__ == "__main__":
-    unittest.main()

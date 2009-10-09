@@ -89,7 +89,3 @@ class TestConfig(unittest.TestCase):
             "config does not contain a section that it should")
         self.assertFalse("bogus" in self.config, 
             "config contains a section that it should not have")
-
-
-if __name__ == "__main__":
-    unittest.main()

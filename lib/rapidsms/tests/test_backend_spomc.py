@@ -13,6 +13,3 @@ class TestBackendSpomc(unittest.TestCase):
         backend.configure(host="localhost",port=65000)
         self.assertEquals(type(backend), Backend, "SPOMC backend loads")
         self.assertEquals(type(backend.client), Client, "SPOMC backend has Spomsky client")
-
-if __name__ == "__main__":
-    unittest.main()
