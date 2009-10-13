@@ -108,12 +108,39 @@ class Router (object):
     # -------------
 
 
-    def add_backend (self, type, name, conf={}):
+    def add_backend(self, type, name, config={}):
         """
-        Finds a RapidSMS backend class (given its module name (the "type" of the
-        backend)), instantiates and (optionally) configures it, and adds it to
-        the list of backends that are polled for incoming messages. Returns the
-        configured instance, or raises ImportError if the module was invalid.
+        Finds a RapidSMS backend class, instantiates and (optionally) configures
+        it, and adds it to the list of backends that will be polled for incoming
+        messages while it is running. Returns the configured instance, or raises
+        ImportError if the module was invalid.
+
+        >>> router = Router.instance()
+        >>> backend = router.add_backend(
+        ...     "base", "my_mock_backend",
+        ...     { "a": "Alpha", "b": "Beta" })
+
+        (The class of the Backend instance is derrived from 'type' by importing
+        the '"rapidsms.backends.%s" % (type)' module, and looking for a subclass
+        of BackendBase.)
+
+        >>> backend.__class__
+        <class 'rapidsms.backends.base.BackendBase'>
+
+        >>> backend.name
+        'my_mock_backend'
+
+        >>> backend.config['a']
+        'Alpha'
+        
+        The instance is added to the router's list of backends, and is regularly
+        polled for new messages once the router is started.
+
+        >>> backend in router.backends
+        True
+        
+        # TODO: check that the router polls this backend once started. maybe
+        # start it in a separate thread. (is this too much for doctest?)
         """
 
         # backends live in rapidsms/backends/*.py
@@ -131,7 +158,7 @@ class Router (object):
         # (except in a purely informative ("you're running
         # _these_ backends") sense))
         backend = cls(self, name)
-        backend._configure(**conf)
+        backend._configure(**config)
         self.backends.append(backend)
 
         return backend
@@ -151,6 +178,9 @@ class Router (object):
         (optionally) configures it, and adds it to the list of apps that are
         notified of incoming messages. Returns the instance, or None if the app
         module could not be imported.
+
+        This method does too much to doctest.
+        TODO: break it up into smaller parts.
         """
 
         # try to import the .app module from this app. it's okay if the
