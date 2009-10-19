@@ -1,23 +1,12 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
+
 import unittest
 from rapidsms.component import Component
-import threading, time
+
 
 class TestComponent(unittest.TestCase):
-    def test_router (self):
-        c = Component()
-        self.assertEquals(c.router, None, "no router set yet")
-        c._router = "(router)"
-        self.assertEquals(c.router, "(router)", "router can be set")
-
-    def test_name(self):
-        c = Component()
-        self.assertEquals(c.name, "Component", "Component.name has a default")
-        c.name = "TestComponent"
-        self.assertEquals(c.name, "TestComponent", "Component.name can be set")
-
     def test_config_requires(self):
         c = Component()
         self.assertEquals(c.config_requires("example", "hello"), "hello",
