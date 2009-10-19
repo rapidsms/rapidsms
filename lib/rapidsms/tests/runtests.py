@@ -7,7 +7,6 @@ from test_message import *
 from test_app import *
 from test_backend import *
 from test_backend_irc import *
-from test_backend_spomc import *
 from test_router import *
 from scripted import MockTestScript
 

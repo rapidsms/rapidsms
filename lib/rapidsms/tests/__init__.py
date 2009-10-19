@@ -18,7 +18,6 @@ def suite():
     from . import test_component
     from . import test_backend
     from . import test_backend_irc
-    from . import test_backend_spomc
     from . import test_app
     from . import test_log
     #from . import test_message
