@@ -33,7 +33,7 @@ def suite():
 
     # iterate all of the modules that we
     # just imported, looking for tests
-    l = locals()
+    l = locals().copy()
     for name in l:
 
         # ignore privates
