@@ -15,35 +15,15 @@ class Component(object):
     def router (self):
         if hasattr(self, "_router"):
             return self._router
-    
-    @property
-    def title(self):
-        """Returns the verbose name of this component, which can contain any
-           text, to clearly identify it to WebUI users and log viewers. This
-           property may change at any time, so don't """
-        if hasattr(self, "_title"):
-            return self._title
-        
-        # since no title has explicitly set, fall back to
-        # name of the file that the class was declared in
-        return str(self.__module__).split(".")[-1]
 
 
-    @property
-    def slug(self):
-        """Returns a sanitized version of the title, which can be
-           assumed to be alphanumeric and unique. This is useful
-           for embedding in URLs and Database keys."""
-        
-        if hasattr(self, "_slug"):
-            return self._slug
-        
-        # no explict slug was set, so convert
-        # the title into something URL-safe
-        slug = self.title.lower().strip()
-        slug = re.sub(r"[\s_\-]+", "-", slug)
-        slug = re.sub(r"[^a-z\-]", "", slug)
-        return slug
+    def __str__(self):
+        return self.title
+
+
+    def __repr__(self):
+        return "<%s.%s>" %\
+            (type(self).__module__, type(self).__name__)
 
 
     def _configure(self, **kwargs):

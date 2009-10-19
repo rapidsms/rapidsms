@@ -2,10 +2,10 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 
-import component
+from .component import Component
 
 
-class App(component.Component):
+class App(Component):
     """
     """
 
@@ -21,15 +21,6 @@ class App(component.Component):
 
     def __init__(self, router=None):
         self._router = router
-
-
-    def __str__(self):
-        return self.title
-
-
-    def __repr__(self):
-        return "<%s.%s>" %\
-            (type(self).__module__, type(self).__name__)
 
 
     @staticmethod
@@ -88,13 +79,15 @@ class App(component.Component):
 
         >>> MockApp().title
         'Whatever'
+        
+        # TODO: doctest for underscore substitution
         """
 
         if hasattr(self, "_title"):
             return self._title
 
         module_name = type(self).__module__
-        return self._name(module_name).title()
+        return self._name(module_name).replace("_", " ").title()
 
 
     def priority(self):

@@ -8,20 +8,35 @@ from rapidsms.messages.incoming import IncomingMessage
 
 
 class BackendBase(Component):
-    def __init__ (self, router, name):
+    """
+    """
+
+    def __init__ (self, router, name=None):
         self._queue = Queue.Queue()
         self._running = False
         self._router = router
         self._name = name
 
+    @property
+    def name(self):
+        return self._name
 
     @property
-    def message_waiting (self):
+    def title(self):
         """
-        Returns the number of incoming messages waiting to be processed.
+        Returns the title of this backend, which isn't guaranteed to be unique,
+        consistant between calls, or in any particular format -- it should be
+        used for display purposes only.
+
+        (For the time being, it actually _is_ unique. But don't count on that.
+        It's currently derrived from self.name, which is a mandatory parameter
+        of the initializer, and must be unique to be attached to a router.)
+
+        >>> BackendBase(None, 'name').title
+        'Name'
         """
 
-        return self._queue.qsize()
+        return self.name(module_name).title()
 
 
     def next_message (self):
@@ -37,12 +52,9 @@ class BackendBase(Component):
             return None
 
     @property
-    def name(self):
-        return self._name
-
-    @property
     def running (self):
         return self._running
+
 
     def start(self):
         self._running = True
@@ -51,9 +63,11 @@ class BackendBase(Component):
         finally:
             self._running = False
 
+
     def run (self):
         while self.running:
             time.sleep(1)
+
 
     def stop(self):
         self._running = False
@@ -63,7 +77,6 @@ class BackendBase(Component):
     def model(self):
         """
         Returns the Django stub model representing this backend in the database.
-        Each backend instance 
         """
 
         from rapidsms.models import Backend as B
