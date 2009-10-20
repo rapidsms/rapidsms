@@ -6,7 +6,7 @@ from harness import MockRouter
 
 class TestBackendIRC(unittest.TestCase):
     def test_backend_irc (self):
-        router = MockRouter()
+        router = MockRouter.instance()
         try:
             import irclib
             from rapidsms.backends.irc import Backend
