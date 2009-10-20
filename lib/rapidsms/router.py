@@ -164,11 +164,18 @@ class Router (object):
         return backend
 
 
-    def get_backend (self, slug):
-        '''gets a backend by slug, if it exists'''
+    # TODO: this is a rather ugly public API. replace it with something nicer,
+    # like accessing self.backends and self.apps via router['whatever'] (since
+    # the names should be unique anyway, although i'm not sure that's enforced)
+    def get_backend(self, name):
+        """
+        Returns the backend named 'name', if it exists, or None.
+        """
+
         for backend in self.backends:
-            if backend.name == slug:
+            if backend.name == name:
                 return backend
+
         return None
 
 
@@ -222,7 +229,7 @@ class Router (object):
                 
                 # an exception was raised in backend.start()
                 # sleep for 5 seconds, then loop and restart it
-                self.log_last_exception("Error in the %s backend" % backend.slug)
+                self.log_last_exception("Error in the %s backend" % backend)
 
                 # don't bother restarting the backend
                 # if the router isn't running any more
@@ -233,7 +240,7 @@ class Router (object):
                 # we should probably be doing something more intelligent
                 # here, rather than just hoping five seconds is enough
                 time.sleep(5.0)
-                self.info("Restarting the %s backend" % backend.slug)
+                self.info("Restarting the %s backend" % backend)
 
 
     def start_all_apps (self):
@@ -248,7 +255,7 @@ class Router (object):
                 app.start()
 
             except Exception:
-                self.log_last_exception("The %s app failed to start" % app.slug)
+                self.log_last_exception("The %s app failed to start" % app)
                 raised = True
 
         # if any of the apps raised, we'll return
@@ -287,14 +294,14 @@ class Router (object):
                 # worker thread to terminate, or log failure
                 while(backend.thread.is_alive()):
                     if timeout <= 0:
-                        raise RuntimeError, "The %s backend's worker thread did not terminate" % backend.slug
+                        raise RuntimeError, "The %s backend's worker thread did not terminate" % backend
 
                     else:
                         time.sleep(step)
                         timeout -= step
 
             except Exception:
-                self.log_last_exception("The %s backend failed to stop" % backend.slug)
+                self.log_last_exception("The %s backend failed to stop" % backend)
 
 
     def start(self):
@@ -471,7 +478,7 @@ class Router (object):
                     # to abort ALL further processing of this message
                     if phase == 'filter':
                         if handled is True:
-                            self.warning('Message filtered by "%s" app', app.slug)
+                            self.warning('Message filtered by "%s" app', app)
                             raise(StopIteration)
 
                     elif phase == 'handle' or phase == 'catch':
