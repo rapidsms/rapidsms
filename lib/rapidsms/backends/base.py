@@ -11,7 +11,7 @@ class BackendBase(Component):
     """
     """
 
-    def __init__ (self, router, name=None):
+    def __init__ (self, router, name):
         self._queue = Queue.Queue()
         self._running = False
         self._router = router
@@ -36,7 +36,7 @@ class BackendBase(Component):
         'Name'
         """
 
-        return self.name(module_name).title()
+        return self.name.title()
 
 
     def next_message (self):

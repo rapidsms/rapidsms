@@ -10,33 +10,29 @@ from rapidsms.messages.incoming import IncomingMessage
 class MockRouter(object):
     def __init__(self):
         self.backends = []
+        self.incoming = []
+
+    def incoming_message(self, msg):
+        self.incoming.append(msg)
 
 
 class TestBackendBase(unittest.TestCase):
-    def setUp (self):
+    def setUp(self):
         self.router = MockRouter()
         self.backend = BackendBase(self.router, "testing")
-        #self.router.add_backend(self.backend)
         self.router.backends.append(self.backend)
 
-    def test__properties (self):
+    def test__properties(self):
         self.assertEquals(self.backend.name, "testing")
+        self.assertEquals(self.backend.title, "Testing")
         self.assertEquals(self.backend.router, self.router)
         self.assertFalse(self.backend.running)
 
-    #def test_start_stop (self):
-    #    self.router.start()
-    #    time.sleep(0.5)
-    #    self.assertTrue(self.backend.running, "backend starts when router starts")
-    #    self.router.stop()
-    #    time.sleep(2.5)
-    #    self.assertFalse(self.backend.running, "backend stops when router stops")
-    
-    def test_message (self):
+    def test_message(self):
         msg = self.backend.message("0000", "Good morning!") 
         self.assertEquals(type(msg), IncomingMessage, "message() returns an incomingmessage")
 
-    #def test_route (self):
-    #    msg = self.backend.message("0000", "Good morning!") 
-    #    self.backend.route(msg)
-    #    self.assertTrue(self.router.message_waiting, "backend sends to router")
+    def test_route(self):
+        msg = self.backend.message("0000", "Good morning!") 
+        self.backend.route(msg)
+        self.assertTrue(msg in self.router.incoming, "backend routes to router")
