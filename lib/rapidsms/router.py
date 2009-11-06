@@ -21,7 +21,7 @@ class Router (object):
     incoming_phases = ('filter', 'parse', 'handle', 'catch', 'cleanup')
     outgoing_phases = ('outgoing', 'pre_send')
 
-    
+
     pre_start  = Signal(providing_args=["router"])
     post_start = Signal(providing_args=["router"])
     pre_stop   = Signal(providing_args=["router"])
@@ -73,16 +73,31 @@ class Router (object):
 
 
     def log(self, level, msg, *args):
+        """
+        Logs 'msg', or does nothing if the 'logger' attribute of this object
+        is None. The 'level' argument should be one of the standard Python
+        logger levels: DEBUG, INFO, WARNING, ERROR, or CRITICAL.
+
+        There aren't many situations in which this method should be called
+        from non-framework code. See Component.log instead.
+        """
         if self.logger is not None:
-            self.logger.write(self,
-                level, msg, *args)
+            lst = [level, msg] + args
+
+            # log to a rapidsms.log.logger-like object
+            if hasattr(self.logger, "write"):
+                self.logger.write(*lst)
+
+            # or to an array-like object, for testing
+            elif hasattr(self.logger, "append"):
+                self.logger.append(lst)
 
 
     def log_last_exception(self, msg=None, level="error"):
         """
-        Logs an exception, to allow rescuing of unexpected errors (in backends
-        and apps) without discarding the debug information or halting the entire
-        process.
+        Logs a the last exception raised, to allow rescuing of unexpected
+        errors (in backends and apps) without discarding the debug information
+        or halting the entire process.
         """
         
         # fetch the traceback for this exception, as
