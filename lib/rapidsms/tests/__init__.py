@@ -19,13 +19,13 @@ def suite():
     from . import test_backend
     from . import test_backend_irc
     from . import test_app
-    from . import test_log
     #from . import test_message
     from . import test_router
 
     # import various other modules,
     # to find and run their doctests
     from .. import router, app
+    from ..log import mixin
 
     # start with an empty test suite
     _suite = unittest.TestSuite()

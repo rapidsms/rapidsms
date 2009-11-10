@@ -3,14 +3,12 @@
 
 import Queue, sys, datetime, re, traceback
 import config
+from .log.mixin import LoggerMixin
 
 Match_True  = re.compile(r'^(?:true|yes|1)$', re.I)
 Match_False = re.compile(r'^(?:false|no|0)$', re.I)
 
-def _logging_method (level):
-    return lambda self, msg, *args: self.log(level, msg, *args)
-
-class Component(object):
+class Component(object, LoggerMixin):
     @property
     def router (self):
         if hasattr(self, "_router"):
@@ -82,24 +80,3 @@ class Component(object):
         if hasattr(value, "__iter__"): return list(value)
         # else split on separator and filter blank values
         return config.to_list(value, separator)
-
-    def log(self, level, msg, *args):
-
-        # find the router to log to (it may be attached
-        # to this component, or it may BE this component)
-        # and pass this message to it's designated logger
-        router = self.router if self.router else self
-        router.logger.write(self, level, msg, *args)
-
-    debug    = _logging_method('debug')
-    info     = _logging_method('info')
-    warning  = _logging_method('warning')
-    error    = _logging_method('error')
-    critical = _logging_method('critical')
-    
-    def log_last_exception(self, *args, **kwargs):
-        """
-        TODO: docs
-        """
-        return self.router.log_last_exception(
-            *args, **kwargs)

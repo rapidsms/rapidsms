@@ -2,22 +2,37 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 
+import logging, logging.handlers
 from django.core.management.base import NoArgsCommand
 from ...djangoproject import settings
-from ...rapidsms import router
+from ...router import router
 
 
 class Command(NoArgsCommand):
     help = "Starts the RapidSMS router."
 
-
     def handle_noargs(self, **options):
 
-        # start logging to the screen and file
-        # TODO: this shouldn't be here
-        router.set_logger(
-            settings.RAPIDSMS_CONF["log"]["level"],
-            settings.RAPIDSMS_CONF["log"]["file"])
+        numeric_level = getattr(logging, settings.LOG_LEVEL.upper())
+        format = logging.Formatter(settings.LOG_FORMAT)
+
+        router.logger = logging.getLogger()
+        router.logger.setLevel(numeric_level)
+
+        # start logging to the screen (via stderr)
+        # TODO: allow the values used here to be
+        # specified as arguments to this command
+        handler = logging.StreamHandler()
+        router.logger.addHandler(handler)
+        handler.setLevel(numeric_level)
+        handler.setFormatter(format)
+
+        # start logging to file
+        file_handler = logging.handlers.RotatingFileHandler(
+            settings.LOG_FILE, maxBytes=settings.LOG_SIZE,
+            backupCount=settings.LOG_BACKUPS)
+        router.logger.addHandler(file_handler)
+        file_handler.setFormatter(format)
 
         # add each application from conf
         for name, conf in settings.RAPIDSMS_APPS.items():

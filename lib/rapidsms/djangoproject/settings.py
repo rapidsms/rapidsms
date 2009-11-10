@@ -106,7 +106,22 @@ RAPIDSMS_CONF = Config(os.environ["RAPIDSMS_INI"])
 RAPIDSMS_BACKENDS = RAPIDSMS_CONF["rapidsms"]["backends"]
 RAPIDSMS_APPS = RAPIDSMS_CONF["rapidsms"]["apps"]
 
+# the default log settings are very noisy
+LOG_LEVEL   = "DEBUG"
+LOG_FILE    = "/tmp/rapidsms.log"
+LOG_FORMAT  = "[%(name)s]: %(message)s"
+LOG_SIZE    = 8192 # 8192 bytes = 64 kb
+LOG_BACKUPS = 256 # number of logs to keep
 
+# if file None, this settings defaults to whatever LOG_FILE
+# ends up set to after merging rapidsms.ini and cmd-line args
+LOG_FILE_FORMAT = None
+
+# overwrite the defaults with those that are present in the
+# rapidsms.ini, prefixed much like the database settings
+if "log" in RAPIDSMS_CONF:
+    for key, val in RAPIDSMS_CONF["log"].items():
+        vars()["LOG_%s" % key.upper()] = val
 
 
 # ==========================
@@ -135,7 +150,6 @@ else:
 if "django" in RAPIDSMS_CONF:
     for key, val in RAPIDSMS_CONF["django"].items():
         vars()[key.upper()] = val
-
 
 
 # ====================

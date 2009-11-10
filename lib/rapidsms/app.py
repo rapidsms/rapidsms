@@ -23,6 +23,10 @@ class App(Component):
         self._router = router
 
 
+    def _log_name(self):
+        return "rapidsms.app"
+
+
     @staticmethod
     def _name(module_name):
         """

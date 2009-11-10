@@ -2,7 +2,7 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 
-import os, sys, log
+import os, sys
 from ConfigParser import SafeConfigParser
 from utils.modules import try_import
 
@@ -145,12 +145,6 @@ class Config (object):
         # to transform into dicts of dicts containing more meta-info
         return { "apps":     dict((n, self.app_section(n)) for n in app_names),
                  "backends": dict((n, self.backend_section(n)) for n in backend_names) }
-
-
-    def parse_log_section (self, raw_section):
-        output = {"level": log.LOG_LEVEL, "file": log.LOG_FILE}
-        output.update(raw_section)
-        return output
 
 
     def __getitem__ (self, key):

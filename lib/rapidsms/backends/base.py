@@ -17,6 +17,11 @@ class BackendBase(Component):
         self._router = router
         self._name = name
 
+
+    def _log_name(self):
+        return "rapidsms.backend"
+
+
     @property
     def name(self):
         return self._name

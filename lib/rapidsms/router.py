@@ -8,11 +8,11 @@ from django.dispatch import Signal
 
 from .utils.modules import try_import, get_class
 from .backends.base import BackendBase
+from .log.mixin import LoggerMixin
 from .app import App as AppBase
-from .log import Logger
 
 
-class Router (object):
+class Router (object, LoggerMixin):
     """
     >>> "wat"
     'wat'
@@ -20,7 +20,6 @@ class Router (object):
 
     incoming_phases = ('filter', 'parse', 'handle', 'catch', 'cleanup')
     outgoing_phases = ('outgoing', 'pre_send')
-
 
     pre_start  = Signal(providing_args=["router"])
     post_start = Signal(providing_args=["router"])
@@ -72,50 +71,8 @@ class Router (object):
         return "Router"
 
 
-    def log(self, level, msg, *args):
-        """
-        Logs 'msg', or does nothing if the 'logger' attribute of this object
-        is None. The 'level' argument should be one of the standard Python
-        logger levels: DEBUG, INFO, WARNING, ERROR, or CRITICAL.
-
-        There aren't many situations in which this method should be called
-        from non-framework code. See Component.log instead.
-        """
-        if self.logger is not None:
-            lst = [level, msg] + args
-
-            # log to a rapidsms.log.logger-like object
-            if hasattr(self.logger, "write"):
-                self.logger.write(*lst)
-
-            # or to an array-like object, for testing
-            elif hasattr(self.logger, "append"):
-                self.logger.append(lst)
-
-
-    def log_last_exception(self, msg=None, level="error"):
-        """
-        Logs a the last exception raised, to allow rescuing of unexpected
-        errors (in backends and apps) without discarding the debug information
-        or halting the entire process.
-        """
-        
-        # fetch the traceback for this exception, as
-        # it would usually be dumped to the STDERR
-        str = traceback.format_exc()
-        
-        # prepend the error message, if one was provided
-        # (sometimes the exception alone is enough, but
-        # the called *should* provide more info)
-        if msg is not None:
-            str = "%s\n--\n%s" % (msg, str)
-        
-        # pass the message on it on to the logger
-        self.log(level, str)
-
-
-    def set_logger(self, level, file):
-        self.logger = Logger(level, file)
+    def _logger_name(self):
+        return "rapidsms.router"
 
 
     # -------------
@@ -255,7 +212,7 @@ class Router (object):
                 # we should probably be doing something more intelligent
                 # here, rather than just hoping five seconds is enough
                 time.sleep(5.0)
-                self.info("Restarting the %s backend" % backend)
+                self.warn("Restarting the %s backend" % backend)
 
 
     def start_all_apps (self):
@@ -328,7 +285,7 @@ class Router (object):
         # dump some debug info for now
         #self.info("BACKENDS: %r" % (self.backends))
         #self.info("APPS: %r" % (self.apps))
-        self.log("info", "Starting %s..." % self)
+        self.info("Starting apps and backends...")
 
         self.pre_start.send(self)
         self.start_all_backends()
@@ -340,6 +297,8 @@ class Router (object):
         # we are ready to accept messages
         self.accepting = True
 
+        self.info("Waiting for incoming messages")
+
         try:
             while self.running:
 
@@ -347,7 +306,7 @@ class Router (object):
                 # immediately. this increments the number of "tasks" on the
                 # queue, which MUST be decremented later to avoid a deadlock
                 # during graceful shutdown (it calls _queue.join to wait for all
-                # pending messages to be processed before stopping the backends 
+                # pending messages to be processed before stopping the backends
                 # and terminating). see help(Queue.Queue.task_done) for more.
                 try:
                     msg = self._queue.get(block=False)
@@ -366,18 +325,18 @@ class Router (object):
 
         # stopped via ctrl+c
         except KeyboardInterrupt:
-            self.log("warning", "Caught KeyboardInterrupt")
+            self.warn("Caught KeyboardInterrupt")
 
         # stopped via sys.exit
         except SystemExit:
-            self.log("warning", "Caught SystemExit")
+            self.warn("Caught SystemExit")
 
         # refuse to accept any new messages. the backend(s) might
         # have to throw them away, but at least they can pass the
         # refusal upstream to the device/gateway where possible
         self.accepting = False
 
-        self.log("info", "Stopping all backends...")
+        self.info("Stopping...")
         self.stop_all_backends()
         self.running = False
 
@@ -472,7 +431,7 @@ class Router (object):
           An opportunity to clean up anything started during earlier phases.
         """
 
-        self.log("info", "Incoming message via %s: %s ->'%s'" %\
+        self.info("Incoming message via %s: %s ->'%s'" %\
             (message.connection.backend, message.connection.identity, message.text))
 
         # loop through all of the apps and notify them of
@@ -481,7 +440,7 @@ class Router (object):
         try:
             for phase in self.incoming_phases:
                 for app in self.__sorted_apps():
-                    self.log("debug", "IN %s phase %s" % (phase, app))
+                    self.debug("IN %s phase %s" % (phase, app))
                     responses = len(message.responses)
                     handled = False
                     try:
@@ -498,7 +457,7 @@ class Router (object):
 
                     elif phase == 'handle' or phase == 'catch':
                         if handled is True:
-                            self.log("debug", "%s short-circuited %s phase" % (app, phase))
+                            self.debug("%s short-circuited %s phase" % (app, phase))
                             break
 
                     elif responses < len(message.responses):
@@ -521,7 +480,7 @@ class Router (object):
 
 
     def outgoing(self, message):
-        self.log("info", "Outgoing message via %s: %s <- '%s'" %\
+        self.info("Outgoing message via %s: %s <- '%s'" %\
             (message.connection.backend, message.connection.identity, message.text))
         
         # first notify all of the apps that want to know
@@ -535,7 +494,7 @@ class Router (object):
             # called with an incoming message is the last app called
             # with an outgoing message
             for app in reversed(self.__sorted_apps()):
-                self.log("debug", "OUT %s phase %s" % (phase, app))
+                self.debug("OUT %s phase %s" % (phase, app))
                 
                 try:
                     continue_sending = getattr(app, phase)(message)
@@ -547,7 +506,7 @@ class Router (object):
 
         # now send the message out
         self.get_backend(message.connection.backend.name).send(message)
-        self.log("debug", "SENT message '%s' to %s via %s" % (message.text,\
+        self.debug("SENT message '%s' to %s via %s" % (message.text,\
             message.connection.identity, message.connection.backend))
         return True
 
