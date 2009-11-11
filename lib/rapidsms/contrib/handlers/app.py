@@ -5,7 +5,7 @@
 import rapidsms
 from rapidsms.djangoproject import settings
 from rapidsms.utils.modules import find_python_files, get_class, try_import
-from rapidsms.contrib.apps.handlers import BaseHandler
+from rapidsms.contrib.handlers import BaseHandler
 
 
 class App(rapidsms.App):

@@ -38,7 +38,7 @@ class App(Component):
           >>> App._name("apps.alpha.app")
           'alpha'
 
-          >>> App._name("rapidsms.contrib.apps.beta")
+          >>> App._name("rapidsms.contrib.beta")
           'beta'
 
           >>> App._name("somewhere.else.gamma.App")
