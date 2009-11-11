@@ -182,37 +182,49 @@ class Router (object, LoggerMixin):
         return app
 
 
+    def _wait(self, func, timeout):
+        """
+        Keep calling 'func' (a lambda function) until it returns True,
+        for a maximum of 'timeout' seconds. Return True if 'func' does,
+        or False if the timeout is eached.
+        """
+
+        for n in range(0, timeout*10):
+            if func(): return True
+            else: time.sleep(0.1)
+
+        return False
+
+
     # -------
     # STARTUP
     # -------
 
 
-    def start_backend (self, backend):
+    def start_backend(self, backend):
         while True:
             try:
-                backend.start()
+                started = backend.start()
 
                 # if backend execution completed
                 # normally (and did not raise),
                 # allow the thread to terminate
                 break
 
-            except Exception, e:
-                
-                # an exception was raised in backend.start()
-                # sleep for 5 seconds, then loop and restart it
-                self.log_last_exception("Error in the %s backend" % backend)
+            except Exception, err:
+                self.exception("Error in the %s backend" % backend)
 
-                # don't bother restarting the backend
-                # if the router isn't running any more
-                if not self.running:
-                    break
-               
-                # TODO: where did the 5.0 constant come from?
-                # we should probably be doing something more intelligent
-                # here, rather than just hoping five seconds is enough
-                time.sleep(5.0)
+                # this flows sort of backwards. wait for five seconds
+                # (to give the backend a break before retrying), but
+                # abort and return if self.accepting is ever False (ie,
+                # the router is shutting down). this ensures that we
+                # don't delay shutdown, because that causes me to SIG
+                # KILL, which prevents things from stopping cleanly
+                if self._wait(lambda: not self.accepting, 5):
+                    return None
+
                 self.warn("Restarting the %s backend" % backend)
+
 
 
     def start_all_apps (self):

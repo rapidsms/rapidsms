@@ -5,9 +5,9 @@
 import time
 import pygsm
 
-from rapidsms.connection import Connection
-from rapidsms.messages.incoming import IncomingMessage
-from rapidsms.backends.base import BackendBase
+from ..models import Connection
+from ..messages.incoming import IncomingMessage
+from .base import BackendBase
 
 
 class Backend(BackendBase):
@@ -141,15 +141,16 @@ class Backend(BackendBase):
         self.failed_messages = 0
         self.received_messages = 0
 
+        # connect to the modem and boot it to start receiving incoming
+        # messages. if connection fails, the router will retry shortly
         self.modem = pygsm.GsmModem(
             logger=self.gsm_log,
-            **self.modem_kwargs)
+            **self.modem_kwargs
+        ).boot()
 
-        # if we connected successfully to the modem, call
-        # superclass to start the run loop -- it just sets
-        # self._running to True and calls run.
-        if self.modem is not None:
-            BackendBase.start(self)
+        # call the superclass to start the run loop -- it just sets
+        # ._running to True and calls run, but let's not duplicate it.
+        BackendBase.start(self)
 
 
     def stop(self):

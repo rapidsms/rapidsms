@@ -3,8 +3,8 @@
 
 
 import time, Queue
-from rapidsms.component import Component
-from rapidsms.messages.incoming import IncomingMessage
+from ..component import Component
+from ..messages.incoming import IncomingMessage
 
 
 class BackendBase(Component):
