@@ -4,8 +4,8 @@
 
 
 import re
-from rapidsms.contrib.apps.handlers import KeywordHandler
-from rapidsms.contrib.apps.search.utils import extract_objects
+from rapidsms.contrib.handlers import KeywordHandler
+from rapidsms.contrib.search.utils import extract_objects
 from reporters.models import Reporter
 from locations.models import Location
 

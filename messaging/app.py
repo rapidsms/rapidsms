@@ -4,7 +4,7 @@
 
 import datetime, re
 import rapidsms
-from rapidsms.contrib.apps.search.utils import find_objects
+from rapidsms.contrib.search.utils import find_objects
 from models import *
 import utils
 

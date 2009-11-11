@@ -2,7 +2,7 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 
-from rapidsms.contrib.apps.handlers import PatternHandler
+from rapidsms.contrib.handlers import PatternHandler
 
 
 class RemindHandler(PatternHandler):
