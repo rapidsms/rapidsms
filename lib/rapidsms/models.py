@@ -14,12 +14,12 @@ class Backend(models.Model):
 
     name = models.CharField(max_length=20, unique=True)
 
-    def __str__(self):
+    def __unicode__(self):
         return self.name
 
     def __repr__(self):
         return '<%s: %s>' %\
-            (type(self).__name__, self.name)
+            (type(self).__name__, self)
 
 
 class App(models.Model):
@@ -39,14 +39,12 @@ class App(models.Model):
     module = models.CharField(max_length=100, unique=True)
     active = models.BooleanField()
 
-
     def __unicode__(self):
         return self.module
 
     def __repr__(self):
-        return "repr"
-        #return '<%s: %s>' %\
-        #    (type(self).__name__, self.module)
+        return '<%s: %s>' %\
+            (type(self).__name__, self)
 
 
 class Connection(models.Model):
@@ -58,3 +56,11 @@ class Connection(models.Model):
 
     backend  = models.ForeignKey(Backend)
     identity = models.CharField(max_length=100)
+
+    def __unicode__(self):
+        return "%s via %s" %\
+            (self.identity, self.backend)
+
+    def __repr__(self):
+        return '<%s: %s>' %\
+            (type(self).__name__, self)
