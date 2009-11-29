@@ -1,2 +1,2 @@
-include rapidsms README LICENSE rapidsms.ini
+include rapidsms LICENSE rapidsms.ini
 recursive-include lib *

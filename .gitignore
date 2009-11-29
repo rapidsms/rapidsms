@@ -2,6 +2,7 @@ __version__.py
 *.pyc
 *.swp
 *~
+*.mo
 local.ini
 core.*
 .project

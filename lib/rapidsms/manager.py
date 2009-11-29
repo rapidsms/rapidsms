@@ -1,28 +1,14 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
+
 from config import Config
 from router import Router
 import os, sys, shutil
 
+
 # the Manager class is a bin for various RapidSMS specific management methods
 class Manager (object):
-    def route (self, conf, *args):
-        router = Router()
-        router.set_logger(conf["log"]["level"], conf["log"]["file"])
-        router.info("RapidSMS Server started up")
-        
-        # add each application from conf
-        for app_conf in conf["rapidsms"]["apps"].values():
-            router.add_app(app_conf)
-
-        # add each backend from conf
-        for backend_conf in conf["rapidsms"]["backends"].values():
-            router.add_backend(backend_conf)
-
-        # wait for incoming messages
-        router.start()
-
     def _skeleton (self, tree):
         return os.path.join(os.path.dirname(__file__), "skeleton", tree)
 
@@ -36,7 +22,9 @@ class Manager (object):
         shutil.copytree(self._skeleton("app"), target)
         print "Don't forget to add '%s' to your rapidsms.ini apps." % name
 
+
 def start (args):
+
     # if a specific conf has been provided (which it
     # will be), if we're inside the django reloaded
     if "RAPIDSMS_INI" in os.environ:
@@ -66,26 +54,23 @@ def start (args):
         # import the webui settings, which builds the django
         # config from rapidsms.config, in a round-about way.
         # can't do it until env[RAPIDSMS_INI] is defined
-        from rapidsms.webui import settings
+        from rapidsms.djangoproject import settings
 
         # whatever we're doing, we'll need to call
         # django's setup_environ, to configure the ORM
-        os.environ["DJANGO_SETTINGS_MODULE"] = "rapidsms.webui.settings"
+        os.environ["DJANGO_SETTINGS_MODULE"] = "rapidsms.djangoproject.settings"
         from django.core.management import setup_environ, execute_manager
         setup_environ(settings)
+
     else:
         settings = None
 
-    # if one or more arguments were passed, we're
-    # starting up django -- copied from manage.py
-    if len(args) < 2:
-        print "Commands: route, startproject <name>, startapp <name>"
-        sys.exit(1)
-
-    if hasattr(Manager, args[1]):
+    # if one of the remaining hard-coded methods were invoked,
+    # go do that. TODO: move those to rapidsms/management
+    if len(args) > 1 and hasattr(Manager, args[1]):
         handler = getattr(Manager(), args[1])
-        handler(conf, *args[2:])
-    elif settings:
-        # none of the commands were recognized,
-        # so hand off to Django
+        handler(*args[2:])
+
+    # otherwise, let Django deal with it
+    else:
         execute_manager(settings)

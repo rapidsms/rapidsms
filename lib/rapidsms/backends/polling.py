@@ -2,13 +2,12 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 import time
-from rapidsms.backends import Backend
-from rapidsms.message import Message
+from rapidsms.backends.base import BackendBase
 from utilities.dbmessagelog.httplog.models import * 
 from datetime import datetime
 
-class Backend(Backend):
-    def configure(self, interval=2, timeout=10):
+class Backend(BackendBase):
+    def configure(self, interval=2, timeout=10, **kwargs):
         self.interval = interval
         self.timeout = timeout
 

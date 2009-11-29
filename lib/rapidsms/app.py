@@ -1,10 +1,14 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-import component
 
-class App(component.Component):
-    
+from .component import Component
+
+
+class App(Component):
+    """
+    """
+
     NAMED_PRIORITIES = {
         "first":   1,
         "highest": 1,
@@ -13,10 +17,83 @@ class App(component.Component):
         "low":    90,
         "lowest": 99,
         "last":   99 }
-    
-    def __init__(self, router):
+
+
+    def __init__(self, router=None):
         self._router = router
-    
+
+
+    def _log_name(self):
+        return "rapidsms.app"
+
+
+    @staticmethod
+    def _name(module_name):
+        """
+        Returns the last interesting part of *module_name* (which can also be a
+        class name), to uniquely identify it without leaving variations of "app"
+        all over the place. This method attempts to handle all of the various
+        ways that RapidSMS apps can be named. For example:
+
+          >>> App._name("apps.alpha.app")
+          'alpha'
+
+          >>> App._name("rapidsms.contrib.beta")
+          'beta'
+
+          >>> App._name("somewhere.else.gamma.App")
+          'gamma'
+        """
+
+        parts = filter(
+            lambda x: x not in ["App", "app", "apps"],
+            module_name.split("."))
+
+        return parts[-1]
+
+
+    @property
+    def name(self):
+        """
+        Returns the name of the module which this app was defined within. To be
+        findable by Router.add_app, this module name will be importable as-is,
+        making it unambiguous within this project, and usable as an identifier.
+
+        # pretend we're in myproject/whatever/app.py
+        >>> __name__ = "myproject.whatever.app"
+
+        >>> class MockApp(App): pass
+        >>> MockApp(None).name
+        'whatever'
+        """
+
+        return App._name(self.__module__)
+
+
+    @property
+    def title(self):
+        """
+        Returns the title of this app, which isn't guaranteed to be unique,
+        consistant between calls, or in any particular format -- it should be
+        used for display purposes only.
+
+        >>> __name__ = "myproject.whatever.app"
+        >>> class MockApp(App):
+        ...     pass
+
+        >>> MockApp().title
+        'Whatever'
+        
+        # TODO: doctest for underscore substitution
+        """
+
+        if hasattr(self, "_title"):
+            return self._title
+
+        module_name = type(self).__module__
+        return self._name(module_name).replace("_", " ").title()
+
+
     def priority(self):
         """Returns the numeric "priority" of this RapidSMS App object,
            which dictates the order in which the app will be notified
@@ -59,7 +136,8 @@ class App(component.Component):
         # if the app doesn't have a priority of its own, or it
         # was invalid (and warned) above, default to "normal"
         return named["normal"]
-    
+
+
     def start (self):
         pass
 
@@ -72,10 +150,16 @@ class App(component.Component):
     def handle (self, message):
         pass
 
+    def catch (self, message):
+        pass
+
     def cleanup (self, message):
         pass
 
     def outgoing (self, message):
+        pass
+
+    def pre_send (self, message):
         pass
 
     def stop (self):

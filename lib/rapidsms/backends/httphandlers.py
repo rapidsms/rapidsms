@@ -9,7 +9,6 @@ import urllib
 from datetime import datetime
 
 import rapidsms
-from rapidsms.message import Message
 
 msg_store = {}
 

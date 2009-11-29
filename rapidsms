@@ -1,10 +1,18 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-import sys, os
-sys.path.append(os.path.join(os.getcwd(),'lib'))
-    
-import rapidsms
-
 if __name__ == "__main__":
+    import sys, os
+
+    # find the absolute directory that this file
+    # is in. this is the root of the project
+    project_root = os.path.abspath(
+        os.path.dirname(__file__))
+
+    for dir in ["lib", "apps"]:
+        path = os.path.join(project_root, dir)
+        sys.path.insert(0, path)
+
+    import rapidsms
+
     rapidsms.manager.start(sys.argv)

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-import os, time
+import os, time, tempfile
 
 
 DEBUG = True
@@ -57,7 +57,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
 )
 
-ROOT_URLCONF = "rapidsms.webui.urls"
+ROOT_URLCONF = "rapidsms.djangoproject.urls"
 
 TEMPLATE_CONTEXT_PROCESSORS = [
     "django.core.context_processors.auth",
@@ -74,6 +74,11 @@ TEMPLATE_DIRS = [
 ]
 
 
+# since we might hit the database from any thread during testing, the in-memory
+# sqlite database isn't sufficient. it spawns a separate virtual database for
+# each thread, and syncdb is only called for the first. this leads to confusing
+# "no such table" errors. so i'm defaulting to a temporary file instead.
+TEST_DATABASE_NAME = os.path.join(tempfile.gettempdir(), "rapidsms.test.sqlite3")
 
 
 # ====================
@@ -96,11 +101,27 @@ if not "RAPIDSMS_INI" in os.environ:
 from rapidsms import Config
 RAPIDSMS_CONF = Config(os.environ["RAPIDSMS_INI"])
 
-# since iterating and reading the config of apps is
-# common, build a handy dict of apps and their configs
+# since iterating and reading the config of apps and backends
+# is common, build a handy dict of both, with their configs
+RAPIDSMS_BACKENDS = RAPIDSMS_CONF["rapidsms"]["backends"]
 RAPIDSMS_APPS = RAPIDSMS_CONF["rapidsms"]["apps"]
 
+# the default log settings are very noisy
+LOG_LEVEL   = "DEBUG"
+LOG_FILE    = "/tmp/rapidsms.log"
+LOG_FORMAT  = "[%(name)s]: %(message)s"
+LOG_SIZE    = 8192 # 8192 bytes = 64 kb
+LOG_BACKUPS = 256 # number of logs to keep
 
+# if file None, this settings defaults to whatever LOG_FILE
+# ends up set to after merging rapidsms.ini and cmd-line args
+LOG_FILE_FORMAT = None
+
+# overwrite the defaults with those that are present in the
+# rapidsms.ini, prefixed much like the database settings
+if "log" in RAPIDSMS_CONF:
+    for key, val in RAPIDSMS_CONF["log"].items():
+        vars()["LOG_%s" % key.upper()] = val
 
 
 # ==========================
@@ -131,11 +152,14 @@ if "django" in RAPIDSMS_CONF:
         vars()[key.upper()] = val
 
 
-
-
 # ====================
 # INJECT RAPIDSMS APPS
 # ====================
+
+LOCALE_PATHS = [
+    "apps/%s/locale" % app_name
+    for app_name in RAPIDSMS_APPS.keys()
+]
 
 INSTALLED_APPS = [
     'django.contrib.auth',
@@ -143,12 +167,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.admin',
-    'django.contrib.admindocs'
+    'django.contrib.admindocs',
+    'rapidsms'
 
-# by using the key names as the python module path, we 
-# avoid actually fetching the lazy app confs. this is
-# inconsistant with my fork (adammck), but since we've
-# decided to standardize the app imports anyway (iirc,
-# ./apps will be added to the python PATH), this will
-# resolve itself fairly soon -- as soon as i pull
-] + ["apps.%s" % app for app in RAPIDSMS_APPS.keys()]
+# by using the key names as the python module path,
+# we avoid actually fetching the lazy app confs
+] + RAPIDSMS_APPS.keys()
