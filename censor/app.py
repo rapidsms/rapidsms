@@ -6,7 +6,7 @@ import re
 
 class App(rapidsms.app.App):
 
-    def configure(self, incoming='yes', outgoing='yes'):
+    def configure(self, incoming='yes', outgoing='yes', **kwargs):
         self._incoming = self.config_bool(incoming) 
         self._outgoing = self.config_bool(outgoing)
 

@@ -1,6 +1,6 @@
 # vim: ai sts=4 ts=4 et sw=4
 from django.db import models
-from apps.reporters.models import Location, Reporter, PersistantConnection
+from reporters.models import Location, Reporter, PersistantConnection
 
 class NetDistribution(models.Model):
     reporter = models.ForeignKey(Reporter, null=True, blank=True)

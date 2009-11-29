@@ -6,8 +6,8 @@ import re, urllib
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.exceptions import FieldError
 from django.core.urlresolvers import reverse
-from rapidsms.webui.utils import *
-from apps.reporters.models import *
+from rapidsms.djangoproject.utils import *
+from reporters.models import *
 from models import combined_message_log, __combined_message_log_row
 
 

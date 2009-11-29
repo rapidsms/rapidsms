@@ -2,12 +2,12 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 import rapidsms
-from apps.httptester.models import Message
+from httptester.models import Message
 import datetime
 
 class App(rapidsms.app.App):
 
-    def configure (self, title="Message Tester", tab_link="/http", host="localhost", port=8080):
+    def configure (self, title="Message Tester", tab_link="/http", host="localhost", port=8080, **kwargs):
         # overridden by App and Backend subclasses
         self._port = int(port) 
         self._host = host

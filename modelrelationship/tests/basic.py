@@ -1,12 +1,12 @@
 import unittest
 import os
 from django.contrib.auth.models import Group, User
-from apps.modelrelationship.models import *
+from modelrelationship.models import *
 from django.contrib.contenttypes.models import ContentType
 from django.core import serializers
 from django.core import management
 
-import apps.modelrelationship.traversal as traversal
+import modelrelationship.traversal as traversal
 
 class BasicTestCase(unittest.TestCase):
     def setup(selfs):

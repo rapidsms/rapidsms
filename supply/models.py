@@ -6,8 +6,8 @@ from django.contrib.auth import models as auth_models
 from django.core.exceptions import ObjectDoesNotExist 
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
-from apps.form.models import Domain
-from apps.reporters.models import Location, Reporter, PersistantConnection
+from form.models import Domain
+from reporters.models import Location, Reporter, PersistantConnection
 from datetime import date
 import re
 

@@ -7,8 +7,8 @@ from django.http import HttpResponse, HttpResponseRedirect, HttpResponseServerEr
 from django.db import IntegrityError
 from django.template import RequestContext
 
-from apps.poll.models import *
-from apps.poll.utils import *
+from poll.models import *
+from poll.utils import *
 
 @require_GET
 def dashboard(req, id=None):

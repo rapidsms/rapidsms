@@ -4,8 +4,8 @@
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from rapidsms.message import StatusCodes
 from models import *
-from apps.form.utils import *
-from apps.form.formslogic import FormsLogic
+from form.utils import *
+from form.formslogic import FormsLogic
 
 class SupplyFormsLogic(FormsLogic):
     ''' This class will hold the supply-specific forms logic.

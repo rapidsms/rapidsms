@@ -1,5 +1,5 @@
 from django.db import models
-from apps.reporters.models import PersistantConnection
+from reporters.models import PersistantConnection
 import re
 
 class AirtimePins(models.Model):

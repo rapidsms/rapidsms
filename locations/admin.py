@@ -3,7 +3,7 @@
 
 
 from django.contrib import admin
-from apps.locations.models import *
+from locations.models import *
 
 
 admin.site.register(LocationType)

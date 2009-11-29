@@ -6,7 +6,10 @@ import re
 from datetime import datetime
 from django.db import models
 from django.core.urlresolvers import reverse
-from rapidsms.webui.managers import *
+from rapidsms.djangoproject.managers import *
+from persistance.models import PersistantBackend
+from rapidsms.messages.outgoing import OutgoingMessage
+from rapidsms.connection import Connection
 
 
 class ReporterGroup(models.Model):
@@ -14,6 +17,10 @@ class ReporterGroup(models.Model):
     parent      = models.ForeignKey("self", related_name="children", null=True, blank=True)
     description = models.TextField(blank=True)
     objects     = RecursiveManager()
+
+    # this belongs in Meta, but Django won't
+    # let us put _unapproved_ things there
+    followable = True
 
 
     class Meta:
@@ -31,7 +38,7 @@ class ReporterGroup(models.Model):
     # see the FOLLOW app, for now,
     # although this will be expanded
     @classmethod
-    def __search__(cls, who, terms):
+    def __search__(cls, terms):
 
         # re-join the terms into a single string, and search
         # for a group with this title (we wont't worry about
@@ -52,7 +59,8 @@ class ReporterGroup(models.Model):
         for rep in self.reporters.all():
             try:
                 rep.__message__(*args, **kwargs)
-            except:
+            except Exception, e:
+                print "FAIL %s" % e
                 pass
 
 
@@ -79,7 +87,7 @@ class Reporter(models.Model):
     # the language that this reporter prefers to
     # receive their messages in, as a w3c language tag
     #
-    # the spec:   http://www.w3.org/International/articles/language-tags/Overview.en.php
+    # the spec:   http://www.w3.org/International/articles/language-tags/Overvi
     # reference:  http://www.iana.org/assignments/language-subtag-registry
     #
     # to summarize:
@@ -88,7 +96,7 @@ class Reporter(models.Model):
     #   chichewa = ny
     #   klingon  = tlh
     #
-    language = models.CharField(max_length=10, blank=True)
+    language = models.CharField(max_length=4, blank=True)
 
     # although it's impossible to enforce, if a user registers
     # themself (via the app.py backend), this flag should be set
@@ -111,7 +119,7 @@ class Reporter(models.Model):
             self.last_name)).strip()
 
     def __unicode__(self):
-        return self.full_name()
+        return self.full_name() or self.alias
 
     def __repr__(self):
         fn = self.full_name()
@@ -136,14 +144,14 @@ class Reporter(models.Model):
     # see the FOLLOW app, for now,
     # although this will be expanded
     @classmethod
-    def __search__(cls, who, terms):
+    def __search__(cls, terms):
         try:
             if len(terms) == 1:
                 try:
                     return cls.objects.get(
                         pk=int(terms[0]))
 
-                except ValueError:
+                except (ValueError, cls.DoesNotExist):
                     return cls.objects.get(
                         alias__iexact=terms[0])
 
@@ -154,6 +162,35 @@ class Reporter(models.Model):
 
         except cls.DoesNotExist:
             return None
+
+
+    def __message__(self, router, text):
+        """
+        Sends a message to this Reporter, via _router_.
+        """
+
+        # abort if we don't know where to send the message to
+        # (if the device the reporter registed with has been
+        # taken by someone else, or was created in the WebUI)
+        pconn = self.connection()
+        if pconn is None:
+            raise Exception("%s is unreachable (no connection)" % self)
+
+        # abort if we can't find a valid backend. persistance.models.Backend
+        # objects SHOULD refer to a valid RapidSMS backend (via their slug),
+        # but sometimes backends are removed or renamed.
+        be = router.get_backend(pconn.backend.slug)
+        print "FINDING %r" % pconn.backend.slug
+        if be is None:
+            raise Exception(
+                "No such backend: %s" %
+                pconn.backend)
+        print "BE %r" % be
+
+        # attempt to send the message
+        # TODO: what could go wrong here?
+        return [OutgoingMessage(Connection(be, pconn.identity), text).send()]
+        #return [be.message(pconn.identity, text).send()]
 
 
     @classmethod
@@ -180,26 +217,45 @@ class Reporter(models.Model):
             return False 
 
     @classmethod
-    def parse_name(klass, flat_name):
-        """Given a single string, this function returns a three-string
-           tuple containing a suggested alias, first name, and last name,
-           via some quite crude pattern matching."""
+    def IsCodeUnique(klass,alias): 
+        """ Check if the code is not used before."""
 
-        patterns = [
-            # try a few common name formats.
-            # this is crappy but sufficient
-            r"([a-z]+)",                       # Adam
-            r"([a-z]+)\s+([a-z]+)",            # Evan Wheeler
-            r"([a-z]+)\s+[a-z]+\.?\s+([a-z]+)",# Mark E. Johnston
-            r"([a-z]+)\s+([a-z]+\-[a-z]+)"     # Erica Kochi-Fabian
-        ]
+        if klass.objects.filter(alias__iexact=alias).count():  
+            return False
+        else:
+            return True 
+   
+        
 
-        def unique(str):
-            """Checks an alias for uniqueness; if it is already taken, alter it
-               (by append incrementing digits) until an available alias is found."""
+    @classmethod
+    def parse_name(cls, flat_name):
+        """
+            Returns a three-string tuple containing a suggested alias, first
+            name, and last name, by performing some crude pattern matching on
+            *flat_name*. For example:
 
-            n = 1
-            alias = str.lower()
+              >>> Reporter.parse_name("Adam Mckaig")
+              ('amckaig', 'Adam', 'Mckaig')
+
+              >>> Reporter.parse_name('XYZZY ^__^')
+              ('xyzzy', 'XYZZY', '')
+
+              >>> Reporter.parse_name('12345')
+              ('12345', '', '')
+
+              # if an alias is already taken, incrementing
+              # digits are appended until one is available
+
+              >>> Reporter.objects.create(alias='ewheeler')
+              <Reporter: ewheeler>
+
+              >>> Reporter.parse_name('Evan Wheeler')
+              ('ewheeler2', 'Evan', 'Wheeler')
+        """
+
+        def unique(alias):
+            try_alias = alias
+            n = 2
 
             # keep on looping until an alias becomes available.
             # --
@@ -207,35 +263,39 @@ class Reporter(models.Model):
             # that we return might be taken before we have time to do anything
             # with it! This should logic should probably be moved to the
             # initializer, to make the find/grab alias loop atomic
-            while klass.objects.filter(alias__iexact=alias).count():
-                alias = "%s%d" % (str.lower(), n)
+            while cls.objects.filter(alias__iexact=try_alias).count():
+                try_alias = "%s%d" % (alias, n)
                 n += 1
 
-            return alias
+            return try_alias
+
+        patterns = [
+            # try a few common name formats.
+            # this is crappy but sufficient
+            r"([a-z]+)\s+([a-z]+)",            # Evan Wheeler
+            r"([a-z]+)\s+[a-z]+\.?\s+([a-z]+)",# Mark E. Johnston
+            r"([a-z]+)\s+([a-z]+\-[a-z]+)"     # Erica Kochi-Fabian
+        ]
 
         # try each pattern, returning as
         # soon as we find something that fits
         for pat in patterns:
-            m = re.match("^%s$" % pat, flat_name, re.IGNORECASE)
+
+            m = re.match(pat, flat_name, re.I)
             if m is not None:
-                g = m.groups()
+                first_name, last_name = m.groups()
 
-                # return single names as-is
-                # they might already be aliases
-                if len(g) == 1:
-                    alias = unique(g[0].lower())
-                    return (alias, g[0], "")
+                # generate an alias from the first letter of the first
+                # name, and the letters (no dots or dashes) from the last
+                alias = (first_name[0] + re.sub(r"[^a-zA-Z]", "", last_name)).lower()
+                return (unique(alias), first_name.title(), last_name.title())
 
-                else:
-                    # return only the letters from
-                    # the first and last names
-                    alias = unique(g[0][0] + re.sub(r"[^a-zA-Z]", "", g[1]))
-                    return (alias.lower(), g[0], g[1])
-
-        # we have no idea what is going on,
-        # so just return the whole thing
-        alias = unique(re.sub(r"[^a-zA-Z]", "", flat_name))
-        return (alias.lower(), flat_name, "")
+        # flat_name doesn't look like a full name, so generate an alias
+        # from the alphanumerics (some aliases are entirely numeric),
+        # and a name from just the letters (there might not be any)
+        alias = unique(re.sub(r"[^a-zA-Z0-9]", "", flat_name).lower())
+        name = re.sub(r"[^a-zA-Z]", "", flat_name)
+        return (alias, name, "")
 
 
     def connection(self):
@@ -270,40 +330,6 @@ class Reporter(models.Model):
         # return the latest, or none, if they've
         # has never been seen on ANY connection
         return max(timedates) if timedates else None
-
-
-class PersistantBackend(models.Model):
-    """This class exists to provide a primary key for each
-       named RapidSMS backend, which can be linked from the
-       other modules. We can't use a char field with OPTIONS
-       (in models which wish to link to a backend), since the
-       available backends (and their orders) may change after
-       deployment; hence, something persistant is needed."""
-
-    slug  = models.CharField(max_length=30, unique=True)
-    title = models.CharField(max_length=30)
-
-
-    class Meta:
-        verbose_name = "Backend"
-
-
-    def __unicode__(self):
-        return self.title
-
-    def __repr__(self):
-        return '<%s: %s via %s>' %\
-            (type(self).__name__, self.slug)
-
-
-    @classmethod
-    def from_message(klass, msg):
-        """"Fetch a PersistantBackend object from the data buried in a rapidsms.message.Message
-            object. In time, this should be moved to the message object itself, since persistance
-            should be fairly ubiquitous; but right now, that would couple the framework to this
-            individual app. So you can use this for now."""
-        be_slug = msg.connection.backend.slug
-        return klass.objects.get(slug=be_slug)
 
 
 class PersistantConnection(models.Model):

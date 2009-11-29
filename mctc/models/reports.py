@@ -3,8 +3,8 @@ from django.db.models import ObjectDoesNotExist
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 
-from apps.mctc.models.general import Case, Provider
-from apps.mctc.models.logs import MessageLog
+from mctc.models.general import Case, Provider
+from mctc.models.logs import MessageLog
 
 from datetime import datetime, date, timedelta
 import md5

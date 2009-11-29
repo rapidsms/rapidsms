@@ -1,8 +1,8 @@
 # vim: ai ts=4 sts=4 et sw=4
 import rapidsms
 from time import time
-from apps.reporters.models import PersistantConnection
-from apps.airtime.models import AirtimePins
+from reporters.models import PersistantConnection
+from airtime.models import AirtimePins
 from time import localtime, strftime, time
 from datetime import datetime
 

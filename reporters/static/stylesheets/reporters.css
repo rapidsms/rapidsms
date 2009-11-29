@@ -1,0 +1,50 @@
+/* UNICEF RapidSMS UI
+ * vim:set noet:
+ * --
+ * reporters.css
+ * --
+ * What is this? */
+
+
+.log { }
+
+	/* there's a lot of data to fit into such a small table,
+	 * so maximize it horizontally, and reserve as much space as
+	 * possible for the "text" column without wrapping the others */
+	.log table {
+		width: 100%;
+	}
+
+		.log td,
+		.log th {
+			white-space: nowrap;
+			width: 1%;
+		}
+			
+			/* undo that funny-business for
+			 * the text (full-width) column */
+			.log th.text,
+			.log td.text {
+				white-space: normal;
+				width: auto;
+			}
+
+
+	/* the To/From text isn't very important,
+	 * so shrink it to avoid distracting */
+	.log .direction {
+		width: 16px;
+		overflow: hidden;
+		text-indent: -999px;
+		padding-right: 0;
+	}
+
+		/* add the icons */
+		.log tr.incoming td.direction { background: url("../icons/incoming.png") no-repeat 100% 50%; }
+		.log tr.outgoing td.direction { background: url("../icons/outgoing.png") no-repeat 100% 50%; }
+
+	/* color the text fields according to the
+	 * direction (incoming=red, outgoing=green) */
+	.log tr.incoming td.text { color: #060; }
+	.log tr.outgoing td.text { color: #600; }
+

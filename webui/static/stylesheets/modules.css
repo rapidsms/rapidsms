@@ -14,6 +14,10 @@ div.module {
 	position: relative;
 }
 
+	div.module div.module {
+		border: 1px solid #8fbcc9;
+	}
+
 div.module:first-child {
 	margin-top: 0; }
 
@@ -453,6 +457,7 @@ table {
 	input.js-button.accept   { background-image: url("../icons/silk/accept.png");       }
 	input.js-button.unaccept { background-image: url("../icons/silk/accept--dull.png"); }
 	input.js-button.clear    { background-image: url("../icons/silk/decline.png");      } /* TODO: better icon! */
+	input.js-button.reload   { background-image: url("../icons/silk/reload.png");       }
 
 	/* some options are less interesting than others; like
 	 * None, or Disabled, or Default; so mark them dull */

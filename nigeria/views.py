@@ -3,10 +3,10 @@
 
 from django.http import HttpResponse, HttpResponseNotAllowed, HttpResponseServerError, Http404
 from django.template import RequestContext
-from apps.reporters.models import Location, LocationType
-from apps.supply.models import Shipment, Transaction, Stock, PartialTransaction
-from apps.nigeria.models import CardDistribution
-from rapidsms.webui.utils import render_to_response
+from reporters.models import Location, LocationType
+from supply.models import Shipment, Transaction, Stock, PartialTransaction
+from nigeria.models import CardDistribution
+from rapidsms.djangoproject.utils import render_to_response
 from django.db import models
 # The import here newly added for serializations
 from django.core import serializers

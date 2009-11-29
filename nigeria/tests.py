@@ -1,10 +1,10 @@
 from rapidsms.tests.scripted import TestScript
-from apps.form.models import *
-from apps.reporters.models import *
-import apps.reporters.app as reporter_app
-import apps.supply.app as supply_app
-import apps.form.app as form_app
-import apps.default.app as default_app
+from form.models import *
+from reporters.models import *
+import reporters.app as reporter_app
+import supply.app as supply_app
+import form.app as form_app
+import default.app as default_app
 from app import App
 from django.core.management.commands.dumpdata import Command
 import time
