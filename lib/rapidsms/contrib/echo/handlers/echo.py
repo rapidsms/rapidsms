@@ -10,6 +10,12 @@ class EchoHandler(handlers.KeywordHandler):
     Handles any message prefixed ECHO, responding with the remainder of
     the text. Useful for remotely (via SMS) checking that the router is
     running, and testing other apps that may alter outgoing messages.
+
+    >>> EchoHandler.test('hello') is None
+    True
+
+    >>> EchoHandler.test('echo hello')
+    ['hello']
     """
 
     keyword = "echo"
