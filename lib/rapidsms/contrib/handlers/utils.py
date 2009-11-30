@@ -3,7 +3,7 @@
 
 
 from rapidsms.utils.modules import find_python_files, get_class, try_import
-from . import BaseHandler
+from .handlers.base import BaseHandler
 
 
 def find_handlers(module_name):

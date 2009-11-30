@@ -5,7 +5,6 @@
 import rapidsms
 from rapidsms.djangoproject import settings
 from .utils import find_handlers
-from . import BaseHandler
 
 
 class App(rapidsms.App):
@@ -17,8 +16,13 @@ class App(rapidsms.App):
         self.handlers = []
 
         for module_name in settings.RAPIDSMS_APPS.keys():
-            handlers = find_handlers(module_name)
-            self.handlers.extend(handlers)
+
+            # ignore handlers found within _this_ app. they're intended
+            # to be inherited by other apps, not instantiated directly.
+            if not module_name.endswith(".handlers"):
+
+                handlers = find_handlers(module_name)
+                self.handlers.extend(handlers)
 
         class_names = [cls.__name__ for cls in self.handlers]
         self.info("Registered handlers: %s" % (", ".join(class_names)))
