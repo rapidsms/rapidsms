@@ -2,31 +2,14 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 
-from config import Config
-from router import Router
-import os, sys, shutil
-
-
-# the Manager class is a bin for various RapidSMS specific management methods
-class Manager (object):
-    def _skeleton (self, tree):
-        return os.path.join(os.path.dirname(__file__), "skeleton", tree)
-
-    def startproject (self, conf, *args):
-        name = args[0]
-        shutil.copytree(self._skeleton("project"), name)
-
-    def startapp (self, conf, *args):
-        name = args[0]
-        target = os.path.join("apps",name)
-        shutil.copytree(self._skeleton("app"), target)
-        print "Don't forget to add '%s' to your rapidsms.ini apps." % name
+import os
+from .config import Config
 
 
 def start (args):
 
     # if a specific conf has been provided (which it
-    # will be), if we're inside the django reloaded
+    # will be, if we're inside the django reloader)
     if "RAPIDSMS_INI" in os.environ:
         ini = os.environ["RAPIDSMS_INI"]
     
@@ -41,7 +24,7 @@ def start (args):
 
     # add the ini path to the environment, so we can
     # access it globally, including any subprocesses
-    # spawned by django
+    # spawned by the django reloader
     os.environ["RAPIDSMS_INI"] = ini
 
     # read the config, which is shared
@@ -65,12 +48,4 @@ def start (args):
     else:
         settings = None
 
-    # if one of the remaining hard-coded methods were invoked,
-    # go do that. TODO: move those to rapidsms/management
-    if len(args) > 1 and hasattr(Manager, args[1]):
-        handler = getattr(Manager(), args[1])
-        handler(*args[2:])
-
-    # otherwise, let Django deal with it
-    else:
-        execute_manager(settings)
+    execute_manager(settings)
