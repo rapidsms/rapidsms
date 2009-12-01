@@ -6,9 +6,13 @@ from django.contrib import admin
 from reporters.models import *
 from django.core.urlresolvers import reverse
 
+class PersistantConnectionInline(admin.TabularInline):
+    model = PersistantConnection
+
 class ReporterAdmin(admin.ModelAdmin):
     list_display = ('id','first_name', 'last_name')
     list_filter = []    
+    inlines = [PersistantConnectionInline,]
 
 
 class PersistantConnectionAdmin(admin.ModelAdmin):
