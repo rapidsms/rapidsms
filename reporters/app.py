@@ -73,7 +73,8 @@ class App(rapidsms.app.App):
         return msg.respond(self.__str("denied", msg.reporter))
 
 
-    def configure(self, allow_join, allow_list, **kwargs):
+    def configure(self, message_handling, allow_join, allow_list, **kwargs):
+        self.message_handling = message_handling
         self.allow_join = allow_join
         self.allow_list = allow_list
 
@@ -117,31 +118,34 @@ class App(rapidsms.app.App):
 
 
     def handle(self, msg):
-        print "REPORTER:HANDLE"
-        matcher = Matcher(msg)
+        if self.message_handling:
+            print "REPORTER:HANDLE"
+            matcher = Matcher(msg)
 
-        # TODO: this is sort of a lightweight implementation
-        # of the keyworder. it wasn't supposed to be. maybe
-        # replace it *with* the keyworder, or extract it
-        # into a parser of its own
-        map = {
-            "register":  ["(?:join|register|reg) (whatever)"],
-            "identify":  ["identify (slug)", "this is (slug)", "i am (slug)"],
-            "remind":    ["whoami", "who am i"],
-            "reporters": ["list reporters", "reporters\\?"],
-            "lang":      ["lang (slug)"]
-        }
+            # TODO: this is sort of a lightweight implementation
+            # of the keyworder. it wasn't supposed to be. maybe
+            # replace it *with* the keyworder, or extract it
+            # into a parser of its own
+            map = {
+                "register":  ["(?:join|register|reg) (whatever)"],
+                "identify":  ["identify (slug)", "this is (slug)", "i am (slug)"],
+                "remind":    ["whoami", "who am i"],
+                "reporters": ["list reporters", "reporters\\?"],
+                "lang":      ["lang (slug)"]
+            }
 
-        # search the map for a match, dispatch
-        # the message to it, and return/stop
-        for method, patterns in map:
-            if matcher(*patterns) and hasattr(self, method):  
-                getattr(self, method)(msg, *matcher.groups)
-                return True
+            # search the map for a match, dispatch
+            # the message to it, and return/stop
+            for method, patterns in map:
+                if matcher(*patterns) and hasattr(self, method):  
+                    getattr(self, method)(msg, *matcher.groups)
+                    return True
 
-        # no matches, so this message is not
-        # for us; allow processing to continue
-        return False
+             no matches, so this message is not
+             for us; allow processing to continue
+            return False
+        else:
+            pass
 
 
     def register(self, msg, name):
