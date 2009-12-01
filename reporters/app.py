@@ -141,8 +141,8 @@ class App(rapidsms.app.App):
                     getattr(self, method)(msg, *matcher.groups)
                     return True
 
-             no matches, so this message is not
-             for us; allow processing to continue
+            # no matches, so this message is not
+            # for us; allow processing to continue
             return False
         else:
             pass
