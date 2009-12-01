@@ -27,6 +27,8 @@ def suite():
     from .. import router, app
     from ..log import mixin
 
+    from ..utils import modules
+
     # start with an empty test suite
     _suite = unittest.TestSuite()
 

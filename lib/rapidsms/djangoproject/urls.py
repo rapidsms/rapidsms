@@ -2,9 +2,9 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 
-import os, sys
+import os
 from rapidsms.djangoproject import settings
-from rapidsms.utils.modules import try_import, get_module_path
+from rapidsms.utils.modules import try_import
 from django.conf.urls.defaults import patterns, url
 
 

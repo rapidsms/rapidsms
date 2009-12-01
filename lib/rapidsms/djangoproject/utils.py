@@ -4,7 +4,7 @@
 
 import os, re, traceback
 from rapidsms.djangoproject import settings
-from rapidsms.utils.modules import try_import, get_module_path
+from rapidsms.utils.modules import try_import, get_package_path
 from django.template import RequestContext
 from django.shortcuts import render_to_response as django_r_to_r
 from django.core.paginator import Paginator, EmptyPage, InvalidPage
@@ -41,7 +41,7 @@ def render_to_response(req, template_name, dictionary=None, **kwargs):
     # which affects the whole webui without hard-coding it
     for module_name in settings.RAPIDSMS_APPS.keys():
         __js_dir(
-            "%s/static/javascripts/global" % get_module_path(module_name),
+            "%s/static/javascripts/global" % get_package_path(module_name),
             "/static/%s/javascripts/global" % module_name)
     
     # A NEW KIND OF LUNACY: inspect the stack to find out
@@ -55,7 +55,7 @@ def render_to_response(req, template_name, dictionary=None, **kwargs):
     m = re.match(r'^.+/(.+?)/views\.py$', tb[-2][0])
     if m is not None:
         app_name = m.group(1)
-        path = get_module_path(app_name)
+        path = get_package_path(app_name)
 
         # since we're fetching the app conf, add it to the
         # template dict. it wouldn't be a very good idea to
