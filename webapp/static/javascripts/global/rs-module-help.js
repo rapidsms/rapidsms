@@ -21,7 +21,7 @@ jQuery(function() {
 		/* add a tool button to show
 		 * the div that we just hid */
 		toolbar.append(
-			jQuery('<span class="help">Show Help</span>').click(function(ev) {
+			jQuery('<span class="help">Help</span>').click(function(ev) {
 				help_box.slideToggle();
 			})
 		);

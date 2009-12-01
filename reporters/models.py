@@ -9,7 +9,6 @@ from django.core.urlresolvers import reverse
 from rapidsms.message import Message
 from rapidsms.webui.managers import *
 
-
 class ReporterGroup(models.Model):
     title       = models.CharField(max_length=30, unique=True)
     parent      = models.ForeignKey("self", related_name="children", null=True, blank=True)
@@ -112,7 +111,11 @@ class Reporter(models.Model):
         permissions = (
             ("can_view", "Can view"),
         )
-    
+
+    @property
+    def groups_list(self):
+        groups = [g for g in self.groups.flatten]
+        return groups
     
     def full_name(self):
         return ("%s %s" % (

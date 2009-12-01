@@ -15,7 +15,7 @@
 		<thead>
 			<tr>
 				<th scope="col">Name</th>
-				<th scope="col">Alias</th>
+				<th scope="col">Interviewer ID</th>
 				<th scope="col">Last Seen</th>
 			</tr>
 		</thead>
@@ -23,7 +23,7 @@
 			<tr>
 				<!--<td><a href="{% self_link "reporter" reporter.pk %}"{% if reporter.full_name %}>{{ reporter.full_name }}{% else %} class="unknown">Unknown{% endif %}</a></td>-->
 				<td><a href="/reporters/{{ reporter.pk }}"{% if reporter.full_name %}>{{ reporter.full_name }}{% else %} class="unknown">Unknown{% endif %}</a></td>
-				<td>{% if reporter.alias %}{{ reporter.alias }}{% else %}<span class="na">n/a</span>{% endif %}</td>
+				<td>{% if reporter.interviewer_id %}{{ reporter.interviewer_id }}{% else %}<span class="na">n/a</span>{% endif %}</td>
 				<td>{{ reporter.last_seen|last_seen }}</td>
 			</tr>{% endfor %}{% else %}
 			<tr class="no-data">

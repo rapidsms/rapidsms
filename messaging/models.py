@@ -38,6 +38,15 @@ class Recipient(models.Model):
         elif self.connection: return unicode(self.connection)
         else:                 return u"Unknown"
 
+    class Meta:
+        # define a permission for this app to use the @permission_required
+        # decorator in messaging's views
+        # in the admin's auth section, we have a group whose
+        # users have this permission -- and are able to see this section
+        permissions = (
+            ("can_view", "Can view"),
+        )
+
 
 def combined_message_log(reporters=None):
     """Returns a list of IncomingMessage and OutgoingMessage objects, sorted by

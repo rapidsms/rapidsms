@@ -14,6 +14,11 @@
 			<p class="help">Must be alphanumeric, up to 20 characters.</p>
 		</div>
 		<div>
+			<label for="fm-rep-add-id">Interviewer ID</label>
+			<input type="text" class="required" id="fm-rep-add-id" name="id"{% if reporter %} value="{{ reporter.id }}"{% endif %} />
+			<p class="help">Must be alphanumeric, up to 20 characters.</p>
+		</div>
+		<div>
 			<label>Name</label>
 			<div>
 				<input type="text" id="fm-rep-add-first_name" name="first_name"{% if reporter %} value="{{ reporter.first_name }}"{% endif %} />

@@ -7,7 +7,8 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.core.exceptions import FieldError
 from django.core.urlresolvers import reverse
 from rapidsms.webui.utils import *
-from reporters.models import *
+#from reporters.models import *
+from childhealth.models import HealthWorker as Reporter
 from models import combined_message_log, __combined_message_log_row
 
 
@@ -52,11 +53,10 @@ def index(req):
     # field of the search form. this is WAY
     # ugly, and should be introspected
     columns = [
-        ("alias", "Alias"),
         ("first_name", "First Name"),
-        ("last_name", "Last Name")]#,
-        #("role__title", "Role"),
-        #("location__name", "Location")]
+        ("last_name", "Last Name"),
+        ("errors", "# suspect surveys"),
+        ("message_count", "# messages sent")]
 
     resp = render_to_response(req,
         "messaging/index.html", {

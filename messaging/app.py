@@ -85,39 +85,39 @@ class App (rapidsms.app.App):
         # TODO: what could go wrong here?
         return be.message(pconn.identity, form["text"]).send()
 
-    def start(self):
+#    def start(self):
         # regex to match @alias or @pk
-        self.alias_pattern= re.compile("(\s*@\w+\s*)")
+#        self.alias_pattern= re.compile("(\s*@\w+\s*)")
         # TODO #grouptitle
 
-    def handle(self, message):
+#    def handle(self, message):
         # FIXME this is a crappy rough draft
-        router = self.router
+#        router = self.router
         # gather possible @aliases and @pks occuring in message's text
-        possible_reportees = re.finditer(self.alias_pattern, message.text)
-        response = ''
-        win = []
-        fail = []
-        for possible_reportee in possible_reportees:
+#        possible_reportees = re.finditer(self.alias_pattern, message.text)
+#        response = ''
+#        win = []
+#        fail = []
+#        for possible_reportee in possible_reportees:
             # pull the @alias or @pk from the match object
-            raw_reportee = possible_reportee.group(0)
+#            raw_reportee = possible_reportee.group(0)
             # lookup the alias or pk
-            reportee = Reporter.lookup(raw_reportee.replace('@','').strip())
-            if reportee:
+#            reportee = Reporter.lookup(raw_reportee.replace('@','').strip())
+#            if reportee:
                 # TODO only say its a success if its successful
                 #if reportee.send(router, message):
-                reportee.send(router, message)
+#                reportee.send(router, message)
                 # add to list of successes
-                win.append(raw_reportee)
-            else:
+#                win.append(raw_reportee)
+#            else:
                 # add to list of failures
-                fail.append(raw_reportee)
-        if len(win) > 0:
-            response = response + "Message sent to %s." % (', '.join(win))
-        if len(fail) > 0:
-            response = response + "No user found for %s." % (', '.join(fail))
+#                fail.append(raw_reportee)
+#        if len(win) > 0:
+#            response = response + "Message sent to %s." % (', '.join(win))
+#        if len(fail) > 0:
+#            response = response + "No user found for %s." % (', '.join(fail))
         # respond with successes and failures
-        return self._send_message(message.connection, response)
+#        return self._send_message(message.connection, response)
         
     def ajax_POST_send_message_to_connection(self, params, form):
         '''Sends a message using a connection id, instead of

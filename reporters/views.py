@@ -9,7 +9,11 @@ from django.shortcuts import get_object_or_404
 from django.db import transaction
 
 from rapidsms.webui.utils import *
-from reporters.models import *
+#from reporters.models import *
+from reporters.models import PersistantConnection
+from reporters.models import PersistantBackend
+from reporters.models import ReporterGroup
+from childhealth.models import HealthWorker as Reporter
 from reporters.utils import *
 
 
