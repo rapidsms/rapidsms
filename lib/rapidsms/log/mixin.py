@@ -118,9 +118,14 @@ class LoggerMixin():
     fatal = critical
 
 
-    def exception(self, *args):
-        """Logs a 'msg % args' with severity ERROR, along with exception information."""
-        return self.error(*args, exc_info=True)
+    def exception(self, *args, **kwargs):
+        """
+        Log a 'msg % args' with severity ERROR, with the backtrace from
+        the last exception raised.
+        """
+
+        kwargs['exc_info'] = True
+        return self.error(*args, **kwargs)
 
     # backwards-compatibility
     log_last_exception = exception
