@@ -8,21 +8,12 @@ import Queue
 
 from rapidsms.message import Message
 from rapidsms.connection import Connection
-from rapidsms.backends import Backend as BackendBase
+from rapidsms.backends import Backend
 import backend
 from rapidsms import log
+from rapidsms import utils
 
-
-
-
-# number of seconds to wait between
-# polling the modem for incoming SMS
-POLL_INTERVAL = 10
-
-
-class Backend(BackendBase):
-    _title = "pyGSM"
-
+POLL_INTERVAL=2 # num secs to wait between checking for inbound texts
 LOG_LEVEL_MAP = {
     'traffic':'info',
     'read':'info',
@@ -32,6 +23,9 @@ LOG_LEVEL_MAP = {
     'error':'error'
 }
 
+class Backend(Backend):
+    _title = "pyGSM"
+    
     def _log(self, modem, msg, level):
         # convert GsmModem levels to levels understood by
         # the rapidsms logger
@@ -45,56 +39,124 @@ LOG_LEVEL_MAP = {
     def configure(self, *args, **kwargs):
         self.modem = None
         self.modem_args = args
-        self.modem_kwargs = kwargs
-
-
-    def send(self, message):
-        self.sent_messages += 1
         
-        self.modem.send_sms(
-            str(message.connection.identity),
-            message.text)
->>>>>>> adammck:lib/rapidsms/backends/gsm.py
-
-
-    def gsm_log(self, modem, str, level):
-        self.debug("%s: %s" % (level, str))
-
-
-    def status(self):
-        csq = self.modem.signal_strength()
-
-        # convert the "real" signal
-        # strength into a 0-4 scale
-        if   csq == 99: level = 0
-        elif csq >= 35: level = 4
-        elif csq >= 25: level = 3
-        elif csq >= 15: level = 2
-        else:           level = 1
-
-        return {
-            "_signal": level,
-            "_title": self.title,
-            "Sent": self.sent_messages,
-            "Received": self.received_messages
-        }
-
-
-    def run(self):
-        while self.running:
-            self.info("Polling modem for messages")
-            msg = self.modem.next_message()
-
-            if msg is not None:
-                self.received_messages += 1
+        # set max outbound text size
+        if 'max_csm' in kwargs:
+            self.max_csm = int(kwargs['max_csm'])
+        else:
+            self.max_csm = 1
+        
+        if self.max_csm>255:
+            self.max_csm = 255
+        if self.max_csm<1:
+                self.max_csm = 1
                 
+        # make a modem log
+        self.modem_logger = None
+        if 'modem_log' in  kwargs:
+            mlog = kwargs.pop('modem_log')
+            level='info'
+            if 'modem_log_level' in kwargs:
+                level=kwargs.pop('modem_log_level')
+            self.modem_logger = log.Logger(level=level, file=mlog, channel='pygsm')
+            
+        kwargs['logger'] = self._log
+        self.modem_kwargs = kwargs
+       
+    def __chunker(self, message_text, max_csm=60):
+        # pdusmshandler seems to support auto-chunking of too-long
+        # messages, but textsmshandler does not. hacking that
+        # functionality here instead of refactoring textsmshandler
+        # and hardcoding a safe arabic limit for now
+        text = message_text 
+        max_chars = max_csm
+        print max_chars
+        messages = []
+
+        # if message text is longer than max_chars, see how
+        # many messages we will need
+        if len(text) > max_chars:
+            full_msgs, remainder = divmod(len(text), max_chars)
+            if remainder > 0:
+                num_msgs = full_msgs + 1
+            else:
+                num_msgs = full_msgs
+            # lo tech
+            #for msg in range(num_msgs):
+            #    messages.append(text[msg*max_chars:(msg+1)*max_chars])
+
+            # make list of all the words in text
+            msg_words = text.split()
+
+            # list of tuples (word, word_length)
+            words_counts = [(w,len(w)) for w in msg_words]
+
+            # construct messages
+            for msg in range(num_msgs):
+                chunk_construction = True
+                chunk_chars = 0
+                chunk_words = []
+                while chunk_construction:
+                    # make sure our chunk isnt too long and we 
+                    # still have words to send
+                    if chunk_chars < max_chars and len(words_counts) > 0:
+
+                            # make sure we can fit this word's 
+                            # characters and a space into this chunk
+                            if ((chunk_chars + words_counts[0][1]) + 1 < max_chars):
+                                word_count = words_counts.pop(0)
+                                chunk_chars = chunk_chars + word_count[1] + 1
+                                chunk_words.append(word_count[0])
+                            else:
+                                chunk = " ".join(chunk_words)
+                                chunk_construction = False
+                    else:
+                        chunk = " ".join(chunk_words)
+                        chunk_construction = False
+                messages.append(chunk) 
+                print chunk
+            return messages
+        else:
+            return False
+
+
+    def __send_sms(self, message):
+        try:
+            # if message text is longer than self.max_csm,
+            # send all of its chunks
+            chunked = self.__chunker(message.text, 60)
+            if chunked:
+                for chunk in chunked:
+                    self.modem.send_sms(
+                        str(message.connection.identity),
+                        chunk)#,
+                        #max_messages=self.max_csm)
+                    # Mattel seems to get overwhelmed
+                    # TODO use More Messages to Send AT+CMMS
+                    # when sending several messages
+                    time.sleep(3)
+            else:
+                self.modem.send_sms(
+                    str(message.connection.identity),
+                    message.text)#,
+                    #max_messages=self.max_csm)
+        except ValueError, err:
+            # TODO: Pass this error info on to caller!
+            self.error('Error sending message: %s' % err)
+        
+    def run(self):
+        while self._running:
+            # check for new messages
+            msg = self.modem.next_message()
+        
+            if msg is not None:
                 # we got an sms! create RapidSMS Connection and
                 # Message objects, and hand it off to the router
                 c = Connection(self, msg.sender)
                 m = Message(
                             connection=c, 
                             text=msg.text,
-                            date=msg.sent.replace(tzinfo=None)
+                            date=utils.to_naive_utc_dt(msg.sent)
                             )
                 self.router.send(m)
                 
@@ -106,21 +168,12 @@ LOG_LEVEL_MAP = {
                     # break out of while
                     break
                 
-
-            # wait for POLL_INTERVAL seconds before continuing
-            # (in a slightly bizarre way, to ensure that we abort
-            # as soon as possible when the backend is asked to stop)
-            for n in range(0, POLL_INTERVAL):
-                if not self.running: return None
-                time.sleep(1)
-
-
+            # poll for new messages
+            # every POLL_INTERVAL seconds
+            time.sleep(POLL_INTERVAL)
+    
     def start(self):
-        self.sent_messages = 0
-        self.received_messages = 0
-        
         self.modem = pygsm.GsmModem(
-            logger=self.gsm_log,
             *self.modem_args,
             **self.modem_kwargs)
 
@@ -128,15 +181,17 @@ LOG_LEVEL_MAP = {
         # start the run loop--it just sets self._running to True
         # and calls run.
         if self.modem is not None:
-            BackendBase.start(self)
-
+            backend.Backend.start(self)
 
     def stop(self):
-        
         # call superclass to stop--sets self._running
         # to False so that the 'run' loop will exit cleanly.
-        BackendBase.stop(self)
+        backend.Backend.stop(self)
 
         # disconnect from modem
         if self.modem is not None:
             self.modem.disconnect()
+
+
+
+        
