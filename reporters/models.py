@@ -272,6 +272,10 @@ class Reporter(models.Model):
         except PersistantConnection.DoesNotExist:
             return None
 
+    @property
+    def identity(self):
+        return self.connection().identity
+
 
     def last_seen(self):
         """Returns the Python datetime that this Reporter was last seen,
