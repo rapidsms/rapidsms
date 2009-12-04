@@ -106,8 +106,9 @@ class App(rapidsms.app.App):
         # store a handy dictionary containing the most personal persistance
         # information that we have about this connection, for other apps to
         # easily link back to it. See PersistantConnection for more docs.
-        if msg.reporter: msg.persistance_dict = conn.dict
-        
+        if msg.reporter: msg.persistance_dict = { "reporter" : msg.reporter }
+        else:            msg.persistance_dict = { "connection" : msg.persistant_connection }
+
         # log, whether we know who the sender is or not
         if msg.reporter: self.info("Identified: %s as %r" % (conn, msg.reporter))
         else:            self.info("Unidentified: %s" % (conn))
