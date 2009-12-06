@@ -124,7 +124,7 @@ class Backend(Backend):
         try:
             # if message text is longer than self.max_csm,
             # send all of its chunks
-            chunked = self.__chunker(message.text, 60)
+            chunked = self.__chunker(message.text, 70)
             if chunked:
                 for chunk in chunked:
                     self.modem.send_sms(
@@ -134,12 +134,11 @@ class Backend(Backend):
                     # Mattel seems to get overwhelmed
                     # TODO use More Messages to Send AT+CMMS
                     # when sending several messages
-                    time.sleep(3)
+                    time.sleep(1)
             else:
                 self.modem.send_sms(
                     str(message.connection.identity),
-                    message.text)#,
-                    #max_messages=self.max_csm)
+                    message.text)#,max_messages=70)
         except ValueError, err:
             # TODO: Pass this error info on to caller!
             self.error('Error sending message: %s' % err)
