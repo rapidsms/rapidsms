@@ -27,14 +27,14 @@ class App (rapidsms.app.App):
             # information provided by reporters.app/parse
             msg = IncomingMessage.objects.create(
                 received=datetime.now(),
-                text=msg.text,
-                **msg.persistance_dict)
+                text=msg.text)#,
+#                **msg.persistance_dict)
 
             self.info("Message %d captured" % (msg.pk))
 
             # short-circuit, since this message is dealt
             # with now (even if it shouldn't have been)
-            return True
+            #return True
 
 
     # NOTE: outgoing messages are not logged here via the "outoging"
