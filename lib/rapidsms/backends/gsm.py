@@ -63,11 +63,7 @@ class Backend(Backend):
         kwargs['logger'] = self._log
         self.modem_kwargs = kwargs
        
-    def __chunker(self, message_text, max_csm=60):
-        # pdusmshandler seems to support auto-chunking of too-long
-        # messages, but textsmshandler does not. hacking that
-        # functionality here instead of refactoring textsmshandler
-        # and hardcoding a safe arabic limit for now
+    def __chunker(self, message_text, max_csm=160):
         text = message_text 
         max_chars = max_csm
         print max_chars
@@ -122,9 +118,9 @@ class Backend(Backend):
 
     def __send_sms(self, message):
         try:
-            # if message text is longer than self.max_csm,
+            # TODO if message text is longer than self.max_csm,
             # send all of its chunks
-            chunked = self.__chunker(message.text, 70)
+            chunked = self.__chunker(message.text, 160)
             if chunked:
                 for chunk in chunked:
                     self.modem.send_sms(
