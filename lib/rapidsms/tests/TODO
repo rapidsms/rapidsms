@@ -1,6 +1,0 @@
-manager.py
-router.py
-backends/http.py
-parsers/keyworder.py
-connection.py
-person.py
