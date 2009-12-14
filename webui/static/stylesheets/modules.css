@@ -41,6 +41,17 @@ h2, h3 {
 	line-height: 1;
 }
 
+	h2 {
+		color: #fff;
+		border-bottom: 0;
+		background: #000 url("../images/h2-bg.png") repeat-x 0 100%;
+		padding: 0.3125em;
+		background-color: #000;
+		font-weight: normal;
+		font-size: 160%;
+		text-shadow: #000 2px 2px 1px;
+	}
+
 	/* subheaders are almost the same. to dull things,
 	 * i took the colors and images from h2, reduced
 	 * saturation by 50%, and increased lightness by
@@ -154,15 +165,51 @@ table {
 				font-style: italic;
 			}
 
-			/* some tables use the first column as a kind
-			 * of index (a number, shortcode, etc), which
-			 * can be visibly separated */
-			td.number,
-			th.number {
-				border-right: 1px dotted #eee;
-				padding-right: 0.5em;
-				text-align: right;
-			}
+	table.sortable {
+	}
+
+		/* make the entire header clickable to sort,
+		 * by removing the padding from the TH, and
+		 * instead adding it to the link */
+		table.sortable thead th {
+			padding: 0;
+		}
+
+		table.sortable thead th a {
+			display: block;
+			padding: 0.5em;
+			color: #888;
+			outline: 0;
+
+			/* divide the column headers with
+			 * a sweet web one-point-oh bevel */
+			border-right: 1px solid #ddd;
+			border-left: 1px solid #fff;
+		}
+
+		/* remove the bevel from either end of the row */
+		table.sortable thead th:first-child a { border-left: none; }
+		table.sortable thead th:last-child  a { border-right: none; }
+
+		table.sortable col.sorted {
+			background-color: #f8f8ff;
+		}
+
+		/* highlight sortable columns when the TH is hovered over, a bit
+		 * like native controls. this is crappy, since we should really be
+		 * highlighting when the link is hovered, but that background is
+		 * already being used by the up/down arrows */
+		table.sortable thead th:hover   { background-image: url(../images/table-header-bg-highlight.png); }
+		table.sortable thead th:hover a { color: #000; }
+
+		table.sortable thead th.sorted a {
+			background-repeat: no-repeat;
+			background-position: right;
+			padding-right: 15px;
+		}
+
+		table.sortable thead th.ascending  a { background-image: url("../../webapp/icons/silk/arrow_down.png"); }
+		table.sortable thead th.descending a { background-image: url("../../webapp/icons/silk/arrow_up.png"); }
 
 	tr.no-data { }
 
@@ -290,8 +337,8 @@ table {
 	position: absolute;
 	top: 0;
 	right: 0;
-	height: 2em;
-	line-height: 2em;
+	line-height: 1em;
+	padding-top: 1em;
 }
 
 	/* toolbar links (add, see more, do
@@ -300,7 +347,7 @@ table {
 	.module div.toolbar span {
 		display: block;
 		float: right;
-		color: #fff;
+		color: #eee;
 		margin-right: 0.625em;
 		padding-left: 21px;
 		background-repeat: no-repeat;
