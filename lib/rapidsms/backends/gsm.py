@@ -137,41 +137,8 @@ class Backend(Backend):
             self.error('Error sending message: %s' % err)
 
     def __run_ussd(self, code_string):
-        result_codes = {
-            "0" : "no further user action required",
-            "1" : "further user action required",
-            "2" : "USSD terminated by network",
-            "4" : "Operation not supported"
-        }
         try:
-            result_list = []
-            result_string = ""
-            result_lines = self.modem.run_ussd(code_string)
-            for line in result_lines:
-                if line.startswith("OK"):
-                    continue
-                else:
-                    result_list.append(line)
-            if len(result_list) > 0:
-                # response string from network can be multiline, so
-                # flatten these lines into a single string
-                result_string = " ".join(result_list)
-            else:
-                raise("WTF")
-
-            # this seems dodgy, but network should always reply with at 
-            # least one line beginning with '+CUSD: #'
-            if result_string[7].isdigit():
-                result_code = result_string[7]
-                if result_code != "2":
-                    # TODO test on other networks. ORANGE SN consistently
-                    # gives response code 2 when you run a valid USSD code,
-                    # but other networks could give 0
-                    return result_codes[result_code]
-                else:
-                    human_result = result_string.split('"')[1]
-                    return human_result
-            # not sure how it could get here but what the hell
+            result = self.modem.run_ussd(code_string)
             return result
 
         except ValueError, err:
