@@ -216,18 +216,3 @@ class Location(models.Model):
             locs.extend(loc.descendants(True))
 
         return locs
-
-
-# if the reporters app happens to be be running, monkey-patch
-# a LOCATION field onto Reporter. any apps that need location-
-# aware reporters can just depend upon both of them, without
-# locations _or_ reporters depending upon one another
-if "reporters" in settings.RAPIDSMS_APPS.keys():
-    from reporters.models import Reporter
-
-    Reporter.add_to_class(
-        "location",
-        models.ForeignKey(
-            Location,
-            null=True,
-            blank=True))
