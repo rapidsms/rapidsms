@@ -3,6 +3,33 @@
 
 
 from django.db import models
+from django.db.models.base import ModelBase
+from .utils.modules import find_extensions
+
+
+class Extensible(ModelBase):
+    """
+    """
+
+    def __new__(cls, name, bases, attrs):
+
+        module_name = attrs["__module__"]
+        app_label = module_name.split('.')[-2]
+        model_name = "%s.%s" % (app_label, name)
+
+        extensions = find_extensions(model_name)
+        bases = tuple(extensions) + bases
+
+        return super(Extensible, cls).__new__(
+            cls, name, bases, attrs)
+
+
+def extends(name):
+    def wrapped(func):
+        func._extends = name
+        return func
+
+    return wrapped
 
 
 class Backend(models.Model):
@@ -56,6 +83,8 @@ class Connection(models.Model):
     need not worry about which backend a messge originated from.
     """
 
+    __metaclass__ = Extensible
+
     backend  = models.ForeignKey(Backend)
     identity = models.CharField(max_length=100)
 
@@ -66,3 +95,32 @@ class Connection(models.Model):
     def __repr__(self):
         return '<%s: %s>' %\
             (type(self).__name__, self)
+
+
+class Person(models.Model):
+    """
+    """
+
+    __metaclass__ = Extensible
+
+    connections = models.ManyToManyField(Connection, blank=True)
+
+    alias = models.CharField(max_length=20, unique=True)
+    name  = models.CharField(max_length=100, blank=True)
+
+    # the language that this person prefers to communicate in, as a w3c
+    # language tag. if this field is blank (or invalid), rapidsms will
+    # default to settings.LANGUAGE_CODE.
+    #
+    # the spec: http://www.w3.org/International/articles/language-tags/Overview
+    # reference:http://www.iana.org/assignments/language-subtag-registry
+    #
+    # for example:
+    #   english  = en
+    #   amharic  = am
+    #   chichewa = ny
+    #   klingon  = tlh
+    language = models.CharField(max_length=4, blank=True)
+
+    class Meta:
+        verbose_name_plural = "people"
