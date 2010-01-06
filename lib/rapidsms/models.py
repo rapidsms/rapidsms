@@ -97,7 +97,7 @@ class Connection(models.Model):
             (type(self).__name__, self)
 
 
-class Person(models.Model):
+class Contact(models.Model):
     """
     """
 
@@ -105,7 +105,7 @@ class Person(models.Model):
 
     connections = models.ManyToManyField(Connection, blank=True)
 
-    alias = models.CharField(max_length=20, unique=True)
+    alias = models.CharField(max_length=20, blank=True)
     name  = models.CharField(max_length=100, blank=True)
 
     # the language that this person prefers to communicate in, as a w3c
@@ -122,5 +122,9 @@ class Person(models.Model):
     #   klingon  = tlh
     language = models.CharField(max_length=4, blank=True)
 
-    class Meta:
-        verbose_name_plural = "people"
+    def __unicode__(self):
+        return self.alias
+
+    def __repr__(self):
+        return '<%s: %s>' %\
+            (type(self).__name__, self)
