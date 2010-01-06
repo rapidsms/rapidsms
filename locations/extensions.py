@@ -8,7 +8,7 @@ from rapidsms.models import extends
 from .models import Location
 
 
-@extends("rapidsms.Person")
+@extends("rapidsms.Contact")
 class PersonLocation(models.Model):
     location = models.ForeignKey(Location, null=True, blank=True)
 
