@@ -93,7 +93,6 @@ class App(Component):
         return self._name(module_name).replace("_", " ").title()
 
 
->>>>>>> 18e745d9db23ff8edd29c9829eb953d085543083:lib/rapidsms/app.py
     def priority(self):
         """Returns the numeric "priority" of this RapidSMS App object,
            which dictates the order in which the app will be notified
