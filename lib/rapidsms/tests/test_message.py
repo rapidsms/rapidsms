@@ -11,11 +11,12 @@ from harness import MockRouter
 class TestMessage(unittest.TestCase):
     def setUp (self):
         self.router = MockRouter()
-        self.backend = Backend(self.router)
+        self.backend = Backend("testing", self.router)
         self.connection = Connection(self.backend, "12345")
         self.person = Person()
         self.person.add_connection(self.connection)
-        self.router.add_backend(self.backend)
+        #self.router.add_backend(self.backend)
+        self.router.backends.append(self.backend)
 
     def test__init__ (self): 
         msg = Message(self.connection, "this is a test")
@@ -67,6 +68,3 @@ class TestMessage(unittest.TestCase):
         waiting = self.backend.next_message()
         self.assertEquals(waiting.text, "and again?", "the backend got the message (3)")
         self.router.stop()
-
-if __name__ == "__main__":
-    unittest.main()

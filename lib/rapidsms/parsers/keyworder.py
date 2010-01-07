@@ -73,7 +73,6 @@ class Keyworder(object):
         return decorator
 
     def match(self, sself, str):
-        print "\n\nMATCHING\n\n: %s" % str
         for pat, func in self.regexen:
             match = pat.match(str)
             if match:

@@ -3,17 +3,21 @@
 
 import unittest
 from rapidsms.app import App
-from harness import MockRouter
+
+
+class MockRouter(object):
+    pass
+
 
 class TestApp(unittest.TestCase):
 
     def setUp(self):
         self.router = MockRouter()
+        self.name = "test"
 
     def test___init__(self):
         app = App(self.router)
-        self.assertEqual(self.router, app.router,
-            "failed to set router")
+        self.assertEqual(self.router, app.router, "failed to set router")
 
     def test_api(self):
         app = App(self.router)
@@ -29,7 +33,3 @@ class TestApp(unittest.TestCase):
                 "app does not have attribute '%s'" % method)
             self.assertTrue(callable(getattr(app, method)),
                 "attribute '%s' is not callable" % method)
-
-
-if __name__ == "__main__":
-    unittest.main()

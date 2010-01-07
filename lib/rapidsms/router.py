@@ -1,149 +1,230 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
 
-import time, datetime, heapq
-import threading
-import traceback
 
-import component
-import log
+import os, sys, threading, traceback, time, datetime, Queue
 
-#
-# RapidSMS only has one instance of a Router, so use
-# module level 'statics' to access it
-#
+from django.dispatch import Signal
 
-_G={
-    'router': None
-}
+from .utils.modules import try_import, get_class
+from .backends.base import BackendBase
+from .log.mixin import LoggerMixin
+from .app import App as AppBase
 
-def get_router():
-    router = _G['router']
-    if router == None:
-        router = Router()
-        _G['router'] = router
-    return router
 
-def _set_router(router):
-    """ This function's only purpose is to support unit tests (with Mock Router) """
-    if router is not None:
-        _G['router'] = router
+class Router (object, LoggerMixin):
+    """
+    >>> "wat"
+    'wat'
+    """
 
-class Router (component.Receiver):
-    incoming_phases = ('filter', 'parse', 'handle', 'cleanup')
-    outgoing_phases = ('outgoing',)
+    incoming_phases = ('filter', 'parse', 'handle', 'catch', 'cleanup')
+    outgoing_phases = ('outgoing', 'pre_send')
 
-    def __init__(self):
-        component.Receiver.__init__(self)
+    pre_start  = Signal(providing_args=["router"])
+    post_start = Signal(providing_args=["router"])
+    pre_stop   = Signal(providing_args=["router"])
+    post_stop  = Signal(providing_args=["router"])
+
+
+    __instance = None
+
+    @classmethod
+    def instance(cls):
+        if not cls.__instance:
+            cls.__instance = cls(
+                prevent=False)
+
+        return cls.__instance
+
+
+    def __init__(self, prevent=True):
+
+        # since router didn't used to be a singleton, there may be dark places
+        # that it's still spawned the usual way. unless specifically asked not
+        # to, i'm going to explode here, to avoid violating the expectation that
+        # there is only a single router. later, we can remove the argument.
+        if prevent:
+            raise Exception(
+                "Router is a singleton. " +\
+                "Use Router.instance() instead.")
+
+        # otherwise, initialize as usual
         self.backends = []
         self.apps = []
-        self.events = []
-        self.running = False
         self.logger = None
 
-    def log(self, level, msg, *args):
-        self.logger.write(self, level, msg, *args)
+        self.running = False
+        """TODO: Docs"""
 
-    def set_logger(self, level, file):
-        self.logger = log.Logger(level, file)
+        self.accepting = False
+        """TODO: Docs"""
 
-    def build_component (self, class_template, conf):
-        """Imports and instantiates an module, given a dict with 
-           the config key/value pairs to pass along."""
-        # break the class name off the end of the module template
-        # i.e. "%s.app.App" -> ("%s.app", "App")
-        module_template, class_name = class_template.rsplit(".",1)
-       
-        # make a copy of the conf dict so we can delete from it
-        conf = conf.copy()
+        self._queue = Queue.Queue()
+        """Pending incoming messages, populated by Router.incoming_message."""
 
-        # resolve the component name into a real class
-        module_name = module_template % (conf.pop("type"))
-        module = __import__(module_name, {}, {}, [''])
-        component_class = getattr(module, class_name)
+
+    def __str__(self):
+
+        # there's only ever a single
+        # router, so no ambiguity here
+        return "Router"
+
+
+    def _logger_name(self):
+        return "rapidsms.router"
+
+
+    # -------------
+    # CONFIGURATION
+    # -------------
+
+
+    def add_backend(self, type, name, config={}):
+        """
+        Finds a RapidSMS backend class, instantiates and (optionally) configures
+        it, and adds it to the list of backends that will be polled for incoming
+        messages while it is running. Returns the configured instance, or raises
+        ImportError if the module was invalid.
+
+        >>> router = Router.instance()
+        >>> backend = router.add_backend(
+        ...     "base", "my_mock_backend",
+        ...     { "a": "Alpha", "b": "Beta" })
+
+        (The class of the Backend instance is derrived from 'type' by importing
+        the '"rapidsms.backends.%s" % (type)' module, and looking for a subclass
+        of BackendBase.)
+
+        >>> backend.__class__
+        <class 'rapidsms.backends.base.BackendBase'>
+
+        >>> backend.name
+        'my_mock_backend'
+
+        >>> backend.config['a']
+        'Alpha'
         
-        # create the component with an instance of this router
-        # and keep hold of it here, so we can communicate both ways
-        component = component_class(self)
-        try:
-            component._configure(**conf)
-        except TypeError, e:
-            # "__init__() got an unexpected keyword argument '...'"
-            if "unexpected keyword" in e.message:
-                missing_keyword = e.message.split("'")[1]
-                raise Exception("Component '%s' does not support a '%s' option."
-                        % (component.title, missing_keyword))
-            else:
-                raise
-        return component
+        The instance is added to the router's list of backends, and is regularly
+        polled for new messages once the router is started.
 
-    def add_backend (self, conf):
-        try:
-            backend = self.build_component("rapidsms.backends.%s.Backend", conf)
-            self.info("Added backend: %r" % conf)
-            self.backends.append(backend)
-            
-        except:
-            self.log_last_exception("Failed to add backend: %r" % conf)
-            
+        >>> backend in router.backends
+        True
+        
+        # TODO: check that the router polls this backend once started. maybe
+        # start it in a separate thread. (is this too much for doctest?)
+        """
 
-    def get_backend (self, slug):
-        '''gets a backend by slug, if it exists'''
+        # backends live in rapidsms/backends/*.py
+        # import it early to check that it's valid
+        module_name = "rapidsms.backends.%s" % type
+        __import__(module_name)
+
+        # find the backend class (regardless of its name). it should
+        # be the only subclass of rapidsms.Backend defined the module
+        cls = get_class(sys.modules[module_name], BackendBase)
+
+        # instantiate and configure the backend instance.
+        # (FYI, i think it's okay to configure backends at
+        # startup, since the webui isn't affected by them.
+        # (except in a purely informative ("you're running
+        # _these_ backends") sense))
+        backend = cls(self, name)
+        backend._configure(**config)
+        self.backends.append(backend)
+
+        return backend
+
+
+    # TODO: this is a rather ugly public API. replace it with something nicer,
+    # like accessing self.backends and self.apps via router['whatever'] (since
+    # the names should be unique anyway, although i'm not sure that's enforced)
+    def get_backend(self, name):
+        """
+        Returns the backend named 'name', if it exists, or None.
+        """
+
         for backend in self.backends:
-            if backend.slug == slug:
+            if backend.name == name:
                 return backend
+
         return None
 
 
-    def add_app (self, conf):
-        try:
+    def add_app(self, name, conf={}):
+        """
+        Finds a RapidSMS app class (given its module name), instantiates and
+        (optionally) configures it, and adds it to the list of apps that are
+        notified of incoming messages. Returns the instance, or None if the app
+        module could not be imported.
 
-            # find the App class via the config, since apps can be
-            # loaded via arbitrary module strings now (apps.whatever vs
-            # rapidsms.apps.whatever vs rapidsms.contrib.apps.whatever)
-            app_module = __import__("%s.app" % conf["module"], {}, {}, ["App"])
-            app_class = getattr(app_module, "App")
-            app = app_class(self)
+        This method does too much to doctest.
+        TODO: break it up into smaller parts.
+        """
 
-            # pass the configuration on to the app. note that
-            # we're not watching for keyword argument any more,
-            # since Component._configure wraps that nicely now
-            app._configure(**dict(conf))
-            self.apps.append(app)
+        # try to import the .app module from this app. it's okay if the
+        # module doesn't exist, but all other exceptions will propagate
+        module = try_import("%s.app" % name)
+        if module is None:
+            return None
 
-            # dump the app config. should this be debug level?
-            self.info("Added app: %r" % (conf))
+        # find the app class (regardless of its name). it should be
+        # the only subclass of rapidsms.App defined the app module
+        cls = get_class(module, AppBase)
 
-        except:
-            self.log_last_exception("Failed to add app: %r" % conf)
+        # instantiate and configure the app instance.
+        # TODO: app.configure must die, because the webui (in a separate
+        # process) can't access the app instances, only the flat modules
+        app = cls(self)
+        app._configure(**dict(conf))
+        self.apps.append(app)
+
+        return app
 
 
-    def start_backend (self, backend):
-        while self.running:
+    def _wait(self, func, timeout):
+        """
+        Keep calling 'func' (a lambda function) until it returns True,
+        for a maximum of 'timeout' seconds. Return True if 'func' does,
+        or False if the timeout is eached.
+        """
+
+        for n in range(0, timeout*10):
+            if func(): return True
+            else: time.sleep(0.1)
+
+        return False
+
+
+    # -------
+    # STARTUP
+    # -------
+
+
+    def start_backend(self, backend):
+        while True:
             try:
-                backend.start()
+                started = backend.start()
 
                 # if backend execution completed
                 # normally (and did not raise),
                 # allow the thread to terminate
                 break
 
-            except Exception, e:
-                
-                # an exception was raised in backend.start()
-                # sleep for 5 seconds, then loop and restart it
-                self.log_last_exception("Error in the %s backend" % backend.slug)
+            except Exception, err:
+                self.exception("Error in the %s backend" % backend)
 
-                # don't bother restarting the backend
-                # if the router isn't running any more
-                if not self.running:
-                    break
-               
-                # TODO: where did the 5.0 constant come from?
-                # we should probably be doing something more intelligent
-                # here, rather than just hoping five seconds is enough
-                time.sleep(5.0)
-                self.info("Restarting the %s backend" % backend.slug)
+                # this flows sort of backwards. wait for five seconds
+                # (to give the backend a break before retrying), but
+                # abort and return if self.accepting is ever False (ie,
+                # the router is shutting down). this ensures that we
+                # don't delay shutdown, because that causes me to SIG
+                # KILL, which prevents things from stopping cleanly
+                if self._wait(lambda: not self.accepting, 5):
+                    return None
+
+                self.warn("Restarting the %s backend" % backend)
+
 
 
     def start_all_apps (self):
@@ -158,7 +239,7 @@ class Router (component.Receiver):
                 app.start()
 
             except Exception:
-                self.log_last_exception("The %s app failed to start" % app.slug)
+                self.log_last_exception("The %s app failed to start" % app)
                 raised = True
 
         # if any of the apps raised, we'll return
@@ -167,8 +248,8 @@ class Router (component.Receiver):
 
 
     def start_all_backends (self):
-        """Starts all backends registed via Router.add_backend,
-           by calling self.start_backend in a new thread for each."""
+        """
+        Starts all backends registed via Router.add_backend, by calling self.start_backend in a new thread for each."""
 
         for backend in self.backends:
             worker = threading.Thread(
@@ -195,141 +276,183 @@ class Router (component.Receiver):
 
                 # wait up to five seconds for the backend's
                 # worker thread to terminate, or log failure
-                while(backend.thread.isAlive()):
+                while(backend.thread.is_alive()):
                     if timeout <= 0:
-                        raise RuntimeError, "The %s backend's worker thread did not terminate" % backend.slug
+                        raise RuntimeError, "The %s backend's worker thread did not terminate" % backend
 
                     else:
                         time.sleep(step)
                         timeout -= step
 
             except Exception:
-                self.log_last_exception("The %s backend failed to stop" % backend.slug)
+                self.log_last_exception("The %s backend failed to stop" % backend)
 
-    """
-    The call_at() method schedules a callback with the router. It takes as its
-    first argument one of several possible objects:
 
-    *   if an int or float, the callback is called that many
-        seconds later.
-    *   if a datetime.datetime object, the callback is called at
-        the time specified.
-    *   if a datetime.timedelta object, the callback is called
-        at the timedelta from now.
-
-    call_at() takes as its second argument the function to be called
-    at the scheduled time. All other positional and keyword arguments
-    are passed directly to the callback when it is called.
-
-    If the callback returns a true value that is one of the time objects
-    understood by call_at(), the callback will be called again at the
-    specified time with the same arguments.
-    """
-    def call_at (self, when, callback, *args, **kwargs):
-        if isinstance(when, datetime.timedelta):
-            when = datetime.datetime.now() + when
-        if isinstance(when, datetime.datetime):
-            when = time.mktime(when.timetuple())
-        elif isinstance(when, (int, float)):
-            when = time.time() + when
-        else:
-            self.debug("Call to %s wasn't scheduled with a suitable time: %s",
-                callback.func_name, when)
-            return
-        self.debug("Scheduling call to %s at %s",
-            callback.func_name, datetime.datetime.fromtimestamp(when).ctime())
-        heapq.heappush(self.events, (when, callback, args, kwargs))
-
-    def start (self):
-        self.running = True
+    def start(self):
+        """
+        Starts polling the backends for incoming messages, and blocks until a
+        KeyboardInterrupt or SystemExit is raised, or Router.stop is called.
+        """
 
         # dump some debug info for now
-        self.info("BACKENDS: %r" % (self.backends))
-        self.info("APPS: %r" % (self.apps))
-        self.info("SERVING FOREVER...")
-        
+        #self.info("BACKENDS: %r" % (self.backends))
+        #self.info("APPS: %r" % (self.apps))
+        self.info("Starting apps and backends...")
+
+        self.pre_start.send(self)
         self.start_all_backends()
         self.start_all_apps()
+        self.post_start.send(self)
+        self.running = True
 
-        # check for any pending messages
+        # now that everything is started,
+        # we are ready to accept messages
+        self.accepting = True
+
+        self.info("Waiting for incoming messages")
+
         try:
-            fn = "/tmp/rapidsms-pending"
-            f = file(fn)
-            
-            # trash the file, to prevent
-            # these messages being re-sent
-            msgs = f.readlines()
-            os.unlink(fn)
-            f.close()
-            
-            # iterate the pending messages,
-            for pending_msg in msgs:
-                be_name, identity, txt =\
-                    pending_msg.strip().split(":")
-                
-                # find the backend named by the message,
-                # reconstruct the object, and send it
-                for backend in self.backends.values():
-                    if backend.slug == be_slug:
-                        msg = backend.message(identity, txt)
-                        self.info("Sending pending message: %r" % msg)
-                        msg.send()
-         
-        # something went bang. not sure what, and don't
-        # particularly care. they'll be re-tried the
-        # next time rapidsms starts up
-        except:
-            pass
-        
-        # wait until we're asked to stop
-        while self.running:
-            try:
-                self.call_scheduled()
-                self.run()
-                
-            except KeyboardInterrupt:
-                self.warning("Caught KeyboardInterrupt")
-                break
-                
-            except SystemExit:
-                self.warning("Caught SystemExit")
-                break
-        
-        self.info("Stopping all backends...")
+            while self.running:
+
+                # fetch the next pending incoming message, if one is available
+                # immediately. this increments the number of "tasks" on the
+                # queue, which MUST be decremented later to avoid a deadlock
+                # during graceful shutdown (it calls _queue.join to wait for all
+                # pending messages to be processed before stopping the backends
+                # and terminating). see help(Queue.Queue.task_done) for more.
+                try:
+                    msg = self._queue.get(block=False)
+
+                    # process the message (which currently (20091005) blocks
+                    # until the outgoing responses are all sent), and ensure
+                    # that the task counter is decremented
+                    self.incoming(msg)
+                    self._queue.task_done()
+
+                # if there were no messages waiting, wait a very short (in human
+                # terms) time before looping to check again. do this here (rather
+                # than every time) to avoid delaying shutdown or the next message
+                except Queue.Empty:
+                    time.sleep(0.1)
+
+        # stopped via ctrl+c
+        except KeyboardInterrupt:
+            self.warn("Caught KeyboardInterrupt")
+
+        # stopped via sys.exit
+        except SystemExit:
+            self.warn("Caught SystemExit")
+
+        # refuse to accept any new messages. the backend(s) might
+        # have to throw them away, but at least they can pass the
+        # refusal upstream to the device/gateway where possible
+        self.accepting = False
+
+        self.info("Stopping...")
         self.stop_all_backends()
         self.running = False
 
-    def stop (self):
-        self.running = False
-        
-    def run(self):
-        msg = self.next_message(timeout=1.0)
-        if msg is not None:
-            self.incoming(msg)
 
-    def call_scheduled(self):
-        while self.events and self.events[0][0] < time.time():
-            when, callback, args, kwargs = heapq.heappop(self.events)
-            self.info("Calling %s(%s, %s)",
-                callback.func_name, args, kwargs)
-            result = callback(*args, **kwargs)
-            if result:
-                self.call_at(result, callback, *args, **kwargs)
-    
+    # ------------------
+    # MESSAGE PROCESSING
+    # ------------------
+
+
+    def incoming_message(self, msg):
+        """
+        Adds 'msg' to the incoming message queue and returns True, or False if
+        this router is not currently accepting new messages (either because the
+        queue is full, or we are shutting down).
+
+        Adding a message to the queue is no guarantee that it will be processed
+        any time soon (although the queue is regularly polled while Router.start
+        is blocking), or responded to at all.
+        """
+
+        if not self.accepting:
+            return False
+
+        try:
+            self._queue.put(msg)
+            return True
+
+        # if the queue is of a limited size, it may raise the Full
+        # exception. there's no sense exploding (especially since
+        # we have a bunch of pending messages), so just refuse to
+        # accept it. hopefully the backend can in turn refuse it
+        except Queue.Full:
+            return False
+
+
+    def stop(self, graceful=False):
+        """
+        Stops the router, which unblocks the Router.start method as soon as
+        possible. This may leave unprocessed messages in the incoming or
+        outgoing queues.
+        
+        If the optional argument 'graceful' is True, this router does its best
+        to avoid leaving unprocessed messages around, by refusing to accept new
+        incoming messages and blocking (by calling Router.join) until all
+        currently pending messages are processed --then stopping.
+        """
+
+        if graceful:
+            self.accepting = False
+            self.join()
+
+        self.running = False
+
+
+
+    def join(self):
+        """
+        Blocks until the incoming message queue is empty. This method can
+        potentially block forever, if it is called while this Router is
+        accepting incoming messages.
+        """
+
+        self._queue.join()
+        return True
+
+
     def __sorted_apps(self):
         return sorted(self.apps, key=lambda a: a.priority())
-    
-    def incoming(self, message):   
-        #self.info("Incoming message via %s: %s ->'%s'" %\
-        #    (message.connection.backend.slug, message.connection.identity, message.text))
-        
+
+
+    def incoming(self, message):
+        """
+        Incoming phases:
+
+        Filter:
+          The first phase, before any actual work is done. This is the only
+          phase that can entirely abort further processing of the incoming
+          message, which it does by returning True. (TODO: use an exception
+          instead, since this is an exceptional circumstance)
+
+        Parse:
+          Don't do INSERTs or UPDATEs in here!
+
+        Handle:
+          Respond to messages here.
+
+        Catch:
+          Provide a default message. Only a single installed app should have a
+          "catch" phase, since app ordering shouldn't be important.
+
+        Cleanup:
+          An opportunity to clean up anything started during earlier phases.
+        """
+
+        self.info("Incoming message via %s: %s ->'%s'" %\
+            (message.connection.backend, message.connection.identity, message.text))
+
         # loop through all of the apps and notify them of
         # the incoming message so that they all get a
         # chance to do what they will with it
         try:
             for phase in self.incoming_phases:
                 for app in self.__sorted_apps():
-                    self.debug('IN' + ' ' + phase + ' ' + app.slug)
+                    self.debug("IN %s phase %s" % (phase, app))
                     responses = len(message.responses)
                     handled = False
                     try:
@@ -341,17 +464,17 @@ class Router (component.Receiver):
                     # to abort ALL further processing of this message
                     if phase == 'filter':
                         if handled is True:
-                            self.warning('Message filtered by "%s" app', app.slug)
+                            self.warning('Message filtered by "%s" app', app)
                             raise(StopIteration)
 
-                    elif phase == 'handle':
+                    elif phase == 'handle' or phase == 'catch':
                         if handled is True:
-                            self.debug("%s short-circuited handle phase", app.slug)
+                            self.debug("%s short-circuited %s phase" % (app, phase))
                             break
 
                     elif responses < len(message.responses):
                         self.warning("App '%s' shouldn't send responses in %s()!", 
-                            app.slug, phase)
+                            app.config["type"], phase)
 
         # maybe raised within the loop, when
         # it's aborted during the filter phase
@@ -368,8 +491,8 @@ class Router (component.Receiver):
 
 
     def outgoing(self, message):
-        #self.info("Outgoing message via %s: %s <- '%s'" %\
-        #    (message.connection.backend.slug, message.connection.identity, message.text))
+        self.info("Outgoing message via %s: %s <- '%s'" %\
+            (message.connection.backend, message.connection.identity, message.text))
         
         # first notify all of the apps that want to know
         # about outgoing messages so that they can do what
@@ -382,17 +505,26 @@ class Router (component.Receiver):
             # called with an incoming message is the last app called
             # with an outgoing message
             for app in reversed(self.__sorted_apps()):
-                self.debug('OUT' + ' ' + phase + ' ' + app.slug)
+                self.debug("OUT %s phase %s" % (phase, app))
+                
                 try:
                     continue_sending = getattr(app, phase)(message)
                 except Exception, e:
                     self.error("%s failed on %s: %r\n%s", app, phase, e, traceback.print_exc())
                 if continue_sending is False:
-                    self.info("App '%s' cancelled outgoing message", app.slug)
+                    self.info("App '%s' cancelled outgoing message", app)
                     return False
 
         # now send the message out
-        message.connection.backend.send(message)
+        self.get_backend(message.connection.backend.name).send(message)
         self.debug("SENT message '%s' to %s via %s" % (message.text,\
-			message.connection.identity, message.connection.backend.slug))
+            message.connection.identity, message.connection.backend))
         return True
+
+
+# a single instance of the router singleton is available globally,
+# like the db connection. it shouldn't be necessary to muck with
+# this very often (since most interaction with the Router happens
+# within an App or Backend, which have their own .router property),
+# but when it is, it should be done via this process global
+router = Router.instance()

@@ -5,9 +5,10 @@ import manager
 import app
 import backends
 
-from router import Router
-from message import Message
+
 from config import Config
+from app import App
+from messages import OutgoingMessage as Message
 
 def get_rapidsms_version ():
     try:
@@ -18,7 +19,7 @@ def get_rapidsms_version ():
         import commands
         try:
             # see http://stackoverflow.com/questions/62264/#72874
-            version = commands.getoutput("git describe --tags --always")
+            version = commands.getoutput("git describe --tags")
         except:
             # otherwise, give up!
             version = "unknown"

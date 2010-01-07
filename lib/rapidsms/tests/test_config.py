@@ -1,14 +1,13 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-import os
 import unittest
 import tempfile
 from rapidsms import Config
 
 TEST_INI = """
 [rapidsms]
-apps=app1,app2,app3
+apps=app1,app2
 backends=backend1
 
 [log]
@@ -19,43 +18,36 @@ file=/tmp/test.log
 beginning=yes
 end=no
 
-[app3]
-type=testapp
-
 [backend1]
 type=testbackend
 beginning=yes
 end=no
-
 """
 
 class TestConfig(unittest.TestCase):
     
     def setUp(self):
-        fd,path = tempfile.mkstemp()
-        ini = os.fdopen( fd ,'w' ) 
+        ini = tempfile.NamedTemporaryFile()
         ini.write(TEST_INI)
+        ini.flush()
+        ini.seek(0)
+        self.config = Config(ini.name)
         ini.close()
-        self.config = Config(path)
 
     def test___init__(self):
         pass
 
     def test_component_section(self):
-        cc = self.config.component_section("app1")
-        self.assertEqual(cc, {"type": "app1"},
-            "default component config incorrect")
+        s = self.config.app_section("app1")
+        self.assertEqual(s, {}, 
+            "default (empty) app config incorrect")
         
-        cc = self.config.component_section("app2")
-        self.assertEqual(cc, {"type": "app2", "beginning": "yes", "end": "no"}, 
-            "does not correctly configure component with assumed type var and additional vars")
+        s = self.config.app_section("app2")
+        self.assertEqual(s, {"beginning": "yes", "end": "no"}, 
+            "does not correctly configure component additional vars")
         
-        cc = self.config.component_section("app3")
-        self.assertEqual(cc, {"type": "testapp"}, 
-            "does not correctly configure component with explicit type variable and no additional vars")
-        
-        cc = self.config.component_section("backend1")
-        self.assertEqual(cc, {"type": "testbackend", "beginning": "yes", "end": "no"}, 
+        s = self.config.backend_section("backend1")
+        self.assertEqual(s, {"type": "testbackend", "beginning": "yes", "end": "no"}, 
             "does not correctly configure component with explicit type var and additional vars")
 
     def test_parse_rapidsms_section(self):
@@ -89,7 +81,3 @@ class TestConfig(unittest.TestCase):
             "config does not contain a section that it should")
         self.assertFalse("bogus" in self.config, 
             "config contains a section that it should not have")
-
-
-if __name__ == "__main__":
-    unittest.main()

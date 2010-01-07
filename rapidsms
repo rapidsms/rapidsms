@@ -1,35 +1,18 @@
 #!/usr/bin/env python
-# vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
-
-import sys, os
-from os import path
-
-# figure out where all the extra libs (rapidsms and contribs) are
-libs=[os.path.abspath('lib'),os.path.abspath('apps')] # main 'rapidsms/lib'
-try:
-    for f in os.listdir('contrib'):
-        pkg = path.join('contrib',f)
-        if path.isdir(pkg) and \
-                'lib' in os.listdir(pkg):
-            libs.append(path.abspath(path.join(pkg,'lib')))
-        # hack in contrib/apps
-        # TODO dont be so hacky about it
-        if pkg == os.path.join('contrib','apps'):
-            libs.append(path.abspath(pkg))
-except Exception, e:
-    # could be several reasons:
-    # no 'contrib' dir, 'contrib' not a dir
-    # 'contrib' not readable, in any case
-    # ignore and leave 'libs' as just
-    # 'rapidsms/lib'
-    pass
-
-# add extra libs to the python sys path
-sys.path.extend(libs)
-
-# import manager now that the path is correct
-from rapidsms import manager
+# vim: ai ts=4 sts=4 et sw=4
 
 if __name__ == "__main__":
-    manager.start(sys.argv)
+    import sys, os
 
+    # find the absolute directory that this file
+    # is in. this is the root of the project
+    project_root = os.path.abspath(
+        os.path.dirname(__file__))
+
+    for dir in ["lib", "apps"]:
+        path = os.path.join(project_root, dir)
+        sys.path.insert(0, path)
+
+    import rapidsms
+
+    rapidsms.manager.start(sys.argv)

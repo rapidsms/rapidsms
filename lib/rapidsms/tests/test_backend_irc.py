@@ -6,11 +6,11 @@ from harness import MockRouter
 
 class TestBackendIRC(unittest.TestCase):
     def test_backend_irc (self):
-        router = MockRouter()
+        router = MockRouter.instance()
         try:
             import irclib
             from rapidsms.backends.irc import Backend
-            backend = Backend(router)
+            backend = Backend("irc", router)
             backend.configure(host="localhost",nick="test",channels="#test1,#test2")
             self.assertEquals(type(backend), Backend, "IRC backend loads")
             self.assertEquals(backend.nick, "test", "IRC backend has nick set")
@@ -19,6 +19,3 @@ class TestBackendIRC(unittest.TestCase):
                               "IRC backend has channels correctly set")
         except ImportError:
             pass
-
-if __name__ == "__main__":
-    unittest.main()

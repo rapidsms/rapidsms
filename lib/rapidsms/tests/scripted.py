@@ -1,16 +1,15 @@
-# vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
+#!/usr/bin/env python
+# vim: ai ts=4 sts=4 et sw=4
 
-from django.utils.encoding import smart_str
-from harness import MockRouter, EchoApp
-from rapidsms.backends.backend import Backend
-from rapidsms.message import Message
-import unittest, re
-from rapidsms.router import get_router, _set_router as set_router
-try:
-    from django.test import TestCase
-except:
-    from unittest import TestCase
+
+import time
+from rapidsms.router import Router
+from harness import MockRouter, MockBackend, EchoApp
+from rapidsms.backends.base import BackendBase
+import unittest, re, threading
+from django.test import TestCase
 from datetime import datetime
+
 
 class MetaTestScript (type):
     def __new__(cls, name, bases, attrs):
@@ -52,21 +51,21 @@ class TestScript (TestCase):
     apps = None
 
     def setUp (self):
-        set_router(MockRouter())
-        router = get_router()
-        self.backend = Backend(router)
-        router.add_backend(self.backend)
+        self.router = Router.instance()
+        self.backend = MockBackend(self.router, "mock")
+        #self.router.add_backend(self.backend)
+        self.router.backends.append(self.backend)
         if not self.apps:
             raise Exception(
                 "You must define a list of apps in your TestScript class!")
         for app_class in self.apps:
-            app = app_class(router)
-            router.add_app(app)
+            app = app_class(self.router)
+            #self.router.add_app(app)
+            self.router.apps.append(app)
 
     def tearDown (self):
-        router = get_router()
-        if router.running:
-            router.stop() 
+        if self.router.running:
+            self.router.stop() 
 
     @classmethod
     def parseScript (cls, script):
@@ -84,38 +83,44 @@ class TestScript (TestCase):
                 date = datetime.now()
             cmds.append((num, date, dir, txt))
         return cmds
-     
+
     def runParsedScript (self, cmds):
-        router = get_router()
-        router.start()
+
+        # Router.start blocks until Router.stop is called, so start it in a
+        # separate thread so it can process our mock messages asynchronously
+        threading.Thread(target=self.router.start).start()
+
+        # HACK: wait for the router to be ready
+        # to accept our incoming messages
+        while not self.router.accepting:
+            time.sleep(0.2)
+
         last_msg = ''
         for num, date, dir, txt in cmds:
-            if dir == '>':
-                last_received = txt
+            if dir == ">":
                 msg = self.backend.message(num, txt)
-                msg.date = date 
-                self.backend.route(msg)  
-                router.run()
-            elif dir == '<':
-                msg = self.backend.next_message()
-                # smart_str is a django util that prevents dumb terminals
-                # from barfing on strange character sets 
-                # see http://code.djangoproject.com/ticket/10183
-                last_msg, msg.text, txt = map(smart_str, [last_msg, msg.text, txt])
+                msg.received_at = date
+                self.backend.route(msg)
+
+                # wait until the router has finished
+                # processing this incoming message
+                self.router.join()
+
+            elif dir == "<":
+                msg = self.backend.next_outgoing_message()
                 self.assertTrue(msg is not None, 
-                    "message was returned.\nMessage: '%s'\nExpecting: '%s')" % (last_msg, txt))
-                try:
-                    self.assertEquals(msg.peer, num,
-                        "Expected to send to %s, but message was sent to %s\nMessage: '%s'\nReceived: '%s'\nExpecting: '%s'" 
-                        % (num, msg.peer,last_msg, msg.text, txt))
-                    self.assertEquals(msg.text.strip(), txt.strip(),
-                        "\nMessage: %s\nReceived text: %s\nExpected text: %s\n"
-                        % (last_msg, msg.text,txt))
-                except UnicodeDecodeError:
-                    raise Exception("There has been a problem interpreting non-ascii characters for your display. " +
-                                    "Please use a console with support for utf-8.")            
-                last_msg = txt
-        router.stop()
+                    "message was ignored.\nMessage: '%s'\nExpecting: '%s'" % (last_msg, txt))
+
+                self.assertEquals(msg.peer, num,
+                    "Expected to respond to %s, but message was sent to %s.\nMessage: '%s'"
+                    % (num, msg.peer, last_msg))
+
+                self.assertEquals(msg.text, txt,
+                    "\nMessage: %s\nReceived text: %s\nExpected text: %s\n"
+                    % (last_msg, msg.text,txt))
+            last_msg = txt
+
+        self.router.stop()
 
     def runScript (self, script):
         self.runParsedScript(self.parseScript(script))
