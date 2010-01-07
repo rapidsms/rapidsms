@@ -1,5 +1,9 @@
 {% extends "layout-split-2.html" %}
+<<<<<<< HEAD:reporters/templates/reporters/index.html
 {% load reporters-tags %}
+=======
+{% load reporters %}
+>>>>>>> 3a291e6ffc5e5fe7e6fc7384863976597343b474:reporters/templates/reporters/index.html
 {% load pagination %}
 {% block title %}Reporters and Groups{% endblock %}
 
@@ -8,6 +12,13 @@
 <script type="text/javascript" src="/static/reporters/javascripts/cloneable.js"></script>
 {% endblock %}
 
+<<<<<<< HEAD:reporters/templates/reporters/index.html
+=======
+{% block stylesheets %}
+<link type="text/css" rel="stylesheet" href="/static/reporters/stylesheets/reporters.css" />
+{% endblock %}
+
+>>>>>>> 3a291e6ffc5e5fe7e6fc7384863976597343b474:reporters/templates/reporters/index.html
 {% block left %}
 <div class="module">
 	<h2>All Reporters</h2>
@@ -15,7 +26,11 @@
 		<thead>
 			<tr>
 				<th scope="col">Name</th>
+<<<<<<< HEAD:reporters/templates/reporters/index.html
 				<th scope="col">Interviewer ID</th>
+=======
+				<th scope="col">Alias</th>
+>>>>>>> 3a291e6ffc5e5fe7e6fc7384863976597343b474:reporters/templates/reporters/index.html
 				<th scope="col">Last Seen</th>
 			</tr>
 		</thead>
@@ -23,7 +38,11 @@
 			<tr>
 				<!--<td><a href="{% self_link "reporter" reporter.pk %}"{% if reporter.full_name %}>{{ reporter.full_name }}{% else %} class="unknown">Unknown{% endif %}</a></td>-->
 				<td><a href="/reporters/{{ reporter.pk }}"{% if reporter.full_name %}>{{ reporter.full_name }}{% else %} class="unknown">Unknown{% endif %}</a></td>
+<<<<<<< HEAD:reporters/templates/reporters/index.html
 				<td>{% if reporter.interviewer_id %}{{ reporter.interviewer_id }}{% else %}<span class="na">n/a</span>{% endif %}</td>
+=======
+				<td>{% if reporter.alias %}{{ reporter.alias }}{% else %}<span class="na">n/a</span>{% endif %}</td>
+>>>>>>> 3a291e6ffc5e5fe7e6fc7384863976597343b474:reporters/templates/reporters/index.html
 				<td>{{ reporter.last_seen|last_seen }}</td>
 			</tr>{% endfor %}{% else %}
 			<tr class="no-data">

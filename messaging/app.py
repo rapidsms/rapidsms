@@ -2,39 +2,81 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 import re
-from datetime import datetime, timedelta
+import datetime
 import rapidsms
-from reporters.models import *
-from models import *
+from rapidsms.contrib.search.utils import find_objects
+from .models import *
+from . import utils
 
 
-class App (rapidsms.app.App):
-    """When an incoming message is received, this application is notified
-       last, to grab and log the message as a "free-text" message, to be
-       displayed in the WebUI with no automatic response from RapidSMS.
+class App (rapidsms.App):
+    """
+    When an incoming message is received, this application is notified
+    last, to grab and log the message as a "free-text" message, to be
+    displayed in the WebUI with no automatic response from RapidSMS.
 
-       Also, this app receives outgoing messages from the WebUI (via the
-       AJAX app), and relays them to the router."""
+    Also, this app receives outgoing messages from the WebUI (via the
+    AJAX app), and relays them to the router.
+    """
 
-    #TODO whats this?
-    #PRIORITY = "lowest"
+
+    DIRECT_MSG_RE = re.compile(r"^(?:@|at\.)\s*(\S+)\s*(.+)$", re.I)
+
+
+    def configure(self, **kwargs):
+        self.catch_all = False
 
 
     def handle(self, msg):
-        if not msg.responses:
+
+        # is this a direct message?
+        # ~> @adammck What is mudkips?
+        match = self.DIRECT_MSG_RE.match(msg.text)
+        if match is not None:
+            models = utils.messagable_models()
+            to_msg = find_objects(match.group(1), models)
+
+            text = "%s: %s" % (
+                msg.reporter or msg.connection,
+                match.group(2))
+
+            # send the message to each object returned
+            # by the search. might be one reporter (via
+            # their username), or 100 (via their location)
+            for obj in to_msg:
+                try:
+                    obj.__message__(self.router, text)
+
+                # something went bang, but don't let that
+                # prevent the other messages from being sent
+                except:
+                    self.log_last_exception(
+                        "Message couldn't be sent to %s" %
+                        obj)
+
+            if to_msg:
+                msg.respond(
+                    u"Your message was sent to: %s." %
+                    (", ".join(map(unicode, to_msg))))
+
+            return True
+
+
+    def catch(self, msg):
+        if self.catch_all and not msg.responses:
 
             # log the message, along with the identity
             # information provided by reporters.app/parse
             msg = IncomingMessage.objects.create(
-                received=datetime.now(),
-                text=msg.text)#,
-#                **msg.persistance_dict)
+                received=datetime.datetime.now(),
+                text=msg.raw_text,
+                **msg.persistance_dict)
 
             self.info("Message %d captured" % (msg.pk))
 
             # short-circuit, since this message is dealt
             # with now (even if it shouldn't have been)
-            #return True
+            return True
 
 
     # NOTE: outgoing messages are not logged here via the "outoging"
@@ -48,7 +90,7 @@ class App (rapidsms.app.App):
         # if this message contains the same text as the _previous_ message sent,
         # and is within 6 hours, we'll recycle it (since it has-many recipients)
         try:
-            time_limit = datetime.now() - timedelta(hours=6)
+            time_limit = datetime.datetime.now() - datetime.timedelta(hours=6)
             msg = OutgoingMessage.objects.filter(
                 sent__gt=time_limit,
                 text=form["text"])[0]
@@ -57,7 +99,7 @@ class App (rapidsms.app.App):
         # this recipient (it might be the first of many)
         except IndexError:
             msg = OutgoingMessage.objects.create(
-                sent=datetime.now(),
+                sent=datetime.datetime.now(),
                 text=form["text"])
 
         # attach this recipient to
@@ -72,74 +114,15 @@ class App (rapidsms.app.App):
         if pconn is None:
             raise Exception("%s is unreachable (no connection)" % rep)
 
-        # abort if we can't find a valid backend. PersistantBackend
+        # abort if we can't find a valid backend. persistant Backend
         # objects SHOULD refer to a valid RapidSMS backend (via their
         # slug), but sometimes backends are removed or renamed.
         be = self.router.get_backend(pconn.backend.slug)
         if be is None:
             raise Exception(
                 "No such backend: %s" %
-                pconn.backend.title)
-        
+                pconn.backend.slug)
+
         # attempt to send the message
         # TODO: what could go wrong here?
         return be.message(pconn.identity, form["text"]).send()
-
-#    def start(self):
-        # regex to match @alias or @pk
-#        self.alias_pattern= re.compile("(\s*@\w+\s*)")
-        # TODO #grouptitle
-
-#    def handle(self, message):
-        # FIXME this is a crappy rough draft
-#        router = self.router
-        # gather possible @aliases and @pks occuring in message's text
-#        possible_reportees = re.finditer(self.alias_pattern, message.text)
-#        response = ''
-#        win = []
-#        fail = []
-#        for possible_reportee in possible_reportees:
-            # pull the @alias or @pk from the match object
-#            raw_reportee = possible_reportee.group(0)
-            # lookup the alias or pk
-#            reportee = Reporter.lookup(raw_reportee.replace('@','').strip())
-#            if reportee:
-                # TODO only say its a success if its successful
-                #if reportee.send(router, message):
-#                reportee.send(router, message)
-                # add to list of successes
-#                win.append(raw_reportee)
-#            else:
-                # add to list of failures
-#                fail.append(raw_reportee)
-#        if len(win) > 0:
-#            response = response + "Message sent to %s." % (', '.join(win))
-#        if len(fail) > 0:
-#            response = response + "No user found for %s." % (', '.join(fail))
-        # respond with successes and failures
-#        return self._send_message(message.connection, response)
-        
-    def ajax_POST_send_message_to_connection(self, params, form):
-        '''Sends a message using a connection id, instead of
-           a reporter id.'''
-        # todo: this method doesn't deal with logging.  should it?
-        # possibly not, since there is no UI for this on the messaging
-        # tab.  This is just a convenience for other apps.  
-        connection = PersistantConnection.objects.get(pk=form["connection_id"])
-        return self._send_message(connection, form["text"])
-        
-    
-    def _send_message(self, connection, message_body):    
-        '''Attempts to send a message througha given connection'''
-        # abort if we can't find a valid backend. PersistantBackend
-        # objects SHOULD refer to a valid RapidSMS backend (via their
-        # slug), but sometimes backends are removed or renamed.
-        be = self.router.get_backend(connection.backend.slug)
-        if be is None:
-            raise Exception(
-                "No such backend: %s" %
-                connection.backend.title)
-        
-        # attempt to send the message
-        # TODO: what could go wrong here?
-        return be.message(connection.identity, message_body).send()

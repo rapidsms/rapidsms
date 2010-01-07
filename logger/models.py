@@ -2,27 +2,15 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 
-from django.db import models
-from nodegraph.models import NodeSet
+from django.db import models, connection
+from django.db.backends.util import typecast_timestamp
 from django.core.exceptions import ValidationError
 from reporters.models import *
 
-MAX_LATIN_SMS_LEN = 160 
 
 class MessageBase(models.Model):
-    text = models.CharField(max_length=MAX_LATIN_SMS_LEN)
-    # TODO save connection title rather than wacky object string?
-    identity = models.CharField(max_length=150)
-    backend = models.CharField(max_length=150)
-    # this isn't modular
-    # but it's optional and saves some ridiculous querying for smsforum frontpage
-    # TODO save domain to wacky object string rather than connection title?
-    # (to reduce app dependencies)
-    domain = models.ForeignKey(NodeSet,null=True)
-    
-    def __unicode__(self):
-        return u'%s (%s) %s' % (self.identity, self.backend, self.text)
-    
+    text = models.TextField()
+
     class Meta:
         abstract = True
 
@@ -61,26 +49,6 @@ class MessageBase(models.Model):
 
 
 class IncomingMessage(MessageBase):
-    # Helper methods to allow this object to be treated similar
-    # to the outgoing message, e.g. if they are in the same list
-    # in a template
-    @property
-    def date(self):
-        '''Same as received''' 
-        return self.received
-    
-    def is_incoming(self):
-        return True
-    
-    def __unicode__(self):
-        return u"%s %s" % (MessageBase.__unicode__(self), self.received)
-
-    class Meta:
-        # the permission required for this tab to display in the UI
-        permissions = (
-            ("can_view", "Can view message logs"),
-        )
-    
     connection = models.ForeignKey(PersistantConnection, null=True, related_name="incoming_messages")
     reporter   = models.ForeignKey(Reporter, null=True, related_name="incoming_messages")
     received   = models.DateTimeField(auto_now_add=True)
@@ -88,63 +56,49 @@ class IncomingMessage(MessageBase):
 
 
 class OutgoingMessage(MessageBase):
-    @property
-    def date(self):
-        '''Same as sent''' 
-        return self.sent
-    
-    def is_incoming(self):
-        return False
-    
-    def __unicode__(self):
-        return u"%s %s" % (MessageBase.__unicode__(self), self.sent)
-
     connection = models.ForeignKey(PersistantConnection, null=True, related_name="outgoing_messages")
     reporter   = models.ForeignKey(Reporter, null=True, related_name="outgoing_messages")
     sent       = models.DateTimeField(auto_now_add=True)
     prep = "to"
 
-class CodeSet(models.Model):
-    """
-    An arbitrary set of codes with which messages can be tagged.
-    e.g. category, state, flagged
-    """
-    name = models.CharField(max_length = 64, unique=True) 
-    
-    def __unicode__(self):
-        return unicode(self.name)
 
-class Code(models.Model):
-    """
-    This model holds codes which can be mapped to individual messages
-    e.g. good/bad/ignore, open/inprogress/closed, flagged/not_flagged
-    """
-    set = models.ForeignKey(CodeSet, null=False)
-    name = models.CharField(max_length = 64, unique=True) # e.g. sante, les droits humain, etc.
-    slug = models.CharField(max_length = 8, unique=True) # e.g. san, dro, etc.
-    
-    def __unicode__(self):
-        return u"%(name)s" % { 'name':self.name }
+def combined_message_log(reporter):
 
-class MessageTag(models.Model):
-    """
-    A dynamic way of associating messages with codes without requiring that
-    all messages be coded
-    """
-    message = models.ForeignKey(IncomingMessage)
-    code = models.ForeignKey(Code)
+    # this wacky sql allows us to fetch a single queryset
+    # containing both incoming and outgoing messages, which
+    # we can display in a single paginated block. it's taken
+    # (sort-of) from the messaging app, which provides a lot
+    # of overlapping functionality that should be abstracted
+    sql = """select
+              "in", inc.id, inc.received, inc.text
+              from logger_incomingmessage as inc
+              where inc.reporter_id=%s
+            union all select
+              "out", out.id, out.sent, out.text
+              from logger_outgoingmessage as out
+              where out.reporter_id=%s
+            order by inc.received desc""" %\
+        (reporter.pk, reporter.pk)
 
-    def __unicode__(self):
-        return u"%(message)s: %(tag)s" % { 'message':self.message, 'tag':self.code }
+    # fetch the blob of messages
+    cursor = connection.cursor()
+    cursor.execute(sql)
 
-class MessageAnnotation(models.Model):
-    """
-    A dynamic way of associating messages with free-form annotations
-    without requiring that all messages be annotated
-    """
-    message = models.ForeignKey(IncomingMessage)
-    text = models.CharField(max_length=255,blank=True)
+    # (from messaging/models.py)
+    # TODO: return a paginatable iterator by overloading the Django
+    # QuerySet with the contents of this query, optionally adding
+    # a LIMIT statement to slice BEFORE hitting the database
+    return cursor.fetchall()
 
-    def __unicode__(self):
-        return u"%(message)s: %(annotation)s" % { 'message':self.message, 'annotation':self.annotation }
 
+def combined_message_log_row(row):
+
+    # order of fields output by combined_message_log:
+    #   [0] direction     [1] message_id
+    #   [2] message_date  [3] message_text
+
+    return {
+        "direction": row[0],
+        "pk":        row[1],
+        "date":      typecast_timestamp(row[2]),
+        "text":      row[3] }

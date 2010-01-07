@@ -2,7 +2,8 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 from django.conf.urls.defaults import *
-import ajax.views as views
+from . import views
+
 
 urlpatterns = patterns('',
     (r'^ajax/(?P<path>.*)$', views.proxy),

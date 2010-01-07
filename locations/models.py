@@ -4,8 +4,8 @@
 
 import re
 from django.db import models
-from rapidsms.webui.managers import *
-from reporters.models import Reporter
+from rapidsms.djangoproject.managers import *
+from rapidsms.djangoproject import settings
 
 
 MARKER_CHOICES = (
@@ -61,6 +61,13 @@ class LocationType(models.Model):
     def __unicode__(self):
         return self.title
 
+    @property
+    def title(self):
+        """Returns the singular form of this LocationType.
+           This is only here for consistency, because most
+           models have a "title" field."""
+        return self.singular
+
 
     class ManyLocationTypesStub(object):
         """This class only exists to serve the LocationType.label method, which
@@ -93,12 +100,12 @@ class LocationType(models.Model):
         return objects[0] if len(objects) == 1 else cls.ManyLocationTypesStub()
 
 
-    @property
-    def title(self):
-        """Returns the singular form of this LocationType.
-           This is only here for consistency, because most
-           models have a "title" field."""
-        return self.singular
+    @classmethod
+    def messaging_filters(cls):
+        return [{
+                "title": loc_type.plural,
+                "items": loc_type.locations.all()
+            } for loc_type in cls.objects.all()]
 
 
 class Location(models.Model):
@@ -129,10 +136,24 @@ class Location(models.Model):
         return self.name
 
 
+    @classmethod
+    def format_uid(cls, uid):
+        return "loc-%d" % uid
+
+
+    @property
+    def uid(self):
+        return self.format_uid(self.pk)
+
+    @property
+    def parent_uid(self):
+        return self.format_uid(self.parent_id)
+
+
     # see the FOLLOW app, for now,
     # although this will be expanded
     @classmethod
-    def __search__(cls, who, terms):
+    def __search__(cls, terms):
 
         # if we're searching for a single term, it
         # could be a location code, so try that first
@@ -155,10 +176,23 @@ class Location(models.Model):
 
         # if this doesn't work, the terms
         # are not a valid location name
-        except cls.DoesNotExist, cls.MultipleObjectsReturned:
+        except (cls.DoesNotExist, cls.MultipleObjectsReturned):
             return None
 
+
+    def __message__(self, *args, **kwargs):
+        """Sends a message to every Reporter in this Location."""
+
+        for rep in self.reporter_set.all():
+            try:
+                rep.__message__(*args, **kwargs)
+
+            except:
+                pass
+
+
     def save(self, *args, **kwargs):
+
         # override the default save behavior, to remove extra spaces from
         # the _name_ property. It's not important enough to bother the end-
         # user with, but self.__search__ assumes that a single space is the
@@ -172,47 +206,30 @@ class Location(models.Model):
     #       methods, now that the locations app has been split from reporters?
     #       even if they can import one another, they can't know if they're
     #       both running at parse time, and can't monkey-patch later.
-    def one_contact(self, role, display=False):
-        return "Mr. Fixme"
-
-    def contacts(self, role=None):
-        return Location.objects.get(pk=2)
-    
     def ancestors(self, include_self=False):
         """Returns all of the parent locations of this location,
            optionally including itself in the output. This is
            very inefficient, so consider caching the output."""
         locs = [self] if include_self else []
         loc = self
-        
         # keep on iterating
         # until we return
         while True:
             locs.append(loc)
             loc = loc.parent
-            
+
             # are we at the top?
             if loc is None:
                 return locs
-    
+
+
     def descendants(self, include_self=False):
         """Returns all of the locations which are descended from this location,
            optionally including itself in the output. This is very inefficient
            (it recurses once for EACH), so consider caching the output."""
         locs = [self] if include_self else []
-        
+
         for loc in self.children.all():
             locs.extend(loc.descendants(True))
-        
+
         return locs
-
-
-class ReporterLocation(models.Model):
-    """This model is kind of a hack, to add a _location_ field
-       to the Reporter class without extending it -- in the same
-       way that the Django docs recommend creating a UserProfile
-       rather than patching User."""
-
-    reporter = models.ForeignKey(Reporter, unique=True)
-    location = models.ForeignKey(Location)
-    location.rel.verbose_name = "Reporters"

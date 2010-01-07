@@ -8,5 +8,3 @@ class MessageForm(forms.ModelForm):
     class Meta:
         model = Message
         exclude = ("date", "outgoing", "phone_number")
-        
-

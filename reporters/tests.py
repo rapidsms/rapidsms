@@ -1,3 +1,4 @@
+<<<<<<< HEAD:reporters/tests.py
 from rapidsms.tests.scripted import TestScript
 from reporters.models import *
 import reporters.app as reporter_app
@@ -21,3 +22,21 @@ class TestApp (TestScript):
          """
     
  
+=======
+#!/usr/bin/env python
+# vim: ai ts=4 sts=4 et sw=4
+
+
+from rapidsms.tests.scripted import TestScript
+#from apps.persistance.app import App as Papp
+from app import App
+
+
+class TestApp (TestScript):
+    apps = (App,)
+
+    _testJoining = """
+        1111 > JOIN 1234567890
+        1111 < blah blah
+    """
+>>>>>>> 3a291e6ffc5e5fe7e6fc7384863976597343b474:reporters/tests.py

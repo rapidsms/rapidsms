@@ -3,6 +3,5 @@
 
 title      = "Reporters and Groups"
 tab_link   = "/reporters"
-message_handling = False
 allow_join = True
 allow_list = True
