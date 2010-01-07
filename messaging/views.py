@@ -7,11 +7,23 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.core.exceptions import FieldError
 from django.core.urlresolvers import reverse
 from rapidsms.djangoproject.utils import *
-from reporters.models import *
-from models import combined_message_log, __combined_message_log_row
+#from reporters.models import *
+#from models import combined_message_log, __combined_message_log_row
+
+from . import filters
 
 
 def index(req):
+    resp = render_to_response(req,
+        "messaging/index.html", {
+            "people": paginated(req, []),
+            "filters": filters.fetch()
+    })
+
+    return resp
+
+
+def indexx(req):
     def cookie_recips(status):
         flat = urllib.unquote(req.COOKIES.get("recip-%s" % status, ""))
         return map(int, re.split(r'\s+', flat)) if flat != "" else []
@@ -66,8 +78,8 @@ def index(req):
             "field":       req.GET.get("field", ""),
             "cmp":         req.GET.get("cmp", ""),
             "show_search": show_search,
-            "message_log": paginated(req, combined_message_log(checked), prefix="msg", wrapper=__combined_message_log_row),
-            "reporters":   paginated(req, Reporter.objects.all(), wrapper=__reporter) })
+            "message_log": paginated(req, [], prefix="msg", wrapper=__combined_message_log_row),
+            "reporters":   paginated(req, [], wrapper=__reporter) })
 
     # if we just searched via GET (not via AJAX), store the hits
     # in a cookie for the client-side javascript to pick up. if

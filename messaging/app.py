@@ -2,20 +2,23 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 
-import datetime, re
+import re
+import datetime
 import rapidsms
 from rapidsms.contrib.search.utils import find_objects
-from models import *
-import utils
+from .models import *
+from . import utils
 
 
 class App (rapidsms.App):
-    """When an incoming message is received, this application is notified
-       last, to grab and log the message as a "free-text" message, to be
-       displayed in the WebUI with no automatic response from RapidSMS.
+    """
+    When an incoming message is received, this application is notified
+    last, to grab and log the message as a "free-text" message, to be
+    displayed in the WebUI with no automatic response from RapidSMS.
 
-       Also, this app receives outgoing messages from the WebUI (via the
-       AJAX app), and relays them to the router."""
+    Also, this app receives outgoing messages from the WebUI (via the
+    AJAX app), and relays them to the router.
+    """
 
 
     DIRECT_MSG_RE = re.compile(r"^(?:@|at\.)\s*(\S+)\s*(.+)$", re.I)

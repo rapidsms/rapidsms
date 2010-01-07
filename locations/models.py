@@ -61,6 +61,13 @@ class LocationType(models.Model):
     def __unicode__(self):
         return self.title
 
+    @property
+    def title(self):
+        """Returns the singular form of this LocationType.
+           This is only here for consistency, because most
+           models have a "title" field."""
+        return self.singular
+
 
     class ManyLocationTypesStub(object):
         """This class only exists to serve the LocationType.label method, which
@@ -94,12 +101,12 @@ class LocationType(models.Model):
         return objects[0] if len(objects) == 1 else cls.ManyLocationTypesStub()
 
 
-    @property
-    def title(self):
-        """Returns the singular form of this LocationType.
-           This is only here for consistency, because most
-           models have a "title" field."""
-        return self.singular
+    @classmethod
+    def messaging_filters(cls):
+        return [{
+                "title": loc_type.plural,
+                "items": loc_type.locations.all()
+            } for loc_type in cls.objects.all()]
 
 
 class Location(models.Model):
@@ -128,6 +135,20 @@ class Location(models.Model):
 
     def __unicode__(self):
         return self.name
+
+
+    @classmethod
+    def format_uid(cls, uid):
+        return "loc-%d" % uid
+
+
+    @property
+    def uid(self):
+        return self.format_uid(self.pk)
+
+    @property
+    def parent_uid(self):
+        return self.format_uid(self.parent_id)
 
 
     # see the FOLLOW app, for now,
