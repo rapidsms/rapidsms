@@ -208,8 +208,8 @@ table {
 			padding-right: 15px;
 		}
 
-		table.sortable thead th.ascending  a { background-image: url("../../webapp/icons/silk/arrow_down.png"); }
-		table.sortable thead th.descending a { background-image: url("../../webapp/icons/silk/arrow_up.png"); }
+		table.sortable thead th.ascending  a { background-image: url("../icons/silk/arrow_down.png"); }
+		table.sortable thead th.descending a { background-image: url("../icons/silk/arrow_up.png"); }
 
 	tr.no-data { }
 
