@@ -8,7 +8,7 @@ from django.core.urlresolvers import reverse
 
 from rapidsms.djangoproject.related import related_objects, with_related_objects
 from rapidsms.djangoproject.utils import render_to_response, paginated
-from reporters.utils import insert_via_querydict, update_via_querydict
+from contrib.reporters.utils import insert_via_querydict, update_via_querydict
 from models import *
 
 

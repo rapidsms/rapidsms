@@ -7,7 +7,7 @@ from datetime import datetime
 from django.db import models
 from django.core.urlresolvers import reverse
 from rapidsms.djangoproject.managers import *
-from persistance.models import PersistantBackend
+from contrib.persistance.models import PersistantBackend
 from rapidsms.messages.outgoing import OutgoingMessage
 from rapidsms.connection import Connection
 

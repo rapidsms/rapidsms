@@ -2,7 +2,7 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 from django.conf.urls.defaults import *
-import webapp.views as views
+import contrib.webapp.views as views
 
 # get the login view from the settings
 from rapidsms.webui import settings

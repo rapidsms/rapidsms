@@ -5,7 +5,7 @@
 from django.db import models, connection
 from django.db.backends.util import typecast_timestamp
 from django.core.exceptions import ValidationError
-from reporters.models import *
+from contrib.reporters.models import *
 
 
 class MessageBase(models.Model):

@@ -10,9 +10,9 @@ from django.db import transaction
 # imports to name what they need explicitly
 from rapidsms.djangoproject import settings
 from rapidsms.djangoproject.utils import *
-from reporters.models import *
-from reporters.utils import *
-from persistance.models import PersistantBackend
+from contrib.reporters.models import *
+from contrib.reporters.utils import *
+from contrib.persistance.models import PersistantBackend
 
 
 # is the LOCATIONS app running? if so, we'll

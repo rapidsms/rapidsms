@@ -3,8 +3,8 @@
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import RequestContext
 from rapidsms.djangoproject.utils import render_to_response
-from httptester.models import Message
-from httptester.forms import MessageForm
+from contrib.httptester.models import Message
+from contrib.httptester.forms import MessageForm
 from django.core.urlresolvers import reverse
 from rapidsms.djangoproject import settings
 import datetime

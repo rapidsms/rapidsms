@@ -1,5 +1,5 @@
 from django.db import models
-from patterns.models import Pattern
+from contrib.patterns.models import Pattern
 
 # some really bare bones models for localization
 class Language(models.Model):

@@ -17,7 +17,6 @@ def find_handlers(module_name):
     can't be opened. All exceptions raised while importing handlers are
     allowed to propagate.
     """
-
     handlers_module = try_import(
         "%s.handlers" % module_name)
 
