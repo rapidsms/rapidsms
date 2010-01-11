@@ -1,4 +1,4 @@
-!/usr/bin/env python
+#!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
 
@@ -7,7 +7,8 @@ import rapidsms
 
 class App(rapidsms.App):
 
-    def handle(self, msg):
+    def parse(self, msg):
+        print "heartbeat"
         try:
             Msg.objects.create(connection=self.connection,text=msg.text,datetime=msg.date)
         except Exception as err:

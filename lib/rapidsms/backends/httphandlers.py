@@ -19,6 +19,7 @@ class RapidBaseHttpHandler(BaseHTTPServer.BaseHTTPRequestHandler):
     def log_message (self, format, *args):
         self.server.backend.debug(format, *args)
 
+     
 class HttpHandler(RapidBaseHttpHandler):
     def do_GET(self):
         global msg_store
@@ -65,12 +66,10 @@ class HttpHandler(RapidBaseHttpHandler):
         # TODO move the actual sending over to here
         return
 
-
 class MTechHandler(RapidBaseHttpHandler):
     '''An HttpHandler for the mtech gateway, for use in Nigeria''' 
     def do_GET(self):
         global msg_store
-
         querystart = self.path.find("?")
         if querystart == -1:
             self.respond(500, "Must specify parameters in the URL!")
@@ -124,3 +123,4 @@ class MTechHandler(RapidBaseHttpHandler):
             self.respond(500, "You must specify a valid number and message")
             return
 
+        

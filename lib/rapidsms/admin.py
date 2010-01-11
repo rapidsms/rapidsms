@@ -3,10 +3,11 @@
 
 
 from django.contrib import admin
-from .models import App, Backend, Connection, Contact
+from .models import App, Backend, Connection, Contact, Msg
 
 
 admin.site.register(App)
 admin.site.register(Backend)
 admin.site.register(Connection)
 admin.site.register(Contact)
+admin.site.register(Msg)

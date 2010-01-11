@@ -5,6 +5,7 @@
 from django.db import models
 from django.db.models.base import ModelBase
 from .utils.modules import find_extensions
+from datetime import datetime
 
 
 class Extensible(ModelBase):
@@ -128,3 +129,22 @@ class Contact(models.Model):
     def __repr__(self):
         return '<%s: %s>' %\
             (type(self).__name__, self)
+
+class Msg(models.Model):
+    """
+    A generic message class 
+    """
+
+    __metaclass__ = Extensible
+
+    connection = models.ManyToManyField(Connection, blank=True)
+    text = models.CharField(max_length=300, blank=True)
+    timestamp = models.DateTimeField(auto_now_add=True, default=datetime.now())
+
+    def __unicode__(self):
+        return self.text
+
+    def __repr__(self):
+        return '<%s: %s>' %\
+            (type(self).__name__, self)
+            
