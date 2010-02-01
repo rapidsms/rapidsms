@@ -21,25 +21,28 @@ for module_name in settings.INSTALLED_APPS:
     module = try_import("%s.urls" % (module_name))
     if module is None: continue
 
-    print module
-
     # add the explicitly defined urlpatterns
     urlpatterns += module.urlpatterns
 
-    # does urls.py have a sibling "static" dir?
-    module_path = os.path.dirname(module.__file__)
-    static_dir = "%s/static" % module_path
-    if os.path.exists(static_dir):
+    # if the MEDIA_URL does not contain a hostname (ie, it's just an
+    # http path), and we are running in DEBUG mode, we will also serve
+    # the media for this app via this development server. in production,
+    # these files should be served directly
+    if settings.DEBUG:
+        if not settings.MEDIA_URL.startswith("http://"):
+            media_prefix = settings.MEDIA_URL.strip("/")
 
-        # found a static dir, so automatically serve those files
-        # via django. this is frowned upon in production, since
-        # the server isn't tough (or fast), but there are so many
-        # places that static files can come from, i'm not sure how
-        # we would auto-configure that in apache. maybe we could
-        # extend manager.py, to output an http conf mapping all
-        # of this stuff for apache?
-        urlpatterns += patterns("", url(
-            "^static/%s/(?P<path>.*)$" % module_name,
-            "django.views.static.serve",
-            {"document_root": static_dir}
-        ))
+        # does urls.py have a sibling "static" dir? (media is always
+        # served from "static", regardless of what MEDIA_URL says)
+        module_path = os.path.dirname(module.__file__)
+        static_dir = "%s/static" % (module_path)
+        if os.path.exists(static_dir):
+
+            # map to {{ MEDIA_URL }}/appname
+            urlpatterns += patterns("", url(
+                "^%s/%s/(?P<path>.*)$" % (
+                    media_prefix,
+                    module_name),
+                "django.views.static.serve",
+                {"document_root": static_dir}
+            ))
