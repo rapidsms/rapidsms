@@ -3,9 +3,9 @@
 
 
 import os
-from rapidsms.djangoproject import settings
-from rapidsms.utils.modules import try_import
+from django.conf import settings
 from django.conf.urls.defaults import patterns, url
+from rapidsms.utils.modules import try_import
 
 
 # this list will be populated with the
@@ -15,11 +15,13 @@ from django.conf.urls.defaults import patterns, url
 urlpatterns = []
 
 
-for module_name in settings.RAPIDSMS_APPS.keys():
+for module_name in settings.INSTALLED_APPS:
 
     # attempt to import this app's urls
     module = try_import("%s.urls" % (module_name))
     if module is None: continue
+
+    print module
 
     # add the explicitly defined urlpatterns
     urlpatterns += module.urlpatterns

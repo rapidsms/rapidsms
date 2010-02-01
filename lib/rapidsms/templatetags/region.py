@@ -3,7 +3,7 @@
 
 
 import os
-from rapidsms.djangoproject import settings
+from django.conf import settings
 from rapidsms.utils.modules import try_import
 
 from django import template
@@ -25,7 +25,7 @@ def region(context, name):
         "request": context["request"],
         "includes": [
             __path(module_name)
-             for module_name in settings.RAPIDSMS_APPS.keys()
+             for module_name in settings.INSTALLED_APPS
              if os.path.exists(__path(module_name)) ]})
 
     return context

@@ -3,9 +3,9 @@
 
 
 import os, re, traceback
-from rapidsms.djangoproject import settings
 from rapidsms.utils.modules import try_import, get_package_path
 from django.template import RequestContext
+from django.conf import settings
 from django.shortcuts import render_to_response as django_r_to_r
 from django.core.paginator import Paginator, EmptyPage, InvalidPage
 
@@ -16,7 +16,7 @@ def render_to_response(req, template_name, dictionary=None, **kwargs):
        and there's probably a much better solution."""
     
     rs_dict = {
-        "apps": settings.RAPIDSMS_APPS,
+        "apps": settings.INSTALLED_APPS,
         "debug": settings.DEBUG,
         "javascripts": []
     }
@@ -39,7 +39,7 @@ def render_to_response(req, template_name, dictionary=None, **kwargs):
     # add all of the global javascript files for all running
     # apps. this is super handy for packaging functionality
     # which affects the whole webui without hard-coding it
-    for module_name in settings.RAPIDSMS_APPS.keys():
+    for module_name in settings.INSTALLED_APPS:
         __js_dir(
             "%s/static/javascripts/global" % get_package_path(module_name),
             "/static/%s/javascripts/global" % module_name)
@@ -56,11 +56,6 @@ def render_to_response(req, template_name, dictionary=None, **kwargs):
     if m is not None:
         app_name = m.group(1)
         path = get_package_path(app_name)
-
-        # since we're fetching the app conf, add it to the
-        # template dict. it wouldn't be a very good idea to
-        # use it, but sometimes, when time is short...
-        rs_dict["app_conf"] = settings.RAPIDSMS_APPS[app_name]
         
         # note which app this func was called from, so the tmpl
         # can mark the tab (or some other type of nav) as active

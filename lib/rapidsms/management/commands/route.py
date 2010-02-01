@@ -4,7 +4,7 @@
 
 import logging, logging.handlers
 from django.core.management.base import NoArgsCommand
-from ...djangoproject import settings
+from django.conf import settings
 from ...router import router
 
 
@@ -35,11 +35,11 @@ class Command(NoArgsCommand):
         file_handler.setFormatter(format)
 
         # add each application from conf
-        for name, conf in settings.RAPIDSMS_APPS.items():
+        for name, conf in settings.INSTALLED_APPS.items():
             router.add_app(name, conf)
 
         # add each backend from conf
-        for name, conf in settings.RAPIDSMS_BACKENDS.items():
+        for name, conf in settings.INSTALLED_BACKENDS.items():
             router.add_backend(conf.pop("type"), name, conf)
 
         # wait for incoming messages

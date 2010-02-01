@@ -3,6 +3,7 @@
 
 
 from django.utils.translation.trans_real import translation
+from django.conf import settings
 from datetime import datetime
 from base import MessageBase
 
@@ -20,15 +21,9 @@ class OutgoingMessage(MessageBase):
         self._connection = connection
         self.sent_at = None
 
-        # default to LANGUAGE_CODE from django settings (which can
-        # be set in the [django] section of rapidsms.ini, or english,
-        # if no LANGUAGE_CODE is set anywhere
-        try:
-            from rapidsms.djangoproject import settings
-            self.language = settings.LANGUAGE_CODE
-
-        except:
-            self.language = "en"
+        # default to LANGUAGE_CODE from the project's settings, or fall
+        # back to 'en-us', from django.conf.global_settings:39
+        self.language = settings.LANGUAGE_CODE
 
 
 

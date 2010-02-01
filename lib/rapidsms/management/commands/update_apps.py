@@ -3,7 +3,7 @@
 
 
 from django.core.management.base import NoArgsCommand
-from rapidsms.djangoproject import settings
+from django.conf import settings
 from rapidsms.models import App
 
 
@@ -21,7 +21,7 @@ class Command(NoArgsCommand):
 
         # find any running apps which currently
         # don't have objects, and fill in the gaps
-        for module_name in settings.RAPIDSMS_APPS.keys():
+        for module_name in settings.INSTALLED_APPS:
             if not module_name in known_module_names:
                 known_module_names.append(module_name)
                 app = App.objects.create(
