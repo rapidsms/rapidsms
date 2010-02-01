@@ -1,12 +1,10 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-import manager
+
 import app
 import backends
 
-
-from config import Config
 from app import App
 from messages import OutgoingMessage as Message
 
