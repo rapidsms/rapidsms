@@ -3,7 +3,7 @@
 
 
 import unittest, doctest
-from rapidsms.djangoproject import settings
+from django.conf import settings
 from .utils import find_handlers
 
 
@@ -14,7 +14,7 @@ def suite():
 
     _suite = unittest.TestSuite()
 
-    for module_name in settings.RAPIDSMS_APPS.keys():
+    for module_name in settings.INSTALLED_APPS:
         for handler in find_handlers(module_name):
             try:
                 _suite.addTest(doctest.DocTestSuite(

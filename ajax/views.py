@@ -4,18 +4,19 @@
 import urllib
 import urllib2
 from django.http import HttpResponse
-from rapidsms.djangoproject import settings
+from django.conf import settings
 
 
 def proxy(req, path):
 
-    # build the url to the http server running in ajax.app.App via conf
-    # hackery. no encoding worries here, since GET only supports ASCII.
+    # todo: make these more configurable
+    host = getattr(settings, "AJAX_BRIDGE_HOST", "localhost")
+    port = getattr(settings, "AJAX_BRIDGE_PORT", 8001)
+
+    # build the url to the http server running in ajax.app.App. there
+    # are no encoding worries here, since GET only supports ASCII:
     # http://www.w3.org/TR/REC-html40/interact/forms.html#idx-POST-1
-    conf = settings.RAPIDSMS_APPS["rapidsms.contrib.ajax"]
-    url = "http://%s:%d/%s?%s" % (
-        conf["host"], conf["port"],
-        path, req.GET.urlencode())
+    url = "http://%s:%d/%s?%s" % (host, port, path, req.GET.urlencode())
 
     try:
         data = None
