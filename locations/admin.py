@@ -3,8 +3,12 @@
 
 
 from django.contrib import admin
-from locations.models import *
+from .models import *
+
+
+class LocationAdmin(admin.ModelAdmin):
+    list_display = ("name", "type", "full_name")
 
 
 admin.site.register(LocationType)
-admin.site.register(Location)
+admin.site.register(Location, LocationAdmin)
