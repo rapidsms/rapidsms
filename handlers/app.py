@@ -16,15 +16,19 @@ class App(rapidsms.App):
         self.handlers = []
         for module_name in settings.INSTALLED_APPS:
 
-
             # ignore handlers found within _this_ app. they're intended
             # to be inherited by other apps, not instantiated directly.
-            if not module_name.endswith(".handlers"):
+            # also ignore django contrib apps, since the "auth" app has
+            # an unrelated "handlers" module. if i'd noticed that when
+            # i created this app, i may have named it differently.
+            if not module_name.endswith(".handlers")\
+            and not module_name.startswith("django.contrib."):
                 handlers = find_handlers(module_name)
                 self.handlers.extend(handlers)
-                
-        class_names = [cls.__name__ for cls in self.handlers]
-        self.info("Registered handlers: %s" % (", ".join(class_names)))
+
+        if len(self.handlers):
+            class_names = [cls.__name__ for cls in self.handlers]
+            self.info("Registered handlers: %s" % (", ".join(class_names)))
 
 
     def handle(self, msg):

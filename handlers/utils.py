@@ -9,14 +9,15 @@ from .handlers.base import BaseHandler
 def find_handlers(module_name):
     """
     Returns a list of handlers (subclasses of app.handlers.HandlerBase)
-    defined in the "handlers" directory of *module_name*. Each Python
+    defined in the "handlers" directory of 'module_name'. Each Python
     file (*.py) is expected to contain a single new-style class, which
-    can be named arbitrarily. (but probably shouldn't be.)
+    can be named arbitrarily. (But probably shouldn't be.)
 
     Returns an empty list if no handlers are defined, or the directory
     can't be opened. All exceptions raised while importing handlers are
     allowed to propagate.
     """
+
     handlers_module = try_import(
         "%s.handlers" % module_name)
 
