@@ -1,6 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 {% load region %}
+{% load tabs_tags %}
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 	<head>
@@ -29,11 +30,15 @@
 						</a>
 					</h1>
 				</div>
-				<ul id="tabs">{% for name, conf in apps.items %}{% if conf.tab_link %}
-					<li class="app-{{ name }}{% ifequal active_app name %} active{% endifequal %}">
-						<a href="{{ conf.tab_link }}"><span>{{ conf.title }}</span></a>
-					</li>{% endif %}{% endfor %}
+
+				{% get_tabs as tabs %}
+
+				<ul id="tabs">{% for tab in tabs %}
+					<li class="app-{{ tab.name }}{% if tab.is_active %} active{% endif %}">
+						<a href="{{ tab.url }}"><span>{{ tab.caption }}</span></a>
+					</li>{% endfor %}
 				</ul>
+
 				{% block page_tabs %}
 				{% endblock %}
 			</div>
