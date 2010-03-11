@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
+
 import urllib
 import urllib2
 from django.http import HttpResponse
@@ -10,11 +11,11 @@ from django.conf import settings
 def proxy(req, path):
 
     # todo: make these more configurable
-    host = getattr(settings, "AJAX_BRIDGE_HOST", "localhost")
-    port = getattr(settings, "AJAX_BRIDGE_PORT", 8001)
+    host = getattr(settings, "AJAX_PROXY_HOST", "localhost")
+    port = getattr(settings, "AJAX_PROXY_PORT", 8001)
 
     # build the url to the http server running in ajax.app.App. there
-    # are no encoding worries here, since GET only supports ASCII:
+    # are no encoding worries here, since GET only supports ASCII.
     # http://www.w3.org/TR/REC-html40/interact/forms.html#idx-POST-1
     url = "http://%s:%d/%s?%s" % (host, port, path, req.GET.urlencode())
 
@@ -40,9 +41,8 @@ def proxy(req, path):
         out = sub_response.read()
         code = 200
 
-    # the request was successful, but the server
-    # returned an error. as above, proxy it as-is,
-    # so we can receive as much debug info as possible
+    # the request was successful, but the server returned an error. as
+    # above, send it as-is, so we receive as much debug info as possible
     except urllib2.HTTPError, err:
         out = err.read()
         code = err.code

@@ -1,16 +1,16 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
+
 import cgi
 import urlparse
 import traceback
 from threading import Thread
 from SocketServer import ThreadingMixIn
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
-
 from django.utils.simplejson import JSONEncoder
 from django.db.models.query import QuerySet
-
+from django.conf import settings
 import rapidsms
 
 
@@ -21,12 +21,12 @@ class App(rapidsms.App):
     between their WebUI and RapidSMS App object.
 
     When RapidSMS starts, this app starts an HTTPServer (port 8001 as
-    default, but configurable via rapidsms.ini) in a worker thread, and
+    default, but configurable via settings.py) in a worker thread, and
     watches for any incoming HTTP requests matching */app/method*. These
     requests, along with their GET parameters and POST form, are passed
     on to the named app.
 
-    Examples:
+    Examples::
 
     method  URL             app   method             args
     ======  ===             ===   ======             ====
@@ -46,6 +46,11 @@ class App(rapidsms.App):
     the server side. I cannot conceive of a situation where this would
     be a problem - but keep it in mind, and don't forget to prepend
     "/ajax/" to your AJAX URLs.
+
+    Settings::
+
+    AJAX_PROXY_HOST (localhost)
+    AJAX_PROXY_PORT (8001)
     """
 
 
@@ -130,6 +135,7 @@ class App(rapidsms.App):
             # error, for the time being. params are optional.
             url = urlparse.urlparse(self.path)
             path_parts = url.path.split("/")
+
             # abort if the url didn't look right
             # TODO: better error message here
             if len(path_parts) != 3:
@@ -149,6 +155,7 @@ class App(rapidsms.App):
             if not hasattr(app, meth_name):
                 return response(404,
                     "Invalid method: %s" % meth_name)
+
             # everything appears to be well, so call the
             # target method, and return the response (as
             # a string, for now)
@@ -156,11 +163,13 @@ class App(rapidsms.App):
                 method = getattr(app, meth_name)
                 params = urlparse.urlparse(url.query)
                 args   = [params]
+
                 # for post requests, we'll also need to parse
                 # the form data, and hand it to the method
                 if self.command == "POST":
                     content_type = self.headers["content-type"]
                     form = {}
+
                     # parse the form data via the CGI lib. this is
                     # a horrible mess, but supports all kinds of
                     # encodings (multipart, in particular)
@@ -198,11 +207,13 @@ class App(rapidsms.App):
                 # structure was returned, serialized with JSON
                 output = method(*args)
                 return response(200, output)
+
             # something raised during the request, so
             # return a useless http error to the requester
             except Exception, err:
                 self.server.app.warning(traceback.format_exc())
                 return response(500, unicode(err), False)
+
         # this does nothing, except prevent HTTP
         # requests being echoed to the screen
         def log_request(*args):
@@ -214,8 +225,8 @@ class App(rapidsms.App):
         # create the webserver, through which the
         # AJAX requests from the WebUI will arrive
         self.server = self.Server((
-            self.config["host"],
-            self.config["port"]),
+            getattr(settings, "AJAX_PROXY_HOST", "localhost")
+            getattr(settings, "AJAX_PROXY_PORT", "8001")),
             self.RequestHandler)
 
         self.server.app = self
