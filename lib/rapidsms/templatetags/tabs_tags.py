@@ -8,14 +8,24 @@ from functools import wraps
 from django import template
 from django.core.urlresolvers import get_resolver, reverse
 
-register = template.Library()
 
+# python considers each module name to be a distinct module, with its
+# own scope, even when they're the same file. since the {% load %} tag
+# loads this module via django.templatetags, we must do the same, to
+# share state. to avoid this confusion, explode with an explanation
+# unless this seemingly-arbitrary rule is followed.
+if not __name__.startswith("django."):
+    raise ImportError(
+        "The tabs_tags module must be imported via the " +\
+        "django.templatetags.tabs_tags package.")
 
 # rather than messing around with middleware or context preprocessors
 # for the sake of two values, we'll can store them as thread locals.
 data = threading.local()
 data._view = None
 data._tabs = []
+
+register = template.Library()
 
 
 class Tab(object):
