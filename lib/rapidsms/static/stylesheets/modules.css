@@ -215,7 +215,7 @@ table {
 
 			tr.no-data td {
 				text-align: center;
-				background: #f8f8ff;
+				background: #f8f8ff no-repeat 50% 50%;
 				padding: 2em;
 				color: #aaa;
 			}
@@ -231,6 +231,14 @@ table {
 				padding-top: 0.625em;
 				font-size: 80%;
 			}
+
+			/* since there is no data, it might be useful to point the user in
+			 * the right direction. these arrows are very light, and displayed
+			 * behind the "You haven't added any yet..." text. */
+			tr.no-data.look-up    td { background-image: url("../images/big-arrows/up.png");    }
+			tr.no-data.look-right td { background-image: url("../images/big-arrows/right.png"); }
+			tr.no-data.look-down  td { background-image: url("../images/big-arrows/down.png");  }
+			tr.no-data.look-left  td { background-image: url("../images/big-arrows/left.png");  }
 
 	tr.depth-1 td.indent { padding-left: 2em;  }
 	tr.depth-2 td.indent { padding-left: 4em;  }
