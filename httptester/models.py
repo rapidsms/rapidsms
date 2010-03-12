@@ -1,6 +1,8 @@
+#!/usr/bin/env python
+# vim: ai ts=4 sts=4 et sw=4
+
 from django.db import models
 
-# Create your models here.
 class Message(models.Model):
     phone_number = models.CharField(max_length=15)
     date = models.DateTimeField('date published')
