@@ -25,5 +25,18 @@ INSTALLED_APPS = [
 ]
 
 
-INSTALLED_BACKENDS = [
-]
+# the INSTALLED_BACKENDS setting is intended to resemble django 1.2's
+# DATABASE: http://docs.djangoproject.com/en/dev/ref/settings/#databases
+INSTALLED_BACKENDS = {
+    #"AT&T": {
+    #    "ENGINE": "rapidsms.backends.gsm",
+    #    "PORT": "/dev/ttyUSB0"
+    #},
+    #"Verizon": {
+    #    "ENGINE": "rapidsms.backends.gsm,
+    #    "PORT": "/dev/ttyUSB1"
+    #},
+    "message_tester": {
+        "ENGINE": "rapidsms.backends.bucket"
+    }
+}
