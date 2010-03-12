@@ -1,0 +1,25 @@
+/* vim:set et ts=4 sw=4 */
+
+/* make the generated buttons look like tiny little icons. they're
+ * seldom used, so should stay well out of the way */
+input.js-button {
+    cursor: pointer;
+    border: 0;
+    padding: 0;
+    width: 16px;
+    height: 16px;
+    overflow: hidden;
+    text-indent: -9999px;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+}
+
+/* from http://www.famfamfam.com/lab/icons/silk/
+ * (licensed under Creative Commons Attribution) */
+input.js-button.add      { background-image: url("../icons/silk/add.png");          }
+input.js-button.del      { background-image: url("../icons/silk/delete.png");       }
+input.js-button.accept   { background-image: url("../icons/silk/accept.png");       }
+input.js-button.unaccept { background-image: url("../icons/silk/accept--dull.png"); }
+input.js-button.clear    { background-image: url("../icons/silk/decline.png");      }
+input.js-button.reload   { background-image: url("../icons/silk/reload.png");       }
