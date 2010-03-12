@@ -2,11 +2,9 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 
-import app
-import backends
+from .apps.base import AppBase as App
+from .messages import OutgoingMessage as Message
 
-from app import App
-from messages import OutgoingMessage as Message
 
 def get_rapidsms_version ():
     try:

@@ -2,24 +2,25 @@
 # vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
 
 
-import os, sys, threading, traceback, time, datetime, Queue
+import sys
+import threading
+import traceback
+import time
+import Queue
 
 from django.dispatch import Signal
 
-from .utils.modules import try_import, get_class
-from .backends.base import BackendBase
 from .log.mixin import LoggerMixin
-from .app import App as AppBase
+from .backends.base import BackendBase
+from .apps.base import AppBase
 
 
-class Router (object, LoggerMixin):
+class Router(object, LoggerMixin):
     """
-    >>> "wat"
-    'wat'
     """
 
-    incoming_phases = ('filter', 'parse', 'handle', 'catch', 'cleanup')
-    outgoing_phases = ('outgoing', 'pre_send')
+    incoming_phases = ("filter", "parse", "handle", "cleanup")
+    outgoing_phases = ("outgoing",)
 
     pre_start  = Signal(providing_args=["router"])
     post_start = Signal(providing_args=["router"])
@@ -27,31 +28,10 @@ class Router (object, LoggerMixin):
     post_stop  = Signal(providing_args=["router"])
 
 
-    __instance = None
+    def __init__(self):
 
-    @classmethod
-    def instance(cls):
-        if not cls.__instance:
-            cls.__instance = cls(
-                prevent=False)
-
-        return cls.__instance
-
-
-    def __init__(self, prevent=True):
-
-        # since router didn't used to be a singleton, there may be dark places
-        # that it's still spawned the usual way. unless specifically asked not
-        # to, i'm going to explode here, to avoid violating the expectation that
-        # there is only a single router. later, we can remove the argument.
-        if prevent:
-            raise Exception(
-                "Router is a singleton. " +\
-                "Use Router.instance() instead.")
-
-        # otherwise, initialize as usual
-        self.backends = []
         self.apps = []
+        self.backends = {}
         self.logger = None
 
         self.running = False
@@ -64,129 +44,43 @@ class Router (object, LoggerMixin):
         """Pending incoming messages, populated by Router.incoming_message."""
 
 
-    def __str__(self):
-
-        # there's only ever a single
-        # router, so no ambiguity here
-        return "Router"
-
-
-    def _logger_name(self):
-        return "rapidsms.router"
-
-
-    # -------------
-    # CONFIGURATION
-    # -------------
-
-
-    def add_backend(self, type, name, config={}):
+    def add_app(self, module_name):
         """
-        Finds a RapidSMS backend class, instantiates and (optionally) configures
-        it, and adds it to the list of backends that will be polled for incoming
-        messages while it is running. Returns the configured instance, or raises
-        ImportError if the module was invalid.
-
-        >>> router = Router.instance()
-        >>> backend = router.add_backend(
-        ...     "base", "my_mock_backend",
-        ...     { "a": "Alpha", "b": "Beta" })
-
-        (The class of the Backend instance is derrived from 'type' by importing
-        the '"rapidsms.backends.%s" % (type)' module, and looking for a subclass
-        of BackendBase.)
-
-        >>> backend.__class__
-        <class 'rapidsms.backends.base.BackendBase'>
-
-        >>> backend.name
-        'my_mock_backend'
-
-        >>> backend.config['a']
-        'Alpha'
-        
-        The instance is added to the router's list of backends, and is regularly
-        polled for new messages once the router is started.
-
-        >>> backend in router.backends
-        True
-        
-        # TODO: check that the router polls this backend once started. maybe
-        # start it in a separate thread. (is this too much for doctest?)
+        Find the app named *module_name*, instantiate it, and add it to
+        the list of apps to be notified of incoming messages. Return the
+        app instance.
         """
 
-        # backends live in rapidsms/backends/*.py
-        # import it early to check that it's valid
-        module_name = "rapidsms.backends.%s" % type
-        __import__(module_name)
+        cls = AppBase.find(module_name)
+        if cls is None: return None
 
-        # find the backend class (regardless of its name). it should
-        # be the only subclass of rapidsms.Backend defined the module
-        cls = get_class(sys.modules[module_name], BackendBase)
-
-        # instantiate and configure the backend instance.
-        # (FYI, i think it's okay to configure backends at
-        # startup, since the webui isn't affected by them.
-        # (except in a purely informative ("you're running
-        # _these_ backends") sense))
-        backend = cls(self, name)
-        backend._configure(**config)
-        self.backends.append(backend)
-
-        return backend
-
-
-    # TODO: this is a rather ugly public API. replace it with something nicer,
-    # like accessing self.backends and self.apps via router['whatever'] (since
-    # the names should be unique anyway, although i'm not sure that's enforced)
-    def get_backend(self, name):
-        """
-        Returns the backend named 'name', if it exists, or None.
-        """
-
-        for backend in self.backends:
-            if backend.name == name:
-                return backend
-
-        return None
-
-
-    def add_app(self, name, conf={}):
-        """
-        Finds a RapidSMS app class (given its module name), instantiates and
-        (optionally) configures it, and adds it to the list of apps that are
-        notified of incoming messages. Returns the instance, or None if the app
-        module could not be imported.
-
-        This method does too much to doctest.
-        TODO: break it up into smaller parts.
-        """
-
-        # try to import the .app module from this app. it's okay if the
-        # module doesn't exist, but all other exceptions will propagate
-        module = try_import("%s.app" % name)
-        if module is None:
-            return None
-
-        # find the app class (regardless of its name). it should be
-        # the only subclass of rapidsms.App defined the app module
-        cls = get_class(module, AppBase)
-
-        # instantiate and configure the app instance.
-        # TODO: app.configure must die, because the webui (in a separate
-        # process) can't access the app instances, only the flat modules
         app = cls(self)
-        app._configure(**dict(conf))
         self.apps.append(app)
-
         return app
 
 
-    def _wait(self, func, timeout):
+    def add_backend(self, name, module_name, config=None):
         """
-        Keep calling 'func' (a lambda function) until it returns True,
-        for a maximum of 'timeout' seconds. Return True if 'func' does,
-        or False if the timeout is eached.
+        Find the backend named *module_name*, instantiate it, and add it
+        to the dict of backends to be polled for incoming messages, once
+        the router is started. Return the backend instance.
+        """
+
+        cls = BackendBase.find(module_name)
+        if cls is None: return None
+
+        if config is None: config = {}
+        backend = cls(self, name, **config)
+        self.backends[name] = backend
+        return backend
+
+
+    @staticmethod
+    def _wait(func, timeout):
+        """
+        Keep calling *func* (a lambda function) until it returns True,
+        for a maximum of *timeout* seconds. Return True if *func* does,
+        or False if time runs out.
         """
 
         for n in range(0, timeout*10):
@@ -196,23 +90,19 @@ class Router (object, LoggerMixin):
         return False
 
 
-    # -------
-    # STARTUP
-    # -------
+    def _start_backend(self, backend):
+        """
+        Start *backend*, and return True when it terminates. If an
+        exception is raised, wait five seconds and restart it.
+        """
 
-
-    def start_backend(self, backend):
         while True:
             try:
                 started = backend.start()
+                return True
 
-                # if backend execution completed
-                # normally (and did not raise),
-                # allow the thread to terminate
-                break
-
-            except Exception, err:
-                self.exception("Error in the %s backend" % backend)
+            except:
+                backend.exception()
 
                 # this flows sort of backwards. wait for five seconds
                 # (to give the backend a break before retrying), but
@@ -223,150 +113,160 @@ class Router (object, LoggerMixin):
                 if self._wait(lambda: not self.accepting, 5):
                     return None
 
-                self.warn("Restarting the %s backend" % backend)
+
+    def _start_all_backends(self):
+        """
+        Start all backends registed via Router.add_backend, by calling
+        self._start_backend in a new daemon thread for each.
+        """
+
+        for backend in self.backends.values():
+            worker = threading.Thread(
+                name=backend._logger_name(),
+                target=self._start_backend,
+                args=(backend,))
+
+            worker.daemon = True
+            worker.start()
+
+            # stash the worker thread in the backend, so we can check
+            # whether it's still alive when _stop_all_backends is called
+            backend.__thread = worker
 
 
+    def _stop_all_backends(self):
+        """
+        Notify all backends registered via Router.add_backend that they
+        should stop. This method cannot guarantee that backends **will**
+        stop in a timely manner.
+        """
 
-    def start_all_apps (self):
-        """Calls the _start_ method of each app registed via
-           Router.add_app, logging any exceptions raised, but
-           not allowing them to propagate. Returns True if all
-           of the apps started without raising."""
+        for backend in self.backends.values():
+            alive = backend.__thread.is_alive
+            if not alive: continue
+            backend.stop()
 
-        raised = False
+            if not self._wait(lambda: not alive(), 5):
+                backend.error("Worker thread did not terminate")
+
+
+    def _start_all_apps(self):
+        """
+        Start all apps registered via Router.add_app.
+        """
+
         for app in self.apps:
             try:
                 app.start()
 
-            except Exception:
-                self.log_last_exception("The %s app failed to start" % app)
-                raised = True
-
-        # if any of the apps raised, we'll return
-        # False, to warn that _something_ is wrong
-        return not raised
-
-
-    def start_all_backends (self):
-        """
-        Starts all backends registed via Router.add_backend, by calling self.start_backend in a new thread for each."""
-
-        for backend in self.backends:
-            worker = threading.Thread(
-                target=self.start_backend,
-                args=(backend,))
-
-            worker.start()
-
-            # attach the worker thread to the backend,
-            # so we can check that it's still running
-            backend.thread = worker
-
-
-    def stop_all_backends (self):
-        """Notifies all backends registered via Router.add_backend
-           that they should stop. This method cannot guarantee that
-           backends *will* stop in a timely manner."""
-
-        for backend in self.backends:
-            try:
-                backend.stop()
-                timeout = 5
-                step = 0.1
-
-                # wait up to five seconds for the backend's
-                # worker thread to terminate, or log failure
-                while(backend.thread.is_alive()):
-                    if timeout <= 0:
-                        raise RuntimeError, "The %s backend's worker thread did not terminate" % backend
-
-                    else:
-                        time.sleep(step)
-                        timeout -= step
-
-            except Exception:
-                self.log_last_exception("The %s backend failed to stop" % backend)
+            except:
+                app.exception()
 
 
     def start(self):
         """
-        Starts polling the backends for incoming messages, and blocks until a
-        KeyboardInterrupt or SystemExit is raised, or Router.stop is called.
+        Start polling the backends registered via Router.add_backend for
+        incoming messages, and keep doing so until a KeyboardInterrupt
+        or SystemExit is raised, or Router.stop is called.
         """
 
         # dump some debug info for now
         #self.info("BACKENDS: %r" % (self.backends))
         #self.info("APPS: %r" % (self.apps))
-        self.info("Starting apps and backends...")
 
+        self.info("Starting...")
         self.pre_start.send(self)
-        self.start_all_backends()
-        self.start_all_apps()
-        self.post_start.send(self)
+        self._start_all_backends()
+        self._start_all_apps()
         self.running = True
+        self.debug("Started")
 
-        # now that everything is started,
-        # we are ready to accept messages
+        # now that all of the apps are started, we are ready to start
+        # accepting messages. (if we tried to dispatch an message to an
+        # app before it had started, it might not be configured yet.)
         self.accepting = True
-
-        self.info("Waiting for incoming messages")
 
         try:
             while self.running:
 
-                # fetch the next pending incoming message, if one is available
-                # immediately. this increments the number of "tasks" on the
-                # queue, which MUST be decremented later to avoid a deadlock
-                # during graceful shutdown (it calls _queue.join to wait for all
-                # pending messages to be processed before stopping the backends
-                # and terminating). see help(Queue.Queue.task_done) for more.
+                # fetch the next pending incoming message, if one is
+                # available immediately. this increments the number of
+                # "tasks" on the queue, which MUST be decremented later
+                # to avoid deadlock during graceful shutdown. (it calls
+                # _queue.join to ensure that all pending messages are
+                # processed before stopping.).
+                #
+                # for more infomation on Queues, see:
+                # help(Queue.Queue.task_done)
                 try:
-                    msg = self._queue.get(block=False)
-
-                    # process the message (which currently (20091005) blocks
-                    # until the outgoing responses are all sent), and ensure
-                    # that the task counter is decremented
-                    self.incoming(msg)
+                    self.incoming(self._queue.get(block=False))
                     self._queue.task_done()
 
-                # if there were no messages waiting, wait a very short (in human
-                # terms) time before looping to check again. do this here (rather
-                # than every time) to avoid delaying shutdown or the next message
+                # if there were no messages waiting, wait a very short
+                # (in human terms) time before looping to check again.
                 except Queue.Empty:
                     time.sleep(0.1)
 
         # stopped via ctrl+c
         except KeyboardInterrupt:
             self.warn("Caught KeyboardInterrupt")
+            self.running = False
 
         # stopped via sys.exit
         except SystemExit:
             self.warn("Caught SystemExit")
+            self.running = False
 
-        # refuse to accept any new messages. the backend(s) might
-        # have to throw them away, but at least they can pass the
-        # refusal upstream to the device/gateway where possible
+        # while shutting down, refuse to accept any new messages. the
+        # backend(s) might have to discard them, but at least they can
+        # pass the refusal back to the device/gateway where possible
         self.accepting = False
 
-        self.info("Stopping...")
-        self.stop_all_backends()
+        self.debug("Stopping...")
+        self._stop_all_backends()
+        self.info("Stopped")
+
+
+    def stop(self, graceful=False):
+        """
+        Stop the router, which unblocks the Router.start method as soon
+        as possible. This may leave unprocessed messages in the incoming
+        or outgoing queues.
+
+        If the optional *graceful* argument is True, the router does its
+        best to avoid discarding any messages, by refusing to accept new
+        incoming messages and blocking (by calling Router.join) until
+        all currently pending messages are processed.
+        """
+
+        if graceful:
+            self.accepting = False
+            self.join()
+
         self.running = False
 
 
-    # ------------------
-    # MESSAGE PROCESSING
-    # ------------------
+    def join(self):
+        """
+        Block until the incoming message queue is empty. This method
+        can potentially block forever, if it is called while this Router
+        is accepting incoming messages.
+        """
+
+        self._queue.join()
+        return True
 
 
     def incoming_message(self, msg):
         """
-        Adds 'msg' to the incoming message queue and returns True, or False if
-        this router is not currently accepting new messages (either because the
-        queue is full, or we are shutting down).
+        Add *msg* to the incoming message queue and return True, or
+        return False if this router is not currently accepting new
+        messages (either because the queue is full, or we are busy
+        shutting down).
 
-        Adding a message to the queue is no guarantee that it will be processed
-        any time soon (although the queue is regularly polled while Router.start
-        is blocking), or responded to at all.
+        Adding a message to the queue is no guarantee that it will be
+        processed any time soon (although the queue is regularly polled
+        while Router.start is blocking), or responded to at all.
         """
 
         if not self.accepting:
@@ -377,57 +277,21 @@ class Router (object, LoggerMixin):
             return True
 
         # if the queue is of a limited size, it may raise the Full
-        # exception. there's no sense exploding (especially since
-        # we have a bunch of pending messages), so just refuse to
-        # accept it. hopefully the backend can in turn refuse it
+        # exception. there's no sense exploding (especially since we
+        # have a bunch of pending messages), so just refuse to accept
+        # it. hopefully, the backend can in turn refuse it
         except Queue.Full:
             return False
 
 
-    def stop(self, graceful=False):
-        """
-        Stops the router, which unblocks the Router.start method as soon as
-        possible. This may leave unprocessed messages in the incoming or
-        outgoing queues.
-        
-        If the optional argument 'graceful' is True, this router does its best
-        to avoid leaving unprocessed messages around, by refusing to accept new
-        incoming messages and blocking (by calling Router.join) until all
-        currently pending messages are processed --then stopping.
-        """
-
-        if graceful:
-            self.accepting = False
-            self.join()
-
-        self.running = False
-
-
-
-    def join(self):
-        """
-        Blocks until the incoming message queue is empty. This method can
-        potentially block forever, if it is called while this Router is
-        accepting incoming messages.
-        """
-
-        self._queue.join()
-        return True
-
-
-    def __sorted_apps(self):
-        return sorted(self.apps, key=lambda a: a.priority())
-
-
-    def incoming(self, message):
+    def incoming(self, msg):
         """
         Incoming phases:
 
         Filter:
-          The first phase, before any actual work is done. This is the only
-          phase that can entirely abort further processing of the incoming
-          message, which it does by returning True. (TODO: use an exception
-          instead, since this is an exceptional circumstance)
+          The first phase, before any actual work is done. This is the
+          only phase that can entirely abort further processing of the
+          incoming message, which it does by returning True.
 
         Parse:
           Don't do INSERTs or UPDATEs in here!
@@ -435,96 +299,90 @@ class Router (object, LoggerMixin):
         Handle:
           Respond to messages here.
 
-        Catch:
-          Provide a default message. Only a single installed app should have a
-          "catch" phase, since app ordering shouldn't be important.
-
         Cleanup:
           An opportunity to clean up anything started during earlier phases.
         """
 
-        self.info("Incoming message via %s: %s ->'%s'" %\
-            (message.connection.backend, message.connection.identity, message.text))
+        self.info("Incoming (%s): %s" %\
+            (msg.connection, msg.text))
 
-        # loop through all of the apps and notify them of
-        # the incoming message so that they all get a
-        # chance to do what they will with it
         try:
             for phase in self.incoming_phases:
-                for app in self.__sorted_apps():
-                    self.debug("IN %s phase %s" % (phase, app))
-                    responses = len(message.responses)
-                    handled = False
-                    try:
-                        handled = getattr(app, phase)(message)
-                    except Exception, e:
-                        self.error("%s failed on %s: %r\n%s", app, phase, e, traceback.print_exc())
+                self.debug("In %s phase" % phase)
 
-                    # during the "filter" phase, apps can return True
+                for app in self.apps:
+                    self.debug("In %s app" % app)
+                    handled = False
+
+                    try:
+                        func = getattr(app, phase)
+                        handled = func(msg)
+
+                    except Exception, err:
+                        app.exception()
+
+                    # during the _filter_ phase, an app can return True
                     # to abort ALL further processing of this message
-                    if phase == 'filter':
+                    if phase == "filter":
                         if handled is True:
-                            self.warning('Message filtered by "%s" app', app)
+                            self.warning("Message filtered")
                             raise(StopIteration)
 
-                    elif phase == 'handle' or phase == 'catch':
+                    # during the _handle_ pahase, apps can return True
+                    # to "short-circuit" this phase, preventing any
+                    # further apps from receiving the message
+                    elif phase == "handle":
                         if handled is True:
-                            self.debug("%s short-circuited %s phase" % (app, phase))
+                            self.debug("Short-circuited")
                             break
 
-                    elif responses < len(message.responses):
-                        self.warning("App '%s' shouldn't send responses in %s()!", 
-                            app.config["type"], phase)
-
-        # maybe raised within the loop, when
-        # it's aborted during the filter phase
         except StopIteration:
             pass
 
         # now send the message's responses
-        message.flush_responses()
+        msg.flush_responses()
 
-        # we are no longer interested in
-        # this message... but some crazy
-        # synchronous backends might be!
-        message.processed = True
+        # we are no longer interested in this message... but some crazy
+        # synchronous backends might be, so mark it as processed.
+        msg.processed = True
 
 
-    def outgoing(self, message):
-        self.info("Outgoing message via %s: %s <- '%s'" %\
-            (message.connection.backend, message.connection.identity, message.text))
-        
-        # first notify all of the apps that want to know
-        # about outgoing messages so that they can do what
-        # they will before the message is actually sent
+    def outgoing(self, msg):
+        """
+        """
+
+        self.info("Outgoing (%s): %s" %\
+            (msg.connection, msg.text))
+
         for phase in self.outgoing_phases:
+            self.debug("Out %s phase" % phase)
             continue_sending = True
-            
-            # call outgoing phases in the opposite order of the
-            # incoming phases so that, for example, the first app
-            # called with an incoming message is the last app called
-            # with an outgoing message
-            for app in reversed(self.__sorted_apps()):
-                self.debug("OUT %s phase %s" % (phase, app))
-                
+
+            # call outgoing phases in the opposite order of the incoming
+            # phases, so the first app called with an  incoming message
+            # is the last app called with an outgoing message
+            for app in reversed(self.apps):
+                self.debug("Out %s app" % app)
+
                 try:
-                    continue_sending = getattr(app, phase)(message)
-                except Exception, e:
-                    self.error("%s failed on %s: %r\n%s", app, phase, e, traceback.print_exc())
+                    func = getattr(app, phase)
+                    continue_sending = func(msg)
+
+                except Exception, err:
+                    app.exception()
+
+                # during any outgoing phase, an app can return True to
+                # abort ALL further processing of this message
                 if continue_sending is False:
-                    self.info("App '%s' cancelled outgoing message", app)
+                    self.warning("Message cancelled")
                     return False
 
-        # now send the message out
-        self.get_backend(message.connection.backend.name).send(message)
-        self.debug("SENT message '%s' to %s via %s" % (message.text,\
-            message.connection.identity, message.connection.backend))
-        return True
+        return msg.send_now()
 
 
-# a single instance of the router singleton is available globally,
-# like the db connection. it shouldn't be necessary to muck with
-# this very often (since most interaction with the Router happens
-# within an App or Backend, which have their own .router property),
-# but when it is, it should be done via this process global
-router = Router.instance()
+# a single instance of the router singleton is available globally, like
+# the db connection. it shouldn't be necessary to muck with this very
+# often (since most interaction with the Router happens within an App or
+# Backend, which have their own .router property), but when it is, it
+# should be done via this process global
+router = Router()

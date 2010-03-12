@@ -2,9 +2,9 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 
+from datetime import datetime
 from django.utils.translation.trans_real import translation
 from django.conf import settings
-from datetime import datetime
 from .base import MessageBase
 
 
@@ -75,14 +75,8 @@ class OutgoingMessage(MessageBase):
         should probably only be called by the Router.
         """
 
-        # find the REAL backend (not the model)
-        from rapidsms.router import router
-        for backend in router.backends:
-            if backend.name == self.name:
-
-                # now send the message directly
-                self.sent = backend.send(self)
-                if self.sent: self.sent_at = datetime.now()
-                return self.sent
-
-        return False
+        from ..router import router
+        backend_name = self.connection.backend.name
+        self.sent = router.backends[backend_name].send(self)
+        if self.sent: self.sent_at = datetime.now()
+        return self.sent

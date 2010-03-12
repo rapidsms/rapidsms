@@ -40,7 +40,7 @@ class Command(NoArgsCommand):
 
         # add each backend
         for name, conf in settings.INSTALLED_BACKENDS.items():
-            router.add_backend(conf.pop("ENGINE"), name, conf)
+            router.add_backend(name, conf.pop("ENGINE"), conf)
 
         # wait for incoming messages
         router.start()

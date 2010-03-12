@@ -5,8 +5,6 @@
 import os
 import sys
 import inspect
-import django.shortcuts
-import django.template
 
 
 def render_to_response(req, template_name, dictionary=None, **kwargs):
@@ -15,6 +13,12 @@ def render_to_response(req, template_name, dictionary=None, **kwargs):
     the same stuff in every view. TODO: moar.
     """
 
+    # delay imports until this function is called, so this module can be
+    # imported before django is finished being configured
+    import django.shortcuts
+    import django.template
+
+    # find the view which this function was called from
     view = _extract_callback()
     module = sys.modules[view.__module__]
 

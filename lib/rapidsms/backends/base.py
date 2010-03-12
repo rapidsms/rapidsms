@@ -2,46 +2,62 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 
-import time, Queue
-from ..component import Component
+import time
+import Queue
+from ..log.mixin import LoggerMixin
 from ..messages.incoming import IncomingMessage
+from ..utils.modules import try_import, get_class
 
 
-class BackendBase(Component):
+class BackendBase(object, LoggerMixin):
     """
     """
 
-    def __init__ (self, router, name):
+
+    @classmethod
+    def find(cls, module_name):
+        module = try_import(module_name)
+        if module is None: return None
+        return get_class(module, cls)
+
+
+    def __init__ (self, router, name, **kwargs):
         self._queue = Queue.Queue()
         self._running = False
         self._router = router
         self._name = name
 
+        self._config = kwargs
+        if hasattr(self, "configure"):
+            self.configure(**kwargs)
 
-    def _log_name(self):
-        return "rapidsms.backend"
+
+    def _logger_name(self):
+        return "backend/%s" % self.name
+
+
+    @property
+    def router (self):
+        if hasattr(self, "_router"):
+            return self._router
 
 
     @property
     def name(self):
         return self._name
 
-    @property
-    def title(self):
-        """
-        Returns the title of this backend, which isn't guaranteed to be unique,
-        consistant between calls, or in any particular format -- it should be
-        used for display purposes only.
 
-        (For the time being, it actually _is_ unique. But don't count on that.
-        It's currently derrived from self.name, which is a mandatory parameter
-        of the initializer, and must be unique to be attached to a router.)
+    def __unicode__(self):
+        return self.name
 
-        >>> BackendBase(None, 'name').title
-        'Name'
-        """
 
-        return self.name.title()
+    def __repr__(self):
+        return "<backend: %s>" %\
+            self.name
+
+
+
+
 
 
     def next_message (self):
