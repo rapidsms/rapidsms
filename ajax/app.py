@@ -74,21 +74,14 @@ class App(rapidsms.App):
 
     class RequestHandler(BaseHTTPRequestHandler):
         def _find_app(self, name):
-
-            # inspect the name of each active app,
-            # returning as soon as we find a match
             for app in self.server.app.router.apps:
                 if app.name == name:
                     return app
 
-            # no app by that
-            # name was found
-            return None
-
         def _charset(self, str):
             """
-            Extracts and returns the character-set argument from an HTTP
-            content-type header, or None if it was not found.
+            Extract and return the charset argument from a content-type
+            header, or None if it was not found.
 
             >>> _charset("multipart/form-data; charset=UTF-8")
             "UTF-8"
@@ -98,13 +91,13 @@ class App(rapidsms.App):
             """
 
             x = str.split("charset=", 1)
-            return x[1] if(len(x) == 2) else None
+            return x[1] if(len(x) == 2)
 
 
-        # handle both GET and POST with
-        # the same method
+        # handle GET and POST with the same method
         def do_GET(self):  return self.process()
         def do_POST(self): return self.process()
+
         def process(self):
             def response(code, output, json=True):
                 self.send_response(code)
@@ -116,9 +109,8 @@ class App(rapidsms.App):
                     json = App.MyJsonEncoder().encode(output)
                     self.wfile.write(json)
 
-                # otherwise, write the raw response.
-                # it doesn't make much sense to have
-                # error messages encoded as JSON...
+                # otherwise, write the raw response. it doesn't make
+                # much sense to have error messages encoded as JSON.
                 else: self.wfile.write(output)
 
                 # HTTP2xx represents success
@@ -131,49 +123,49 @@ class App(rapidsms.App):
             # method of the "alpha" app, with the params:
             #   { "charlie": ["delta"] }
             #
-            # any other path format will return an http404
-            # error, for the time being. params are optional.
+            # any other path format will return an http 404 error, for
+            # the time being. GET parameters are optional.
             url = urlparse.urlparse(self.path)
             path_parts = url.path.split("/")
 
             # abort if the url didn't look right
-            # TODO: better error message here
             if len(path_parts) != 3:
-                return response(404, "FAIL.")
+                return response(404,
+                    "Malformed URL (should be: /app/action): %s" %
+                    url)
 
-            # resolve the first part of the url into an app
-            # (via the router), and abort if it wasn't valid
+            # resolve the first part of the url into an app (via the
+            # router), and abort if it wasn't valid
             app_name = path_parts[1]
             app = self._find_app(app_name)
             if (app is None):
                 return response(404,
-                    "Invalid app: %s" % app_name)
+                    "Invalid app: %s" %
+                    app_name)
 
             # same for the request name within the app
-            # (FYI, self.command returns GET, POST, etc)
             meth_name = "ajax_%s_%s" % (self.command, path_parts[2])
             if not hasattr(app, meth_name):
                 return response(404,
-                    "Invalid method (for %s app): %s" % (
-                        app.name, meth_name))
+                    "Invalid method (for %s app): %s" %
+                        (app.name, meth_name))
 
-            # everything appears to be well, so call the
-            # target method, and return the response (as
-            # a string, for now)
+            # everything appears to be well, so call the  target method,
+            # and return the response (as a string, for now)
             try:
                 method = getattr(app, meth_name)
                 params = urlparse.urlparse(url.query)
                 args   = [params]
 
-                # for post requests, we'll also need to parse
-                # the form data, and hand it to the method
+                # for post requests, we'll also need to parse the form
+                # data and hand it along to the method
                 if self.command == "POST":
                     content_type = self.headers["content-type"]
                     form = {}
 
-                    # parse the form data via the CGI lib. this is
-                    # a horrible mess, but supports all kinds of
-                    # encodings (multipart, in particular)
+                    # parse the form data via the CGI lib. this is a
+                    # horrible mess, but supports all kinds of encodings
+                    # that we may encounter. (multipart, in particular.)
                     storage = cgi.FieldStorage(
                         fp = self.rfile, 
                         headers = self.headers,
@@ -185,10 +177,9 @@ class App(rapidsms.App):
                     # which should have been passed along in views.py
                     charset = self._charset(content_type)
 
-                    # convert the fieldstorage object into a dict,
-                    # to keep it simple for the handler methods.
-                    # TODO: maybe make this a util if it's useful
-                    # elsewhere. it isn't, for the time being.
+                    # convert the fieldstorage object into a dict, to
+                    # keep it simple for the handler methods. TODO: make
+                    # this a util, if it's useful elsewhere.
                     for key in storage.keys():
 
                         # convert each of the values with this key into
@@ -204,27 +195,27 @@ class App(rapidsms.App):
 
                     args.append(form)
 
-                # call the method, and send back whatever data
-                # structure was returned, serialized with JSON
+                # call the method, and send back whatever data structure
+                # was returned, serialized with JSON
                 output = method(*args)
                 return response(200, output)
 
-            # something raised during the request, so
-            # return a useless http error to the requester
+            # something raised during the request, so return a useless
+            # http error to the requester
             except Exception, err:
                 self.server.app.warning(traceback.format_exc())
                 return response(500, unicode(err), False)
 
-        # this does nothing, except prevent HTTP
-        # requests being echoed to the screen
+        # this does nothing, except prevent the incoming http requests
+        # from being echoed to the screen (which screws up the log)
         def log_request(*args):
             pass
 
 
     def start(self):
 
-        # create the webserver, through which the
-        # AJAX requests from the WebUI will arrive
+        # create the webserver, through which the AJAX requests from the
+        # WebUI will arrive (via utils.py)
         self.server = self.Server((
             getattr(settings, "AJAX_PROXY_HOST", "localhost"),
             getattr(settings, "AJAX_PROXY_PORT", "8001")),
@@ -232,8 +223,8 @@ class App(rapidsms.App):
 
         self.server.app = self
 
-        # start the server in a separate thread, and daemonize it
-        # to prevent it from hanging once the main thread terminates
+        # start the server in a separate thread, and daemonize it to
+        # prevent it from hanging once the main thread terminates
         self.thread = Thread(target=self.server.serve_forever)
         self.thread.daemon = True
         self.thread.start()
