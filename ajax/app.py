@@ -91,7 +91,7 @@ class App(rapidsms.App):
             """
 
             x = str.split("charset=", 1)
-            return x[1] if(len(x) == 2)
+            return x[1] if(len(x) == 2) else None
 
 
         # handle GET and POST with the same method
