@@ -1,0 +1,43 @@
+#inner .col-1 { width: 25%; }
+#inner .col-2 { width: 75%; }
+
+
+/* stretch the form fields to full width (it's only 25% of the layout),
+ * without exploding it. TODO: webkit, ie6, etc */
+#inner textarea,
+#inner input {
+	font: 100% monospace;
+	-moz-box-sizing: border-box;
+	width: 100%;
+}
+
+/* horizontally center the SEND button */
+#inner div.submit input {
+	display: block;
+	margin: 0 auto;
+	width: auto;
+}
+
+
+#log {
+	width: 100%;
+}
+
+	#log tr.no-data td {
+		padding-bottom: 8em;
+		padding-top: 8em;
+	}
+
+	#log th.phone {
+		width: 14em; }
+
+	#log tbody span {
+		font-weight: bold;
+		cursor: help;
+	}
+
+	/* make incoming (from rapidsms's point of view) messages dull, since
+	 * they're not very important, compared to the outgoing messages */
+	#log tr.in {
+		color: #eee;
+	}
