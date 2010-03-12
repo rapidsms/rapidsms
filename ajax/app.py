@@ -90,7 +90,7 @@ class App(rapidsms.App):
             Extracts and returns the character-set argument from an HTTP
             content-type header, or None if it was not found.
 
-            >>> _charset("multipart/form-data; charst=UTF-8")
+            >>> _charset("multipart/form-data; charset=UTF-8")
             "UTF-8"
 
             >>> _charset("application/x-www-form-urlencoded") is None
@@ -154,7 +154,8 @@ class App(rapidsms.App):
             meth_name = "ajax_%s_%s" % (self.command, path_parts[2])
             if not hasattr(app, meth_name):
                 return response(404,
-                    "Invalid method: %s" % meth_name)
+                    "Invalid method (for %s app): %s" % (
+                        app.name, meth_name))
 
             # everything appears to be well, so call the
             # target method, and return the response (as
@@ -225,7 +226,7 @@ class App(rapidsms.App):
         # create the webserver, through which the
         # AJAX requests from the WebUI will arrive
         self.server = self.Server((
-            getattr(settings, "AJAX_PROXY_HOST", "localhost")
+            getattr(settings, "AJAX_PROXY_HOST", "localhost"),
             getattr(settings, "AJAX_PROXY_PORT", "8001")),
             self.RequestHandler)
 
