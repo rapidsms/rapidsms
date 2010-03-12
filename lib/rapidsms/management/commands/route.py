@@ -35,12 +35,12 @@ class Command(NoArgsCommand):
         file_handler.setFormatter(format)
 
         # add each application from conf
-        for name, conf in settings.INSTALLED_APPS.items():
-            router.add_app(name, conf)
+        for name in settings.INSTALLED_APPS:
+            router.add_app(name)
 
-        # add each backend from conf
+        # add each backend
         for name, conf in settings.INSTALLED_BACKENDS.items():
-            router.add_backend(conf.pop("type"), name, conf)
+            router.add_backend(conf.pop("ENGINE"), name, conf)
 
         # wait for incoming messages
         router.start()
