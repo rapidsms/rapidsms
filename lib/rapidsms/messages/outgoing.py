@@ -5,7 +5,7 @@
 from django.utils.translation.trans_real import translation
 from django.conf import settings
 from datetime import datetime
-from base import MessageBase
+from .base import MessageBase
 
 
 class OutgoingMessage(MessageBase):
@@ -24,7 +24,6 @@ class OutgoingMessage(MessageBase):
         # default to LANGUAGE_CODE from the project's settings, or fall
         # back to 'en-us', from django.conf.global_settings:39
         self.language = settings.LANGUAGE_CODE
-
 
 
     def append(self, template, **kwargs):
@@ -57,15 +56,33 @@ class OutgoingMessage(MessageBase):
 
     def send(self):
         """
-        Send this message via self.connection.backend, and returns true if the
-        message was sent successfully.
+        Send this message via the router, triggering the _outgoing_
+        phase (giving any app the opportunity to modify or cancel it).
+        Return True if the message was sent successfully.
 
-        Warning: This method blocks the current thread until the backend accepts
-        or rejects the message, which takes... as long as it takes. There is
-        currently no way to send messages asynchronously.
+        Warning: This method blocks the current thread until the backend
+        accepts or rejects the message, which takes as long as it takes.
+        There is currently no way to send messages asynchronously.
         """
 
-        from rapidsms.router import Router
-        self.sent = Router.instance().outgoing(self)
-        if self.sent: self.sent_at = datetime.now()
-        return self.sent
+        from rapidsms.router import router
+        return router.outgoing(self)
+
+
+    def send_now(self):
+        """
+        Send this message immediately via the physical backend. This
+        should probably only be called by the Router.
+        """
+
+        # find the REAL backend (not the model)
+        from rapidsms.router import router
+        for backend in router.backends:
+            if backend.name == self.name:
+
+                # now send the message directly
+                self.sent = backend.send(self)
+                if self.sent: self.sent_at = datetime.now()
+                return self.sent
+
+        return False

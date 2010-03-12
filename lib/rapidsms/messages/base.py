@@ -15,12 +15,13 @@ class MessageBase(object):
         return self._connection
 
     @property
-    def peer (self):
+    def peer(self):
         """
-        Returns the identity (eg. a phone number, email address, irc nickname)
-        of the other end of this message. But don't use this method. It only
-        seems to encourage people to ignore the backend/identity distinction,
-        and create fields like "mobile_number", which is all kinds of wrong.
+        Return the identity (eg. a phone number, email address, irc
+        nickname) on the other end of this message. But you shouldn't
+        use this method. It only seems to encourage people to ignore the
+        distinction between backends and identities, and create fields
+        like "mobile_number", which is all kinds of wrong.
         """
 
-        return self.connection.identity 
+        return self.connection.identity

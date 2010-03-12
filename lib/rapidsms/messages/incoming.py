@@ -4,9 +4,9 @@
 
 from copy import copy
 from datetime import datetime
-from base import MessageBase
-from outgoing import OutgoingMessage
-from error import ErrorMessage
+from .base import MessageBase
+from .outgoing import OutgoingMessage
+from .error import ErrorMessage
 
 
 class IncomingMessage(MessageBase):
