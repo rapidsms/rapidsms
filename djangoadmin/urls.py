@@ -8,5 +8,4 @@ admin.autodiscover()
 
 
 urlpatterns = patterns('',
-    (r'^admin/(.*)', admin.site.root),
-)
+    (r'^admin/(.*)', admin.site.root))
