@@ -7,9 +7,9 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.views.decorators.http import require_GET, require_POST
 from django.templatetags.tabs_tags import register_tab
-from rapidsms.contrib.ajax.utils import call_app
 from rapidsms.utils import render_to_response
 from . import forms
+from . import utils
 
 
 def _redirect(identity):
@@ -27,16 +27,15 @@ def message_tester(req, identity):
     if req.method == "POST":
         form = forms.MessageForm(req.POST)
         if form.is_valid():
-            call_app("httptester", "send", **form.cleaned_data)
-            return _redirect(form.cleaned_data["identity"])
+            cd = form.cleaned_data
+            utils.send_test_message(**cd)
+            return _redirect(cd["identity"])
 
     else:
         form = forms.MessageForm({
             "identity": identity })
 
-    log = call_app("httptester", "log")
-
     return render_to_response(
         req, "httptester/index.html", {
-            "message_form": form,
-            "message_log": log })
+            "message_log": utils.get_message_log(),
+            "message_form": form, })

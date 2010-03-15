@@ -9,7 +9,7 @@ from django.conf import settings
 from django.utils.simplejson import JSONDecoder
 
 
-def call_app(app, action, **kwargs):
+def call_router(app, action, **kwargs):
     """
     TODO: docs
     """
