@@ -130,25 +130,26 @@ class App(rapidsms.App):
 
             # abort if the url didn't look right
             if len(path_parts) != 3:
-                return response(404,
-                    "Malformed URL (should be: /app/action): %s" %
-                    url)
+                str_ = "Malformed URL: %s" % url
+                self.server.app.warning(str_)
+                return response(404, str_)
 
             # resolve the first part of the url into an app (via the
             # router), and abort if it wasn't valid
             app_name = path_parts[1]
             app = self._find_app(app_name)
             if (app is None):
-                return response(404,
-                    "Invalid app: %s" %
-                    app_name)
+                str_ = "Invalid app: %s" % app_name
+                self.server.app.warning(str_)
+                return response(404, str_)
 
             # same for the request name within the app
             meth_name = "ajax_%s_%s" % (self.command, path_parts[2])
             if not hasattr(app, meth_name):
-                return response(404,
-                    "Invalid method (for %s app): %s" %
-                        (app.name, meth_name))
+                str_ = "Invalid method: %s.%s" %\
+                    (app.__class__.__name__, meth_name)
+                self.server.app.warning(str_)
+                return response(404, str_)
 
             # everything appears to be well, so call the  target method,
             # and return the response (as a string, for now)
@@ -195,9 +196,12 @@ class App(rapidsms.App):
 
                     args.append(form)
 
-                # call the method, and send back whatever data structure
-                # was returned, serialized with JSON
+                self.server.app.info(
+                    "Calling %s.%s with args: %s" %
+                    (app.__class__.__name__, meth_name, args))
                 output = method(*args)
+
+                self.server.app.info("Response: %s" % output)
                 return response(200, output)
 
             # something raised during the request, so return a useless
