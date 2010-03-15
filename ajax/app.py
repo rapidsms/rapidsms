@@ -23,7 +23,7 @@ class App(rapidsms.App):
     When RapidSMS starts, this app starts an HTTPServer (port 8001 as
     default, but configurable via settings.py) in a worker thread, and
     watches for any incoming HTTP requests matching */app/method*. These
-    requests, along with their GET parameters and POST form, are passed
+    requests, along with their GET parameters and POST data, are passed
     on to the named app.
 
     Examples::
@@ -35,10 +35,9 @@ class App(rapidsms.App):
     POST    /food/eggs?x=1  food  ajax_POST_eggs     { "x": 1 }, { }
 
     Any data that is returned by the handler method is JSON encoded, and
-    sent back to the WebUI in response. Since the _webui_ app includes
-    jQuery with every view, this makes it very easy for the WebUIs of
-    other apps to query their running App object for state. See the
-    _training_ app for an example.
+    sent back to the WebUI in response. Since RapidSMS includes jQuery
+    with every view, this makes it very easy for apps to query their
+    running App object for state. See the _httptester_ for an example.
 
     But wait! AJAX can't cross domains, so a request to port 8001 from
     the WebUI won't work! This is handled by the WebUI bundled with this
@@ -80,14 +79,8 @@ class App(rapidsms.App):
 
         def _charset(self, str):
             """
-            Extract and return the charset argument from a content-type
-            header, or None if it was not found.
-
-            >>> _charset("multipart/form-data; charset=UTF-8")
-            "UTF-8"
-
-            >>> _charset("application/x-www-form-urlencoded") is None
-            True
+            Extract and return the charset argument from an HTTP
+            content-type header, or None if it was not found.
             """
 
             x = str.split("charset=", 1)
@@ -225,6 +218,7 @@ class App(rapidsms.App):
             getattr(settings, "AJAX_PROXY_PORT", "8001")),
             self.RequestHandler)
 
+        # allow the server to call back the app
         self.server.app = self
 
         # start the server in a separate thread, and daemonize it to
