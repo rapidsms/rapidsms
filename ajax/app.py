@@ -155,7 +155,7 @@ class App(rapidsms.App):
             try:
                 method = getattr(app, meth_name)
                 params = urlparse.urlparse(url.query)
-                args   = [params]
+                args   = [params.query]
 
                 # for post requests, we'll also need to parse the form
                 # data and hand it along to the method
