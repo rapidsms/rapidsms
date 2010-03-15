@@ -7,6 +7,7 @@ import urllib2
 from copy import copy
 from django.conf import settings
 from django.utils.simplejson import JSONDecoder
+from . import exceptions
 
 
 def call_router(app, action, **kwargs):
@@ -23,19 +24,13 @@ def call_router(app, action, **kwargs):
     if content_type == "application/json":
         return JSONDecoder().decode(body)
 
-    # requests failing is an exceptional condition, so explode. this
-    # makes debuggery a lot simpler, in development mode
-    if status != 200:
-        raise ValueError(body)
-
-    # explode if the response was something unknown, to avoid spurting
-    # binary data over unsuspecting callers
-    if content_type == "text/plain":
+    # return plain text as-is
+    elif content_type == "text/plain":
         return body
 
-    # i have no idea what's going on
-    raise ValueError(
-        "The call_app helper can only return decoded JSON or plain" +\
+    # other content types must be dealt with by 'request'
+    raise exceptions.MalformedRouterResponse(
+        "The call_router helper can only return decoded JSON or plain" +\
         "text responses. The content_type was: %s" % content_type)
 
 
@@ -86,13 +81,11 @@ def request(path, get=None, post=None, encoding=None):
         content_type = res.info()["content-type"]
         return (res.code, content_type, res.read())
 
-    # the request was successful, but the server returned an error. as
-    # above, send it as-is, so we receive as much debug info as possible
+    # the server returned an error
     except urllib2.HTTPError, err:
-        content_type = err.info()["content-type"]
-        return (err.code, content_type, err.read())
+        raise exceptions.RouterError(
+            err.code, err.info()["content-type"], err.read())
 
-    # the router couldn't be reached, but we have no idea why. return a
-    # useless error
+    # the router couldn't be reached
     except urllib2.URLError, err:
-        return (None, None, None)
+        raise exceptions.RouterNotResponding
