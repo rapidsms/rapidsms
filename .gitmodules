@@ -1,0 +1,7 @@
+[submodule "locations/lib/gmaps-v3-mask"]
+	path = locations/lib/gmaps-v3-mask
+	url = git://github.com/adammck/gmaps-v3-mask.git
+
+[submodule "locations/lib/gmaps-v3-label-marker"]
+	path = locations/lib/gmaps-v3-label-marker
+	url = git://github.com/adammck/gmaps-v3-label-marker.git
