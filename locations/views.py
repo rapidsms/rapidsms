@@ -5,16 +5,11 @@
 from django.views.decorators.http import require_GET, require_http_methods
 from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse
+from django.templatetags.tabs_tags import register_tab
+from django.conf import settings
 
-from rapidsms.djangoproject.related import related_objects, with_related_objects
-from rapidsms.djangoproject.utils import render_to_response, paginated
-from contrib.reporters.utils import insert_via_querydict, update_via_querydict
-from models import *
-
-
-def __global(req):
-    return {
-        "location_types": LocationType.objects.all() }
+from rapidsms.utils import render_to_response
+from .models import *
 
 
 def message(req, msg, link=None):
@@ -25,11 +20,26 @@ def message(req, msg, link=None):
     })
 
 
+@register_tab(caption="Map")
 @require_GET
 def dashboard(req):
+    loc_types = LocationType.objects.filter(exists_in=None)
+    locations = Location.objects.filter(type=loc_types)
+
     return render_to_response(req,
         "locations/dashboard.html", {
-            "all_locations": Location.objects.all() })
+            "locations": locations })
+
+
+@require_GET
+def view_location(req, location_code, location_type_slug):
+    location = get_object_or_404(Location, slug=location_code)
+    loc_type = get_object_or_404(LocationType, exists_in=location)
+    locations = loc_type.location_set.all().order_by("slug")
+
+    return render_to_response(req,
+        "locations/dashboard.html", {
+            "locations": locations })
 
 
 @require_GET

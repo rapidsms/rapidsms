@@ -7,45 +7,6 @@ from django.db import models
 from rapidsms.models import Extensible
 
 
-MARKER_CHOICES = (
-    ("0",       "Red"),
-    ("1",    "Orange"),
-    ("2",    "Yellow"),
-    ("3",     "Green"),
-    ("4", "Turquoise"),
-    ("5",      "Cyan"),
-    ("6",      "Blue"),
-    ("7",    "Indigo"),
-    ("8",    "Purple"),
-    ("9",      "Pink"))
-
-
-# see the following url for gmap/bing/yahoo conversion ratios:
-#   http://code.davidjanes.com/blog/2008/11/08/switching-between-mapping
-#   -apis-and-universal-map-levels/
-ZOOM_CHOICES = (
-    ("-19", "19"),
-    ("-18", "18"),
-    ("-17", "17 (block)"),
-    ("-16", "16"),
-    ("-15", "15"),
-    ("-14", "14"),
-    ("-13", "13 (city)"),
-    ("-12", "12"),
-    ("-11", "11"),
-    ("-10", "10"),
-    ("-9",  "9"),
-    ("-8",  "8"),
-    ("-7",  "7 (state)"),
-    ("-6",  "6"),
-    ("-5",  "5"),
-    ("-4",  "4"),
-    ("-3",  "3"),
-    ("-2",  "2"),
-    ("-1",  "1 (space)"),
-    ("0",   "0 (always)"))
-
-
 class LocationType(models.Model):
     """
     This model allows Locations to be organized into a hierachy, via the
@@ -81,21 +42,13 @@ class LocationType(models.Model):
     singular = models.CharField(max_length=100)
     plural   = models.CharField(max_length=100)
 
-    slug = models.CharField(max_length=100,
+    slug = models.CharField(max_length=30,
         help_text="An URL-safe alternative to the <em>plural</em> field.")
 
     exists_in = models.ForeignKey("Location", null=True, blank=True,
         help_text='The Location which this LocationType exists within. For '
                   'example, "states" may exist within "The United States", '
                   'and "counties" may exist within "England".')
-
-    visible_at_zoom_level = models.IntegerField(blank=True, choices=ZOOM_CHOICES,
-        help_text="The zoom level (in David Janes' Universal Zoom Levels) "
-                  "at which Locations of this LocationType become visible.")
-
-    # require a marker to be chosen, so the types don't all end up the
-    # same color on the maps
-    marker = models.CharField(max_length=10, choices=MARKER_CHOICES)
 
 
     class Meta:
@@ -104,6 +57,10 @@ class LocationType(models.Model):
 
     def __unicode__(self):
         return self.singular
+
+    def __repr__(self):
+        return '<%s: %s>' %\
+            (type(self).__name__, self)
 
 
 class Location(models.Model):
@@ -121,15 +78,20 @@ class Location(models.Model):
     __metaclass__ = Extensible
 
     name = models.CharField(max_length=100)
-    code = models.CharField(max_length=30)
+    slug = models.CharField(max_length=30)
     type = models.ForeignKey(LocationType)
 
+    # i'm not using geodjango here yet. it's on the todo list, though.
     latitude  = models.DecimalField(max_digits=13, decimal_places=10, blank=True, null=True, help_text="The physical latitude of this location")
     longitude = models.DecimalField(max_digits=13, decimal_places=10, blank=True, null=True, help_text="The physical longitude of this location")
 
 
     def __unicode__(self):
         return self.name
+
+    def __repr__(self):
+        return '<%s: %s>' %\
+            (type(self).__name__, self)
 
 
     def full_name(self):

@@ -6,21 +6,17 @@
             "singular": "Country",
             "plural": "Countries",
             "slug": "countries",
-            "exists_in": null,
-            "visible_at_zoom_level": 0,
-            "marker": 0
+            "exists_in": null
         }
     },
     {
-        "pk": 2,
+        "pk": 4,
         "model": "locations.locationtype",
         "fields": {
             "singular": "Department",
             "plural": "Departments",
             "slug": "departments",
-            "exists_in": 1,
-            "visible_at_zoom_level": 4,
-            "marker": 6
+            "exists_in": 58
         }
     },
 
@@ -31,7 +27,7 @@
         "pk": 58,
         "model": "locations.location",
         "fields": {
-            "code": "GT",
+            "slug": "gt",
             "name": "Guatemala",
             "longitude": "-90.5",
             "latitude": "14.633333",
@@ -46,242 +42,242 @@
         "pk": 59,
         "model": "locations.location",
         "fields": {
-            "code": "AV",
+            "slug": "av",
             "name": "Alta Verapaz",
             "longitude": "-90.333333",
             "latitude": "15.5",
-            "type": 2
+            "type": 4
         }
     },
     {
         "pk": 60,
         "model": "locations.location",
         "fields": {
-            "code": "BV",
+            "slug": "bv",
             "name": "Baja Verapaz",
             "longitude": "-90.318611",
             "latitude": "15.101389",
-            "type": 2
+            "type": 4
         }
     },
     {
         "pk": 61,
         "model": "locations.location",
         "fields": {
-            "code": "CM",
+            "slug": "cm",
             "name": "Chimaltenango",
             "longitude": "-90.81",
             "latitude": "14.66",
-            "type": 2
+            "type": 4
         }
     },
     {
         "pk": 62,
         "model": "locations.location",
         "fields": {
-            "code": "CQ",
+            "slug": "cq",
             "name": "Chiquimula",
             "longitude": "-90.588",
             "latitude": "14.545",
-            "type": 2
+            "type": 4
         }
     },
     {
         "pk": 63,
         "model": "locations.location",
         "fields": {
-            "code": "PR",
+            "slug": "pr",
             "name": "El Progreso",
             "longitude": "-90.068611",
             "latitude": "14.853889",
-            "type": 2
+            "type": 4
         }
     },
     {
         "pk": 64,
         "model": "locations.location",
         "fields": {
-            "code": "ES",
+            "slug": "es",
             "name": "Escuintla",
             "longitude": "-90.786944",
             "latitude": "14.297778",
-            "type": 2
+            "type": 4
         }
     },
     {
         "pk": 65,
         "model": "locations.location",
         "fields": {
-            "code": "GU",
+            "slug": "gu",
             "name": "Guatemala",
             "longitude": "-90.513056",
             "latitude": "14.641389",
-            "type": 2
+            "type": 4
         }
     },
     {
         "pk": 66,
         "model": "locations.location",
         "fields": {
-            "code": "HU",
+            "slug": "hu",
             "name": "Huehuetenango",
             "longitude": "-91.475833",
             "latitude": "15.314167",
-            "type": 2
+            "type": 4
         }
     },
     {
         "pk": 67,
         "model": "locations.location",
         "fields": {
-            "code": "IZ",
+            "slug": "iz",
             "name": "Izabal",
             "longitude": "-88.6",
             "latitude": "15.733333",
-            "type": 2
+            "type": 4
         }
     },
     {
         "pk": 68,
         "model": "locations.location",
         "fields": {
-            "code": "JA",
+            "slug": "ja",
             "name": "Jalapa",
             "longitude": "-89.981111",
             "latitude": "14.633889",
-            "type": 2
+            "type": 4
         }
     },
     {
         "pk": 69,
         "model": "locations.location",
         "fields": {
-            "code": "JU",
+            "slug": "ju",
             "name": "Jutiapa",
             "longitude": "-89.8925",
             "latitude": "14.282778",
-            "type": 2
+            "type": 4
         }
     },
     {
         "pk": 770,
         "model": "locations.location",
         "fields": {
-            "code": "PT",
+            "slug": "pt",
             "name": "Pet\u00e9n",
             "longitude": "-89.9",
             "latitude": "16.9",
-            "type": 2
+            "type": 4
         }
     },
     {
         "pk": 71,
         "model": "locations.location",
         "fields": {
-            "code": "QZ",
+            "slug": "qz",
             "name": "Quetzaltenango",
             "longitude": "-91.518889",
             "latitude": "14.845833",
-            "type": 2
+            "type": 4
         }
     },
     {
         "pk": 72,
         "model": "locations.location",
         "fields": {
-            "code": "QC",
+            "slug": "qc",
             "name": "Quich\u00e9",
             "longitude": "-91.15",
             "latitude": "15.03",
-            "type": 2
+            "type": 4
         }
     },
     {
         "pk": 73,
         "model": "locations.location",
         "fields": {
-            "code": "RE",
+            "slug": "re",
             "name": "Retalhuleu",
             "longitude": "-91.6667",
             "latitude": "14.5333",
-            "type": 2
+            "type": 4
         }
     },
     {
         "pk": 74,
         "model": "locations.location",
         "fields": {
-            "code": "SA",
+            "slug": "sa",
             "name": "Sacatepéquez",
             "longitude": "-90.733889",
             "latitude": "14.556667",
-            "type": 2
+            "type": 4
         }
     },
     {
         "pk": 75,
         "model": "locations.location",
         "fields": {
-            "code": "SM",
+            "slug": "sm",
             "name": "San Marcos",
             "longitude": "-91.795556",
             "latitude": "14.961111",
-            "type": 2
+            "type": 4
         }
     },
     {
         "pk": 76,
         "model": "locations.location",
         "fields": {
-            "code": "SR",
+            "slug": "sr",
             "name": "Santa Rosa",
             "longitude": "-90.3",
             "latitude": "14.278333",
-            "type": 2
+            "type": 4
         }
     },
     {
         "pk": 77,
         "model": "locations.location",
         "fields": {
-            "code": "SO",
+            "slug": "so",
             "name": "Solol\u00e1",
             "longitude": "-91.1875",
             "latitude": "14.773889",
-            "type": 2
+            "type": 4
         }
     },
     {
         "pk": 78,
         "model": "locations.location",
         "fields": {
-            "code": "SU",
+            "slug": "su",
             "name": "Suchitep\u00e9quez",
             "longitude": "-90.733889",
             "latitude": "14.556667",
-            "type": 2
+            "type": 4
         }
     },
     {
         "pk": 79,
         "model": "locations.location",
         "fields": {
-            "code": "TO",
+            "slug": "to",
             "name": "Totonicap\u00e1n",
             "longitude": "-91.36",
             "latitude": "14.9125",
-            "type": 2
+            "type": 4
         }
     },
     {
         "pk": 80,
         "model": "locations.location",
         "fields": {
-            "code": "ZA",
+            "slug": "za",
             "name": "Zacapa",
             "longitude": "-89.528333",
             "latitude": "14.9725",
-            "type": 2
+            "type": 4
         }
     }
 ]
