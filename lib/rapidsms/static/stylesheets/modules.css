@@ -19,43 +19,38 @@ div.module:first-child {
  * surprisingly confusing layout rules.) */
 div.module h2,
 div.module h3 {
-    background: #74d7e3 url(../images/h2-bg.png) repeat-x;
-    border-bottom: 1px solid #4bd;
-    color: #fff;
-    font-weight: bold;
-    font-size: 100%;
     margin: 0;
-    padding: 0.5em;
-    text-align: left;
+    background-repeat: repeat-x;
+    background-position: 0 100%;
     white-space: nowrap;
+    font-weight: normal;
     line-height: 1;
+    color: #fff;
 }
 
     div.module h2 {
-        color: #fff;
-        border-bottom: 0;
-        background: #000 url("../images/h2-bg.png") repeat-x 0 100%;
-        padding: 0.3125em;
         background-color: #000;
-        font-weight: normal;
-        font-size: 160%;
+        background-image: url("../images/h2-bg.png");
         text-shadow: #000 2px 2px 1px;
+        padding: 0.3125em;
+        font-size: 160%;
     }
 
-    /* subheaders are almost the same. to dull things, i took the colors
-     * and images from h2, reduced saturation by 50%, and increased the
-     * lightness by the same. TODO: ask meghana to make this pretty */
+        /* less important info can  be wrapped in a span to dull it */
+        div.module h2 span {
+            text-shadow: none;
+            font-size: 62.5%;
+            opacity: 0.8;
+        }
+
+    /* subheaders are almost the same. to dull things, i just made the
+     * h2-bg image 80% opaque and re-saved it. STILL TODO: ask meghana
+     * to make this pretty */
     div.module h3 {
-        border-bottom-color: #8fbcc9;
         background-image: url("../images/h3-bg.png");
-        background-color: #aad0d4;
-        font-weight: normal;
-    }
-
-    /* less important info can  be wrapped in a span to dull it */
-    div.module h2 span {
-        color: #e3f7f9;
-        font-size: 80%;
+        background-color: #333;
+        padding: 0.5em;
+        font-size: 100%;
     }
 
 
