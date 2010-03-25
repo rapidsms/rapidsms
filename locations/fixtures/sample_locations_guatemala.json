@@ -25,12 +25,19 @@
 
     {
         "pk": 58,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-90.5",
+            "latitude": "14.633333"
+        }
+    },
+    {
+        "pk": 58,
         "model": "locations.location",
         "fields": {
             "slug": "gt",
             "name": "Guatemala",
-            "longitude": "-90.5",
-            "latitude": "14.633333",
+            "point": 58,
             "type": 1
         }
     },
@@ -40,13 +47,29 @@
 
     {
         "pk": 59,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-90.333333",
+            "latitude": "15.5"
+        }
+    },
+    {
+        "pk": 59,
         "model": "locations.location",
         "fields": {
             "slug": "av",
             "name": "Alta Verapaz",
-            "longitude": "-90.333333",
-            "latitude": "15.5",
+            "point": 59,
             "type": 4
+        }
+    },
+
+    {
+        "pk": 60,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-90.318611",
+            "latitude": "15.101389"
         }
     },
     {
@@ -55,9 +78,17 @@
         "fields": {
             "slug": "bv",
             "name": "Baja Verapaz",
-            "longitude": "-90.318611",
-            "latitude": "15.101389",
+            "point": 60,
             "type": 4
+        }
+    },
+
+    {
+        "pk": 61,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-90.81",
+            "latitude": "14.66"
         }
     },
     {
@@ -66,9 +97,17 @@
         "fields": {
             "slug": "cm",
             "name": "Chimaltenango",
-            "longitude": "-90.81",
-            "latitude": "14.66",
+            "point": 61,
             "type": 4
+        }
+    },
+
+    {
+        "pk": 62,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-90.588",
+            "latitude": "14.545"
         }
     },
     {
@@ -77,9 +116,17 @@
         "fields": {
             "slug": "cq",
             "name": "Chiquimula",
-            "longitude": "-90.588",
-            "latitude": "14.545",
+            "point": 62,
             "type": 4
+        }
+    },
+
+    {
+        "pk": 63,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-90.068611",
+            "latitude": "14.853889"
         }
     },
     {
@@ -88,9 +135,17 @@
         "fields": {
             "slug": "pr",
             "name": "El Progreso",
-            "longitude": "-90.068611",
-            "latitude": "14.853889",
+            "point": 63,
             "type": 4
+        }
+    },
+
+    {
+        "pk": 64,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-90.786944",
+            "latitude": "14.297778"
         }
     },
     {
@@ -99,9 +154,17 @@
         "fields": {
             "slug": "es",
             "name": "Escuintla",
-            "longitude": "-90.786944",
-            "latitude": "14.297778",
+            "point": 64,
             "type": 4
+        }
+    },
+
+    {
+        "pk": 65,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-90.513056",
+            "latitude": "14.641389"
         }
     },
     {
@@ -110,9 +173,17 @@
         "fields": {
             "slug": "gu",
             "name": "Guatemala",
-            "longitude": "-90.513056",
-            "latitude": "14.641389",
+            "point": 65,
             "type": 4
+        }
+    },
+
+    {
+        "pk": 66,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-91.475833",
+            "latitude": "15.314167"
         }
     },
     {
@@ -121,9 +192,17 @@
         "fields": {
             "slug": "hu",
             "name": "Huehuetenango",
-            "longitude": "-91.475833",
-            "latitude": "15.314167",
+            "point": 66,
             "type": 4
+        }
+    },
+
+    {
+        "pk": 67,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-88.6",
+            "latitude": "15.733333"
         }
     },
     {
@@ -132,9 +211,17 @@
         "fields": {
             "slug": "iz",
             "name": "Izabal",
-            "longitude": "-88.6",
-            "latitude": "15.733333",
+            "point": 67,
             "type": 4
+        }
+    },
+
+    {
+        "pk": 68,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-89.981111",
+            "latitude": "14.633889"
         }
     },
     {
@@ -143,9 +230,17 @@
         "fields": {
             "slug": "ja",
             "name": "Jalapa",
-            "longitude": "-89.981111",
-            "latitude": "14.633889",
+            "point": 68,
             "type": 4
+        }
+    },
+
+    {
+        "pk": 69,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-89.8925",
+            "latitude": "14.282778"
         }
     },
     {
@@ -154,20 +249,36 @@
         "fields": {
             "slug": "ju",
             "name": "Jutiapa",
-            "longitude": "-89.8925",
-            "latitude": "14.282778",
+            "point": 69,
             "type": 4
         }
     },
+
     {
-        "pk": 770,
+        "pk": 70,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-89.9",
+            "latitude": "16.9"
+        }
+    },
+    {
+        "pk": 70,
         "model": "locations.location",
         "fields": {
             "slug": "pt",
             "name": "Pet\u00e9n",
-            "longitude": "-89.9",
-            "latitude": "16.9",
+            "point": 70,
             "type": 4
+        }
+    },
+
+    {
+        "pk": 71,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-91.518889",
+            "latitude": "14.845833"
         }
     },
     {
@@ -176,9 +287,17 @@
         "fields": {
             "slug": "qz",
             "name": "Quetzaltenango",
-            "longitude": "-91.518889",
-            "latitude": "14.845833",
+            "point": 71,
             "type": 4
+        }
+    },
+
+    {
+        "pk": 72,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-91.15",
+            "latitude": "15.03"
         }
     },
     {
@@ -187,9 +306,17 @@
         "fields": {
             "slug": "qc",
             "name": "Quich\u00e9",
-            "longitude": "-91.15",
-            "latitude": "15.03",
+            "point": 72,
             "type": 4
+        }
+    },
+
+    {
+        "pk": 73,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-91.6667",
+            "latitude": "14.5333"
         }
     },
     {
@@ -198,9 +325,17 @@
         "fields": {
             "slug": "re",
             "name": "Retalhuleu",
-            "longitude": "-91.6667",
-            "latitude": "14.5333",
+            "point": 73,
             "type": 4
+        }
+    },
+
+    {
+        "pk": 74,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-90.733889",
+            "latitude": "14.556667"
         }
     },
     {
@@ -209,9 +344,17 @@
         "fields": {
             "slug": "sa",
             "name": "Sacatepéquez",
-            "longitude": "-90.733889",
-            "latitude": "14.556667",
+            "point": 74,
             "type": 4
+        }
+    },
+
+    {
+        "pk": 75,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-91.795556",
+            "latitude": "14.961111"
         }
     },
     {
@@ -220,9 +363,17 @@
         "fields": {
             "slug": "sm",
             "name": "San Marcos",
-            "longitude": "-91.795556",
-            "latitude": "14.961111",
+            "point": 75,
             "type": 4
+        }
+    },
+
+    {
+        "pk": 76,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-90.3",
+            "latitude": "14.278333"
         }
     },
     {
@@ -231,9 +382,17 @@
         "fields": {
             "slug": "sr",
             "name": "Santa Rosa",
-            "longitude": "-90.3",
-            "latitude": "14.278333",
+            "point": 76,
             "type": 4
+        }
+    },
+
+    {
+        "pk": 77,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-91.1875",
+            "latitude": "14.773889"
         }
     },
     {
@@ -242,9 +401,17 @@
         "fields": {
             "slug": "so",
             "name": "Solol\u00e1",
-            "longitude": "-91.1875",
-            "latitude": "14.773889",
+            "point": 77,
             "type": 4
+        }
+    },
+
+    {
+        "pk": 78,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-90.733889",
+            "latitude": "14.556667"
         }
     },
     {
@@ -253,9 +420,17 @@
         "fields": {
             "slug": "su",
             "name": "Suchitep\u00e9quez",
-            "longitude": "-90.733889",
-            "latitude": "14.556667",
+            "point": 78,
             "type": 4
+        }
+    },
+
+    {
+        "pk": 79,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-91.36",
+            "latitude": "14.9125"
         }
     },
     {
@@ -264,9 +439,17 @@
         "fields": {
             "slug": "to",
             "name": "Totonicap\u00e1n",
-            "longitude": "-91.36",
-            "latitude": "14.9125",
+            "point": 79,
             "type": 4
+        }
+    },
+
+    {
+        "pk": 80,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-89.528333",
+            "latitude": "14.9725"
         }
     },
     {
@@ -275,8 +458,7 @@
         "fields": {
             "slug": "za",
             "name": "Zacapa",
-            "longitude": "-89.528333",
-            "latitude": "14.9725",
+            "point": 80,
             "type": 4
         }
     }

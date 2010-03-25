@@ -21,7 +21,7 @@
 			<th class="slug" scope="col"><a href="">Slug</a></th>
 		</thead>
 		<tbody>{% if locations %}{% for location in locations %}
-			<tr lat="{{ location.latitude }}" lng="{{ location.longitude }}" slug="{{ location.slug|upper }}">
+			<tr lat="{{ location.point.latitude }}" lng="{{ location.point.longitude }}" slug="{{ location.slug|upper }}">
 				<th scope="row"><a href="{% url locations location.pk %}">{{ location.name }}</a></th>
 				<td>{{ location.slug|upper }}</td>
 			</tr>{% endfor %}{% else %}

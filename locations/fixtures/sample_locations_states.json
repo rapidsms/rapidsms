@@ -34,13 +34,20 @@
 
 
     {
+        "pk": 1,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-98.5795",
+            "latitude": "39.828175"
+        }
+    },
+    {
         "pk": 1, 
         "model": "locations.location",
         "fields": {
             "slug": "usa",
             "name": "United States of America",
-            "longitude": "-98.5795",
-            "latitude": "39.828175",
+            "point": 1,
             "type": 1
         }
     },
@@ -50,13 +57,29 @@
 
     {
         "pk": 2,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-86.7415782668",
+            "latitude": "32.9865857394"
+        }
+    },
+    {
+        "pk": 2,
         "model": "locations.location",
         "fields": {
             "slug": "al",
             "name": "Alabama",
-            "longitude": "-86.7415782668",
-            "latitude": "32.9865857394",
+            "point": 2,
             "type": 2
+        }
+    },
+
+    {
+        "pk": 3,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-148.556907313",
+            "latitude": "61.1822087709"
         }
     },
     {
@@ -65,9 +88,17 @@
         "fields": {
             "slug": "ak",
             "name": "Alaska",
-            "longitude": "-148.556907313",
-            "latitude": "61.1822087709",
+            "point": 3,
             "type": 2
+        }
+    },
+
+    {
+        "pk": 4,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-92.2",
+            "latitude": "34.8"
         }
     },
     {
@@ -76,9 +107,17 @@
         "fields": {
             "slug": "ar",
             "name": "Arkansas",
-            "longitude": "-92.2",
-            "latitude": "34.8",
+            "point": 4,
             "type": 2
+        }
+    },
+
+    {
+        "pk": 5,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-111.509465331",
+            "latitude": "33.8947715893"
         }
     },
     {
@@ -87,9 +126,17 @@
         "fields": {
             "slug": "az",
             "name": "Arizona",
-            "longitude": "-111.509465331",
-            "latitude": "33.8947715893",
+            "point": 5,
             "type": 2
+        }
+    },
+
+    {
+        "pk": 6,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-105.465397491",
+            "latitude": "39.0473491002"
         }
     },
     {
@@ -98,9 +145,17 @@
         "fields": {
             "slug": "co",
             "name": "Colorado",
-            "longitude": "-105.465397491",
-            "latitude": "39.0473491002",
+            "point": 6,
             "type": 2
+        }
+    },
+
+    {
+        "pk": 7,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-119.701379437",
+            "latitude": "36.4885198674"
         }
     },
     {
@@ -109,9 +164,17 @@
         "fields": {
             "slug": "ca",
             "name": "California",
-            "longitude": "-119.701379437",
-            "latitude": "36.4885198674",
+            "point": 7,
             "type": 2
+        }
+    },
+
+    {
+        "pk": 8,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-72.7",
+            "latitude": "41.6"
         }
     },
     {
@@ -120,9 +183,17 @@
         "fields": {
             "slug": "ct",
             "name": "Connecticut",
-            "longitude": "-72.7",
-            "latitude": "41.6",
+            "point": 8,
             "type": 2
+        }
+    },
+
+    {
+        "pk": 9,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-75.4835090786",
+            "latitude": "39.1456638211"
         }
     },
     {
@@ -131,9 +202,17 @@
         "fields": {
             "slug": "de",
             "name": "Delaware",
-            "longitude": "-75.4835090786",
-            "latitude": "39.1456638211",
+            "point": 9,
             "type": 2
+        }
+    },
+
+    {
+        "pk": 10,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-81.960407533",
+            "latitude": "28.0908069444"
         }
     },
     {
@@ -142,9 +221,17 @@
         "fields": {
             "slug": "fl",
             "name": "Florida",
-            "longitude": "-81.960407533",
-            "latitude": "28.0908069444",
+            "point": 10,
             "type": 2
+        }
+    },
+
+    {
+        "pk": 11,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-157.7964",
+            "latitude": "21.3114"
         }
     },
     {
@@ -153,9 +240,17 @@
         "fields": {
             "slug": "hi",
             "name": "Hawaii",
-            "longitude": "-157.7964",
-            "latitude": "21.3114",
+            "point": 11,
             "type": 2
+        }
+    },
+
+    {
+        "pk": 12,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-93.3718348556",
+            "latitude": "42.0546451333"
         }
     },
     {
@@ -164,9 +259,17 @@
         "fields": {
             "slug": "ia",
             "name": "Iowa",
-            "longitude": "-93.3718348556",
-            "latitude": "42.0546451333",
+            "point": 12,
             "type": 2
+        }
+    },
+
+    {
+        "pk": 13,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-114.690403175",
+            "latitude": "44.5402146825"
         }
     },
     {
@@ -175,9 +278,17 @@
         "fields": {
             "slug": "id",
             "name": "Idaho",
-            "longitude": "-114.690403175",
-            "latitude": "44.5402146825",
+            "point": 13,
             "type": 2
+        }
+    },
+
+    {
+        "pk": 14,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-88.9244490556",
+            "latitude": "40.4298247444"
         }
     },
     {
@@ -186,9 +297,17 @@
         "fields": {
             "slug": "il",
             "name": "Illinois",
-            "longitude": "-88.9244490556",
-            "latitude": "40.4298247444",
+            "point": 14,
             "type": 2
+        }
+    },
+
+    {
+        "pk": 15,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-86.2913991487",
+            "latitude": "40.0066019668"
         }
     },
     {
@@ -197,9 +316,17 @@
         "fields": {
             "slug": "in",
             "name": "Indiana",
-            "longitude": "-86.2913991487",
-            "latitude": "40.0066019668",
+            "point": 15,
             "type": 2
+        }
+    },
+
+    {
+        "pk": 16,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-96.5333",
+            "latitude": "38.45"
         }
     },
     {
@@ -208,9 +335,17 @@
         "fields": {
             "slug": "ks",
             "name": "Kansas",
-            "longitude": "-96.5333",
-            "latitude": "38.45",
+            "point": 16,
             "type": 2
+        }
+    },
+
+    {
+        "pk": 17,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-85.3279475422",
+            "latitude": "37.7884710645"
         }
     },
     {
@@ -219,9 +354,17 @@
         "fields": {
             "slug": "ky",
             "name": "Kentucky",
-            "longitude": "-85.3279475422",
-            "latitude": "37.7884710645",
+            "point": 17,
             "type": 2
+        }
+    },
+
+    {
+        "pk": 18,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-91.8359559164",
+            "latitude": "31.0413428196"
         }
     },
     {
@@ -230,9 +373,17 @@
         "fields": {
             "slug": "la",
             "name": "Louisiana",
-            "longitude": "-91.8359559164",
-            "latitude": "31.0413428196",
+            "point": 18,
             "type": 2
+        }
+    },
+
+    {
+        "pk": 19,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-76.7854797575",
+            "latitude": "39.0616685311"
         }
     },
     {
@@ -241,9 +392,17 @@
         "fields": {
             "slug": "md",
             "name": "Maryland",
-            "longitude": "-76.7854797575",
-            "latitude": "39.0616685311",
+            "point": 19,
             "type": 2
+        }
+    },
+
+    {
+        "pk": 20,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-85.0101500936",
+            "latitude": "43.6867450175"
         }
     },
     {
@@ -252,9 +411,17 @@
         "fields": {
             "slug": "mi",
             "name": "Michigan",
-            "longitude": "-85.0101500936",
-            "latitude": "43.6867450175",
+            "point": 20,
             "type": 2
+        }
+    },
+
+    {
+        "pk": 21,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-89.5261187442",
+            "latitude": "32.9905984827"
         }
     },
     {
@@ -263,9 +430,17 @@
         "fields": {
             "slug": "ms",
             "name": "Mississippi",
-            "longitude": "-89.5261187442",
-            "latitude": "32.9905984827",
+            "point": 21,
             "type": 2
+        }
+    },
+
+    {
+        "pk": 22,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-92.5",
+            "latitude": "38.5"
         }
     },
     {
@@ -274,9 +449,17 @@
         "fields": {
             "slug": "mo",
             "name": "Missouri",
-            "longitude": "-92.5",
-            "latitude": "38.5",
+            "point": 22,
             "type": 2
+        }
+    },
+
+    {
+        "pk": 23,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-94",
+            "latitude": "46"
         }
     },
     {
@@ -285,9 +468,17 @@
         "fields": {
             "slug": "mn",
             "name": "Minnesota",
-            "longitude": "-94",
-            "latitude": "46",
+            "point": 23,
             "type": 2
+        }
+    },
+
+    {
+        "pk": 24,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-69.3346152041",
+            "latitude": "44.6931643091"
         }
     },
     {
@@ -296,9 +487,17 @@
         "fields": {
             "slug": "me",
             "name": "Maine",
-            "longitude": "-69.3346152041",
-            "latitude": "44.6931643091",
+            "point": 24,
             "type": 2
+        }
+    },
+
+    {
+        "pk": 25,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-110.140867977",
+            "latitude": "46.654509294"
         }
     },
     {
@@ -307,9 +506,17 @@
         "fields": {
             "slug": "mt",
             "name": "Montana",
-            "longitude": "-110.140867977",
-            "latitude": "46.654509294",
+            "point": 25,
             "type": 2
+        }
+    },
+
+    {
+        "pk": 26,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-71.5642098846",
+            "latitude": "43.6540820346"
         }
     },
     {
@@ -318,9 +525,17 @@
         "fields": {
             "slug": "nh",
             "name": "New Hampshire",
-            "longitude": "-71.5642098846",
-            "latitude": "43.6540820346",
+            "point": 26,
             "type": 2
+        }
+    },
+
+    {
+        "pk": 27,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-116.863863852",
+            "latitude": "38.8215008889"
         }
     },
     {
@@ -329,9 +544,17 @@
         "fields": {
             "slug": "nv",
             "name": "Nevada",
-            "longitude": "-116.863863852",
-            "latitude": "38.8215008889",
+            "point": 27,
             "type": 2
+        }
+    },
+
+    {
+        "pk": 28,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-98.4159979703",
+            "latitude": "41.2324319335"
         }
     },
     {
@@ -340,9 +563,17 @@
         "fields": {
             "slug": "ne",
             "name": "Nebraska",
-            "longitude": "-98.4159979703",
-            "latitude": "41.2324319335",
+            "point": 28,
             "type": 2
+        }
+    },
+
+    {
+        "pk": 29,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-74.511843005",
+            "latitude": "40.3278286374"
         }
     },
     {
@@ -351,9 +582,17 @@
         "fields": {
             "slug": "nj",
             "name": "New Jersey",
-            "longitude": "-74.511843005",
-            "latitude": "40.3278286374",
+            "point": 29,
             "type": 2
+        }
+    },
+
+    {
+        "pk": 30,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-106.295252344",
+            "latitude": "34.831864378"
         }
     },
     {
@@ -362,9 +601,17 @@
         "fields": {
             "slug": "nm",
             "name": "New Mexico",
-            "longitude": "-106.295252344",
-            "latitude": "34.831864378",
+            "point": 30,
             "type": 2
+        }
+    },
+
+    {
+        "pk": 31,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-79.4002284439",
+            "latitude": "35.4833648675"
         }
     },
     {
@@ -373,9 +620,17 @@
         "fields": {
             "slug": "nc",
             "name": "North Carolina",
-            "longitude": "-79.4002284439",
-            "latitude": "35.4833648675",
+            "point": 31,
             "type": 2
+        }
+    },
+
+    {
+        "pk": 32,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-100.5",
+            "latitude": "47.5"
         }
     },
     {
@@ -384,9 +639,17 @@
         "fields": {
             "slug": "nd",
             "name": "North Dakota",
-            "longitude": "-100.5",
-            "latitude": "47.5",
+            "point": 32,
             "type": 2
+        }
+    },
+
+    {
+        "pk": 33,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-121.431326778",
+            "latitude": "44.5106146616"
         }
     },
     {
@@ -395,9 +658,17 @@
         "fields": {
             "slug": "or",
             "name": "Oregon",
-            "longitude": "-121.431326778",
-            "latitude": "44.5106146616",
+            "point": 33,
             "type": 2
+        }
+    },
+
+    {
+        "pk": 34,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-82.5",
+            "latitude": "40.5"
         }
     },
     {
@@ -406,9 +677,17 @@
         "fields": {
             "slug": "oh",
             "name": "Ohio",
-            "longitude": "-82.5",
-            "latitude": "40.5",
+            "point": 34,
             "type": 2
+        }
+    },
+
+    {
+        "pk": 35,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-96.8460570462",
+            "latitude": "35.5607802899"
         }
     },
     {
@@ -417,9 +696,17 @@
         "fields": {
             "slug": "ok",
             "name": "Oklahoma",
-            "longitude": "-96.8460570462",
-            "latitude": "35.5607802899",
+            "point": 35,
             "type": 2
+        }
+    },
+
+    {
+        "pk": 36,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-77.9064900333",
+            "latitude": "40.6649812556"
         }
     },
     {
@@ -428,9 +715,17 @@
         "fields": {
             "slug": "pa",
             "name": "Pennsylvania",
-            "longitude": "-77.9064900333",
-            "latitude": "40.6649812556",
+            "point": 36,
             "type": 2
+        }
+    },
+
+    {
+        "pk": 37,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-71.5",
+            "latitude": "41.7"
         }
     },
     {
@@ -439,9 +734,17 @@
         "fields": {
             "slug": "ri",
             "name": "Rhode Island",
-            "longitude": "-71.5",
-            "latitude": "41.7",
+            "point": 37,
             "type": 2
+        }
+    },
+
+    {
+        "pk": 38,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-99.2367396523",
+            "latitude": "44.2961309373"
         }
     },
     {
@@ -450,9 +753,17 @@
         "fields": {
             "slug": "sd",
             "name": "South Dakota",
-            "longitude": "-99.2367396523",
-            "latitude": "44.2961309373",
+            "point": 37,
             "type": 2
+        }
+    },
+
+    {
+        "pk": 39,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-81.0592258065",
+            "latitude": "34.0033149514"
         }
     },
     {
@@ -461,9 +772,17 @@
         "fields": {
             "slug": "sc",
             "name": "South Carolina",
-            "longitude": "-81.0592258065",
-            "latitude": "34.0033149514",
+            "point": 39,
             "type": 2
+        }
+    },
+
+    {
+        "pk": 40,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-97.7816569778",
+            "latitude": "31.4484328889"
         }
     },
     {
@@ -472,9 +791,17 @@
         "fields": {
             "slug": "tx",
             "name": "Texas",
-            "longitude": "-97.7816569778",
-            "latitude": "31.4484328889",
+            "point": 40,
             "type": 2
+        }
+    },
+
+    {
+        "pk": 41,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-86.227190641",
+            "latitude": "35.8489644444"
         }
     },
     {
@@ -483,9 +810,17 @@
         "fields": {
             "slug": "tn",
             "name": "Tennessee",
-            "longitude": "-86.227190641",
-            "latitude": "35.8489644444",
+            "point": 41,
             "type": 2
+        }
+    },
+
+    {
+        "pk": 42,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-111.5",
+            "latitude": "39.5"
         }
     },
     {
@@ -494,9 +829,17 @@
         "fields": {
             "slug": "ut",
             "name": "Utah",
-            "longitude": "-111.5",
-            "latitude": "39.5",
+            "point": 42,
             "type": 2
+        }
+    },
+
+    {
+        "pk": 43,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-78.6145553005",
+            "latitude": "37.6666466469"
         }
     },
     {
@@ -505,9 +848,17 @@
         "fields": {
             "slug": "va",
             "name": "Virginia",
-            "longitude": "-78.6145553005",
-            "latitude": "37.6666466469",
+            "point": 43,
             "type": 2
+        }
+    },
+
+    {
+        "pk": 44,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-72.5623",
+            "latitude": "44.2035"
         }
     },
     {
@@ -516,9 +867,17 @@
         "fields": {
             "slug": "vt",
             "name": "Vermont",
-            "longitude": "-72.5623",
-            "latitude": "44.2035",
+            "point": 44,
             "type": 2
+        }
+    },
+
+    {
+        "pk": 45,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-80.3694176534",
+            "latitude": "38.7800944309"
         }
     },
     {
@@ -527,9 +886,17 @@
         "fields": {
             "slug": "wv",
             "name": "West Virginia",
-            "longitude": "-80.3694176534",
-            "latitude": "38.7800944309",
+            "point": 45,
             "type": 2
+        }
+    },
+
+    {
+        "pk": 46,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-120.5",
+            "latitude": "47.5"
         }
     },
     {
@@ -538,9 +905,17 @@
         "fields": {
             "slug": "wa",
             "name": "Washington",
-            "longitude": "-120.5",
-            "latitude": "47.5",
+            "point": 46,
             "type": 2
+        }
+    },
+
+    {
+        "pk": 47,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-120.5",
+            "latitude": "47.5"
         }
     },
     {
@@ -549,9 +924,17 @@
         "fields": {
             "slug": "wi",
             "name": "Wisconsin",
-            "longitude": "-89.5",
-            "latitude": "44.5",
+            "point": 47,
             "type": 2
+        }
+    },
+
+    {
+        "pk": 48,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-108.154049643",
+            "latitude": "43.0039679365"
         }
     },
     {
@@ -560,9 +943,17 @@
         "fields": {
             "slug": "wy",
             "name": "Wyoming",
-            "longitude": "-108.154049643",
-            "latitude": "43.0039679365",
+            "point": 48,
             "type": 2
+        }
+    },
+
+    {
+        "pk": 49,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-83.1131966831",
+            "latitude": "32.9604601566"
         }
     },
     {
@@ -571,9 +962,17 @@
         "fields": {
             "slug": "ga",
             "name": "Georgia",
-            "longitude": "-83.1131966831",
-            "latitude": "32.9604601566",
+            "point": 49,
             "type": 2
+        }
+    },
+
+    {
+        "pk": 50,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-75.1889929444",
+            "latitude": "42.3481810333"
         }
     },
     {
@@ -582,9 +981,16 @@
         "fields": {
             "slug": "ny",
             "name": "New York",
-            "longitude": "-75.1889929444",
-            "latitude": "42.3481810333",
+            "point": 50,
             "type": 2
+        }
+    },
+    {
+        "pk": 51,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-71.8",
+            "latitude": "42.3"
         }
     },
     {
@@ -593,8 +999,7 @@
         "fields": {
             "slug": "ma",
             "name": "Massachusetts",
-            "longitude": "-71.8",
-            "latitude": "42.3",
+            "point": 51,
             "type": 2
         }
     },
@@ -604,13 +1009,28 @@
 
     {
         "pk": 52,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-74",
+            "latitude": "40.716667"
+        }
+    },
+    {
+        "pk": 52,
         "model": "locations.location",
         "fields": {
             "slug": "nyc",
             "name": "New York City",
-            "longitude": "-74",
-            "latitude": "40.716667",
+            "point": 52,
             "type": 3
+        }
+    },
+    {
+        "pk": 53,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-78.849444",
+            "latitude": "42.904722"
         }
     },
     {
@@ -619,9 +1039,16 @@
         "fields": {
             "slug": "",
             "name": "Buffalo",
-            "longitude": "-78.849444",
-            "latitude": "42.904722",
+            "point": 53,
             "type": 3
+        }
+    },
+    {
+        "pk": 54,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-77.611389",
+            "latitude": "43.165556"
         }
     },
     {
@@ -630,9 +1057,16 @@
         "fields": {
             "slug": "",
             "name": "Rochester",
-            "longitude": "-77.611389",
-            "latitude": "43.165556",
+            "point": 54,
             "type": 3
+        }
+    },
+    {
+        "pk": 55,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-73.864365",
+            "latitude": "40.941478"
         }
     },
     {
@@ -641,9 +1075,16 @@
         "fields": {
             "slug": "",
             "name": "Yonkers",
-            "longitude": "-73.864365",
-            "latitude": "40.941478",
+            "point": 55,
             "type": 3
+        }
+    },
+    {
+        "pk": 56,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-76.144423",
+            "latitude": "43.046899"
         }
     },
     {
@@ -652,9 +1093,16 @@
         "fields": {
             "slug": "",
             "name": "Syracuse",
-            "longitude": "-76.144423",
-            "latitude": "43.046899",
+            "point": 56,
             "type": 3
+        }
+    },
+    {
+        "pk": 57,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-73.781389",
+            "latitude": "42.659722"
         }
     },
     {
@@ -663,8 +1111,7 @@
         "fields": {
             "slug": "",
             "name": "Albany",
-            "longitude": "-73.781389",
-            "latitude": "42.659722",
+            "point": 57,
             "type": 3
         }
     }

@@ -63,6 +63,25 @@ class LocationType(models.Model):
             (type(self).__name__, self)
 
 
+class Point(models.Model):
+    """
+    This model represents an anonymous point on the globe. It should be
+    replaced with something from GeoDjango soon, but I can't seem to get
+    Spatialite to build right now...
+    """
+
+    latitude  = models.DecimalField(max_digits=13, decimal_places=10)
+    longitude = models.DecimalField(max_digits=13, decimal_places=10)
+
+
+    def __unicode__(self):
+        return "%s, %s" % (self.latitude, self.longitude)
+
+    def __repr__(self):
+        return '<%s: %s>' %\
+            (type(self).__name__, self)
+
+
 class Location(models.Model):
     """
     This model represents a named point on the globe. It is deliberately
@@ -80,10 +99,7 @@ class Location(models.Model):
     name = models.CharField(max_length=100)
     slug = models.CharField(max_length=30)
     type = models.ForeignKey(LocationType)
-
-    # i'm not using geodjango here yet. it's on the todo list, though.
-    latitude  = models.DecimalField(max_digits=13, decimal_places=10, blank=True, null=True, help_text="The physical latitude of this location")
-    longitude = models.DecimalField(max_digits=13, decimal_places=10, blank=True, null=True, help_text="The physical longitude of this location")
+    point = models.ForeignKey(Point, null=True, blank=True)
 
 
     def __unicode__(self):
@@ -104,7 +120,7 @@ class Location(models.Model):
 
         return locations
 
-
+    @property
     def full_name(self):
         """
         Return the full-qualified name of this Location, including all
@@ -112,7 +128,7 @@ class Location(models.Model):
         """
 
         def _code(location):
-            return location.code or\
+            return location.slug or\
                 ("#%d" % location.pk)
 
         return "/".join(map(_code, self.path))
