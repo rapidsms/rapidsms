@@ -1,7 +1,5 @@
 {% extends "locations/base.html" %}
 
-{% block title %}Locations{% endblock %}
-
 {% block javascripts %}
 {{ block.super }}
 <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
@@ -13,51 +11,80 @@
 {{ block.super }}
 <link type="text/css" rel="stylesheet" href="/static/locations/stylesheets/label-overlay.css" />
 {% endblock %}
-{% block content %}
-<div class="map">
-	<div id="map"></div>
 
-	<script type="text/javascript">
-		$(function() {
+{% block left %}{% for location_type, locations in locations_data %}
+<div class="module">
+	<h2>{{ location_type.plural }}</h2>
+	<table id="locations" class="sortable">
+		<thead>
+			<th class="name" scope="col"><a href="">Name</a></th>
+			<th class="slug" scope="col"><a href="">Slug</a></th>
+		</thead>
+		<tbody>{% if locations %}{% for location in locations %}
+			<tr lat="{{ location.latitude }}" lng="{{ location.longitude }}" slug="{{ location.slug|upper }}">
+				<th scope="row"><a href="{% url locations location.pk %}">{{ location.name }}</a></th>
+				<td>{{ location.slug|upper }}</td>
+			</tr>{% endfor %}{% else %}
+			<tr class="no-data">
+				<td colspan="2">
+					<p>
+						You haven't created any {{ location_type.plural }} yet.<br />
+						<a href="">Add a {{ location_type.plural }}</a>
+					</p>
+				</td>
+			</tr>{% endif %}
+		</tbody>
+		<tfoot>
+			<td colspan="2">
+				<span>Paginator!</span>
+			</td>
+		</tfoot>
+	</table>
+</div>{% endfor %}
+{% endblock %}
 
-			/* initialize the google map */
-			var map = new google.maps.Map(
-				$("#map").get(0), {
-					mapTypeId: google.maps.MapTypeId.TERRAIN
-				}
-			);
+{% block right %}
+<div class="module">
+	<h2>Map <span>of Locations</span></h2>
+	<div class="map">
+		<div id="map"></div>
+	</div>
+</div>
 
-			var bounds = new google.maps.LatLngBounds();
-			var mask = new adammck.maps.Mask({
-				"map": map,
-				"paths": []
-			});
+<script type="text/javascript">
+	$(function() {
 
-			$("#markers div").each(function() {
-				var loc = $(this);
+		/* initialize the google map */
+		var map = new google.maps.Map(
+			$("#map").get(0), {
+				mapTypeId: google.maps.MapTypeId.TERRAIN
+			}
+		);
 
-				var latlng = new google.maps.LatLng(
-					loc.attr("lat"),
-					loc.attr("lng"));
+		var bounds = new google.maps.LatLngBounds();
+		/*var mask = new adammck.maps.Mask({
+			"map": map,
+			"paths": []
+		});*/
 
+		$("#locations tbody tr").each(function() {
+			var loc = $(this);
+			var lat = loc.attr("lat");
+			var lng = loc.attr("lng");
+
+			if(lat && lng) {
 				var label = new adammck.maps.Label({
 					"map": map,
-					"position": latlng,
-					"content": loc.get(0),
+					"content": loc.attr("slug"),//loc.find("th").text(),
+					"position": new google.maps.LatLng(lat, lng),
 					"direction": adammck.maps.Label.Direction.CENTER
 				});
 
-				bounds.extend(latlng);
-			});
-
-			map.fitBounds(bounds);
+				bounds.extend(label.position);
+			}
 		});
-	</script>
 
-	<div id="markers">{% for location in locations %}
-		<div slug="{{ location.slug|upper }}" marker="{{ location.type.marker }}" lat="{{ location.latitude }}" lng="{{ location.longitude }}">
-			<a href="">{{ location.name }}</a>
-		</div>{% endfor %}
-	</div>
-</div>
+		map.fitBounds(bounds);
+	});
+</script>
 {% endblock %}

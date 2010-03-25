@@ -22,13 +22,40 @@ def message(req, msg, link=None):
 
 @register_tab(caption="Map")
 @require_GET
-def dashboard(req):
-    loc_types = LocationType.objects.filter(exists_in=None)
-    locations = Location.objects.filter(type=loc_types)
+def dashboard(req, location_pk=None):
+
+    # to avoid the breadcrumb trail being empty browsing the entire
+    # world, hard-code the first item. TODO: configure via settings.
+    breadcrumbs = [("Planet Earth", reverse(dashboard))]
+
+    # if a location was given, we will display its sub-locations via its
+    # sub-locationtypes.
+    if location_pk is not None:
+        location = get_object_or_404(Location, pk=location_pk)
+
+        # add each ancestor to the breadcrumbs.
+        for loc in location.path:
+            url = reverse(dashboard, args=(loc.pk,))
+            breadcrumbs.append((loc.name, url))
+
+    # no location is fine; we're browing the entire world. the top-level
+    # location types will be returned by filter(exists_in=None).
+    else: location = None
+
+    # build a list of [sub-]locationtypes with their locations, to avoid
+    # having to invoke the ORM from the template (which is foul).
+    locations_data = [
+        (x, Location.objects.filter(type=x))
+        for x in LocationType.objects.filter(exists_in=location)
+    ]
 
     return render_to_response(req,
         "locations/dashboard.html", {
-            "locations": locations })
+            "breadcrumbs": breadcrumbs,
+            "locations_data": locations_data,
+            "location": location
+         }
+     )
 
 
 @require_GET

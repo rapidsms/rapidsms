@@ -9,7 +9,7 @@ from . import views
 urlpatterns = patterns('',
 
     # mini dashboard for this app
-    url(r'^locations$',
+    url(r'^locations(?:/(?P<location_pk>\d+))?$',
         views.dashboard,
         name="locations"),
 
