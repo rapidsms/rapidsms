@@ -12,7 +12,7 @@ class LocationType(models.Model):
     This model allows Locations to be organized into a hierachy, via the
     mutually recursive *LocationType.exists_in* and *Location.type*
     fields. Multiple LocationTypes of the same name (eg. City, County)
-    may exist within separate Locations.This looks something like:
+    may exist within separate Locations. This looks something like:
 
                                                         +---------+
                                                      /->| Arizona |
@@ -93,6 +93,17 @@ class Location(models.Model):
         return '<%s: %s>' %\
             (type(self).__name__, self)
 
+    @property
+    def path(self):
+        next = self
+        locations = []
+
+        while next is not None:
+            locations.insert(0, next)
+            next = next.type.exists_in
+
+        return locations
+
 
     def full_name(self):
         """
@@ -104,14 +115,7 @@ class Location(models.Model):
             return location.code or\
                 ("#%d" % location.pk)
 
-        next = self
-        locations = []
-
-        while next is not None:
-            locations.insert(0, _code(next))
-            next = next.type.exists_in
-
-        return "/".join(locations)
+        return "/".join(map(_code, self.path))
 
 
     def save(self, *args, **kwargs):
