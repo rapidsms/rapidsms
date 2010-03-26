@@ -84,6 +84,9 @@ class ConnectionBase(models.Model):
     backend  = models.ForeignKey(Backend)
     identity = models.CharField(max_length=100)
 
+    class Meta:
+        abstract = True
+
     def __unicode__(self):
         return "%s via %s" %\
             (self.identity, self.backend)
