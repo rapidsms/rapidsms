@@ -192,24 +192,26 @@ div.clear-hack {
 
 
 
+#breadcrumbs {
+    color: #ccc;
+    font-size: 2em;
+    line-height: 1;
+    padding: 0.5em;
+    text-shadow: #eee 2px 2px 2px;
+    border-bottom: 1px dotted #eee;
+}
+
+    #breadcrumbs a {
+        color: #000;
+    }
+
+
+
+
 #inner {
     padding: 1em;
     position: relative;
 }
-
-    #inner h1 {
-        color: #ccc;
-        font-size: 2em;
-        line-height: 1;
-        font-weight: normal;
-        margin: 0.5em 0 1em 0;
-        text-shadow: #eee 2px 2px 2px;
-    }
-
-        #inner h1 a {
-            color: #000;
-            text-decoration: none;
-        }
 
         /* some parts of the page title are dynamic (or otherwise really
          * important), like search terms. highlight them! */

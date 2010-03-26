@@ -57,6 +57,13 @@
 			</div>
 			{% endblock %}
 
+			{% block breadcrumbs %}{% if breadcrumbs %}
+			<div id="breadcrumbs">{% for caption, url in breadcrumbs %}
+				<a href="{{ url }}">{{ caption }}</a>{% if not forloop.last %}
+				<span>&raquo;</span>{% endif %}{% endfor %}
+			</div>{% endif %}
+			{% endblock %}
+
 			<div id="inner">
 				{% block content %}{% endblock %}
 			</div>
