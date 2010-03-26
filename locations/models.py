@@ -4,7 +4,7 @@
 
 import re
 from django.db import models
-from rapidsms.models import Extensible
+from rapidsms.models import ExtensibleModelBase
 
 
 class LocationType(models.Model):
@@ -82,25 +82,14 @@ class Point(models.Model):
             (type(self).__name__, self)
 
 
-class Location(models.Model):
-    """
-    This model represents a named point on the globe. It is deliberately
-    spartan, so more specific apps can extend it with their own fields
-    and relationships without clashing with built-in functionality.
-
-    Note that there is no *parent* field. Since each LocationType exists
-    within a single Location (ie, cities in the USA are distinct from
-    cities in the UK), the hierachy of Locations can be derrived by the
-    hierachy of types. An explicit Location parent would be ambiguous.
-    """
-
-    __metaclass__ = Extensible
-
+class LocationBase(models.Model):
     name = models.CharField(max_length=100)
     slug = models.CharField(max_length=30)
     type = models.ForeignKey(LocationType)
     point = models.ForeignKey(Point, null=True, blank=True)
 
+    class Meta:
+        abstract = True
 
     def __unicode__(self):
         return self.name
@@ -144,3 +133,18 @@ class Location(models.Model):
 
         # then save the model as usual
         models.Model.save(self, *args, **kwargs)
+
+
+class Location(LocationBase):
+    """
+    This model represents a named point on the globe. It is deliberately
+    spartan, so more specific apps can extend it with their own fields
+    and relationships without clashing with built-in functionality.
+
+    Note that there is no *parent* field. Since each LocationType exists
+    within a single Location (ie, cities in the USA are distinct from
+    cities in the UK), the hierachy of Locations can be derrived by the
+    hierachy of types. An explicit Location parent would be ambiguous.
+    """
+
+    __metaclass__ = ExtensibleModelBase
