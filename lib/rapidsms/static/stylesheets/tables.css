@@ -127,6 +127,14 @@ table {
             tr.no-data.look-down  td { background-image: url("../images/big-arrows/down.png");  }
             tr.no-data.look-left  td { background-image: url("../images/big-arrows/left.png");  }
 
+            /* if there is no data because an error occurred, make the
+             * table obviously busted by highlighting it in red. */
+            tr.no-data.error td {
+                color: #f66;
+                background-color: #fff8f8;
+                background-image: url("../images/big-arrows/error.png");
+            }
+
     tr.depth-1 td.indent { padding-left: 2em;  }
     tr.depth-2 td.indent { padding-left: 4em;  }
     tr.depth-3 td.indent { padding-left: 6em;  }
