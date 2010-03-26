@@ -60,11 +60,11 @@ class IncomingMessage(MessageBase):
             self.responses.pop(0).send()
 
 
-    def respond(self, text=None, cls=OutgoingMessage, **kwargs):
+    def respond(self, template=None, cls=OutgoingMessage, **kwargs):
         """
         Instantiates a new OutgoingMessage object bound to the same connection
-        as this object containing *text*, and queues it for delivery when the
-        flush method is called.
+        as this object containing *template*, and queues it for delivery when
+        the flush method is called.
 
         Optionally, the class (*cls*) of the outgoing message can be given, to
         give a hint about the contents of the message, which can be introspected
@@ -75,7 +75,7 @@ class IncomingMessage(MessageBase):
         You really should. It's rather exciting.
         """
 
-        msg = cls(self.connection, text, **kwargs)
+        msg = cls(self.connection, template, **kwargs)
         self.responses.append(msg)
         return msg
 
