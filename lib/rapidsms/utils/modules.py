@@ -44,26 +44,6 @@ def try_import(module_name):
         return None
 
 
-def find_extensions(name):
-    """
-    Return the extensions to *name*.
-    """
-
-    ext = []
-
-    modules = filter(None, [
-        try_import("%s.extensions" % app_name)
-        for app_name in settings.INSTALLED_APPS
-    ])
-
-    for module in modules:
-        for value in vars(module).itervalues():
-            if getattr(value, "_extends", None) == name:
-                ext.append(value)
-
-    return ext
-
-
 def find_python_files(path):
     """
     Return a list of the Python files (*.py) in a directory. Note that

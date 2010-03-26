@@ -3,35 +3,37 @@
 
 
 from datetime import datetime
-from django.conf import settings
 from django.db import models
-from django.db.models.base import ModelBase
-from .utils.modules import find_extensions
+from django.conf import settings
+from .utils.modules import try_import, get_classes
 
 
-class Extensible(ModelBase):
-    """
-    """
-
+class ExtensibleModelBase(models.base.ModelBase):
     def __new__(cls, name, bases, attrs):
-
         module_name = attrs["__module__"]
         app_label = module_name.split('.')[-2]
-        model_name = "%s.%s" % (app_label, name)
-
-        extensions = find_extensions(model_name)
+        extensions = _find_extensions(app_label, name)
         bases = tuple(extensions) + bases
 
-        return super(Extensible, cls).__new__(
+        return super(ExtensibleModelBase, cls).__new__(
             cls, name, bases, attrs)
 
 
-def extends(name):
-    def wrapped(func):
-        func._extends = name
-        return func
+def _find_extensions(app_label, model_name):
+    ext = []
 
-    return wrapped
+    suffix = "extensions.%s.%s" % (
+        app_label, model_name.lower())
+
+    modules = filter(None, [
+        try_import("%s.%s" % (app_name, suffix))
+        for app_name in settings.INSTALLED_APPS ])
+
+    for module in modules:
+        for cls in get_classes(module, models.Model):
+            ext.append(cls)
+
+    return ext
 
 
 class Backend(models.Model):
@@ -78,15 +80,7 @@ class App(models.Model):
             (type(self).__name__, self)
 
 
-class Connection(models.Model):
-    """
-    This model pairs a Backend object with an identity unique to it (eg.
-    a phone number, email address, or IRC nick), so RapidSMS developers
-    need not worry about which backend a messge originated from.
-    """
-
-    __metaclass__ = Extensible
-
+class ConnectionBase(models.Model):
     backend  = models.ForeignKey(Backend)
     identity = models.CharField(max_length=100)
 
@@ -98,14 +92,20 @@ class Connection(models.Model):
         return '<%s: %s>' %\
             (type(self).__name__, self)
 
-class Contact(models.Model):
+
+class Connection(ConnectionBase):
     """
+    This model pairs a Backend object with an identity unique to it (eg.
+    a phone number, email address, or IRC nick), so RapidSMS developers
+    need not worry about which backend a messge originated from.
     """
 
-    __metaclass__ = Extensible
+    __metaclass__ = ExtensibleModelBase
 
+
+
+class ContactBase(models.Model):
     connections = models.ManyToManyField(Connection, blank=True)
-
     alias = models.CharField(max_length=20, blank=True)
     name  = models.CharField(max_length=100, blank=True)
 
@@ -115,6 +115,9 @@ class Contact(models.Model):
         "The language which this contact prefers to communicate in, as "
         "a W3C language tag. If this field is left blank, RapidSMS will "
         "default to: " + settings.LANGUAGE_CODE)
+
+    class Meta:
+        abstract = True
 
     def __unicode__(self):
         return self.name or self.alias or "Anonymous"
@@ -126,3 +129,7 @@ class Contact(models.Model):
     @property
     def is_anonymous(self):
         return not (self.name or self.alias)
+
+
+class Contact(ContactBase):
+    __metaclass__ = ExtensibleModelBase
