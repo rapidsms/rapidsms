@@ -1,0 +1,60 @@
+{% extends "registration/base.html" %}
+{% load forms_tags %}
+
+
+{% block stylesheets %}
+{{ block.super }}
+<link type="text/css" rel="stylesheet" href="{{ MEDIA_URL }}registration/stylesheets/dashboard.css" />
+{% endblock %}
+
+{% block left %}
+<div class="module">
+	<h2>Contacts</h2>
+	<table class="contacts sortable">
+		<thead>
+			<th class="name" scope="col"><a href="">Name</a></th>
+		</thead>
+		<tbody>{% if contacts %}{% for contact in contacts %}
+			<tr{% if contact.is_anonymous %} class="anonymous"{% endif %}>
+				<th scope="row">
+					<a href="{% url registration_edit contact.pk %}">{{ contact }}</a>
+				</th>
+			</tr>{% endfor %}{% else %}
+			<tr class="no-data look-right">
+				<td colspan="1">
+					<p>
+						You haven't created any contacts yet.<br />
+						Use the form on the right to get started.
+					</p>
+				</td>
+			</tr>{% endif %}
+		</tbody>
+		<tfoot>
+			<td colspan="1">
+				<span>Paginator!</span>
+			</td>
+		</tfoot>
+	</table>
+	<div class="toolbar">
+		<a href="{% url registration_add %}" class="add">Add a Contact</a>
+	</div>
+</div>
+{% endblock %}
+
+{% block right %}
+<div class="module">
+	<h2>{% if contact %}
+		Edit {{ contact }}{% else %}
+		Add a Contact{% endif %}
+	</h2>
+
+	<form action="" method="post">
+		{% render_form contact_form %}
+
+		<div class="submit">
+			<input type="submit" name="submit" value="Save Contact" />
+			<input type="submit" name="submit" value="Delete Contact" />
+		</div>
+	</form>
+</div>
+{% endblock %}

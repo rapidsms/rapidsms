@@ -1,0 +1,10 @@
+/* vim:set et ts=4 sw=4 */
+
+table.contacts {
+    width: 100%;
+}
+
+table tr.anonymous a {
+    font-style: italic;
+    opacity: 0.5;
+}
