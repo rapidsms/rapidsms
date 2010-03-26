@@ -7,6 +7,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.views.decorators.http import require_GET, require_POST
 from django.templatetags.tabs_tags import register_tab
+from rapidsms.contrib.ajax.exceptions import RouterNotResponding
 from rapidsms.utils import render_to_response
 from . import forms
 from . import utils
@@ -35,7 +36,18 @@ def message_tester(req, identity):
         form = forms.MessageForm({
             "identity": identity })
 
+    # attempt to fetch the message log from the router, but don't expode
+    # if it's not available. (the router probably just isn't running.)
+    try:
+        router_available = True
+        message_log = utils.get_message_log()
+
+    except RouterNotResponding:
+        router_available = False
+        message_log = None
+
     return render_to_response(
         req, "httptester/index.html", {
-            "message_log": utils.get_message_log(),
+            "router_available": router_available,
+            "message_log": message_log,
             "message_form": form, })
