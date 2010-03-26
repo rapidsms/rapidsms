@@ -124,7 +124,14 @@ class LoggerMixin():
         the last exception raised.
         """
 
+        # log the the most recent exception
         kwargs['exc_info'] = True
+
+        # the logger requires a message, so add a very dull one if none
+        # was provided. (often, it's useful to just log the exception.)
+        if not len(args):
+            args = ("An exception occurred",)
+
         return self.error(*args, **kwargs)
 
     # backwards-compatibility
