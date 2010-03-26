@@ -3,6 +3,7 @@
 
 
 from datetime import datetime
+from django.conf import settings
 from django.db import models
 from django.db.models.base import ModelBase
 from .utils.modules import find_extensions
@@ -97,7 +98,6 @@ class Connection(models.Model):
         return '<%s: %s>' %\
             (type(self).__name__, self)
 
-
 class Contact(models.Model):
     """
     """
@@ -109,23 +109,20 @@ class Contact(models.Model):
     alias = models.CharField(max_length=20, blank=True)
     name  = models.CharField(max_length=100, blank=True)
 
-    # the language that this person prefers to communicate in, as a w3c
-    # language tag. if this field is blank (or invalid), rapidsms will
-    # default to settings.LANGUAGE_CODE.
-    #
     # the spec: http://www.w3.org/International/articles/language-tags/Overview
     # reference:http://www.iana.org/assignments/language-subtag-registry
-    #
-    # for example:
-    #   english  = en
-    #   amharic  = am
-    #   chichewa = ny
-    #   klingon  = tlh
-    language = models.CharField(max_length=4, blank=True)
+    language = models.CharField(max_length=6, blank=True, help_text=
+        "The language which this contact prefers to communicate in, as "
+        "a W3C language tag. If this field is left blank, RapidSMS will "
+        "default to: " + settings.LANGUAGE_CODE)
 
     def __unicode__(self):
-        return self.alias
+        return self.name or self.alias or "Anonymous"
 
     def __repr__(self):
         return '<%s: %s>' %\
             (type(self).__name__, self)
+
+    @property
+    def is_anonymous(self):
+        return not (self.name or self.alias)
