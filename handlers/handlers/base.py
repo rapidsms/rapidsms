@@ -2,7 +2,13 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 
-class BaseHandler(object):
+from rapidsms.log.mixin import LoggerMixin
+
+
+class BaseHandler(object, LoggerMixin):
+    def _logger_name(self):
+        app_label = self.__module__.split(".")[-3]
+        return "app/%s/%s" % (app_label, self.__class__.__name__)
 
     @classmethod
     def dispatch(cls, router, msg):
@@ -12,8 +18,8 @@ class BaseHandler(object):
         self.router = router
         self.msg = msg
 
-    def respond(self, text, **kwargs):
-        return self.msg.respond(text, **kwargs)
+    def respond(self, template=None, **kwargs):
+        return self.msg.respond(template, **kwargs)
 
     @classmethod
     def test(cls, text, identity=None):
