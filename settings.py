@@ -13,6 +13,8 @@ INSTALLED_APPS = [
     "rapidsms",
     "rapidsms.contrib.handlers",
     "rapidsms.contrib.echo",
+    "rapidsms.contrib.httptester",
+    "rapidsms.contrib.registration",
 
     # enable the django admin using a little shim app (which includes
     # the required urlpatterns), and a bunch of undocumented apps that
@@ -40,3 +42,5 @@ INSTALLED_BACKENDS = {
         "ENGINE": "rapidsms.backends.bucket"
     }
 }
+
+LOGIN_REDIRECT_URL='/'
