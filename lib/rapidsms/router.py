@@ -19,7 +19,7 @@ class Router(object, LoggerMixin):
     """
     """
 
-    incoming_phases = ("filter", "parse", "handle", "cleanup")
+    incoming_phases = ("filter", "parse", "handle", "default", "cleanup")
     outgoing_phases = ("outgoing",)
 
     pre_start  = Signal(providing_args=["router"])
@@ -299,6 +299,9 @@ class Router(object, LoggerMixin):
         Handle:
           Respond to messages here.
 
+        Default:
+          Only called if no responses were sent during the Handle phase.
+
         Cleanup:
           An opportunity to clean up anything started during earlier phases.
         """
@@ -309,6 +312,11 @@ class Router(object, LoggerMixin):
         try:
             for phase in self.incoming_phases:
                 self.debug("In %s phase" % phase)
+
+                if phase == "default":
+                    if msg.responses:
+                        self.debug("Skipping phase")
+                        break
 
                 for app in self.apps:
                     self.debug("In %s app" % app)

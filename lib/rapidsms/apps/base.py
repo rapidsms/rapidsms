@@ -64,6 +64,9 @@ class AppBase(object, LoggerMixin):
     def handle (self, message):
         pass
 
+    def default (self, message):
+        pass
+
     def catch (self, message):
         pass
 
