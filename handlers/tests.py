@@ -3,7 +3,7 @@
 
 
 import unittest, doctest
-from django.conf import settings
+from rapidsms.conf import settings
 from .utils import find_handlers
 
 

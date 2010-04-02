@@ -3,7 +3,7 @@
 
 
 import rapidsms
-from django.conf import settings
+from rapidsms.conf import settings
 from .utils import find_handlers
 
 
@@ -28,7 +28,7 @@ class App(rapidsms.App):
 
         if len(self.handlers):
             class_names = [cls.__name__ for cls in self.handlers]
-            self.info("Registered handlers: %s" % (", ".join(class_names)))
+            self.info("Registered: %s" % (", ".join(class_names)))
 
 
     def handle(self, msg):
