@@ -4,12 +4,12 @@
 
 import logging, logging.handlers
 from django.core.management.base import NoArgsCommand
-from django.conf import settings
 from ...router import router
+from ...conf import settings
 
 
 class Command(NoArgsCommand):
-    help = "Starts the RapidSMS router."
+    help = "Starts the %s router." % settings.PROJECT_NAME
 
     def handle_noargs(self, **options):
 

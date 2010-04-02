@@ -5,9 +5,9 @@
 import os
 from copy import copy
 from django import template
-from django.conf import settings
 from django.template.loader import get_template
 from rapidsms.utils.modules import try_import
+from ..conf import settings
 
 register = template.Library()
 

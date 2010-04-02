@@ -4,8 +4,8 @@
 
 from datetime import datetime
 from django.utils.translation.trans_real import translation
-from django.conf import settings
 from .base import MessageBase
+from ..conf import settings
 
 
 class OutgoingMessage(MessageBase):

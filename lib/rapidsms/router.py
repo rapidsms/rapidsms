@@ -13,6 +13,7 @@ from django.dispatch import Signal
 from .log.mixin import LoggerMixin
 from .backends.base import BackendBase
 from .apps.base import AppBase
+from .conf import settings
 
 
 class Router(object, LoggerMixin):
@@ -174,7 +175,7 @@ class Router(object, LoggerMixin):
         #self.info("BACKENDS: %r" % (self.backends))
         #self.info("APPS: %r" % (self.apps))
 
-        self.info("Starting...")
+        self.info("Starting %s..." % settings.PROJECT_NAME)
         self.pre_start.send(self)
         self._start_all_backends()
         self._start_all_apps()

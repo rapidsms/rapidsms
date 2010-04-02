@@ -3,9 +3,9 @@
 
 
 import os
-from django.conf import settings
 from django.conf.urls.defaults import patterns, url
 from rapidsms.utils.modules import try_import
+from ..conf import settings
 
 
 # this list will be populated with the urls from the urls.urlpatterns of

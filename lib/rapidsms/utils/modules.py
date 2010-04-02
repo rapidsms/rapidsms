@@ -5,7 +5,6 @@
 import os
 import sys
 import traceback
-from django.conf import settings
 
 
 def try_import(module_name):

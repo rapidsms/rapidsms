@@ -3,8 +3,8 @@
 
 
 from django.core.management.base import NoArgsCommand
-from django.conf import settings
 from rapidsms.models import App
+from ...conf import settings
 
 
 class Command(NoArgsCommand):

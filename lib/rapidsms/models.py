@@ -4,8 +4,8 @@
 
 from datetime import datetime
 from django.db import models
-from django.conf import settings
 from .utils.modules import try_import, get_classes
+from .conf import settings
 
 
 class ExtensibleModelBase(models.base.ModelBase):
