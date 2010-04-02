@@ -32,7 +32,7 @@ class App(rapidsms.App):
     ======  ===             ===   ======             ====
     GET     /food/toast     food  ajax_GET_toast     { }
     POST    /food/waffles   food  ajax_POST_waffles  { }, { }
-    POST    /food/eggs?x=1  food  ajax_POST_eggs     { "x": 1 }, { }
+    POST    /food/eggs?x=1  food  ajax_POST_eggs     { "x": [1] }, { }
 
     Any data that is returned by the handler method is JSON encoded, and
     sent back to the WebUI in response. Since RapidSMS includes jQuery
@@ -143,8 +143,7 @@ class App(rapidsms.App):
             # and return the response (as a string, for now)
             try:
                 method = getattr(app, meth_name)
-                params = urlparse.urlparse(url.query)
-                args   = [params.query]
+                args   = [cgi.parse_qs(url.query)]
 
                 # for post requests, we'll also need to parse the form
                 # data and hand it along to the method
