@@ -47,8 +47,3 @@ INSTALLED_BACKENDS = {
 # after login, django redirects to this URL
 # rather than the default 'accounts/profile'
 LOGIN_REDIRECT_URL='/'
-
-# these settings specify the host and port
-# used by rapidsms.contrib.ajax
-AJAX_PROXY_HOST='localhost'
-AJAX_PROXY_PORT=8001
