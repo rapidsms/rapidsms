@@ -80,35 +80,7 @@ class App(models.Model):
             (type(self).__name__, self)
 
 
-class ConnectionBase(models.Model):
-    backend  = models.ForeignKey(Backend)
-    identity = models.CharField(max_length=100)
-
-    class Meta:
-        abstract = True
-
-    def __unicode__(self):
-        return "%s via %s" %\
-            (self.identity, self.backend)
-
-    def __repr__(self):
-        return '<%s: %s>' %\
-            (type(self).__name__, self)
-
-
-class Connection(ConnectionBase):
-    """
-    This model pairs a Backend object with an identity unique to it (eg.
-    a phone number, email address, or IRC nick), so RapidSMS developers
-    need not worry about which backend a messge originated from.
-    """
-
-    __metaclass__ = ExtensibleModelBase
-
-
-
 class ContactBase(models.Model):
-    connections = models.ManyToManyField(Connection, blank=True)
     alias = models.CharField(max_length=20, blank=True)
     name  = models.CharField(max_length=100, blank=True)
 
@@ -135,4 +107,31 @@ class ContactBase(models.Model):
 
 
 class Contact(ContactBase):
+    __metaclass__ = ExtensibleModelBase
+
+
+class ConnectionBase(models.Model):
+    backend  = models.ForeignKey(Backend)
+    identity = models.CharField(max_length=100)
+    contact  = models.ForeignKey(Contact, null=True, blank=True)
+
+    class Meta:
+        abstract = True
+
+    def __unicode__(self):
+        return "%s via %s" %\
+            (self.identity, self.backend)
+
+    def __repr__(self):
+        return '<%s: %s>' %\
+            (type(self).__name__, self)
+
+
+class Connection(ConnectionBase):
+    """
+    This model pairs a Backend object with an identity unique to it (eg.
+    a phone number, email address, or IRC nick), so RapidSMS developers
+    need not worry about which backend a messge originated from.
+    """
+
     __metaclass__ = ExtensibleModelBase
