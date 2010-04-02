@@ -3,7 +3,7 @@
 
 
 import time
-from django.conf import settings
+from rapidsms.conf import settings
 from rapidsms.backends.base import BackendBase
 from rapidsms.messages import IncomingMessage, OutgoingMessage
 import rapidsms
@@ -12,16 +12,12 @@ import rapidsms
 class App(rapidsms.App):
     """
     What
-    
-    Settings::
-    MESSAGE_TESTER_TIMEOUT (4)
-    MESSAGE_TESTER_INTERVAL (0.25)
     """
 
 
     def _wait_for_message(self, msg):
-        countdown = getattr(settings, "MESSAGE_TESTER_TIMEOUT", 4)
-        interval  = getattr(settings, "MESSAGE_TESTER_INTERVAL", 0.25)
+        countdown = settings.MESSAGE_TESTER_TIMEOUT
+        interval  = settings.MESSAGE_TESTER_INTERVAL
 
         while countdown > 0:
             if msg.processed:
