@@ -1,0 +1,3 @@
+[submodule "submodules/django-app-settings"]
+	path = submodules/django-app-settings
+	url = git://github.com/adammck/django-app-settings.git

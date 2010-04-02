@@ -1,0 +1,4 @@
+This directory contains git submodules to other projects that RapidSMS
+depends upon, which should be symlinked into lib. We can't create the
+submodules in lib, since most Python repos contain all kinds of stuff
+alongside the package itself, and git doesn't support partial clones.
