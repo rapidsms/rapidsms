@@ -84,7 +84,3 @@ LOG_FILE    = "/tmp/rapidsms.log"
 LOG_FORMAT  = "[%(name)s]: %(message)s"
 LOG_SIZE    = 8192 # 8192 bytes = 64 kb
 LOG_BACKUPS = 256 # number of logs to keep
-
-# if file None, this settings defaults to whatever LOG_FILE
-# ends up set to after merging rapidsms.ini and cmd-line args
-LOG_FILE_FORMAT = None
