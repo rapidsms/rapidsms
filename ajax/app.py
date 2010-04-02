@@ -10,7 +10,7 @@ from SocketServer import ThreadingMixIn
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 from django.utils.simplejson import JSONEncoder
 from django.db.models.query import QuerySet
-from django.conf import settings
+from rapidsms.conf import settings
 import rapidsms
 
 
@@ -45,11 +45,6 @@ class App(rapidsms.App):
     the server side. I cannot conceive of a situation where this would
     be a problem - but keep it in mind, and don't forget to prepend
     "/ajax/" to your AJAX URLs.
-
-    Settings::
-
-    AJAX_PROXY_HOST (localhost)
-    AJAX_PROXY_PORT (8001)
     """
 
 
@@ -214,8 +209,8 @@ class App(rapidsms.App):
         # create the webserver, through which the AJAX requests from the
         # WebUI will arrive (via utils.py)
         self.server = self.Server((
-            getattr(settings, "AJAX_PROXY_HOST", "localhost"),
-            getattr(settings, "AJAX_PROXY_PORT", "8001")),
+            settings.AJAX_PROXY_HOST,
+            settings.AJAX_PROXY_PORT),
             self.RequestHandler)
 
         # allow the server to call back the app

@@ -5,8 +5,8 @@
 import urllib
 import urllib2
 from copy import copy
-from django.conf import settings
 from django.utils.simplejson import JSONDecoder
+from rapidsms.conf import settings
 from . import exceptions
 
 
@@ -41,15 +41,14 @@ def request(path, get=None, post=None, encoding=None):
     returned HTTP status, content-type, and body.
     """
 
-    # todo: make these more configurable
-    host = getattr(settings, "AJAX_PROXY_HOST", "localhost")
-    port = getattr(settings, "AJAX_PROXY_PORT", 8001)
-
     # build the url to the http server running in the app. encoding
     # doesn't apply here, since the query string only supports ASCII:
     # http://www.w3.org/TR/REC-html40/interact/forms.html#idx-POST-1
     query = "?%s" % urllib.urlencode(get) if (get is not None) else ""
-    url = "http://%s:%d/%s%s" % (host, port, path, query)
+    url = "http://%s:%d/%s%s" % (
+        settings.AJAX_PROXY_HOST,
+        settings.AJAX_PROXY_PORT,
+        path, query)
 
     # if *post* quacks like a QuerySet, it can urlencode itself, taking
     # its own character encoding into account. which is nice.
