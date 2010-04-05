@@ -1,4 +1,5 @@
 {% extends "locations/base.html" %}
+{% load forms_tags %}
 
 {% block javascripts %}
 {{ block.super }}
@@ -12,7 +13,19 @@
 <link type="text/css" rel="stylesheet" href="/static/locations/stylesheets/label-overlay.css" />
 {% endblock %}
 
-{% block left %}{% for location_type, locations in locations_data %}
+{% block left %}{% if location %}
+<div class="module">
+	<h2>Edit this Location</h2>
+
+	<form action="" method="post">
+		{% render_form location_form %}
+
+		<div class="submit">
+			<input type="submit" value="Send" />
+		</div>
+	</form>
+
+</div>{% endif %}{% for location_type, locations in locations_data %}
 <div class="module">
 	<h2>{{ location_type.plural }}</h2>
 	<table id="locations" class="sortable">

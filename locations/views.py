@@ -6,11 +6,10 @@ from django.views.decorators.http import require_GET, require_http_methods
 from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse
 from django.templatetags.tabs_tags import register_tab
-from django.conf import settings
 
 from rapidsms.utils import render_to_response
 from .models import *
-
+from .forms import *
 
 def message(req, msg, link=None):
     return render_to_response(req,
@@ -32,6 +31,7 @@ def dashboard(req, location_pk=None):
     # sub-locationtypes.
     if location_pk is not None:
         location = get_object_or_404(Location, pk=location_pk)
+        location_form = LocationForm(instance=location)
 
         # add each ancestor to the breadcrumbs.
         for loc in location.path:
@@ -40,7 +40,9 @@ def dashboard(req, location_pk=None):
 
     # no location is fine; we're browing the entire world. the top-level
     # location types will be returned by filter(exists_in=None).
-    else: location = None
+    else:
+        location = None
+        location_form = None
 
     # build a list of [sub-]locationtypes with their locations, to avoid
     # having to invoke the ORM from the template (which is foul).
@@ -53,6 +55,7 @@ def dashboard(req, location_pk=None):
         "locations/dashboard.html", {
             "breadcrumbs": breadcrumbs,
             "locations_data": locations_data,
+            "location_form": location_form,
             "location": location
          }
      )
