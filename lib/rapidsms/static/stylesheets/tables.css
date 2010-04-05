@@ -212,3 +212,8 @@ table {
                  * over to reveal the transparent sprite to the left */
                 tfoot .paginator span.na {
                     background-position: -16px 50%; }
+
+                tfoot .paginator span.elipsis {
+                    letter-spacing: 1px;
+                    color: #888;
+                 }
