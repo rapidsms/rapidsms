@@ -15,6 +15,10 @@ class MessageBase(object):
         return self._connection
 
     @property
+    def contact(self):
+        return self._connection.contact
+
+    @property
     def peer(self):
         """
         Return the identity (eg. a phone number, email address, irc
