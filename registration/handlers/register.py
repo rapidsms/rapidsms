@@ -16,8 +16,9 @@ class RegisterHandler(KeywordHandler):
         self.respond("To register, send JOIN <NAME>")
 
     def handle(self, text):
-        contact = Contact.objects.create(
-            name=text)
+        contact = Contact.objects.create(name=text)
+        self.msg.connection.contact = contact
+        self.msg.connection.save()
 
         self.respond(
             "Thank you for registering, %(name)s!",
