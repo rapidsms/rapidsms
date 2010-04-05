@@ -1,13 +1,13 @@
-{% extends "messaging/base.html" %}
-{% block title %}Messaging{% endblock %}
-{% load pagination %}
+{% extends "layout.html" %}
 
-{% block content %}
-<h1>
-	<a href="">Messaging</a>
-	/ <a href="">New Message</a>
-</h1>{% if filters %}
+{% load pagination_tags %}
 
+{% block stylesheets %}
+{{ block.super }}
+<link type="text/css" rel="stylesheet" href="{{ MEDIA_URL }}messaging/stylesheets/messaging.css" />
+{% endblock %}
+
+{% block content %}{% if filters %}
 <div class="split-4 filters">{% for filter in filters %}
 	<div class="{% ifequal forloop.counter 1 %}left{% endifequal %}{% ifequal forloop.counter 2 %}mid-left{% endifequal %}{% ifequal forloop.counter 3 %}mid-right{% endifequal %}{% ifequal forloop.counter 4 %}right{% endifequal %}">
 		<div class="module">
@@ -19,37 +19,7 @@
 		</div>
 	</div>{% endfor %}
 </div>
-<div class="clear-hack"></div>
-
-<script type="text/javascript">
-	(function() {
-		var cls = "checked";
-		var par = "-parent";
-
-		var checked = function(element) {
-			return $(element).hasClass(cls) || $(element).hasClass(cls+par);
-		};
-
-		var children = function(element) {
-			var item_uid = $(element).get(0).id;
-			return $(".filters li.child-of-" + item_uid);
-		};
-
-		var inherit = function(element, state) {
-			$.each(children(element), function() {
-				$(this).toggleClass(cls+par, state);
-				inherit(this, checked(this));
-			});
-		};
-
-		$(".filters a").click(function(ev) {
-			var li = $(this).parent("li");
-			li.toggleClass(cls);
-			inherit(li, checked(li));
-			ev.preventDefault();
-		});
-	})();
-</script>{% endif %}
+<div class="clear-hack"></div>{% endif %}
 
 <div class="split-2">
 	<div class="left">
@@ -104,14 +74,4 @@
 	</div>
 </div>
 <div class="clear-hack"></div>
-
-<script type="text/javascript">
-	(function() {
-		$(".question a").click(function(ev) {
-			var li = $(this).parent("li");
-			li.toggleClass("checked");
-			ev.preventDefault();
-		});
-	})();
-</script>
 {% endblock %}
