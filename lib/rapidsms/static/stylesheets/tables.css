@@ -8,7 +8,7 @@ table {
     /* when a row is "active" (eg. it is being viewed, edited, etc), it
      * is dimly highlighted. the bgcolor is 10% of #33a7d2 (links). */
     tr.active {
-        background: #ebf6fa; }
+        background: #ebf6fa url(../images/table-row-bg-active.png) repeat-x 100% 0; }
 
             /* reset the "look" of headers to match regular cells, since
              * they can appear anywhere (the the col or row scope) */
