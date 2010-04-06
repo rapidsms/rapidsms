@@ -1,3 +1,7 @@
 [submodule "submodules/django-app-settings"]
 	path = submodules/django-app-settings
 	url = git://github.com/adammck/django-app-settings.git
+
+[submodule "submodules/rapidsms-contrib-apps-dev"]
+	path = submodules/rapidsms-contrib-apps-dev
+	url = git://github.com/rapidsms/rapidsms-contrib-apps-dev.git
