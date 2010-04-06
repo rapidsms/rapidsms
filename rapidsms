@@ -15,5 +15,7 @@ if __name__ == "__main__":
         path = os.path.join(project_root, dir)
         sys.path.insert(0, path)
 
+    sys.path.insert(0, project_root)
+
     import settings
     execute_manager(settings)
