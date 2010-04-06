@@ -5,6 +5,11 @@ table {
 
     tr { }
 
+    /* when a row is "active" (eg. it is being viewed, edited, etc), it
+     * is dimly highlighted. the bgcolor is 10% of #33a7d2 (links). */
+    tr.active {
+        background: #ebf6fa; }
+
             /* reset the "look" of headers to match regular cells, since
              * they can appear anywhere (the the col or row scope) */
             th {
@@ -19,7 +24,7 @@ table {
                 }
 
                 /* sometimes fake columns are added to the table head,
-                 * to make things line up. hide this embarressing fact
+                 * to make things line up. hide this embarrassing fact
                  * as best i can */
                 thead td {
                     border-top: none; }
@@ -52,9 +57,9 @@ table {
             /* some cells have nothing important to say, (like "none" or
              * "never"), but are required none the less. make them dull,
              * o highlight the rows which contain real data */
-            td.na {
-                color: #ccc;
+            td.na, th.na {
                 font-style: italic;
+                opacity: 0.5;
             }
 
     table.sortable { }
