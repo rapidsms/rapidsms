@@ -1,4 +1,5 @@
 {% extends "registration/base.html" %}
+{% load pagination_tags %}
 {% load forms_tags %}
 
 
@@ -12,12 +13,14 @@
 	<h2>Contacts</h2>
 	<table class="contacts sortable">
 		<thead>
-			<th class="name" scope="col"><a href="">Name</a></th>
+			<tr>
+				<th class="name" scope="col"><a href="">Name</a></th>
+			</tr>
 		</thead>
-		<tbody>{% if contacts %}{% for contact in contacts %}
-			<tr{% if contact.is_anonymous %} class="anonymous"{% endif %}>
-				<th scope="row">
-					<a href="{% url registration_edit contact.pk %}">{{ contact }}</a>
+		<tbody>{% if contacts.object_list %}{% for contact in contacts.object_list %}
+			<tr class="{% if contact.is_active %}active{% endif %}">
+				<th scope="row"{% if contact.is_anonymous %} class="na"{% endif %}>
+					<a href="{{ contact.url }}">{{ contact }}</a>
 				</th>
 			</tr>{% endfor %}{% else %}
 			<tr class="no-data look-right">
@@ -30,9 +33,13 @@
 			</tr>{% endif %}
 		</tbody>
 		<tfoot>
-			<td colspan="1">
-				<span>Paginator!</span>
-			</td>
+			<tr>
+				<td colspan="1">
+					<div class="paginator">
+						{% paginator contacts %}
+					</div>
+				</td>
+			</tr>
 		</tfoot>
 	</table>
 	<div class="toolbar">

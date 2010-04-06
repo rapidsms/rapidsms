@@ -6,7 +6,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.templatetags.tabs_tags import register_tab
-from rapidsms.utils import render_to_response
+from rapidsms.utils import render_to_response, paginated
 from rapidsms.forms import ContactForm
 from rapidsms.models import Contact
 
@@ -39,9 +39,24 @@ def registration(req, pk=None):
         form = ContactForm(
             instance=contact)
 
+    def _contact(c):
+
+        # add an 'url' attribute; a link to the edit page, with the same
+        # GET parameters as the current view. this hocus-pocus lets us
+        # persist the pagination params (page=, per-page=), maintaining
+        # the current state of the contacts list (on the left).
+        c.url = reverse(registration, args=[c.pk])
+        if req.GET: c.url += "?%s" % req.GET.urlencode()
+
+        # add an 'is_active' attribute, to highlight the contact if
+        # we're currently editing it.
+        c.is_active = (contact == c)
+
+        return c
+
     return render_to_response(req,
         "registration/dashboard.html", {
-            "contacts": Contact.objects.all(),
+            "contacts": paginated(req, Contact.objects.all(), wrapper=_contact),
             "contact_form": form,
             "contact": contact
         })
