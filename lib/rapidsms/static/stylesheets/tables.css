@@ -86,10 +86,10 @@ table {
 
             /* some cells have nothing important to say, (like "none" or
              * "never"), but are required none the less. make them dull,
-             * o highlight the rows which contain real data */
-            td.na, th.na {
+             * to highlight the rows which contain real data */
+            td.na, th.na, td span.na, th span.na {
                 font-style: italic;
-                opacity: 0.5;
+                color: #aaa;
             }
 
     /* when a row is "active" (eg. it is being viewed, edited, etc), it
