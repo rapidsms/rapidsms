@@ -1,0 +1,55 @@
+{% extends "layout.html" %}
+{% load pagination_tags %}
+
+{% block title %}Message Log - {{ block.super }}{% endblock %}
+
+{% block stylesheets %}
+{{ block.super }}
+<link type="text/css" rel="stylesheet" href="{{ MEDIA_URL }}messagelog/stylesheets/messagelog.css" />
+{% endblock %}
+
+{% block content %}
+<div class="module">
+	<h2>Contacts</h2>
+	<table class="messages">
+		<colgroup>
+			<col />
+			<col />
+			<col />
+			<col />
+		</colgroup>
+		<thead>
+			<tr>
+				<th scope="col"><a href="">Text</a></th>
+				<th scope="col"><a href="">Direction</a></th>
+				<th scope="col"><a href="">From/To</a></th>
+				<th scope="col"><a href="">Date</a></th>
+			</tr>
+		</thead>
+		<tbody>{% if messages.object_list %}{% for message in messages.object_list %}
+			<tr>
+				<td>{{ message.text }}</td>
+				<td>{{ message.who }}</td>
+				<td>{{ message.get_direction_display }}</td>
+				<td>{{ message.date|date:"d/m/Y H:i" }}</td>
+			</tr>{% endfor %}{% else %}
+			<tr class="no-data">
+				<td colspan="4">
+					<p>
+						No messages have been sent or recieved yet.
+					</p>
+				</td>
+			</tr>{% endif %}
+		</tbody>
+		<tfoot>
+			<tr>
+				<td colspan="4">
+					<div class="paginator">
+						{% paginator messages %}
+					</div>
+				</td>
+			</tr>
+		</tfoot>
+	</table>
+</div>
+{% endblock %}
