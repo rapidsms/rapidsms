@@ -5,7 +5,7 @@
 from django.core.paginator import Paginator, EmptyPage, InvalidPage
 
 
-def paginated(req, query_set, per_page=None, prefix="", wrapper=None):
+def paginated(req, query_set, per_page=None, default_page=1, prefix="", wrapper=None):
 
     if per_page is None:
         from ..conf import settings
@@ -27,9 +27,16 @@ def paginated(req, query_set, per_page=None, prefix="", wrapper=None):
             raise ValueError("Invalid per-page parameter: %r" %
                 (req.GET[prefix + "per-page"]))
 
+    paginator = Paginator(query_set, per_page)
+
+    if (prefix + "page") in req.GET:
+        page = int(req.GET[prefix+"page"])
+
+    else:
+        if default_page >= 1: page = default_page
+        else: page = paginator.num_pages + (default_page+1)
+
     try:
-        page = int(req.GET.get(prefix+"page", "1"))
-        paginator = Paginator(query_set, per_page)
         objects = paginator.page(page)
 
     # have no mercy if the page parameter is not valid. there should be
