@@ -1,4 +1,16 @@
 /* vim:set et ts=4 sw=4 */
 
-table.contacts {
-    width: 100%; }
+#inner .col-1 { width: 60%; }
+#inner .col-2 { width: 40%; }
+
+.contacts {
+    width: 100%;
+}
+
+    .contacts th,
+    .contacts td {
+        white-space: nowrap;
+    }
+
+    .contacts col { width: 1%; }
+    .contacts col:last-child { width: auto; }

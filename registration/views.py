@@ -48,6 +48,12 @@ def registration(req, pk=None):
         c.url = reverse(registration, args=[c.pk])
         if req.GET: c.url += "?%s" % req.GET.urlencode()
 
+        # add an 'identity' attribute, which is a bit naughty, since
+        # a contact can have many of them. but that's an implementation
+        # detail, and rarely shows up in practice.
+        identities = c.connection_set.values_list('identity', flat=True)
+        c.identity = identities[0] if identities else None
+
         # add an 'is_active' attribute, to highlight the contact if
         # we're currently editing it.
         c.is_active = (contact == c)
