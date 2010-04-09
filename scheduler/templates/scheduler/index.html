@@ -1,0 +1,74 @@
+{% extends "layout-split-2.html" %}
+{% load i18n %}
+{% load pagination_tags %}
+{% load scheduler_tags %}
+{% block title %}Scheduled Events{% endblock %}
+{% block content %}
+
+<div class="module">
+	<h2>Scheduled Events</h2>
+
+	<table>
+		<thead>
+			<tr>
+				<th scope="col">{% trans "Event" %}</th>
+				<th scope="col">{% trans "Description" %}</th>
+				<th scope="col">{% trans "Month" %}</th>
+                <th scope="col">{% trans "Day of Month" %}</th>
+                <th scope="col">{% trans "Day of Week" %}</th>
+                <th scope="col">{% trans "Hour" %}</th>
+                <th scope="col">{% trans "Minute" %}</th>
+                <th scope="col">{% trans "Start Time" %}</th>
+                <th scope="col">{% trans "End Time" %}</th>
+                <th scope="col">{% trans "Count" %}</th>
+                <th scope="col">{% trans "Active" %}</th>
+			</tr>
+		</thead>
+		<tbody>{% if schedules.object_list %}{% for schedule in schedules.object_list %}
+			<tr>
+                <td><a href="/scheduler/{{ schedule.pk }}">{{ schedule.callback }}</a></td>
+				<td>{% if schedule.description %}{{ schedule.description }}{% else %}<span class="na">n/a</span>{% endif %}</td>
+                <td>{{ schedule.months|display_list|default:"All" }}</td>
+                <td>{{ schedule.days_of_month|display_list|default:"All" }}</td>
+                <td>{{ schedule.days_of_week|display_list|default:"All" }}</td>
+                <td>{{ schedule.hours|display_list|default:"All" }}</td>
+                <td>{{ schedule.minutes|display_list }}</td>
+                <td>{% if schedule.end_time %}{{ schedule.end_time|date:"D M d H:i" }}{% else %}<span class="na">n/a</span>{% endif %}</td>
+                <td>{% if schedule.start_time %}{{ schedule.date_joined|date:"D M d H:i" }}{% else %}<span class="na">n/a</span>{% endif %}</td>
+                <td>{% if schedule.count %}{{ schedule.count }}{% else %}<span class="na">n/a</span>{% endif %}</td>
+                <td>{% if schedule.active %}True{% else %}False{% endif %}</td>
+			</tr>{% endfor %}
+            <tr>
+                <td colspan="11">
+                <!-- we don't yet support the ability to add schedules via the UI
+		            <a href="/village/{{village.id}}/schedule/add" class="add">
+		                {% trans "Add a Schedule" %}
+		            </a>
+                -->
+                </td>
+            </tr>
+			{% else %}
+			<tr class="no-data">
+                <td colspan="11">
+				{% trans "No schedules yet" %}
+				<!-- we don't yet support the ability to add schedules via the UI
+					<a href="/village/{{village.id}}/schedule/add" class="add">
+						{% trans "Add a Schedule" %}
+					</a>
+				-->
+				</td>
+			</tr>{% endif %}
+		</tbody>
+		<tfoot>
+			<tr>
+                <td colspan="11">
+				{% paginator schedules %}
+				</td>
+			</tr>
+		</tfoot>
+	</table>
+
+</div>
+
+{% endblock %}
+    
