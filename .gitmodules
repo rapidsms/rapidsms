@@ -4,4 +4,4 @@
 
 [submodule "lib/rapidsms/contrib"]
 	path = lib/rapidsms/contrib
-	url = git://github.com/rapidsms/rapidsms-contrib-apps-dev.git
+	url = git://github.com/mwana/rapidsms-contrib-apps-dev.git
