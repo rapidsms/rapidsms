@@ -20,5 +20,5 @@ class App(rapidsms.App):
             text=text,
             **who)
 
-    def handle(self, msg):   self._log("I", self._who(msg), msg.raw_text)
+    def parse(self, msg):    self._log("I", self._who(msg), msg.raw_text)
     def outgoing(self, msg): self._log("O", self._who(msg), msg.text)
