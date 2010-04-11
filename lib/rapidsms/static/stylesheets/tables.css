@@ -3,6 +3,15 @@
 table {
     border-collapse: collapse; }
 
+    col { }
+
+        /* highlight sorted columns just a little tiny bit. some people
+         * won't be able to see it, but the header should contain some
+         * kind of indication, too. darker colors interfere with the
+         * grid lines, which are also very light. */
+        col.sorted {
+            background: #fcfcff; }
+
     tr { }
 
             td, th {
@@ -25,7 +34,8 @@ table {
                     color: #888;
                 }
 
-                    thead th a {
+                    thead th a,
+                    thead th span.unsortable {
                         color: #888;
                         outline: 0;
                         border-left: 1px solid #f8f8f8;
@@ -50,24 +60,28 @@ table {
                             color: #000;
                         }
 
-                    /* unfortunately, an extra element (a span) is
-                     * needed to display the sort marker. all of the
-                     * other backgrounds are already busy. snap it to
-                     * the right/middle of the th */
-                    thead th.sorted a span {
-                        display: block;
-                        position: absolute;
-                        right: 0.5em;
-                        top: 50%;
-                        width: 16px;
-                        height: 16px;
-                        margin-top: -8px;
-                        overflow: hidden;
-                        text-indent: -9999px;
-                    }
+                    thead th.sorted a {
+                        color: #000;
+                     }
 
-                    thead th.ascending  a span { background-image: url("../icons/silk/sort_ascending.png"); }
-                    thead th.descending a span { background-image: url("../icons/silk/sort_descending.png"); }
+                        /* unfortunately, an extra element (a span) is
+                         * needed to display the sort marker. all of the
+                         * other backgrounds are already busy. snap it
+                         * to the right/middle of the th */
+                        thead th.sorted a span {
+                            display: block;
+                            position: absolute;
+                            right: 0.5em;
+                            top: 50%;
+                            width: 16px;
+                            height: 16px;
+                            margin-top: -8px;
+                            overflow: hidden;
+                            text-indent: -9999px;
+                        }
+
+                        thead th.asc  a span { background-image: url("../icons/silk/sort_ascending.png"); }
+                        thead th.desc a span { background-image: url("../icons/silk/sort_descending.png"); }
 
                 /* make the grid lighter within the tbody, since it's
                  * only a visual hint to distinguish the rows + cols */
