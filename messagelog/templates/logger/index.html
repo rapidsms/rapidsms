@@ -12,26 +12,29 @@
 <div class="module">
 	<h2>Contacts</h2>
 	<table class="messages">
-		<colgroup>
-			<col />
-			<col />
-			<col />
-			<col />
+		<colgroup>{% for column in table.columns %}
+			<col{% if column.sorted %} class="sorted"{% endif %}/>{% endfor %}
 		</colgroup>
 		<thead>
-			<tr>
-				<th scope="col"><a href="">Text</a></th>
-				<th scope="col"><a href="">Direction</a></th>
-				<th scope="col"><a href="">From/To</a></th>
-				<th scope="col"><a href="">Date</a></th>
+			<tr>{% for column in table.columns %}
+				<th scope="col" class="{% if column.sorted %}sorted {{ table.sort_order }}{% endif %}">{% if column.sortable %}
+					<a href="{{ column.sort_url }}" title="Sort this table by {{ column.verbose_name|lower }}">{% else %}
+					<span class="unsortable">{% endif %}
+						{{ column.verbose_name }}{% if column.sorted %}
+						<span title="Sorted in {{ table.verbose_sort_order }} order">
+							({{ table.sort_order }})
+						</span>{% endif %}{% if column.sorted %}
+					</a>{% else %}
+					<span>{% endif %}
+				</th>{% endfor %}
 			</tr>
 		</thead>
-		<tbody>{% if messages.object_list %}{% for message in messages.object_list %}
+		<tbody>{% if table.paginator.object_list %}{% for row in table.paginator.object_list %}
 			<tr>
-				<td>{{ message.text }}</td>
-				<td>{{ message.who }}</td>
-				<td>{{ message.get_direction_display }}</td>
-				<td>{{ message.date|date:"d/m/Y H:i" }}</td>
+				<td>{{ row.text }}</td>
+				<td>{{ row.get_direction_display }}</td>
+				<td>{{ row.who }}</td>
+				<td>{{ row.date|date:"d/m/Y H:i" }}</td>
 			</tr>{% endfor %}{% else %}
 			<tr class="no-data">
 				<td colspan="4">
@@ -45,7 +48,7 @@
 			<tr>
 				<td colspan="4">
 					<div class="paginator">
-						{% paginator messages %}
+						{% paginator table.paginator %}
 					</div>
 				</td>
 			</tr>
