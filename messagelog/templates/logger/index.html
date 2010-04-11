@@ -1,5 +1,5 @@
 {% extends "layout.html" %}
-{% load pagination_tags %}
+{% load tables_tags %}
 
 {% block title %}Message Log - {{ block.super }}{% endblock %}
 
@@ -12,47 +12,23 @@
 <div class="module">
 	<h2>Contacts</h2>
 	<table class="messages">
-		<colgroup>{% for column in table.columns %}
-			<col{% if column.sorted %} class="sorted"{% endif %}/>{% endfor %}
-		</colgroup>
-		<thead>
-			<tr>{% for column in table.columns %}
-				<th scope="col" class="{% if column.sorted %}sorted {{ table.sort_order }}{% endif %}">{% if column.sortable %}
-					<a href="{{ column.sort_url }}" title="Sort this table by {{ column.verbose_name|lower }}">{% else %}
-					<span class="unsortable">{% endif %}
-						{{ column.verbose_name }}{% if column.sorted %}
-						<span title="Sorted in {{ table.verbose_sort_order }} order">
-							({{ table.sort_order }})
-						</span>{% endif %}{% if column.sorted %}
-					</a>{% else %}
-					<span>{% endif %}
-				</th>{% endfor %}
-			</tr>
-		</thead>
+		{% render_colgroup table %}
+		{% render_thead table %}
+
 		<tbody>{% if table.paginator.object_list %}{% for row in table.paginator.object_list %}
-			<tr>
-				<td>{{ row.text }}</td>
-				<td>{{ row.get_direction_display }}</td>
-				<td>{{ row.who }}</td>
-				<td>{{ row.date|date:"d/m/Y H:i" }}</td>
+			<tr>{% for column in table.columns %}
+				<td>{% render_cell table column row %}</td>{% endfor %}
 			</tr>{% endfor %}{% else %}
 			<tr class="no-data">
-				<td colspan="4">
+				<td colspan="{{ table.columns|length }}">
 					<p>
 						No messages have been sent or recieved yet.
 					</p>
 				</td>
 			</tr>{% endif %}
 		</tbody>
-		<tfoot>
-			<tr>
-				<td colspan="4">
-					<div class="paginator">
-						{% paginator table.paginator %}
-					</div>
-				</td>
-			</tr>
-		</tfoot>
+
+		{% render_tfoot table %}
 	</table>
 </div>
 {% endblock %}

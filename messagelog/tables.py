@@ -2,15 +2,18 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 
+from django.template import Context, Template
 from rapidsms.utils import paginated
 
 
 class Column(object):
     creation_counter = 0
 
-    def __init__(self, verbose_name=None, sortable=True):
-        self.verbose_name = verbose_name
+    def __init__(self, label=None, sortable=True, template=None, attr=None):
+        self.label = label
         self.sortable = sortable
+        self.template = template
+        self.attr = attr
 
         self.creation_counter = Column.creation_counter
         Column.creation_counter += 1
@@ -28,16 +31,16 @@ class BoundColumn(object):
     def __init__(self, table, name):
         self._column = getattr(table, name)
         self._table = table
-        self._name = name
+        self.name = name
 
     def sorted(self):
-        return self._table.sort_field == self._name
+        return self._table.sort_field == self.name
 
     def sort_url(self):
         params = self._table.request.GET.copy()
         params["sort"] = self._name
 
-        if self._table.sort_field == self._name:
+        if self._table.sort_field == self.name:
             params["order"] = (self._table.sort_order == "desc")\
                 and "asc" or "desc"
 
@@ -107,6 +110,28 @@ class Table(object):
         return (self.sort_order == "asc")\
             and "ascending" or "decending"
 
-    #@property
-    #def rows(self):
-    #    return self.paginator.object_list
+    def render_cell(self, column, row):
+
+        # if the column has a template, it could contain anything, so
+        # must take priority. render it with some handy variables.
+        if column.template is not None:
+            t = Template(column.template)
+            return t.render(Context({
+                "table": self,
+                "column": column,
+                "row": row
+            }))
+
+        # columns can name an attribute (of the query_set) to render
+        # as-is. this is useful for listing non-field methods of models.
+        elif column.attr is not None:
+            x = getattr(row, column.attr)
+            return x() if callable(x) else x
+
+        # this will only work with boundcolumns, because columns don't
+        # *have* names, except when bound to tables.
+        elif hasattr(column, "name"):
+            return getattr(row, column.name)
+
+        else:
+            raise ValueError

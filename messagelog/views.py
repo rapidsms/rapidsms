@@ -10,9 +10,9 @@ from .tables import Table, Column
 
 class MessagelogTable(Table):
     text      = Column("Text")
-    direction = Column("Direction")
     who       = Column("To/From", sortable=False)
-    date      = Column("Date")
+    date      = Column("Date", template="{{ row.date|date:'d/m/Y H:i' }}")
+    direction = Column("Direction", attr="get_direction_display")
 
     def get_query_set(self):
         return Message.objects.all()
