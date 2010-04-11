@@ -52,9 +52,9 @@ def paginated(req, query_set, per_page=None, default_page=1, prefix="", wrapper=
         objects.raw_object_list = objects.object_list
         objects.object_list = map(wrapper, objects.object_list)
 
-    # attach the prefix (it might be blank) to the objects, to be found
-    # by the {% paginator %} tag, to create the prev/next page links
+    # attach the prefix (it might be blank) and request to the objects,
+    # for the {% paginator %} tag, to create the prev/next page links
     objects.prefix = prefix
+    objects.request = req
 
     return objects
-
