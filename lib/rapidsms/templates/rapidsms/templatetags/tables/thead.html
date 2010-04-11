@@ -1,0 +1,14 @@
+<thead>
+	<tr>{% for column in table.columns %}
+		<th scope="col" class="{% if column.sorted %}sorted {{ table.sort_order }}{% endif %}">{% if column.sortable %}
+			<a href="{{ column.sort_url }}" title="Sort this table by {{ column.label|lower }}">{% else %}
+			<span class="unsortable">{% endif %}
+				{{ column.label }}{% if column.sorted %}
+				<span title="Sorted in {{ table.verbose_sort_order }} order">
+					({{ table.sort_order }})
+				</span>{% endif %}{% if column.sorted %}
+			</a>{% else %}
+			<span>{% endif %}
+		</th>{% endfor %}
+	</tr>
+</thead>

@@ -1,0 +1,3 @@
+<colgroup>{% for column in table.columns %}
+	<col{% if column.sorted %} class="sorted"{% endif %}/>{% endfor %}
+</colgroup>
