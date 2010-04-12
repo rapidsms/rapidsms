@@ -38,7 +38,7 @@ class BoundColumn(object):
 
     def sort_url(self):
         params = self._table.request.GET.copy()
-        params["sort"] = self._name
+        params["sort"] = self.name
 
         if self._table.sort_field == self.name:
             params["order"] = (self._table.sort_order == "desc")\
