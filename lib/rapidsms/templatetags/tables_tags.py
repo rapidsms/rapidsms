@@ -6,6 +6,11 @@ from django import template
 register = template.Library()
 
 
+@register.inclusion_tag("rapidsms/templatetags/tables/table.html")
+def render_table(table):
+    return { "table": table }
+
+
 @register.inclusion_tag("rapidsms/templatetags/tables/colgroup.html")
 def render_colgroup(table):
     return { "table": table }
