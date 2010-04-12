@@ -3,9 +3,9 @@
 
 
 from django.templatetags.tabs_tags import register_tab
+from rapidsms.utils.tables import Table, Column
 from rapidsms.utils import render_to_response
 from .models import Message
-from .tables import Table, Column
 
 
 class MessagelogTable(Table):
