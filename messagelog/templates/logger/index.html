@@ -9,26 +9,8 @@
 {% endblock %}
 
 {% block content %}
-<div class="module">
-	<h2>Contacts</h2>
-	<table class="messages">
-		{% render_colgroup table %}
-		{% render_thead table %}
-
-		<tbody>{% if table.paginator.object_list %}{% for row in table.paginator.object_list %}
-			<tr>{% for column in table.columns %}
-				<td>{% render_cell table column row %}</td>{% endfor %}
-			</tr>{% endfor %}{% else %}
-			<tr class="no-data">
-				<td colspan="{{ table.columns|length }}">
-					<p>
-						Nothing to display.
-					</p>
-				</td>
-			</tr>{% endif %}
-		</tbody>
-
-		{% render_tfoot table %}
-	</table>
+<div class="messages module">
+	<h2>Message Log</h2>
+	{% render_table table %}
 </div>
 {% endblock %}
