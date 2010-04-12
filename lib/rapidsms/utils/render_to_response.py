@@ -66,7 +66,7 @@ def _extract_callback():
     for tpl in inspect.stack(0):
         try:
             frame, filename = tpl[0:2]
-            if os.path.splitext(filename)[0] == root:
+            if os.path.normcase(os.path.splitext(filename)[0]) == os.path.normcase(root):
                 return frame.f_locals['callback']
 
         # release the frame object to avoid gc cycles, as advised by:
