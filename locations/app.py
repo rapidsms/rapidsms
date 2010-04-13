@@ -13,7 +13,7 @@ class App(rapidsms.App):
     def __find_location(self, text):
         try:
             # check for a location code first
-            return Location.objects.get(code__iexact=text)
+            return Location.objects.get(slug__iexact=text)
 
         # nothing else is supported, for now!
         except Location.DoesNotExist:
@@ -33,12 +33,12 @@ class App(rapidsms.App):
             #split the text by space to find if it has a village
             # locCode,village = text.split()
 
-           # location = self.__find_location(locCode)
-           # location.village = village
+            # location = self.__find_location(locCode)
+            # location.village = village
             
             #msg.location = location
             msg.location = self.__find_location(text)
-
+            
             # strip the location tag from the message,
             # so other apps don't have to deal with it
             msg.text = m.group(1)
@@ -46,5 +46,3 @@ class App(rapidsms.App):
             # we should probably log this crazy behavior...
             self.info("Stripped Location code: %s" % text)
             self.info("Message is now: %s" % msg.text)
-
-
