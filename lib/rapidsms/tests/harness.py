@@ -5,17 +5,16 @@ import os
 
 from rapidsms.router import Router
 from rapidsms.backends.base import BackendBase
-from rapidsms.app import App
+from rapidsms import App
 
 
 # a really dumb Logger stand-in
 class MockLogger (list):
     def __init__(self):
-
-	# enable logging during tests with an
-	# environment variable, since the runner
-	# doesn't seem to have args
-	self.to_console = os.environ.get("verbose", False)
+        # enable logging during tests with an
+        # environment variable, since the runner
+        # doesn't seem to have args
+        self.to_console = os.environ.get("verbose", False)
 
     def write (self, *args):
         if self.to_console:

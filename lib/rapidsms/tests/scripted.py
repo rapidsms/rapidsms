@@ -4,6 +4,7 @@
 
 import time
 from rapidsms.router import Router
+from rapidsms.router import router as globalrouter
 from harness import MockRouter, MockBackend, EchoApp
 from rapidsms.backends.base import BackendBase
 import unittest, re, threading
@@ -51,7 +52,8 @@ class TestScript (TestCase):
     apps = None
 
     def setUp (self):
-        self.router = Router.instance()
+        self.router = globalrouter
+        mockbackend_settings = {"ENGINE": "rapidsms.tests.harness"}
         self.backend = MockBackend(self.router, "mock")
         #self.router.add_backend(self.backend)
         self.router.backends.append(self.backend)
