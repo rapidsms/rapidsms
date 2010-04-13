@@ -3,15 +3,13 @@
 
 
 from django.templatetags.tabs_tags import register_tab
-from rapidsms.utils import render_to_response, paginated
-from .models import Message
+from rapidsms.utils import render_to_response
+from .tables import MessagelogTable
 
 
 @register_tab
 def message_log(req):
     return render_to_response(req,
         "logger/index.html", {
-            "messages": paginated(req,
-                Message.objects.all(),
-                default_page=-1)
+            "table": MessagelogTable(req)
         })
