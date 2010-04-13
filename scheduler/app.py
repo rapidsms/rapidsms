@@ -32,7 +32,7 @@ import rapidsms
 
 from rapidsms.contrib.scheduler.models import EventSchedule
 
-class App (rapidsms.app.App):
+class App (rapidsms.App):
     """ This app provides cron-like functionality for scheduled tasks,
     as defined in the django model EventSchedule
     
