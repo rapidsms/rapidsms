@@ -6,7 +6,6 @@ from django.core.paginator import Paginator, EmptyPage, InvalidPage
 
 
 def paginated(req, query_set, per_page=None, default_page=1, prefix="", wrapper=None):
-
     if per_page is None:
         from ..conf import settings
         per_page = settings.PAGINATOR_OBJECTS_PER_PAGE
@@ -27,16 +26,23 @@ def paginated(req, query_set, per_page=None, default_page=1, prefix="", wrapper=
             raise ValueError("Invalid per-page parameter: %r" %
                 (req.GET[prefix + "per-page"]))
 
+    # create the paginator early, so we can check that the page number
+    # is valid, and (maybe) apply *wrapper* to this page's objects.
     paginator = Paginator(query_set, per_page)
 
-    if (prefix + "page") in req.GET:
-        page = int(req.GET[prefix+"page"])
-
-    else:
-        if default_page >= 1: page = default_page
-        else: page = paginator.num_pages + (default_page+1)
-
     try:
+        if (prefix + "page") in req.GET:
+            page = int(req.GET[prefix+"page"])
+
+        else:
+            # if the default page was negative, count backwards from the
+            # last page. this is handy for skipping to the latest page
+            # in a stream of information (like a message log), rather
+            # than displaying it backwards to suit the paginator.
+            if default_page >= 0: page = default_page
+            else: page = paginator.num_pages + (default_page+1)
+
+        # try to switch to the *page*. (might raise.)
         objects = paginator.page(page)
 
     # have no mercy if the page parameter is not valid. there should be
@@ -52,9 +58,9 @@ def paginated(req, query_set, per_page=None, default_page=1, prefix="", wrapper=
         objects.raw_object_list = objects.object_list
         objects.object_list = map(wrapper, objects.object_list)
 
-    # attach the prefix (it might be blank) to the objects, to be found
-    # by the {% paginator %} tag, to create the prev/next page links
+    # attach the prefix (it might be blank) and request to the objects,
+    # for the {% paginator %} tag, to create the prev/next page links
     objects.prefix = prefix
+    objects.request = req
 
     return objects
-

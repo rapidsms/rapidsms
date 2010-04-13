@@ -1,0 +1,11 @@
+{% load pagination_tags %}
+
+<tfoot>
+	<tr>
+		<td colspan="{{ table.columns|length }}">
+			<div class="paginator">
+				{% paginator table.paginator %}
+			</div>
+		</td>
+	</tr>
+</tfoot>

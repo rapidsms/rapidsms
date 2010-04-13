@@ -14,17 +14,16 @@ register = template.Library()
 from rapidsms.conf import settings
 
 
-@register.inclusion_tag("rapidsms/templatetags/paginator.html", takes_context=True)
-def paginator(context, objects):
+@register.inclusion_tag("rapidsms/templatetags/paginator.html")
+def paginator(objects):
 
     prefix = getattr(objects, "prefix", "")
     dom_id = prefix + "paginator"
     page_param = prefix + "page"
-    req = context["request"]
 
     def _link(page_number):
-        kwargs = { page_param: page_number }
-        return _self_link(req, **kwargs)
+        return _self_link(objects.request,
+            **{ page_param: page_number })
 
     def _page(number):
         return {

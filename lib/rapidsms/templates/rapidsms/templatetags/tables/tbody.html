@@ -1,0 +1,14 @@
+{% load tables_tags %}
+
+<tbody>{% if table.paginator.object_list %}{% for row in table.paginator.object_list %}
+	<tr>{% for column in table.columns %}
+		<td>{% render_cell table column row %}</td>{% endfor %}
+	</tr>{% endfor %}{% else %}
+	<tr class="no-data">
+		<td colspan="{{ table.columns|length }}">
+			<p>
+				Nothing to display.
+			</p>
+		</td>
+	</tr>{% endif %}
+</tbody>
