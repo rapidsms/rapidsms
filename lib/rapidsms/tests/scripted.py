@@ -5,7 +5,7 @@
 import time
 from rapidsms.router import Router
 from rapidsms.router import router as globalrouter
-from harness import MockRouter, MockBackend, EchoApp
+from harness import MockRouter, EchoApp
 from rapidsms.backends.base import BackendBase
 import unittest, re, threading
 from django.test import TestCase
@@ -53,10 +53,9 @@ class TestScript (TestCase):
 
     def setUp (self):
         self.router = globalrouter
-        mockbackend_settings = {"ENGINE": "rapidsms.tests.harness"}
-        self.backend = MockBackend(self.router, "mock")
         #self.router.add_backend(self.backend)
-        self.router.backends.append(self.backend)
+        self.router.add_backend("mockbackend", "rapidsms.tests.harness", {})
+        self.backend = self.router.backends["mockbackend"]
         if not self.apps:
             raise Exception(
                 "You must define a list of apps in your TestScript class!")
@@ -111,8 +110,7 @@ class TestScript (TestCase):
             elif dir == "<":
                 msg = self.backend.next_outgoing_message()
                 self.assertTrue(msg is not None, 
-                    "message was ignored.\nMessage: '%s'\nExpecting: '%s'" % (last_msg, txt))
-
+                    "Message was ignored.\nMessage: '%s'\nExpecting: '%s'" % (last_msg, txt))
                 self.assertEquals(msg.peer, num,
                     "Expected to respond to %s, but message was sent to %s.\nMessage: '%s'"
                     % (num, msg.peer, last_msg))
