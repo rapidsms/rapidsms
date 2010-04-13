@@ -10,5 +10,6 @@ class LocationAdmin(admin.ModelAdmin):
     list_display = ("name", "type", "full_name")
 
 
+admin.site.register(Point)
 admin.site.register(LocationType)
 admin.site.register(Location, LocationAdmin)
