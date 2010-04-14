@@ -3,12 +3,11 @@
 
 
 import time
-from rapidsms.router import Router
+import logging
 from rapidsms.router import router as globalrouter
-from harness import MockRouter, EchoApp
-from rapidsms.backends.base import BackendBase
+from harness import EchoApp
 import unittest, re, threading
-from django.test import TestCase
+from django.test import TransactionTestCase
 from datetime import datetime
 
 
@@ -22,7 +21,10 @@ class MetaTestScript (type):
                 attrs[key] = wrapper
         return type.__new__(cls, name, bases, attrs)
 
-class TestScript (TestCase):
+class TestScript (TransactionTestCase):
+    # we use the TransactionTestCase so that the router thread has access
+    # to the DB objects used outside and vice versa.
+    # see: http://docs.djangoproject.com/en/dev/releases/1.1/#releases-1-1
     __metaclass__ = MetaTestScript
 
     """
@@ -53,15 +55,24 @@ class TestScript (TestCase):
 
     def setUp (self):
         self.router = globalrouter
-        #self.router.add_backend(self.backend)
+        
+        # Enable debug logging to screen during tests.  This should be 
+        # configurable better.
+        handler = logging.StreamHandler()
+        self.router.logger = logging.getLogger()
+        self.router.logger.addHandler(handler)
+        self.router.logger.setLevel(logging.DEBUG)
+        
+        # setup the mock backend
         self.router.add_backend("mockbackend", "rapidsms.tests.harness", {})
         self.backend = self.router.backends["mockbackend"]
+        
+        # setup apps
         if not self.apps:
             raise Exception(
                 "You must define a list of apps in your TestScript class!")
         for app_class in self.apps:
             app = app_class(self.router)
-            #self.router.add_app(app)
             self.router.apps.append(app)
 
     def tearDown (self):
