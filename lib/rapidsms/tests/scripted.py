@@ -56,12 +56,7 @@ class TestScript (TransactionTestCase):
     def setUp (self):
         self.router = globalrouter
         
-        # Enable debug logging to screen during tests.  This should be 
-        # configurable better.
-        handler = logging.StreamHandler()
-        self.router.logger = logging.getLogger()
-        self.router.logger.addHandler(handler)
-        self.router.logger.setLevel(logging.DEBUG)
+        self._init_log(logging.DEBUG)
         
         # setup the mock backend
         self.router.add_backend("mockbackend", "rapidsms.tests.harness", {})
@@ -79,6 +74,17 @@ class TestScript (TransactionTestCase):
         if self.router.running:
             self.router.stop() 
 
+    def _init_log(self, level):
+        # Enable debug logging to screen during tests.  This should be 
+        # configurable better.
+        if not self.router.logger:
+            self.router.logger = logging.getLogger()
+        if not self.router.logger.handlers:
+            handler = logging.StreamHandler()
+            self.router.logger.addHandler(handler)
+        self.router.logger.setLevel(level)
+    
+        
     @classmethod
     def parseScript (cls, script):
         cmds  = []
