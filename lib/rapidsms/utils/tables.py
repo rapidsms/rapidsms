@@ -4,6 +4,7 @@
 
 from django.template import Context, Template
 from rapidsms.utils import paginated
+from ..conf import settings
 
 
 class Column(object):
@@ -23,9 +24,25 @@ class Column(object):
         return column.creation_counter
 
 
+class DatetimeColumn(Column):
+    default_template = "{{ row.date|date:column.format }}"
+    default_format = settings.DATETIME_FORMAT
+
+    def __init__(self, *args, **kwargs):
+        if not 'template' in kwargs:
+            kwargs['template'] =\
+                self.default_template
+
+        self.format = kwargs.pop('format', self.default_format)
+
+        super(DatetimeColumn, self).__init__(
+            *args, **kwargs)
+
+
 class BoundColumn(object):
     """
     Column bound to a table instance.
+    This should go away.
     """
 
     def __init__(self, table, name):
