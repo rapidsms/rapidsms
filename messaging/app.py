@@ -14,7 +14,17 @@ class App (rapidsms.App):
     PRIORITY = "lowest"
 
     def ajax_POST_send_message(self, params, form):
-        '''Sends a message to a connection'''
+        '''
+        Sends a message to a connection.  You can call this method
+        via the ajax app by posting to the url:
+           
+            ajax/messaging/send_message
+           
+        You can also call this directly from a view by calling:
+        
+            ajax.utils.call_router("messaging", "send_message", 
+                       **{"connection_id": 1, "text": "hello rapidsms!" })
+        '''
         connection = Connection.objects.get(pk=form["connection_id"])
         return self._send_message(connection, form["text"])
         
