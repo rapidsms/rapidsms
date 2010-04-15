@@ -30,10 +30,6 @@ class App (rapidsms.App):
         
     def _send_message(self, connection, message_body):    
         '''Attempts to send a message through a given connection'''
-        # abort if we can't find a valid backend. Backend
-        # objects SHOULD refer to a valid RapidSMS backend (via their
-        # slug), but sometimes backends are removed or renamed.
-        
         # attempt to send the message
         # TODO: what could go wrong here?
         msg = OutgoingMessage(connection, message_body)
