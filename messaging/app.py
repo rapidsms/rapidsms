@@ -22,8 +22,7 @@ class App (rapidsms.App):
            
         You can also call this directly from a view by calling:
         
-            ajax.utils.call_router("messaging", "send_message", 
-                       **{"connection_id": 1, "text": "hello rapidsms!" })
+            messaging.utils.send_message(connection, text)
         '''
         connection = Connection.objects.get(pk=form["connection_id"])
         return self._send_message(connection, form["text"])
