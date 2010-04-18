@@ -19,5 +19,5 @@ class ContactTable(tables.ModelTable):
 
     class Meta:
         model = Contact
-        exclude = ['id']
+        exclude = ['id', 'language']
         order_by = 'alias'
