@@ -1,7 +1,7 @@
 {% load tables_tags %}
 
 <tbody>{% if table.rows %}{% for row in table.rows %}
-	<tr class="{% if row.is_active %}active{% endif %}">{% for value in row %}
+	<tr>{% for value in row %}
 		<td>{{ value }}</td>{% endfor %}
 	</tr>{% endfor %}{% else %}
 	<tr class="no-data">
