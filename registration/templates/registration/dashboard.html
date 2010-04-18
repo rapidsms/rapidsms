@@ -1,5 +1,6 @@
 {% extends "registration/base.html" %}
 {% load pagination_tags %}
+{% load tables_tags %}
 {% load forms_tags %}
 
 
@@ -12,28 +13,16 @@
 <div class="module">
 	<h2>Contacts</h2>
 	<table class="contacts">
-		<colgroup>
-			<col />
-			<col />
-			<col />
-		</colgroup>
-		<thead>
-			<tr>
-				<th scope="col"><a href="">Alias</a></th>
-				<th scope="col"><a href="">Name</a></th>
-				<th scope="col">Identity</th>
-			</tr>
-		</thead>
-		<tbody>{% if contacts.object_list %}{% for contact in contacts.object_list %}
-			<tr class="{% if contact.is_active %}active{% endif %}">
-				<th scope="row"{% if contact.is_anonymous %} class="na"{% endif %}>
-					<a href="{{ contact.url }}">{{ contact.alias }}</a>
-				</th>
-				<td>{{ contact.name }}</td>
-				<td>{% if contact.identity %}{{ contact.identity }}{% else %}<span class="na">Unknown</span>{% endif %}</td>
+		{% render_colgroup contacts %}
+		{% render_thead contacts %}
+
+		<tbody>{% if contacts.rows %}{% for row in contacts.rows %}
+			<tr{% if row.is_active %} class="active"{% endif %}>{% for value in row %}{% if forloop.first %}
+				<th><a href="{{ row.url }}">{% if value %}{{ value }}{% else %}&nbsp;{% endif %}</a></th>{% else %}
+				<td>{{ value }}</td>{% endif %}{% endfor %}
 			</tr>{% endfor %}{% else %}
 			<tr class="no-data look-right">
-				<td colspan="3">
+				<td colspan="{{ contacts.columns|length }}">
 					<p>
 						You haven't created any contacts yet.<br />
 						Use the form on the right to get started.
@@ -41,15 +30,8 @@
 				</td>
 			</tr>{% endif %}
 		</tbody>
-		<tfoot>
-			<tr>
-				<td colspan="3">
-					<div class="paginator">
-						{% paginator contacts %}
-					</div>
-				</td>
-			</tr>
-		</tfoot>
+
+		{% render_tfoot contacts %}
 	</table>
 	<div class="toolbar">
 		<a href="{% url registration_add %}" class="add">Add a Contact</a>
