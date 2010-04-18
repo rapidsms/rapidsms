@@ -7,8 +7,10 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.templatetags.tabs_tags import register_tab
 from rapidsms.utils import render_to_response, paginated
+from rapidsms.tables import ModelRow
 from rapidsms.forms import ContactForm
 from rapidsms.models import Contact
+from .tables import ContactTable
 
 
 @register_tab
@@ -39,30 +41,25 @@ def registration(req, pk=None):
         form = ContactForm(
             instance=contact)
 
-    def _contact(c):
+    class ContactRow(ModelRow):
 
         # add an 'url' attribute; a link to the edit page, with the same
-        # GET parameters as the current view. this hocus-pocus lets us
-        # persist the pagination params (page=, per-page=), maintaining
-        # the current state of the contacts list (on the left).
-        c.url = reverse(registration, args=[c.pk])
-        if req.GET: c.url += "?%s" % req.GET.urlencode()
+        # GET parameters as the current view. this lets us persist the
+        # pagination params (page=, per-page=), maintaining the current
+        # state of the contacts list (on the left).
+        def url(self):
+            u = reverse(registration, args=[self.data.pk])
+            if req.GET: u += "?%s" % req.GET.urlencode()
+            return u
 
-        # add an 'identity' attribute, which is a bit naughty, since
-        # a contact can have many of them. but that's an implementation
-        # detail, and rarely shows up in practice.
-        identities = c.connection_set.values_list('identity', flat=True)
-        c.identity = identities[0] if identities else None
-
-        # add an 'is_active' attribute, to highlight the contact if
-        # we're currently editing it.
-        c.is_active = (contact == c)
-
-        return c
+        # add an 'is_active' attr, to highlight the row that we're
+        # currently editing (if any) in the form to the right.
+        def is_active(self):
+            return self.data == contact
 
     return render_to_response(req,
         "registration/dashboard.html", {
-            "contacts": paginated(req, Contact.objects.all(), wrapper=_contact),
+            "contacts": ContactTable(request=req, row_class=ContactRow),
             "contact_form": form,
             "contact": contact
         })
