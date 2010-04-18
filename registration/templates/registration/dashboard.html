@@ -19,7 +19,7 @@
 		<tbody>{% if contacts.rows %}{% for row in contacts.rows %}
 			<tr{% if row.is_active %} class="active"{% endif %}>{% for value in row %}{% if forloop.first %}
 				<th><a href="{{ row.url }}">{% if value %}{{ value }}{% else %}&nbsp;{% endif %}</a></th>{% else %}
-				<td>{{ value }}</td>{% endif %}{% endfor %}
+				<td>{% if value %}{{ value }}{% endif %}</td>{% endif %}{% endfor %}
 			</tr>{% endfor %}{% else %}
 			<tr class="no-data look-right">
 				<td colspan="{{ contacts.columns|length }}">
