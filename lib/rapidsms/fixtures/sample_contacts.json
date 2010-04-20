@@ -1,0 +1,58 @@
+[
+    {
+        "pk": 1,
+        "model": "rapidsms.contact",
+        "fields": {
+            "alias": "adammck",
+            "name": "Adam Mckaig"
+        }
+    },
+    {
+        "pk": 2,
+        "model": "rapidsms.contact",
+        "fields": {
+            "alias": "ewheeler",
+            "name": "Evan Wheeler"
+        }
+    },
+    {
+        "pk": 3,
+        "model": "rapidsms.contact",
+        "fields": {
+            "alias": "merrickweb",
+            "name": "Merrick Shaefer"
+        }
+    },
+    {
+        "pk": 4,
+        "model": "rapidsms.contact",
+        "fields": {
+            "alias": "sblaschke",
+            "name": "Sean Blaschke"
+        }
+    },
+    {
+        "pk": 5,
+        "model": "rapidsms.contact",
+        "fields": {
+            "alias": "tweikel",
+            "name": "Terra Weikel"
+        }
+    },
+    {
+        "pk": 6,
+        "model": "rapidsms.contact",
+        "fields": {
+            "alias": "cfabian",
+            "name": "Chris Fabian"
+        }
+    },
+    {
+        "pk": 7,
+        "model": "rapidsms.contact",
+        "fields": {
+            "alias": "ekochi",
+            "name": "Erica Kochi"
+        }
+    }
+]

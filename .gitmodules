@@ -5,3 +5,8 @@
 [submodule "lib/rapidsms/contrib"]
 	path = lib/rapidsms/contrib
 	url = git://github.com/mwana/rapidsms-contrib-apps-dev.git
+
+[submodule "submodules/django-tables"]
+	path = submodules/django-tables
+	url = git://github.com/adammck/django-tables.git
+

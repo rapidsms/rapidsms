@@ -1,12 +1,12 @@
 <thead>
 	<tr>{% for column in table.columns %}
-		<th scope="col" class="{% if column.sorted %}sorted {{ table.sort_order }}{% endif %}">{% if column.sortable %}
-			<a href="{{ column.sort_url }}" title="Sort this table by {{ column.label|lower }}">{% else %}
+		<th scope="col" class="{% if column.is_ordered %}sorted {% if column.is_ordered_straight %}asc{% else %}desc{% endif %}{% endif %}">{% if column.sortable %}
+			<a href="?sort={{ column.name_toggled }}" title="Sort this table by {{ column|lower }}">{% else %}
 			<span class="unsortable">{% endif %}
-				{{ column.label }}{% if column.sorted %}
-				<span title="Sorted in {{ table.verbose_sort_order }} order">
-					({{ table.sort_order }})
-				</span>{% endif %}{% if column.sorted %}
+				{{ column }}{% if column.is_ordered %}
+				<span title="Sorted in {{ column }} order">
+					({% if column.is_ordered_straight %}asc{% else %}desc{% endif %})
+				</span>{% endif %}{% if column.is_ordered %}
 			</a>{% else %}
 			<span>{% endif %}
 		</th>{% endfor %}
