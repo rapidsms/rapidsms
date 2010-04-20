@@ -5,7 +5,6 @@
 from django.views.decorators.http import require_GET, require_http_methods
 from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse
-from django.templatetags.tabs_tags import register_tab
 
 from rapidsms.utils import render_to_response
 from .models import *
@@ -19,7 +18,6 @@ def message(req, msg, link=None):
     })
 
 
-@register_tab(caption="Map")
 @require_GET
 def dashboard(req, location_pk=None):
 

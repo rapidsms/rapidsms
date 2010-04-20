@@ -5,13 +5,11 @@
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
-from django.templatetags.tabs_tags import register_tab
 from rapidsms.utils import render_to_response, paginated
 from rapidsms.forms import ContactForm
 from rapidsms.models import Contact
 
 
-@register_tab
 def registration(req, pk=None):
     contact = None
 
