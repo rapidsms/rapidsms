@@ -143,7 +143,8 @@ class Backend(BackendBase):
 
         # connect to the modem and boot it to start receiving incoming
         # messages. if connection fails, the router will retry shortly
-        self.modem = pygsm.GsmModem(logger=self.gsm_log,**self.modem_kwargs).boot()
+        self.modem = pygsm.GsmModem(logger=self.gsm_log,**self.modem_kwargs)
+        self.modem.boot()
 
         # call the superclass to start the run loop -- it just sets
         # ._running to True and calls run, but let's not duplicate it.
