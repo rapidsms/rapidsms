@@ -8,6 +8,6 @@ from .tables import MessagelogTable
 
 def message_log(req):
     return render_to_response(req,
-        "logger/index.html", {
-            "table": MessagelogTable(req)
+        "messagelog/index.html", {
+            "messages": MessagelogTable(request=req, row_class=ContactRow)
         })

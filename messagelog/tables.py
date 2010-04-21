@@ -2,15 +2,15 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 
-from rapidsms.utils.tables import Table, Column, DatetimeColumn
+from rapidsms import tables
 from .models import Message
 
 
-class MessagelogTable(Table):
-    text      = Column("Text")
-    who       = Column("To/From", sortable=False)
-    direction = Column("Direction", attr="get_direction_display")
-    date      = DatetimeColumn("Date", format="d/m/Y H:i")
+class MessagelogTable(tables.Table):
+    text      = tables.Column("Text")
+    who       = tables.Column("To/From", sortable=False)
+    direction = tables.Column("Direction")
+    date      = tables.Column("Date")
 
     def get_query_set(self):
         return Message.objects.all()

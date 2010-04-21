@@ -2,25 +2,19 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 
-from django.views.decorators.http import require_GET, require_http_methods
-from django.shortcuts import get_object_or_404
+from .forms import *
+from .models import *
 from django.core.urlresolvers import reverse
 
-from rapidsms.utils import render_to_response
-from .models import *
-from .forms import *
-
-def message(req, msg, link=None):
-    return render_to_response(req,
-        "message.html", {
-            "message": msg,
-            "link": link
-    })
+from django.shortcuts import get_object_or_404
+from django.templatetags.tabs_tags import register_tab
+from django.views.decorators.http import require_GET, require_http_methods
+from rapidsms.utils import render_to_response, web_message
 
 
 @require_GET
 def dashboard(req, location_pk=None):
-
+    
     # to avoid the breadcrumb trail being empty browsing the entire
     # world, hard-code the first item. TODO: configure via settings.
     breadcrumbs = [("Planet Earth", reverse(dashboard))]
@@ -114,24 +108,24 @@ def edit_location(req, location_type_slug, location_pk):
             "show_map": int(req.GET.get("map", 0)) })
 
     elif req.method == "POST":
-
         # if DELETE was clicked... delete
         # the object, then and redirect
         if req.POST.get("delete", ""):
             pk = location.pk
             location.delete()
 
-            return message(req,
+            return web_message(req,
                 "Location %d deleted" % (pk),
                 link=reverse("locations_dashboard"))
 
         # otherwise, just update the object
         # and display the success message
         else:
+            
             location = update_via_querydict(location, req.POST)
             location.save()
 
-            return message(req,
+            return web_message(req,
                 "Location %d saved" % (location.pk),
                 link=reverse("locations_dashboard"))
 
@@ -157,6 +151,6 @@ def add_location(req, location_type_slug):
         location = insert_via_querydict(Location, req.POST, { "type": loc_type })
         location.save()
         
-        return message(req,
+        return web_message(req,
             "Location %d saved" % (location.pk),
             link=reverse("locations_dashboard"))
