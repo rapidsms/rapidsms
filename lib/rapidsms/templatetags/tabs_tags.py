@@ -6,8 +6,10 @@ import types
 import threading
 from functools import wraps
 from django import template
+from django.conf import settings
 from django.core.urlresolvers import get_resolver, reverse
-
+from django.utils.importlib import import_module
+from django.template import Variable
 
 # python considers each module name to be a distinct module, with its
 # own scope, even when they're the same file. since the {% load %} tag
@@ -19,18 +21,17 @@ if not __name__.startswith("django."):
         "The tabs_tags module must be imported via the " +\
         "django.templatetags.tabs_tags package.")
 
-# rather than messing around with middleware or context preprocessors
-# for the sake of two values, we'll can store them as thread locals.
-data = threading.local()
-data._view = None
-data._tabs = []
-
 register = template.Library()
 
 
 class Tab(object):
     def __init__(self, callback, caption=None):
-        self.callback = callback
+        if isinstance(callback, basestring):
+            module = '.'.join(callback.split('.')[:-1])
+            view = callback.split('.')[-1]
+            self.callback = getattr(import_module(module), view)
+        else:
+            self.callback = callback
         self._caption = caption
         self._view = None
 
@@ -79,81 +80,19 @@ class Tab(object):
     def caption(self):
         return self._caption or self._auto_caption()
 
-    @property
-    def is_active(self):
-        return self._looks_like(self.view, data._view)
-
-
-def register_tab(*args, **kwargs):
-    """
-    Decorate a view as a tab, which should be displayed globally in the
-    WebUI via the {%% get_tabs %%} tag. Any keyword arguments are passed
-    along to the `Tab` constructor.
-
-    Example::
-
-        @register_tab
-        def dashboard(request):
-            ...
-
-        @register_tab(caption="Show all users")
-        def users(request):
-            ...
-
-    WARNING: This only works when other decorators are well-behaved, and
-    don't alter the signature (the __module__ and __name__ attributes)
-    of their function. (This makes it very difficult to reverse the
-    function.) Most Django decorators seem to work fine, but those
-    bundled with contrib.auth do not. To work around this, attach the
-    misbehaving decorators **before** @register_tab.
-    """
-
-    def decorator(func):
-        def inner(*args, **kwargs):
-            data._view = func
-            response = func(*args, **kwargs)
-            data._view = None
-            return response
-
-        data._tabs.append(
-            Tab(func, **kwargs))
-
-        return wraps(func)(inner)
-
-    # here be dragons:
-    # (or pythons, whatever.)
-    #
-    # i figured that `@decorate` was syntactic sugar for `@decorate()`.
-    # but it's not. if this decorator was used without arguments, we
-    # must return the decorated function. for example::
-    #
-    #   @register_tab
-    #   def my_view(request):
-    #      pass
-    #
-    if (len(kwargs) == 0) and (len(args) == 1) and\
-    isinstance(args[0], types.FunctionType):
-        return decorator(args[0])
-
-    # otherwise, we must return a nested decorator, to pass along the
-    # arguments. this python syntax is kind of funky, but consistent.
-    # for example::
-    #
-    #  @register_tab(caption="My Lovely View")
-    #  def my_view(request):
-    #      pass
-    #
-    return decorator
-
 
 # adapted from ubernostrum's django-template-utils. it didn't seem
 # substantial enough to add a dependency, so i've just pasted it.
-class ContextUpdatingNode(template.Node):
-    def __init__(self, **kwargs):
-        self.context = kwargs
-
+class TabsNode(template.Node):
+    def __init__(self, tabs, varname):
+        self.tabs = tabs
+        self.varname = varname
+        
     def render(self, context):
-        context.update(self.context)
+        request = Variable("request").resolve(context)
+        for tab in self.tabs:
+            tab.is_active = tab.url == request.get_full_path()
+        context[self.varname] = self.tabs
         return ""
 
 
@@ -181,5 +120,5 @@ def get_tabs(parser, token):
         raise template.TemplateSyntaxError(
             'The second argument to the {%% %s %%} tag must be "as"' % (tag_name))
 
-    kwargs = { str(args[1]): data._tabs }
-    return ContextUpdatingNode(**kwargs)
+    tabs = [Tab(callback, caption) for callback, caption in settings.TABS]
+    return TabsNode(tabs, str(args[1]))
