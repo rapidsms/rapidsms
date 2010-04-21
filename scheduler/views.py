@@ -4,14 +4,12 @@
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext as _
 from django.contrib.auth.decorators import login_required
-from django.templatetags.tabs_tags import register_tab
 from rapidsms.utils import paginated, render_to_response
 
 from rapidsms.contrib.scheduler.models import EventSchedule
 from rapidsms.contrib.scheduler.forms import ScheduleForm
 
 @login_required
-@register_tab(caption="Event Scheduler")
 def index(request, template="scheduler/index.html"):
     context = {}
     schedules = EventSchedule.objects.all()
