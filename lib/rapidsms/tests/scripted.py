@@ -102,8 +102,7 @@ class TestScript (TransactionTestCase):
             cmds.append((num, date, dir, txt))
         return cmds
 
-    def runParsedScript (self, cmds):
-
+    def startRouter (self):
         # Router.start blocks until Router.stop is called, so start it in a
         # separate thread so it can process our mock messages asynchronously
         threading.Thread(target=self.router.start).start()
@@ -113,19 +112,39 @@ class TestScript (TransactionTestCase):
         while not self.router.accepting:
             time.sleep(0.2)
 
+    def stopRouter (self):
+        self.router.stop()
+
+    def sendMessage (self, num, txt, date=None):
+        if date is None:
+            date = datetime.now()
+        msg = self.backend.message(num, txt)
+        msg.received_at = date
+        self.backend.route(msg)
+
+        # wait until the router has finished
+        # processing this incoming message
+        self.router.join()
+
+    def receiveMessage (self):
+        return self.backend.next_outgoing_message()
+
+    def receiveAllMessages (self):
+        messages = []
+        msg = self.receiveMessage()
+        while msg is not None:
+            messages.append(msg)
+            msg = self.receiveMessage()
+        return messages
+
+    def runParsedScript (self, cmds):
+        self.startRouter()
         last_msg = ''
         for num, date, dir, txt in cmds:
             if dir == ">":
-                msg = self.backend.message(num, txt)
-                msg.received_at = date
-                self.backend.route(msg)
-
-                # wait until the router has finished
-                # processing this incoming message
-                self.router.join()
-
+                self.sendMessage(num, txt, date)
             elif dir == "<":
-                msg = self.backend.next_outgoing_message()
+                msg = self.receiveMessage()
                 self.assertTrue(msg is not None, 
                     "Message was ignored.\nMessage: '%s'\nExpecting: '%s'" % (last_msg, txt))
                 self.assertEquals(msg.peer, num,
@@ -137,7 +156,7 @@ class TestScript (TransactionTestCase):
                     % (last_msg, msg.text,txt))
             last_msg = txt
 
-        self.router.stop()
+        self.stopRouter()
 
     def runScript (self, script):
         self.runParsedScript(self.parseScript(script))
