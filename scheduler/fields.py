@@ -22,7 +22,7 @@ class PickledObject(str):
        then it must [well, should] be a pickled one)."""
     pass
 
-class PickledObjectField(models.Field):
+class PickledObjectField(models.TextField):
     """ An extension of django's model Field to support pickled Python objects """
     __metaclass__ = models.SubfieldBase
     
@@ -39,12 +39,9 @@ class PickledObjectField(models.Field):
                 return value
     
     def get_db_prep_save(self, value):
-        if value is not None and not isinstance(value, PickledObject):
-            value = PickledObject(pickle.dumps(value))
-        return value
-    
-    def get_internal_type(self): 
-        return 'TextField'
+        if value is not None and not isinstance(value, basestring):
+            value = pickle.dumps(value)
+        return super(PickledObjectField, self).get_db_prep_save(value)
     
     def get_db_prep_lookup(self, lookup_type, value):
         if lookup_type == 'exact' or lookup_type == 'iexact':
