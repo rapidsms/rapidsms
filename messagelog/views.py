@@ -9,5 +9,5 @@ from .tables import MessagelogTable
 def message_log(req):
     return render_to_response(req,
         "messagelog/index.html", {
-            "messages": MessagelogTable(request=req, row_class=ContactRow)
+            "messages": MessagelogTable(request=req)
         })

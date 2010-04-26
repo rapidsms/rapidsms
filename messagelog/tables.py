@@ -6,11 +6,9 @@ from rapidsms import tables
 from .models import Message
 
 
-class MessagelogTable(tables.Table):
-    text      = tables.Column("Text")
-    who       = tables.Column("To/From", sortable=False)
-    direction = tables.Column("Direction")
-    date      = tables.Column("Date")
-
-    def get_query_set(self):
-        return Message.objects.all()
+class MessagelogTable(tables.ModelTable):
+    
+    class Meta:
+        model = Message
+        exclude = ['id']
+        order_by = '-date'

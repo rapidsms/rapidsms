@@ -11,24 +11,6 @@
 {% block content %}
 <div class="messages module">
 	<h2>Message Log</h2>
-	{% render_colgroup messages %}
-        {% render_thead messages %}
-
-        <tbody>{% if messages.rows %}{% for row in messages.rows %}
-            <tr{% if row.is_active %} class="active"{% endif %}>{% for value in row %}{% if forloop.first %}
-                <th><a href="{{ row.url }}">{% if value %}{{ value }}{% else %}&nbsp;{% endif %}</a></th>{% else %}
-                <td>{{ value }}</td>{% endif %}{% endfor %}
-            </tr>{% endfor %}{% else %}
-            <tr class="no-data look-right">
-                <td colspan="{{ contacts.columns|length }}">
-                    <p>
-                        You haven't created any contacts yet.<br />
-                        Use the form on the right to get started.
-                    </p>
-                </td>
-            </tr>{% endif %}
-        </tbody>
-
-        {% render_tfoot messages %}
+	{% render_table messages %}
 </div>
 {% endblock %}
