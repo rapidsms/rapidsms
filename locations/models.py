@@ -89,6 +89,7 @@ class LocationBase(models.Model):
                             help_text = "A unique identifier that will be lowercased going into the database.")
     type = models.ForeignKey(LocationType)
     point = models.ForeignKey(Point, null=True, blank=True)
+    parent = models.ForeignKey('self', null=True, blank=True)
 
     class Meta:
         abstract = True
