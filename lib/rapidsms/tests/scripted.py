@@ -56,7 +56,7 @@ class TestScript (TransactionTestCase):
     def setUp (self):
         self.router = globalrouter
         
-        self._init_log(logging.DEBUG)
+        self._init_log(logging.WARNING)
         
         # setup the mock backend
         self.router.add_backend("mockbackend", "rapidsms.tests.harness", {})
