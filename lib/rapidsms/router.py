@@ -348,7 +348,13 @@ class Router(object, LoggerMixin):
                             msg.handled = True
                             break
                     
-                    
+                    elif phase == "default":
+                        # allow default phase of apps to short circuit
+                        # for prioritized contextual responses.   
+                        if handled is True:
+                            self.debug("Short-circuited default")
+                            break
+                        
         except StopIteration:
             pass
 
