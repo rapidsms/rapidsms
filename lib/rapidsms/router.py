@@ -315,7 +315,7 @@ class Router(object, LoggerMixin):
                 self.debug("In %s phase" % phase)
 
                 if phase == "default":
-                    if msg.responses:
+                    if msg.handled:
                         self.debug("Skipping phase")
                         break
 
@@ -343,8 +343,12 @@ class Router(object, LoggerMixin):
                     elif phase == "handle":
                         if handled is True:
                             self.debug("Short-circuited")
+                            # mark the message handled to avoid the 
+                            # default phase firing unnecessarily
+                            msg.handled = True
                             break
-
+                    
+                    
         except StopIteration:
             pass
 
