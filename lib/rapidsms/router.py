@@ -337,7 +337,7 @@ class Router(object, LoggerMixin):
                             self.warning("Message filtered")
                             raise(StopIteration)
 
-                    # during the _handle_ pahase, apps can return True
+                    # during the _handle_ phase, apps can return True
                     # to "short-circuit" this phase, preventing any
                     # further apps from receiving the message
                     elif phase == "handle":
