@@ -9,9 +9,12 @@ from .models import Message
 
 class App(rapidsms.App):
     def _who(self, msg):
-        if   msg.contact:    return { "contact":    msg.contact }
-        elif msg.connection: return { "connection": msg.connection }
-        raise ValueError
+        to_return = {}
+        if msg.contact:    to_return["contact"]    = msg.contact 
+        if msg.connection: to_return["connection"] = msg.connection 
+        if not to_return:
+            raise ValueError
+        return to_return
 
     def _log(self, direction, who, text):
         return Message.objects.create(
