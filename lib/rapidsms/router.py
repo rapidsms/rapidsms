@@ -100,19 +100,28 @@ class Router(object, LoggerMixin):
         while True:
             try:
                 started = backend.start()
+                self.debug("backend %s terminated normally" % backend)
                 return True
+            
+            except Exception, e:
+                try:
+                    self.debug("caught exception starting backend %s: %s" % backend, e)
+                    backend.exception()
 
-            except:
-                backend.exception()
-
-                # this flows sort of backwards. wait for five seconds
-                # (to give the backend a break before retrying), but
-                # abort and return if self.accepting is ever False (ie,
-                # the router is shutting down). this ensures that we
-                # don't delay shutdown, because that causes me to SIG
-                # KILL, which prevents things from stopping cleanly
-                if self._wait(lambda: not self.accepting, 5):
-                    return None
+                    # this flows sort of backwards. wait for five seconds
+                    # (to give the backend a break before retrying), but
+                    # abort and return if self.accepting is ever False (ie,
+                    # the router is shutting down). this ensures that we
+                    # don't delay shutdown, because that causes me to SIG
+                    # KILL, which prevents things from stopping cleanly
+                    if self._wait(lambda: not self.accepting, 5):
+                        return None
+                
+                except:
+                    # a last ditch effort failure.  something went wrong
+                    # in logging or waiting and we still want to keep 
+                    # restarting the backend
+                    pass
 
 
     def _start_all_backends(self):
