@@ -116,6 +116,7 @@ class Backend(BackendBase):
 
 
     def run(self):
+        self.debug("starting the run method")
         while self.running:
             self.info("Polling modem for messages")
             msg = self.modem.next_message()
@@ -134,18 +135,23 @@ class Backend(BackendBase):
             for n in range(0, self.POLL_INTERVAL*10):
                 if not self.running: return None
                 time.sleep(0.1)
+        self.debug("The GSM backend appears to be terminating normally.")
 
 
     def start(self):
+        self.debug("starting up gsm backend")
+        
         self.sent_messages = 0
         self.failed_messages = 0
         self.received_messages = 0
 
         # connect to the modem and boot it to start receiving incoming
         # messages. if connection fails, the router will retry shortly
+        self.debug("bootstraping pygsm modem")
         self.modem = pygsm.GsmModem(logger=self.gsm_log,**self.modem_kwargs)
         self.modem.boot()
-
+        self.debug("pygsm modem bootstrapped")
+        
         # call the superclass to start the run loop -- it just sets
         # ._running to True and calls run, but let's not duplicate it.
         BackendBase.start(self)
