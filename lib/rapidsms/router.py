@@ -99,29 +99,29 @@ class Router(object, LoggerMixin):
 
         while True:
             try:
+                self.debug("starting backend")
                 started = backend.start()
                 self.debug("backend %s terminated normally" % backend)
                 return True
             
             except Exception, e:
-                try:
-                    self.debug("caught exception starting backend %s: %s" % backend, e)
-                    backend.exception()
+                self.debug("caught exception in backend %s: %s" % (backend, e))
+                backend.exception()
 
-                    # this flows sort of backwards. wait for five seconds
-                    # (to give the backend a break before retrying), but
-                    # abort and return if self.accepting is ever False (ie,
-                    # the router is shutting down). this ensures that we
-                    # don't delay shutdown, because that causes me to SIG
-                    # KILL, which prevents things from stopping cleanly
-                    if self._wait(lambda: not self.accepting, 5):
-                        return None
-                
-                except:
-                    # a last ditch effort failure.  something went wrong
-                    # in logging or waiting and we still want to keep 
-                    # restarting the backend
-                    pass
+                # this flows sort of backwards. wait for five seconds
+                # (to give the backend a break before retrying), but
+                # abort and return if self.accepting is ever False (ie,
+                # the router is shutting down). this ensures that we
+                # don't delay shutdown, because that causes me to SIG
+                # KILL, which prevents things from stopping cleanly.
+                # also check _starting_backends to see if we're in the startup
+                # state.  if we are, don't exit, because accepting won't be
+                # True until we've finished starting up
+                def should_exit():
+                    return not (self._starting_backends or self.accepting)
+                if self._wait(should_exit, 5):
+                    self.debug('returning from _start_backend')
+                    return None
 
 
     def _start_all_backends(self):
@@ -186,6 +186,7 @@ class Router(object, LoggerMixin):
 
         self.info("Starting %s..." % settings.PROJECT_NAME)
         self.pre_start.send(self)
+        self._starting_backends = True
         self._start_all_backends()
         self._start_all_apps()
         self.running = True
@@ -195,6 +196,7 @@ class Router(object, LoggerMixin):
         # accepting messages. (if we tried to dispatch an message to an
         # app before it had started, it might not be configured yet.)
         self.accepting = True
+        self._starting_backends = False
 
         try:
             while self.running:
