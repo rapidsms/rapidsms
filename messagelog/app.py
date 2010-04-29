@@ -23,5 +23,10 @@ class App(rapidsms.App):
             text=text,
             **who)
 
-    def parse(self, msg):    self._log("I", self._who(msg), msg.raw_text)
-    def outgoing(self, msg): self._log("O", self._who(msg), msg.text)
+    def parse(self, msg):
+        # annotate the message as we log them in case any other apps
+        # want a handle to them
+        msg.logger_msg = self._log("I", self._who(msg), msg.raw_text)
+
+    def outgoing(self, msg): 
+        msg.logger_msg = self._log("O", self._who(msg), msg.text)
