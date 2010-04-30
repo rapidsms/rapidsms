@@ -139,24 +139,26 @@ class TestScript (TransactionTestCase):
 
     def runParsedScript (self, cmds):
         self.startRouter()
-        last_msg = ''
-        for num, date, dir, txt in cmds:
-            if dir == ">":
-                self.sendMessage(num, txt, date)
-            elif dir == "<":
-                msg = self.receiveMessage()
-                self.assertTrue(msg is not None, 
-                    "Message was ignored.\nMessage: '%s'\nExpecting: '%s'" % (last_msg, txt))
-                self.assertEquals(msg.peer, num,
-                    "Expected to respond to %s, but message was sent to %s.\nMessage: '%s'"
-                    % (num, msg.peer, last_msg))
-
-                self.assertEquals(msg.text, txt,
-                    "\nMessage: %s\nReceived text: %s\nExpected text: %s\n"
-                    % (last_msg, msg.text,txt))
-            last_msg = txt
-
-        self.stopRouter()
+        try:
+            last_msg = ''
+            for num, date, dir, txt in cmds:
+                if dir == ">":
+                    self.sendMessage(num, txt, date)
+                elif dir == "<":
+                    msg = self.receiveMessage()
+                    self.assertTrue(msg is not None, "Message was ignored.\n"
+                                    "Message: '%s'\nExpecting: '%s'" %
+                                    (last_msg, txt))
+                    self.assertEquals(msg.peer, num, "Expected to respond to "
+                                      "%s, but message was sent to %s.\n"
+                                      "Message: '%s'" % (num, msg.peer,
+                                                         last_msg))
+                    self.assertEquals(msg.text, txt, "\nMessage: %s\nReceived "
+                                      "text: %s\nExpected text: %s\n" %
+                                      (last_msg, msg.text,txt))
+                last_msg = txt
+        finally:
+            self.stopRouter()
 
     def runScript (self, script):
         self.runParsedScript(self.parseScript(script))
