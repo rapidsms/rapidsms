@@ -9,6 +9,7 @@ from harness import EchoApp
 import unittest, re, threading
 from django.test import TransactionTestCase
 from datetime import datetime
+from rapidsms.log.mixin import LoggerMixin
 
 
 class MetaTestScript (type):
@@ -21,7 +22,7 @@ class MetaTestScript (type):
                 attrs[key] = wrapper
         return type.__new__(cls, name, bases, attrs)
 
-class TestScript (TransactionTestCase):
+class TestScript (TransactionTestCase, LoggerMixin):
     # we use the TransactionTestCase so that the router thread has access
     # to the DB objects used outside and vice versa.
     # see: http://docs.djangoproject.com/en/dev/releases/1.1/#releases-1-1
@@ -58,6 +59,11 @@ class TestScript (TransactionTestCase):
         
         self._init_log(logging.WARNING)
         
+        if self.router.backends or self.router.apps:
+            self.error("Found existing backends or apps in the test router! "
+                       "Did you override tearDown and forget to call the base "
+                       "class?  Test behavior may not be as expected.")
+                       
         # setup the mock backend
         self.router.add_backend("mockbackend", "rapidsms.tests.harness", {})
         self.backend = self.router.backends["mockbackend"]
@@ -73,6 +79,11 @@ class TestScript (TransactionTestCase):
     def tearDown (self):
         if self.router.running:
             self.router.stop() 
+        
+        # clear backends, apps
+        self.router.backends = {}
+        self.router.apps = []
+        
 
     def _init_log(self, level):
         # Enable debug logging to screen during tests.  This should be 
