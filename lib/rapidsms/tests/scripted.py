@@ -8,6 +8,7 @@ from rapidsms.router import router as globalrouter
 from harness import EchoApp
 import unittest, re, threading
 from django.test import TransactionTestCase
+from django.conf import settings
 from datetime import datetime
 from rapidsms.log.mixin import LoggerMixin
 
@@ -68,13 +69,9 @@ class TestScript (TransactionTestCase, LoggerMixin):
         self.router.add_backend("mockbackend", "rapidsms.tests.harness", {})
         self.backend = self.router.backends["mockbackend"]
         
-        # setup apps
-        if not self.apps:
-            raise Exception(
-                "You must define a list of apps in your TestScript class!")
-        for app_class in self.apps:
-            app = app_class(self.router)
-            self.router.apps.append(app)
+        # add each application from conf
+        for name in settings.INSTALLED_APPS:
+            self.router.add_app(name)
 
     def tearDown (self):
         if self.router.running:
