@@ -70,7 +70,8 @@ class TestScript (TransactionTestCase, LoggerMixin):
         self.backend = self.router.backends["mockbackend"]
         
         # add each application from conf
-        for name in settings.INSTALLED_APPS:
+        for name in [app_name for app_name in settings.INSTALLED_APPS \
+                     if not app_name in settings.TEST_EXCLUDED_APPS]:
             self.router.add_app(name)
 
     def tearDown (self):
