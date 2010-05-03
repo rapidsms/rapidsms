@@ -59,6 +59,17 @@ class Router(object, LoggerMixin):
         self.apps.append(app)
         return app
 
+    def get_app(self, module_name):
+        """Get a handle to one of our apps by module name.""" 
+        cls = AppBase.find(module_name)
+        if cls is None: return None
+        
+        for app in self.apps:
+            if type(app) == cls:
+                return app
+            
+        raise KeyError("The %s app was not found in the router!" % module_name)
+    
 
     def add_backend(self, name, module_name, config=None):
         """
@@ -74,7 +85,6 @@ class Router(object, LoggerMixin):
         backend = cls(self, name, **config)
         self.backends[name] = backend
         return backend
-
 
     @staticmethod
     def _wait(func, timeout):
