@@ -129,7 +129,8 @@ class Router(object, LoggerMixin):
                 # True until we've finished starting up
                 def should_exit():
                     return not (self._starting_backends or self.accepting)
-                if self._wait(should_exit, 5):
+                self.debug('waiting 15 seconds before retrying')
+                if self._wait(should_exit, 15):
                     self.debug('returning from _start_backend')
                     return None
 
