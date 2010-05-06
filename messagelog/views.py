@@ -7,7 +7,7 @@ from rapidsms.utils import render_to_response
 from .tables import MessagelogTable
 
 
-MESSAGES_PER_PAGE = 25
+MESSAGES_PER_PAGE = 100
 
 
 def message_log(req):
