@@ -39,5 +39,5 @@
 	/* make incoming (from rapidsms's point of view) messages dull, since
 	 * they're not very important, compared to the outgoing messages */
 	#log tr.in {
-		color: #eee;
+		color: #C0C0C0;
 	}
