@@ -105,6 +105,16 @@ class ContactBase(models.Model):
     def is_anonymous(self):
         return not (self.name or self.alias)
 
+    @property
+    def default_connection(self):
+        """
+        Return the default connection for this person.
+        """
+        # TODO: this is defined totally arbitrarily for a future 
+        # sane implementation
+        if self.connection_set.count() > 0:
+            return self.connection_set.all()[0]
+        return None
 
 class Contact(ContactBase):
     __metaclass__ = ExtensibleModelBase

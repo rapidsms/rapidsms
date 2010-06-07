@@ -3,12 +3,14 @@
 
 
 import time
-from rapidsms.router import Router
-from harness import MockRouter, MockBackend, EchoApp
-from rapidsms.backends.base import BackendBase
+import logging
+from rapidsms.router import router as globalrouter
+from harness import EchoApp
 import unittest, re, threading
-from django.test import TestCase
+from django.test import TransactionTestCase
+from django.conf import settings
 from datetime import datetime
+from rapidsms.log.mixin import LoggerMixin
 
 
 class MetaTestScript (type):
@@ -21,7 +23,10 @@ class MetaTestScript (type):
                 attrs[key] = wrapper
         return type.__new__(cls, name, bases, attrs)
 
-class TestScript (TestCase):
+class TestScript (TransactionTestCase, LoggerMixin):
+    # we use the TransactionTestCase so that the router thread has access
+    # to the DB objects used outside and vice versa.
+    # see: http://docs.djangoproject.com/en/dev/releases/1.1/#releases-1-1
     __metaclass__ = MetaTestScript
 
     """
@@ -51,22 +56,44 @@ class TestScript (TestCase):
     apps = None
 
     def setUp (self):
-        self.router = Router.instance()
-        self.backend = MockBackend(self.router, "mock")
-        #self.router.add_backend(self.backend)
-        self.router.backends.append(self.backend)
-        if not self.apps:
-            raise Exception(
-                "You must define a list of apps in your TestScript class!")
-        for app_class in self.apps:
-            app = app_class(self.router)
-            #self.router.add_app(app)
-            self.router.apps.append(app)
+        self.router = globalrouter
+        
+        self._init_log(logging.WARNING)
+        
+        if self.router.backends or self.router.apps:
+            self.error("Found existing backends or apps in the test router! "
+                       "Did you override tearDown and forget to call the base "
+                       "class?  Test behavior may not be as expected.")
+                       
+        # setup the mock backend
+        self.router.add_backend("mockbackend", "rapidsms.tests.harness", {})
+        self.backend = self.router.backends["mockbackend"]
+        
+        # add each application from conf
+        for name in [app_name for app_name in settings.INSTALLED_APPS \
+                     if not app_name in settings.TEST_EXCLUDED_APPS]:
+            self.router.add_app(name)
 
     def tearDown (self):
         if self.router.running:
             self.router.stop() 
+        
+        # clear backends, apps
+        self.router.backends = {}
+        self.router.apps = []
+        
 
+    def _init_log(self, level):
+        # Enable debug logging to screen during tests.  This should be 
+        # configurable better.
+        if not self.router.logger:
+            self.router.logger = logging.getLogger()
+        if not self.router.logger.handlers:
+            handler = logging.StreamHandler()
+            self.router.logger.addHandler(handler)
+        self.router.logger.setLevel(level)
+    
+        
     @classmethod
     def parseScript (cls, script):
         cmds  = []
@@ -84,8 +111,7 @@ class TestScript (TestCase):
             cmds.append((num, date, dir, txt))
         return cmds
 
-    def runParsedScript (self, cmds):
-
+    def startRouter (self):
         # Router.start blocks until Router.stop is called, so start it in a
         # separate thread so it can process our mock messages asynchronously
         threading.Thread(target=self.router.start).start()
@@ -95,32 +121,53 @@ class TestScript (TestCase):
         while not self.router.accepting:
             time.sleep(0.2)
 
-        last_msg = ''
-        for num, date, dir, txt in cmds:
-            if dir == ">":
-                msg = self.backend.message(num, txt)
-                msg.received_at = date
-                self.backend.route(msg)
-
-                # wait until the router has finished
-                # processing this incoming message
-                self.router.join()
-
-            elif dir == "<":
-                msg = self.backend.next_outgoing_message()
-                self.assertTrue(msg is not None, 
-                    "message was ignored.\nMessage: '%s'\nExpecting: '%s'" % (last_msg, txt))
-
-                self.assertEquals(msg.peer, num,
-                    "Expected to respond to %s, but message was sent to %s.\nMessage: '%s'"
-                    % (num, msg.peer, last_msg))
-
-                self.assertEquals(msg.text, txt,
-                    "\nMessage: %s\nReceived text: %s\nExpected text: %s\n"
-                    % (last_msg, msg.text,txt))
-            last_msg = txt
-
+    def stopRouter (self):
         self.router.stop()
+
+    def sendMessage (self, num, txt, date=None):
+        if date is None:
+            date = datetime.now()
+        msg = self.backend.message(num, txt)
+        msg.received_at = date
+        self.backend.route(msg)
+
+        # wait until the router has finished
+        # processing this incoming message
+        self.router.join()
+
+    def receiveMessage (self):
+        return self.backend.next_outgoing_message()
+
+    def receiveAllMessages (self):
+        messages = []
+        msg = self.receiveMessage()
+        while msg is not None:
+            messages.append(msg)
+            msg = self.receiveMessage()
+        return messages
+
+    def runParsedScript (self, cmds):
+        self.startRouter()
+        try:
+            last_msg = ''
+            for num, date, dir, txt in cmds:
+                if dir == ">":
+                    self.sendMessage(num, txt, date)
+                elif dir == "<":
+                    msg = self.receiveMessage()
+                    self.assertTrue(msg is not None, "Message was ignored.\n"
+                                    "Message: '%s'\nExpecting: '%s'" %
+                                    (last_msg, txt))
+                    self.assertEquals(msg.peer, num, "Expected to respond to "
+                                      "%s, but message was sent to %s.\n"
+                                      "Message: '%s'" % (num, msg.peer,
+                                                         last_msg))
+                    self.assertEquals(msg.text, txt, "\nMessage: %s\nReceived "
+                                      "text: %s\nExpected text: %s\n" %
+                                      (last_msg, msg.text,txt))
+                last_msg = txt
+        finally:
+            self.stopRouter()
 
     def runScript (self, script):
         self.runParsedScript(self.parseScript(script))

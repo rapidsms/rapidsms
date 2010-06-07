@@ -35,6 +35,12 @@ class Backend(BackendBase):
         self.modem_kwargs = kwargs
         self.modem = None
 
+        # set a default timeout if it wasn't specified in localsettings.py;
+        # otherwise read() will hang forever if the modem is powered off
+        # (but the USB <-> serial device is not disconnected)
+        if 'timeout' not in self.modem_kwargs:
+            self.modem_kwargs['timeout'] = 10
+
 
     def __str__(self):
         return self._title
@@ -116,6 +122,7 @@ class Backend(BackendBase):
 
 
     def run(self):
+        self.debug("starting the run method")
         while self.running:
             self.info("Polling modem for messages")
             msg = self.modem.next_message()
@@ -134,20 +141,35 @@ class Backend(BackendBase):
             for n in range(0, self.POLL_INTERVAL*10):
                 if not self.running: return None
                 time.sleep(0.1)
+        self.debug("The GSM backend appears to be terminating normally.")
 
 
     def start(self):
-        self.sent_messages = 0
-        self.failed_messages = 0
-        self.received_messages = 0
-
-        # connect to the modem and boot it to start receiving incoming
-        # messages. if connection fails, the router will retry shortly
-        self.modem = pygsm.GsmModem(logger=self.gsm_log,**self.modem_kwargs).boot()
-
-        # call the superclass to start the run loop -- it just sets
-        # ._running to True and calls run, but let's not duplicate it.
-        BackendBase.start(self)
+        self.debug("starting up gsm backend")
+        
+        try:
+            self.sent_messages = 0
+            self.failed_messages = 0
+            self.received_messages = 0
+    
+            # connect to the modem and boot it to start receiving incoming
+            # messages. if connection fails, the router will retry shortly
+            self.debug("bootstraping pygsm modem")
+            self.modem = pygsm.GsmModem(logger=self.gsm_log,**self.modem_kwargs)
+            self.debug("booting modem")
+            self.modem.boot()
+            self.debug("pygsm modem bootstrapped")
+            
+            # call the superclass to start the run loop -- it just sets
+            # ._running to True and calls run, but let's not duplicate it.
+            BackendBase.start(self)
+        except:
+            if getattr(self, 'modem', None):
+                self.debug('disconnecting gsm modem')
+                self.modem.disconnect()
+            else:
+                self.debug('self.modem not yet set, skipping disconnect')
+            raise
 
 
     def stop(self):

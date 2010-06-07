@@ -1,6 +1,6 @@
 {% load tables_tags %}
 
-<tbody>{% if table.rows %}{% for row in table.rows %}
+<tbody>{% if rows %}{% for row in rows %}
 	<tr>{% for value in row %}
 		<td>{{ value }}</td>{% endfor %}
 	</tr>{% endfor %}{% else %}

@@ -70,6 +70,15 @@ TEMPLATE_DIRS = [
     # Don't forget to use absolute paths, not relative paths.
 ]
 
+TABS = [
+    ('rapidsms.views.dashboard', 'Dashboard'),
+#    ('rapidsms.contrib.httptester.views.generate_identity', 'Message Tester'),
+#    ('rapidsms.contrib.locations.views.dashboard', 'Map'),
+#    ('rapidsms.contrib.messagelog.views.message_log', 'Message Log'),
+#    ('rapidsms.contrib.messaging.views.messaging', 'Messaging'),
+#    ('rapidsms.contrib.registration.views.registration', 'Registration'),
+#    ('rapidsms.contrib.scheduler.views.index', 'Event Scheduler'),
+]
 
 # since we might hit the database from any thread during testing, the in-memory
 # sqlite database isn't sufficient. it spawns a separate virtual database for

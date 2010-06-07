@@ -5,17 +5,16 @@ import os
 
 from rapidsms.router import Router
 from rapidsms.backends.base import BackendBase
-from rapidsms.app import App
+from rapidsms import App
 
 
 # a really dumb Logger stand-in
 class MockLogger (list):
     def __init__(self):
-
-	# enable logging during tests with an
-	# environment variable, since the runner
-	# doesn't seem to have args
-	self.to_console = os.environ.get("verbose", False)
+        # enable logging during tests with an
+        # environment variable, since the runner
+        # doesn't seem to have args
+        self.to_console = os.environ.get("verbose", False)
 
     def write (self, *args):
         if self.to_console:
@@ -37,15 +36,29 @@ class MockRouter (Router):
         self.stop_all_backends()
 
 class MockBackend (BackendBase):
+    """
+    A simple mock backend, modeled after the BucketBackend
+    """
     def start(self):
-        self.outgoing = []
+        self.bucket = []
+        self.outgoing_bucket = []
         BackendBase.start(self)
 
-    def send(self, msg):
-        self.outgoing.append(msg)
+    def receive(self, identity, text):
+        msg = self.message(identity, text)
+        self.router.incoming_message(msg)
+        self.bucket.append(msg)
+        return msg
 
+    def send(self, msg):
+        self.bucket.append(msg)
+        self.outgoing_bucket.append(msg)
+        return True
+    
     def next_outgoing_message(self):
-        return self.outgoing.pop(0)
+        if len(self.outgoing_bucket) == 0:
+            return None
+        return self.outgoing_bucket.pop(0)
  
 # a subclass of App with all the moving parts replaced
 class MockApp (App):
