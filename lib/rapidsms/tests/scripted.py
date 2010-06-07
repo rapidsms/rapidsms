@@ -112,6 +112,10 @@ class TestScript (TransactionTestCase, LoggerMixin):
         return cmds
 
     def startRouter (self):
+        if not hasattr(self, "router") or not self.router:
+            raise Exception("Can't start router -- it doesn't exist!  "
+                            "Did you override setUp and forget to call "
+                            "the base class?")
         # Router.start blocks until Router.stop is called, so start it in a
         # separate thread so it can process our mock messages asynchronously
         threading.Thread(target=self.router.start).start()
