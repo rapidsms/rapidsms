@@ -20,6 +20,7 @@ class HttpServer (BaseHTTPServer.HTTPServer, SocketServer.ThreadingMixIn):
             BaseHTTPServer.HTTPServer.handle_request(self)
 
 class Backend(BackendBase):
+    
     def configure(self, host="localhost", port=8080, handler="HttpHandler", **kwargs):
         
         #module_name = "httphandlers"
@@ -34,8 +35,8 @@ class Backend(BackendBase):
         
     def run (self):
         while self.running:
-            if self.message_waiting:
-                msg = self.next_message()
+            msg = self.next_message()
+            if msg:
                 if handlers.msg_store.has_key(msg.connection.identity):
                         handlers.msg_store[msg.connection.identity].append(msg.text)
                 else:
