@@ -27,11 +27,19 @@ class Backend(BackendBase):
         #module = __import__(module_name, {}, {}, [''])
         component_class = getattr(handlers, handler)
         
+        self.handler = component_class
         self.server = HttpServer((host, int(port)), component_class)
         self.type = "HTTP"
         # set this backend in the server instance so it 
         # can callback when a message is received
         self.server.backend = self
+        # also set it in the handler class so we can callback
+        self.handler.backend = self
+
+        # set the slug based on the handler, so we can have multiple
+        # http backends
+        self._slug = "http_%s" % handler
+        
         
     def run (self):
         while self.running:
@@ -43,3 +51,6 @@ class Backend(BackendBase):
                         handlers.msg_store[msg.connection.identity] = []
                         handlers.msg_store[msg.connection.identity].append(msg.text)
             self.server.handle_request()
+
+    def send(self, message):
+        self.handler.outgoing(message)
