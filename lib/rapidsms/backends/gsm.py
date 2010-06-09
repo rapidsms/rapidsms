@@ -30,6 +30,9 @@ class Backend(BackendBase):
             if arg in kwargs:
                 kwargs.pop(arg)
 
+        # extract any settings which shouldn't be passed to __init__.
+        self.service_center = kwargs.pop("service_center", None)
+
         # store the rest to pass on to the
         # GsmModem() when RapidSMS starts
         self.modem_kwargs = kwargs
@@ -144,6 +147,10 @@ class Backend(BackendBase):
         # connect to the modem and boot it to start receiving incoming
         # messages. if connection fails, the router will retry shortly
         self.modem = pygsm.GsmModem(logger=self.gsm_log,**self.modem_kwargs).boot()
+
+        # set the SMSC, if it was included in the config.
+        if self.service_center is not None:
+            self.modem.service_center = self.service_center
 
         # call the superclass to start the run loop -- it just sets
         # ._running to True and calls run, but let's not duplicate it.
