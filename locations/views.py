@@ -5,8 +5,7 @@
 from django.views.decorators.http import require_GET, require_http_methods
 from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse
-from django.templatetags.tabs_tags import register_tab
-
+from rapidsms.templatetags.tabs_tags import register_tab
 from rapidsms.utils import render_to_response
 from .models import *
 from .forms import *
