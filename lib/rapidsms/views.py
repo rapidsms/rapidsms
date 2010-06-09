@@ -3,7 +3,7 @@
 
 
 from django.views.decorators.http import require_GET
-from django.templatetags.tabs_tags import register_tab
+from .templatetags.tabs_tags import register_tab
 from django.contrib.auth.views import login as django_login
 from django.contrib.auth.views import logout as django_logout
 from rapidsms.utils import render_to_response
