@@ -28,7 +28,6 @@ import imaplib
 import time
 import smtplib
 import re
-import Queue
 
 
 from datetime import datetime
