@@ -11,6 +11,8 @@ DATABASE_NAME   = "/tmp/rapidsms.sqlite3"
 
 INSTALLED_APPS = [
     "rapidsms",
+    "djangotables",
+
     "rapidsms.contrib.handlers",
     "rapidsms.contrib.echo",
     "rapidsms.contrib.ajax",
