@@ -9,9 +9,12 @@ from .models import Message
 
 class App(rapidsms.App):
     def _who(self, msg):
-        if   msg.contact:    return { "contact":    msg.contact }
-        elif msg.connection: return { "connection": msg.connection }
-        raise ValueError
+        to_return = {}
+        if msg.contact:    to_return["contact"]    = msg.contact 
+        if msg.connection: to_return["connection"] = msg.connection 
+        if not to_return:
+            raise ValueError
+        return to_return
 
     def _log(self, direction, who, text):
         return Message.objects.create(
@@ -20,5 +23,10 @@ class App(rapidsms.App):
             text=text,
             **who)
 
-    def parse(self, msg):    self._log("I", self._who(msg), msg.raw_text)
-    def outgoing(self, msg): self._log("O", self._who(msg), msg.text)
+    def parse(self, msg):
+        # annotate the message as we log them in case any other apps
+        # want a handle to them
+        msg.logger_msg = self._log("I", self._who(msg), msg.raw_text)
+
+    def outgoing(self, msg): 
+        msg.logger_msg = self._log("O", self._who(msg), msg.text)

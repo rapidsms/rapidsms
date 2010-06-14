@@ -1,0 +1,41 @@
+{% extends base_template %}
+{% load i18n %}
+{% load scheduler_tags %}
+{% block title %}Edit Schedule {{ schedule.pk }}{% endblock %}
+{% block content %}
+
+<div class="module">
+	<h2>Edit Schedule {{ schedule.pk }}</h2><br/>
+    <p/>
+    
+    {% if status %}<div>{{ status }}</div><p/>{% endif %}
+    {% if errors %}<div class="error" style="color:red">{{ errors }}</div><p/>{% endif %}
+
+	<i>Note that we currently do not support adding a schedule from the UI, 
+	nor modifying start-time, end_time, or the function to be called.</i>
+	<form action="" method="POST">
+	<tr><th><label>Name of Python callback function: </label></th>
+		<td><b>{{schedule.callback}}</b></td></tr> 
+	<tr><th><label for="id_description">Description:</label></th><td>
+		<input value="{{schedule.description}}" id="id_description" type="text" name="description" maxlength="255" /></td></tr> 
+	<tr><th><label for="id_months">Months:</label></th><td>
+		<input type="text" name="months" value="{{schedule.months|display_list}}" id="id_months" /><br />'1,2,3' for jan, feb, march - '*' for all</td></tr> 
+	<tr><th><label for="id_days_of_month">Days of month:</label></th><td>
+		<input type="text" name="days_of_month" value="{{schedule.days_of_month|display_list}}" id="id_days_of_month" /><br />'1,2,3' for 1st, 2nd, 3rd - '*' for all</td></tr> 
+	<tr><th><label for="id_days_of_week">Days of week:</label></th><td>
+		<input type="text" name="days_of_week" value="{{schedule.days_of_week|display_list}}" id="id_days_of_week" /><br />'0,1,2' for mon, tue, wed - '*' for all</td></tr> 
+	<tr><th><label for="id_hours">Hours:</label></th><td>
+		<input type="text" name="hours" value="{{schedule.hours|display_list}}" id="id_hours" /><br />'0,1,2' for midnight, 1 o'clock, 2 - '*' for all</td></tr> 
+	<tr><th><label for="id_minutes">Minutes:</label></th><td>
+		<input type="text" name="minutes" value="{{schedule.minutes|display_list}}" id="id_minutes" /><br />'0,1,2' for X:00, X:01, X:02 - '*' for all</td></tr> 
+	<tr><th><label for="id_count">Count:</label></th><td>
+		<input value="{{schedule.count|default:""}}" type="text" name="count" id="id_count" /><br />How many times do you want this to fire? Leave blank for 'continuously'</td></tr> 
+	<tr><th><label for="id_active">Active:</label></th><td>
+		<input {% if schedule.active %}checked="checked"{% endif %} type="checkbox" name="active" id="id_active" /></td></tr><p/> 
+	<input type="submit" value="{% trans 'Submit' %}" /> 
+	</form><p/>
+
+	<a href="{% url scheduler %}">{% trans 'Return to the list of schedules' %}</a>
+</div>
+
+{% endblock %}

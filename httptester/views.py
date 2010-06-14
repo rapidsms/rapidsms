@@ -6,7 +6,6 @@ from random import randint
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.views.decorators.http import require_GET, require_POST
-from rapidsms.templatetags.tabs_tags import register_tab
 from rapidsms.contrib.ajax.exceptions import RouterNotResponding
 from rapidsms.utils import render_to_response
 from . import forms
@@ -18,7 +17,6 @@ def _redirect(identity):
     return HttpResponseRedirect(url)
 
 
-@register_tab(caption="Message Tester")
 def generate_identity(req):
     identity = randint(111111, 999999)
     return _redirect(identity)

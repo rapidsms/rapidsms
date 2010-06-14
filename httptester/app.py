@@ -35,7 +35,7 @@ class App(rapidsms.App):
             self.backend
 
         except KeyError:
-            raise KeyError(
+            self.info(
                 "To use the message tester app, you must add a bucket " +\
                 "backend named 'message_tester' to your INSTALLED_BACKENDS")
 

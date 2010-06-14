@@ -3,11 +3,10 @@
 
 
 from django.db import models
-from ...models import Location
 
 
 class ContactLocation(models.Model):
-    location = models.ForeignKey(Location, null=True, blank=True, help_text=
+    location = models.ForeignKey('locations.Location', null=True, blank=True, help_text=
         "The location which this Contact last reported from.")
 
     class Meta:
