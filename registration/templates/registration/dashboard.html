@@ -12,27 +12,8 @@
 {% block left %}
 <div class="module">
 	<h2>Contacts</h2>
-	<table class="contacts">
-		{% render_colgroup contacts %}
-		{% render_thead contacts %}
+	{{ contacts_table.as_html }}
 
-		<tbody>{% if contacts.rows %}{% for row in contacts.rows %}
-			<tr{% if row.is_active %} class="active"{% endif %}>{% for value in row %}{% if forloop.first %}
-				<th><a href="{{ row.url }}">{% if value %}{{ value }}{% else %}&nbsp;{% endif %}</a></th>{% else %}
-				<td>{% if value %}{{ value }}{% endif %}</td>{% endif %}{% endfor %}
-			</tr>{% endfor %}{% else %}
-			<tr class="no-data look-right">
-				<td colspan="{{ contacts.columns|length }}">
-					<p>
-						You haven't created any contacts yet.<br />
-						Use the form on the right to get started.
-					</p>
-				</td>
-			</tr>{% endif %}
-		</tbody>
-
-		{% render_tfoot contacts %}
-	</table>
 	<div class="toolbar">
 		<a href="{% url registration_add %}" class="add">Add a Contact</a>
 	</div>
