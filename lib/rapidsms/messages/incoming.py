@@ -34,6 +34,10 @@ class IncomingMessage(MessageBase):
         # can only send messages in response to the incoming http
         # request; so they have to wait until processing is done.
         self.processed = False
+        
+        # a message can be marked "handled" by any app, which will
+        # short-circuit the default phase in the router.  
+        self._handled = False
 
 
     @property
@@ -49,6 +53,19 @@ class IncomingMessage(MessageBase):
     def date(self):
         return self.received_at
 
+    
+    def __get_handled(self):
+        """
+        Whether the message has been handled or responded to.
+        """  
+        # The internal flag is checked first, but if not set
+        # then assume anyone who responded wanted it handled
+        return self._handled or len(self.responses) > 0
+
+    def __set_handled(self,val):
+        self._handled = val
+        
+    handled = property(__get_handled,__set_handled)
 
     def flush_responses(self):
         """

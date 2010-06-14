@@ -23,7 +23,10 @@ def render_thead(table):
 
 @register.inclusion_tag("rapidsms/templatetags/tables/tbody.html")
 def render_tbody(table):
-    return { "table": table }
+    rows = table.rows.page()
+    if not rows:
+        rows = table.rows
+    return { "table": table, "rows": rows }
 
 
 @register.inclusion_tag("rapidsms/templatetags/tables/tfoot.html")

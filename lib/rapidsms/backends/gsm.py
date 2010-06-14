@@ -30,13 +30,15 @@ class Backend(BackendBase):
             if arg in kwargs:
                 kwargs.pop(arg)
 
-        # extract any settings which shouldn't be passed to __init__.
-        self.service_center = kwargs.pop("service_center", None)
-
         # store the rest to pass on to the
         # GsmModem() when RapidSMS starts
         self.modem_kwargs = kwargs
         self.modem = None
+
+        # set a default timeout if it wasn't specified in localsettings.py;
+        # otherwise read() will hang forever if the modem is powered off
+        if "timeout" not in self.modem_kwargs:
+            self.modem_kwargs["timeout"] = 10
 
 
     def __str__(self):
@@ -138,23 +140,31 @@ class Backend(BackendBase):
                 if not self.running: return None
                 time.sleep(0.1)
 
+        self.info("Run loop terminated.")
+
 
     def start(self):
-        self.sent_messages = 0
-        self.failed_messages = 0
-        self.received_messages = 0
+        try:
+            self.sent_messages = 0
+            self.failed_messages = 0
+            self.received_messages = 0
 
-        # connect to the modem and boot it to start receiving incoming
-        # messages. if connection fails, the router will retry shortly
-        self.modem = pygsm.GsmModem(logger=self.gsm_log,**self.modem_kwargs).boot()
+            self.info("Connecting and booting via pyGSM...")
+            self.modem = pygsm.GsmModem(logger=self.gsm_log, **self.modem_kwargs)
+            self.modem.boot()
 
-        # set the SMSC, if it was included in the config.
-        if self.service_center is not None:
-            self.modem.service_center = self.service_center
+		    if self.service_center is not None:
+		        self.modem.service_center = self.service_center
 
-        # call the superclass to start the run loop -- it just sets
-        # ._running to True and calls run, but let's not duplicate it.
-        BackendBase.start(self)
+            # call the superclass to start the run loop -- it just sets
+            # ._running to True and calls run, but let's not duplicate it.
+            BackendBase.start(self)
+
+        except:
+            if getattr(self, "modem", None):
+                self.modem.disconnect()
+
+            raise
 
 
     def stop(self):

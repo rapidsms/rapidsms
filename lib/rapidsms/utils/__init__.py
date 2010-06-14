@@ -4,3 +4,4 @@
 
 from .render_to_response import render_to_response
 from .pagination import paginated
+from .web_message import web_message

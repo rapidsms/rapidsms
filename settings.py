@@ -29,6 +29,18 @@ INSTALLED_APPS = [
     "rapidsms.contrib.djangoadmin"
 ]
 
+# These apps should not be started by rapidsms in your tests
+# However the models + bootstrap will still be available through
+# django
+TEST_EXCLUDED_APPS = (
+    "django.contrib.sessions",
+    "django.contrib.contenttypes",
+    "django.contrib.auth",
+    "rapidsms",
+    "rapidsms.contrib.ajax", 
+    "rapidsms.contrib.httptester", 
+)
+
 
 # the INSTALLED_BACKENDS setting is intended to resemble django 1.2's
 # DATABASE: http://docs.djangoproject.com/en/dev/ref/settings/#databases
