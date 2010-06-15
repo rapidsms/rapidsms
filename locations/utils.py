@@ -11,7 +11,8 @@ def get_location_types():
     return [
         LocationTypeStub(cls)
         for cls in loading.get_models()
-        if issubclass(cls, Location) and (cls is not Location)]
+        if issubclass(cls, Location) and\
+            (cls is not Location)]
 
 
 def get_locations(parent=None):
@@ -24,9 +25,6 @@ def get_locations(parent=None):
         kwargs = {
             "parent_type": None,
             "parent_id": None }
-
-    print "filtering"
-    print kwargs
 
     return [
         (type, type.model.objects.filter(**kwargs))
