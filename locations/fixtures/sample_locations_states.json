@@ -1,40 +1,6 @@
 [
     {
         "pk": 1,
-        "model": "locations.locationtype",
-        "fields": {
-            "singular": "Country",
-            "plural": "Countries",
-            "slug": "countries",
-            "exists_in": null
-        }
-    },
-    {
-        "pk": 2,
-        "model": "locations.locationtype",
-        "fields": {
-            "singular": "State",
-            "plural": "States",
-            "slug": "states",
-            "exists_in": 1
-        }
-    },
-    {
-        "pk": 3,
-        "model": "locations.locationtype",
-        "fields": {
-            "singular": "City",
-            "plural": "Cities",
-            "slug": "cities",
-            "exists_in": 50
-        }
-    },
-
-
-
-
-    {
-        "pk": 1,
         "model": "locations.point",
         "fields": {
             "longitude": "-98.5795",
@@ -42,19 +8,23 @@
         }
     },
     {
-        "pk": 1, 
-        "model": "locations.location",
+        "pk": 1,
+        "model": "locations.country",
         "fields": {
             "slug": "usa",
             "name": "United States of America",
-            "point": 1,
-            "type": 1
+            "point": 1
         }
     },
-
-
-
-
+    {
+        "pk": 1,
+        "model": "locations.country",
+        "fields": {
+            "slug": "usa",
+            "name": "United States of America",
+            "point": 1
+        }
+    },
     {
         "pk": 2,
         "model": "locations.point",
@@ -65,15 +35,15 @@
     },
     {
         "pk": 2,
-        "model": "locations.location",
+        "model": "locations.state",
         "fields": {
             "slug": "al",
             "name": "Alabama",
             "point": 2,
-            "type": 2
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
         }
     },
-
     {
         "pk": 3,
         "model": "locations.point",
@@ -84,12 +54,13 @@
     },
     {
         "pk": 3,
-        "model": "locations.location",
+        "model": "locations.state",
         "fields": {
             "slug": "ak",
             "name": "Alaska",
             "point": 3,
-            "type": 2
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
         }
     },
 
@@ -103,12 +74,13 @@
     },
     {
         "pk": 4,
-        "model": "locations.location",
+        "model": "locations.state",
         "fields": {
             "slug": "ar",
             "name": "Arkansas",
             "point": 4,
-            "type": 2
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
         }
     },
 
@@ -122,12 +94,13 @@
     },
     {
         "pk": 5,
-        "model": "locations.location",
+        "model": "locations.state",
         "fields": {
             "slug": "az",
             "name": "Arizona",
             "point": 5,
-            "type": 2
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
         }
     },
 
@@ -141,12 +114,13 @@
     },
     {
         "pk": 6,
-        "model": "locations.location",
+        "model": "locations.state",
         "fields": {
             "slug": "co",
             "name": "Colorado",
             "point": 6,
-            "type": 2
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
         }
     },
 
@@ -160,12 +134,13 @@
     },
     {
         "pk": 7,
-        "model": "locations.location",
+        "model": "locations.state",
         "fields": {
             "slug": "ca",
             "name": "California",
             "point": 7,
-            "type": 2
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
         }
     },
 
@@ -179,12 +154,13 @@
     },
     {
         "pk": 8,
-        "model": "locations.location",
+        "model": "locations.state",
         "fields": {
             "slug": "ct",
             "name": "Connecticut",
             "point": 8,
-            "type": 2
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
         }
     },
 
@@ -198,12 +174,13 @@
     },
     {
         "pk": 9,
-        "model": "locations.location",
+        "model": "locations.state",
         "fields": {
             "slug": "de",
             "name": "Delaware",
             "point": 9,
-            "type": 2
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
         }
     },
 
@@ -217,12 +194,13 @@
     },
     {
         "pk": 10,
-        "model": "locations.location",
+        "model": "locations.state",
         "fields": {
             "slug": "fl",
             "name": "Florida",
             "point": 10,
-            "type": 2
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
         }
     },
 
@@ -236,12 +214,13 @@
     },
     {
         "pk": 11,
-        "model": "locations.location",
+        "model": "locations.state",
         "fields": {
             "slug": "hi",
             "name": "Hawaii",
             "point": 11,
-            "type": 2
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
         }
     },
 
@@ -255,12 +234,13 @@
     },
     {
         "pk": 12,
-        "model": "locations.location",
+        "model": "locations.state",
         "fields": {
             "slug": "ia",
             "name": "Iowa",
             "point": 12,
-            "type": 2
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
         }
     },
 
@@ -274,12 +254,13 @@
     },
     {
         "pk": 13,
-        "model": "locations.location",
+        "model": "locations.state",
         "fields": {
             "slug": "id",
             "name": "Idaho",
             "point": 13,
-            "type": 2
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
         }
     },
 
@@ -293,12 +274,13 @@
     },
     {
         "pk": 14,
-        "model": "locations.location",
+        "model": "locations.state",
         "fields": {
             "slug": "il",
             "name": "Illinois",
             "point": 14,
-            "type": 2
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
         }
     },
 
@@ -312,12 +294,13 @@
     },
     {
         "pk": 15,
-        "model": "locations.location",
+        "model": "locations.state",
         "fields": {
             "slug": "in",
             "name": "Indiana",
             "point": 15,
-            "type": 2
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
         }
     },
 
@@ -331,12 +314,13 @@
     },
     {
         "pk": 16,
-        "model": "locations.location",
+        "model": "locations.state",
         "fields": {
             "slug": "ks",
             "name": "Kansas",
             "point": 16,
-            "type": 2
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
         }
     },
 
@@ -350,12 +334,13 @@
     },
     {
         "pk": 17,
-        "model": "locations.location",
+        "model": "locations.state",
         "fields": {
             "slug": "ky",
             "name": "Kentucky",
             "point": 17,
-            "type": 2
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
         }
     },
 
@@ -369,12 +354,13 @@
     },
     {
         "pk": 18,
-        "model": "locations.location",
+        "model": "locations.state",
         "fields": {
             "slug": "la",
             "name": "Louisiana",
             "point": 18,
-            "type": 2
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
         }
     },
 
@@ -388,12 +374,13 @@
     },
     {
         "pk": 19,
-        "model": "locations.location",
+        "model": "locations.state",
         "fields": {
             "slug": "md",
             "name": "Maryland",
             "point": 19,
-            "type": 2
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
         }
     },
 
@@ -407,12 +394,13 @@
     },
     {
         "pk": 20,
-        "model": "locations.location",
+        "model": "locations.state",
         "fields": {
             "slug": "mi",
             "name": "Michigan",
             "point": 20,
-            "type": 2
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
         }
     },
 
@@ -426,12 +414,13 @@
     },
     {
         "pk": 21,
-        "model": "locations.location",
+        "model": "locations.state",
         "fields": {
             "slug": "ms",
             "name": "Mississippi",
             "point": 21,
-            "type": 2
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
         }
     },
 
@@ -445,12 +434,13 @@
     },
     {
         "pk": 22,
-        "model": "locations.location",
+        "model": "locations.state",
         "fields": {
             "slug": "mo",
             "name": "Missouri",
             "point": 22,
-            "type": 2
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
         }
     },
 
@@ -464,12 +454,13 @@
     },
     {
         "pk": 23,
-        "model": "locations.location",
+        "model": "locations.state",
         "fields": {
             "slug": "mn",
             "name": "Minnesota",
             "point": 23,
-            "type": 2
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
         }
     },
 
@@ -483,12 +474,13 @@
     },
     {
         "pk": 24,
-        "model": "locations.location",
+        "model": "locations.state",
         "fields": {
             "slug": "me",
             "name": "Maine",
             "point": 24,
-            "type": 2
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
         }
     },
 
@@ -502,12 +494,13 @@
     },
     {
         "pk": 25,
-        "model": "locations.location",
+        "model": "locations.state",
         "fields": {
             "slug": "mt",
             "name": "Montana",
             "point": 25,
-            "type": 2
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
         }
     },
 
@@ -521,12 +514,13 @@
     },
     {
         "pk": 26,
-        "model": "locations.location",
+        "model": "locations.state",
         "fields": {
             "slug": "nh",
             "name": "New Hampshire",
             "point": 26,
-            "type": 2
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
         }
     },
 
@@ -540,12 +534,13 @@
     },
     {
         "pk": 27,
-        "model": "locations.location",
+        "model": "locations.state",
         "fields": {
             "slug": "nv",
             "name": "Nevada",
             "point": 27,
-            "type": 2
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
         }
     },
 
@@ -559,12 +554,13 @@
     },
     {
         "pk": 28,
-        "model": "locations.location",
+        "model": "locations.state",
         "fields": {
             "slug": "ne",
             "name": "Nebraska",
             "point": 28,
-            "type": 2
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
         }
     },
 
@@ -578,12 +574,13 @@
     },
     {
         "pk": 29,
-        "model": "locations.location",
+        "model": "locations.state",
         "fields": {
             "slug": "nj",
             "name": "New Jersey",
             "point": 29,
-            "type": 2
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
         }
     },
 
@@ -597,12 +594,13 @@
     },
     {
         "pk": 30,
-        "model": "locations.location",
+        "model": "locations.state",
         "fields": {
             "slug": "nm",
             "name": "New Mexico",
             "point": 30,
-            "type": 2
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
         }
     },
 
@@ -616,12 +614,13 @@
     },
     {
         "pk": 31,
-        "model": "locations.location",
+        "model": "locations.state",
         "fields": {
             "slug": "nc",
             "name": "North Carolina",
             "point": 31,
-            "type": 2
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
         }
     },
 
@@ -635,12 +634,13 @@
     },
     {
         "pk": 32,
-        "model": "locations.location",
+        "model": "locations.state",
         "fields": {
             "slug": "nd",
             "name": "North Dakota",
             "point": 32,
-            "type": 2
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
         }
     },
 
@@ -654,12 +654,13 @@
     },
     {
         "pk": 33,
-        "model": "locations.location",
+        "model": "locations.state",
         "fields": {
             "slug": "or",
             "name": "Oregon",
             "point": 33,
-            "type": 2
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
         }
     },
 
@@ -673,12 +674,13 @@
     },
     {
         "pk": 34,
-        "model": "locations.location",
+        "model": "locations.state",
         "fields": {
             "slug": "oh",
             "name": "Ohio",
             "point": 34,
-            "type": 2
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
         }
     },
 
@@ -692,12 +694,13 @@
     },
     {
         "pk": 35,
-        "model": "locations.location",
+        "model": "locations.state",
         "fields": {
             "slug": "ok",
             "name": "Oklahoma",
             "point": 35,
-            "type": 2
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
         }
     },
 
@@ -711,12 +714,13 @@
     },
     {
         "pk": 36,
-        "model": "locations.location",
+        "model": "locations.state",
         "fields": {
             "slug": "pa",
             "name": "Pennsylvania",
             "point": 36,
-            "type": 2
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
         }
     },
 
@@ -730,12 +734,13 @@
     },
     {
         "pk": 37,
-        "model": "locations.location",
+        "model": "locations.state",
         "fields": {
             "slug": "ri",
             "name": "Rhode Island",
             "point": 37,
-            "type": 2
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
         }
     },
 
@@ -749,12 +754,13 @@
     },
     {
         "pk": 38,
-        "model": "locations.location",
+        "model": "locations.state",
         "fields": {
             "slug": "sd",
             "name": "South Dakota",
             "point": 38,
-            "type": 2
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
         }
     },
 
@@ -768,12 +774,13 @@
     },
     {
         "pk": 39,
-        "model": "locations.location",
+        "model": "locations.state",
         "fields": {
             "slug": "sc",
             "name": "South Carolina",
             "point": 39,
-            "type": 2
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
         }
     },
 
@@ -787,12 +794,13 @@
     },
     {
         "pk": 40,
-        "model": "locations.location",
+        "model": "locations.state",
         "fields": {
             "slug": "tx",
             "name": "Texas",
             "point": 40,
-            "type": 2
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
         }
     },
 
@@ -806,12 +814,13 @@
     },
     {
         "pk": 41,
-        "model": "locations.location",
+        "model": "locations.state",
         "fields": {
             "slug": "tn",
             "name": "Tennessee",
             "point": 41,
-            "type": 2
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
         }
     },
 
@@ -825,12 +834,13 @@
     },
     {
         "pk": 42,
-        "model": "locations.location",
+        "model": "locations.state",
         "fields": {
             "slug": "ut",
             "name": "Utah",
             "point": 42,
-            "type": 2
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
         }
     },
 
@@ -844,12 +854,13 @@
     },
     {
         "pk": 43,
-        "model": "locations.location",
+        "model": "locations.state",
         "fields": {
             "slug": "va",
             "name": "Virginia",
             "point": 43,
-            "type": 2
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
         }
     },
 
@@ -863,12 +874,13 @@
     },
     {
         "pk": 44,
-        "model": "locations.location",
+        "model": "locations.state",
         "fields": {
             "slug": "vt",
             "name": "Vermont",
             "point": 44,
-            "type": 2
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
         }
     },
 
@@ -882,12 +894,13 @@
     },
     {
         "pk": 45,
-        "model": "locations.location",
+        "model": "locations.state",
         "fields": {
             "slug": "wv",
             "name": "West Virginia",
             "point": 45,
-            "type": 2
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
         }
     },
 
@@ -901,12 +914,13 @@
     },
     {
         "pk": 46,
-        "model": "locations.location",
+        "model": "locations.state",
         "fields": {
             "slug": "wa",
             "name": "Washington",
             "point": 46,
-            "type": 2
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
         }
     },
 
@@ -920,12 +934,13 @@
     },
     {
         "pk": 47,
-        "model": "locations.location",
+        "model": "locations.state",
         "fields": {
             "slug": "wi",
             "name": "Wisconsin",
             "point": 47,
-            "type": 2
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
         }
     },
 
@@ -939,12 +954,13 @@
     },
     {
         "pk": 48,
-        "model": "locations.location",
+        "model": "locations.state",
         "fields": {
             "slug": "wy",
             "name": "Wyoming",
             "point": 48,
-            "type": 2
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
         }
     },
 
@@ -958,15 +974,15 @@
     },
     {
         "pk": 49,
-        "model": "locations.location",
+        "model": "locations.state",
         "fields": {
             "slug": "ga",
             "name": "Georgia",
             "point": 49,
-            "type": 2
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
         }
     },
-
     {
         "pk": 50,
         "model": "locations.point",
@@ -977,12 +993,13 @@
     },
     {
         "pk": 50,
-        "model": "locations.location",
+        "model": "locations.state",
         "fields": {
             "slug": "ny",
             "name": "New York",
             "point": 50,
-            "type": 2
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
         }
     },
     {
@@ -995,18 +1012,15 @@
     },
     {
         "pk": 51,
-        "model": "locations.location",
+        "model": "locations.state",
         "fields": {
             "slug": "ma",
             "name": "Massachusetts",
             "point": 51,
-            "type": 2
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
         }
     },
-
-
-
-
     {
         "pk": 52,
         "model": "locations.point",
@@ -1017,12 +1031,13 @@
     },
     {
         "pk": 52,
-        "model": "locations.location",
+        "model": "locations.city",
         "fields": {
             "slug": "nyc",
             "name": "New York City",
             "point": 52,
-            "type": 3
+            "parent_type": ["locations", "state"],
+            "parent_id": 50
         }
     },
     {
@@ -1035,12 +1050,13 @@
     },
     {
         "pk": 53,
-        "model": "locations.location",
+        "model": "locations.city",
         "fields": {
             "slug": "",
             "name": "Buffalo",
             "point": 53,
-            "type": 3
+            "parent_type": ["locations", "state"],
+            "parent_id": 50
         }
     },
     {
@@ -1053,12 +1069,13 @@
     },
     {
         "pk": 54,
-        "model": "locations.location",
+        "model": "locations.city",
         "fields": {
             "slug": "",
             "name": "Rochester",
             "point": 54,
-            "type": 3
+            "parent_type": ["locations", "state"],
+            "parent_id": 50
         }
     },
     {
@@ -1071,12 +1088,13 @@
     },
     {
         "pk": 55,
-        "model": "locations.location",
+        "model": "locations.city",
         "fields": {
             "slug": "",
             "name": "Yonkers",
             "point": 55,
-            "type": 3
+            "parent_type": ["locations", "state"],
+            "parent_id": 50
         }
     },
     {
@@ -1089,12 +1107,13 @@
     },
     {
         "pk": 56,
-        "model": "locations.location",
+        "model": "locations.city",
         "fields": {
             "slug": "",
             "name": "Syracuse",
             "point": 56,
-            "type": 3
+            "parent_type": ["locations", "state"],
+            "parent_id": 50
         }
     },
     {
@@ -1107,12 +1126,13 @@
     },
     {
         "pk": 57,
-        "model": "locations.location",
+        "model": "locations.city",
         "fields": {
             "slug": "",
             "name": "Albany",
             "point": 57,
-            "type": 3
+            "parent_type": ["locations", "state"],
+            "parent_id": 50
         }
     }
 ]
