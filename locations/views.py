@@ -10,6 +10,7 @@ from rapidsms.conf import settings
 from .forms import *
 from .models import *
 from .tables import *
+from . import utils
 
 
 def _breadcrumbs(location=None, first_caption="Planet Earth"):
@@ -23,42 +24,31 @@ def _breadcrumbs(location=None, first_caption="Planet Earth"):
 
     if location is not None:
         for loc in location.path:
-            url = reverse(dashboard, args=(loc.pk,))
+            type = ContentType.objects.get_for_model(loc)
+            url = reverse(dashboard, args=(type.model, loc.pk,))
             breadcrumbs.append((loc.name, url))
 
     return breadcrumbs
 
 
-def _type(location_type, request):
-    """
-    Return a tuple of ``location_type`` and a LocationTable populated
-    with any Location objects of the type. Pass along ``request``, so
-    the table can build its own URLs (for sorting, pagination, etc).
-    """
-
-    return (
-        location_type,
-        LocationTable(
-            Location.objects.filter(type=location_type),
-            prefix=location_type.slug + "-",
-            request=request
-        )
-    )
-
-
 @require_GET
-def dashboard(req, location_pk=None):
+def dashboard(req, location_type_slug=None, location_pk=None):
+    location_types = utils.get_location_types()
 
     if location_pk is not None:
-        location = get_object_or_404(Location, pk=location_pk)
-        location_form = LocationForm(instance=location)
+        location_type = get_object_or_404(ContentType, model=location_type_slug)
+        location = get_object_or_404(location_type.model_class(), pk=location_pk)
 
     else:
+        location_type = None
         location = None
-        location_form = None
 
-    location_types = LocationType.objects.filter(exists_in=location)
-    all_locations = Location.objects.filter(type__in=location_types)
+    all_locations = utils.get_locations(location)
+
+    location_tables = [
+        (type, LocationTable(l, prefix=type.slug + "-", request=req))
+        for type, l in all_locations
+    ]
 
     return render_to_response(req,
         "locations/dashboard.html", {
@@ -67,7 +57,7 @@ def dashboard(req, location_pk=None):
 
             # build a list of [sub-]locationtypes with their locations,
             # to avoid having to invoke the ORM from the template.
-            "location_type_tables": map(lambda lt: _type(lt, req), location_types),
+            "location_type_tables": location_tables,
 
             # from rapidsms.contrib.locations.settings
             "default_latitude":  settings.MAP_DEFAULT_LATITUDE,
@@ -75,7 +65,7 @@ def dashboard(req, location_pk=None):
 
             # if there are no locationtypes, then we should display a
             # big error, since this app is useless without them.
-            "no_location_types": (LocationType.objects.count() == 0)
+            "no_location_types": False#(LocationType.objects.count() == 0)
          }
      )
 

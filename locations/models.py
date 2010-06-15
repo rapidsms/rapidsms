@@ -4,63 +4,43 @@
 
 import re
 from django.db import models
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes import generic
 from rapidsms.models import ExtensibleModelBase
 
 
-class LocationType(models.Model):
+class LocationTypeStub(object):
     """
-    This model allows Locations to be organized into a hierachy, via the
-    mutually recursive *LocationType.exists_in* and *Location.type*
-    fields. Multiple LocationTypes of the same name (eg. City, County)
-    may exist within separate Locations. This looks something like:
-
-                                                        +---------+
-                                                     /->| Arizona |
-                      +---------------+  /--------\  |  +---------+
-                   /->| United States |->| States |--+->| Alabama |
-                   |  +---------------+  \--------/  |  +---------+
-                   |                                 \->| Alaska  |
-    /-----------\  |                                    +---------+
-    | Countries |--+
-    \-----------/  |                                +-----------------+
-                   |                             /->| Bedfordshire    |
-                   |  +---------+  /----------\  |  +-----------------+
-                   \->| England |->| Counties |--+->| Berkshire       |
-                      +---------+  \----------/  |  +-----------------+
-                                                 \->| Buckinghamshire |
-                                                    +-----------------+
-
-    It should be obvious to all inhabitants of Planet Earth which boxes
-    are Locations, and which are LocationTypes. Although it is not shown
-    here, multiple LocationTypes may be linked to a single Location, to
-    represent more complex or incomplete hierarchies.
+    This is not a model. It's just a regular class which looks like a
+    model, to support the old interface. It will go away soon.
     """
 
-    # django doesn't like to automatically pluralize things (and neither
-    # do i), but it's not a _huge_ inconvenience to provide them both,
-    # since the names of LocationTypes rarely change
-    singular = models.CharField(max_length=100)
-    plural   = models.CharField(max_length=100)
-
-    slug = models.CharField(max_length=30,
-        help_text="An URL-safe alternative to the <em>plural</em> field.")
-
-    exists_in = models.ForeignKey("Location", null=True, blank=True,
-        help_text='The Location which this LocationType exists within. For '
-                  'example, "states" may exist within "The United States", '
-                  'and "counties" may exist within "England".')
-
-    class Meta:
-        verbose_name = "Type"
+    def __init__(self, model):
+        self.model = model
 
     def __unicode__(self):
-        return self.singular
+        return unicode(self.plural)
 
     def __repr__(self):
         return '<%s: %s>' %\
-            (type(self).__name__, self)
+            (type(self).__name__, self.model.__name__)
 
-    
+    @property
+    def singular(self):
+        return self.model._meta.verbose_name
+
+    @property
+    def plural(self):
+        return self.model._meta.verbose_name_plural
+
+    @property
+    def slug(self):
+        return self.singular.lower()
+
+    def get_children(self):
+        pass
+
+
 class Point(models.Model):
     """
     This model represents an anonymous point on the globe. It should be
@@ -80,11 +60,13 @@ class Point(models.Model):
 
 
 class LocationBase(models.Model):
-    name = models.CharField(max_length=100)
-    slug = models.CharField(max_length=30)
-    type = models.ForeignKey(LocationType)
+    name  = models.CharField(max_length=100)
+    slug  = models.CharField(max_length=30)
     point = models.ForeignKey(Point, null=True, blank=True)
-    parent = models.ForeignKey('self', null=True, blank=True)
+
+    parent_type = models.ForeignKey(ContentType, null=True, blank=True)
+    parent_id   = models.PositiveIntegerField(null=True, blank=True)
+    parent      = generic.GenericForeignKey("parent_type", "parent_id")
 
     class Meta:
         abstract = True
@@ -95,7 +77,7 @@ class LocationBase(models.Model):
     def __repr__(self):
         return '<%s: %s>' %\
             (type(self).__name__, self)
-
+    
     @property
     def path(self):
         next = self
@@ -103,9 +85,13 @@ class LocationBase(models.Model):
 
         while next is not None:
             locations.insert(0, next)
-            next = next.type.exists_in
+            next = next.parent
 
         return locations
+
+    @property
+    def type_slug(self):
+        return ContentType.objects.get_for_model(self).model
 
     @property
     def full_name(self):
@@ -159,3 +145,15 @@ class Location(LocationBase):
     """
 
     __metaclass__ = ExtensibleModelBase
+
+
+# these are just an example!
+
+
+class Country(Location):
+    class Meta:
+        verbose_name_plural = "countries"
+
+
+class Department(Location):
+    alpha = models.CharField(max_length=10)

@@ -15,44 +15,23 @@
 <script src="{{ MEDIA_URL }}locations/javascripts/map.js" type="text/javascript"></script>
 {% endblock %}
 
-{% block left %}{% if no_location_types %}
+{% block left %}{% for location_type, locations_table in location_type_tables %}{% if locations_table.rows %}
 <div class="module">
-	<table>
-		<tbody>
-			<tr class="no-data error">
-				<td>
-					<p>
-						You haven't created any LocationType objects, nor subclassed Location yet.
-					</p>
-				</td>
-			</tr>
-		</tbody>
-	</table>
-</div>{% else %}{% for location_type, locations_table in location_type_tables %}
-<div class="module">
-	<h2>{{ location_type.plural }}</h2>
+	<h2>{{ location_type.plural|title }}</h2>
 	<table class="locations">
 		{% table_cols locations_table %}
 		{% table_head locations_table %}
 
 		<tbody>{% for location in locations_table.rows %}
 			<tr>
-				<th scope="row"><a href="{% url locations location.pk %}">{{ location.name }}</a></th>
+				<th scope="row"><a href="{% url locations location.type_slug location.pk %}">{{ location.name }}</a></th>
 				<td>{{ location.slug|upper }}</td>
-			</tr>{% empty %}
-			<tr class="no-data">
-				<td colspan="2">
-					<p>
-						You haven't created any {{ location_type.plural }} yet.<br />
-						<a href="">Add a {{ location_type.singular }}</a>
-					</p>
-				</td>
 			</tr>{% endfor %}
 		</tbody>
 
 		{% table_foot locations_table %}
 	</table>
-</div>{% endfor %}{% endif %}
+</div>{% endif %}{% endfor %}
 {% endblock %}
 
 {% block right %}
@@ -61,10 +40,10 @@
 	<div class="map" lat="{{ default_latitude }}" lng="{{ default_longitude }}">
 		<div class="container"></div>
 
-		<ul class="labels">{% for location in all_locations %}
+		<ul class="labels">{% for type, locations in all_locations %}{% for location in locations %}
 			<li lat="{{ location.point.latitude }}" lng="{{ location.point.longitude }}">
 				{{ location.label }}
-			</li>{% endfor %}
+			</li>{% endfor %}{% endfor %}
 		</ul>
 	</div>
 </div>

@@ -7,9 +7,11 @@ from .models import *
 
 
 class LocationAdmin(admin.ModelAdmin):
-    list_display = ("name", "type", "full_name")
+    list_display = ("name", "full_name")
 
 
 admin.site.register(Point)
-admin.site.register(LocationType)
 admin.site.register(Location, LocationAdmin)
+
+admin.site.register(Country)
+admin.site.register(Department)
