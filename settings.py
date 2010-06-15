@@ -39,7 +39,7 @@ TABS = [
     ("rapidsms.contrib.registration.views.registration",    "Registration"),
     ("rapidsms.contrib.messagelog.views.message_log",       "Message Log"),
     ("rapidsms.contrib.messaging.views.messaging",          "Messaging"),
-    ("rapidsms.contrib.locations.views.dashboard",          "Map")
+    ("rapidsms.contrib.locations.views.locations",          "Map")
 ]
 
 # these apps should not be started by rapidsms in your tests, however,
