@@ -42,19 +42,16 @@ class LocationType(models.Model):
     singular = models.CharField(max_length=100)
     plural   = models.CharField(max_length=100)
 
-    slug = models.CharField(max_length=30, unique=True,
+    slug = models.CharField(max_length=30,
         help_text="An URL-safe alternative to the <em>plural</em> field.")
-                  
 
     exists_in = models.ForeignKey("Location", null=True, blank=True,
         help_text='The Location which this LocationType exists within. For '
                   'example, "states" may exist within "The United States", '
                   'and "counties" may exist within "England".')
 
-
     class Meta:
         verbose_name = "Type"
-
 
     def __unicode__(self):
         return self.singular
@@ -74,7 +71,6 @@ class Point(models.Model):
     latitude  = models.DecimalField(max_digits=13, decimal_places=10)
     longitude = models.DecimalField(max_digits=13, decimal_places=10)
 
-
     def __unicode__(self):
         return "%s, %s" % (self.latitude, self.longitude)
 
@@ -85,8 +81,7 @@ class Point(models.Model):
 
 class LocationBase(models.Model):
     name = models.CharField(max_length=100)
-    slug = models.CharField(max_length=30, unique=True,
-                            help_text = "A unique identifier that will be lowercased going into the database.")
+    slug = models.CharField(max_length=30)
     type = models.ForeignKey(LocationType)
     point = models.ForeignKey(Point, null=True, blank=True)
     parent = models.ForeignKey('self', null=True, blank=True)
@@ -124,7 +119,6 @@ class LocationBase(models.Model):
                 ("#%d" % location.pk)
 
         return "/".join(map(_code, self.path))
-
 
     def save(self, *args, **kwargs):
 
