@@ -28,21 +28,21 @@
 			</tr>
 		</tbody>
 	</table>
-</div>{% endif %}{% for location_type, locations_table in location_type_tables %}{% if locations_table.rows %}
+</div>{% endif %}{% for type in location_types %}{% if not type.is_empty %}
 <div class="module">
-	<h2>{{ location_type.plural|title }}</h2>
+	<h2>What</h2>
 	<table class="locations">
-		{% table_cols locations_table %}
-		{% table_head locations_table %}
+		{% table_cols type.table %}
+		{% table_head type.table %}
 
-		<tbody>{% for location in locations_table.rows %}
+		<tbody>{% for location in type.table.rows %}
 			<tr>
-				<th scope="row"><a href="{% url locations location.type_slug location.pk %}">{{ location.name }}</a></th>
+				<th scope="row"><a href="{% url locations location.uid %}">{{ location.name }}</a></th>
 				<td>{{ location.slug|upper }}</td>
 			</tr>{% endfor %}
 		</tbody>
 
-		{% table_foot locations_table %}
+		{% table_foot type.table %}
 	</table>
 </div>{% endif %}{% endfor %}
 {% endblock %}
@@ -53,7 +53,7 @@
 	<div class="map" lat="{{ default_latitude }}" lng="{{ default_longitude }}">
 		<div class="container"></div>
 
-		<ul class="labels">{% for type, locations in all_locations %}{% for location in locations %}
+		<ul class="labels">{% for type in location_types %}{% for location in type.locations %}
 			<li lat="{{ location.point.latitude }}" lng="{{ location.point.longitude }}">
 				{{ location.label }}
 			</li>{% endfor %}{% endfor %}

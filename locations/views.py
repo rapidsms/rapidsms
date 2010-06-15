@@ -10,7 +10,6 @@ from rapidsms.conf import settings
 from .forms import *
 from .models import *
 from .tables import *
-from . import utils
 
 
 def _breadcrumbs(location=None, first_caption="Planet Earth"):
@@ -20,44 +19,69 @@ def _breadcrumbs(location=None, first_caption="Planet Earth"):
     first crumb is hard coded.
     """
 
-    breadcrumbs = [(first_caption, reverse(dashboard))]
+    breadcrumbs = [(first_caption, reverse(locations))]
 
     if location is not None:
         for loc in location.path:
             type = ContentType.objects.get_for_model(loc)
-            url = reverse(dashboard, args=(type.model, loc.pk,))
+            url = reverse(locations, args=(loc.uid,))
             breadcrumbs.append((loc.name, url))
 
     return breadcrumbs
 
 
+class LocationTypeStub(object):
+    """
+    This is a shim class, to encapsulate the nested type/location
+    structure, and keep the code out of the template. It's not useful
+    anywhere else, so I haven't moved it into a template tag.
+    """
+
+    def __init__(self, type, req, loc):
+        self._type = type
+        self._req = req
+        self._loc = loc
+
+    def content_type(self):
+        return ContentType.objects.get_for_model(
+            self._loc)
+
+    def prefix(self):
+        return self._type._meta.module_name + "-"
+
+    def table(self):
+        return LocationTable(
+            self.locations(),
+            request=self._req,
+            prefix=self.prefix())
+
+    def locations(self):
+        if self._loc is not None:
+            return self._type.objects.filter(
+                parent_type=self.content_type(),
+                parent_id=self._loc.pk)
+
+        else: 
+            return self._type.objects.filter(
+                parent_type=None)
+
+    def is_empty(self):
+        return self.locations().count() == 0
+
+
 @require_GET
-def dashboard(req, location_type_slug=None, location_pk=None):
-    location_types = utils.get_location_types()
+def locations(req, location_uid=None):
+    location = Location.get_for_uid(location_uid)\
+        if location_uid else None
 
-    if location_pk is not None:
-        location_type = get_object_or_404(ContentType, model=location_type_slug)
-        location = get_object_or_404(location_type.model_class(), pk=location_pk)
-
-    else:
-        location_type = None
-        location = None
-
-    all_locations = utils.get_locations(location)
-
-    location_tables = [
-        (type, LocationTable(l, prefix=type.slug + "-", request=req))
-        for type, l in all_locations
-    ]
+    types = [
+        LocationTypeStub(type, req, location)
+        for type in Location.subclasses()]
 
     return render_to_response(req,
         "locations/dashboard.html", {
+            "location_types": types,
             "breadcrumbs": _breadcrumbs(location),
-            "all_locations": all_locations,
-
-            # build a list of [sub-]locationtypes with their locations,
-            # to avoid having to invoke the ORM from the template.
-            "location_type_tables": location_tables,
 
             # from rapidsms.contrib.locations.settings
             "default_latitude":  settings.MAP_DEFAULT_LATITUDE,
@@ -65,7 +89,7 @@ def dashboard(req, location_type_slug=None, location_pk=None):
 
             # if there are no locationtypes, then we should display a
             # big error, since this app is useless without them.
-            "no_location_types": (len(location_types) == 0)
+            "no_location_types": (len(types) == 0)
          }
      )
 

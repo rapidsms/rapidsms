@@ -85,7 +85,44 @@ class Location(models.Model):
     def __repr__(self):
         return '<%s: %s>' %\
             (type(self).__name__, self)
-    
+
+    @property
+    def uid(self):
+        """
+        Return a unique ID for this location, suitable for embedding in
+        URLs. The primary key is insufficient, because the name of the
+        model must also be included.
+
+        This method (and ``get_for_uid`` will go away, once the ``slug``
+        field is validated as unique across all Location subclasses.
+        """
+
+        return "%s:%d" % (ContentType.objects.get_for_model(self).model, self.pk)
+
+    @staticmethod
+    def get_for_uid(uid):
+        """
+        Return the object (an instance of a subclass of Location) named
+        by ``uid``. The UID should be in the form ``model:id``, as
+        returned by the Location.uid property.
+        """
+
+        model, pk = uid.split(":")
+        type = ContentType.objects.get(model=model)
+        return type.get_object_for_this_type(pk=pk)
+
+    @staticmethod
+    def subclasses():
+        """
+        Return a list of all known subclasses of Location.
+        """
+
+        return [
+            cls
+            for cls in models.loading.get_models()
+            if issubclass(cls, Location) and\
+                (cls is not Location)]
+
     @property
     def path(self):
         next = self
@@ -96,10 +133,6 @@ class Location(models.Model):
             next = next.parent
 
         return locations
-
-    @property
-    def type_slug(self):
-        return ContentType.objects.get_for_model(self).model
 
     @property
     def full_name(self):
