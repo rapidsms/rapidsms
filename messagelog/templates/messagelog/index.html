@@ -11,6 +11,6 @@
 {% block content %}
 <div class="messages module">
 	<h2>Message Log</h2>
-	{% render_table messages %}
+	{{ messages_table.as_html }}
 </div>
 {% endblock %}
