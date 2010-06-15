@@ -120,6 +120,16 @@ class LocationBase(models.Model):
 
         return "/".join(map(_code, self.path))
 
+    @property
+    def label(self):
+        """
+        Return an HTML fragment, for embedding in a Google map. This
+        method should be overridden by subclasses wishing to provide
+        better contextual information.
+        """
+
+        return self.slug.upper()
+
     def save(self, *args, **kwargs):
 
         # remove any superfluous spaces from the _name_. it would be a

@@ -63,7 +63,7 @@
 
 		<ul class="labels">{% for location in all_locations %}
 			<li lat="{{ location.point.latitude }}" lng="{{ location.point.longitude }}">
-				{{ location.slug|upper }}
+				{{ location.label }}
 			</li>{% endfor %}
 		</ul>
 	</div>
