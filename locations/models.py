@@ -9,38 +9,6 @@ from django.contrib.contenttypes import generic
 from rapidsms.models import ExtensibleModelBase
 
 
-class LocationTypeStub(object):
-    """
-    This is not a model. It's just a regular class which looks like a
-    model, to support the old interface. It will go away soon.
-    """
-
-    def __init__(self, model):
-        self.model = model
-
-    def __unicode__(self):
-        return unicode(self.plural)
-
-    def __repr__(self):
-        return '<%s: %s>' %\
-            (type(self).__name__, self.model.__name__)
-
-    @property
-    def singular(self):
-        return self.model._meta.verbose_name
-
-    @property
-    def plural(self):
-        return self.model._meta.verbose_name_plural
-
-    @property
-    def slug(self):
-        return self.singular.lower()
-
-    def get_children(self):
-        pass
-
-
 class Point(models.Model):
     """
     This model represents an anonymous point on the globe. It should be
@@ -171,3 +139,8 @@ class Location(models.Model):
         
         # then save the model as usual
         models.Model.save(self, *args, **kwargs)
+
+
+class Country(Location): pass
+class State(Location): pass
+class City(Location): pass
