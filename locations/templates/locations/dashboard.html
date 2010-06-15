@@ -15,7 +15,20 @@
 <script src="{{ MEDIA_URL }}locations/javascripts/map.js" type="text/javascript"></script>
 {% endblock %}
 
-{% block left %}{% for location_type, locations_table in location_type_tables %}{% if locations_table.rows %}
+{% block left %}{% if no_location_types %}
+<div class="module">
+	<table>
+		<tbody>
+		<tr class="no-data error">
+			<td>
+				<p>
+					You haven't created any subclasses of Location yet.
+				</p>
+			</td>
+			</tr>
+		</tbody>
+	</table>
+</div>{% endif %}{% for location_type, locations_table in location_type_tables %}{% if locations_table.rows %}
 <div class="module">
 	<h2>{{ location_type.plural|title }}</h2>
 	<table class="locations">

@@ -65,7 +65,7 @@ def dashboard(req, location_type_slug=None, location_pk=None):
 
             # if there are no locationtypes, then we should display a
             # big error, since this app is useless without them.
-            "no_location_types": False#(LocationType.objects.count() == 0)
+            "no_location_types": (len(location_types) == 0)
          }
      )
 
