@@ -753,7 +753,7 @@
         "fields": {
             "slug": "sd",
             "name": "South Dakota",
-            "point": 37,
+            "point": 38,
             "type": 2
         }
     },
@@ -914,8 +914,8 @@
         "pk": 47,
         "model": "locations.point",
         "fields": {
-            "longitude": "-120.5",
-            "latitude": "47.5"
+            "longitude": "-89.5",
+            "latitude": "44.5"
         }
     },
     {
