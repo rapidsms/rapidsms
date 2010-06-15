@@ -30,7 +30,7 @@
 	</table>
 </div>{% endif %}{% for type in location_types %}{% if not type.is_empty %}
 <div class="module">
-	<h2>What</h2>
+	<h2>{{ type.plural|title }}</h2>
 	<table class="locations">
 		{% table_cols type.table %}
 		{% table_head type.table %}

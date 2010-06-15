@@ -42,6 +42,9 @@ class LocationTypeStub(object):
         self._req = req
         self._loc = loc
 
+    def plural(self):
+        return self._type._meta.verbose_name_plural
+
     def content_type(self):
         return ContentType.objects.get_for_model(
             self._loc)
