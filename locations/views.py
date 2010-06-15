@@ -9,11 +9,12 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404
 from django.views.decorators.http import require_GET, require_http_methods
 from rapidsms.utils import render_to_response, web_message
+from rapidsms.conf import settings
 
 
 @require_GET
 def dashboard(req, location_pk=None):
-    
+
     # to avoid the breadcrumb trail being empty browsing the entire
     # world, hard-code the first item. TODO: configure via settings.
     breadcrumbs = [("Planet Earth", reverse(dashboard))]
@@ -47,7 +48,11 @@ def dashboard(req, location_pk=None):
             "breadcrumbs": breadcrumbs,
             "locations_data": locations_data,
             "location_form": location_form,
-            "location": location
+            "location": location,
+
+            # from rapidsms.contrib.locations.settings
+            "default_latitude":  settings.MAP_DEFAULT_LATITUDE,
+            "default_longitude": settings.MAP_DEFAULT_LONGITUDE
          }
      )
 

@@ -53,6 +53,19 @@
 			</td>
 		</tfoot>
 	</table>
+</div>{% empty %}
+<div class="module">
+	<table>
+		<tbody>
+			<tr class="no-data error">
+				<td>
+					<p>
+						You haven't created any LocationType objects, nor subclassed Location yet.
+					</p>
+				</td>
+			</tr>
+		</tbody>
+	</table>
 </div>{% endfor %}
 {% endblock %}
 
@@ -66,19 +79,14 @@
 
 <script type="text/javascript">
 	$(function() {
-
-		/* initialize the google map */
 		var map = new google.maps.Map(
 			$("#map").get(0), {
-				mapTypeId: google.maps.MapTypeId.TERRAIN
+				"mapTypeId": google.maps.MapTypeId.TERRAIN,
+				"mapTypeControl": false
 			}
 		);
 
 		var bounds = new google.maps.LatLngBounds();
-		/*var mask = new adammck.maps.Mask({
-			"map": map,
-			"paths": []
-		});*/
 
 		$("#locations tbody tr").each(function() {
 			var loc = $(this);
@@ -96,6 +104,11 @@
 				bounds.extend(label.position);
 			}
 		});
+
+		if(bounds.isEmpty()) {
+			pos = new google.maps.LatLng({{ default_latitude }}, {{ default_longitude }});
+			bounds.extend(pos);
+		}
 
 		map.fitBounds(bounds);
 	});

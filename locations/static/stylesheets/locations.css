@@ -30,6 +30,12 @@ div.map {
 		height: 50em;
 	}
 
+	/* if no location types are defined, a big error will be displayed in
+	 * the left column. equalize the height with the map, to ensure that
+	 * it's seen. (map=50em, h2=(line-height=1.6em, padding=0.5em*2)) */
+	div.col-1 tr.no-data.error {
+		height: 52.6em;
+	}
 
 
 
