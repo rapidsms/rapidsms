@@ -2,11 +2,11 @@
 #inner .col-2 { width: 75%; }
 
 
-#locations {
+.locations {
 	width: 100%;
 }
 
-	#locations th.slug {
+	.locations th.slug {
 		width: 1%;
 	}
 
@@ -25,17 +25,21 @@ div.map {
 		white-space: nowrap;
 	}
 
-	div#map {
+	div.map div.container {
 		background: #f8f8ff;
 		height: 50em;
 	}
 
-	/* if no location types are defined, a big error will be displayed in
-	 * the left column. equalize the height with the map, to ensure that
-	 * it's seen. (map=50em, h2=(line-height=1.6em, padding=0.5em*2)) */
-	div.col-1 tr.no-data.error {
-		height: 52.6em;
+	div.map ul.labels {
+		display: none;
 	}
+
+/* if no location types are defined, a big error will be displayed in
+ * the left column. equalize the height with the map, to ensure that
+ * it's seen. (map=50em, h2=(line-height=1.6em, padding=0.5em*2)) */
+div.col-1 tr.no-data.error {
+	height: 52.6em;
+}
 
 
 
