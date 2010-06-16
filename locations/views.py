@@ -3,6 +3,7 @@
 
 
 from django.core.urlresolvers import reverse
+from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.views.decorators.http import require_GET, require_http_methods
 from rapidsms.utils import render_to_response, web_message
@@ -10,6 +11,7 @@ from rapidsms.conf import settings
 from .forms import *
 from .models import *
 from .tables import *
+from . import utils
 
 
 def _breadcrumbs(location=None, first_caption="Planet Earth"):
@@ -42,21 +44,31 @@ class LocationTypeStub(object):
         self._req = req
         self._loc = loc
 
+    def singular(self):
+        return self._type._meta.verbose_name
+
     def plural(self):
         return self._type._meta.verbose_name_plural
+
+    def name(self):
+        return self._type._meta.module_name
 
     def content_type(self):
         return ContentType.objects.get_for_model(
             self._loc)
 
     def prefix(self):
-        return self._type._meta.module_name + "-"
+        return self.name() + "-"
 
     def table(self):
         return LocationTable(
             self.locations(),
             request=self._req,
             prefix=self.prefix())
+
+    def form(self):
+        return utils.form_for_model(
+            self._type)()
 
     def locations(self):
         if self._loc is not None:
@@ -72,19 +84,50 @@ class LocationTypeStub(object):
         return self.locations().count() == 0
 
 
-@require_GET
 def locations(req, location_uid=None):
-    location = Location.get_for_uid(location_uid)\
-        if location_uid else None
+    view_location = None
+
+    if location_uid is not None:
+        view_location = Location.get_for_uid(
+            location_uid)
+
+    if req.method == "POST":
+        model_class = utils.get_model(req.POST["type"])
+        form_class = utils.form_for_model(model_class)
+        model = None
+
+        if req.POST.get("id", None):
+            model = get_object_or_404(
+                model_class, pk=req.POST["id"])
+
+            if req.POST["submit"] == "Delete":
+                model.delete()
+                return HttpResponseRedirect(
+                    reverse(view_location))
+
+        form = form_class(instance=model, data=req.POST)
+
+        if form.is_valid():
+            model = form.save()
+
+            if req.POST.get("parent_type", None) and req.POST.get("parent_id", None):
+                parent_class = utils.get_model(req.POST["parent_type"])
+                parent = get_object_or_404(parent_class, pk=req.POST["parent_id"])
+                model.parent = parent
+                model.save()
+
+            return HttpResponseRedirect(
+                reverse(locations, args=(model.uid,)))
 
     types = [
-        LocationTypeStub(type, req, location)
+        LocationTypeStub(type, req, view_location)
         for type in Location.subclasses()]
 
     return render_to_response(req,
         "locations/dashboard.html", {
+            "breadcrumbs": _breadcrumbs(view_location),
+            "location": view_location,
             "location_types": types,
-            "breadcrumbs": _breadcrumbs(location),
 
             # from rapidsms.contrib.locations.settings
             "default_latitude":  settings.MAP_DEFAULT_LATITUDE,

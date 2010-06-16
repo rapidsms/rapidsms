@@ -65,7 +65,11 @@ class Location(models.Model):
         field is validated as unique across all Location subclasses.
         """
 
-        return "%s:%d" % (ContentType.objects.get_for_model(self).model, self.pk)
+        return "%s:%d" % (self.content_type, self.pk)
+
+    @property
+    def content_type(self):
+        return ContentType.objects.get_for_model(self).model
 
     @staticmethod
     def get_for_uid(uid):
@@ -141,6 +145,8 @@ class Location(models.Model):
         models.Model.save(self, *args, **kwargs)
 
 
-class Country(Location): pass
+class Country(Location):
+    monkeys = models.CharField(max_length=30)
+
 class State(Location): pass
 class City(Location): pass

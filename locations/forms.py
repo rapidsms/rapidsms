@@ -9,7 +9,6 @@ from django import forms
 from .models import *
 
 
-
 class PointWidget(widgets.MultiWidget):
     default_attrs = {
         "size": 8 }
@@ -62,9 +61,28 @@ class PointField(fields.MultiValueField):
 
         return None
 
+
 class LocationForm(forms.ModelForm):
     point = PointField()
 
     class Meta:
         model = Location
-        exclude = ("type",)
+        exclude = ("parent_type", "parent_id")
+
+
+class CountryForm(LocationForm):
+    class Meta:
+        model = Country
+        exclude = ("parent_type", "parent_id")
+
+
+class StateForm(LocationForm):
+    class Meta:
+        model = State
+        exclude = ("parent_type", "parent_id")
+
+
+class CityForm(LocationForm):
+    class Meta:
+        model = City
+        exclude = ("parent_type", "parent_id")
