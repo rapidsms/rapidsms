@@ -12,6 +12,35 @@ div.module:first-child {
     margin-top: 0; }
 
 
+div.module.collapsed {
+    overflow-y: hidden;
+    height: 2.6em;
+}
+
+    div.module.collapsed h2 {
+        background-image: url("../images/h2-bg-collapsed.png"); }
+
+    div.module.collapsed + div.module {
+        margin-top: 0; }
+
+    div.module.collapsed h2 span.toggler,
+    div.module.expanded h2 span.toggler {
+        background: no-repeat 50% 50%;
+        text-indent: -9999px;
+        cursor: pointer;
+        width: 16px;
+        height: 2.6em;
+        overflow: hidden;
+        position: absolute;
+        padding: 0 0.5em;
+        right: 0;
+        top: 0;
+    }
+
+        div.module.collapsed h2 span.toggler { background-image: url("../icons/silk/section_collapsed--bright.png"); }
+        div.module.expanded  h2 span.toggler { background-image: url("../icons/silk/section_expanded--bright.png"); }
+
+
 
 
 /* module headers are mostly ripped off from  django admin, although
