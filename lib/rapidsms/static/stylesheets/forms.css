@@ -1,6 +1,9 @@
 /* vim:set et ts=4 sw=4 */
 
-form { }
+form {
+    border: 1px solid #ddd;
+    padding: 0 1em;
+}
 
     /* recursive models can be displayed as a tree within a <select>, by
      * ordering them cleverly and adding their "depth" to the class, to
@@ -49,7 +52,6 @@ form { }
         margin-top: 1em; }
 
         form div.field label {
-            margin: 1em 0 0.5em 0;
             margin-bottom: 0.5em;
             display: block;
             color: #000;
@@ -102,4 +104,43 @@ form { }
 
     /* wrap submission and/or action buttons separately */
     form div.submit {
-        margin-top: 1em; }
+        background: #f8f8f8 url("../images/table-footer-bg.png") repeat-x 0 0;
+        border-top: 1px solid #eee;
+        margin: 1em -1em 0 -1em;
+        padding: 1em;
+    }
+
+/* if the browser supports after (+) and :first-child...
+ *
+ * 1. do a bit of extra work to replace the usual `1em margin-top` of
+ *    the first div.field with padding-top on the form itself, to remove
+ *    the 1px border between the module h2 and the form
+ *
+ * 2. add some fancy rounded corners to the bottom of the form, and do
+ *    some margin jiggery-pokery to ensure that the div.submit doesn't
+ *    overlap and cause jagged edges. */
+body:last-child h2 + form {
+    border-top: 0;
+    padding: 0;
+
+    background-color: #f8f8f8;
+    -webkit-border-bottom-right-radius: 5px;
+    -webkit-border-bottom-left-radius: 5px;
+    -moz-border-radius-bottomright: 5px;
+    -moz-border-radius-bottomleft: 5px;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+
+    h2 + form div.field:first-child {
+        margin-top: 0; }
+
+    body:last-child form > div:first-child {
+        background-color: #fff;
+        padding: 1em;
+    }
+
+    body:last-child form div.submit {
+        background-color: transparent;
+        margin: 0;
+    }
