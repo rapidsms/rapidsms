@@ -62,8 +62,8 @@
 </div>
 {% endblock %}
 
-{% block right %}
-<div class="module">{% for type in location_types %}
+{% block right %}{% for type in location_types %}
+<div class="module collapsed">
 	<h2>Add a {{ type.singular }}</h2>
 	<form action="" method="post">
 		{% render_form type.form %}
@@ -75,6 +75,6 @@
 			<input type="hidden" name="parent_type" value="{{ location.content_type }}" />
 			<input type="hidden" name="parent_id" value="{{ location.id }}" />
 		</div>
-	</form>{% endfor %}
-</div>
+	</form>
+</div>{% endfor %}
 {% endblock %}
