@@ -8,7 +8,7 @@
 }
 
 
-.two-columns      { padding-left: 1em; }
+.two-columns        { padding-left: 1em; }
 .two-columns .col-1 { margin-left: -1em; }
 
     .two-columns .col-1,
@@ -16,7 +16,7 @@
         width: 50%; }
 
 
-.three-columns      { padding-left: 2em; }
+.three-columns        { padding-left: 2em; }
 .three-columns .col-1 { margin-left: -2em; }
 
     .three-columns .col-2 {
@@ -27,7 +27,7 @@
         width: 33%; }
 
 
-.four-columns      { padding-left: 3em; }
+.four-columns        { padding-left: 3em; }
 .four-columns .col-1 { margin-left: -3em; }
 
     .four-columns .col-1,
@@ -37,7 +37,7 @@
         width: 25%; }
 
 
-.five-columns      { padding-left: 4em; }
+.five-columns        { padding-left: 4em; }
 .five-columns .col-1 { margin-left: -4em; }
 
     .five-columns .col-1,
