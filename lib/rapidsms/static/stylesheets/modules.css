@@ -12,6 +12,8 @@ div.module:first-child {
     margin-top: 0; }
 
 
+
+
 div.module.collapsed {
     overflow-y: hidden;
     height: 2.6em;
@@ -21,7 +23,7 @@ div.module.collapsed {
         background-image: url("../images/h2-bg-collapsed.png"); }
 
     div.module.collapsed + div.module {
-        margin-top: 0; }
+        margin-top: 1px; }
 
     div.module.collapsed h2 span.toggler,
     div.module.expanded h2 span.toggler {
@@ -106,8 +108,7 @@ div.module div.toolbar {
     position: absolute;
     top: 0;
     right: 0;
-    line-height: 1em;
-    padding-top: 1em;
+    line-height: 2.6em;
 }
 
     div.module div.toolbar a,
