@@ -1,10 +1,11 @@
 {% extends "locations/base.html" %}
-{% load table_tags %}
 {% load forms_tags %}
+{% load table_tags %}
 
 {% block stylesheets %}
 {{ block.super }}
-<link type="text/css" rel="stylesheet" href="/static/locations/stylesheets/label-overlay.css" />
+<link type="text/css" rel="stylesheet" href="{{ MEDIA_URL }}locations/stylesheets/locations.css" />
+<link type="text/css" rel="stylesheet" href="{{ MEDIA_URL }}locations/stylesheets/label-overlay.css" />
 {% endblock %}
 
 {% block javascripts %}
@@ -27,7 +28,7 @@
 			</tr>
 		</tbody>
 	</table>
-</div>{% endif %}{% for type in location_types %}{% if not type.is_empty %}
+</div>{% else %}{% for type in location_types %}{% if not type.is_empty %}
 <div class="module">
 	<h2>{{ type.plural|title }}</h2>
 	<table class="locations">
@@ -36,14 +37,13 @@
 
 		<tbody>{% for location in type.table.rows %}
 			<tr>
-				<th scope="row"><a href="{% url locations location.uid %}">{{ location.name }}</a></th>
-				<td>{{ location.slug|upper }}</td>
+				<th scope="row"><a href="{% url locations location.uid %}">{{ location }}</a></th>
 			</tr>{% endfor %}
 		</tbody>
 
 		{% table_foot type.table %}
 	</table>
-</div>{% endif %}{% endfor %}
+</div>{% endif %}{% endfor %}{% endif %}
 {% endblock %}
 
 {% block middle %}
@@ -54,16 +54,19 @@
 
 		<ul class="labels">{% for type in location_types %}{% for location in type.locations %}
 			<li lat="{{ location.point.latitude }}" lng="{{ location.point.longitude }}">
-				{{ location.label }}
+				{{ location.as_html }}
 			</li>{% endfor %}{% endfor %}
 		</ul>
+	</div>
+	<div class="toolbar">
+		<a class="maximize">Maximize</a>
 	</div>
 </div>
 {% endblock %}
 
 {% block right %}{% for type in location_types %}
 <div class="module collapsed">
-	<h2>Add a {{ type.singular }}</h2>
+	<h2>Add a {{ type.singular|title }}</h2>
 	<form action="" method="post">
 		{% render_form type.form %}
 

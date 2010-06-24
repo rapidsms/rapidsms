@@ -27,7 +27,7 @@ def _breadcrumbs(location=None, first_caption="Planet Earth"):
         for loc in location.path:
             type = ContentType.objects.get_for_model(loc)
             url = reverse(locations, args=(loc.uid,))
-            breadcrumbs.append((loc.name, url))
+            breadcrumbs.append((loc, url))
 
     return breadcrumbs
 
@@ -76,7 +76,7 @@ class LocationTypeStub(object):
                 parent_type=self.content_type(),
                 parent_id=self._loc.pk)
 
-        else: 
+        else:
             return self._type.objects.filter(
                 parent_type=None)
 
@@ -122,7 +122,7 @@ def locations(req, location_uid=None):
     types = [
         LocationTypeStub(type, req, view_location)
         for type in Location.subclasses()]
-
+    
     return render_to_response(req,
         "locations/dashboard.html", {
             "breadcrumbs": _breadcrumbs(view_location),

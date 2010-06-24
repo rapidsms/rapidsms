@@ -4,6 +4,7 @@
 
 import re
 from django.db import models
+from django.utils.safestring import SafeString
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from rapidsms.models import ExtensibleModelBase
@@ -36,8 +37,6 @@ class Location(models.Model):
 
     __metaclass__ = ExtensibleModelBase
 
-    name  = models.CharField(max_length=100)
-    slug  = models.CharField(max_length=30)
     point = models.ForeignKey(Point, null=True, blank=True)
 
     parent_type = models.ForeignKey(ContentType, null=True, blank=True)
@@ -48,11 +47,10 @@ class Location(models.Model):
         abstract = True
 
     def __unicode__(self):
-        return self.name
-
-    def __repr__(self):
-        return '<%s: %s>' %\
-            (type(self).__name__, self)
+        """
+        """
+        
+        return getattr(self, "name", "#%d" % self.pk)
 
     @property
     def uid(self):
@@ -106,18 +104,11 @@ class Location(models.Model):
 
         return locations
 
-    @property
-    def full_name(self):
+    def as_html(self):
         """
-        Return the full-qualified name of this Location, including all
-        of its ancestors. Ideal for displaying in the Django admin.
         """
 
-        def _code(location):
-            return location.slug or\
-                ("#%d" % location.pk)
-
-        return "/".join(map(_code, self.path))
+        return SafeString(self.label)
 
     @property
     def label(self):
@@ -127,26 +118,33 @@ class Location(models.Model):
         better contextual information.
         """
 
-        return self.slug.upper()
-
-    def save(self, *args, **kwargs):
-
-        # remove any superfluous spaces from the _name_. it would be a
-        # huge bother to require the user to do it manually, but the
-        # __search__ method assumes that a single space is the only
-        # delimiter, so we'll do it here transparently.
-        self.name = re.sub(r"\s+", " ", self.name)
-
-        # do some processing on the slug field to ensure we only store 
-        # lowercase and strip spaces
-        self.slug = self.slug.lower().strip()
-        
-        # then save the model as usual
-        models.Model.save(self, *args, **kwargs)
+        return unicode(self)
 
 
-class Country(Location):
-    monkeys = models.CharField(max_length=30)
+#class Country(Location):
+#    name = models.CharField(max_length=100)
+#    iso_code = models.CharField("ISO Code", max_length=2)
 
-class State(Location): pass
-class City(Location): pass
+#    class Meta:
+#        verbose_name_plural = "countries"
+
+#    @property
+#    def label(self):
+#        return self.iso_code.upper()
+
+
+#class State(Location):
+#    name = models.CharField(max_length=100)
+#    usps_code = models.CharField("USPS Code", max_length=2,
+#        help_text="The two-letter state abbreviation")
+
+#    @property
+#    def label(self):
+#        return self.usps_code.upper()
+
+
+#class City(Location):
+#    name = models.CharField(max_length=100)
+
+#    class Meta:
+#        verbose_name_plural = "cities"

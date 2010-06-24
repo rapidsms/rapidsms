@@ -7,7 +7,7 @@ from djangotables import Table, Column
 
 class LocationTable(Table):
     name = Column()
-    slug = Column()
+    #slug = Column()
 
-    class Meta:
-        order_by = 'name'
+    #class Meta:
+    #    order_by = 'name'

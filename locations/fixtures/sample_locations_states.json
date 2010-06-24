@@ -11,16 +11,7 @@
         "pk": 1,
         "model": "locations.country",
         "fields": {
-            "slug": "usa",
-            "name": "United States of America",
-            "point": 1
-        }
-    },
-    {
-        "pk": 1,
-        "model": "locations.country",
-        "fields": {
-            "slug": "usa",
+            "iso_code": "us",
             "name": "United States of America",
             "point": 1
         }
@@ -37,7 +28,7 @@
         "pk": 2,
         "model": "locations.state",
         "fields": {
-            "slug": "al",
+            "usps_code": "al",
             "name": "Alabama",
             "point": 2,
             "parent_type": ["locations", "country"],
@@ -56,7 +47,7 @@
         "pk": 3,
         "model": "locations.state",
         "fields": {
-            "slug": "ak",
+            "usps_code": "ak",
             "name": "Alaska",
             "point": 3,
             "parent_type": ["locations", "country"],
@@ -76,7 +67,7 @@
         "pk": 4,
         "model": "locations.state",
         "fields": {
-            "slug": "ar",
+            "usps_code": "ar",
             "name": "Arkansas",
             "point": 4,
             "parent_type": ["locations", "country"],
@@ -96,7 +87,7 @@
         "pk": 5,
         "model": "locations.state",
         "fields": {
-            "slug": "az",
+            "usps_code": "az",
             "name": "Arizona",
             "point": 5,
             "parent_type": ["locations", "country"],
@@ -116,7 +107,7 @@
         "pk": 6,
         "model": "locations.state",
         "fields": {
-            "slug": "co",
+            "usps_code": "co",
             "name": "Colorado",
             "point": 6,
             "parent_type": ["locations", "country"],
@@ -136,7 +127,7 @@
         "pk": 7,
         "model": "locations.state",
         "fields": {
-            "slug": "ca",
+            "usps_code": "ca",
             "name": "California",
             "point": 7,
             "parent_type": ["locations", "country"],
@@ -156,7 +147,7 @@
         "pk": 8,
         "model": "locations.state",
         "fields": {
-            "slug": "ct",
+            "usps_code": "ct",
             "name": "Connecticut",
             "point": 8,
             "parent_type": ["locations", "country"],
@@ -176,7 +167,7 @@
         "pk": 9,
         "model": "locations.state",
         "fields": {
-            "slug": "de",
+            "usps_code": "de",
             "name": "Delaware",
             "point": 9,
             "parent_type": ["locations", "country"],
@@ -196,7 +187,7 @@
         "pk": 10,
         "model": "locations.state",
         "fields": {
-            "slug": "fl",
+            "usps_code": "fl",
             "name": "Florida",
             "point": 10,
             "parent_type": ["locations", "country"],
@@ -216,7 +207,7 @@
         "pk": 11,
         "model": "locations.state",
         "fields": {
-            "slug": "hi",
+            "usps_code": "hi",
             "name": "Hawaii",
             "point": 11,
             "parent_type": ["locations", "country"],
@@ -236,7 +227,7 @@
         "pk": 12,
         "model": "locations.state",
         "fields": {
-            "slug": "ia",
+            "usps_code": "ia",
             "name": "Iowa",
             "point": 12,
             "parent_type": ["locations", "country"],
@@ -256,7 +247,7 @@
         "pk": 13,
         "model": "locations.state",
         "fields": {
-            "slug": "id",
+            "usps_code": "id",
             "name": "Idaho",
             "point": 13,
             "parent_type": ["locations", "country"],
@@ -276,7 +267,7 @@
         "pk": 14,
         "model": "locations.state",
         "fields": {
-            "slug": "il",
+            "usps_code": "il",
             "name": "Illinois",
             "point": 14,
             "parent_type": ["locations", "country"],
@@ -296,7 +287,7 @@
         "pk": 15,
         "model": "locations.state",
         "fields": {
-            "slug": "in",
+            "usps_code": "in",
             "name": "Indiana",
             "point": 15,
             "parent_type": ["locations", "country"],
@@ -316,7 +307,7 @@
         "pk": 16,
         "model": "locations.state",
         "fields": {
-            "slug": "ks",
+            "usps_code": "ks",
             "name": "Kansas",
             "point": 16,
             "parent_type": ["locations", "country"],
@@ -336,7 +327,7 @@
         "pk": 17,
         "model": "locations.state",
         "fields": {
-            "slug": "ky",
+            "usps_code": "ky",
             "name": "Kentucky",
             "point": 17,
             "parent_type": ["locations", "country"],
@@ -356,7 +347,7 @@
         "pk": 18,
         "model": "locations.state",
         "fields": {
-            "slug": "la",
+            "usps_code": "la",
             "name": "Louisiana",
             "point": 18,
             "parent_type": ["locations", "country"],
@@ -376,7 +367,7 @@
         "pk": 19,
         "model": "locations.state",
         "fields": {
-            "slug": "md",
+            "usps_code": "md",
             "name": "Maryland",
             "point": 19,
             "parent_type": ["locations", "country"],
@@ -396,7 +387,7 @@
         "pk": 20,
         "model": "locations.state",
         "fields": {
-            "slug": "mi",
+            "usps_code": "mi",
             "name": "Michigan",
             "point": 20,
             "parent_type": ["locations", "country"],
@@ -416,7 +407,7 @@
         "pk": 21,
         "model": "locations.state",
         "fields": {
-            "slug": "ms",
+            "usps_code": "ms",
             "name": "Mississippi",
             "point": 21,
             "parent_type": ["locations", "country"],
@@ -436,7 +427,7 @@
         "pk": 22,
         "model": "locations.state",
         "fields": {
-            "slug": "mo",
+            "usps_code": "mo",
             "name": "Missouri",
             "point": 22,
             "parent_type": ["locations", "country"],
@@ -456,7 +447,7 @@
         "pk": 23,
         "model": "locations.state",
         "fields": {
-            "slug": "mn",
+            "usps_code": "mn",
             "name": "Minnesota",
             "point": 23,
             "parent_type": ["locations", "country"],
@@ -476,7 +467,7 @@
         "pk": 24,
         "model": "locations.state",
         "fields": {
-            "slug": "me",
+            "usps_code": "me",
             "name": "Maine",
             "point": 24,
             "parent_type": ["locations", "country"],
@@ -496,7 +487,7 @@
         "pk": 25,
         "model": "locations.state",
         "fields": {
-            "slug": "mt",
+            "usps_code": "mt",
             "name": "Montana",
             "point": 25,
             "parent_type": ["locations", "country"],
@@ -516,7 +507,7 @@
         "pk": 26,
         "model": "locations.state",
         "fields": {
-            "slug": "nh",
+            "usps_code": "nh",
             "name": "New Hampshire",
             "point": 26,
             "parent_type": ["locations", "country"],
@@ -536,7 +527,7 @@
         "pk": 27,
         "model": "locations.state",
         "fields": {
-            "slug": "nv",
+            "usps_code": "nv",
             "name": "Nevada",
             "point": 27,
             "parent_type": ["locations", "country"],
@@ -556,7 +547,7 @@
         "pk": 28,
         "model": "locations.state",
         "fields": {
-            "slug": "ne",
+            "usps_code": "ne",
             "name": "Nebraska",
             "point": 28,
             "parent_type": ["locations", "country"],
@@ -576,7 +567,7 @@
         "pk": 29,
         "model": "locations.state",
         "fields": {
-            "slug": "nj",
+            "usps_code": "nj",
             "name": "New Jersey",
             "point": 29,
             "parent_type": ["locations", "country"],
@@ -596,7 +587,7 @@
         "pk": 30,
         "model": "locations.state",
         "fields": {
-            "slug": "nm",
+            "usps_code": "nm",
             "name": "New Mexico",
             "point": 30,
             "parent_type": ["locations", "country"],
@@ -616,7 +607,7 @@
         "pk": 31,
         "model": "locations.state",
         "fields": {
-            "slug": "nc",
+            "usps_code": "nc",
             "name": "North Carolina",
             "point": 31,
             "parent_type": ["locations", "country"],
@@ -636,7 +627,7 @@
         "pk": 32,
         "model": "locations.state",
         "fields": {
-            "slug": "nd",
+            "usps_code": "nd",
             "name": "North Dakota",
             "point": 32,
             "parent_type": ["locations", "country"],
@@ -656,7 +647,7 @@
         "pk": 33,
         "model": "locations.state",
         "fields": {
-            "slug": "or",
+            "usps_code": "or",
             "name": "Oregon",
             "point": 33,
             "parent_type": ["locations", "country"],
@@ -676,7 +667,7 @@
         "pk": 34,
         "model": "locations.state",
         "fields": {
-            "slug": "oh",
+            "usps_code": "oh",
             "name": "Ohio",
             "point": 34,
             "parent_type": ["locations", "country"],
@@ -696,7 +687,7 @@
         "pk": 35,
         "model": "locations.state",
         "fields": {
-            "slug": "ok",
+            "usps_code": "ok",
             "name": "Oklahoma",
             "point": 35,
             "parent_type": ["locations", "country"],
@@ -716,7 +707,7 @@
         "pk": 36,
         "model": "locations.state",
         "fields": {
-            "slug": "pa",
+            "usps_code": "pa",
             "name": "Pennsylvania",
             "point": 36,
             "parent_type": ["locations", "country"],
@@ -736,7 +727,7 @@
         "pk": 37,
         "model": "locations.state",
         "fields": {
-            "slug": "ri",
+            "usps_code": "ri",
             "name": "Rhode Island",
             "point": 37,
             "parent_type": ["locations", "country"],
@@ -756,7 +747,7 @@
         "pk": 38,
         "model": "locations.state",
         "fields": {
-            "slug": "sd",
+            "usps_code": "sd",
             "name": "South Dakota",
             "point": 38,
             "parent_type": ["locations", "country"],
@@ -776,7 +767,7 @@
         "pk": 39,
         "model": "locations.state",
         "fields": {
-            "slug": "sc",
+            "usps_code": "sc",
             "name": "South Carolina",
             "point": 39,
             "parent_type": ["locations", "country"],
@@ -796,7 +787,7 @@
         "pk": 40,
         "model": "locations.state",
         "fields": {
-            "slug": "tx",
+            "usps_code": "tx",
             "name": "Texas",
             "point": 40,
             "parent_type": ["locations", "country"],
@@ -816,7 +807,7 @@
         "pk": 41,
         "model": "locations.state",
         "fields": {
-            "slug": "tn",
+            "usps_code": "tn",
             "name": "Tennessee",
             "point": 41,
             "parent_type": ["locations", "country"],
@@ -836,7 +827,7 @@
         "pk": 42,
         "model": "locations.state",
         "fields": {
-            "slug": "ut",
+            "usps_code": "ut",
             "name": "Utah",
             "point": 42,
             "parent_type": ["locations", "country"],
@@ -856,7 +847,7 @@
         "pk": 43,
         "model": "locations.state",
         "fields": {
-            "slug": "va",
+            "usps_code": "va",
             "name": "Virginia",
             "point": 43,
             "parent_type": ["locations", "country"],
@@ -876,7 +867,7 @@
         "pk": 44,
         "model": "locations.state",
         "fields": {
-            "slug": "vt",
+            "usps_code": "vt",
             "name": "Vermont",
             "point": 44,
             "parent_type": ["locations", "country"],
@@ -896,7 +887,7 @@
         "pk": 45,
         "model": "locations.state",
         "fields": {
-            "slug": "wv",
+            "usps_code": "wv",
             "name": "West Virginia",
             "point": 45,
             "parent_type": ["locations", "country"],
@@ -916,7 +907,7 @@
         "pk": 46,
         "model": "locations.state",
         "fields": {
-            "slug": "wa",
+            "usps_code": "wa",
             "name": "Washington",
             "point": 46,
             "parent_type": ["locations", "country"],
@@ -936,7 +927,7 @@
         "pk": 47,
         "model": "locations.state",
         "fields": {
-            "slug": "wi",
+            "usps_code": "wi",
             "name": "Wisconsin",
             "point": 47,
             "parent_type": ["locations", "country"],
@@ -956,7 +947,7 @@
         "pk": 48,
         "model": "locations.state",
         "fields": {
-            "slug": "wy",
+            "usps_code": "wy",
             "name": "Wyoming",
             "point": 48,
             "parent_type": ["locations", "country"],
@@ -976,7 +967,7 @@
         "pk": 49,
         "model": "locations.state",
         "fields": {
-            "slug": "ga",
+            "usps_code": "ga",
             "name": "Georgia",
             "point": 49,
             "parent_type": ["locations", "country"],
@@ -995,7 +986,7 @@
         "pk": 50,
         "model": "locations.state",
         "fields": {
-            "slug": "ny",
+            "usps_code": "ny",
             "name": "New York",
             "point": 50,
             "parent_type": ["locations", "country"],
@@ -1014,7 +1005,7 @@
         "pk": 51,
         "model": "locations.state",
         "fields": {
-            "slug": "ma",
+            "usps_code": "ma",
             "name": "Massachusetts",
             "point": 51,
             "parent_type": ["locations", "country"],
@@ -1033,7 +1024,6 @@
         "pk": 52,
         "model": "locations.city",
         "fields": {
-            "slug": "nyc",
             "name": "New York City",
             "point": 52,
             "parent_type": ["locations", "state"],
@@ -1052,7 +1042,6 @@
         "pk": 53,
         "model": "locations.city",
         "fields": {
-            "slug": "",
             "name": "Buffalo",
             "point": 53,
             "parent_type": ["locations", "state"],
@@ -1071,7 +1060,6 @@
         "pk": 54,
         "model": "locations.city",
         "fields": {
-            "slug": "",
             "name": "Rochester",
             "point": 54,
             "parent_type": ["locations", "state"],
@@ -1090,7 +1078,6 @@
         "pk": 55,
         "model": "locations.city",
         "fields": {
-            "slug": "",
             "name": "Yonkers",
             "point": 55,
             "parent_type": ["locations", "state"],
@@ -1109,7 +1096,6 @@
         "pk": 56,
         "model": "locations.city",
         "fields": {
-            "slug": "",
             "name": "Syracuse",
             "point": 56,
             "parent_type": ["locations", "state"],
@@ -1128,7 +1114,6 @@
         "pk": 57,
         "model": "locations.city",
         "fields": {
-            "slug": "",
             "name": "Albany",
             "point": 57,
             "parent_type": ["locations", "state"],

@@ -70,19 +70,19 @@ class LocationForm(forms.ModelForm):
         exclude = ("parent_type", "parent_id")
 
 
-class CountryForm(LocationForm):
-    class Meta:
-        model = Country
-        exclude = ("parent_type", "parent_id")
+#class CountryForm(LocationForm):
+#    class Meta:
+#        model = Country
+#        exclude = ("parent_type", "parent_id")
 
 
-class StateForm(LocationForm):
-    class Meta:
-        model = State
-        exclude = ("parent_type", "parent_id")
+#class StateForm(LocationForm):
+#    class Meta:
+#        model = State
+#        exclude = ("parent_type", "parent_id")
 
 
-class CityForm(LocationForm):
-    class Meta:
-        model = City
-        exclude = ("parent_type", "parent_id")
+#class CityForm(LocationForm):
+#    class Meta:
+#        model = City
+#        exclude = ("parent_type", "parent_id")

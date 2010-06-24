@@ -14,6 +14,7 @@ adammck.maps = adammck.maps || {};
         this.content   = null;
         this.minZoom   = 0;
         this.maxZoom   = 99;
+        this.skin      = namespace.Label.Skin.BUBBLE;
         this.direction = namespace.Label.Direction.ABOVE;
         this.setValues(options);
 
@@ -56,12 +57,16 @@ adammck.maps = adammck.maps || {};
         "LEFT":   "left"
     };
 
+    namespace.Label.Skin = {
+        "BUBBLE": "bubble"
+    };
+
     namespace.Label.prototype =
         new google.maps.OverlayView();
 
     namespace.Label.prototype.onAdd = function() {
         this.wrapper_ = document.createElement("div");
-        this.wrapper_.className = "label-wrapper " + this.direction;
+        this.wrapper_.className = "label-wrapper " + this.skin + " " + this.direction;
 
         this.arrow_ = document.createElement("div");
         this.arrow_.className = "arrow";
