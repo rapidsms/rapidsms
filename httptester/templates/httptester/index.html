@@ -26,6 +26,16 @@
 		</div>
 	</form>
 </div>
+<div class="module">
+    <h2>Bulk Message Tester</h2>
+    <p>Upload a plain text file containing ONE message per line (e.g., testform +l mychair +r 2 +d 2).</p>
+    <form method="post" id="fm-bulk" action="/message-tester/bulk" enctype="multipart/form-data">
+                <label for="fm-bulk-identity">From phone number</label>
+                <input type="text" class="required" id="fm-bulk-identity" name="identity"/>
+                <label for="fm-bulk-file">Text file</label>
+                <input type="file" id="fm-bulk-file" name="file"/>
+                <input type="submit" value="Upload"/>
+</div>
 {% endblock %}
 
 {% block right %}

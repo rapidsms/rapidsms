@@ -22,6 +22,14 @@ def generate_identity(req):
     return _redirect(identity)
 
 
+def bulk_messages(req):
+    file = req.FILES['file']
+    identity = req.POST['identity']
+    for line in file:
+        utils.send_test_message(identity=identity, text=line)
+    return _redirect(identity)
+
+
 def message_tester(req, identity):
     if req.method == "POST":
         form = forms.MessageForm(req.POST)
