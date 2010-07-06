@@ -70,14 +70,57 @@ TEMPLATE_DIRS = [
     # Don't forget to use absolute paths, not relative paths.
 ]
 
-TABS = [
-    ('rapidsms.views.dashboard', 'Dashboard'),
-#    ('rapidsms.contrib.httptester.views.generate_identity', 'Message Tester'),
-#    ('rapidsms.contrib.locations.views.dashboard', 'Map'),
-#    ('rapidsms.contrib.messagelog.views.message_log', 'Message Log'),
-#    ('rapidsms.contrib.messaging.views.messaging', 'Messaging'),
-#    ('rapidsms.contrib.registration.views.registration', 'Registration'),
-#    ('rapidsms.contrib.scheduler.views.index', 'Event Scheduler'),
+# to get up and running quickly with a minimal rapidsms project, start
+# with these apps. just prepend them to your INSTALLED_APPS.
+RAPIDSMS_BASE_APPS = [
+
+    # the essentials.
+    "djangotables",
+    "rapidsms",
+
+    # common dependencies (which don't clutter up the ui).
+    "rapidsms.contrib.handlers",
+    "rapidsms.contrib.ajax",
+
+    # enable the django admin using a little shim app (which includes
+    # the required urlpatterns), and a bunch of undocumented apps that
+    # the AdminSite seems to explode without.
+    "django.contrib.auth",
+    "django.contrib.admin",
+    "django.contrib.sessions",
+    "django.contrib.contenttypes",
+    "rapidsms.contrib.djangoadmin"
+]
+
+# alternatively, start with ALL of the contrib apps, for a useful system
+# out of the box.
+RAPIDSMS_APPS = RAPIDSMS_BASE_APPS + [
+    "rapidsms.contrib.default",
+    "rapidsms.contrib.echo",
+    "rapidsms.contrib.export",
+    "rapidsms.contrib.httptester",
+    "rapidsms.contrib.locations",
+    "rapidsms.contrib.messagelog",
+    "rapidsms.contrib.messaging",
+    "rapidsms.contrib.registration",
+    "rapidsms.contrib.scheduler",
+    "rapidsms.contrib.search",
+    #"rapidsms.contrib.training"
+]
+
+# the tabs for RAPISMS_BASE_APPS.
+RAPIDSMS_BASE_TABS = [
+    ("rapidsms.views.dashboard", "Dashboard")
+]
+
+# the tabs for RAPIDSMS_APPS.
+RAPIDSMS_TABS = RAPIDSMS_BASE_TABS + [
+    ("rapidsms.contrib.messagelog.views.message_log",       "Message Log"),
+    ("rapidsms.contrib.registration.views.registration",    "Registration"),
+    ("rapidsms.contrib.messaging.views.messaging",          "Messaging"),
+    ("rapidsms.contrib.locations.views.locations",          "Map"),
+    ("rapidsms.contrib.scheduler.views.index",              "Event Scheduler"),
+    ("rapidsms.contrib.httptester.views.generate_identity", "Message Tester"),
 ]
 
 # since we might hit the database from any thread during testing, the in-memory

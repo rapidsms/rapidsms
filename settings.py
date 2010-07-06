@@ -8,39 +8,8 @@ from rapidsms.djangoproject.settings import *
 DATABASE_ENGINE = "sqlite3"
 DATABASE_NAME   = "/tmp/rapidsms.sqlite3"
 
-
-INSTALLED_APPS = [
-    "rapidsms",
-    "djangotables",
-
-    "rapidsms.contrib.handlers",
-    "rapidsms.contrib.echo",
-    "rapidsms.contrib.ajax",
-
-    "rapidsms.contrib.httptester",
-    "rapidsms.contrib.registration",
-    "rapidsms.contrib.messagelog",
-    "rapidsms.contrib.messaging",
-    "rapidsms.contrib.locations",
-
-    # enable the django admin using a little shim app (which includes
-    # the required urlpatterns), and a bunch of undocumented apps that
-    # the AdminSite seems to explode without
-    "django.contrib.auth",
-    "django.contrib.admin",
-    "django.contrib.sessions",
-    "django.contrib.contenttypes",
-    "rapidsms.contrib.djangoadmin"
-]
-
-TABS = [
-    ("rapidsms.views.dashboard",                            "Dashboard"),
-    ("rapidsms.contrib.httptester.views.generate_identity", "Message Tester"),
-    ("rapidsms.contrib.registration.views.registration",    "Registration"),
-    ("rapidsms.contrib.messagelog.views.message_log",       "Message Log"),
-    ("rapidsms.contrib.messaging.views.messaging",          "Messaging"),
-    ("rapidsms.contrib.locations.views.locations",          "Map")
-]
+INSTALLED_APPS = RAPIDSMS_APPS
+TABS = RAPIDSMS_TABS
 
 # these apps should not be started by rapidsms in your tests, however,
 # the models and bootstrap will still be available through django.
