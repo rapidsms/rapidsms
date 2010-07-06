@@ -153,8 +153,8 @@ class Backend(BackendBase):
             self.modem = pygsm.GsmModem(logger=self.gsm_log, **self.modem_kwargs)
             self.modem.boot()
 
-		    if self.service_center is not None:
-		        self.modem.service_center = self.service_center
+            if self.service_center is not None:
+                self.modem.service_center = self.service_center
 
             # call the superclass to start the run loop -- it just sets
             # ._running to True and calls run, but let's not duplicate it.
