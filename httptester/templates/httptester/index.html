@@ -20,6 +20,7 @@
 
 	<form action="" method="post">
 		{% render_form message_form %}
+		{% csrf_token %}
 
 		<div class="submit">
 			<input type="submit" value="Send" />
