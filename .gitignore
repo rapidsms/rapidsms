@@ -1,13 +1,8 @@
-__version__.py
 *.pyc
 *.swp
 *~
 *.mo
-local.ini
 core.*
 .project
 .pydevproject
 *.sqlite3
-logs/*
-apps/airtime/fixtures/airtime.json
-apps/nigeria/fixtures/airtime.json
