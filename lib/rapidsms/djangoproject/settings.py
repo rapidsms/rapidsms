@@ -17,6 +17,12 @@ ROOT_URLCONF = "rapidsms.djangoproject.urls"
 MEDIA_URL = "/static/"
 
 
+# this is required for the django.contrib.sites tests to run, but also
+# not included in global_settings.py, and is almost always ``1``.
+# see: http://docs.djangoproject.com/en/dev/ref/contrib/sites/
+SITE_ID = 1
+
+
 # ugh. this is why django is garbage. these weird dependencies should be
 # handled by their respective apps, but they're not, so here they are.
 TEMPLATE_CONTEXT_PROCESSORS = [
@@ -43,6 +49,7 @@ RAPIDSMS_BASE_APPS = [
     # enable the django admin using a little shim app (which includes
     # the required urlpatterns), and a bunch of undocumented apps that
     # the AdminSite seems to explode without.
+    "django.contrib.sites",
     "django.contrib.auth",
     "django.contrib.admin",
     "django.contrib.sessions",
