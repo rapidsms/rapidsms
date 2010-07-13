@@ -4,7 +4,7 @@
 
 import unittest, doctest
 from rapidsms.conf import settings
-from .utils import find_handlers
+from .utils import get_handlers
 
 
 def suite():
@@ -14,13 +14,12 @@ def suite():
 
     _suite = unittest.TestSuite()
 
-    for module_name in settings.INSTALLED_APPS:
-        for handler in find_handlers(module_name):
-            try:
-                _suite.addTest(doctest.DocTestSuite(
-                    handler.__module__))
+    for handler in get_handlers():
+        try:
+            _suite.addTest(doctest.DocTestSuite(
+                handler.__module__))
 
-            except ValueError:
-                pass
+        except ValueError:
+            pass
 
     return _suite

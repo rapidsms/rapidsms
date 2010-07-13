@@ -3,8 +3,7 @@
 
 
 import rapidsms
-from rapidsms.conf import settings
-from .utils import find_handlers
+from .utils import get_handlers
 
 
 class App(rapidsms.App):
@@ -13,23 +12,11 @@ class App(rapidsms.App):
         Spiders all apps, and registers all available handlers.
         """
 
-        self.handlers = []
-        for module_name in settings.INSTALLED_APPS:
-
-            # ignore handlers found within _this_ app. they're intended
-            # to be inherited by other apps, not instantiated directly.
-            # also ignore django contrib apps, since the "auth" app has
-            # an unrelated "handlers" module. if i'd noticed that when
-            # i created this app, i may have named it differently.
-            if not module_name.endswith(".handlers")\
-            and not module_name.startswith("django.contrib."):
-                handlers = find_handlers(module_name)
-                self.handlers.extend(handlers)
+        self.handlers = get_handlers()
 
         if len(self.handlers):
             class_names = [cls.__name__ for cls in self.handlers]
             self.info("Registered: %s" % (", ".join(class_names)))
-
 
     def handle(self, msg):
         """
