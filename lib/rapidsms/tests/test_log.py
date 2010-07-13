@@ -3,7 +3,6 @@
 
 import unittest, time, logging
 from rapidsms.log import Logger
-from rapidsms.component import Component
 from tempfile import NamedTemporaryFile
 
 expected_output = """
@@ -22,8 +21,7 @@ class TestLog(unittest.TestCase):
         log = Logger("debug", self.tmp.name, 
                     "%(levelname)s [%(component)s]: %(message)s",
                     False)
-        c = Component()
-        c._title = "Testing"
+        c = None
         log.write(c, "debug", "this is a debug message: %d", 1) 
         log.write(c, "info", "this is a info message: %d", 2) 
         log.write(c, "warning", "this is a warning message: %d", 3) 
