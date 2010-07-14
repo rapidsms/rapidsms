@@ -1,10 +1,24 @@
-import irclib
+#!/usr/bin/env python
+# vim: ai ts=4 sts=4 et sw=4
 
-import rapidsms
-from rapidsms.connection import Connection
-from rapidsms.backends.base import BackendBase
+
+from ..models import Connection
+from .base import BackendBase
+
+from ..utils.modules import try_import
+irclib = try_import('irclib')
+
 
 class Backend(BackendBase):
+
+    def __init__(self, *args, **kwargs):
+        BackendBase.__init__(*args, **kwargs)
+
+        if irclib is None:
+            raise ImportError(
+                "The rapidsms.backends.irc engine is not available, " +
+                "because 'irclib' is not installed.")
+
     def configure(self, host="irc.freenode.net", port=6667,
                         nick=None, channels=["#rapidsms"], *kwargs):
         self.host = host

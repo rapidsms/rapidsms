@@ -3,11 +3,13 @@
 
 
 import time
-import pygsm
 
 from ..models import Connection
 from ..messages.incoming import IncomingMessage
 from .base import BackendBase
+
+from ..utils.modules import try_import
+pygsm = try_import('pygsm')
 
 
 class Backend(BackendBase):
@@ -20,6 +22,15 @@ class Backend(BackendBase):
     # time to wait for the start method to
     # complete before assuming that it failed
     MAX_CONNECT_TIME = 10
+
+
+    def __init__(self, *args, **kwargs):
+        BackendBase.__init__(*args, **kwargs)
+
+        if pygsm is None:
+            raise ImportError(
+                "The rapidsms.backends.gsm engine is not available, " +
+                "because 'pygsm' is not installed.")
 
 
     def configure(self, **kwargs):
