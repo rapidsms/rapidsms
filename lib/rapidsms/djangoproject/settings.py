@@ -39,6 +39,7 @@ TEMPLATE_CONTEXT_PROCESSORS = [
 RAPIDSMS_BASE_APPS = [
 
     # the essentials.
+    "django_nose",
     "djangotables",
     "rapidsms",
 
@@ -90,6 +91,13 @@ RAPIDSMS_TABS = RAPIDSMS_BASE_TABS + [
     ("rapidsms.contrib.scheduler.views.index",              "Event Scheduler"),
     ("rapidsms.contrib.httptester.views.generate_identity", "Message Tester"),
 ]
+
+
+# use django-nose to run tests. rapidsms contains lots of packages and
+# modules which django does not find automatically, and importing them
+# all manually is tiresome and error-prone.
+TEST_RUNNER = "django_nose.NoseTestSuiteRunner"
+
 
 # since we might hit the database from any thread during testing, the
 # in-memory sqlite database isn't sufficient. it spawns a separate
