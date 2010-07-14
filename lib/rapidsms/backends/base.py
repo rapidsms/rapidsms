@@ -4,15 +4,14 @@
 
 import time
 import Queue
-from ..log.mixin import LoggerMixin
-from ..messages.incoming import IncomingMessage
 from ..utils.modules import try_import, get_class
+from ..messages.incoming import IncomingMessage
+from ..log.mixin import LoggerMixin
 
 
 class BackendBase(object, LoggerMixin):
     """
     """
-
 
     @classmethod
     def find(cls, module_name):
@@ -24,53 +23,22 @@ class BackendBase(object, LoggerMixin):
     def __init__ (self, router, name, **kwargs):
         self._queue = Queue.Queue()
         self._running = False
-        self._router = router
-        self._name = name
+        self.router = router
+        self.name = name
 
         self._config = kwargs
         if hasattr(self, "configure"):
             self.configure(**kwargs)
 
-
-    def _logger_name(self):
+    def _logger_name(self): # pragma: no cover
         return "backend/%s" % self.name
-
-
-    @property
-    def router (self):
-        if hasattr(self, "_router"):
-            return self._router
-
-
-    @property
-    def name(self):
-        return self._name
-
 
     def __unicode__(self):
         return self.name
 
-
     def __repr__(self):
         return "<backend: %s>" %\
             self.name
-
-
-
-
-
-
-    def next_message (self):
-        """
-        Returns the next incoming message waiting to be processed, or None if
-        there are none pending. This method should be called regularly by
-        """
-
-        try:
-            return self._queue.get(False)
-
-        except Queue.Empty:
-            return None
 
     @property
     def running (self):
@@ -78,16 +46,17 @@ class BackendBase(object, LoggerMixin):
 
 
     def start(self):
-        self._running = True
         try:
+            self._running = True
             self.run()
+
         finally:
             self._running = False
 
 
     def run (self):
         while self.running:
-            time.sleep(1)
+            time.sleep(0.1)
 
 
     def stop(self):
@@ -97,7 +66,9 @@ class BackendBase(object, LoggerMixin):
     @property
     def model(self):
         """
-        Returns the Django stub model representing this backend in the database.
+        Return the Django stub model representing this backend in the
+        database. This is useful when you want to to link a model to a
+        backend, since it enforced a foreign key constraint.
         """
 
         from rapidsms.models import Backend as B
@@ -109,13 +80,12 @@ class BackendBase(object, LoggerMixin):
 
     def message(self, identity, text, received_at=None):
 
-        # imports here, rather than at the top, to
-        # give the django orm a chance to initialize
-        from rapidsms.models import Connection
+        # import the models here, rather than at the top, to give the
+        # orm a chance to initialize. (avoids SETTINGS_MODULE errors.)
+        from ..models import Connection
 
-        # connections are models now (to simplify lightweight
-        # persistance), so fetch an existing instance if we've
-        # already heard from this connection, or create one
+        # ensure that a persistent connection instance exists for this
+        # backend+identity pair. silently create one, if not.
         conn, created = Connection.objects.get_or_create(
             backend=self.model,
             identity=identity)
@@ -126,3 +96,17 @@ class BackendBase(object, LoggerMixin):
 
     def route(self, msg):
         return self.router.incoming_message(msg)
+
+
+    # TODO: what on earth is this for?
+    def next_message (self): # pragma: no cover
+        """
+        Returns the next incoming message waiting to be processed, or
+        None if there are none pending.
+        """
+
+        try:
+            return self._queue.get(False)
+
+        except Queue.Empty:
+            return None
