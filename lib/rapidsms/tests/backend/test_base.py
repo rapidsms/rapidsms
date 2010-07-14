@@ -5,7 +5,7 @@
 import time
 import threading
 from nose.tools import assert_equals
-from ..backends.base import BackendBase
+from ...backends.base import BackendBase
 
 
 class BackendStub(BackendBase):
@@ -22,7 +22,7 @@ def test_backend_has_name():
 
 def test_backend_has_model():
     backend = BackendStub(None, "mock")
-    from ..models import Backend as B
+    from ...models import Backend as B
 
     # before fetching the model via BackendBase, check that it does not
     # already exist in the db. (if it does, this test checks nothing.)
@@ -41,7 +41,7 @@ def test_backend_has_model():
 
 def test_backend_creates_connections():
     backend = BackendStub(None, "mock")
-    from ..models import Connection as C
+    from ...models import Connection as C
 
     # check that the mock connection doesn't already exist.
     assert_equals(C.objects.filter(identity="mock").count(), 0)
