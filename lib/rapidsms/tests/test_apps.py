@@ -40,29 +40,6 @@ def test_app_has_name():
     assert_equals(app.name, "tests")
 
 
-def test_app_logs():
-    router = MockRouter()
-    app = AppStub(router)
-
-    from logging.handlers import MemoryHandler
-    import logging
-
-    log = logging.getLogger()
-    handler = MemoryHandler(999)
-    log.setLevel(logging.DEBUG)
-    log.addHandler(handler)
-
-    app.debug("This is a DEBUG message")
-    app.info("This is an INFORMATIVE message")
-    app.warning("This is a WARNING")
-    app.error("This is an ERROR")
-    app.critical("This is a CRITICAL error")
-
-    assert_equals(len(handler.buffer), 5)
-    assert_equals(handler.buffer[2].name, "app/tests")
-    assert_equals(handler.buffer[2].msg, "This is a WARNING")
-
-
 def test_app_finds_valid_app_classes():
     app = AppBase.find('rapidsms.contrib.default')
     from rapidsms.contrib.default.app import App

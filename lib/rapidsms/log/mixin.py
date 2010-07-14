@@ -7,66 +7,19 @@ import logging
 
 class LoggerMixin():
     """
-    This mixin provides a quick way to log from classes within the RapidSMS
-    framework. It's mostly pasted from logging.LoggingAdaptor (which isn't
-    available in < Py2.6), with a couple of backwards-compatibility tweaks.
-
-    TODO: This is a ridiculously long doctest. Make it a unittest.
-
-
-    # set up an temporary python logger, which
-    # buffers ALL messages to inspect later
-
-    >>> import logging
-    >>> from logging.handlers\
-          import MemoryHandler
-
-    >>> log = logging.getLogger()
-    >>> log.setLevel(logging.DEBUG)
-    >>> handler = MemoryHandler(999)
-    >>> log.addHandler(handler)
-
-
-    # create an instance of a noisy example class
-    # (this would be your app, backend, or whatever)
-
-    >>> class MyLoggingClass(object, LoggerMixin):
-    ...     def do_something(self):
-    ...        self.info("This is an INFO message")
-    ...        self.debug("This is a DEBUG message")
-    ...        self.warning("This is a WARNING message")
-    ...        self.error("This is an ERROR message")
-    ...        self.critical("This is a CRITICAL message")
-
-    >>> x = MyLoggingClass()
-    >>> x.do_something()
-
-
-    # check that the buffer contains
-    # exactly those those messages
-
-    >>> len(handler.buffer)
-    5
-
-    >>> handler.buffer[0].levelname
-    'INFO'
-
-    >>> handler.buffer[0].msg
-    'This is an INFO message'
+    This mixin provides a quick way to log from classes within the
+    RapidSMS framework. It's mostly pasted from logging.LoggingAdaptor
+    (which isn't available in < Py2.6), with a couple of compatibility
+    tweaks.
     """
 
 
     def _logger_name(self):
         """
-        Returns the name of the log which will receive messages emitted by this
-        object. This defaults to the class name (sanitized), but should almost
-        always be overloaded by subclasses to make the hierarchy clear.
-
-        >>> class MyLoggingClass(object, LoggerMixin):
-        ...    pass
-
-        >>> MyLoggingClass()._logger_name()
-        'myloggingclass'
+        Returns the name of the log which will receive messages emitted
+        by this object. This defaults to the class name (sanitized), but
+        should almost always be overloaded by subclasses to make the
+        hierarchy clear.
         """
         return type(self).__name__.lower()
 
