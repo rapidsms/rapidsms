@@ -7,22 +7,19 @@ import unittest, doctest
 
 def suite():
     """
-    Returns an extended test suite for this module, which includes all of the
-    test modules in this package (rapidsms.tests), along with important parts of
-    RapidSMS which aren't usually tested. (Django only runs tests declared in
-    models.py and tests.py as default. imported modules are ignored.)
+    Return a test suite for this module, which includes all of the test
+    modules in this package (rapidsms.tests), along with the important
+    parts of RapidSMS which aren't found automatically. (Django only
+    runs tests declared in models.py and tests.py as default.)
     """
-
-    # run all of the tests in this directory
-    from . import test_backend
-    from . import test_app
-    #from . import test_message
-    from . import test_router
 
     # import various other modules,
     # to find and run their doctests
-    from .. import router, app
-    from ..log import mixin
+    from ..         import router
+    from ..log      import mixin
+    from ..apps     import base
+    from ..backends import base
+    from ..messages import base, incoming, outgoing, error
 
     from ..utils import modules
 
