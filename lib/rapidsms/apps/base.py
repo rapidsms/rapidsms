@@ -2,36 +2,33 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 
-from ..log.mixin import LoggerMixin
 from ..utils.modules import try_import, get_class
+from ..log.mixin import LoggerMixin
 
 
 class AppBase(object, LoggerMixin):
     """
     """
 
-
     @classmethod
     def find(cls, app_name):
+        """
+        Return the RapidSMS app class from *app_name* (a standard Django
+        app name), or None if it does not exist. Import errors raised
+        *within* the module are allowed to propagate.
+        """
+
         module_name = "%s.app" % app_name
         module = try_import(module_name)
         if module is None: return None
         return get_class(module, cls)
 
 
-    def __init__(self, router=None):
-        self._router = router
+    def __init__(self, router):
+        self.router = router
 
-
-    @property
-    def router (self):
-        if hasattr(self, "_router"):
-            return self._router
-
-
-    def _logger_name(self):
+    def _logger_name(self): # pragma: no cover
         return "app/%s" % self.name
-
 
     @property
     def name(self):
@@ -42,39 +39,24 @@ class AppBase(object, LoggerMixin):
 
         return self.__module__.split(".")[-2]
 
-
     def __unicode__(self):
         return self.name
-
 
     def __repr__(self):
         return "<app: %s>" %\
             self.name
 
+    # router events
+    def start (self): pass
+    def stop  (self): pass
 
-    def start (self):
-        pass
+    # incoming phases
+    def filter   (self, msg): pass
+    def parse    (self, msg): pass
+    def handle   (self, msg): pass
+    def default  (self, msg): pass
+    def catch    (self, msg): pass
+    def cleanup  (self, msg): pass
 
-    def filter (self, message):
-        pass
-
-    def parse (self, message):
-        pass
-
-    def handle (self, message):
-        pass
-
-    def default (self, message):
-        pass
-
-    def catch (self, message):
-        pass
-
-    def cleanup (self, message):
-        pass
-
-    def outgoing (self, message):
-        pass
-
-    def stop (self):
-        pass
+    # outgoing phases:
+    def outgoing (self, msg): pass
