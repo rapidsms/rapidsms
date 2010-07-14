@@ -45,12 +45,12 @@ class BestMatch(object):
 
     Basic usage:
 
-    bm=BestMatch(['foo', 'bar', 'baz'])
-    hit = bm.match('f')
-    if len(hit)==1: 
-        print 'we found: %s' % hit[0] 
-    elif len(hit)>1: 
-        print 'which did you mean? we found: %s' % hit
+    >>> bm = BestMatch(['foo', 'bar', 'baz'])
+    >>> bm.match('f')
+    ['foo']
+    
+    >>> bm.match('b')
+    ['bar', 'baz']
 
     The matcher has several advanced features:
     - aliases where each target can have multiple aliases (spellings) 
@@ -67,20 +67,20 @@ class BestMatch(object):
 
     e.g.
 
-    bm = BestMatch([['John Fitzgerald Kennedy', 'JFK', 'Jack Kennedy'], 'Jim'])
-    print bm.match('jfk')
-    >>> ['John Fitzgerald Kennedy']
+    >>> bm = BestMatch([['John Fitzgerald Kennedy', 'JFK', 'Jack Kennedy'], 'Jim'])
+    >>> bm.match('jfk')
+    ['John Fitzgerald Kennedy']
 
     Data:
     To store data:
     1. pass a tuple where you would have passed a target. 
     t[0] is the target (or target/alias list) t[1] is the data:
 
-    bm = BestMatch([('bob',25),('jim',35)])
-    
+    >>> bm = BestMatch([('bob',25),('jim',35)])
+
     2. set 'with_data' to true when performing the match:
-    print bm.match('b',with_data=True)
-    >>> [('bob',25)]
+    >>> bm.match('b',with_data=True)
+    [('bob', 25)]
 
     Anchored v. Unanchored searches
     By default, searches will assume the match should be anchored at
@@ -89,11 +89,11 @@ class BestMatch(object):
 
     Pass 'anchored=False' to 'match()' for unanchored behavior
 
-    bm = BestMatch(['westfield','springfield','fieldton'])
-    print bm.match('field')
-    >>> ['fieldton']
-    print bm.match(field, anchored=False)
-    >>> ['westfield','springfield','fieldton']
+    >>> bm = BestMatch(['westfield','springfield','fieldton'])
+    >>> bm.match('field')
+    ['fieldton']
+    >>> bm.match('field', anchored=False)
+    ['westfield', 'fieldton', 'springfield']
 
     Ignore Prefixes:
     If searching over a set that contains common prefixes, 
@@ -101,14 +101,13 @@ class BestMatch(object):
     leave them off the source.
     
     E.g. Match French resaurants:
-    bm = BestMatch(['chez louis', 'chez panisse', 'chez robert'],
-                   ignore_prefixes=['chez'])
-    print bm.match('p')
-    >>> ['chez panisse']
+    >>> bm = BestMatch(['chez louis', 'chez panisse', 'chez robert'], ignore_prefixes=['chez'])
+    >>> bm.match('p')
+    ['chez panisse']
 
     src's containing the prefix match as expected:
-    print bm.match('chez')
-    >>> ['chez louis', 'chez panisse', 'chez robert']
+    >>> bm.match('chez')
+    ['chez panisse', 'chez louis', 'chez robert']
 
     NOTE: All matches are case insensitive!
     
