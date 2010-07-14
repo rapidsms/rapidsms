@@ -4,6 +4,7 @@
 
 import logging, logging.handlers
 from django.core.management.base import NoArgsCommand
+from django.core.management import call_command
 from ...router import router
 from ...conf import settings
 
@@ -33,6 +34,11 @@ class Command(NoArgsCommand):
             backupCount=settings.LOG_BACKUPS)
         router.logger.addHandler(file_handler)
         file_handler.setFormatter(format)
+
+        # update the persistance models. (this is not djangonic at all.
+        # it should be replaced with managers for App and Backend.)
+        call_command("update_backends", verbosity=0)
+        call_command("update_apps", verbosity=0)
 
         # add each application from conf
         for name in settings.INSTALLED_APPS:

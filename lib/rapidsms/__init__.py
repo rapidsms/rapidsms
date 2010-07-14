@@ -2,7 +2,6 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 
-from .apps.base import AppBase as App
 from .messages import OutgoingMessage as Message
 
 

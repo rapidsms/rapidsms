@@ -5,7 +5,7 @@ import os
 
 from rapidsms.router import Router
 from rapidsms.backends.base import BackendBase
-from rapidsms import App
+from ..apps.base import AppBase
 
 
 # a really dumb Logger stand-in
@@ -61,7 +61,7 @@ class MockBackend (BackendBase):
         return self.outgoing_bucket.pop(0)
  
 # a subclass of App with all the moving parts replaced
-class MockApp (App):
+class MockApp (AppBase):
     def configure (self):
         self.calls = []
 
