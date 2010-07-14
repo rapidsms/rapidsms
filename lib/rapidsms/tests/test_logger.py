@@ -33,6 +33,8 @@ def test_logger_mixin():
     assert_equals(handler.buffer[2].name, "loggablestub")
     assert_equals(handler.buffer[2].msg, "This is a WARNING")
 
+    log.removeHandler(handler)
+
 
 def test_logger_raises_on_invalid_name_type():
     class BrokenLoggableStub(object, LoggerMixin):
