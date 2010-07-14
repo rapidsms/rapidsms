@@ -15,7 +15,6 @@ def suite():
 
     # run all of the tests in this directory
     from . import test_backend
-    from . import test_backend_irc
     from . import test_app
     #from . import test_message
     from . import test_router
