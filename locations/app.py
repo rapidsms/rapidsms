@@ -3,11 +3,11 @@
 
 
 import re
-import rapidsms
-from models import *
+from rapidsms.apps.base import AppBase
+from .models import *
 
 
-class App(rapidsms.App):
+class App(AppBase):
     PATTERN = re.compile(r"^(.+)\b(?:at)\b(.+?)$")
 
     def __find_location(self, text):

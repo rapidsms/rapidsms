@@ -4,12 +4,12 @@
 
 import time
 from rapidsms.conf import settings
+from rapidsms.apps.base import AppBase
 from rapidsms.backends.base import BackendBase
 from rapidsms.messages import IncomingMessage, OutgoingMessage
-import rapidsms
 
 
-class App(rapidsms.App):
+class App(AppBase):
     """
     What
     """

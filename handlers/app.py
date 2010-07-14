@@ -2,11 +2,11 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 
-import rapidsms
+from rapidsms.apps.base import AppBase
 from .utils import get_handlers
 
 
-class App(rapidsms.App):
+class App(AppBase):
     def start(self):
         """
         Spiders all apps, and registers all available handlers.

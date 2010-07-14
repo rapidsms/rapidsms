@@ -2,12 +2,12 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 
-import rapidsms
+from rapidsms.apps.base import AppBase
 from rapidsms.models import Connection
 from rapidsms.messages.outgoing import OutgoingMessage
 
 
-class App (rapidsms.App):
+class App (AppBase):
     """This app receives outgoing messages from the WebUI (via the
        AJAX app), and relays them to the router."""
 

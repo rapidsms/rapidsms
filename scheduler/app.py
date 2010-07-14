@@ -28,11 +28,10 @@ import time
 import threading
 from datetime import datetime, timedelta
 
-import rapidsms
-
+from rapidsms.apps.base import AppBase
 from rapidsms.contrib.scheduler.models import EventSchedule
 
-class App (rapidsms.App):
+class App (AppBase):
     """ This app provides cron-like functionality for scheduled tasks,
     as defined in the django model EventSchedule
     

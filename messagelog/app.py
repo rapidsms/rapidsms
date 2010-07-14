@@ -3,11 +3,11 @@
 
 
 import datetime
-import rapidsms
+from rapidsms.apps.base import AppBase
 from .models import Message
 
 
-class App(rapidsms.App):
+class App(AppBase):
     def _who(self, msg):
         to_return = {}
         if msg.contact:    to_return["contact"]    = msg.contact 

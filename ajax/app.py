@@ -10,11 +10,11 @@ from SocketServer import ThreadingMixIn
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 from django.utils.simplejson import JSONEncoder
 from django.db.models.query import QuerySet
+from rapidsms.apps.base import AppBase
 from rapidsms.conf import settings
-import rapidsms
 
 
-class App(rapidsms.App):
+class App(AppBase):
     """
     This App does nothing by itself. It exists only to serve other Apps,
     by providing an easy (and standard) way for them to communicate

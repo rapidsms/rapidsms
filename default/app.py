@@ -3,10 +3,10 @@
 
 
 from rapidsms.conf import settings
-import rapidsms
+from rapidsms.apps.base import AppBase
 
 
-class App(rapidsms.App):
+class App(AppBase):
     def default(self, msg):
         if settings.DEFAULT_RESPONSE is not None:
             msg.error(settings.DEFAULT_RESPONSE,
