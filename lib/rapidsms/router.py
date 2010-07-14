@@ -184,6 +184,19 @@ class Router(object, LoggerMixin):
                 app.exception()
 
 
+    def _stop_all_apps(self):
+        """
+        Stop all apps registered via Router.add_app.
+        """
+
+        for app in self.apps:
+            try:
+                app.stop()
+
+            except:
+                app.exception()
+
+
     def start(self):
         """
         Start polling the backends registered via Router.add_backend for
@@ -247,6 +260,7 @@ class Router(object, LoggerMixin):
 
         self.debug("Stopping...")
         self._stop_all_backends()
+        self._stop_all_apps()
         self.info("Stopped")
 
 
