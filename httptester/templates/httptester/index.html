@@ -11,14 +11,13 @@
 {% block javascripts %}
 {{ block.super }}
 <script type="text/javascript" src="{{ MEDIA_URL }}rapidsms/javascripts/module-help.js"></script>
-<script type="text/javascriptx" src="{{ MEDIA_URL }}httptester/javascripts/httptester.js"></script>
 {% endblock %}
 
 {% block left %}
 <div class="module">
 	<h2>Message Tester</h2>
 
-	<form action="" method="post">
+	<form action="" method="post" enctype="multipart/form-data">
 		{% render_form message_form %}
 		{% csrf_token %}
 
@@ -26,16 +25,6 @@
 			<input type="submit" value="Send" />
 		</div>
 	</form>
-</div>
-<div class="module">
-    <h2>Bulk Message Tester</h2>
-    <p>Upload a plain text file containing ONE message per line (e.g., testform +l mychair +r 2 +d 2).</p>
-    <form method="post" id="fm-bulk" action="/message-tester/bulk" enctype="multipart/form-data">
-                <label for="fm-bulk-identity">From phone number</label>
-                <input type="text" class="required" id="fm-bulk-identity" name="identity"/>
-                <label for="fm-bulk-file">Text file</label>
-                <input type="file" id="fm-bulk-file" name="file"/>
-                <input type="submit" value="Upload"/>
 </div>
 {% endblock %}
 

@@ -22,20 +22,28 @@ def generate_identity(req):
     return _redirect(identity)
 
 
-def bulk_messages(req):
-    file = req.FILES['file']
-    identity = req.POST['identity']
-    for line in file:
-        utils.send_test_message(identity=identity, text=line)
-    return _redirect(identity)
-
-
 def message_tester(req, identity):
     if req.method == "POST":
         form = forms.MessageForm(req.POST)
+
         if form.is_valid():
             cd = form.cleaned_data
-            utils.send_test_message(**cd)
+            identity = cd["identity"]
+
+            if "bulk" in req.FILES:
+                for line in req.FILES["bulk"]:
+                    utils.send_test_message(
+                        identity=identity,
+                        text=line)
+
+            # no bulk file was submitted, so use the "single message"
+            # field. this may be empty, which is fine, since contactcs
+            # can (and will) submit empty sms, too.
+            else:
+                utils.send_test_message(
+                    identity=identity,
+                    text=cd["text"])
+
             return _redirect(cd["identity"])
 
     else:
