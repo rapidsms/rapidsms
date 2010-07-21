@@ -9,6 +9,6 @@
 			<li>{{ error }}</li>{% endfor %}
 		</ul>{% endif %}
 		{{ field }}{% if field.help_text %}
-		<p class="help">{{ field.help_text }}</p>{% endif %}
+		<p class="help">{{ field.help_text|safe }}</p>{% endif %}
 	</div>{% endfor %}
 </div>
