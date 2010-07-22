@@ -56,9 +56,10 @@ class PointField(fields.MultiValueField):
 
     def compress(self, data_list):
         if data_list:
-            lat = data_list[0]
-            lng = data_list[1]
-            return Point(latitude=lat, longitude=lng)
+            lat = unicode(data_list[0])
+            lng = unicode(data_list[1])
+            return Point.objects.create(
+                latitude=lat, longitude=lng)
 
         return None
 
