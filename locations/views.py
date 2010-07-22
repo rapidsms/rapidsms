@@ -116,8 +116,11 @@ def locations(req, location_uid=None):
                 model.parent = parent
                 model.save()
 
+                return HttpResponseRedirect(
+                    reverse(locations, args=(parent.uid,)))
+
             return HttpResponseRedirect(
-                reverse(locations, args=(model.uid,)))
+                reverse(locations))
 
     types = [
         LocationTypeStub(type, req, view_location)
