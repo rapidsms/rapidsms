@@ -16,7 +16,7 @@
 {% endblock %}
 
 {% block left %}{% if no_location_types %}
-<div class="module">
+<div class="module tables">
 	<table>
 		<tbody>
 		<tr class="no-data error">
@@ -28,22 +28,29 @@
 			</tr>
 		</tbody>
 	</table>
-</div>{% else %}{% for type in location_types %}{% if not type.is_empty %}
-<div class="module">
+</div>{% else %}{% for type in location_types %}
+<div class="module tables{% if type.is_empty %} collapsed{% endif %}">
 	<h2>{{ type.plural|title }}</h2>
 	<table class="locations">
 		{% table_cols type.table %}
 		{% table_head type.table %}
 
-		<tbody>{% for location in type.table.rows %}
+		<tbody>{% if rows %}{% for location in type.table.rows %}
 			<tr>
 				<th scope="row"><a href="{% url locations location.uid %}">{{ location }}</a></th>
-			</tr>{% endfor %}
+			</tr>{% endfor %}{% else %}
+			<tr class="no-data">
+				<td colspan="{{ num_columns }}">
+					<p>
+						Nothing to display.
+					</p>
+				</td>
+			</tr>{% endif %}
 		</tbody>
 
 		{% table_foot type.table %}
 	</table>
-</div>{% endif %}{% endfor %}{% endif %}
+</div>{% endfor %}{% endif %}
 {% endblock %}
 
 {% block middle %}
@@ -65,10 +72,11 @@
 {% endblock %}
 
 {% block right %}{% for type in location_types %}
-<div class="module collapsed">
+<div class="module forms collapsed">
 	<h2>Add a {{ type.singular|title }}</h2>
 	<form action="" method="post">
 		{% render_form type.form %}
+		{% csrf_token %}
 
 		<div class="submit">
 			<input type="submit" name="submit" value="Save" />

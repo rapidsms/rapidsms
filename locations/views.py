@@ -68,7 +68,7 @@ class LocationTypeStub(object):
 
     def form(self):
         return utils.form_for_model(
-            self._type)()
+            self._type)(prefix=self.name())
 
     def locations(self):
         if self._loc is not None:
@@ -122,7 +122,7 @@ def locations(req, location_uid=None):
     types = [
         LocationTypeStub(type, req, view_location)
         for type in Location.subclasses()]
-    
+
     return render_to_response(req,
         "locations/dashboard.html", {
             "breadcrumbs": _breadcrumbs(view_location),

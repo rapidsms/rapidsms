@@ -58,4 +58,59 @@ jQuery(function() {
             google.maps.event.trigger(map, "resize");
         });
     });
+
+    var pp_events = [];
+
+    /* start watching the map(s) for clicks, to fill the lat+lng fields
+     * preceding `trigger`. after click, stop_pinpoint is called. */
+    var start_pinpoint = function(trigger) {
+        jQuery(document.body).addClass("pinpointing");
+        trigger.parent().addClass("pp-target");
+
+        jQuery.each(maps, function(n, map) {
+            map.setOptions({
+                "draggable": false
+            });
+
+            pp_events.push(
+                google.maps.event.addListener(map, "click", function(event) {
+                    trigger.prev().prev().attr("value", event.latLng.lat());
+                    trigger.prev().attr("value", event.latLng.lng());
+                    stop_pinpoint(trigger);
+                })
+            );
+        });
+    };
+
+    /* stop watching map(s) for clicks, and undo ui changes. */
+    var stop_pinpoint = function(trigger) {
+        jQuery.each(pp_events, function(n, event) {
+            google.maps.event.removeListener(event);
+        });
+
+        jQuery.each(maps, function(n, map) {
+            map.setOptions({
+                "draggable": true
+            });
+        });
+
+        jQuery(".pp-target").removeClass("pp-target");
+        jQuery(document.body).removeClass("pinpointing");
+    };
+
+    /* add a trigger to each co-ord field (before the help text), to
+     * make it easy to fill the widgets by clicking on the map. */
+    jQuery("div.field.point p.help").each(function() {
+        var trigger = jQuery('<input class="js-button pinpoint">');
+
+        trigger.click(function() {
+            if(jQuery(document.body).hasClass("pinpointing")) {
+                stop_pinpoint(trigger);
+            } else {
+                start_pinpoint(trigger);
+            }
+        });
+
+        jQuery(this).before(trigger);
+    });
 });

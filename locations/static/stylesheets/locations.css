@@ -61,3 +61,28 @@ div.col-1 tr.no-data.error {
         display: block;
         width: 100%;
     }
+
+
+/* to make it easy to add a point without knowing its exact lat+long,
+ * this javascript-powered trigger is added to each widget by map.js.
+ * (see rapidsms/icons.css for the global 'js-button' rule.) */
+
+input.js-button.pinpoint { background-image: url("../icons/silk/map_cursor.png"); }
+
+body.pinpointing { }
+
+	body.pinpointing .col-2 .module {
+		outline: 0.5em solid #ff8;
+	}
+
+	body.pinpointing div.map {
+		cursor: crosshair;
+	}
+
+	body.pinpointing div.pp-target {
+		border-left: 1.5em solid #ff8;
+		padding-left: 0.5em;
+		margin-left: -2em;
+	}
+
+	body.pinpointing input.js-button.pinpoint { background-image: url("../../rapidsms/icons/silk/decline.png"); }

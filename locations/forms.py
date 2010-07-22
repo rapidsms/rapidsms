@@ -11,7 +11,7 @@ from .models import *
 
 class PointWidget(widgets.MultiWidget):
     default_attrs = {
-        "size": 8 }
+        "size": 6 }
 
     def __init__(self, attrs=None):
         attrs_ = self.default_attrs.copy()
@@ -25,6 +25,7 @@ class PointWidget(widgets.MultiWidget):
         if value:
             p = Point.objects.get(pk=value)
             return [p.latitude, p.longitude]
+
         return [None, None]
 
 
@@ -63,7 +64,10 @@ class PointField(fields.MultiValueField):
 
 
 class LocationForm(forms.ModelForm):
-    point = PointField()
+    point = PointField(
+        label="Coordinates",
+        help_text="The latitude and longitude of this " +
+                  "location. Click the map to set.")
 
     class Meta:
         model = Location
