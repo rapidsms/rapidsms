@@ -68,7 +68,7 @@ class LocationTypeStub(object):
 
     def form(self):
         return utils.form_for_model(
-            self._type)(prefix=self.name())
+            self._type)()
 
     def locations(self):
         if self._loc is not None:

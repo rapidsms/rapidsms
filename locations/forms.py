@@ -66,8 +66,8 @@ class PointField(fields.MultiValueField):
 class LocationForm(forms.ModelForm):
     point = PointField(
         label="Coordinates",
-        help_text="The latitude and longitude of this " +
-                  "location. Click the map to set.")
+        help_text="The physical latitude and longitude of this location. " +
+                  "Click the icon to select a point on the map.")
 
     class Meta:
         model = Location

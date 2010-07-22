@@ -35,17 +35,17 @@
 		{% table_cols type.table %}
 		{% table_head type.table %}
 
-		<tbody>{% if rows %}{% for location in type.table.rows %}
+		<tbody>{% for location in type.table.rows %}
 			<tr>
 				<th scope="row"><a href="{% url locations location.uid %}">{{ location }}</a></th>
-			</tr>{% endfor %}{% else %}
+			</tr>{% empty %}
 			<tr class="no-data">
 				<td colspan="{{ num_columns }}">
 					<p>
 						Nothing to display.
 					</p>
 				</td>
-			</tr>{% endif %}
+			</tr>{% endfor %}
 		</tbody>
 
 		{% table_foot type.table %}
