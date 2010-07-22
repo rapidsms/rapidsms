@@ -3,6 +3,7 @@
 
 
 from rapidsms.utils.modules import try_import
+from .forms import LocationForm
 from .models import Location
 
 
@@ -19,24 +20,36 @@ def get_model(name):
 
 def form_for_model(model):
     """
+    Return the Form which should be used to add/edit ``model`` in the
+    WebUI, by importing the class named ``"%sForm" % model.__name__``
+    from the sibling ``forms`` module. For example::
+
+        app1.models.Alpha     -> myapp.forms.SchoolForm
+        app2.models.beta.Beta -> app2.forms.beta.BetaForm
+
+    If no such form is defined, an appropriately-patched copy of the
+    rapidsms.contrib.locations.forms.LocationForm form is returned.
     """
 
     parts = model.__module__.split(".")
     parts[parts.index("models")] = "forms"
+
     module_name = ".".join(parts)
-    module = try_import(module_name)
-    
-    if module is None:
-        raise StandardError(
-            "No such module as '%s'." %
-            module_name)
-
     form_name = model.__name__ + "Form"
-    form = getattr(module, form_name, None)
 
-    if form is None:
-        raise StandardError(
-            "No such form as '%s' in '%s'." %
-            (form_name, module_name))
+    module = try_import(module_name)
+    if module is not None:
 
-    return form
+        form = getattr(module, form_name, None)
+        if form is not None:
+            return form
+
+    meta_dict = LocationForm.Meta.__dict__
+    meta_dict["model"] = model
+
+    return type(
+        form_name,
+        (LocationForm,), {
+            "Meta": type("Meta", (), meta_dict)
+        }
+    )
