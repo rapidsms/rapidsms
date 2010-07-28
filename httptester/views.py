@@ -3,11 +3,12 @@
 
 
 from random import randint
+from django.template import RequestContext
+from django.shortcuts import render_to_response
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.views.decorators.http import require_GET, require_POST
 from rapidsms.contrib.ajax.exceptions import RouterNotResponding
-from rapidsms.utils import render_to_response
 from . import forms
 from . import utils
 
@@ -61,7 +62,9 @@ def message_tester(req, identity):
         message_log = None
 
     return render_to_response(
-        req, "httptester/index.html", {
+        "httptester/index.html", {
             "router_available": router_available,
             "message_log": message_log,
-            "message_form": form, })
+            "message_form": form
+        }, context_instance=RequestContext(req)
+    )

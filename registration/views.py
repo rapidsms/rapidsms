@@ -2,10 +2,10 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 
+from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
-from django.shortcuts import get_object_or_404
-from rapidsms.utils import render_to_response, paginated
+from django.shortcuts import render_to_response, get_object_or_404
 from rapidsms.forms import ContactForm
 from rapidsms.models import Contact
 from .tables import ContactTable
@@ -38,9 +38,10 @@ def registration(req, pk=None):
         form = ContactForm(
             instance=contact)
 
-    return render_to_response(req,
+    return render_to_response(
         "registration/dashboard.html", {
             "contacts_table": ContactTable(Contact.objects.all(), request=req),
             "contact_form": form,
             "contact": contact
-        })
+        }, context_instance=RequestContext(req)
+    )
