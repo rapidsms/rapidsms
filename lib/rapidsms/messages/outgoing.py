@@ -21,9 +21,20 @@ class OutgoingMessage(MessageBase):
         self._connection = connection
         self.sent_at = None
 
-        # default to LANGUAGE_CODE from the project's settings, or fall
-        # back to 'en-us', from django.conf.global_settings:39
-        self.language = settings.LANGUAGE_CODE
+
+    @property
+    def language(self):
+        """
+        Return the language which this message will be sent in. If
+        possible, this is fetched from the recipient Contact model.
+        Otherwise, it defaults to the ``LANGUAGE_CODE`` setting.
+        """
+
+        if self._connection.contact is not None:
+            if self._connection.contact.language:
+                return self._connection.contact.language
+
+        return settings.LANGUAGE_CODE
 
 
     def append(self, template, **kwargs):
