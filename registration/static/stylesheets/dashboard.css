@@ -3,14 +3,14 @@
 #inner .col-1 { width: 60%; }
 #inner .col-2 { width: 40%; }
 
-.contacts {
+.col-1 table {
     width: 100%;
 }
 
-    .contacts th,
-    .contacts td {
+    .col-1 th,
+    .col-1 td {
         white-space: nowrap;
     }
 
-    .contacts col { width: 1%; }
-    .contacts col:last-child { width: auto; }
+    .col-1 col { width: 1%; }
+    .col-1 col:last-child { width: auto; }

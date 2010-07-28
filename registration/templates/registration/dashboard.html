@@ -1,6 +1,4 @@
 {% extends "registration/base.html" %}
-{% load pagination_tags %}
-{% load tables_tags %}
 {% load forms_tags %}
 
 
@@ -29,10 +27,11 @@
 
 	<form action="" method="post">
 		{% render_form contact_form %}
+		{% csrf_token %}
 
 		<div class="submit">
-			<input type="submit" name="submit" value="Save Contact" />
-			<input type="submit" name="submit" value="Delete Contact" />
+			<input type="submit" name="submit" value="Save Contact" />{% if contact %}
+			<input type="submit" name="submit" value="Delete Contact" />{% endif %}
 		</div>
 	</form>
 </div>
