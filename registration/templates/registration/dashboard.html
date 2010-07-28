@@ -10,11 +10,11 @@
 {% block left %}
 <div class="module">
 	<h2>Contacts</h2>
-	{{ contacts_table.as_html }}
+	{{ contacts_table.as_html }}{% if contact %}
 
 	<div class="toolbar">
-		<a href="{% url registration_add %}" class="add">Add a Contact</a>
-	</div>
+		<a href="{% url registration %}" class="add">Add a Contact</a>
+	</div>{% endif %}
 </div>
 {% endblock %}
 
