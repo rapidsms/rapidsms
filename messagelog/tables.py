@@ -2,7 +2,9 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 
+from django.conf import settings
 from djangotables import Table, Column
+from djangotables.column import DateColumn
 from .models import Message
 
 
@@ -12,7 +14,7 @@ class MessageTable(Table):
     contact = Column()
     connection = Column()
     direction = Column()
-    date = Column()
+    date = DateColumn(format="H:m d/m/Y")
     text = Column()
 
     class Meta:

@@ -7,8 +7,8 @@ from .models import Message
 
 
 class MessageAdmin(admin.ModelAdmin):
-    list_display=("text", "direction", "who", "date")
-    list_filter=("contact", "connection", "direction", "date")
+    list_display = ("text", "direction", "who", "date")
+    list_filter = ("direction", "date")
 
 
 admin.site.register(Message, MessageAdmin)
