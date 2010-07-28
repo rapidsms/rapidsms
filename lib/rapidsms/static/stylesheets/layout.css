@@ -270,11 +270,21 @@ div.trigger {
 }
 
     /* bump the footer links down a line, to align them with the second
-     * line of the legal junk on the right */
+     * line of legal junk on the right. reduce the opacity until hover,
+     * to keep them out of view until they're needed. */
     #footer .footer-region {
-        padding-top: 1.4em;
+        margin-top: 1.4em;
         line-height: 1.4;
+        opacity: 0.25;
+        float: left;
     }
+
+        #footer .footer-region:hover {
+            opacity: 1; }
+
+        #footer .footer-region a            { margin-right: 0.5em; }
+        #footer .footer-region a:last-child { margin-right: 0; }
+
 
     #footer p.rights {
         text-align: right;
