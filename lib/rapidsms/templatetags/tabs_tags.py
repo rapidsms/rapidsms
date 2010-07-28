@@ -7,7 +7,7 @@ import threading
 from functools import wraps
 from django import template
 from django.conf import settings
-from django.core.urlresolvers import get_resolver, reverse
+from django.core.urlresolvers import get_resolver, reverse, RegexURLPattern
 from django.utils.importlib import import_module
 from django.template import Variable
 
@@ -48,9 +48,10 @@ class Tab(object):
         if not self._view:
             resolver = get_resolver(None)
             for pattern in resolver.url_patterns:
-                if self._looks_like(self.callback, pattern.callback):
-                    self._view = pattern.callback
-                    break
+                if type(pattern) is RegexURLPattern:
+                    if self._looks_like(self.callback, pattern.callback):
+                        self._view = pattern.callback
+                        break
 
         return self._view
 
