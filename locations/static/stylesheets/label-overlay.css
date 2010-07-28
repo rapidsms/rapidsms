@@ -10,6 +10,8 @@ div.label-wrapper div.arrow {
     div.label-wrapper.bubble div.label {
         background: #fff;
         border: 1px solid #000;
+        text-align: center;
+        line-height: 1.4;
         font-weight: bold;
         padding: 6px;
         color: #000;
@@ -28,7 +30,6 @@ div.label-wrapper div.arrow {
         div.label-wrapper.below.bubble div.label { margin-top:    8px; }
         div.label-wrapper.left.bubble  div.label { margin-right:  8px; }
 
-    
     div.label-wrapper.bubble div.arrow {
         position: absolute;
         display: block;
