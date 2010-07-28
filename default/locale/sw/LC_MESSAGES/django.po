@@ -6,4 +6,4 @@ msgstr ""
 
 #: default/settings.py:4
 msgid "Sorry, %(project_name)s could not understand your message."
-msgstr ""
+msgstr "Samahani, %(project_name)s haikuelewa ujumbe wako"
