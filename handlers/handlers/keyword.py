@@ -11,7 +11,7 @@ class KeywordHandler(BaseHandler):
     @classmethod
     def _keyword(cls):
         if hasattr(cls, "keyword"):
-            prefix = r"^(?:%s)(?:[\s,;:]+(.+))?$" % (cls.keyword)
+            prefix = r"^\s*(?:%s)(?:[\s,;:]+(.+))?$" % (cls.keyword)
             return re.compile(prefix, re.IGNORECASE)
 
     @classmethod
