@@ -81,7 +81,6 @@ class App(models.Model):
 
 
 class ContactBase(models.Model):
-    alias = models.CharField(max_length=20, blank=True)
     name  = models.CharField(max_length=100, blank=True)
 
     # the spec: http://www.w3.org/International/articles/language-tags/Overview
@@ -95,7 +94,7 @@ class ContactBase(models.Model):
         abstract = True
 
     def __unicode__(self):
-        return self.name or self.alias or "Anonymous"
+        return self.name or "Anonymous"
 
     def __repr__(self):
         return '<%s: %s>' %\
@@ -103,7 +102,7 @@ class ContactBase(models.Model):
 
     @property
     def is_anonymous(self):
-        return not (self.name or self.alias)
+        return not self.name
 
     @property
     def default_connection(self):
