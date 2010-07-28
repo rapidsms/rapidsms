@@ -21,6 +21,9 @@ class BaseHandler(object, LoggerMixin):
     def respond(self, template=None, **kwargs):
         return self.msg.respond(template, **kwargs)
 
+    def respond_error(self, template=None, **kwargs):
+        return self.msg.error(template, **kwargs)
+
     @classmethod
     def test(cls, text, identity=None):
         """

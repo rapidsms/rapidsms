@@ -17,17 +17,23 @@ class LanguageHandler(KeywordHandler):
         self.respond("To set your language, send LANGUAGE <CODE>")
 
     def handle(self, text):
+        if self.msg.connection.contact is None:
+            return self.respond_error(
+                "You must JOIN or IDENTIFY yourself before you can " +
+                "set your language preference.")
+
+        t = text.lower()
         for code, name in settings.LANGUAGES:
-            if text != code and text != name:
+            if t != code.lower() and t != name.lower():
                 continue
 
-            self.msg.contact.language = code
-            self.msg.contact.save()
+            self.msg.connection.contact.language = code
+            self.msg.connection.contact.save()
 
             return self.respond(
                 "I will speak to you in %(language)s.",
                 language=name)
 
-        self.error(
-            "Sorry, I don't speak '%(language)s'.",
+        return self.respond_error(
+            'Sorry, I don\'t speak "%(language)s".',
             language=text)
