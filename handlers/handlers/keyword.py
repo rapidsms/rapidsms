@@ -8,6 +8,36 @@ from .base import BaseHandler
 
 class KeywordHandler(BaseHandler):
 
+    """
+    This handler type can be subclassed to create simple keyword-based
+    handlers. When a message is received, it is checked against the
+    mandatory ``keyword`` attribute (a regular expression) for a prefix
+    match. For example::
+
+        >>> class MyAbcHandler(KeywordHandler):
+        ...    keyword = "abc"
+        ...
+        ...    def help(self):
+        ...        self.respond("Here is some help.")
+        ...
+        ...    def handle(self, text):
+        ...        self.respond("You said: %s." % text)
+
+    If the keyword is matched and followed by some text, the ``handle``
+    method is called::
+
+        >>> MyHandler.test("abc")
+        ['Here is some help.']
+
+    If *just* the keyword is matched, the ``help`` method is called::
+
+        >>> MyHandler.test("abc waffles")
+        ['You said: waffles.']
+
+    All other messages are silently ignored (as usual), to allow other
+    apps or handlers to catch them.
+    """
+
     @classmethod
     def _keyword(cls):
         if hasattr(cls, "keyword"):
