@@ -7,8 +7,8 @@ from rapidsms.contrib.handlers.handlers.keyword import KeywordHandler
 
 class EchoHandler(KeywordHandler):
     """
-    Handle any message prefixed ECHO, responding with the remainder of
-    the text. Useful for remotely checking that the router is running.
+    Handle any message prefixed ``echo``, responding with the remainder
+    of the text. Useful for remotely testing internationalization.
     """
 
     keyword = "echo"
