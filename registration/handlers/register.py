@@ -8,6 +8,19 @@ from rapidsms.models import Contact
 
 class RegisterHandler(KeywordHandler):
     """
+    Allow remote users to register themselves, by creating a Contact
+    object and associating it with their Connection. For example::
+
+        >>> RegisterHandler.test('join Adam Mckaig')
+        ['Thank you for registering, Adam Mckaig!']
+
+        >>> Contact.objects.filter(name="Adam Mckaig")
+        [<Contact: Adam Mckaig>]
+
+    Note that the ``name`` field of the Contact model is not constrained
+    to be unique, so this handler does not reject duplicate names. If
+    you wish to enforce unique usernames or aliases, you must extend
+    Contact, disable this handler, and write your own.
     """
 
     keyword = "register|reg|join"

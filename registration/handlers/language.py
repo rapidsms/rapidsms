@@ -9,6 +9,8 @@ from rapidsms.conf import settings
 
 class LanguageHandler(KeywordHandler):
     """
+    Allow remote users to set their preferred language, by updating the
+    ``language`` field of the Contact associated with their connection.
     """
 
     keyword = "language|lang"
