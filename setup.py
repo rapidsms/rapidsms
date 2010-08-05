@@ -12,7 +12,9 @@ setup(
 
     install_requires = [
         "django",
-        "django-nose"
+        "django-nose",
+        "djtables",
+        "djappsettings"
     ],
 
     author="RapidSMS development community",
@@ -21,9 +23,8 @@ setup(
     maintainer="RapidSMS development community",
     maintainer_email="rapidsms@googlegroups.com",
 
-    description="Build SMS applications with Python",
+    description="Build SMS applications with Python and Django",
     url="http://github.com/rapidsms/rapidsms-core-dev",
 
-    package_dir = {'': "lib"},
-    packages=find_packages("lib")
-)
+    package_dir = {"": "lib"},
+    packages = find_packages("lib"))

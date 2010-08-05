@@ -16,7 +16,7 @@ RAPIDSMS_BASE_APPS = [
 
     # the essentials.
     "django_nose",
-    "djangotables",
+    "djtables",
     "rapidsms",
 
     # common dependencies (which don't clutter up the ui).
