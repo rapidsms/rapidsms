@@ -1,0 +1,5 @@
+include LICENSE
+recursive-include lib *
+recursive-exclude lib *.pyc
+recursive-exclude lib/rapidsms/contrib/ .git*
+recursive-exclude lib/rapidsms/contrib/.git *
