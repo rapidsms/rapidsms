@@ -8,6 +8,42 @@ from .base import BaseHandler
 
 class PatternHandler(BaseHandler):
 
+    """
+    This handler type can be subclassed to create simple pattern-based
+    handlers. This isn't usually a good idea -- it's cumbersome to write
+    patterns with enough flexibility to be used in the real world -- but
+    it's very handy for prototyping, and can easily be upgraded later.
+
+    When a message is received, it is matched against the mandatory
+    ``pattern`` attribute (a regular expression). If the pattern is
+    matched, the ``handle`` method is called with the captures as
+    arguments. For example::
+
+        >>> class SumHandler(PatternHandler):
+        ...    pattern = "^(\d+) + (\d+)$"
+        ...
+        ...    def handle(self, a, b):
+        ...        a, b = int(a), int(b)
+        ...        total = a + b
+        ...
+        ...        self.respond("%d plus %d equals %d." % (
+        ...            (a, b, total))
+
+        >>> SumHandler.test("1 + 2")
+        ['1 plus 2 equals 144.']
+
+    Note that the pattern is not mangled for flexibility (as it was in
+    previous versions of RapidSMS), so if you choose to deploy pattern
+    handlers, your incoming messages must be very precise. Perhaps
+    obviously, this won't work::
+
+        >>> SumHandler.test("1 + 2 ")
+        ['']
+
+    All non-matching messages are silently ignored (as usual), to allow
+    other apps or handlers to catch them.
+    """
+
     @classmethod
     def _pattern(cls):
         if hasattr(cls, "pattern"):
