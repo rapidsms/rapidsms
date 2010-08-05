@@ -82,7 +82,7 @@ INSTALLED_APPS = [
 # this rapidsms-specific setting defines which views are linked by the
 # tabbed navigation. when adding an app to INSTALLED_APPS, you may wish
 # to add it here, also, to expose it in the rapidsms ui.
-RAPIDSMS_TABS = [
+TABS = [
     ("rapidsms.views.dashboard",                            "Dashboard"),
     ("rapidsms.contrib.messagelog.views.message_log",       "Message Log"),
     ("rapidsms.contrib.registration.views.registration",    "Registration"),
