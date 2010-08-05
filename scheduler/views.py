@@ -6,7 +6,7 @@ from django.template import RequestContext
 from django.shortcuts import render_to_response, get_object_or_404
 from django.utils.translation import ugettext as _
 from django.contrib.auth.decorators import login_required
-from rapidsms.utils import paginated
+from rapidsms.utils.pagination import paginated
 
 from rapidsms.contrib.scheduler.models import EventSchedule
 from rapidsms.contrib.scheduler.forms import ScheduleForm

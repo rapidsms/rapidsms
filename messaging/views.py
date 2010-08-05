@@ -4,8 +4,8 @@
 
 from django.template import RequestContext
 from django.shortcuts import render_to_response
+from rapidsms.utils.pagination import paginated
 from rapidsms.models import Contact
-from rapidsms.utils import paginated
 from . import filters
 
 
