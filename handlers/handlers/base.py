@@ -28,47 +28,56 @@ class BaseHandler(object, LoggerMixin):
     def test(cls, text, identity=None):
         """
         Test this handler by dispatching an IncomingMessage containing
-        *text*. Returns a list containing the *text* property of each
-        response, in the order which they were sent.
+        ``text``, as sent by ``identity`` via a mock backend. Return a
+        list containing the ``text`` property of each response, in the
+        order which they were sent.::
 
-        >>> class AlwaysHandler(BaseHandler):
-        ...
-        ...     @classmethod
-        ...     def dispatch(cls, router, msg):
-        ...         msg.respond("xxx")
-        ...         msg.respond("yyy")
-        ...         return True
+            >>> class AlwaysHandler(BaseHandler):
+            ...
+            ...     @classmethod
+            ...     def dispatch(cls, router, msg):
+            ...         msg.respond("xxx")
+            ...         msg.respond("yyy")
+            ...         return True
 
-        >>> AlwaysHandler.test('anything')
-        ['xxx', 'yyy']
+            >>> AlwaysHandler.test('anything')
+            ['xxx', 'yyy']
 
-        Returns None if the handler ignored the message (ie, the
-        `dispatch` method returned False or None).
+        Return False if the handler ignored the message (ie, the
+        ``dispatch`` method returned False or None).
 
-        >>> class NeverHandler(BaseHandler):
-        ...     pass
+            >>> class NeverHandler(BaseHandler):
+            ...     pass
 
-        >>> NeverHandler.test('anything') is None
-        True
+            >>> NeverHandler.test('anything')
+            False
 
         This is intended to test the handler in complete isolation. To
         test the interaction between multiple apps and/or handlers, see
         the rapidsms.tests.scripted module.
         """
 
-        # these can't be loaded until runtime,
-        # since the django ORM isn't configured
+        # avoid setting the default identity to "mock" in the signature,
+        # to avoid exposing it in the public API. it's not important.
+        if identity is None:
+            identity = "mock"
+
+        # models can't be loaded until the django ORM is ready.
         from rapidsms.models import Backend, Connection
         from rapidsms.messages import IncomingMessage
 
-        bknd = Backend(name='mock')
-        conn = Connection(backend=bknd, identity=identity)
+        # create a mock backend and connection, so tests can create and
+        # manipulate linked objects without raising IntegrityError.
+        bknd = Backend.objects.create(name='mock')
+        conn = Connection.objects.create(backend=bknd, identity=identity)
         msg = IncomingMessage(connection=conn, text=text)
 
-        accepted = cls.dispatch(None, msg)
-        if not accepted:
-            return None
-        
-        # just the text, for now. maybe the
-        # full OutgoingMessage objects later
-        return [m.text for m in msg.responses]
+        try:
+            accepted = cls.dispatch(None, msg)
+            return [m.text for m in msg.responses]\
+                if accepted else False
+
+        # clean up the mock objects, to avoid causing side-effects.
+        finally:
+            conn.delete()
+            bknd.delete()

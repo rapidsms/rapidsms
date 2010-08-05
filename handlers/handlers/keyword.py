@@ -14,7 +14,7 @@ class KeywordHandler(BaseHandler):
     mandatory ``keyword`` attribute (a regular expression) for a prefix
     match. For example::
 
-        >>> class MyAbcHandler(KeywordHandler):
+        >>> class AbcHandler(KeywordHandler):
         ...    keyword = "abc"
         ...
         ...    def help(self):
@@ -26,12 +26,12 @@ class KeywordHandler(BaseHandler):
     If the keyword is matched and followed by some text, the ``handle``
     method is called::
 
-        >>> MyHandler.test("abc")
+        >>> AbcHandler.test("abc")
         ['Here is some help.']
 
     If *just* the keyword is matched, the ``help`` method is called::
 
-        >>> MyHandler.test("abc waffles")
+        >>> AbcHandler.test("abc waffles")
         ['You said: waffles.']
 
     All other messages are silently ignored (as usual), to allow other

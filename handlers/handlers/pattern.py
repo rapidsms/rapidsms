@@ -20,25 +20,26 @@ class PatternHandler(BaseHandler):
     arguments. For example::
 
         >>> class SumHandler(PatternHandler):
-        ...    pattern = "^(\d+) + (\d+)$"
+        ...    pattern = r'^(\d+) plus (\d+)$'
         ...
         ...    def handle(self, a, b):
         ...        a, b = int(a), int(b)
         ...        total = a + b
         ...
-        ...        self.respond("%d plus %d equals %d." % (
+        ...        self.respond(
+        ...            "%d+%d = %d" %
         ...            (a, b, total))
 
-        >>> SumHandler.test("1 + 2")
-        ['1 plus 2 equals 144.']
+        >>> SumHandler.test("1 plus 2")
+        ['1+2 = 3']
 
     Note that the pattern is not mangled for flexibility (as it was in
     previous versions of RapidSMS), so if you choose to deploy pattern
-    handlers, your incoming messages must be very precise. Perhaps
-    obviously, this won't work::
+    handlers, your incoming messages must match *precisely*. Perhaps
+    obviously, this won't work because of the trailing whitespace::
 
-        >>> SumHandler.test("1 + 2 ")
-        ['']
+        >>> SumHandler.test("1 plus 2 ")
+        False
 
     All non-matching messages are silently ignored (as usual), to allow
     other apps or handlers to catch them.
