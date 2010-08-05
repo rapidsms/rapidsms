@@ -11,7 +11,8 @@ setup(
     license="BSD",
 
     install_requires = [
-        "django"
+        "django",
+        "django-nose"
     ],
 
     author="RapidSMS development community",
