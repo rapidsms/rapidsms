@@ -7,10 +7,11 @@ from rapidsms.contrib.handlers.handlers.base import BaseHandler
 
 class PingHandler(BaseHandler):
     """
-    Handle the message ``ping``, by responding with ``Pong``. Useful for
-    remotely checking that the router is alive.
+    Handle the (precise) message ``ping``, by responding with ``pong``.
+    Useful for remotely checking that the router is alive.
     """
 
-    def dispatch(self, router, msg):
-        if msg.text.tolower() == "ping":
-            self.respond("Pong")
+    @classmethod
+    def dispatch(cls, router, msg):
+        if msg.text == "ping":
+            return msg.respond("pong")
