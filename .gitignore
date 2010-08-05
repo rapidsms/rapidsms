@@ -1,8 +1,11 @@
-*.pyc
-*.swp
 *~
+*.pyc
+*.pyo
+*.swp
 *.mo
 core.*
 .project
 .pydevproject
+*.egg-info
 *.sqlite3
+dist

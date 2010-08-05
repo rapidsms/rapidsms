@@ -17,6 +17,8 @@ setup(
         "djappsettings"
     ],
 
+    scripts = ["bin/rapidsms-admin.py"],
+
     author="RapidSMS development community",
     author_email="rapidsms@googlegroups.com",
 
