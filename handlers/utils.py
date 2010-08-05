@@ -9,13 +9,40 @@ from .handlers.base import BaseHandler
 
 def get_handlers():
     """
-    Return a list of ALL handlers defined in the current project. (Named
-    after the django.db.models.loading.get_models function.)
+    Return a list of the handlers installed in the current project. This
+    defaults to **all** of the handlers defined in the current project,
+    but can be explicitly specified by the ``INSTALLED_HANDLERS`` and
+    ``EXCLUDED_HANDLERS`` settings. (Both lists of module prefixes.)
+    """
+
+    handlers = _find_handlers(_apps())
+
+    # if we're explicitly selecting handlers, filter out all those which
+    # are not matched by one (or more) prefixes in INSTALLED_HANDLERS.
+    if settings.INSTALLED_HANDLERS is not None:
+        for prefix in settings.INSTALLED_HANDLERS:
+            handlers = [
+                handler for handler in handlers
+                if handler.__module__.startswith(prefix)]
+
+    # likewise, in reverse, for EXCLUDED_HANDLERS.
+    if settings.EXCLUDED_HANDLERS is not None:
+        for prefix in settings.EXCLUDED_HANDLERS:
+            handlers = [
+                handler for handler in handlers
+                if not handler.__module__.startswith(prefix)]
+
+    return handlers
+
+
+def _find_handlers(app_names):
+    """
+    Return a list of all handlers defined in ``app_names``.
     """
 
     handlers = []
 
-    for module_name in _apps():
+    for module_name in app_names:
         handlers.extend(_handlers(module_name))
 
     return handlers
@@ -24,7 +51,7 @@ def get_handlers():
 def _apps():
     """
     Return a list of the apps which may contain handlers. This is not
-    quite as simple as returning settings.INSTALLED_APPS, since:
+    quite as simple as returning ``settings.INSTALLED_APPS``, since:
 
     1. This app (rapidsms.contrib.handlers) should be excluded, because
        although it contains handlers, they are intended to be abstract,
@@ -46,8 +73,8 @@ def _apps():
 def _handlers(module_name):
     """
     Return a list of handlers (subclasses of app.handlers.HandlerBase)
-    defined in the "handlers" directory of 'module_name'. Each Python
-    file (*.py) is expected to contain a single new-style class, which
+    defined in the ``handlers`` directory of ``module_name``. Each
+    Python file is expected to contain a single new-style class, which
     can be named arbitrarily. (But probably shouldn't be.)
 
     Return an empty list if no handlers are defined, or the directory
