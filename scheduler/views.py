@@ -17,7 +17,7 @@ def index(request, template="scheduler/index.html"):
     context = {}
     schedules = EventSchedule.objects.all()
     context['schedules'] = paginated(request, schedules)
-    return render_to_response(template, context, context_instance=RequestContext(req))
+    return render_to_response(template, context, context_instance=RequestContext(request))
 
 
 @login_required
