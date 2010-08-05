@@ -3,8 +3,8 @@
 
 
 from django.conf import settings
-from djangotables import Table, Column
-from djangotables.column import DateColumn
+from djtables import Table, Column
+from djtables.column import DateColumn
 from .models import Message
 
 

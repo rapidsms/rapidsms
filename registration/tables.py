@@ -3,7 +3,7 @@
 
 
 from django.core.urlresolvers import reverse
-from djangotables import Table, Column
+from djtables import Table, Column
 from rapidsms.models import Contact
 
 

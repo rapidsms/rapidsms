@@ -2,7 +2,7 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 
-from djangotables import Table, Column
+from djtables import Table, Column
 
 
 class LocationTable(Table):
