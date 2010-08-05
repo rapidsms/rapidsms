@@ -1,4 +1,5 @@
 {% extends "layout-split-2.html" %}
+{% load forms_tags %}
 {% block title %}Login{% endblock %}
 {% block content %}
 
@@ -25,7 +26,7 @@
     <td>{{ form.password }}</td>
 </tr>
 </table>
-
+{% csrf_token %}
 <input type="submit" value="login" />
 <input type="hidden" name="next" value="{{ next }}" />
 </form>
