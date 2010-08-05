@@ -1,0 +1,7 @@
+This is one of the most useful and most commonly used RapidSMS apps. 
+It is an interactive web-based session which can be used to demonstrate
+RapidSMS functionality using only a browser (i.e. no phone required).
+
+DEPENDENCIES
+* ajax app
+* http backend
