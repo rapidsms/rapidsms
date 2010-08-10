@@ -1,0 +1,5 @@
+This scheduler can send outbound SMS at regular intervals, using a web-based cron-inspired interface.
+
+FEATURE REQUESTS
+* There is currently no good UI for creating schedules. Right now, the easiest way to do so is in Python, 
+by creating and saving an EventSchedule module.
