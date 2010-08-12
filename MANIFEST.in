@@ -1,4 +1,5 @@
 include LICENSE
+include README.rst
 recursive-include lib *
 recursive-exclude lib *.pyc
 recursive-exclude lib/rapidsms/contrib/ .git*
