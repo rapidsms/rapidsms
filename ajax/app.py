@@ -183,12 +183,13 @@ class App(AppBase):
 
                     args.append(form)
 
-                self.server.app.info(
+                self.server.app.debug(
                     "Calling %s.%s with args: %s" %
                     (app.__class__.__name__, meth_name, args))
+
                 output = method(*args)
 
-                self.server.app.info("Response: %s" % output)
+                self.server.app.debug("Response: %s" % output)
                 return response(200, output)
 
             # something raised during the request, so return a useless
