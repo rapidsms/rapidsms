@@ -18,7 +18,7 @@ def _any_identity(cell):
 
 class ContactTable(Table):
     name     = Column(link=_edit_link)
-    identity = Column(value=_any_identity)
+    identity = Column(value=_any_identity, sortable=False)
 
     class Meta:
         order_by = 'name'
