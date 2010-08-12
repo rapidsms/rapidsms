@@ -23,9 +23,9 @@ The RapidSMS project skeleton is identical to the Django project skeleton, with 
   $ rapidsms-admin.py startproject myproject
 
 
-The ``route`` management command starts the router, sends and receives SMS (and other short messages) via the configurable backends::
+The ``runrouter`` management command starts the router, sends and receives SMS (and other short messages) via the configurable backends::
 
-  $ python manage.py route
+  $ python manage.py runrouter
 
 
 Getting Help
