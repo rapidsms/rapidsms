@@ -10,7 +10,19 @@
 
 {% block javascripts %}
 {{ block.super }}
-<script type="text/javascript" src="{{ MEDIA_URL }}rapidsms/javascripts/module-help.js"></script>
+<script type="text/javascript">
+	(function($) {
+		$(function() {
+			$("#id_text").keypress(function(ev) {
+				if (ev.keyCode == 13 && ev.ctrlKey) {
+					$(this).closest("form").submit();
+					$("#id_submit").focus();
+					ev.preventDefault();
+				}
+			}).focus();
+		});
+	})(jQuery);
+</script>
 {% endblock %}
 
 {% block left %}
@@ -22,7 +34,7 @@
 		{% csrf_token %}
 
 		<div class="submit">
-			<input type="submit" value="Send" />
+			<input type="submit" id="id_submit" value="Send" />
 		</div>
 	</form>
 </div>
