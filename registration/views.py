@@ -8,7 +8,10 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from rapidsms.forms import ContactForm
 from rapidsms.models import Contact
+from rapidsms.models import Connection
+from rapidsms.models import Backend
 from .tables import ContactTable
+from .forms import BulkRegistrationForm
 
 
 def registration(req, pk=None):
@@ -24,24 +27,44 @@ def registration(req, pk=None):
             return HttpResponseRedirect(
                 reverse(registration))
 
+        elif "bulk" in req.FILES:
+            for line in req.FILES["bulk"]:
+                # TODO use csv module
+                line_list = line.split(',')
+                name = line_list[0].strip()
+                backend_name = line_list[1].strip()
+                identity = line_list[2].strip()
+
+                contact = Contact(name=name)
+                contact.save()
+                # TODO catch error!
+                backend = Backend.objects.get(name=backend_name)
+                connection = Connection(backend=backend, identity=identity,\
+                    contact=contact)
+                connection.save()
+
+            return HttpResponseRedirect(
+                reverse(registration))
         else:
-            form = ContactForm(
+            contact_form = ContactForm(
                 instance=contact,
                 data=req.POST)
 
-            if form.is_valid():
-                contact = form.save()
+            if contact_form.is_valid():
+                contact = contact_form.save()
                 return HttpResponseRedirect(
                     reverse(registration))
 
     else:
-        form = ContactForm(
+        contact_form = ContactForm(
             instance=contact)
+        bulk_form = BulkRegistrationForm()
 
     return render_to_response(
         "registration/dashboard.html", {
             "contacts_table": ContactTable(Contact.objects.all(), request=req),
-            "contact_form": form,
+            "contact_form": contact_form,
+            "bulk_form": bulk_form,
             "contact": contact
         }, context_instance=RequestContext(req)
     )
