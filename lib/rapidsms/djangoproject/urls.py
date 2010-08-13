@@ -62,4 +62,5 @@ for pat in urlpatterns:
 
 # if there is no dashboard url, add the default
 if not has_dash:
+    from ..views import dashboard
     urlpatterns += patterns('', url(r'^$', dashboard),)
