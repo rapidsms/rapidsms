@@ -52,3 +52,14 @@ for module_name in settings.INSTALLED_APPS:
                     "django.views.static.serve",
                     {"document_root": static_dir}
                 ))
+
+# examine all of the urlpatterns to see if there is a pattern
+# defined for the root url / dashboard
+has_dash = False
+for pat in urlpatterns:
+    if pat.regex.pattern == '^$':
+        has_dash = True
+
+# if there is no dashboard url, add the default
+if not has_dash:
+    urlpatterns += patterns('', url(r'^$', dashboard),)

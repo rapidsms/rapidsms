@@ -2,5 +2,9 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
-<em>Insert Dashboard Here</em>
+<h2>Installation successful!</h2>
+<p>See http://docs.rapidsms.org/Installation to learn how to add community-contributed apps or create your own.</p>
+<p>To customize this dashboard page, add a pattern in an app's urls.py that matches r'^$, for example:</p>
+<p>urlpatterns = patterns('',
+    url(r'^$', views.registration),</p>
 {% endblock %}
