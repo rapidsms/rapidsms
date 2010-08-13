@@ -5,7 +5,6 @@ from django.conf.urls.defaults import *
 from . import views
 
 urlpatterns = patterns('',
-    url(r'^$', views.dashboard),
     url(r'^accounts/login/$', views.login),
     url(r'^accounts/logout/$', views.logout),
 )
