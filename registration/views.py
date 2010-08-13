@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
+import csv
 
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
@@ -28,8 +29,10 @@ def registration(req, pk=None):
                 reverse(registration))
 
         elif "bulk" in req.FILES:
+            # TODO use csv module
+            #reader = csv.reader(open(req.FILES["bulk"].read(), "rb"))
+            #for row in reader:
             for line in req.FILES["bulk"]:
-                # TODO use csv module
                 line_list = line.split(',')
                 name = line_list[0].strip()
                 backend_name = line_list[1].strip()
@@ -37,8 +40,9 @@ def registration(req, pk=None):
 
                 contact = Contact(name=name)
                 contact.save()
-                # TODO catch error!
+                # TODO deal with errors!
                 backend = Backend.objects.get(name=backend_name)
+
                 connection = Connection(backend=backend, identity=identity,\
                     contact=contact)
                 connection.save()
