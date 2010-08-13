@@ -6,6 +6,7 @@ import csv
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
+from django.db import transaction
 from django.shortcuts import render_to_response, get_object_or_404
 from rapidsms.forms import ContactForm
 from rapidsms.models import Contact
@@ -14,7 +15,7 @@ from rapidsms.models import Backend
 from .tables import ContactTable
 from .forms import BulkRegistrationForm
 
-
+@transaction.commit_on_success
 def registration(req, pk=None):
     contact = None
 
