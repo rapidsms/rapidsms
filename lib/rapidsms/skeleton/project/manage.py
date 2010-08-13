@@ -11,9 +11,8 @@ if __name__ == "__main__":
 #    project_root = os.path.abspath(
 #        os.path.dirname(__file__))
 
-#    for dir in ["apps"]:
-#        path = os.path.join(project_root, dir)
-#        sys.path.insert(0, path)
+#    path = os.path.join(project_root, "apps")
+#    sys.path.insert(0, path)
 
 #    sys.path.insert(0, project_root)
     execute_manager(settings)
