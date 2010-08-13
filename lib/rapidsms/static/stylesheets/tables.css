@@ -61,6 +61,7 @@ table {
                         }
 
                     thead th.sorted a {
+                        padding-right: 26px;
                         color: #000;
                      }
 
@@ -71,7 +72,7 @@ table {
                         thead th.sorted a span {
                             display: block;
                             position: absolute;
-                            right: 0.5em;
+                            right: 5px;
                             top: 50%;
                             width: 16px;
                             height: 16px;
