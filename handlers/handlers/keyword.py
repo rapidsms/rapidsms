@@ -3,6 +3,7 @@
 
 
 import re
+from django.core.exceptions import ObjectDoesNotExist
 from .base import BaseHandler
 
 
@@ -59,12 +60,36 @@ class KeywordHandler(BaseHandler):
         # the low(er)-level router and message object
         inst = cls(router, msg)
 
-        # if any non-whitespace content was send after the keyword, send it
-        # along to the handle method. the instance can always get hold of the
-        # original text via self.msg, if it really needs it
+        # if any non-whitespace content was send after the keyword, send
+        # it along to the handle method. the instance can always find
+        # the original text via self.msg if it really needs it.
         text = match.group(1)
         if text is not None and text.strip() != "":
-            inst.handle(text)
+            try:
+                inst.handle(text)
+
+            # special case: if an object was expected but not found,
+            # return the (rather appropriate) "%s matching query does
+            # not exist." message. this can, of course, be overridden by
+            # catching the exception within the ``handle`` method.
+            except ObjectDoesNotExist, err:
+                return inst.respond_error(
+                    unicode(err))
+
+            # another special case: if something was miscast to an int
+            # (it was probably a string from the ``text``), return a
+            # more friendly (and internationalizable) error.
+            except ValueError, err:
+                p = r"^invalid literal for int\(\) with base (\d+?): '(.+?)'$"
+                m = re.match(p, unicode(err))
+
+                # allow other valueerrors to propagate.
+                if m is None:
+                    raise
+
+                return inst.respond_error(
+                    "Not a valid number: %(string)s",
+                    string=m.group(2))
 
         # if we received _just_ the keyword, with
         # no content, some help should be sent back
