@@ -79,5 +79,5 @@ def get_tabs(parser, token):
             'The second argument to the {%% %s %%} tag must be "as"' %
             (tag_name))
 
-    tabs = [Tab(view, caption) for view, caption in settings.TABS]
+    tabs = [Tab(view, caption) for view, caption in settings.RAPIDSMS_TABS]
     return TabsNode(tabs, str(args[1]))
