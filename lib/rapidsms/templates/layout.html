@@ -41,8 +41,8 @@
 
 				{% block auth %}
 				<div id="auth">{% if user.is_authenticated %}
-					<a href="/accounts/logout/">{% trans "Log out" %} {{ user.username }}</a>{% else %}
-					<a href="/accounts/login/">{% trans "Log in" %}</a>{% endif %}
+					<a href="{% url rapidsms.views.logout %}">{% trans "Log out" %} {{ user.username }}</a>{% else %}
+					<a href="{% url rapidsms.views.login %}">{% trans "Log in" %}</a>{% endif %}
 				</div>
 				{% endblock %}
 
