@@ -7,11 +7,11 @@ from . import views
 
 urlpatterns = patterns('',
 
-    url(r'^registration$',
+    url(r'^registration/$',
         views.registration,
         name="registration"),
 
-    url(r'^registration/(?P<pk>\d+)/edit$',
+    url(r'^registration/(?P<pk>\d+)/edit/$',
         views.registration,
         name="registration_edit")
 )

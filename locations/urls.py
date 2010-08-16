@@ -7,7 +7,7 @@ from . import views
 
 
 urlpatterns = patterns('',
-    url(r'^locations(?:/(?P<location_uid>[a-z\-]+:\d+))?$',
+    url(r'^locations(?:/(?P<location_uid>[a-z\-]+:\d+))?/$',
         views.locations,
         name="locations")
 )
