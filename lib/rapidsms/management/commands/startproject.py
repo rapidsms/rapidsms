@@ -28,4 +28,4 @@ class Command(LabelCommand):
                 project_name)
 
         src_dir = os.path.join(rapidsms.__path__[0], "skeleton", "project")
-        shutil.copytree(src_dir, project_name)
+        shutil.copytree(src_dir, project_name, ignore=shutil.ignore_patterns('*.pyc'))
