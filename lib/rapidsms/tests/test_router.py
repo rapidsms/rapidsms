@@ -79,3 +79,12 @@ def test_router_starts_and_stops_apps_and_backends():
     assert_equals(app.stopped, True)
     assert_equals(backend.started, True)
     assert_equals(backend.stopped, True)
+
+
+def test_router_finds_backends():
+    router = Router()
+    test_backend = "rapidsms.backends.base"
+    backend = router.add_backend("mock", test_backend)
+
+    assert_equals(router.backends["mock"], backend)
+    assert_equals(len(router.backends), 1)
