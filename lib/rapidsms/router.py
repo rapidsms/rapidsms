@@ -69,7 +69,7 @@ class Router(object, LoggerMixin):
                 return app
             
         raise KeyError("The %s app was not found in the router!" % module_name)
-    
+
 
     def add_backend(self, name, module_name, config=None):
         """
@@ -81,10 +81,24 @@ class Router(object, LoggerMixin):
         cls = BackendBase.find(module_name)
         if cls is None: return None
 
-        if config is None: config = {}
+        config = self._clean_backend_config(config or {})
         backend = cls(self, name, **config)
         self.backends[name] = backend
         return backend
+
+
+    @staticmethod
+    def _clean_backend_config(config):
+        """
+        Return ``config`` (a dict) with the keys downcased. (This is
+        intended to make the backend configuration case insensitive.)
+        """
+
+        return dict([
+            (key.lower(), val)
+            for key, val in config.iteritems()
+        ])
+
 
     @staticmethod
     def _wait(func, timeout):
