@@ -24,16 +24,11 @@ class Backend(BackendBase):
     MAX_CONNECT_TIME = 10
 
 
-    def __init__(self, *args, **kwargs):
-        BackendBase.__init__(*args, **kwargs)
-
+    def configure(self, **kwargs):
         if pygsm is None:
             raise ImportError(
                 "The rapidsms.backends.gsm engine is not available, " +
                 "because 'pygsm' is not installed.")
-
-
-    def configure(self, **kwargs):
 
         # strip any config settings that
         # obviously aren't for the modem
