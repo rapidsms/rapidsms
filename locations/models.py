@@ -46,6 +46,15 @@ class Location(models.Model):
     class Meta:
         abstract = True
 
+    # choices for the Location.direction method.
+    # (values stolen from label-overlay.js)
+    class Direction:
+        CENTER = "center"
+        ABOVE  = "above"
+        RIGHT  = "right"
+        BELOW  = "below"
+        LEFT   = "left"
+
     def __unicode__(self):
         """
         """
@@ -119,6 +128,25 @@ class Location(models.Model):
         """
 
         return unicode(self)
+
+    @property
+    def css_class(self):
+        """
+        Return the CSS class name of the label overlay. This method
+        should be overriden by subclasses wishing to customize the
+        appearance of the embedded HTML fragment.
+        """
+
+        return "bubble"
+
+    @property
+    def direction(self):
+        """
+        Return the direction which the embedded HTML fragment should be
+        offset from the anchor point. Return one of Location.Direction.
+        """
+
+        return self.Direction.ABOVE
 
 
 #class Country(Location):

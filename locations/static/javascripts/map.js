@@ -26,7 +26,8 @@ jQuery(function() {
                     "map": map,
                     "content": loc.html(),
                     "position": new google.maps.LatLng(lat, lng),
-                    "direction": adammck.maps.Label.Direction.CENTER
+                    "direction": loc.attr("direction"),
+                    "className": loc.attr("class")
                 });
 
                 bounds.extend(label.position);
