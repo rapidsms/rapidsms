@@ -61,7 +61,7 @@
 
 		<ul class="labels">{% for type in location_types %}{% for location in type.locations %}
 			<li class="{{ location.css_class }}" direction="{{ location.direction }}" lat="{{ location.point.latitude }}" lng="{{ location.point.longitude }}">
-				{{ location.as_html }}
+				{{ location.as_html|safe }}
 			</li>{% endfor %}{% endfor %}
 		</ul>
 	</div>

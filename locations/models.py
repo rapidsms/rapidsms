@@ -4,7 +4,7 @@
 
 import re
 from django.db import models
-from django.utils.safestring import SafeString
+from django.utils.html import escape
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from rapidsms.models import ExtensibleModelBase
@@ -115,16 +115,26 @@ class Location(models.Model):
 
     def as_html(self):
         """
+        Return the HTML fragment to be embedded in the map. This method
+        should be overridden by subclasses wishing to fully customize
+        the the rendering of their instance in the map.
+
+        The output of this method is not escaped before being included
+        in the template, so be careful to escape it yourself.
         """
 
-        return SafeString(self.label)
+        return escape(self.label)
 
     @property
     def label(self):
         """
-        Return an HTML fragment, for embedding in a Google map. This
-        method should be overridden by subclasses wishing to provide
-        better contextual information.
+        Return the caption for this Location, to be embedded in the
+        map. This method should be overridden by subclasses wishing to
+        provide better contextual information.
+
+        The output of this method is included in the template as-is, so
+        is HTML-escaped by default. If you wish to customize the HTML,
+        override the ``as_html`` method, instead.
         """
 
         return unicode(self)
