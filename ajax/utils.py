@@ -60,9 +60,13 @@ def request(path, get=None, post=None, encoding=None):
     # so let's pretend that it's the django default
     else:
         encoding = settings.DEFAULT_CHARSET
-        data = urllib.urlencode(post)\
-            if post is not None else None
-
+        # urlencode only takes bytes, so we need to encode
+        # whatever charset we're using as bytes
+        data = None
+        if post is not None:
+            encoded_post = dict([k, v.encode(encoding)] for k, v in post.items())
+            data = urllib.urlencode(encoded_post)
+    
     # build the content-type header, including the character set
     # that we just encoded the POST data into
     headers = {
