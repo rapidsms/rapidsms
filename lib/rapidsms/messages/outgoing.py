@@ -54,10 +54,10 @@ class OutgoingMessage(MessageBase):
 
     @property
     def text(self):
-        return " ".join([
+        return unicode(" ".join([
             self._render_part(template, **kwargs)
             for template, kwargs in self._parts
-        ])
+        ]))
 
 
     @property
