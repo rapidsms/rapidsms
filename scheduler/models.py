@@ -166,7 +166,7 @@ class EventSchedule(models.Model):
     def check_months_bounds(months):
         check_bounds('Months', months, 1, 12)
         
-    def save(self, force_insert=False, force_update=False):
+    def save(self, *args, **kwargs):
         """
         
         TODO - still need to fix this so that creating a schedule
@@ -193,7 +193,7 @@ class EventSchedule(models.Model):
         self.validate(self.months, self.days_of_month, self.days_of_week, 
                       self.hours, self.minutes)
         
-        super(EventSchedule, self).save(force_insert, force_update)
+        super(EventSchedule, self).save(*args, **kwargs)
     
     def should_fire(self, when):
         """Return True if this event should trigger at the specified datetime """
