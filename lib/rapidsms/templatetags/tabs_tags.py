@@ -15,45 +15,13 @@ register = template.Library()
 
 
 class Tab(object):
-    def __init__(self, callback, caption=None):
-        if isinstance(callback, basestring):
-            module = '.'.join(callback.split('.')[:-1])
-            view = callback.split('.')[-1]
-            self.callback = getattr(import_module(module), view)
-        else:
-            self.callback = callback
+    def __init__(self, view, caption=None):
         self._caption = caption
-        self._view = None
-
-    @staticmethod
-    def _looks_like(a, b):
-        return (a.__module__ == b.__module__) and\
-               (a.__name__   == b.__name__)
+        self._view = view
 
     def _auto_caption(self):
-        func_name = self.callback.__name__         # my_view
-        return func_name.replace("_", " ").title() # My View
-
-    @property
-    def view(self):
-        """
-        Return the view of this tab.
-
-        This is a little more complex than just returning the 'callback'
-        attribute, since that is often wrapped (by decorators and the
-        such). This iterates the project's urlpatterns, to find the
-        real view function by name.
-        """
-
-        if not self._view:
-            resolver = get_resolver(None)
-            for pattern in resolver.url_patterns:
-                if type(pattern) is RegexURLPattern:
-                    if self._looks_like(self.callback, pattern.callback):
-                        self._view = pattern.callback
-                        break
-
-        return self._view
+        func_name = self._view.split('.')[-1]       # my_view
+        return func_name.replace("_", " ").title()  # My View
 
     @property
     def url(self):
@@ -64,8 +32,7 @@ class Tab(object):
         will silently ignore the exception, and return the value of the
         TEMPLATE_STRING_IF_INVALID setting.
         """
-
-        return reverse(self.view)
+        return reverse(self._view)
 
     @property
     def caption(self):
@@ -78,7 +45,7 @@ class TabsNode(template.Node):
     def __init__(self, tabs, varname):
         self.tabs = tabs
         self.varname = varname
-        
+
     def render(self, context):
         request = Variable("request").resolve(context)
         for tab in self.tabs:
@@ -109,7 +76,8 @@ def get_tabs(parser, token):
 
     if args[0] != "as":
         raise template.TemplateSyntaxError(
-            'The second argument to the {%% %s %%} tag must be "as"' % (tag_name))
+            'The second argument to the {%% %s %%} tag must be "as"' %
+            (tag_name))
 
-    tabs = [Tab(callback, caption) for callback, caption in settings.TABS]
+    tabs = [Tab(view, caption) for view, caption in settings.RAPIDSMS_TABS]
     return TabsNode(tabs, str(args[1]))
