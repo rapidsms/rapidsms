@@ -66,18 +66,20 @@ class BaseHandler(object, LoggerMixin):
         from rapidsms.models import Backend, Connection
         from rapidsms.messages import IncomingMessage
 
-        # create a mock backend and connection, so tests can create and
-        # manipulate linked objects without raising IntegrityError.
-        bknd = Backend.objects.create(name='mock')
-        conn = Connection.objects.create(backend=bknd, identity=identity)
-        msg = IncomingMessage(connection=conn, text=text)
+        # spawn a mock backend for each handler, to allow multiple tests
+        # to interact with one another without overlapping.
+        if not hasattr(cls, "_mock_backend"):
+            cls._mock_backend = Backend.objects.create(
+                name="mock_%d" % id(cls))
 
-        try:
-            accepted = cls.dispatch(None, msg)
-            return [m.text for m in msg.responses]\
-                if accepted else False
+        conn, created = Connection.objects.get_or_create(
+            backend=cls._mock_backend,
+            identity=identity)
 
-        # clean up the mock objects, to avoid causing side-effects.
-        finally:
-            conn.delete()
-            bknd.delete()
+        msg = IncomingMessage(
+            connection=conn,
+            text=text)
+
+        accepted = cls.dispatch(None, msg)
+        return [m.text for m in msg.responses]\
+            if accepted else False
