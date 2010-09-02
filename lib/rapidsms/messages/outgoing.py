@@ -5,6 +5,7 @@
 from datetime import datetime
 from django.utils.translation.trans_real import translation
 from .base import MessageBase
+from ..errors import NoRouterError
 from ..conf import settings
 
 
@@ -71,12 +72,19 @@ class OutgoingMessage(MessageBase):
         phase (giving any app the opportunity to modify or cancel it).
         Return True if the message was sent successfully.
 
+        If the router is not running (as is usually the case outside of
+        the ``runrouter`` process), NoRouterError is raised.
+
         Warning: This method blocks the current thread until the backend
         accepts or rejects the message, which takes as long as it takes.
         There is currently no way to send messages asynchronously.
         """
 
         from rapidsms.router import router
+
+        if not router.running:
+            raise NoRouterError()
+
         return router.outgoing(self)
 
 

@@ -5,6 +5,7 @@
 from datetime import datetime
 from django.db import models
 from .utils.modules import try_import, get_classes
+from .errors import NoConnectionError, MessageSendingError
 from .conf import settings
 
 
@@ -115,6 +116,28 @@ class ContactBase(models.Model):
             return self.connection_set.all()[0]
         return None
 
+    def message(self, template, **kwargs):
+        """
+        Attempt to send a message to this contact via their default
+        connection. Like any outgoing message, it may be aborted during
+        the ``outgoing`` phase, or be rejected by the backend. In these
+        cases, MessageSendingError is raised. If no default connection
+        exists, NoConnectionError is raised.
+        """
+
+        if self.default_connection is None:
+            raise NoConnectionError()
+
+        was_sent = self.default_connection.message(
+            template, **kwargs)
+
+        if not was_sent:
+            raise MessageSendingError()
+
+        return True
+
+
+
 class Contact(ContactBase):
     __metaclass__ = ExtensibleModelBase
 
@@ -134,6 +157,28 @@ class ConnectionBase(models.Model):
     def __repr__(self):
         return '<%s: %s>' %\
             (type(self).__name__, self)
+
+    def message(self, template, **kwargs):
+        """
+        Attempt to send a message to this connection. Like any outgoing
+        message, it may be aborted during the ``outgoing`` phase, or be
+        rejected by the backend. In these cases, MessageSendingError is
+        raised. (There is currently no way to know *why* the message was
+        not sent, so we raise a generic error.)
+
+        This method can only be called in the ``runrouter`` process,
+        since the router is currently not accessible from the webui
+        process(es). If no router is running, NoRouterError is raised
+        (by the ``OutgoingMessage.send`` method).
+        """
+
+        from .messages.outgoing import OutgoingMessage
+        was_sent = OutgoingMessage(self, template, **kwargs).send()
+
+        if not was_sent:
+            raise MessageSendingError()
+
+        return True
 
 
 class Connection(ConnectionBase):
