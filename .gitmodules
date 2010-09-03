@@ -1,3 +1,0 @@
-[submodule "lib/rapidsms/contrib"]
-	path = lib/rapidsms/contrib
-	url = git://github.com/rapidsms/rapidsms-contrib-apps-dev.git
