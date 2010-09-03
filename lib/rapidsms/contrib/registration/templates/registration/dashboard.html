@@ -1,0 +1,48 @@
+{% extends "registration/base.html" %}
+{% load forms_tags %}
+
+{% block stylesheets %}
+{{ block.super }}
+<link type="text/css" rel="stylesheet" href="{{ MEDIA_URL }}registration/stylesheets/dashboard.css" />
+{% endblock %}
+
+{% block left %}
+<div class="module">
+	<h2>Contacts</h2>
+	{{ contacts_table.as_html }}{% if contact %}
+
+	<div class="toolbar">
+		<a href="{% url registration %}" class="add">Add a Contact</a>
+	</div>{% endif %}
+</div>
+{% endblock %}
+
+{% block right %}
+<div class="module">
+	<h2>{% if contact %}
+		Edit {{ contact }}{% else %}
+		Add a Contact{% endif %}
+	</h2>
+
+	<form action="" method="post">
+		{% render_form contact_form %}
+		{% csrf_token %}
+
+		<div class="submit">
+			<input type="submit" name="submit" value="Save Contact" />{% if contact %}
+			<input type="submit" name="submit" value="Delete Contact" />{% endif %}
+		</div>
+	</form>
+</div>
+<div class="module collapsed">
+        <h2>Bulk Registration</h2>
+	<form action="" method="post" enctype="multipart/form-data">
+		{% render_form bulk_form %}
+		{% csrf_token %}
+
+		<div class="submit">
+			<input type="submit" name="submit" value="Save Contacts" />
+		</div>
+	</form>
+</div>
+{% endblock %}

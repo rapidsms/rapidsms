@@ -1,0 +1,1123 @@
+[
+    {
+        "pk": 1,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-98.5795",
+            "latitude": "39.828175"
+        }
+    },
+    {
+        "pk": 1,
+        "model": "locations.country",
+        "fields": {
+            "iso_code": "us",
+            "name": "United States of America",
+            "point": 1
+        }
+    },
+    {
+        "pk": 2,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-86.7415782668",
+            "latitude": "32.9865857394"
+        }
+    },
+    {
+        "pk": 2,
+        "model": "locations.state",
+        "fields": {
+            "usps_code": "al",
+            "name": "Alabama",
+            "point": 2,
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
+        }
+    },
+    {
+        "pk": 3,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-148.556907313",
+            "latitude": "61.1822087709"
+        }
+    },
+    {
+        "pk": 3,
+        "model": "locations.state",
+        "fields": {
+            "usps_code": "ak",
+            "name": "Alaska",
+            "point": 3,
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
+        }
+    },
+
+    {
+        "pk": 4,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-92.2",
+            "latitude": "34.8"
+        }
+    },
+    {
+        "pk": 4,
+        "model": "locations.state",
+        "fields": {
+            "usps_code": "ar",
+            "name": "Arkansas",
+            "point": 4,
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
+        }
+    },
+
+    {
+        "pk": 5,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-111.509465331",
+            "latitude": "33.8947715893"
+        }
+    },
+    {
+        "pk": 5,
+        "model": "locations.state",
+        "fields": {
+            "usps_code": "az",
+            "name": "Arizona",
+            "point": 5,
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
+        }
+    },
+
+    {
+        "pk": 6,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-105.465397491",
+            "latitude": "39.0473491002"
+        }
+    },
+    {
+        "pk": 6,
+        "model": "locations.state",
+        "fields": {
+            "usps_code": "co",
+            "name": "Colorado",
+            "point": 6,
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
+        }
+    },
+
+    {
+        "pk": 7,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-119.701379437",
+            "latitude": "36.4885198674"
+        }
+    },
+    {
+        "pk": 7,
+        "model": "locations.state",
+        "fields": {
+            "usps_code": "ca",
+            "name": "California",
+            "point": 7,
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
+        }
+    },
+
+    {
+        "pk": 8,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-72.7",
+            "latitude": "41.6"
+        }
+    },
+    {
+        "pk": 8,
+        "model": "locations.state",
+        "fields": {
+            "usps_code": "ct",
+            "name": "Connecticut",
+            "point": 8,
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
+        }
+    },
+
+    {
+        "pk": 9,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-75.4835090786",
+            "latitude": "39.1456638211"
+        }
+    },
+    {
+        "pk": 9,
+        "model": "locations.state",
+        "fields": {
+            "usps_code": "de",
+            "name": "Delaware",
+            "point": 9,
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
+        }
+    },
+
+    {
+        "pk": 10,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-81.960407533",
+            "latitude": "28.0908069444"
+        }
+    },
+    {
+        "pk": 10,
+        "model": "locations.state",
+        "fields": {
+            "usps_code": "fl",
+            "name": "Florida",
+            "point": 10,
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
+        }
+    },
+
+    {
+        "pk": 11,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-157.7964",
+            "latitude": "21.3114"
+        }
+    },
+    {
+        "pk": 11,
+        "model": "locations.state",
+        "fields": {
+            "usps_code": "hi",
+            "name": "Hawaii",
+            "point": 11,
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
+        }
+    },
+
+    {
+        "pk": 12,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-93.3718348556",
+            "latitude": "42.0546451333"
+        }
+    },
+    {
+        "pk": 12,
+        "model": "locations.state",
+        "fields": {
+            "usps_code": "ia",
+            "name": "Iowa",
+            "point": 12,
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
+        }
+    },
+
+    {
+        "pk": 13,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-114.690403175",
+            "latitude": "44.5402146825"
+        }
+    },
+    {
+        "pk": 13,
+        "model": "locations.state",
+        "fields": {
+            "usps_code": "id",
+            "name": "Idaho",
+            "point": 13,
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
+        }
+    },
+
+    {
+        "pk": 14,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-88.9244490556",
+            "latitude": "40.4298247444"
+        }
+    },
+    {
+        "pk": 14,
+        "model": "locations.state",
+        "fields": {
+            "usps_code": "il",
+            "name": "Illinois",
+            "point": 14,
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
+        }
+    },
+
+    {
+        "pk": 15,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-86.2913991487",
+            "latitude": "40.0066019668"
+        }
+    },
+    {
+        "pk": 15,
+        "model": "locations.state",
+        "fields": {
+            "usps_code": "in",
+            "name": "Indiana",
+            "point": 15,
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
+        }
+    },
+
+    {
+        "pk": 16,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-96.5333",
+            "latitude": "38.45"
+        }
+    },
+    {
+        "pk": 16,
+        "model": "locations.state",
+        "fields": {
+            "usps_code": "ks",
+            "name": "Kansas",
+            "point": 16,
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
+        }
+    },
+
+    {
+        "pk": 17,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-85.3279475422",
+            "latitude": "37.7884710645"
+        }
+    },
+    {
+        "pk": 17,
+        "model": "locations.state",
+        "fields": {
+            "usps_code": "ky",
+            "name": "Kentucky",
+            "point": 17,
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
+        }
+    },
+
+    {
+        "pk": 18,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-91.8359559164",
+            "latitude": "31.0413428196"
+        }
+    },
+    {
+        "pk": 18,
+        "model": "locations.state",
+        "fields": {
+            "usps_code": "la",
+            "name": "Louisiana",
+            "point": 18,
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
+        }
+    },
+
+    {
+        "pk": 19,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-76.7854797575",
+            "latitude": "39.0616685311"
+        }
+    },
+    {
+        "pk": 19,
+        "model": "locations.state",
+        "fields": {
+            "usps_code": "md",
+            "name": "Maryland",
+            "point": 19,
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
+        }
+    },
+
+    {
+        "pk": 20,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-85.0101500936",
+            "latitude": "43.6867450175"
+        }
+    },
+    {
+        "pk": 20,
+        "model": "locations.state",
+        "fields": {
+            "usps_code": "mi",
+            "name": "Michigan",
+            "point": 20,
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
+        }
+    },
+
+    {
+        "pk": 21,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-89.5261187442",
+            "latitude": "32.9905984827"
+        }
+    },
+    {
+        "pk": 21,
+        "model": "locations.state",
+        "fields": {
+            "usps_code": "ms",
+            "name": "Mississippi",
+            "point": 21,
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
+        }
+    },
+
+    {
+        "pk": 22,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-92.5",
+            "latitude": "38.5"
+        }
+    },
+    {
+        "pk": 22,
+        "model": "locations.state",
+        "fields": {
+            "usps_code": "mo",
+            "name": "Missouri",
+            "point": 22,
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
+        }
+    },
+
+    {
+        "pk": 23,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-94",
+            "latitude": "46"
+        }
+    },
+    {
+        "pk": 23,
+        "model": "locations.state",
+        "fields": {
+            "usps_code": "mn",
+            "name": "Minnesota",
+            "point": 23,
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
+        }
+    },
+
+    {
+        "pk": 24,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-69.3346152041",
+            "latitude": "44.6931643091"
+        }
+    },
+    {
+        "pk": 24,
+        "model": "locations.state",
+        "fields": {
+            "usps_code": "me",
+            "name": "Maine",
+            "point": 24,
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
+        }
+    },
+
+    {
+        "pk": 25,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-110.140867977",
+            "latitude": "46.654509294"
+        }
+    },
+    {
+        "pk": 25,
+        "model": "locations.state",
+        "fields": {
+            "usps_code": "mt",
+            "name": "Montana",
+            "point": 25,
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
+        }
+    },
+
+    {
+        "pk": 26,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-71.5642098846",
+            "latitude": "43.6540820346"
+        }
+    },
+    {
+        "pk": 26,
+        "model": "locations.state",
+        "fields": {
+            "usps_code": "nh",
+            "name": "New Hampshire",
+            "point": 26,
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
+        }
+    },
+
+    {
+        "pk": 27,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-116.863863852",
+            "latitude": "38.8215008889"
+        }
+    },
+    {
+        "pk": 27,
+        "model": "locations.state",
+        "fields": {
+            "usps_code": "nv",
+            "name": "Nevada",
+            "point": 27,
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
+        }
+    },
+
+    {
+        "pk": 28,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-98.4159979703",
+            "latitude": "41.2324319335"
+        }
+    },
+    {
+        "pk": 28,
+        "model": "locations.state",
+        "fields": {
+            "usps_code": "ne",
+            "name": "Nebraska",
+            "point": 28,
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
+        }
+    },
+
+    {
+        "pk": 29,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-74.511843005",
+            "latitude": "40.3278286374"
+        }
+    },
+    {
+        "pk": 29,
+        "model": "locations.state",
+        "fields": {
+            "usps_code": "nj",
+            "name": "New Jersey",
+            "point": 29,
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
+        }
+    },
+
+    {
+        "pk": 30,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-106.295252344",
+            "latitude": "34.831864378"
+        }
+    },
+    {
+        "pk": 30,
+        "model": "locations.state",
+        "fields": {
+            "usps_code": "nm",
+            "name": "New Mexico",
+            "point": 30,
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
+        }
+    },
+
+    {
+        "pk": 31,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-79.4002284439",
+            "latitude": "35.4833648675"
+        }
+    },
+    {
+        "pk": 31,
+        "model": "locations.state",
+        "fields": {
+            "usps_code": "nc",
+            "name": "North Carolina",
+            "point": 31,
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
+        }
+    },
+
+    {
+        "pk": 32,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-100.5",
+            "latitude": "47.5"
+        }
+    },
+    {
+        "pk": 32,
+        "model": "locations.state",
+        "fields": {
+            "usps_code": "nd",
+            "name": "North Dakota",
+            "point": 32,
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
+        }
+    },
+
+    {
+        "pk": 33,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-121.431326778",
+            "latitude": "44.5106146616"
+        }
+    },
+    {
+        "pk": 33,
+        "model": "locations.state",
+        "fields": {
+            "usps_code": "or",
+            "name": "Oregon",
+            "point": 33,
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
+        }
+    },
+
+    {
+        "pk": 34,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-82.5",
+            "latitude": "40.5"
+        }
+    },
+    {
+        "pk": 34,
+        "model": "locations.state",
+        "fields": {
+            "usps_code": "oh",
+            "name": "Ohio",
+            "point": 34,
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
+        }
+    },
+
+    {
+        "pk": 35,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-96.8460570462",
+            "latitude": "35.5607802899"
+        }
+    },
+    {
+        "pk": 35,
+        "model": "locations.state",
+        "fields": {
+            "usps_code": "ok",
+            "name": "Oklahoma",
+            "point": 35,
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
+        }
+    },
+
+    {
+        "pk": 36,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-77.9064900333",
+            "latitude": "40.6649812556"
+        }
+    },
+    {
+        "pk": 36,
+        "model": "locations.state",
+        "fields": {
+            "usps_code": "pa",
+            "name": "Pennsylvania",
+            "point": 36,
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
+        }
+    },
+
+    {
+        "pk": 37,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-71.5",
+            "latitude": "41.7"
+        }
+    },
+    {
+        "pk": 37,
+        "model": "locations.state",
+        "fields": {
+            "usps_code": "ri",
+            "name": "Rhode Island",
+            "point": 37,
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
+        }
+    },
+
+    {
+        "pk": 38,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-99.2367396523",
+            "latitude": "44.2961309373"
+        }
+    },
+    {
+        "pk": 38,
+        "model": "locations.state",
+        "fields": {
+            "usps_code": "sd",
+            "name": "South Dakota",
+            "point": 38,
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
+        }
+    },
+
+    {
+        "pk": 39,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-81.0592258065",
+            "latitude": "34.0033149514"
+        }
+    },
+    {
+        "pk": 39,
+        "model": "locations.state",
+        "fields": {
+            "usps_code": "sc",
+            "name": "South Carolina",
+            "point": 39,
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
+        }
+    },
+
+    {
+        "pk": 40,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-97.7816569778",
+            "latitude": "31.4484328889"
+        }
+    },
+    {
+        "pk": 40,
+        "model": "locations.state",
+        "fields": {
+            "usps_code": "tx",
+            "name": "Texas",
+            "point": 40,
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
+        }
+    },
+
+    {
+        "pk": 41,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-86.227190641",
+            "latitude": "35.8489644444"
+        }
+    },
+    {
+        "pk": 41,
+        "model": "locations.state",
+        "fields": {
+            "usps_code": "tn",
+            "name": "Tennessee",
+            "point": 41,
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
+        }
+    },
+
+    {
+        "pk": 42,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-111.5",
+            "latitude": "39.5"
+        }
+    },
+    {
+        "pk": 42,
+        "model": "locations.state",
+        "fields": {
+            "usps_code": "ut",
+            "name": "Utah",
+            "point": 42,
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
+        }
+    },
+
+    {
+        "pk": 43,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-78.6145553005",
+            "latitude": "37.6666466469"
+        }
+    },
+    {
+        "pk": 43,
+        "model": "locations.state",
+        "fields": {
+            "usps_code": "va",
+            "name": "Virginia",
+            "point": 43,
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
+        }
+    },
+
+    {
+        "pk": 44,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-72.5623",
+            "latitude": "44.2035"
+        }
+    },
+    {
+        "pk": 44,
+        "model": "locations.state",
+        "fields": {
+            "usps_code": "vt",
+            "name": "Vermont",
+            "point": 44,
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
+        }
+    },
+
+    {
+        "pk": 45,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-80.3694176534",
+            "latitude": "38.7800944309"
+        }
+    },
+    {
+        "pk": 45,
+        "model": "locations.state",
+        "fields": {
+            "usps_code": "wv",
+            "name": "West Virginia",
+            "point": 45,
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
+        }
+    },
+
+    {
+        "pk": 46,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-120.5",
+            "latitude": "47.5"
+        }
+    },
+    {
+        "pk": 46,
+        "model": "locations.state",
+        "fields": {
+            "usps_code": "wa",
+            "name": "Washington",
+            "point": 46,
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
+        }
+    },
+
+    {
+        "pk": 47,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-89.5",
+            "latitude": "44.5"
+        }
+    },
+    {
+        "pk": 47,
+        "model": "locations.state",
+        "fields": {
+            "usps_code": "wi",
+            "name": "Wisconsin",
+            "point": 47,
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
+        }
+    },
+
+    {
+        "pk": 48,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-108.154049643",
+            "latitude": "43.0039679365"
+        }
+    },
+    {
+        "pk": 48,
+        "model": "locations.state",
+        "fields": {
+            "usps_code": "wy",
+            "name": "Wyoming",
+            "point": 48,
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
+        }
+    },
+
+    {
+        "pk": 49,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-83.1131966831",
+            "latitude": "32.9604601566"
+        }
+    },
+    {
+        "pk": 49,
+        "model": "locations.state",
+        "fields": {
+            "usps_code": "ga",
+            "name": "Georgia",
+            "point": 49,
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
+        }
+    },
+    {
+        "pk": 50,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-75.1889929444",
+            "latitude": "42.3481810333"
+        }
+    },
+    {
+        "pk": 50,
+        "model": "locations.state",
+        "fields": {
+            "usps_code": "ny",
+            "name": "New York",
+            "point": 50,
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
+        }
+    },
+    {
+        "pk": 51,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-71.8",
+            "latitude": "42.3"
+        }
+    },
+    {
+        "pk": 51,
+        "model": "locations.state",
+        "fields": {
+            "usps_code": "ma",
+            "name": "Massachusetts",
+            "point": 51,
+            "parent_type": ["locations", "country"],
+            "parent_id": 1
+        }
+    },
+    {
+        "pk": 52,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-74",
+            "latitude": "40.716667"
+        }
+    },
+    {
+        "pk": 52,
+        "model": "locations.city",
+        "fields": {
+            "name": "New York City",
+            "point": 52,
+            "parent_type": ["locations", "state"],
+            "parent_id": 50
+        }
+    },
+    {
+        "pk": 53,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-78.849444",
+            "latitude": "42.904722"
+        }
+    },
+    {
+        "pk": 53,
+        "model": "locations.city",
+        "fields": {
+            "name": "Buffalo",
+            "point": 53,
+            "parent_type": ["locations", "state"],
+            "parent_id": 50
+        }
+    },
+    {
+        "pk": 54,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-77.611389",
+            "latitude": "43.165556"
+        }
+    },
+    {
+        "pk": 54,
+        "model": "locations.city",
+        "fields": {
+            "name": "Rochester",
+            "point": 54,
+            "parent_type": ["locations", "state"],
+            "parent_id": 50
+        }
+    },
+    {
+        "pk": 55,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-73.864365",
+            "latitude": "40.941478"
+        }
+    },
+    {
+        "pk": 55,
+        "model": "locations.city",
+        "fields": {
+            "name": "Yonkers",
+            "point": 55,
+            "parent_type": ["locations", "state"],
+            "parent_id": 50
+        }
+    },
+    {
+        "pk": 56,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-76.144423",
+            "latitude": "43.046899"
+        }
+    },
+    {
+        "pk": 56,
+        "model": "locations.city",
+        "fields": {
+            "name": "Syracuse",
+            "point": 56,
+            "parent_type": ["locations", "state"],
+            "parent_id": 50
+        }
+    },
+    {
+        "pk": 57,
+        "model": "locations.point",
+        "fields": {
+            "longitude": "-73.781389",
+            "latitude": "42.659722"
+        }
+    },
+    {
+        "pk": 57,
+        "model": "locations.city",
+        "fields": {
+            "name": "Albany",
+            "point": 57,
+            "parent_type": ["locations", "state"],
+            "parent_id": 50
+        }
+    }
+]

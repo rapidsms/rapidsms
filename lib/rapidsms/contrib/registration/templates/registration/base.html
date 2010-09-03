@@ -1,0 +1,8 @@
+{% extends "layout-split-2.html" %}
+
+{% block stylesheets %}
+{{ block.super }}
+<link type="text/css" rel="stylesheet" href="{{ MEDIA_URL }}registration/stylesheets/base.css" />
+{% endblock %}
+
+{% block title %}Registration - {{ block.super }}{% endblock %}

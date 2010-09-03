@@ -1,0 +1,3 @@
+The registration app provides a nice interface for creating, updating,
+and deleting RapidSMS contacts. It is deliberately minimal, and outside
+of the core, so other apps can extend or replace it where necessary.

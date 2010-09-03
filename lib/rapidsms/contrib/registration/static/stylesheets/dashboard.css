@@ -1,0 +1,16 @@
+/* vim:set et ts=4 sw=4 */
+
+#inner .col-1 { width: 60%; }
+#inner .col-2 { width: 40%; }
+
+.col-1 table {
+    width: 100%;
+}
+
+    .col-1 th,
+    .col-1 td {
+        white-space: nowrap;
+    }
+
+    .col-1 col { width: 1%; }
+    .col-1 col:last-child { width: auto; }

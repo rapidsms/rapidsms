@@ -1,0 +1,88 @@
+#inner .col-1 { width: 25%; }
+#inner .col-2 { width: 50%; }
+#inner .col-3 { width: 25%; }
+
+
+.locations {
+	width: 100%;
+}
+
+	.locations th.slug {
+		width: 1%;
+	}
+
+
+div.map {
+	border: 1px solid #000;
+	border-top: none;
+}
+
+	div.map div.label {
+		font-weight: bold;
+		font-size: 7pt;
+		color: #000;
+		white-space: nowrap;
+	}
+
+	div.map div.container {
+		background: #f8f8ff;
+		height: 50em;
+	}
+
+	div.map ul.labels {
+		display: none;
+	}
+
+	div.toolbar .maximize { background-image: url("../icons/silk/map_magnify.png"); }
+
+
+/* if no location types are defined, a big error will be displayed in
+ * the left column. equalize the height with the map, to ensure that
+ * it's seen. (map=50em, h2=(line-height=1.6em, padding=0.5em*2)) */
+div.col-1 tr.no-data.error {
+	height: 52.6em;
+}
+
+
+/* when the center column is maximized (see map.js), undo the split and
+ * columns styles, and hide the outer columns. (#inner is prepended to
+ * raise the precedence of the rules.) */
+#inner .max-map {
+	padding-left: 0; }
+
+    #inner .max-map .col-1,
+    #inner .max-map .col-3 {
+        margin-left: 0;
+        display: none;
+    }
+
+    #inner .max-map .col-2 {
+        margin-left: 0;
+        display: block;
+        width: 100%;
+    }
+
+
+/* to make it easy to add a point without knowing its exact lat+long,
+ * this javascript-powered trigger is added to each widget by map.js.
+ * (see rapidsms/icons.css for the global 'js-button' rule.) */
+
+input.js-button.pinpoint { background-image: url("../icons/silk/map_cursor.png"); }
+
+body.pinpointing { }
+
+	body.pinpointing .col-2 .module {
+		outline: 0.5em solid #ff8;
+	}
+
+	body.pinpointing div.map {
+		cursor: crosshair;
+	}
+
+	body.pinpointing div.pp-target {
+		border-left: 1.5em solid #ff8;
+		padding-left: 0.5em;
+		margin-left: -2em;
+	}
+
+	body.pinpointing input.js-button.pinpoint { background-image: url("../../rapidsms/icons/silk/decline.png"); }

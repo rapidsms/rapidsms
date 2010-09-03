@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+
+{% block title %}Message Log - {{ block.super }}{% endblock %}
+
+{% block stylesheets %}
+{{ block.super }}
+<link type="text/css" rel="stylesheet" href="{{ MEDIA_URL }}messagelog/stylesheets/messagelog.css" />
+{% endblock %}
+
+{% block content %}
+<div class="messages module">
+	<h2>Message Log</h2>
+	{{ messages_table.as_html }}
+</div>
+{% endblock %}

@@ -1,0 +1,55 @@
+/* vim:set et ts=4 sw=4 */
+
+
+div.label-wrapper {
+    position: absolute; }
+
+div.label-wrapper div.arrow {
+    display: none; }
+
+    div.label-wrapper.bubble div.label {
+        background: #fff;
+        border: 1px solid #000;
+        text-align: center;
+        line-height: 1.4;
+        font-weight: bold;
+        padding: 6px;
+        color: #000;
+
+        /* firefox */
+        -moz-box-shadow: 1px 1px 4px #000;
+        -moz-border-radius: 7px;
+
+        /* chrome, safari */
+        -webkit-box-shadow: 1px 1px 4px #000;
+        -webkit-border-radius: 7px;
+    }
+
+        div.label-wrapper.above.bubble div.label { margin-bottom: 8px; }
+        div.label-wrapper.right.bubble div.label { margin-left:   8px; }
+        div.label-wrapper.below.bubble div.label { margin-top:    8px; }
+        div.label-wrapper.left.bubble  div.label { margin-right:  8px; }
+
+    div.label-wrapper.bubble div.arrow {
+        position: absolute;
+        display: block;
+        width: 9px;
+        height: 9px;
+    }
+
+        div.label-wrapper.above.bubble div.arrow { bottom: 0; background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAQAAABKmM6bAAAAAXNSR0IArs4c6QAAAGtJREFUCNdjKPuPCpr+M/D9v4Uk8OC/wH8G4yVeSELB/512MjBwyfzfChXY81/yPwMPAxBEqf3/CRT4/V/rP0McAwRY/+8ECvX+t/jPwAgVYjDi/38eZLAJAwIk/eH+n/SfAQWIyv1nEIMwAVmaVKRCjzOvAAAAAElFTkSuQmCC"); }
+        div.label-wrapper.right.bubble div.arrow { left:   0; background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAQAAABKmM6bAAAAAXNSR0IArs4c6QAAAGpJREFUCNdjYEAALuMlfP/L/iMEomT+e/2/9f8/VMjI+r/a/63/IYCBQTTpD///zv8//8MAg9x/7v/n/yMDBgaxpP8C/3v//0YSAgETi/9a//egCDEwMDLESf4P/v8ASQgEeJx2Cvxv+g8AMklUpAhpjnsAAAAASUVORK5CYII="); }
+        div.label-wrapper.below.bubble div.arrow { top:    0; background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAQAAABKmM6bAAAAAXNSR0IArs4c6QAAAGxJREFUCNdjYIAAMbn/DKIMyCDpP/f/pD/IIiYC/8//5//PYAQTYLT43/v////O/9b/YUJxWv9/A4V+/lf7zxAFEuCR/L/nPwRs/S/zn4GLwWln8H8E8PpvvIRB4P8DJKFb//n+MzT9RwVl/wEhdlSks5uJkgAAAABJRU5ErkJggg=="); }
+        div.label-wrapper.left.bubble  div.arrow { right:  0; background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAQAAABKmM6bAAAAAXNSR0IArs4c6QAAAHFJREFUCB1NwS0KwgAAgNFvVUVXJgxk0WCcBsFmtNoMhh1iB7AteAuvsCB4B7vJawwHn+zHn/c4Gbq9MuJHn+6N5UhAx9bNhWtZ0bD38mxoJlP8c3doIvYqCydmNRG2SuduJKWhD3fO5MBH7tjlhQFfb0jHVKTtOc/FAAAAAElFTkSuQmCC"); }
+
+        div.label-wrapper.above.bubble div.arrow,
+        div.label-wrapper.below.bubble div.arrow {
+            margin-left: -4px;
+            left: 50%;
+        }
+
+        div.label-wrapper.left.bubble div.arrow,
+        div.label-wrapper.right.bubble div.arrow {
+            margin-top: -4px;
+            top: 50%;
+        }

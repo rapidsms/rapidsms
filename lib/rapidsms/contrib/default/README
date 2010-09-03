@@ -1,0 +1,5 @@
+This app provides a default response when none of the other apps know what to do with a given message.
+
+e.g.
+user sends: junk
+default reply: Sorry, RapidSMS could not understand your message.
