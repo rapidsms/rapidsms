@@ -8,6 +8,21 @@ RapidSMS is a free and open source framework for building interactive SMS applic
 .. _the RapidSMS Team: http://github.com/rapidsms
 
 
+PLEASE NOTE
+===========
+
+1) the old rapidsms codebase (aka tusker) that has been living in http://github.com/rapidsms/rapidsms HAS BEEN MOVED to http://github.com/rapidsms/rapidsms-legacy -- if your clone or fork is still in use, you should update your repository's remote/origin
+
+
+2) a COMBINED repository of the contents of http://github.com/rapidsms/rapidsms-core-dev and http://github.com/rapidsms/rapidsms-contrib-apps-dev HAS REPLACED the old codebase in http://github.com/rapidsms/rapidsms
+
+('search' and 'training' apps that were in http://github.com/rapidsms/rapidsms-contrib-apps-dev HAVE BEEN REMOVED and are now submodules of http://github.com/rapidsms/rapidsms-community-apps-dev)
+
+3) http://github.com/rapidsms/rapidsms-core-dev and http://github.com/rapidsms/rapidsms-contrib-apps-dev WILL REMAIN UNCHANGED until the 1.0 release but should now be considered DEPRECATED.
+
+
+4) pypi package will now install from http://github.com/rapidsms/rapidsms
+
 Installing
 ==========
 
@@ -59,3 +74,4 @@ Bugs
 Please file bugs on `GitHub`_.
 
 .. _GitHub: http://github.com/rapidsms/rapidsms-core-dev/issues
+
