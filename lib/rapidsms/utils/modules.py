@@ -83,7 +83,7 @@ def find_python_files(path):
 
             # ignore __magic__ files and those
             # not ending with the .py suffix
-            if not file.startswith("_")
+            if not file.startswith(('_', '.'))
             and file.endswith('.py')])
 
     except OSError:
