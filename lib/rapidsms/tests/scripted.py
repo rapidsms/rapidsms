@@ -12,22 +12,10 @@ from django.conf import settings
 from datetime import datetime
 from rapidsms.log.mixin import LoggerMixin
 
-
-class MetaTestScript (type):
-    def __new__(cls, name, bases, attrs):
-        for key, obj in attrs.items():
-            if key.startswith("test") and not callable(obj):
-                cmds = TestScript.parseScript(obj)
-                def wrapper (self, cmds=cmds):
-                    return self.runParsedScript(cmds)
-                attrs[key] = wrapper
-        return type.__new__(cls, name, bases, attrs)
-
 class TestScript (TransactionTestCase, LoggerMixin):
     # we use the TransactionTestCase so that the router thread has access
     # to the DB objects used outside and vice versa.
     # see: http://docs.djangoproject.com/en/dev/releases/1.1/#releases-1-1
-    __metaclass__ = MetaTestScript
 
     """
     The scripted.TestScript class subclasses unittest.TestCase
@@ -55,6 +43,9 @@ class TestScript (TransactionTestCase, LoggerMixin):
     """
     apps = None
 
+    def assertInteraction(self, script):
+        self.runParsedScript(self.parseScript(script))
+
     def setUp (self):
         self.router = globalrouter
         
@@ -76,8 +67,8 @@ class TestScript (TransactionTestCase, LoggerMixin):
 
     def tearDown (self):
         if self.router.running:
-            self.router.stop() 
-        
+            self.router.stop(True) 
+
         # clear backends, apps
         self.router.backends = {}
         self.router.apps = []

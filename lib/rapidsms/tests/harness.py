@@ -54,6 +54,9 @@ class MockBackend (BackendBase):
         self.bucket.append(msg)
         self.outgoing_bucket.append(msg)
         return True
+
+    def run(self):
+        pass
     
     def next_outgoing_message(self):
         if len(self.outgoing_bucket) == 0:
