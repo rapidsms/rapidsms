@@ -128,7 +128,7 @@ SITE_ID = 1
 LOG_LEVEL   = "DEBUG"
 LOG_FILE    = "rapidsms.log"
 LOG_FORMAT  = "[%(name)s]: %(message)s"
-LOG_SIZE    = 8192 # 8192 bytes = 64 kb
+LOG_SIZE    = 8192 # 8192 bits = 8 kb
 LOG_BACKUPS = 256 # number of logs to keep
 
 
