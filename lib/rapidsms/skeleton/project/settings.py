@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
-
+# encoding=utf-8
 
 # -------------------------------------------------------------------- #
 #                          MAIN CONFIGURATION                          #
@@ -12,7 +12,7 @@
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": "rapidsms.sqlite3"
+        "NAME": "rapidsms.sqlite3",
     }
 }
 
@@ -37,7 +37,7 @@ INSTALLED_BACKENDS = {
     #    "PORT": "/dev/ttyUSB1"
     #},
     "message_tester": {
-        "ENGINE": "rapidsms.backends.bucket"
+        "ENGINE": "rapidsms.backends.bucket",
     }
 }
 
@@ -125,11 +125,11 @@ SITE_ID = 1
 
 
 # the default log settings are very noisy.
-LOG_LEVEL   = "DEBUG"
-LOG_FILE    = "rapidsms.log"
-LOG_FORMAT  = "[%(name)s]: %(message)s"
-LOG_SIZE    = 8192 # 8192 bits = 8 kb
-LOG_BACKUPS = 256 # number of logs to keep
+LOG_LEVEL = "DEBUG"
+LOG_FILE = "rapidsms.log"
+LOG_FORMAT = "[%(name)s]: %(message)s"
+LOG_SIZE = 8192  # 8192 bits = 8 kb
+LOG_BACKUPS = 256  # number of logs to keep
 
 
 # these weird dependencies should be handled by their respective apps,
@@ -139,7 +139,7 @@ TEMPLATE_CONTEXT_PROCESSORS = [
     "django.core.context_processors.debug",
     "django.core.context_processors.i18n",
     "django.core.context_processors.media",
-    "django.core.context_processors.request"
+    "django.core.context_processors.request",
 ]
 
 
@@ -172,9 +172,12 @@ ROOT_URLCONF = "rapidsms.djangoproject.urls"
 # virtual database for each thread, and syncdb is only called for the
 # first. this leads to confusing "no such table" errors. We create
 # a named temporary instance instead.
-import os, tempfile, sys
+import os
+import tempfile
+import sys
+
 if 'test' in sys.argv:
     for db_name in DATABASES:
         DATABASES[db_name]['TEST_NAME'] = os.path.join(
-            tempfile.gettempdir(), 
+            tempfile.gettempdir(),
             "%s.rapidsms.test.sqlite3" % db_name)
