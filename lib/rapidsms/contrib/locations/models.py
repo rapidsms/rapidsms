@@ -27,6 +27,18 @@ class Point(models.Model):
         return '<%s: %s>' %\
             (type(self).__name__, self)
 
+class LocationType(models.Model):
+    """
+    This model represents the 'type' of Location, as an option for a
+    simpler way of having a location heirarchy without having different
+    classes for each location type (as is supported by the generic 
+    relation to parent).  
+    """
+    name = models.CharField(max_length=100)
+    slug = models.SlugField(unique=True, primary_key=True)
+
+    def __unicode__(self):
+        return self.name
 
 class Location(models.Model):
     """
@@ -39,12 +51,11 @@ class Location(models.Model):
 
     point = models.ForeignKey(Point, null=True, blank=True)
 
+    type = models.ForeignKey(LocationType, related_name="locations", blank=True, null=True)
     parent_type = models.ForeignKey(ContentType, null=True, blank=True)
     parent_id   = models.PositiveIntegerField(null=True, blank=True)
     parent      = generic.GenericForeignKey("parent_type", "parent_id")
 
-    class Meta:
-        abstract = True
 
     # choices for the Location.direction method.
     # (values stolen from label-overlay.js)
