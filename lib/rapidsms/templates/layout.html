@@ -33,7 +33,7 @@
 			<div id="header">
 				<div id="branding">
 					<h1>
-						<a title="{% trans "Return to the Dashboard" %}" href="/">
+						<a title="{% trans "Return to the Dashboard" %}" href="{% url dashboard %}">
 							<span>RapidSMS</span>
 						</a>
 					</h1>
@@ -41,8 +41,8 @@
 
 				{% block auth %}
 				<div id="auth">{% if user.is_authenticated %}
-					<a href="{% url rapidsms.views.logout %}">{% trans "Log out" %} {{ user.username }}</a>{% else %}
-					<a href="{% url rapidsms.views.login %}">{% trans "Log in" %}</a>{% endif %}
+					<a href="{% url rapidsms-logout %}">{% trans "Log out" %} {{ user.username }}</a>{% else %}
+					<a href="{% url rapidsms-login %}">{% trans "Log in" %}</a>{% endif %}
 				</div>
 				{% endblock %}
 
