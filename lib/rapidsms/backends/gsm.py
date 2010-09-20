@@ -44,7 +44,7 @@ class Backend(BackendBase):
         # set a default timeout if it wasn't specified in localsettings.py;
         # otherwise read() will hang forever if the modem is powered off
         if "timeout" not in self.modem_kwargs:
-            self.modem_kwargs["timeout"] = 10
+            self.modem_kwargs["timeout"] = '10'
 
 
     def __str__(self):
@@ -159,7 +159,7 @@ class Backend(BackendBase):
             self.modem = pygsm.GsmModem(logger=self.gsm_log, **self.modem_kwargs)
             self.modem.boot()
 
-            if self.service_center is not None:
+            if getattr(self, 'service_center', None) is not None:
                 self.modem.service_center = self.service_center
 
             # call the superclass to start the run loop -- it just sets
