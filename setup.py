@@ -30,5 +30,5 @@ setup(
     maintainer_email="rapidsms@googlegroups.com",
 
     description="Build SMS applications with Python and Django",
-    url="http://github.com/rapidsms/rapidsms-core-dev"
+    url="http://github.com/rapidsms/rapidsms"
 )
