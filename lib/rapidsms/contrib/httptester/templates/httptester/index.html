@@ -14,7 +14,7 @@
 	(function($) {
 		$(function() {
 			$("#id_text").keypress(function(ev) {
-				if (ev.keyCode == 13 && ev.ctrlKey) {
+				if (ev.keyCode == 13) {
 					$(this).closest("form").submit();
 					$("#id_submit").focus();
 					ev.preventDefault();
