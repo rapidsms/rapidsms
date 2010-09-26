@@ -46,11 +46,6 @@ def test_app_finds_valid_app_classes():
     assert_equals(app, App)
 
 
-def test_app_ignores_missing_app_classes():
-    app = AppBase.find('rapidsms.contrib.djangoadmin')
-    assert_equals(app, None)
-
-
 def test_app_ignores_invalid_modules():
     app = AppBase.find('not.a.valid.module')
     assert_equals(app, None)

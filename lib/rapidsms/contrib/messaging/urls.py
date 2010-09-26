@@ -5,7 +5,7 @@ from django.conf.urls.defaults import *
 from . import views
 
 urlpatterns = patterns('',
-    url(r'^messaging/$',
+    url(r'^$',
         views.messaging,
         name="messaging")
 )

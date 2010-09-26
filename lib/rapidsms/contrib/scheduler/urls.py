@@ -6,6 +6,6 @@ from django.conf.urls.defaults import *
 import rapidsms.contrib.scheduler.views as views
 
 urlpatterns = patterns('',
-    url(r'^scheduler/$', views.index, name="scheduler"),
-    url(r'^scheduler/(?P<pk>\d+)/$', views.edit),
+    url(r'^$', views.index, name="scheduler"),
+    url(r'^(?P<pk>\d+)/$', views.edit),
 )

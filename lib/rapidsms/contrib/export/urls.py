@@ -7,5 +7,5 @@ from . import views
 
 
 urlpatterns = patterns('',
-    url(r'^export/database', views.database)
+    url(r'^database', views.database)
 )

@@ -7,4 +7,4 @@ from . import views
 
 
 urlpatterns = patterns('',
-    (r'^ajax/(?P<path>.*)$', views.proxy))
+    (r'^(?P<path>.*)$', views.proxy))
