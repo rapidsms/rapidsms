@@ -72,7 +72,7 @@ class LocationForm(forms.ModelForm):
 
     class Meta:
         model = Location
-        exclude = ("parent_type", "parent_id")
+        exclude = ("parent_type", "parent_id", "type")
 
 
 #class CountryForm(LocationForm):
