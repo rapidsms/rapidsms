@@ -26,21 +26,24 @@ PLEASE NOTE
 Installing
 ==========
 
-RapidSMS is best installed via `PyPi`_::
+RapidSMS is best installed via `PyPi`_. To install the latest stable-ish version::
 
   $ pip install rapidsms
 
-.. _PyPi: http://pypi.python.org/pypi/RapidSMS
+Alternatively, to install the development version from `GitHub`_::
 
+  $ pip install git+git://github.com/rapidsms/rapidsms.git#egg=RapidSMS
 
 The RapidSMS project skeleton is identical to the Django project skeleton, with a few of our settings added. To quickly spawn a new project, we've bundled a wrapper around django-admin.py::
 
   $ rapidsms-admin.py startproject myproject
 
-
 The ``runrouter`` management command starts the router, sends and receives SMS (and other short messages) via the configurable backends::
 
   $ python manage.py runrouter
+
+.. _PyPi: http://pypi.python.org/pypi/RapidSMS
+.. _GitHub: http://github.com/rapidsms/rapidsms
 
 
 Getting Help
