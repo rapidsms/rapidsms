@@ -13,15 +13,14 @@ PLEASE NOTE
 
 1) the old rapidsms codebase (aka tusker) that has been living in http://github.com/rapidsms/rapidsms HAS BEEN MOVED to http://github.com/rapidsms/rapidsms-legacy -- if your clone or fork is still in use, you should update your repository's remote/origin
 
-
 2) a COMBINED repository of the contents of http://github.com/rapidsms/rapidsms-core-dev and http://github.com/rapidsms/rapidsms-contrib-apps-dev HAS REPLACED the old codebase in http://github.com/rapidsms/rapidsms
 
 ('search' and 'training' apps that were in http://github.com/rapidsms/rapidsms-contrib-apps-dev HAVE BEEN REMOVED and are now submodules of http://github.com/rapidsms/rapidsms-community-apps-dev)
 
 3) http://github.com/rapidsms/rapidsms-core-dev and http://github.com/rapidsms/rapidsms-contrib-apps-dev WILL REMAIN UNCHANGED until the 1.0 release but should now be considered DEPRECATED.
 
-
 4) pypi package will now install from http://github.com/rapidsms/rapidsms
+
 
 Installing
 ==========
@@ -74,7 +73,6 @@ RapidSMS is free software, available under the BSD license.
 Bugs
 ====
 
-Please file bugs on `GitHub`_.
+Please file bugs on `the RapidSMS issue tracker`_, and/or submit a pull request.
 
-.. _GitHub: http://github.com/rapidsms/rapidsms-core-dev/issues
-
+.. _the RapidSMS issue tracker: http://github.com/rapidsms/rapidsms/issues
