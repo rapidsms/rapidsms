@@ -49,17 +49,15 @@ class Backend(BackendBase):
                 self.sm.SendSMS(self.outgoing_q.get_nowait())
             except Empty:
                 pass
-            else:
-                self.sent_messages += 1
 
             try:
                 msg = self.sm.GetNextSMS(0, True)[0]
+                self.sm.DeleteSMS(0, True)
             except gammu.ERR_EMPTY:
                 pass
             else:
                 x = self.message(msg['Number'], msg['Text'])
                 self.router.incoming_message(x)
-                self.sm.DeleteSMS(0, True)
             
             for n in range(0, self.POLL_INTERVAL*10):
                 if not self.running: return None
@@ -73,10 +71,6 @@ class Backend(BackendBase):
 
 
     def start(self):
-        self.sent_messages = 0
-        self.failed_messages = 0
-        self.received_messages = 0
-
         self.info("Connecting with gammu...")
         self.sm.Init()
             
