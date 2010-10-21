@@ -59,7 +59,7 @@ class Backend(BackendBase):
                 self.router.incoming_message(x)
                 try:
                     self.sm.DeleteSMS(msg['Folder'], msg['Location'])
-                except gammu.ERR_EMPTY:
+                except (gammu.ERR_EMPTY, gammu.ERR_INVALIDLOCATION):
                     pass
             
             for n in range(0, self.POLL_INTERVAL*10):
