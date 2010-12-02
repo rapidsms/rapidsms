@@ -149,6 +149,7 @@ class ConnectionBase(models.Model):
 
     class Meta:
         abstract = True
+        unique_together = (('backend', 'identity'),)
 
     def __unicode__(self):
         return "%s via %s" %\
@@ -179,9 +180,6 @@ class ConnectionBase(models.Model):
             raise MessageSendingError()
 
         return True
-
-    class Meta:
-        unique_together = (('backend', 'identity'),)
 
 
 class Connection(ConnectionBase):
