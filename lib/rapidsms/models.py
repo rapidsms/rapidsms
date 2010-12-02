@@ -180,6 +180,9 @@ class ConnectionBase(models.Model):
 
         return True
 
+    class Meta:
+        unique_together = (('backend', 'identity'),)
+
 
 class Connection(ConnectionBase):
     """
