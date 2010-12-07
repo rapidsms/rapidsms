@@ -11,8 +11,11 @@ from .conf import settings
 
 class ExtensibleModelBase(models.base.ModelBase):
     def __new__(cls, name, bases, attrs):
-        module_name = attrs["__module__"]
-        app_label = module_name.split('.')[-2]
+        try:
+            app_label = attrs['Meta'].app_label
+        except KeyError:
+            module_name = attrs["__module__"]
+            app_label = module_name.split('.')[-2]
         extensions = _find_extensions(app_label, name)
         bases = tuple(extensions) + bases
 
