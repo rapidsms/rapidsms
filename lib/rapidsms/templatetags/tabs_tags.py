@@ -47,7 +47,13 @@ class TabsNode(template.Node):
         self.varname = varname
 
     def render(self, context):
-        request = Variable("request").resolve(context)
+        # try to find a request variable, but don't blow up entirely if we don't find it
+        # (this no blow up property is mostly used during testing)
+        try:
+            request = Variable("request").resolve(context)
+        except Exception as e:
+            return ""
+
         for tab in self.tabs:
             tab.is_active = tab.url == request.get_full_path()
         context[self.varname] = self.tabs
