@@ -6,8 +6,8 @@ import math
 from django import template
 register = template.Library()
 
-# when this module is imported via {% load pagination_tags %}, it is
-# imported as django.templatetags.pagination_tags, which prevents a
+# when this module is imported via {% load paginator_tags %}, it is
+# imported as django.templatetags.paginator_tags, which prevents a
 # relative import (..conf) to rapidsms from working here. in fact, that
 # would import django.conf, so it will appear to be working, but per-app
 # settings won't work! PAGINATOR_ defaults are in the ..settings module.

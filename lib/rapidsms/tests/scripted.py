@@ -119,6 +119,10 @@ class TestScript (TransactionTestCase, LoggerMixin):
     def stopRouter (self):
         self.router.stop()
 
+        # HACK: wait for the router to stop
+        while self.router.accepting:
+            time.sleep(0.1)
+
     def sendMessage (self, num, txt, date=None):
         if date is None:
             date = datetime.now()
