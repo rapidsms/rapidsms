@@ -1,4 +1,54 @@
 # vim: ai ts=4 sts=4 et sw=4
+"""
+To use the Kannel backend, one needs to append 'kannel' to the list of 
+available backends, like so:
+
+INSTALLED_BACKENDS.update({
+    "fake" : {
+        "ENGINE":  "rapidsms.backends.kannel",
+        "host": "127.0.0.1",
+        "port": 8081,
+        "sendsms_url": "http://127.0.0.1:13013/cgi-bin/sendsms",
+        "sendsms_params": {"smsc": "FAKE",
+                           "from": "88160", # not set automatically by SMSC
+                           "username": "tester",
+                           "password": "foobar"},
+        "coding": 0,
+        "charset": "ascii",
+        "encode_errors": "ignore", # strip out unknown (unicode) characters
+    }
+})
+    
+The associated Kannel settings might look something like this:
+
+# start the fake SMSC for testing on port 20000:
+group = smsc
+smsc = fake
+smsc-id = FAKE
+port = 20000
+connect-allow-ip = 127.0.0.1
+
+# listen for outgoing messages from RapidSMS:
+group = smsbox
+sendsms-port = 13013
+# .... other smsbox options here
+
+# add a user for RapidSMS to connect as:
+group = sendsms-user
+username = tester
+password = foobar
+user-deny-ip = "*.*.*.*"
+user-allow-ip = "127.0.0.1"
+
+# deliver inbound messages to RapidSMS:
+group = sms-service
+keyword = default
+accepted-smsc = FAKE
+# don't send a reply here (it'll come through sendsms):
+max-messages = 0
+get-url = http://127.0.0.1:8083/?id=%p&text=%a&charset=%C&coding=%c
+"""
+
 from rapidsms.backends.http import RapidHttpBacked
 
 import copy
@@ -11,20 +61,6 @@ from django.http import HttpResponse, HttpResponseBadRequest
 class KannelBackend(RapidHttpBacked):
     """
     Backend for use with the Kannel SMS Gateway.
-    
-    The associated Kannel settings might look something like this:
-    
-    # listen for outgoing messages from RapidSMS:
-    group = smsbox
-    sendsms-port = 13013
-    # .... other smsbox options here
-    
-    # deliver inbound messages to RapidSMS:
-    group = sms-service
-    keyword = default
-    # don't send an automated reply here (it'll come through sendsms):
-    max-messages = 0
-    get-url = http://127.0.0.1:8888/?id=%p&text=%a
     """
 
     def configure(self, sendsms_url='http://127.0.0.1:13013/cgi-bin/sendsms',
