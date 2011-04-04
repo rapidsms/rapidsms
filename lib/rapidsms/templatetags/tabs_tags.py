@@ -2,6 +2,7 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 
+import re
 import types
 import threading
 from functools import wraps
@@ -37,6 +38,12 @@ class Tab(object):
     @property
     def caption(self):
         return self._caption or self._auto_caption()
+
+    @property
+    def caption_slug(self):
+        slug = self.caption.lower().replace(' ', '-') # convert spaces to '-'
+        slug = re.sub(r'\W', '', slug) # remove any remaining non-word chars
+        return slug
 
 
 # adapted from ubernostrum's django-template-utils. it didn't seem

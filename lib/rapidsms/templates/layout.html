@@ -49,7 +49,7 @@
 				{% get_tabs as tabs %}
 
 				<ul id="tabs">{% for tab in tabs %}
-					<li class="app-{{ tab.name }}{% if tab.is_active %} active{% endif %}">
+					<li class="app-{{ tab.caption_slug }}{% if tab.is_active %} active{% endif %}">
 						<a href="{{ tab.url }}"><span>{{ tab.caption }}</span></a>
 					</li>{% endfor %}
 				</ul>
