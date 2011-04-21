@@ -144,26 +144,47 @@ class TestScript (TransactionTestCase, LoggerMixin):
             messages.append(msg)
             msg = self.receiveMessage()
         return messages
-
+    
+    def _checkAgainstMessage(self, num, txt, last_msg, msg):
+        self.assertTrue(msg is not None, "Message was ignored.\n"
+                        "Message: '%s'\nExpecting: '%s'" %
+                        (last_msg, txt))
+        self.assertEquals(msg.peer, num, "Expected to respond to "
+                          "%s, but message was sent to %s.\n"
+                          "Message: '%s'" % (num, msg.peer,
+                                             last_msg))
+        self.assertEquals(msg.text, txt, "\nMessage: %s\nReceived "
+                          "text: %s\nExpected text: %s\n" %
+                          (last_msg, msg.text,txt))
+        
+    
+    def _checkAgainstMessages(self, num, txt, last_msg, msgs):
+        self.assertTrue(len(msgs) != 0, "Message was ignored.\n"
+                        "Message: '%s'\nExpecting: '%s'" %
+                        (last_msg, txt))
+        for i, msg in enumerate(msgs):
+            try:
+                self._checkAgainstMessage(num, txt, last_msg, msg)
+                return i
+            except AssertionError:
+                # only raise this up if we've exhausted all our candidates
+                if i == len(msgs) - 1: raise 
+                    
     def runParsedScript (self, cmds):
         self.startRouter()
         try:
             last_msg = ''
+            msgs = []
             for num, date, dir, txt in cmds:
                 if dir == ">":
                     self.sendMessage(num, txt, date)
                 elif dir == "<":
-                    msg = self.receiveMessage()
-                    self.assertTrue(msg is not None, "Message was ignored.\n"
-                                    "Message: '%s'\nExpecting: '%s'" %
-                                    (last_msg, txt))
-                    self.assertEquals(msg.peer, num, "Expected to respond to "
-                                      "%s, but message was sent to %s.\n"
-                                      "Message: '%s'" % (num, msg.peer,
-                                                         last_msg))
-                    self.assertEquals(msg.text, txt, "\nMessage: %s\nReceived "
-                                      "text: %s\nExpected text: %s\n" %
-                                      (last_msg, msg.text,txt))
+                    if len(msgs) == 0:
+                        # only reload when we've exhausted our cache of messages
+                        msgs = self.receiveAllMessages()
+                    match = self._checkAgainstMessages(num, txt, last_msg, msgs)
+                    msgs.pop(match)
+
                 last_msg = txt
         finally:
             self.stopRouter()
