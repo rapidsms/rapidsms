@@ -146,9 +146,6 @@ class TestScript (TransactionTestCase, LoggerMixin):
         return messages
     
     def _checkAgainstMessage(self, num, txt, last_msg, msg):
-        self.assertTrue(msg is not None, "Message was ignored.\n"
-                        "Message: '%s'\nExpecting: '%s'" %
-                        (last_msg, txt))
         self.assertEquals(msg.peer, num, "Expected to respond to "
                           "%s, but message was sent to %s.\n"
                           "Message: '%s'" % (num, msg.peer,
