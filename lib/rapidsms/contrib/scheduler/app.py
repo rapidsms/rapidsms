@@ -36,7 +36,6 @@ class App (AppBase):
     as defined in the django model EventSchedule
     
     """
-    
     bootstrapped = False
 
     def start (self):
@@ -50,6 +49,18 @@ class App (AppBase):
 
     def stop (self):
         self.schedule_thread.stop()
+
+    def ajax_POST_run_schedule(self, params, form):
+        '''
+        Triggers a schedule via the ajax app. You can call this method
+        via the ajax app by posting to the url:
+           
+            ajax/messaging/run_schedule
+           
+\        '''
+        schedule = EventSchedule.objects.get(pk=form["schedule_pk"])
+        schedule.run(self.router)
+        return True
 
 class SchedulerThread (threading.Thread):
     _speedup = None
@@ -88,27 +99,7 @@ class SchedulerThread (threading.Thread):
                     if schedule.should_fire(now):
                         # call the callback function
                         # possibly passing in args and kwargs
-                        module, callback = schedule.callback.rsplit(".", 1)
-                        module = __import__(module, globals(), locals(), [callback])
-                        callback = getattr(module, callback)
-                        if schedule.callback_args and schedule.callback_kwargs:
-                            callback(self._router, *schedule.callback_args, **schedule.callback_kwargs)
-                        elif schedule.callback_args:
-                            callback(self._router, *schedule.callback_args)
-                        elif schedule.callback_kwargs:
-                            callback(self._router, **schedule.callback_kwargs)
-                        else:
-                            callback(self._router)
-                        if schedule.count:
-                            schedule.count = schedule.count - 1
-                            # should we delete expired schedules? we do now.
-                            if schedule.count <= 0: 
-                                schedule.deactivate()
-                            else: schedule.save()
-                        # should we delete expired schedules? we do now.
-                        if schedule.end_time:
-                            if now > schedule.end_time:
-                                schedule.deactivate()
+                        schedule.run(self._router)
                 except Exception, e:
                     # Don't prevent exceptions from killing the thread
                     self._router.error("Problem in scheduler for: %s. %s" % (schedule,
@@ -126,3 +117,4 @@ class SchedulerThread (threading.Thread):
                     time.sleep((next_run - updated_now + timedelta(seconds=1)).seconds)
                     updated_now = datetime.now()
                 now = next_run
+

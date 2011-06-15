@@ -8,4 +8,5 @@ import rapidsms.contrib.scheduler.views as views
 urlpatterns = patterns('',
     url(r'^$', views.index, name="scheduler"),
     url(r'^(?P<pk>\d+)/$', views.edit),
+    url(r'^(?P<schedule_pk>\d+)/test/?$', views.test_schedule, name='test_schedule'),
 )
