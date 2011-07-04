@@ -7,7 +7,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="RapidSMS",
-    version="0.9.5a",
+    version="0.9.6a",
     license="BSD",
 
     install_requires = [

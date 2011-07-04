@@ -1,0 +1,66 @@
+Code contributions governed by one or both of the following CLAs:
+
+    RapidSMS Individual Contributor License Agreement
+    https://spreadsheets.google.com/viewform?formkey=dGtKTGU1bWkwU1ctOEpkdENhaVQ5YkE6MA
+
+    RapidSMS Corporate Contributor License Agreement
+    https://spreadsheets.google.com/viewform?formkey=dGJPeFh5NTV6NlJjclg1cFRKUFVsQmc6MA
+
+View contributors who have signed CLAs:
+
+    individual contributors
+    http://spreadsheets.google.com/pub?key=tkJLe5mi0SW-8JdtCaiT9bA&output=html
+
+    corporate contributors
+    http://spreadsheets.google.com/pub?key=tbOxXy55z6RcrX5pTJPUlBg&output=html
+
+
+Below is a list of code contributors (as of 30 March 2011), outputted by
+	$ git log --format=format:"%an <%aE>" | sort | uniq
+
+
+adammck <adam.mckaig@gmail.com>
+Adam Mckaig <adam.mckaig@gmail.com>
+Adam Mckaig <adammck@fry.localdomain>
+Colin Copeland <copelco@caktusgroup.com>
+Cory Zue <czue@dimagi.com>
+David McCann <david.a.mccann@gmail.com>
+dimagidan <dmyung@dimagi.com>
+dmyung <dmyung@ubuntu.ubuntu-domain>
+Drew Roos <droos@dimagi.com>
+Emma Oluka <oluka@oluka.(none)>
+Evan Wheeler <evanmwheeler@gmail.com>
+evan wheeler <ewheeler@abacus.local>
+Evan Wheeler <ewheeler@astrolabe.local>
+ewheeler <evanmwheeler@gmail.com>
+Jeffrey Wishnie <jwishnie@wish-mac.local>
+Jeff Wishnie <jeff@wishnie.org>
+Mark E Johnston <mejymejy@gmail.com>
+Meredith Finkelstein <mnfinkel@gmail.com>
+Meredith <meredith@system76-netbook.(none)>
+Mike Edwards <mike@onearmedman.com>
+Nchimunya Hamakando <nchimunya@mist.cva>
+Nic Pottier <nicpottier@gmail.com>
+RapidSMS <rapidsms@rapidsms-desktop.(none)>
+RapidSMS <rapidsms@ubuntu.ubuntu-domain>
+rgaudin <rgaudin@gmail.com>
+root <root@rapidsms-desktop.(none)>
+root <root@rowena-vm.(none)>
+root <root@tostan-rapidsms.(none)>
+root <root@tostansms.(none)>
+Rowena <rluk@dimagi.com>
+Rowena <rowena@rowena-ubuntu.(none)>
+Rowena <rowena@rowena-vm.(none)>
+Schuyler Erle <sderle@goldman.(none)>
+Solomon Adebayo <solomoniyi@gmail.com>
+soloz <solomoniyi@gmail.com>
+takinbo <takinbo@gmail.com>
+thebenedict <thebenedict@gmail.com>
+Tim Akinbo <takinbo@gmail.com>
+Tobias McNulty <http://www.caktusgroup.com>
+tsinkala <sinkalation@gmail.com>
+unknown <Cory Zue@.(none)>
+unknown <dmyung@.(none)>
+unknown <soolz@.(none)>
+U-rotop\rowena <rowena@rotop.(none)>
+U-rotop\Rowena <Rowena@rotop.(none)>

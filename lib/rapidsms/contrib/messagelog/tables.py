@@ -14,7 +14,7 @@ class MessageTable(Table):
     contact = Column()
     connection = Column()
     direction = Column()
-    date = DateColumn(format="H:m d/m/Y")
+    date = DateColumn(format="H:i d/m/Y")
     text = Column()
 
     class Meta:

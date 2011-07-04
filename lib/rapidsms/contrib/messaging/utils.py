@@ -8,6 +8,6 @@ def send_message(connection, text):
     Send a message from the webui process to the router process,
     via the ajax app.
     """
-    return call_router("messaging", "send_message", 
-                       **{"connection_id": connection.id, "text": text })
-    
+    post = {"connection_id": unicode(connection.id), "text": text}
+    return call_router("messaging", "send_message", **post)
+

@@ -52,12 +52,12 @@
 		</thead>
 		<tbody>{% if message_log %}{% for msg in message_log %}
 			<tr class="{{ msg.direction }}">
-				<td>{{ msg.identity }}</td>
-				<td>{% ifequal msg.direction "in" %}
+				<td>
+					{{ msg.identity }}{% ifequal msg.direction "in" %}
 					<span title="Incoming (You sent this message to RapidSMS)">&raquo;</span>{% endifequal %}{% ifequal msg.direction "out" %}
 					<span title="Outgoing (You received this message from RapidSMS)">&laquo;</span>{% endifequal %}
-					{{ msg.text }}
 				</td>
+				<td class="text">{{ msg.text }}</td>
 			</tr>{% endfor %}{% else %}{% if router_available %}
 			<tr class="no-data look-left">
 				<td colspan="2">
