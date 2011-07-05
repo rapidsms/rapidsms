@@ -17,6 +17,7 @@ class ExtensibleModelBase(models.base.ModelBase):
             module_name = attrs["__module__"]
             app_label = module_name.split('.')[-2]
         extensions = _find_extensions(app_label, name)
+        print "extensions for %s : %s" % (name, str(extensions))
         bases = tuple(extensions) + bases
 
         return super(ExtensibleModelBase, cls).__new__(
@@ -28,7 +29,7 @@ def _find_extensions(app_label, model_name):
 
     suffix = "extensions.%s.%s" % (
         app_label, model_name.lower())
-
+    print "suffix is %s" % suffix
     modules = filter(None, [
         try_import("%s.%s" % (app_name, suffix))
         for app_name in settings.INSTALLED_APPS ])
