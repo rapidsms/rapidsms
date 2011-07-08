@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
 
+from datetime import datetime
 from django.db import models
 from fields import PickledObjectField
 from django.utils.dates import MONTHS, WEEKDAYS_ABBR
@@ -259,6 +260,29 @@ class EventSchedule(models.Model):
             return True
         return False
 
+    def run(self, router):
+        module, callback = self.callback.rsplit(".", 1)
+        module = __import__(module, globals(), locals(), [callback])
+        callback = getattr(module, callback)
+        if self.callback_args and self.callback_kwargs:
+            callback(router, *self.callback_args, **self.callback_kwargs)
+        elif self.callback_args:
+            callback(router, *self.callback_args)
+        elif self.callback_kwargs:
+            callback(router, **self.callback_kwargs)
+        else:
+            callback(router)
+        if self.count:
+            self.count = self.count - 1
+            # should we delete expired schedules? we do now.
+            if self.count <= 0: 
+                self.deactivate()
+            else: self.save()
+        # should we delete expired schedules? we do now.
+        if self.end_time:
+            if datetime.now() > self.end_time:
+                self.deactivate()
+        
 ############################
 # global utility functions #
 ############################
