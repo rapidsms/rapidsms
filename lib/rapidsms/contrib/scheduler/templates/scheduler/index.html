@@ -22,6 +22,7 @@
                 <th scope="col">{% trans "End Time" %}</th>
                 <th scope="col">{% trans "Count" %}</th>
                 <th scope="col">{% trans "Active" %}</th>
+                <td></td>
 			</tr>
 		</thead>
 		<tbody>{% if schedules.object_list %}{% for schedule in schedules.object_list %}
@@ -37,6 +38,13 @@
                 <td>{% if schedule.start_time %}{{ schedule.date_joined|date:"D M d H:i" }}{% else %}<span class="na">n/a</span>{% endif %}</td>
                 <td>{% if schedule.count %}{{ schedule.count }}{% else %}<span class="na">n/a</span>{% endif %}</td>
                 <td>{% if schedule.active %}True{% else %}False{% endif %}</td>
+                <td><form name="test_report" 
+                          action="{% url test_schedule schedule.pk %}" 
+                          method="POST">
+                        	  {% csrf_token %}
+                              <a href="#" onclick="$(this).closest('form').submit()" class="button">Send</a>
+                    </form>
+                </td>
 			</tr>{% endfor %}
             <tr>
                 <td colspan="11">
