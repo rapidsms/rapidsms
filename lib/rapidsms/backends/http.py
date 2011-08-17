@@ -61,7 +61,7 @@ class RapidHttpServer(WSGIServer):
             WSGIServer.handle_request(self)
 
 
-class RapidHttpBacked(BackendBase):
+class RapidHttpBackend(BackendBase):
     """ RapidSMS backend that creates and handles an HTTP server """
 
     _title = "HTTP"
@@ -109,7 +109,7 @@ class RapidHttpBacked(BackendBase):
             return HttpResponseBadRequest(error_msg)
         now = datetime.utcnow()
         try:
-            msg = super(RapidHttpBacked, self).message(sender, sms, now)
+            msg = super(RapidHttpBackend, self).message(sender, sms, now)
         except Exception, e:
             self.exception(e)
             raise        

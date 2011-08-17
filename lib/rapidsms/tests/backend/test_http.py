@@ -3,10 +3,10 @@ from nose.tools import assert_equals, assert_true, assert_raises
 from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest
 
 from rapidsms.tests.harness import MockRouter
-from rapidsms.backends.http import RapidHttpBacked
+from rapidsms.backends.http import RapidHttpBackend
 
 
-class NewBackend(RapidHttpBacked):
+class NewBackend(RapidHttpBackend):
     def configure(self, *args, **kwargs):
         self.username = kwargs.pop('username')
         super(NewBackend, self).configure(*args, **kwargs)
@@ -14,7 +14,7 @@ class NewBackend(RapidHttpBacked):
 def test_handle_good_request():
     """ handle_request must return a HttpResponse """
     router = MockRouter()
-    backend = RapidHttpBacked(name='test', 
+    backend = RapidHttpBackend(name='test', 
                               router=router)
     http_request = HttpRequest()
     http_request.GET = {'id':'123','text':'message'}
@@ -24,7 +24,7 @@ def test_handle_good_request():
 def test_handle_bad_request():
     """ handle_request must return a HttpResponse """
     router = MockRouter()
-    backend = RapidHttpBacked(name='test', 
+    backend = RapidHttpBackend(name='test', 
                               router=router)
     response = backend.handle_request(HttpRequest())
     assert_true(isinstance(response, HttpResponseBadRequest))
@@ -32,7 +32,7 @@ def test_handle_bad_request():
 def test_config():
     """ Allow custom configuration """
     router = MockRouter()
-    backend = RapidHttpBacked(router=router, name="test_http_backend")
+    backend = RapidHttpBackend(router=router, name="test_http_backend")
     backend.configure("localhost", 8080,
                       gateway_url='http://smsgateway.com',
                       params_outgoing = 'user=my_username&password=my_password&id=%(params_incoming)s&text=%(message)s',
@@ -45,7 +45,7 @@ def test_config():
 def test_bad_config():
     """ Test bad configuration """
     router = MockRouter()
-    assert_raises(Exception, RapidHttpBacked, router=router, 
+    assert_raises(Exception, RapidHttpBackend, router=router, 
                                   username='rapidsms', 
                                   gateway_url = 'http://smsgateway.com',
                                   params_outgoing = "user=my_username&password=my_password&id=%(params_incoming)s&text=%(message)s",

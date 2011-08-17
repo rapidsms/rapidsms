@@ -1,9 +1,9 @@
 -*- restructuredtext -*-
 
-RapidHttpBacked
+RapidHttpBackend
 ===============
 
-RapidHttpBacked is a basic extension to Django's built-in WSGI server
+RapidHttpBackend is a basic extension to Django's built-in WSGI server
 simplified to run as a backend for RapidSMS.
 
 Configuration
@@ -28,17 +28,17 @@ via HTTP GET.
 Extension
 --------------
 
-To further customize the behaviour of httpbackend, simply extend rapidsms.backends.http.RapidHttpBacked
+To further customize the behaviour of httpbackend, simply extend rapidsms.backends.http.RapidHttpBackend
 and implement handle_request. For example::
 
     import datetime
 	import twilio
     
     from django.http import HttpResponse
-    from rapidsms.backends.http import RapidHttpBacked
+    from rapidsms.backends.http import RapidHttpBackend
 
 
-    class MyBackend(RapidHttpBacked):
+    class MyBackend(RapidHttpBackend):
         """ A RapidSMS backend for the My Cool SMS API """
 
         def configure(self, config=None, **kwargs):
