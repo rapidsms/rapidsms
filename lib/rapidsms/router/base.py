@@ -10,10 +10,10 @@ import Queue
 
 from django.dispatch import Signal
 
-from .log.mixin import LoggerMixin
-from .backends.base import BackendBase
-from .apps.base import AppBase
-from .conf import settings
+from ..log.mixin import LoggerMixin
+from ..backends.base import BackendBase
+from ..apps.base import AppBase
+from ..conf import settings
 
 
 class Router(object, LoggerMixin):
@@ -447,11 +447,3 @@ class Router(object, LoggerMixin):
                     return False
 
         return msg.send_now()
-
-
-# a single instance of the router singleton is available globally, like
-# the db connection. it shouldn't be necessary to muck with this very
-# often (since most interaction with the Router happens within an App or
-# Backend, which have their own .router property), but when it is, it
-# should be done via this process global
-router = Router()
