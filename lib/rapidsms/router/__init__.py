@@ -3,13 +3,11 @@ from django.core.exceptions import ImproperlyConfigured
 from django.utils.importlib import import_module
 
 
-def get_router():
+def get_router(import_path):
     """
-    Imports and returns the router class described by the RAPIDSMS_ROUTER
-    setting, where RAPIDSMS_ROUTER is the full Python path to the class.
+    Imports and returns the router class described by import_path, where
+    import_path is the full Python path to the class.
     """
-    import_path = getattr(settings, 'RAPIDSMS_ROUTER',
-                          'rapidsms.router.legacy.LegacyRouter')
     try:
         dot = import_path.rindex('.')
     except ValueError:
@@ -32,4 +30,6 @@ def get_router():
 # often (since most interaction with the Router happens within an App or
 # Backend, which have their own .router property), but when it is, it
 # should be done via this process global
-router = get_router()()
+Router = get_router(getattr(settings, 'RAPIDSMS_ROUTER',
+                    'rapidsms.router.legacy.LegacyRouter'))
+router = Router()

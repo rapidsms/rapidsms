@@ -4,7 +4,7 @@
 
 import time
 import logging
-from rapidsms.router.blocking import BlockingRouter
+from rapidsms.router import get_router
 from harness import EchoApp
 import unittest, re, threading
 from django.test import TransactionTestCase
@@ -47,8 +47,17 @@ class TestScript (TransactionTestCase, LoggerMixin):
         self.runParsedScript(self.parseScript(script))
 
     def setUp (self):
-        self.router = BlockingRouter()
-        
+        # For now, default to using the old global router during unit tests,
+        # but let users change that by setting TEST_RAPIDSMS_ROUTER
+        # to a new router (e.g., rapidsms.router.blocking.BlockingRouter) in
+        # their settings file
+        router_cls = getattr(settings, 'TEST_RAPIDSMS_ROUTER', 'global')
+        if router_cls == 'global':
+            from rapidsms.router import router as globalrouter
+            self.router = globalrouter
+        else:
+            self.router = get_router(router_cls)()
+
         self._init_log(logging.WARNING)
         
         if self.router.backends or self.router.apps:
@@ -66,6 +75,9 @@ class TestScript (TransactionTestCase, LoggerMixin):
             self.router.add_app(name)
 
     def tearDown (self):
+        if self.router.running:
+            self.router.stop(True) 
+
         # clear backends, apps
         self.router.backends = {}
         self.router.apps = []
@@ -104,10 +116,28 @@ class TestScript (TransactionTestCase, LoggerMixin):
             raise Exception("Can't start router -- it doesn't exist!  "
                             "Did you override setUp and forget to call "
                             "the base class?")
-        self.router.start()
+
+        if hasattr(self.router.start, 'blocks') and self.router.start.blocks:
+            # Router.start blocks until Router.stop is called, so start it in a
+            # separate thread so it can process our mock messages asynchronously
+            threading.Thread(target=self.router.start).start()
+        else:
+            # If Router.start does not block, just call it normally
+            self.router.start()
+
+        if hasattr(self.router, 'accepting'):
+            # HACK: wait for the router to be ready
+            # to accept our incoming messages
+            while not self.router.accepting:
+                time.sleep(0.2)
 
     def stopRouter (self):
         self.router.stop()
+
+        if hasattr(self.router, 'accepting'):
+            # HACK: wait for the router to stop
+            while self.router.accepting:
+                time.sleep(0.1)
 
     def sendMessage (self, num, txt, date=None):
         if date is None:
@@ -115,6 +145,11 @@ class TestScript (TransactionTestCase, LoggerMixin):
         msg = self.backend.message(num, txt)
         msg.received_at = date
         self.backend.route(msg)
+
+        if hasattr(self.router, 'join'):
+            # wait until the router has finished
+            # processing this incoming message
+            self.router.join()
 
     def receiveMessage (self):
         return self.backend.next_outgoing_message()

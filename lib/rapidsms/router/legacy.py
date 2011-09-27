@@ -162,6 +162,7 @@ class LegacyRouter(BaseRouter):
         # backend(s) might have to discard them, but at least they can
         # pass the refusal back to the device/gateway where possible
         self.accepting = False
+    start.blocks = True
 
     def stop(self, graceful=False):
         """
