@@ -4,7 +4,7 @@
 
 import time
 import logging
-from rapidsms.router import router as globalrouter
+from rapidsms.router.blocking import BlockingRouter
 from harness import EchoApp
 import unittest, re, threading
 from django.test import TransactionTestCase
@@ -47,7 +47,7 @@ class TestScript (TransactionTestCase, LoggerMixin):
         self.runParsedScript(self.parseScript(script))
 
     def setUp (self):
-        self.router = globalrouter
+        self.router = BlockingRouter()
         
         self._init_log(logging.WARNING)
         
@@ -66,9 +66,6 @@ class TestScript (TransactionTestCase, LoggerMixin):
             self.router.add_app(name)
 
     def tearDown (self):
-        if self.router.running:
-            self.router.stop(True) 
-
         # clear backends, apps
         self.router.backends = {}
         self.router.apps = []
@@ -107,21 +104,10 @@ class TestScript (TransactionTestCase, LoggerMixin):
             raise Exception("Can't start router -- it doesn't exist!  "
                             "Did you override setUp and forget to call "
                             "the base class?")
-        # Router.start blocks until Router.stop is called, so start it in a
-        # separate thread so it can process our mock messages asynchronously
-        threading.Thread(target=self.router.start).start()
-
-        # HACK: wait for the router to be ready
-        # to accept our incoming messages
-        while not self.router.accepting:
-            time.sleep(0.2)
+        self.router.start()
 
     def stopRouter (self):
         self.router.stop()
-
-        # HACK: wait for the router to stop
-        while self.router.accepting:
-            time.sleep(0.1)
 
     def sendMessage (self, num, txt, date=None):
         if date is None:
@@ -129,10 +115,6 @@ class TestScript (TransactionTestCase, LoggerMixin):
         msg = self.backend.message(num, txt)
         msg.received_at = date
         self.backend.route(msg)
-
-        # wait until the router has finished
-        # processing this incoming message
-        self.router.join()
 
     def receiveMessage (self):
         return self.backend.next_outgoing_message()

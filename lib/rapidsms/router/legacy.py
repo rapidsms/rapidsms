@@ -24,9 +24,6 @@ class LegacyRouter(BaseRouter):
 
         super(LegacyRouter, self).__init__()
 
-        self.running = False
-        """TODO: Docs"""
-
         self.accepting = False
         """TODO: Docs"""
 
@@ -123,9 +120,6 @@ class LegacyRouter(BaseRouter):
 
         self._starting_backends = True
         super(LegacyRouter, self).start()
-        
-        self.running = True
-        self.debug("Started")
 
         # now that all of the apps are started, we are ready to start
         # accepting messages. (if we tried to dispatch an message to an
@@ -184,8 +178,6 @@ class LegacyRouter(BaseRouter):
         if graceful:
             self.accepting = False
             self.join()
-
-        self.running = False
         
         super(LegacyRouter, self).stop(graceful=graceful)
 

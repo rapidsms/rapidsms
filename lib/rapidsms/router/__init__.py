@@ -1,4 +1,5 @@
-from .legacy import LegacyRouter as Router
+#from .legacy import LegacyRouter as Router
+from .blocking import BlockingRouter as Router
 
 # a single instance of the router singleton is available globally, like
 # the db connection. it shouldn't be necessary to muck with this very

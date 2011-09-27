@@ -33,6 +33,9 @@ class BaseRouter(object, LoggerMixin):
         self.backends = {}
         self.logger = None
 
+        self.running = False
+        """TODO: Docs"""
+
     def add_app(self, module_name):
         """
         Find the app named *module_name*, instantiate it, and add it to
@@ -138,6 +141,8 @@ class BaseRouter(object, LoggerMixin):
         self.pre_start.send(self)
         self._start_all_backends()
         self._start_all_apps()
+        self.running = True
+        self.debug("Started")
 
     def stop(self, graceful=False):
         """
@@ -150,11 +155,20 @@ class BaseRouter(object, LoggerMixin):
         incoming messages and blocking (by calling Router.join) until
         all currently pending messages are processed.
         """
-        
+
+        self.running = False
+
         self.debug("Stopping...")
         self._stop_all_backends()
         self._stop_all_apps()
         self.info("Stopped")
+
+    def incoming_message(self, msg):
+        """
+        Queue or send immediately the incoming message.  Defaults to sending
+        the message immediately.
+        """
+        self.incoming(msg)
 
     def incoming(self, msg):
         """
