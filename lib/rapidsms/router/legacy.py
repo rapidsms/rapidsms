@@ -187,7 +187,7 @@ class LegacyRouter(BaseRouter):
 
         self.running = False
         
-        super(LegacyRouter, self).stop()
+        super(LegacyRouter, self).stop(graceful=graceful)
 
     def join(self):
         """
