@@ -49,8 +49,7 @@ class TestScript (TransactionTestCase, LoggerMixin):
     def setUp (self):
         # For now, default to using the old global router during unit tests,
         # but let users change that by setting TEST_RAPIDSMS_ROUTER
-        # to a new router (e.g., rapidsms.router.blocking.BlockingRouter) in
-        # their settings file
+        # to a new router in their settings file
         router_cls = getattr(settings, 'TEST_RAPIDSMS_ROUTER', 'global')
         if router_cls == 'global':
             from rapidsms.router import router as globalrouter
