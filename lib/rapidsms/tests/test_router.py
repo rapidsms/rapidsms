@@ -6,10 +6,25 @@ import time
 import threading
 from nose.tools import assert_equals, assert_raises
 from django.utils.functional import curry
+from django.core.exceptions import ImproperlyConfigured
 from ..backends.base import BackendBase
 from ..apps.base import AppBase
+from ..router import get_router
 from ..router.base import BaseRouter
 from ..router.legacy import LegacyRouter
+
+
+class MockRouter(object):
+    pass
+
+
+def test_get_router():
+    assert_raises(ImproperlyConfigured, get_router,
+                  'rapidsms.tests.test_router.BadClassName')
+    assert_raises(ImproperlyConfigured, get_router,
+                  'rapidsms.tests.bad_module.MockRouter')
+    assert_equals(get_router('rapidsms.tests.test_router.MockRouter'),
+                  MockRouter)
 
 def test_router_finds_apps():
     router = BaseRouter()
@@ -134,13 +149,14 @@ def test_router_calls_all_app_phases():
     app = MockApp(router)
     router.apps.append(app)
     router.incoming(MockMsg())
-    assert app.called_phases == app.incoming_phases, app.called_phases
+    assert_equals(app.called_phases, app.incoming_phases)
     app.called_phases = []
     router.outgoing(MockMsg())
-    assert app.called_phases == app.outgoing_phases, app.called_phases
+    assert_equals(app.called_phases, app.outgoing_phases)
     app.called_phases = []
     router.start()
-    assert app.called_phases == app.start_phases, app.called_phases
+    assert_equals(app.called_phases, app.start_phases)
     app.called_phases = []
     router.stop()
-    assert app.called_phases == app.stop_phases, app.called_phases
+    assert_equals(app.called_phases, app.stop_phases)
+
