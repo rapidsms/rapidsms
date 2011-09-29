@@ -23,10 +23,10 @@ class Router(object, LoggerMixin):
     incoming_phases = ("filter", "parse", "handle", "default", "cleanup")
     outgoing_phases = ("outgoing",)
 
-    pre_start = Signal(providing_args=["router"])
+    pre_start  = Signal(providing_args=["router"])
     post_start = Signal(providing_args=["router"])
-    pre_stop = Signal(providing_args=["router"])
-    post_stop = Signal(providing_args=["router"])
+    pre_stop   = Signal(providing_args=["router"])
+    post_stop  = Signal(providing_args=["router"])
 
 
     def __init__(self):
@@ -60,14 +60,14 @@ class Router(object, LoggerMixin):
         return app
 
     def get_app(self, module_name):
-        """Get a handle to one of our apps by module name."""
+        """Get a handle to one of our apps by module name.""" 
         cls = AppBase.find(module_name)
         if cls is None: return None
-
+        
         for app in self.apps:
             if type(app) == cls:
                 return app
-
+            
         raise KeyError("The %s app was not found in the router!" % module_name)
 
 
@@ -108,7 +108,7 @@ class Router(object, LoggerMixin):
         or False if time runs out.
         """
 
-        for n in range(0, timeout * 10):
+        for n in range(0, timeout*10):
             if func(): return True
             else: time.sleep(0.1)
 
@@ -127,7 +127,7 @@ class Router(object, LoggerMixin):
                 started = backend.start()
                 self.debug("backend %s terminated normally" % backend)
                 return True
-
+            
             except Exception, e:
                 self.debug("caught exception in backend %s: %s" % (backend, e))
                 backend.exception()
@@ -357,7 +357,7 @@ class Router(object, LoggerMixin):
           An opportunity to clean up anything started during earlier phases.
         """
 
-        self.info("Incoming (%s): %s" % \
+        self.info("Incoming (%s): %s" %\
             (msg.connection, msg.text))
 
         try:
@@ -397,14 +397,14 @@ class Router(object, LoggerMixin):
                             # default phase firing unnecessarily
                             msg.handled = True
                             break
-
+                    
                     elif phase == "default":
                         # allow default phase of apps to short circuit
                         # for prioritized contextual responses.   
                         if handled is True:
                             self.debug("Short-circuited default")
                             break
-
+                        
         except StopIteration:
             pass
 
@@ -420,7 +420,7 @@ class Router(object, LoggerMixin):
         """
         """
 
-        self.info("Outgoing (%s): %s" % \
+        self.info("Outgoing (%s): %s" %\
             (msg.connection, msg.text))
 
         for phase in self.outgoing_phases:
@@ -448,13 +448,10 @@ class Router(object, LoggerMixin):
 
         return msg.send_now()
 
-def get_router():
-    #TODO : return a settings-driven router instance
-    return Router()
 
 # a single instance of the router singleton is available globally, like
 # the db connection. it shouldn't be necessary to muck with this very
 # often (since most interaction with the Router happens within an App or
 # Backend, which have their own .router property), but when it is, it
 # should be done via this process global
-router = get_router()
+router = Router()
