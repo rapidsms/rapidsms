@@ -31,5 +31,5 @@ def get_router(import_path):
 # Backend, which have their own .router property), but when it is, it
 # should be done via this process global
 Router = get_router(getattr(settings, 'RAPIDSMS_ROUTER',
-                    'rapidsms.router.legacy.LegacyRouter'))
+                    'rapidsms.router.blocking.BlockingRouter'))
 router = Router()
