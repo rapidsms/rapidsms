@@ -238,4 +238,7 @@ class LegacyRouter(BaseRouter):
         Run the outgoing app phases on the message, and then send it now.
         """
         super(LegacyRouter, self).outgoing(msg)
-        return msg.send_now()
+        backend_name = msg.connection.backend.name
+        msg.sent = router.backends[backend_name].send(msg)
+        if msg.sent: msg.sent_at = datetime.now()
+        return msg.sent

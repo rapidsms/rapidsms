@@ -86,16 +86,3 @@ class OutgoingMessage(MessageBase):
             raise NoRouterError()
 
         return router.outgoing(self)
-
-
-    def send_now(self):
-        """
-        Send this message immediately via the physical backend. This
-        should probably only be called by the Router.
-        """
-
-        from ..router import router
-        backend_name = self.connection.backend.name
-        self.sent = router.backends[backend_name].send(self)
-        if self.sent: self.sent_at = datetime.now()
-        return self.sent
