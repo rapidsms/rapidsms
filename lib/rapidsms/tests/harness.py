@@ -3,7 +3,7 @@
 
 import os
 
-from rapidsms.router import Router
+from rapidsms.router.base import BaseRouter
 from rapidsms.backends.base import BackendBase
 from ..apps.base import AppBase
 
@@ -24,8 +24,8 @@ class MockLogger (list):
                 print args[2] % args[3:]
         self.append(args)
 
-# a subclass of Router with all the moving parts replaced
-class MockRouter (Router):
+# a subclass of BaseRouter with all the moving parts replaced
+class MockRouter (BaseRouter):
     def start (self):
         self.running = True
         self.start_all_backends()

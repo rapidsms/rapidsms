@@ -37,8 +37,8 @@ INSTALLED_BACKENDS = {
     #    "PORT": "/dev/ttyUSB1"
     #},
     "message_tester": {
-        "ENGINE": "rapidsms.backends.bucket",
-    }
+        "ENGINE": "rapidsms.contrib.httptester.backend",
+    },
 }
 
 

@@ -88,9 +88,9 @@ def test_backend_routes_messages():
 
 
 def test_backend_finds_valid_backend_classes():
-    backend = BackendBase.find('rapidsms.backends.bucket')
-    from rapidsms.backends.bucket import BucketBackend
-    assert_equals(backend, BucketBackend)
+    backend = BackendBase.find('rapidsms.backends.http')
+    from rapidsms.backends.http import RapidHttpBackend
+    assert_equals(backend, RapidHttpBackend)
 
 
 def test_backend_can_be_started_and_stopped():

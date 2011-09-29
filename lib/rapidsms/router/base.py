@@ -69,7 +69,8 @@ class BaseRouter(object, LoggerMixin):
         """
 
         cls = BackendBase.find(module_name)
-        if cls is None: return None
+        if cls is None:
+            raise ValueError('No such backend "%s"' % module_name)
 
         config = self._clean_backend_config(config or {})
         backend = cls(self, name, **config)
