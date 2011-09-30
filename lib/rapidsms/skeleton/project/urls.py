@@ -18,7 +18,6 @@ urlpatterns = patterns('',
     url(r'^$', 'rapidsms.views.dashboard', name='rapidsms-dashboard'),
 
     # RapidSMS contrib app URLs
-    (r'^ajax/', include('rapidsms.contrib.ajax.urls')),
     (r'^export/', include('rapidsms.contrib.export.urls')),
     url(r'^httptester/$',
         'rapidsms.contrib.httptester.views.generate_identity',
