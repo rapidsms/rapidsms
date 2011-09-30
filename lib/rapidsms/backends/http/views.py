@@ -36,7 +36,8 @@ class BaseHttpBackendView(FormMixin, LoggerMixin, ProcessFormView):
         If the form validated successfully, passes the message on to the
         router for processing.
         """
-        handle_incoming(self.backend_name, **form.get_incoming_data())
+        data = form.get_incoming_data()
+        handle_incoming(data['text'], self.backend_name, data['identity'])
         return HttpResponse('OK')
 
     def form_invalid(self, form):

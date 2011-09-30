@@ -20,4 +20,4 @@ def store_message(direction, identity, text):
 def store_and_queue(backend_name, identity, text):
     from rapidsms.messages.router_api import handle_incoming
     store_message('in', identity, text)
-    handle_incoming(backend_name, identity, text)
+    handle_incoming(text, backend_name, identity)
