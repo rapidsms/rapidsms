@@ -68,21 +68,9 @@ class OutgoingMessage(MessageBase):
 
     def send(self):
         """
-        Send this message via the router, triggering the _outgoing_
-        phase (giving any app the opportunity to modify or cancel it).
-        Return True if the message was sent successfully.
-
-        If the router is not running (as is usually the case outside of
-        the ``runrouter`` process), NoRouterError is raised.
-
-        Warning: This method blocks the current thread until the backend
-        accepts or rejects the message, which takes as long as it takes.
-        There is currently no way to send messages asynchronously.
+        Raises an exception to help developers upgrade legacy code to use
+        the new interface for sending messages.
         """
-
-        from rapidsms.router import router
-
-        if not router.running:
-            raise NoRouterError()
-
-        return router.outgoing(self)
+        raise NoRouterError('The global router has been removed from RapidSMS. '
+                            'You must send the this message by calling '
+                            'router.outgoing(message).')

@@ -24,12 +24,6 @@ def get_router(import_path):
         raise ImproperlyConfigured('Module "%s" does not define a "%s" '
                                    'class.' % (module, classname))
 
-# TODO: remove this global singleton
-# a single instance of the router singleton is available globally, like
-# the db connection. it shouldn't be necessary to muck with this very
-# often (since most interaction with the Router happens within an App or
-# Backend, which have their own .router property), but when it is, it
-# should be done via this process global
+
 Router = get_router(getattr(settings, 'RAPIDSMS_ROUTER',
                     'rapidsms.router.blocking.BlockingRouter'))
-router = Router()

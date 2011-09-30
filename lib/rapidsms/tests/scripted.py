@@ -47,16 +47,11 @@ class TestScript (TransactionTestCase, LoggerMixin):
         self.runParsedScript(self.parseScript(script))
 
     def setUp (self):
-        # For now, default to using the old global router during unit tests,
-        # but let users change that by setting TEST_RAPIDSMS_ROUTER
-        # to a new router in their settings file
+        # Default to using the BlockingRouter for running tests (rather than
+        # spinning up threads or involving celery)
         router_cls = getattr(settings, 'TEST_RAPIDSMS_ROUTER',
                              'rapidsms.router.blocking.BlockingRouter')
-        if router_cls == 'global':
-            from rapidsms.router import router as globalrouter
-            self.router = globalrouter
-        else:
-            self.router = get_router(router_cls)()
+        self.router = get_router(router_cls)()
 
         self._init_log(logging.WARNING)
         

@@ -5,7 +5,7 @@
 import logging, logging.handlers
 from django.core.management.base import NoArgsCommand
 from django.core.management import call_command
-from ...router import router
+from ...router import Router
 from ...conf import settings
 
 
@@ -16,7 +16,7 @@ class Command(NoArgsCommand):
 
         numeric_level = getattr(logging, settings.LOG_LEVEL.upper())
         format = logging.Formatter(settings.LOG_FORMAT)
-
+        router = Router()
         router.logger = logging.getLogger()
         router.logger.setLevel(numeric_level)
 
