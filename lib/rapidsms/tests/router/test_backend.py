@@ -9,6 +9,9 @@ from rapidsms.backends.base import BackendBase
 
 
 def test_router_finds_backends():
+    """
+    Router should find backend with module path
+    """
     router = BaseRouter()
     test_backend = "rapidsms.backends.base"
     backend = router.add_backend("mock", test_backend)
@@ -18,6 +21,9 @@ def test_router_finds_backends():
 
 
 def test_router_downcases_backend_configs():
+    """
+    Backend configuration should automatically be lowercased
+    """
     router = BaseRouter()
     test_backend = "rapidsms.backends.base"
     test_conf = { "a": 1, "B": 2, "Cc": 3 }
