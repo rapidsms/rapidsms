@@ -3,6 +3,7 @@ import copy
 from django.conf import settings
 
 from .base import BaseRouter
+from ..models import Backend, Contact, Connection
 
 
 class BlockingRouter(BaseRouter):
@@ -38,3 +39,16 @@ class BlockingRouter(BaseRouter):
         # send message from within router
         self.sent = self.backends[msg.connection.backend.name].send(msg)
         msg.sent = self.sent
+
+    def handle_outgoing(self, text, backend_name=None, identity=None,
+                        connection=None):
+        """
+        Takes an outgoing message passes it to a router for processing.  If a 
+        ``connection`` is passed, ``backend_name`` and ``identity`` are ignored.
+        """
+        if not connection:
+            backend, _ = Backend.objects.get_or_create(name=backend_name)
+            connection, _ = backend.connection_set.get_or_create(identity=identity)
+        from ..messages import OutgoingMessage
+        message = OutgoingMessage(connection, text)
+        self.outgoing(message)
