@@ -2,7 +2,7 @@
 Test backend specific functionality of Router
 """
 
-from nose.tools import assert_equals
+from nose.tools import assert_equals, assert_true
 
 from rapidsms.router.base import BaseRouter
 from rapidsms.backends.base import BackendBase
@@ -36,3 +36,16 @@ def test_router_downcases_backend_configs():
     assert_equals("cc" in backend._config, True)
     assert_equals("B"  in backend._config, False)
     assert_equals("Cc" in backend._config, False)
+
+
+def test_add_instantiated_backend():
+    """
+    Router.add_backend should also accept an instantiated BackendBase
+    """
+    router = BaseRouter()
+    backend = BackendBase(router, "mock")
+    router.add_backend("mock", backend)
+    assert_equals(len(router.backends), 1)
+    assert_true("mock" in router.backends.keys())
+    assert_equals(backend, router.backends['mock'])
+    assert_equals(backend.name, router.backends['mock'].name)
