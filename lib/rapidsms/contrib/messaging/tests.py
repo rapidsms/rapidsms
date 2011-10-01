@@ -69,7 +69,7 @@ class MessagingTest(TestCase, CreateDataTest):
 		"""
 		router = BlockingRouter()
 		backend = SimpleBackend(router, self.backend.name)
-		router.backends[self.backend.name] = backend
+		router.add_backend(self.backend.name, backend)
 		msg = OutgoingMessage(self.connection, 'hello!')
 		router.outgoing(msg)
 		self.assertTrue(msg.sent)
@@ -81,7 +81,7 @@ class MessagingTest(TestCase, CreateDataTest):
 		"""
 		router = BlockingRouter()
 		backend = SimpleBackend(router, self.backend.name, send_message=False)
-		router.backends[self.backend.name] = backend
+		router.add_backend(self.backend.name, backend)
 		msg = OutgoingMessage(self.connection, 'hello!')
 		router.outgoing(msg)
 		self.assertFalse(msg.sent)
@@ -92,7 +92,7 @@ class MessagingTest(TestCase, CreateDataTest):
 		"""
 		router = BlockingRouter()
 		backend = SimpleBackend(router, self.backend.name)
-		router.backends[self.backend.name] = backend
+		router.add_backend(self.backend.name, backend)
 		router.handle_outgoing('hello!', connection=self.connection)
 		self.assertEqual('hello!', backend._saved_message.text)
 		self.assertEqual(self.connection, backend._saved_message.connection)
