@@ -2,10 +2,11 @@ from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.importlib import import_module
 
+__all__ = ['import_class', 'get_router', 'get_test_router']
 
-def get_router(import_path):
+def import_class(import_path):
     """
-    Imports and returns the router class described by import_path, where
+    Imports and returns the class described by import_path, where
     import_path is the full Python path to the class.
     """
     try:
@@ -25,5 +26,11 @@ def get_router(import_path):
                                    'class.' % (module, classname))
 
 
-Router = get_router(getattr(settings, 'RAPIDSMS_ROUTER',
-                    'rapidsms.router.blocking.BlockingRouter'))
+def get_router():
+    return import_class(getattr(settings, 'RAPIDSMS_ROUTER',
+                        'rapidsms.router.blocking.BlockingRouter'))
+
+
+def get_test_router():
+    return import_class(getattr(settings, 'TEST_RAPIDSMS_ROUTER',
+                        'rapidsms.router.blocking.BlockingRouter'))
