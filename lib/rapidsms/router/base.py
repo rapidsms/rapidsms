@@ -34,6 +34,7 @@ class BaseRouter(object, LoggerMixin):
         self.logger = None
 
         self.running = False
+        self.pre_start.send(self)
         """TODO: Docs"""
 
     def add_app(self, module_name):

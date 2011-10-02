@@ -2,11 +2,13 @@ import string
 import random
 
 from django.test import TestCase
+from django.core.urlresolvers import reverse
 
 from rapidsms.backends.base import BackendBase
 from rapidsms.router.test import TestRouter
 from rapidsms.messages.outgoing import OutgoingMessage
 from rapidsms.models import Backend, Contact, Connection
+from rapidsms.tests.harness import CustomRouter
 
 from rapidsms.contrib.messaging.forms import MessageForm
 
@@ -101,9 +103,15 @@ class OurgoingTest(TestCase, CreateDataTest):
 		self.assertEqual(self.connection, backend._saved_message.connection)
 
 
-class MessagingTest(TestCase, CreateDataTest):
+class MessagingTest(CustomRouter, TestCase, CreateDataTest):
+	"""
+	Test rapidsms.contrib.messaging form and views
+	"""
+
+	router_backends = {'simple': SimpleBackend}
 
 	def setUp(self):
+		super(MessagingTest, self).setUp()
 		self.contact = self.create_contact()
 		self.backend = self.create_backend({'name': 'simple'})
 		self.connection = self.create_connection({'backend': self.backend,
@@ -121,7 +129,7 @@ class MessagingTest(TestCase, CreateDataTest):
 
 	def test_valid_send_data(self):
 		"""
-		Only contacts with connections are valid options
+		MessageForm.send should return successfully with valid data
 		"""
 		data = {'text': 'hello!',
 		        'recipients': [self.contact.id]}
@@ -136,6 +144,5 @@ class MessagingTest(TestCase, CreateDataTest):
 		"""
 		data = {'text': 'hello!',
 		        'recipients': [self.contact.id]}
-		response = self.client.post(reverse('send_message', data))
+		response = self.client.post(reverse('send_message'), data)
 		self.assertEqual(response.status_code, 200)
-		

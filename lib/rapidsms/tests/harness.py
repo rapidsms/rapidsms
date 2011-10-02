@@ -117,3 +117,24 @@ class EchoApp (MockApp):
     def handle (self, message):
         MockApp.handle(self, message)
         message.respond(message.peer + ": " + message.text)
+
+
+class CustomRouter(object):
+    """
+    Inheritable TestCase-like object that allows Router customization
+    """
+    router_class = 'rapidsms.router.test.TestRouter'
+    router_backends = {}
+
+    def setUp(self):
+        super(CustomRouter, self).setUp()
+        def update_router(sender, **kwargs):
+            for key, backend in self.router_backends.iteritems():
+                sender.add_backend(key, backend(sender, key))
+        BaseRouter.pre_start.connect(update_router, weak=False)
+        self._RAPIDSMS_ROUTER = getattr(settings, 'RAPIDSMS_ROUTER', None)
+        setattr(settings, 'RAPIDSMS_ROUTER', self.router_class)
+
+    def tearDown(self):
+        super(CustomRouter, self).tearDown()
+        setattr(settings, 'RAPIDSMS_ROUTER', self._RAPIDSMS_ROUTER)
