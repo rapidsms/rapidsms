@@ -4,9 +4,14 @@ import random
 from django.test import TestCase
 
 from rapidsms.backends.base import BackendBase
-from rapidsms.router.blocking import BlockingRouter
+from rapidsms.router.test import TestRouter
 from rapidsms.messages.outgoing import OutgoingMessage
 from rapidsms.models import Backend, Contact, Connection
+
+from rapidsms.contrib.messaging.forms import MessageForm
+
+
+__all__ = ('OurgoingTest', 'MessagingTest')
 
 
 class CreateDataTest(object):
@@ -54,6 +59,48 @@ class SimpleBackend(BackendBase):
 		return self.send_message
 
 
+class OurgoingTest(TestCase, CreateDataTest):
+
+	def setUp(self):
+		self.contact = self.create_contact()
+		self.backend = self.create_backend({'name': 'simple'})
+		self.connection = self.create_connection({'backend': self.backend,
+		                                          'contact': self.contact})
+		self.router = TestRouter()
+
+	def test_outgoing(self):
+		"""
+		Router.outgoing should call backend.send() method
+		and set message.sent flag respectively
+		"""
+		backend = SimpleBackend(self.router, self.backend.name)
+		self.router.add_backend(self.backend.name, backend)
+		msg = OutgoingMessage(self.connection, 'hello!')
+		self.router.outgoing(msg)
+		self.assertTrue(msg.sent)
+		self.assertEqual(msg, backend._saved_message)
+
+	def test_outgoing_failure(self):
+		"""
+		Message sent flag should be false if backend.send() fails
+		"""
+		backend = SimpleBackend(self.router, self.backend.name, send_message=False)
+		self.router.add_backend(self.backend.name, backend)
+		msg = OutgoingMessage(self.connection, 'hello!')
+		self.router.outgoing(msg)
+		self.assertFalse(msg.sent)
+
+	def test_handle_outgoing_with_connection(self):
+		"""
+		Router.handle_outgoing with a connection
+		"""
+		backend = SimpleBackend(self.router, self.backend.name)
+		self.router.add_backend(self.backend.name, backend)
+		self.router.handle_outgoing('hello!', connection=self.connection)
+		self.assertEqual('hello!', backend._saved_message.text)
+		self.assertEqual(self.connection, backend._saved_message.connection)
+
+
 class MessagingTest(TestCase, CreateDataTest):
 
 	def setUp(self):
@@ -62,37 +109,33 @@ class MessagingTest(TestCase, CreateDataTest):
 		self.connection = self.create_connection({'backend': self.backend,
 		                                          'contact': self.contact})
 
-	def test_outgoing(self):
+	def test_contacts_with_connection(self):
 		"""
-		Router.outgoing should call backend.send() method
-		and set message.sent flag respectively
+		Only contacts with connections are valid options
 		"""
-		router = BlockingRouter()
-		backend = SimpleBackend(router, self.backend.name)
-		router.backends[self.backend.name] = backend
-		msg = OutgoingMessage(self.connection, 'hello!')
-		router.outgoing(msg)
-		self.assertTrue(msg.sent)
-		self.assertEqual(msg, backend._saved_message)
+		connectionless_contact = self.create_contact()
+		data = {'text': 'hello!',
+		        'recipients': [self.contact.id, connectionless_contact.pk]}
+		form = MessageForm(data)
+		self.assertTrue('recipients' in form.errors)
 
-	def test_outgoing_failure(self):
+	def test_valid_send_data(self):
 		"""
-		Message sent flag should be false if backend.send() fails
+		Only contacts with connections are valid options
 		"""
-		router = BlockingRouter()
-		backend = SimpleBackend(router, self.backend.name, send_message=False)
-		router.backends[self.backend.name] = backend
-		msg = OutgoingMessage(self.connection, 'hello!')
-		router.outgoing(msg)
-		self.assertFalse(msg.sent)
+		data = {'text': 'hello!',
+		        'recipients': [self.contact.id]}
+		form = MessageForm(data)
+		self.assertTrue(form.is_valid())
+		recipients = form.send()
+		self.assertTrue(self.contact in recipients)
 
-	def test_handle_outgoing_with_connection(self):
+	def test_ajax_send_view(self):
 		"""
-		Router.handle_outgoing with a connection
+		Test AJAX send view with valid data
 		"""
-		router = BlockingRouter()
-		backend = SimpleBackend(router, self.backend.name)
-		router.backends[self.backend.name] = backend
-		router.handle_outgoing('hello!', connection=self.connection)
-		self.assertEqual('hello!', backend._saved_message.text)
-		self.assertEqual(self.connection, backend._saved_message.connection)
+		data = {'text': 'hello!',
+		        'recipients': [self.contact.id]}
+		response = self.client.post(reverse('send_message', data))
+		self.assertEqual(response.status_code, 200)
+		
