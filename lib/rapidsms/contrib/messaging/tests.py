@@ -8,6 +8,11 @@ from rapidsms.router.test import TestRouter
 from rapidsms.messages.outgoing import OutgoingMessage
 from rapidsms.models import Backend, Contact, Connection
 
+from rapidsms.contrib.messaging.forms import MessageForm
+
+
+__all__ = ('OurgoingTest', 'MessagingTest')
+
 
 class CreateDataTest(object):
     """
@@ -54,7 +59,7 @@ class SimpleBackend(BackendBase):
 		return self.send_message
 
 
-class MessagingTest(TestCase, CreateDataTest):
+class OurgoingTest(TestCase, CreateDataTest):
 
 	def setUp(self):
 		self.contact = self.create_contact()
@@ -94,3 +99,43 @@ class MessagingTest(TestCase, CreateDataTest):
 		self.router.handle_outgoing('hello!', connection=self.connection)
 		self.assertEqual('hello!', backend._saved_message.text)
 		self.assertEqual(self.connection, backend._saved_message.connection)
+
+
+class MessagingTest(TestCase, CreateDataTest):
+
+	def setUp(self):
+		self.contact = self.create_contact()
+		self.backend = self.create_backend({'name': 'simple'})
+		self.connection = self.create_connection({'backend': self.backend,
+		                                          'contact': self.contact})
+
+	def test_contacts_with_connection(self):
+		"""
+		Only contacts with connections are valid options
+		"""
+		connectionless_contact = self.create_contact()
+		data = {'text': 'hello!',
+		        'recipients': [self.contact.id, connectionless_contact.pk]}
+		form = MessageForm(data)
+		self.assertTrue('recipients' in form.errors)
+
+	def test_valid_send_data(self):
+		"""
+		Only contacts with connections are valid options
+		"""
+		data = {'text': 'hello!',
+		        'recipients': [self.contact.id]}
+		form = MessageForm(data)
+		self.assertTrue(form.is_valid())
+		recipients = form.send()
+		self.assertTrue(self.contact in recipients)
+
+	def test_ajax_send_view(self):
+		"""
+		Test AJAX send view with valid data
+		"""
+		data = {'text': 'hello!',
+		        'recipients': [self.contact.id]}
+		response = self.client.post(reverse('send_message', data))
+		self.assertEqual(response.status_code, 200)
+		

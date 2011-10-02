@@ -57,7 +57,7 @@
                 // do post
                 $.ajax({url: "{% url send_message %}", 
                         type: "POST",
-                        data: {"recipients": JSON.stringify(rec), "text": text},
+                        data: {"recipients": rec, "text": text},
                         success: function(msg) {
                             $("#notifications").addClass("success");
                             $("#notifications").html(msg);
