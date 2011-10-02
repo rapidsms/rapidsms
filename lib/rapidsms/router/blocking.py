@@ -13,9 +13,9 @@ class BlockingRouter(BaseRouter):
         """
         Apps and backends are added manually to the blocking backend.
         """
+        apps = kwargs.pop('apps', settings.INSTALLED_APPS)
+        backends = kwargs.pop('backends', settings.INSTALLED_BACKENDS)
         super(BlockingRouter, self).__init__(*args, **kwargs)
-        apps = settings.INSTALLED_APPS
-        backends = settings.INSTALLED_BACKENDS
         for name in apps:
             try:
                 self.add_app(name)
