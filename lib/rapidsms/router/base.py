@@ -25,7 +25,7 @@ class BaseRouter(object, LoggerMixin):
     post_start = Signal(providing_args=["router"])
     pre_stop   = Signal(providing_args=["router"])
     post_stop  = Signal(providing_args=["router"])
-
+    post_init  = Signal(providing_args=["router"])
 
     def __init__(self):
 
@@ -34,7 +34,6 @@ class BaseRouter(object, LoggerMixin):
         self.logger = None
 
         self.running = False
-        self.pre_start.send(self)
         """TODO: Docs"""
 
     def add_app(self, module_name):

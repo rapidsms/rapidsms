@@ -131,7 +131,7 @@ class CustomRouter(object):
         def update_router(sender, **kwargs):
             for key, backend in self.router_backends.iteritems():
                 sender.add_backend(key, backend(sender, key))
-        BaseRouter.pre_start.connect(update_router, weak=False)
+        BaseRouter.post_init.connect(update_router, weak=False)
         self._RAPIDSMS_ROUTER = getattr(settings, 'RAPIDSMS_ROUTER', None)
         setattr(settings, 'RAPIDSMS_ROUTER', self.router_class)
 
