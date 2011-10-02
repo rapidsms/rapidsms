@@ -4,7 +4,7 @@
 
 import time
 import logging
-from rapidsms.router import get_router
+from rapidsms.router import get_test_router
 from harness import EchoApp
 import unittest, re, threading
 from django.test import TransactionTestCase
@@ -47,12 +47,7 @@ class TestScript (TransactionTestCase, LoggerMixin):
         self.runParsedScript(self.parseScript(script))
 
     def setUp (self):
-        # Default to using the BlockingRouter for running tests (rather than
-        # spinning up threads or involving celery)
-        router_cls = getattr(settings, 'TEST_RAPIDSMS_ROUTER',
-                             'rapidsms.router.blocking.BlockingRouter')
-        self.router = get_router(router_cls)()
-
+        self.router = get_test_router()()
         self._init_log(logging.WARNING)
         
         if self.router.backends or self.router.apps:

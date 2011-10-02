@@ -3,8 +3,9 @@ from nose.tools import assert_equals, assert_raises
 from django.utils.functional import curry
 from django.core.exceptions import ImproperlyConfigured
 
+from rapidsms.tests.harness import setting
 from rapidsms.apps.base import AppBase
-from rapidsms.router import get_router
+from rapidsms.router import *
 from rapidsms.router.base import BaseRouter
 
 
@@ -12,13 +13,31 @@ class MockRouter(object):
     pass
 
 
-def test_get_router():
-    assert_raises(ImproperlyConfigured, get_router,
+def test_import_class():
+    assert_raises(ImproperlyConfigured, import_class,
                   'rapidsms.tests.test_router.BadClassName')
-    assert_raises(ImproperlyConfigured, get_router,
+    assert_raises(ImproperlyConfigured, import_class,
                   'rapidsms.tests.bad_module.MockRouter')
-    assert_equals(get_router('rapidsms.tests.router.test_base.MockRouter'),
+    assert_equals(import_class('rapidsms.tests.router.test_base.MockRouter'),
                   MockRouter)
+
+
+def test_get_router():
+    with setting(RAPIDSMS_ROUTER='rapidsms.tests.test_router.BadClassName'):
+        assert_raises(ImproperlyConfigured, get_router)
+    with setting(RAPIDSMS_ROUTER='rapidsms.tests.bad_module.MockRouter'):
+        assert_raises(ImproperlyConfigured, get_router)
+    with setting(RAPIDSMS_ROUTER='rapidsms.tests.router.test_base.MockRouter'):
+        assert_equals(get_router(), MockRouter)
+
+
+def test_get_test_router():
+    with setting(TEST_RAPIDSMS_ROUTER='rapidsms.tests.test_router.BadClassName'):
+        assert_raises(ImproperlyConfigured, get_test_router)
+    with setting(TEST_RAPIDSMS_ROUTER='rapidsms.tests.bad_module.MockRouter'):
+        assert_raises(ImproperlyConfigured, get_test_router)
+    with setting(TEST_RAPIDSMS_ROUTER='rapidsms.tests.router.test_base.MockRouter'):
+        assert_equals(get_test_router(), MockRouter)
 
 
 def test_router_calls_all_app_phases():

@@ -3,7 +3,7 @@
 import datetime
 
 from ..conf import settings
-from ..router import Router
+from ..router import get_router
 from ..models import Connection, Backend
 from ..utils.modules import try_import
 
@@ -19,7 +19,7 @@ def handle_incoming(text, backend_name=None, identity=None, connection=None):
         connection, _ = backend.connection_set.get_or_create(identity=identity)
     from ..messages import IncomingMessage
     message = IncomingMessage(connection, text, datetime.datetime.now())
-    router = Router()
+    router = get_router()()
     router.start()
     router.incoming(message)
     router.stop()
@@ -35,7 +35,7 @@ def handle_outgoing(text, backend_name=None, identity=None, connection=None):
         connection, _ = backend.connection_set.get_or_create(identity=identity)
     from ..messages import OutgoingMessage
     message = OutgoingMessage(connection, text)
-    router = Router()
+    router = get_router()()
     router.start()
     router.outgoing(message)
     router.stop()
