@@ -15,26 +15,26 @@ class MockRouter(object):
 
 def test_import_class():
     assert_raises(ImproperlyConfigured, import_class,
-                  'rapidsms.tests.test_router.BadClassName')
+                  'rapidsms.tests.router.test_router.BadClassName')
     assert_raises(ImproperlyConfigured, import_class,
-                  'rapidsms.tests.bad_module.MockRouter')
+                  'rapidsms.tests.router.bad_module.MockRouter')
     assert_equals(import_class('rapidsms.tests.router.test_base.MockRouter'),
                   MockRouter)
 
 
 def test_get_router():
-    with setting(RAPIDSMS_ROUTER='rapidsms.tests.test_router.BadClassName'):
+    with setting(RAPIDSMS_ROUTER='rapidsms.tests.router.test_router.BadClassName'):
         assert_raises(ImproperlyConfigured, get_router)
-    with setting(RAPIDSMS_ROUTER='rapidsms.tests.bad_module.MockRouter'):
+    with setting(RAPIDSMS_ROUTER='rapidsms.tests.router.bad_module.MockRouter'):
         assert_raises(ImproperlyConfigured, get_router)
     with setting(RAPIDSMS_ROUTER='rapidsms.tests.router.test_base.MockRouter'):
         assert_equals(get_router(), MockRouter)
 
 
 def test_get_test_router():
-    with setting(TEST_RAPIDSMS_ROUTER='rapidsms.tests.test_router.BadClassName'):
+    with setting(TEST_RAPIDSMS_ROUTER='rapidsms.tests.router.test_router.BadClassName'):
         assert_raises(ImproperlyConfigured, get_test_router)
-    with setting(TEST_RAPIDSMS_ROUTER='rapidsms.tests.bad_module.MockRouter'):
+    with setting(TEST_RAPIDSMS_ROUTER='rapidsms.tests.router.bad_module.MockRouter'):
         assert_raises(ImproperlyConfigured, get_test_router)
     with setting(TEST_RAPIDSMS_ROUTER='rapidsms.tests.router.test_base.MockRouter'):
         assert_equals(get_test_router(), MockRouter)
