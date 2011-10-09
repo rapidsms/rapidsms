@@ -123,18 +123,20 @@ class CustomRouter(object):
     """
     Inheritable TestCase-like object that allows Router customization
     """
-    router_class = 'rapidsms.router.test.TestRouter'
-    router_backends = {}
+    router_class = 'rapidsms.router.blocking.BlockingRouter'
+    backends = {}
 
-    def setUp(self):
-        super(CustomRouter, self).setUp()
-        def update_router(sender, **kwargs):
-            for key, backend in self.router_backends.iteritems():
-                sender.add_backend(key, backend(sender, key))
-        BaseRouter.post_init.connect(update_router, weak=False)
+    def _pre_rapidsms_setup(self):
+        self._INSTALLED_BACKENDS = getattr(settings, 'INSTALLED_BACKENDS', {})
+        setattr(settings, 'INSTALLED_BACKENDS', self.backends)
         self._RAPIDSMS_ROUTER = getattr(settings, 'RAPIDSMS_ROUTER', None)
         setattr(settings, 'RAPIDSMS_ROUTER', self.router_class)
 
-    def tearDown(self):
-        super(CustomRouter, self).tearDown()
+    def _post_rapidsms_teardown(self):
+        setattr(settings, 'INSTALLED_BACKENDS', self._INSTALLED_BACKENDS)
         setattr(settings, 'RAPIDSMS_ROUTER', self._RAPIDSMS_ROUTER)
+
+    def __call__(self, result=None):
+        self._pre_rapidsms_setup()
+        super(CustomRouter, self).__call__(result)
+        self._post_rapidsms_teardown()
