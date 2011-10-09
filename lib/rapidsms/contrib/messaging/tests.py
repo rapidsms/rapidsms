@@ -9,6 +9,7 @@ from rapidsms.router.test import TestRouter
 from rapidsms.messages.outgoing import OutgoingMessage
 from rapidsms.models import Backend, Contact, Connection
 from rapidsms.tests.harness.base import MockBackendRouter
+from rapidsms.tests.harness import backend
 
 from rapidsms.contrib.messaging.forms import MessageForm
 
@@ -123,6 +124,7 @@ class MessagingTest(MockBackendRouter, CreateDataTest, TestCase):
                 'recipients': [self.contact.id, connectionless_contact.pk]}
         form = MessageForm(data)
         self.assertTrue('recipients' in form.errors)
+        self.assertEqual(len(backend.outbox), 0)
 
     def test_valid_send_data(self):
         """
@@ -134,6 +136,7 @@ class MessagingTest(MockBackendRouter, CreateDataTest, TestCase):
         self.assertTrue(form.is_valid())
         recipients = form.send()
         self.assertTrue(self.contact in recipients)
+        self.assertEqual(backend.outbox[0].text, data['text'])
 
     def test_ajax_send_view(self):
         """
@@ -143,3 +146,4 @@ class MessagingTest(MockBackendRouter, CreateDataTest, TestCase):
                 'recipients': [self.contact.id]}
         response = self.client.post(reverse('send_message'), data)
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(backend.outbox[0].text, data['text'])
