@@ -8,7 +8,7 @@ from rapidsms.backends.base import BackendBase
 from rapidsms.router.test import TestRouter
 from rapidsms.messages.outgoing import OutgoingMessage
 from rapidsms.models import Backend, Contact, Connection
-from rapidsms.tests.harness import CustomRouter
+from rapidsms.tests.harness.base import MockBackendRouter
 
 from rapidsms.contrib.messaging.forms import MessageForm
 
@@ -103,7 +103,7 @@ class OurgoingTest(TestCase, CreateDataTest):
         self.assertEqual(self.connection, backend._saved_message.connection)
 
 
-class MessagingTest(CustomRouter, CreateDataTest, TestCase):
+class MessagingTest(MockBackendRouter, CreateDataTest, TestCase):
     """
     Test rapidsms.contrib.messaging form and views
     """
