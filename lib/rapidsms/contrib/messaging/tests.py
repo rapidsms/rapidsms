@@ -1,11 +1,11 @@
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 
-from rapidsms.tests.harness.base import MockBackendRouter, CreateDataTest
+from rapidsms.tests.harness.base import MockBackendRouter
 from rapidsms.contrib.messaging.forms import MessageForm
 
 
-class MessagingTest(MockBackendRouter, CreateDataTest, TestCase):
+class MessagingTest(MockBackendRouter, TestCase):
     """
     Test rapidsms.contrib.messaging form and views
     """

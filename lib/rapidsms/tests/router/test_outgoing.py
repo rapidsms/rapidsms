@@ -2,10 +2,10 @@ from django.test import TestCase
 
 from rapidsms.router.test import BlockingRouter
 from rapidsms.messages.outgoing import OutgoingMessage
-from rapidsms.tests.harness.base import MockBackendRouter, CreateDataTest
+from rapidsms.tests.harness.base import MockBackendRouter
 
 
-class OutgoingTest(MockBackendRouter, CreateDataTest, TestCase):
+class OutgoingTest(MockBackendRouter, TestCase):
 
     def setUp(self):
         self.contact = self.create_contact()
