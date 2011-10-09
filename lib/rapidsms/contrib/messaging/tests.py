@@ -108,8 +108,6 @@ class MessagingTest(CustomRouter, CreateDataTest, TestCase):
     Test rapidsms.contrib.messaging form and views
     """
 
-    backends = {'simple': {'ENGINE': SimpleBackend}}
-
     def setUp(self):
         self.contact = self.create_contact()
         self.backend = self.create_backend({'name': 'simple'})
