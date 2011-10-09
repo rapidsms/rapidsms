@@ -1,70 +1,9 @@
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 
-from rapidsms.backends.base import BackendBase
-from rapidsms.router.test import TestRouter
-from rapidsms.messages.outgoing import OutgoingMessage
 from rapidsms.tests.harness.base import MockBackendRouter, CreateDataTest
 from rapidsms.tests.harness import backend
-
 from rapidsms.contrib.messaging.forms import MessageForm
-
-
-__all__ = ('OurgoingTest', 'MessagingTest')
-
-
-class SimpleBackend(BackendBase):
-
-    def __init__(self, *args, **kwargs):
-        self._saved_message = None
-        self.send_message = kwargs.pop('send_message', True)
-        super(SimpleBackend, self).__init__(*args, **kwargs)
-
-    def send(self, message):
-        self._saved_message = message
-        return self.send_message
-
-
-class OurgoingTest(TestCase, CreateDataTest):
-
-    def setUp(self):
-        self.contact = self.create_contact()
-        self.backend = self.create_backend({'name': 'simple'})
-        self.connection = self.create_connection({'backend': self.backend,
-                                                  'contact': self.contact})
-        self.router = TestRouter()
-
-    def test_outgoing(self):
-        """
-        Router.outgoing should call backend.send() method
-        and set message.sent flag respectively
-        """
-        backend = SimpleBackend(self.router, self.backend.name)
-        self.router.backends[self.backend.name] = backend
-        msg = OutgoingMessage(self.connection, 'hello!')
-        self.router.outgoing(msg)
-        self.assertTrue(msg.sent)
-        self.assertEqual(msg, backend._saved_message)
-
-    def test_outgoing_failure(self):
-        """
-        Message sent flag should be false if backend.send() fails
-        """
-        backend = SimpleBackend(self.router, self.backend.name, send_message=False)
-        self.router.backends[self.backend.name] = backend
-        msg = OutgoingMessage(self.connection, 'hello!')
-        self.router.outgoing(msg)
-        self.assertFalse(msg.sent)
-
-    def test_handle_outgoing_with_connection(self):
-        """
-        Router.handle_outgoing with a connection
-        """
-        backend = SimpleBackend(self.router, self.backend.name)
-        self.router.backends[self.backend.name] = backend
-        self.router.handle_outgoing('hello!', connection=self.connection)
-        self.assertEqual('hello!', backend._saved_message.text)
-        self.assertEqual(self.connection, backend._saved_message.connection)
 
 
 class MessagingTest(MockBackendRouter, CreateDataTest, TestCase):
