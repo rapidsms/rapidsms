@@ -68,12 +68,12 @@ class BaseRouter(object, LoggerMixin):
         to the dict of backends to be polled for incoming messages, once
         the router is started. Return the backend instance.
         """
-        if issubclass(module_name, BackendBase):
-            cls = module_name
-        else:
+        if isinstance(module_name, basestring):
             cls = BackendBase.find(module_name)
-            if cls is None:
-                raise ValueError('No such backend "%s"' % module_name)
+        elif issubclass(module_name, BackendBase):
+            cls = module_name
+        if not cls:
+            raise ValueError('No such backend "%s"' % module_name)
         config = self._clean_backend_config(config or {})
         backend = cls(self, name, **config)
         self.backends[name] = backend
