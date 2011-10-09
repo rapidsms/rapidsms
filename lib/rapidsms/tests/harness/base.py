@@ -45,6 +45,10 @@ class MockBackendRouter(CustomRouter):
         if hasattr(backend, 'outbox'):
             backend.outbox = []
 
+    @property
+    def outbox(self):
+        return backend.outbox
+
 
 class CreateDataTest(object):
     """
