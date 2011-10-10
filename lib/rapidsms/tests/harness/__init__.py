@@ -85,8 +85,9 @@ class MockBackend(BackendBase):
 
 
 # a subclass of App with all the moving parts replaced
-class MockApp (AppBase):
-    def configure (self):
+class MockApp(AppBase):
+    def __init__(self, *args, **kwargs):
+        super(MockApp, self).__init__(*args, **kwargs)
         self.calls = []
 
     def start (self):
