@@ -42,12 +42,11 @@ class BaseRouter(object, LoggerMixin):
         the list of apps to be notified of incoming messages. Return the
         app instance.
         """
-        if isinstance(module_name, AppBase):
-            app = module_name
-        else:
+        if isinstance(module_name, basestring):
             cls = AppBase.find(module_name)
-            if cls is None: return None
-            app = cls(self)
+        elif issubclass(module_name, AppBase):
+            cls = module_name
+        app = cls(self)
         self.apps.append(app)
         return app
 
