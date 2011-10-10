@@ -42,6 +42,7 @@ def test_backend_has_model():
 def test_backend_creates_connections():
     backend = BackendStub(None, "mock")
     from ...models import Connection as C
+    from ...models import Backend as B
 
     # check that the mock connection doesn't already exist.
     assert_equals(C.objects.filter(identity="mock").count(), 0)
@@ -57,6 +58,7 @@ def test_backend_creates_connections():
 
     # tidy up the db.
     C.objects.filter(identity="mock").delete()
+    B.objects.filter(name="mock").delete()
 
 
 def test_backend_passes_kwargs_to_configure():
