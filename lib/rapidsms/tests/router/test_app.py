@@ -29,12 +29,10 @@ def test_router_raises_on_uninstalled_apps():
     assert_raises(KeyError, BaseRouter().get_app, "rapidsms.contrib.default")
 
 
-def test_add_instantiated_app():
+def test_add_app_class():
     """
     Router.add_app should also accept an instantiated AppBase
     """
     router = BaseRouter()
-    app = AppBase(router)
-    router.add_app(app)
+    router.add_app(AppBase)
     assert_equals(len(router.apps), 1)
-    assert_true(app in router.apps)
