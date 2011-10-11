@@ -38,14 +38,12 @@ def test_router_downcases_backend_configs():
     assert_equals("Cc" in backend._config, False)
 
 
-def test_add_instantiated_backend():
+def test_add_backend_class():
     """
     Router.add_backend should also accept an instantiated BackendBase
     """
     router = BaseRouter()
-    backend = BackendBase(router, "mock")
-    router.add_backend("mock", backend)
+    router.add_backend("mock", BackendBase)
     assert_equals(len(router.backends), 1)
     assert_true("mock" in router.backends.keys())
-    assert_equals(backend, router.backends['mock'])
-    assert_equals(backend.name, router.backends['mock'].name)
+    assert_equals("mock", router.backends['mock'].name)

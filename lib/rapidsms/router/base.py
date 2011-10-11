@@ -25,7 +25,7 @@ class BaseRouter(object, LoggerMixin):
     post_start = Signal(providing_args=["router"])
     pre_stop   = Signal(providing_args=["router"])
     post_stop  = Signal(providing_args=["router"])
-
+    post_init  = Signal(providing_args=["router"])
 
     def __init__(self):
 
@@ -42,12 +42,11 @@ class BaseRouter(object, LoggerMixin):
         the list of apps to be notified of incoming messages. Return the
         app instance.
         """
-        if isinstance(module_name, AppBase):
-            app = module_name
-        else:
+        if isinstance(module_name, basestring):
             cls = AppBase.find(module_name)
-            if cls is None: return None
-            app = cls(self)
+        elif issubclass(module_name, AppBase):
+            cls = module_name
+        app = cls(self)
         self.apps.append(app)
         return app
 
@@ -68,14 +67,14 @@ class BaseRouter(object, LoggerMixin):
         to the dict of backends to be polled for incoming messages, once
         the router is started. Return the backend instance.
         """
-        if isinstance(module_name, BackendBase):
-            backend = module_name
-        else:
+        if isinstance(module_name, basestring):
             cls = BackendBase.find(module_name)
-            if cls is None:
-                raise ValueError('No such backend "%s"' % module_name)
-            config = self._clean_backend_config(config or {})
-            backend = cls(self, name, **config)
+        elif issubclass(module_name, BackendBase):
+            cls = module_name
+        if not cls:
+            raise ValueError('No such backend "%s"' % module_name)
+        config = self._clean_backend_config(config or {})
+        backend = cls(self, name, **config)
         self.backends[name] = backend
         return backend
 

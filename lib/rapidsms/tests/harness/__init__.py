@@ -7,7 +7,7 @@ from django.conf import settings
 
 from rapidsms.router.base import BaseRouter
 from rapidsms.backends.base import BackendBase
-from ..apps.base import AppBase
+from rapidsms.apps.base import AppBase
 
 
 class setting(object):
@@ -62,37 +62,32 @@ class MockRouter (BaseRouter):
         self.running = False
         self.stop_all_backends()
 
-class MockBackend (BackendBase):
+
+class MockBackend(BackendBase):
     """
     A simple mock backend, modeled after the BucketBackend
     """
-    def start(self):
+
+    def __init__(self, *args, **kwargs):
+        super(MockBackend, self).__init__(*args, **kwargs)
         self.bucket = []
         self.outgoing_bucket = []
-        BackendBase.start(self)
-
-    def receive(self, identity, text):
-        msg = self.message(identity, text)
-        self.router.incoming_message(msg)
-        self.bucket.append(msg)
-        return msg
 
     def send(self, msg):
         self.bucket.append(msg)
         self.outgoing_bucket.append(msg)
         return True
 
-    def run(self):
-        pass
-    
     def next_outgoing_message(self):
         if len(self.outgoing_bucket) == 0:
             return None
         return self.outgoing_bucket.pop(0)
- 
+
+
 # a subclass of App with all the moving parts replaced
-class MockApp (AppBase):
-    def configure (self):
+class MockApp(AppBase):
+    def __init__(self, *args, **kwargs):
+        super(MockApp, self).__init__(*args, **kwargs)
         self.calls = []
 
     def start (self):
