@@ -38,10 +38,11 @@ class TestScript(MockBackendRouter):
     apps = None
 
     def setUp(self):
-        if not self.apps:
-            self.apps = {}
+        kwargs = {}
+        if self.apps:
+            kwargs['apps'] = self.apps
         self.backend = self.create_backend({'name': 'mock'})
-        self.router = BlockingRouter(apps=self.apps)
+        self.router = BlockingRouter(**kwargs)
         self.router.start()
 
     def tearDown(self):
