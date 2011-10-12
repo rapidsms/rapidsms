@@ -25,7 +25,6 @@ class BlockingRouter(BaseRouter):
             parsed_conf = copy.copy(conf)
             engine = parsed_conf.pop('ENGINE')
             self.add_backend(name, engine, parsed_conf)
-        self.post_init.send(self)
 
     def incoming(self, msg):
         # process incoming phases
