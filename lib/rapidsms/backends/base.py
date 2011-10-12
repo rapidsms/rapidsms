@@ -46,17 +46,11 @@ class BackendBase(object, LoggerMixin):
 
 
     def start(self):
-        try:
-            self._running = True
-            self.run()
-
-        finally:
-            self._running = False
+        self._running = True
 
 
     def run (self):
-        while self.running:
-            time.sleep(0.1)
+        pass
 
 
     def stop(self):
