@@ -42,6 +42,10 @@ class TestScript(MockBackendRouter):
             self.apps = {}
         self.backend = self.create_backend({'name': 'mock'})
         self.router = BlockingRouter(apps=self.apps)
+        self.router.start()
+
+    def tearDown(self):
+        self.router.stop()
 
     def assertInteraction(self, script):
         self.runParsedScript(self.parseScript(script))
