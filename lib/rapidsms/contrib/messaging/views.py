@@ -6,14 +6,12 @@ from django.http import HttpResponse, HttpResponseBadRequest
 
 from rapidsms.models import Contact
 from rapidsms.utils.pagination import paginated
-from rapidsms.contrib.messaging import filters
 from rapidsms.contrib.messaging.forms import MessageForm
 
 
 def messaging(request):
     context = {
         "people": paginated(request, Contact.objects.all()),
-        "filters": filters.fetch()
     }
     return render(request, "messaging/dashboard.html", context)
 

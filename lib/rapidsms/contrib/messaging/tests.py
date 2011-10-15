@@ -16,6 +16,13 @@ class MessagingTest(MockBackendRouter, TestCase):
         self.connection = self.create_connection({'backend': self.backend,
                                                   'contact': self.contact})
 
+    def test_messaging_list(self):
+        """
+        The messaging index page should return a 200
+        """
+        response = self.client.get(reverse('messaging'))
+        self.assertEqual(response.status_code, 200)
+
     def test_contacts_with_connection(self):
         """
         Only contacts with connections are valid options
