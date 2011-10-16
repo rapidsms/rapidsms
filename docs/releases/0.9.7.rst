@@ -1,0 +1,138 @@
+================================================
+RapidSMS 0.9.7 release notes - UNDER DEVELOPMENT
+================================================
+
+This page documents release notes for the as-yet-unreleased RapidSMS
+0.9.7. As such, it's tentative and subject to change. It provides
+up-to-date information for those who are following trunk.
+
+Welcome to RapidSMS 0.9.7!
+
+These release notes cover the new features in 0.9.7, as well
+as some `backwards-incompatible-changes`_ you'll want to be aware of
+when upgrading from RapidSMS 0.9.6a or older versions.
+
+Overview
+========
+
+RapidSMS 0.9.7's focus has mostly been on decoupling the RapidSMS route process in several key places to begin processing all SMSes in normal HTTP requests. This also includes making it possible to swap the Router class that RapidSMS uses via a setting in the settings file. The key changes are as follows:
+
+* Removal of the bucket, email, irc, and gsm backends. 
+* Dividing the Router logic into BaseRouter, BlockingRouter, and LegacyRouter classes.
+* ...
+
+What's new in RapidSMS 0.9.7
+============================
+
+A new Router
+~~~~~~~~~~~~
+
+RapidSMS 0.9.7 supplies the following built-in routers:
+
+* **BaseRouter:** The base router class that all routers should extend from.
+* **BlockingRouter:** The default router that processes messages in real time.
+* **LegacyRouter:** The legacy, blocking router that spins up threads for apps and backends. This should only be use for legacy purposes.
+
+RAPIDSMS_ROUTER setting
+~~~~~~~~~~~~~~~~~~~~~~~
+
+RapidSMS now allows you to specify the router class to use by defining ``RAPIDSMS_ROUTER``. This now defaults to ``rapidsms.router.blocking.BlockingRouter``, but you can change this in settings.py::
+
+    RAPIDSMS_ROUTER = 'myproject.router.MyRouter'
+
+get_router()
+~~~~~~~~~~~~
+
+A new untility funciton, ``get_router``, provides the ability to retrieve the settings-defined router. This helper function allows your app to remain router independent::
+
+    from rapidsms.router import get_router
+
+    def send(recipient, text):
+        router = get_router()()
+        router.handle_outgoing(text, recipient.default_connection)
+
+Backends are now Django apps
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+
+Updated http backend
+~~~~~~~~~~~~~~~~~~~~
+
+
+
+MockBackendRouter
+~~~~~~~~~~~~~~~~~
+
+``MockBackendRouter`` is a unittest mix-in class that provides a mock backend to use with the ``BlockingRouter``. The following example from ``contrib.messaging`` illustrates how you can test that inbound messages route to the mock backend outbox.
+
+.. code-block:: python
+    :linenos:
+    :emphasize-lines: 14,16
+
+    class MessagingTest(MockBackendRouter, TestCase):
+
+        def setUp(self):
+            self.contact = self.create_contact()
+            self.backend = self.create_backend({'name': 'mock'})
+            self.connection = self.create_connection({'backend': self.backend,
+                                                      'contact': self.contact})
+
+        def test_ajax_send_view(self):
+            """
+            Test AJAX send view with valid data
+            """
+            data = {'text': 'hello!', 'recipients': [self.contact.id]}
+            response = self.client.post(reverse('send_message'), data)
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(self.outbox[0].text, data['text'])
+
+TestScript
+~~~~~~~~~~
+
+Prior to 0.9.7, ``TestScript`` would instantiate the route process (with blocking backends) to allow for testing of the entire routing stack. This was a useful function, but in practice was unstable and caused tests to hang indefinetly. In 0.9.7, ``TestScript`` has been updated to work with ``BockingRouter`` and functions much in the same way. Here's an example testing the EchoApp:
+
+.. code-block:: python
+    :linenos:
+
+    class EchoTest(TestScript):
+        apps = (EchoApp,)
+
+        def testRunScript(self):
+            self.runScript("""
+                2345678901 > echo?
+                2345678901 < 2345678901: echo?
+            """)
+
+.. _backwards-incompatible-changes:
+
+Backwards-incompatible changes in 0.9.7
+=======================================
+
+Removal of backends
+~~~~~~~~~~~~~~~~~~~
+
+The following backend packages were removed:
+
+* ``rapidsms.backends.bucket``
+* ``rapidsms.backends.email``
+* ``rapidsms.backends.irc``
+* ``rapidsms.backends.gsm``
+
+Removal of rapidsms.contrib.ajax
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The ``ajax`` app has been removed from ``rapidsms.contrib`` and therefore you must remove it from your ``INSTALLED_APPS``.
+
+Removal of send_message
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Prior to 0.9.7, ``rapidsms.contrib.messaging`` contained a utility function to send a message to the Router process. This relied on the ``contrib.ajax``'s ``call_router`` function to pass messages to the Router via the ajax app running in the Router thread. send_message has been removed and you should now use ``Router.outgoing`` directly. Using send_message will now raise an exception::
+
+    >>> from rapidsms.contrib.messaging.utils import send_message 
+    >>> send_message(conn, "hello?")
+    Traceback (most recent call last):
+      File "<stdin>", line 1, in <module>
+      File "../rapidsms/lib/rapidsms/contrib/messaging/utils.py", line 2, in send_message
+        raise DeprecationWarning("rapidsms.contrib.messaging.utils is deprecated")
+    DeprecationWarning: rapidsms.contrib.messaging.utils is deprecated
