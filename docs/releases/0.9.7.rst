@@ -124,6 +124,20 @@ Removal of rapidsms.contrib.ajax
 
 The ``ajax`` app has been removed from ``rapidsms.contrib`` and therefore you must remove it from your ``INSTALLED_APPS``.
 
+Removal of OutgoingMessage.send
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Since the global router was removed in RapidSMS 0.9.7, ``OutgoingMessage.send`` will no longer work. You should use ``router.outgoing(message)`` instead. An exception will be raised if you use ``OutgoingMessage.send``::
+
+    >>> from rapidsms.messages.outgoing import OutgoingMessage
+    >>> message = OutgoingMessage(conn, "hello?")
+    >>> message.send()
+    Traceback (most recent call last):
+      File "<stdin>", line 1, in <module>
+      File "../rapidsms/lib/rapidsms/messages/outgoing.py", line 74, in send
+        raise NoRouterError('The global router has been removed from RapidSMS. '
+    rapidsms.errors.NoRouterError: The global router has been removed from RapidSMS. You must send the this message by calling router.outgoing(message).
+
 Removal of send_message
 ~~~~~~~~~~~~~~~~~~~~~~~
 
