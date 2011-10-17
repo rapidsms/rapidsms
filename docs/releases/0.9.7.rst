@@ -43,7 +43,7 @@ RapidSMS now allows you to specify the router class to use by defining ``RAPIDSM
 get_router()
 ~~~~~~~~~~~~
 
-A new untility funciton, ``get_router``, provides the ability to retrieve the settings-defined router. This helper function allows your app to remain router independent::
+A new utility function, ``get_router``, provides the ability to retrieve the settings-defined router. This helper function allows your app to remain router independent::
 
     from rapidsms.router import get_router
 
@@ -90,7 +90,7 @@ MockBackendRouter
 TestScript
 ~~~~~~~~~~
 
-Prior to 0.9.7, ``TestScript`` would instantiate the route process (with blocking backends) to allow for testing of the entire routing stack. This was a useful function, but in practice was unstable and caused tests to hang indefinetly. In 0.9.7, ``TestScript`` has been updated to work with ``BockingRouter`` and functions much in the same way. Here's an example testing the EchoApp:
+Prior to 0.9.7, ``TestScript`` would instantiate the route process (with blocking backends) to allow for testing of the entire routing stack. This was a useful function, but in practice was unstable and caused tests to hang indefinitely. In 0.9.7, ``TestScript`` has been updated to work with ``BockingRouter`` and functions much in the same way. Here's an example testing the EchoApp:
 
 .. code-block:: python
     :linenos:
