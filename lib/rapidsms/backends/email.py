@@ -10,6 +10,7 @@ available backends, like so:
                         "smtp_port": 587,
                         "imap_host": "imap.gmail.com",
                         "imap_port": 993,
+                        "imap_ssl": True,
                         "username": "rapidsms@domain.org",
                         "password": "rapidsms",
                         "use_tls":  "True"}
@@ -47,7 +48,7 @@ class Backend(BackendBase):
     _title = "Email"
     
     def configure(self, smtp_host="localhost", smtp_port=25,  
-                  imap_host="localhost", imap_port=143,
+                  imap_host="localhost", imap_port=143, imap_ssl=True,
                   username="demo-user@domain.com",
                   password="secret", 
                   use_tls=True, poll_interval=60):
@@ -59,6 +60,7 @@ class Backend(BackendBase):
         self.smtp_port = int(smtp_port)
         self.imap_host = imap_host
         self.imap_port = int(imap_port)
+        self.imap_ssl = imap_ssl
         self.username = username 
         self.password = password
         self.use_tls = use_tls 
@@ -93,7 +95,10 @@ class Backend(BackendBase):
             
     def _get_new_messages(self):
         self.debug("polling for new messages")
-        imap_connection = imaplib.IMAP4_SSL(self.imap_host, self.imap_port)
+        if self.imap_ssl:
+            imap_connection = imaplib.IMAP4_SSL(self.imap_host, self.imap_port)
+        else: # Hopefully no one manages to sniff these packets.
+            imap_connection = imaplib.IMAP4(self.imap_host, self.imap_port)
         imap_connection.login(self.username, self.password)
         imap_connection.select()
         all_msgs = []
