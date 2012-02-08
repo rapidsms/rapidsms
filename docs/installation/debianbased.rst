@@ -16,7 +16,7 @@ Steps 1-3 are optional -- virtualenv makes it easier to keep a tidy python envir
 
     $ virtualenv --no-site-packages my_rapidsms_env
 
-*Note:* The above commands will create a directory (the virtualenv) called ``my_rapidsms_env``, so this command should be run from a directory where you'd normally keep source code and/or Python virtual environments on your machine.
+*Note:* The above command will create a directory (the virtualenv) called ``my_rapidsms_env``, so it should be run from a directory where you'd normally keep source code and/or Python virtual environments on your machine.
 
 3 - Activate the virtual environment (optional)
 ------------------------------------------------
