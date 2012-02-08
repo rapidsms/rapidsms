@@ -1,0 +1,84 @@
+We use German (de) as an example here.
+
+What comes with RapidSMS
+==========================
+
+The 'registration' app in rapidsms/contrib can be used to associate connections with languages. When you add 'rapidsms.contrib.registration' to your list of installed apps, you get::
+
+    Message: lang de
+    Response: I will speak to you in German.
+
+After a connection registers a language in this way, RapidSMS will attempt to translate all future messages sent to that connection (using `OutgoingMessage.send()`) into German. For example::
+
+    message.send('goodbye!')
+
+You can extend any outgoing message using OutgoingMessage.append(self, string). For example::
+
+
+    message.append('come back soon!')
+
+You can insert variables using OutgoingMessage.append(self, template, **kwargs). For example::
+
+    message.append('come back in %(num_days)s days!', {'num_days':3})
+
+
+INTERNATIONALIZATION (I18N)
+============================
+aka writing apps that can support multiple different translations
+
+Mark all strings needing translation in web template html, apps.py, and views.py
+
+For web templates (*.html), this means that you'll need to:
+* Add `{% load i18n %}` to the top
+* Tag strings like `{% trans "hello world" %}`
+* For web views (typically views.py) and sms apps (app.py), this means that you will add:
+* Import from django.utils.translation import ugettext as _.
+* Tag all of your translatable strings like `_("hello world")`.
+
+LOCALIZATION (L10N)
+====================
+aka deploying internationalized apps in a given language or set of languages.
+
+* From the project or app root, type django-admin.py makemessages -l de.
+* You will need to create the directories you need for each locale: mkdir --parents [app_root]/locale/de
+* This will generate the file [app_root]/locale/de/LC_MESSAGES.django.po
+* Add your translations to the django.po file
+* From the project or app root, type django-admin.py compilemessages.
+* In settings.py, be sure to add::
+
+    LANGUAGES = (
+      ('de', _('German')),
+      ('en', _('English')),
+    )
+
+you can't import the gettext function in the settings file, because the internationalization system requires the settings file to be available before it can start up. the official (django) workaround is adding::
+
+    _ = lambda s: s
+
+to the top of your settings file. see:
+http://docs.djangoproject.com/en/dev/ref/settings/?from=olddocs#languages
+
+TIPS
+======
+
+The vast majority of problems with UTF-8 are caused by using an improperly configured document editor or IDE. Be sure to set your encoding for your translation files, IDEs, emacs, textmate, etc. to UTF-8.
+
+MISC
+=====
+
+Django doesn't support a lot of useful languages, like Swahili (swh) or Pashto (pbt).
+
+http://docs.djangoproject.com/en/dev/topics/i18n/localization/#locale-restrictions
+
+If you are translating the webui into a language which Django does not currently support (and there are many - Swahili, for instance), you'll need to add that translation file directly to your Django installation. To do this:
+
+Copy the contents of <django-install-dir>/conf/locale/en to <django-install-dir>/conf/locale/<your-language-code>
+Create a django.mo file in the same directory by installing 'gettext' and running msgfmt -o django.mo django.po
+Restart your server and your route process
+
+REFERENCES
+============
+
+`DjangoI18n <http://docs.djangoproject.com/en/dev/topics/i18n/>`_ : Django's i18n documentation
+
+`Scripts <http://rishida.net/scripts/featurelist/>`_ : Script features by language
