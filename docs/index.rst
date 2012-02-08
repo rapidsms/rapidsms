@@ -5,7 +5,7 @@ RapidSMS is a free and open-source framework for dynamic data collection, logist
 
 * **Website**: http://www.rapidsms.org/
 
-* **Documentation**: http://github.com/rapidsms/rapidsms/wiki/
+* **Documentation**: http://rapidsms.readthedocs.org/
 
 * **Code**: http://github.com/rapidsms/rapidsms
 
