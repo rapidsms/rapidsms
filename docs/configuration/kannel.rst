@@ -317,7 +317,7 @@ Kannel backends get created (one for the fake SMSC and one for the GSM modem).
 Troubleshooting
 ===============
 
-For help troubleshooting, please carefully review the the relevant log files in
+For help troubleshooting, please carefully review the relevant log files in
 ``/var/log/kannel`` as well as the output of the ``./manage.py runrouter``
 command.  For additional help configuring Kannel, review the
 `Kannel user guide <http://www.kannel.org/userguide.shtml>`_ or subscribe to the
