@@ -84,6 +84,10 @@ Find out how you can edit this wiki and what markup it uses
 
 Tips on recording RapidSMS tutorial videos in Linux
 
+:doc:`Kannel Configuration <configuration/kannel>`
+
+Configuring RapidSMS to work with the Kannel SMS gateway
+
 :doc:`In Development <misc/indevelopment>`
 
 A list of other repositories, all works in progress, of new apps for RapidSMS
