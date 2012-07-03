@@ -5,6 +5,8 @@ from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest
 from rapidsms.tests.harness import MockRouter
 from rapidsms.backends.http import RapidHttpBackend
 
+from django.utils import simplejson as json
+
 
 class NewBackend(RapidHttpBackend):
     def configure(self, *args, **kwargs):
@@ -28,6 +30,27 @@ def test_handle_bad_request():
                               router=router)
     response = backend.handle_request(HttpRequest())
     assert_true(isinstance(response, HttpResponseBadRequest))
+
+def test_handle_json_missing_header():
+    """ JSON requests will fail unless CONTENT_TYPE header is set """
+    router = MockRouter()
+    backend = RapidHttpBackend(name='test', router=router)
+    data = json.dumps({'id':'123','text':'message'})
+    http_request = HttpRequest()
+    http_request.POST = data
+    response = backend.handle_request(HttpRequest())
+    assert_true(isinstance(response, HttpResponseBadRequest))
+
+def test_handle_json_with_header():
+    """ JSON should be interpreted if request header is set """
+    router = MockRouter()
+    backend = RapidHttpBackend(name='test', router=router)
+    data = json.dumps({'id':'123','text':'message'})
+    http_request = HttpRequest()
+    http_request.POST = data
+    http_request.META['CONTENT_TYPE'] = 'application/json'
+    response = backend.handle_request(HttpRequest())
+    assert_equals(response.status_code, 200)
 
 def test_config():
     """ Allow custom configuration """
