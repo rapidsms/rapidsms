@@ -14,6 +14,7 @@ available backends, like so:
 
 """
 
+import urllib
 import urllib2
 import select
 from datetime import datetime
@@ -126,6 +127,8 @@ class RapidHttpBackend(BackendBase):
         if self.format == 'GET':
             query = self.http_params_outgoing % context
             url = "%s?%s" % (self.gateway_url, query)
+        elif self.format == 'POST':
+            data = urllib.urlencode(context)
         elif self.format == 'JSON':
             data = json.dumps(context)
         req = urllib2.Request(url)

@@ -1,3 +1,5 @@
+import urllib
+
 from nose.tools import assert_equals, assert_true, assert_raises
 
 from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest
@@ -59,6 +61,14 @@ def test_json_outbound_message():
     data = {'message': 'foo', 'phone': '1112223333'}
     req = backend._build_request(data)
     assert_equals(req.get_data(), json.dumps(data))
+
+def test_post_outbound_message():
+    """ POST-enabled backend should reply as an HTTP POST """
+    router = MockRouter()
+    backend = RapidHttpBackend(name='test', router=router, format='POST')
+    data = {'message': 'foo', 'phone': '1112223333'}
+    req = backend._build_request(data)
+    assert_equals(req.get_data(), urllib.urlencode(data))
 
 def test_config():
     """ Allow custom configuration """
