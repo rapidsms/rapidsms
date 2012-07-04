@@ -119,7 +119,6 @@ class RapidHttpBackend(BackendBase):
     def handle_request(self, request):
         self.debug('Received request: %s' % request)
         data = self._parse_request(request)
-        print data, type(data)
         sms = data['message']
         sender = data['phone_number']
         if not sms or not sender:
