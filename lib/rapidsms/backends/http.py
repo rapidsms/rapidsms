@@ -69,7 +69,8 @@ class RapidHttpBackend(BackendBase):
     _title = "HTTP"
 
     def configure(self, host="localhost", port=8080, 
-                  gateway_url="http://smsgateway.com", 
+                  gateway_url="http://smsgateway.com",
+                  gateway_credentials=None,
                   params_outgoing="user=my_username&password=my_password&id=%(phone_number)s&text=%(message)s", 
                   params_incoming="id=%(phone_number)s&text=%(message)s",
                   format='GET'):
@@ -78,6 +79,7 @@ class RapidHttpBackend(BackendBase):
         self.handler = RapidWSGIHandler()
         self.handler.backend = self
         self.gateway_url = gateway_url
+        self.gateway_credentials = gateway_credentials
         self.http_params_outgoing = params_outgoing
         self.format = format
         
@@ -161,9 +163,19 @@ class RapidHttpBackend(BackendBase):
         context = {'message': message.text,
                    'phone_number': message.connection.identity}
         req = self._build_request(context)
+        # use HTTP Basic Authentication if credentials are provided
+        if self.gateway_credentials:
+            password_mgr = urllib2.HTTPPasswordMgrWithDefaultRealm()
+            password_mgr.add_password(None, self.gateway_url,
+                                      self.gateway_credentials['username'],
+                                      self.gateway_credentials['password'])
+            handler = urllib2.HTTPBasicAuthHandler(password_mgr)
+        else:
+            handler = urllib2.HTTPHandler()
+        opener = urllib2.build_opener(handler)
         try:
             self.debug('Sending: %s' % req.get_full_url())
-            response = urllib2.urlopen(req)
+            response = opener.open(req)
         except Exception, e:
             self.exception(e)
             return
