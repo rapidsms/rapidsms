@@ -22,6 +22,7 @@ from django import http
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.core.handlers.wsgi import WSGIHandler, STATUS_CODE_TEXT
 from django.core.servers.basehttp import WSGIServer, WSGIRequestHandler
+from django.utils import simplejson as json
 
 from rapidsms.log.mixin import LoggerMixin
 from rapidsms.backends.base import BackendBase
@@ -69,13 +70,15 @@ class RapidHttpBackend(BackendBase):
     def configure(self, host="localhost", port=8080, 
                   gateway_url="http://smsgateway.com", 
                   params_outgoing="user=my_username&password=my_password&id=%(phone_number)s&text=%(message)s", 
-                  params_incoming="id=%(phone_number)s&text=%(message)s"):
+                  params_incoming="id=%(phone_number)s&text=%(message)s",
+                  format='GET'):
         self.host = host
         self.port = port
         self.handler = RapidWSGIHandler()
         self.handler.backend = self
         self.gateway_url = gateway_url
         self.http_params_outgoing = params_outgoing
+        self.format = format
         
         self.incoming_phone_number_param = None
         self.incoming_message_param = None
@@ -115,17 +118,31 @@ class RapidHttpBackend(BackendBase):
             raise        
         self.route(msg)
         return HttpResponse('OK') 
-    
+
+    def _build_request(self, context):
+        """ Construct outbound Request object based on backend settings """
+        data = ''
+        url = self.gateway_url
+        if self.format == 'GET':
+            query = self.http_params_outgoing % context
+            url = "%s?%s" % (self.gateway_url, query)
+        elif self.format == 'JSON':
+            data = json.dumps(context)
+        req = urllib2.Request(url)
+        if data:
+            req.add_data(data)
+        return req
+
     def send(self, message):
         self.info('Sending message: %s' % message)
         # if you wanted to add timestamp or any other outbound variable, 
         # you could add it to this context dictionary
-        context = {'message':message.text,
-                   'phone_number':message.connection.identity}
-        url = "%s?%s" % (self.gateway_url, self.http_params_outgoing % context)
+        context = {'message': message.text,
+                   'phone_number': message.connection.identity}
+        req = self._build_request(context)
         try:
-            self.debug('Sending: %s' % url)
-            response = urllib2.urlopen(url)
+            self.debug('Sending: %s' % req.get_full_url())
+            response = urllib2.urlopen(req)
         except Exception, e:
             self.exception(e)
             return

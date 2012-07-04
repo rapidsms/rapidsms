@@ -52,6 +52,14 @@ def test_handle_json_with_header():
     response = backend.handle_request(HttpRequest())
     assert_equals(response.status_code, 200)
 
+def test_json_outbound_message():
+    """ JSON-enabled backend should reply in JSON """
+    router = MockRouter()
+    backend = RapidHttpBackend(name='test', router=router, format='JSON')
+    data = {'message': 'foo', 'phone': '1112223333'}
+    req = backend._build_request(data)
+    assert_equals(req.get_data(), json.dumps(data))
+
 def test_config():
     """ Allow custom configuration """
     router = MockRouter()
