@@ -99,10 +99,29 @@ class RapidHttpBackend(BackendBase):
         while self.running:
             self.server.handle_request()
 
+    def _parse_request(self, request):
+        """ Prase request data based on header information """
+        if request.method == 'GET':
+            data = request.GET
+        elif request.method == 'POST':
+            if request.META['CONTENT_TYPE'] == 'application/json':
+                data = json.loads(request.POST)
+            else:
+                data = request.POST
+        try:
+            message = data.get(self.incoming_message_param, '')
+            phone_number = data.get(self.incoming_phone_number_param, '')
+        except AttributeError:
+            message = ''
+            phone_number = ''
+        return {'message': message, 'phone_number': phone_number}
+
     def handle_request(self, request):
-        self.debug('Received request: %s' % request.GET)
-        sms = request.GET.get(self.incoming_message_param, '')
-        sender = request.GET.get(self.incoming_phone_number_param, '')
+        self.debug('Received request: %s' % request)
+        data = self._parse_request(request)
+        print data, type(data)
+        sms = data['message']
+        sender = data['phone_number']
         if not sms or not sender:
             error_msg = 'ERROR: Missing %(msg)s or %(phone_number)s. parameters received are: %(params)s' % \
                          { 'msg' : self.incoming_message_param, 
