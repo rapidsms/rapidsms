@@ -53,7 +53,7 @@ class LegacyRouter(BaseRouter):
         while True:
             try:
                 self.debug("starting backend")
-                started = backend.start()
+                started = backend.start(legacy_behavior=True)
                 self.debug("backend %s terminated normally" % backend)
                 return True
             
