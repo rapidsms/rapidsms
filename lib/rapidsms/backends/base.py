@@ -45,8 +45,17 @@ class BackendBase(object, LoggerMixin):
         return self._running
 
 
-    def start(self):
+    def start(self, legacy_behavior=False):
+        """
+        Start the backend.  Normally just sets self._running to ``True``.  If
+        legacy behavior is desired (i.e., if you want ``start()`` wait until
+        the router sets the backend's ``_running`` attribute to ``False``, ')
+        pass ``legacy_behavior=True``
+        """
         self._running = True
+        if legacy_behavior:
+            while self._running:
+                time.sleep(1)
 
 
     def run (self):

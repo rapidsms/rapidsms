@@ -10,19 +10,25 @@ from rapidsms.router.legacy import LegacyRouter
 
 def test_legacy_router_starts_and_stops_apps_and_backends():
     class MockApp(AppBase):
+        start_called = False
+        stop_called = False
+
         def start(self):
-            self.started = True
+            self.start_called = True
 
         def stop(self):
-            self.stopped = True
+            self.stop_called = True
 
     class MockBackend(BackendBase):
-        def start(self):
-            self.started = True
-            BackendBase.start(self)
+        start_called = False
+        stop_called = False
+
+        def start(self, *args, **kwargs):
+            self.start_called = True
+            BackendBase.start(self, *args, **kwargs)
 
         def stop(self):
-            self.stopped = True
+            self.stop_called = True
             BackendBase.stop(self)
 
     router = LegacyRouter()
@@ -31,10 +37,10 @@ def test_legacy_router_starts_and_stops_apps_and_backends():
     backend = MockBackend(router, "mock")
     router.backends["mock"] = backend
 
-    assert hasattr(app, 'started') == False
-    assert hasattr(app, 'stopped') == False
-    assert hasattr(backend, 'started') == False
-    assert hasattr(backend, 'stopped') == False
+    assert_equals(app.start_called, False)
+    assert_equals(app.stop_called, False)
+    assert_equals(backend.start_called, False)
+    assert_equals(backend.stop_called, False)
 
     # start in a separate thread, so we can test it asynchronously.
     worker = threading.Thread(target=router.start)
@@ -45,16 +51,16 @@ def test_legacy_router_starts_and_stops_apps_and_backends():
     while not router.running:
         time.sleep(0.1)
 
-    assert_equals(app.started, True)
-    assert_equals(backend.started, True)
-    assert hasattr(app, 'stopped') == False
-    assert hasattr(backend, 'stopped') == False
+    assert_equals(app.start_called, True)
+    assert_equals(backend.start_called, True)
+    assert_equals(app.stop_called, False)
+    assert_equals(backend.stop_called, False)
 
     # wait until the router has stopped.
     router.stop()
     worker.join()
 
-    assert_equals(app.started, True)
-    assert_equals(app.stopped, True)
-    assert_equals(backend.started, True)
-    assert_equals(backend.stopped, True)
+    assert_equals(app.start_called, True)
+    assert_equals(app.stop_called, True, 'App not stopped')
+    assert_equals(backend.start_called, True)
+    assert_equals(backend.stop_called, True, 'Backend not stopped')
