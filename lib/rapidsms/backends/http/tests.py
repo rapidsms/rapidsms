@@ -3,6 +3,8 @@ from django.test import TestCase, RequestFactory
 from django.core.urlresolvers import reverse
 from django.conf.urls.defaults import *
 
+from rapidsms.tests.harness.base import CustomRouter
+
 from . import views
 from .forms import BaseHttpForm
 
@@ -19,7 +21,7 @@ urlpatterns = patterns('',
         kwargs=post_view_kwargs, name='generic-http-post-view'),
 )
 
-class HttpTest(TestCase):
+class HttpTestMixin(object):
 
     urls = 'rapidsms.backends.http.tests'
 
@@ -29,15 +31,18 @@ class HttpTest(TestCase):
                                 args=['test-post-backend'])
         self.get_url = reverse('generic-http-get-view',
                                args=['test-get-backend'])
-        self.view = views.GenericHttpBackendView.as_view()
+        self.view = views.GenericHttpBackendView.as_view(backend_name='http-backend')
 
     def _post(self, data={}):
         request = self.rf.post(self.post_url, data)
-        return self.view(request, backend_name='test-post-backend')
+        return self.view(request)
 
     def _get(self, data={}):
         request = self.rf.get(self.get_url, data)
-        return self.view(request, backend_name='test-get-backend')
+        return self.view(request)
+
+
+class HttpTest(HttpTestMixin, TestCase):
 
     def test_valid_form_post(self):
         """ Form should be valid if POST keys match configuration """
@@ -71,6 +76,22 @@ class HttpTest(TestCase):
         form = view.get_form(view.get_form_class())
         self.assertFalse(form.is_valid())
 
+    def test_get_incoming_data(self):
+        """ Subclasses must implement get_incoming_data """
+        form = BaseHttpForm()
+        self.assertRaises(NotImplementedError, form.get_incoming_data)
+
+
+class HttpViewTest(CustomRouter, HttpTestMixin, TestCase):
+
+    router_class = 'rapidsms.router.test.NoOpTestRouter'
+
+    def test_valid_response_post(self):
+        """ HTTP 200 should return if form is valid """
+        data = {'identity': '1112223333', 'text': 'hi there'}
+        response = self._post(data)
+        self.assertEqual(response.status_code, 200)
+
     def test_invalid_response_post(self):
         """ HTTP 400 should return if form is invalid """
         data = {'invalid-phone': '1112223333', 'message': 'hi there'}
@@ -82,8 +103,3 @@ class HttpTest(TestCase):
         data = {'invalid-phone': '1112223333', 'message': 'hi there'}
         response = self._get(data)
         self.assertEqual(response.status_code, 400)
-
-    def test_get_incoming_data(self):
-        """ Subclasses must implement get_incoming_data """
-        form = BaseHttpForm()
-        self.assertRaises(NotImplementedError, form.get_incoming_data)
