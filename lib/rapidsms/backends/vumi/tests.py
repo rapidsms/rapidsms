@@ -2,10 +2,14 @@ from django.test import TestCase, RequestFactory
 from django.core.urlresolvers import reverse
 from django.utils import simplejson as json
 
+from rapidsms.router.test import TestRouter
 from rapidsms.backends.vumi import views
+from rapidsms.backends.vumi.outgoing import VumiBackend
+from rapidsms.tests.harness.base import CreateDataTest
+from rapidsms.messages.outgoing import OutgoingMessage
 
 
-class HttpTest(TestCase):
+class ReceiveTest(TestCase):
 
     urls = 'rapidsms.backends.vumi.urls'
 
@@ -17,12 +21,12 @@ class HttpTest(TestCase):
     def _post(self, data={}):
         request = self.rf.post(self.url, json.dumps(data),
                                content_type='text/json')
-        return self.view(request, backend_name='vumi-backend')
+        return self.view(request)
 
     def test_valid_form(self):
         """ Form should be valid if GET keys match configuration """
         view = views.VumiBackendView()
-        data = {'id': '1112223333', 'text': 'hi there'}
+        data = {'from_adr': '1112223333', 'content': 'hi there'}
         view.request = self.rf.post(self.url, json.dumps(data),
                                     content_type='text/json')
         form = view.get_form(view.get_form_class())
@@ -42,3 +46,31 @@ class HttpTest(TestCase):
         data = {'invalid-phone': '1112223333', 'message': 'hi there'}
         response = self._post(data)
         self.assertEqual(response.status_code, 400)
+
+    def test_outgoing_context(self):
+        """ Make sure outgoing JSON contains correct keys """
+        data = {'invalid-phone': '1112223333', 'message': 'hi there'}
+        response = self._post(data)
+        self.assertEqual(response.status_code, 400)
+
+
+class SendTest(CreateDataTest, TestCase):
+
+    def test_required_fields(self):
+        """ Vumi backend requires Gateway URL and credentials """
+        router = TestRouter()
+        self.assertRaises(TypeError, VumiBackend, router, "vumi")
+
+    def test_outgoing_keys(self):
+        """ Vumi requires JSON to include to_adr and content """
+        connection = self.create_connection()
+        message = OutgoingMessage(connection, 'hello!')
+        router = TestRouter()
+        backend = VumiBackend(router, "vumi",
+                              vumi_url="http://example.com",
+                              vumi_credentials={'username': 'user',
+                                                'password': 'pass'})
+        request = backend._build_request(message)
+        self.assertEqual(request.get_full_url(), "http://example.com")
+        self.assertTrue('to_adr' in request.get_data())
+        self.assertTrue('content' in request.get_data())
