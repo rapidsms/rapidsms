@@ -26,7 +26,7 @@ class ReceiveTest(TestCase):
     def test_valid_form(self):
         """ Form should be valid if GET keys match configuration """
         view = views.VumiBackendView()
-        data = {'from_adr': '1112223333', 'content': 'hi there'}
+        data = {'from_addr': '1112223333', 'content': 'hi there'}
         view.request = self.rf.post(self.url, json.dumps(data),
                                     content_type='text/json')
         form = view.get_form(view.get_form_class())
@@ -72,5 +72,5 @@ class SendTest(CreateDataTest, TestCase):
                                                 'password': 'pass'})
         request = backend._build_request(message)
         self.assertEqual(request.get_full_url(), "http://example.com")
-        self.assertTrue('to_adr' in request.get_data())
+        self.assertTrue('to_addr' in request.get_data())
         self.assertTrue('content' in request.get_data())
