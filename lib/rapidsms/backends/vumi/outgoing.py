@@ -16,7 +16,11 @@ class VumiBackend(BackendBase):
         """ Construct outbound Request object based on context """
         request = urllib2.Request(self.vumi_url)
         context = {'content': message.text,
-                   'to_addr': message.connection.identity}
+                   'to_addr': message.connection.identity,
+                   'session_event': None}
+        if message.in_reply_to:
+            message_id = message.in_reply_to.fields['message_id']
+            context['in_reply_to'] = message_id
         request.add_data(json.dumps(context))
         return request
 

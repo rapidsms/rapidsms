@@ -25,8 +25,21 @@ class ReceiveTest(TestCase):
 
     def test_valid_form(self):
         """ Form should be valid if GET keys match configuration """
+        data = {"transport_name": "transport",
+                "in_reply_to": None,
+                "group": None,
+                "from_addr": "127.0.0.1:38634",
+                "message_type": "user_message",
+                "helper_metadata": {},
+                "to_addr": "0.0.0.0:8005",
+                "content": "ping",
+                "message_version": "20110921",
+                "transport_type": "telnet",
+                "timestamp": "2012-07-06 14:08:20.845715",
+                "transport_metadata": {},
+                "session_event": "resume",
+                "message_id": "56047985ceec40da908ca064f2fd59d3"}
         view = views.VumiBackendView()
-        data = {'from_addr': '1112223333', 'content': 'hi there'}
         view.request = self.rf.post(self.url, json.dumps(data),
                                     content_type='text/json')
         form = view.get_form(view.get_form_class())

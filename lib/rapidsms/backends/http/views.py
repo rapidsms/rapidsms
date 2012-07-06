@@ -40,7 +40,8 @@ class BaseHttpBackendView(FormMixin, LoggerMixin, ProcessFormView):
         router for processing.
         """
         data = form.get_incoming_data()
-        handle_incoming(data['text'], self.backend_name, data['identity'])
+        data['backend_name'] = self.backend_name
+        handle_incoming(**data)
         return HttpResponse('OK')
 
     def form_invalid(self, form):
