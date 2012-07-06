@@ -37,8 +37,12 @@ class BlockingRouter(BaseRouter):
         # process outgoing phase
         super(BlockingRouter, self).outgoing(msg)
         # send message from within router
-        self.sent = self.backends[msg.connection.backend.name].send(msg)
-        msg.sent = self.sent
+        sent = False
+        try:
+            sent = self.backends[msg.connection.backend.name].send(msg)
+        except Exception, e:
+            self.exception(e)
+        sent = self.sent
 
     def handle_outgoing(self, text, backend_name=None, identity=None,
                         connection=None):
