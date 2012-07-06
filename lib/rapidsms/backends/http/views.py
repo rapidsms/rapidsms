@@ -22,6 +22,8 @@ class BaseHttpBackendView(FormMixin, LoggerMixin, ProcessFormView):
         decorator, which most (if not all) clients using this view will not
         know about.
         """
+        if 'backend_name' in kwargs:
+            self.backend_name = kwargs['backend_name']
         return super(BaseHttpBackendView, self).dispatch(*args, **kwargs)
 
     def get(self, request, *args, **kwargs):
