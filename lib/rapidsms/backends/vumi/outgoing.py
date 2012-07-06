@@ -22,7 +22,7 @@ class VumiBackend(BackendBase):
 
     def send(self, message):
         self.info('Sending message: %s' % message)
-        request = self._build_request(context)
+        request = self._build_request(message)
         # use HTTP Basic Authentication if credentials are provided
         if self.vumi_credentials:
             password_mgr = urllib2.HTTPPasswordMgrWithDefaultRealm()
