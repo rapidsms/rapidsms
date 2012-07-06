@@ -42,7 +42,7 @@ class BlockingRouter(BaseRouter):
             sent = self.backends[msg.connection.backend.name].send(msg)
         except Exception, e:
             self.exception(e)
-        sent = self.sent
+        msg.sent = sent
 
     def handle_outgoing(self, text, backend_name=None, identity=None,
                         connection=None):
