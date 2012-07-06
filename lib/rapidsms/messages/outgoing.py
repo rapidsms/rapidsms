@@ -13,7 +13,8 @@ class OutgoingMessage(MessageBase):
     """
     """
 
-    def __init__(self, connection=None, template=None, **kwargs):
+    def __init__(self, connection=None, template=None, in_reply_to=None,
+                 **kwargs):
         self._parts = []
         
         if template is not None:
@@ -21,6 +22,7 @@ class OutgoingMessage(MessageBase):
 
         self._connection = connection
         self.sent_at = None
+        self.in_reply_to = in_reply_to
 
 
     @property
