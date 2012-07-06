@@ -45,6 +45,8 @@ class BaseRouter(object, LoggerMixin):
             cls = AppBase.find(module_name)
         elif issubclass(module_name, AppBase):
             cls = module_name
+        if not cls:
+            return None
         app = cls(self)
         self.apps.append(app)
         return app
