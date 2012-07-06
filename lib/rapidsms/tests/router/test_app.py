@@ -36,3 +36,13 @@ def test_add_app_class():
     router = BaseRouter()
     router.add_app(AppBase)
     assert_equals(len(router.apps), 1)
+
+
+def test_no_app_doesnt_raise_error():
+    """
+    If an INSTALLED_APP does not contain an app module, don't
+    raise an exception
+    """
+    router = BaseRouter()
+    app = router.add_app('django.conrib.admin')
+    assert_equals(app, None)
