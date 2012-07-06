@@ -49,7 +49,7 @@ def test_legacy_router_starts_and_stops_apps_and_backends():
 
     # wait until the router has started.
     while not router.running:
-        time.sleep(0.1)
+        time.sleep(0.3)
 
     assert_equals(app.start_called, True)
     assert_equals(backend.start_called, True)
