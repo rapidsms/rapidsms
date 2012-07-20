@@ -1,9 +1,7 @@
 RapidSMS 1.0 Roadmap
 ====================
 
-This document describes the high level goals for releasing RapidSMS 1.0.
-
-Started by Colin Copeland and Tobias McNulty in collaboration with UNICEF Innovation. However, the document is open to the greater RapidSMS community for discussion and comments.
+This document describes the high level goals and schedule for releasing RapidSMS 1.0. It was originally created by Colin Copeland and Tobias McNulty in collaboration with UNICEF Innovation. However, the document is open to the greater RapidSMS community for discussion, comments, and other feedback.
 
 Design Philosophies
 -------------------
