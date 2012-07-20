@@ -86,8 +86,6 @@ Provide community blessed way to package and distribute pluggable RapidSMS apps
 * Build small apps as examples using proposed packaging guidelines
 * Provide support  packaging using the provided examples, test coverage and documentation
 * Identify overlap of different projects, e.g., two apps that do group management
-* Caktus Deliverables:
-    * Donate design of new RapidSMS website
 * UNICEF Deliverables:
     * Sign off on new website design and functionality
     * Server for RapidSMS website
