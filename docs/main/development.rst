@@ -152,6 +152,22 @@ The names and arguments to API methods must not be changed within a major versio
 
 Additional arguments may be added to API methods within a major version if a default is provided.
 
+Testing
+=======
+
+While the `nose <http://pypi.python.org/pypi/nose/>`_ test runner is used for all tests, RapidSMS has a few different options for running its test suite. 
+The python module ``run_tests.py`` is provided as the simplest method of running the test suite, and executing ``python setup.py test`` will run this module.
+
+A Tox configuration file is included for running tests in a variety of environments including:
+
+ * `py2.6-1.3` - Test using Python 2.6 and Django 1.3.x
+ * `py2.6-1.4` - Test using Python 2.6 and Django 1.4.x
+ * `py2.7-1.3` - Test using Python 2.7 and Django 1.3.x
+ * `py2.7-1.4` - Test using Python 2.7 and Django 1.4.x
+
+You can run any of the environments listed above using: ``tox -e <name>``. Using ``tox`` on its own runs the test suite against each of these environments.
+In order to run coverage and produce an xml report for use with continous integration software, the run_tests module and tox commands each take the positional argument `ci`. (e.g. To include reports for continuous integration, use ``run_tests.py ci`` or ``tox ci``).
+
 Contributor License Agreement
 ===============================
 
@@ -162,3 +178,4 @@ Contributor License Agreement
 `RapidSMS Corporate Contributor License Agreement <https://spreadsheets.google.com/viewform?formkey=dGJPeFh5NTV6NlJjclg1cFRKUFVsQmc6MA>`_
 
 `View corporate contributors <http://spreadsheets.google.com/pub?key=tbOxXy55z6RcrX5pTJPUlBg&output=html>`_
+

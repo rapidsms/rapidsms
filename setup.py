@@ -17,6 +17,10 @@ setup(
         "djappsettings"
     ],
 
+    test_requires = [
+        "nose",
+    ],
+
     scripts = ["bin/rapidsms-admin.py"],
 
     package_dir = {"": "lib"},
@@ -30,5 +34,6 @@ setup(
     maintainer_email="rapidsms@googlegroups.com",
 
     description="Build SMS applications with Python and Django",
-    url="http://github.com/rapidsms/rapidsms"
+    url="http://github.com/rapidsms/rapidsms",
+    test_suite="run_tests.run_tests",
 )

@@ -11,3 +11,9 @@ core.*
 dist
 build
 _build
+.tox/
+.coverage
+*.log
+*.egg
+coverage.xml
+nosetests.xml
