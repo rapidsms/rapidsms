@@ -16,4 +16,3 @@ _build
 *.log
 *.egg
 coverage.xml
-nosetests.xml

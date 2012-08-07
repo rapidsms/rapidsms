@@ -75,7 +75,6 @@ if not settings.configured:
 
 def run_ci_tests():
     cmd_flags = (
-        'with-xunit',
         'with-xcoverage',
         'cover-tests',
         'noinput',
