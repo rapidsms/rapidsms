@@ -70,17 +70,45 @@ if not settings.configured:
             ("rapidsms.contrib.scheduler.views.index",              "Event Scheduler"),
             ("rapidsms.contrib.httptester.views.generate_identity", "Message Tester"),
         ],
+        # Only test these modules when using continuous integration ('ci' flag)
+        CI_APPS = [
+            # Root level modules
+            'rapidsms.forms',
+            'rapidsms.models',
+            'rapidsms.views',
+            # Sub folders
+            'rapidsms.apps',
+            'rapidsms.backends',
+            'rapidsms.management',
+            'rapidsms.messages',
+            'rapidsms.router',
+            'rapidsms.tests',
+            'rapidsms.utils',
+            # Contrib apps
+            'rapidsms.contrib.default',
+            'rapidsms.contrib.export',
+            'rapidsms.contrib.handlers',
+            'rapidsms.contrib.httptester',
+            'rapidsms.contrib.locations',
+            'rapidsms.contrib.messagelog',
+            'rapidsms.contrib.messaging',
+            'rapidsms.contrib.registration',
+            'rapidsms.contrib.echo',
+        ],
     )
 
 
 def run_ci_tests():
-    cmd_flags = (
+    cmd_flags = [
         'with-xcoverage',
         'cover-tests',
         'noinput',
-        'cover-package=rapidsms',
-    )
-    os.system('django-admin.py test --{0}'.format(' --'.join((cmd_flags))))
+    ]
+    # If settings.CI_APPS isn't set, default to testing all modules.
+    ci_apps = getattr(settings, 'CI_APPS', ['rapidsms'])
+    cmd_flags.extend(('cover-package=' + app for app in ci_apps))
+    named_flags = ' --'.join(cmd_flags)
+    os.system('django-admin.py test --{0}'.format(named_flags))
 
 
 def run_tests():
