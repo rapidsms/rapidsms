@@ -123,7 +123,7 @@ sometimes you might want to use a customized router. To use an external router
 with RapidSMS, use the Python import path to the router class for the
 :setting:`ROUTER` setting, like so::
 
-    ROUTER = 'path.to.router'
+    RAPIDSMS_ROUTER = 'path.to.router'
 
 If you're building your own router, you can use the standard routers
 as reference implementations.
