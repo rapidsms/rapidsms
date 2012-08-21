@@ -4,7 +4,7 @@
 
 import time
 import logging
-from rapidsms.router import router as globalrouter
+from rapidsms.router import get_router
 from harness import EchoApp
 import unittest, re, threading
 from django.test import TransactionTestCase
@@ -47,8 +47,16 @@ class TestScript (TransactionTestCase, LoggerMixin):
         self.runParsedScript(self.parseScript(script))
 
     def setUp (self):
-        self.router = globalrouter
-        
+        # For now, default to using the old global router during unit tests,
+        # but let users change that by setting TEST_RAPIDSMS_ROUTER
+        # to a new router in their settings file
+        router_cls = getattr(settings, 'TEST_RAPIDSMS_ROUTER', 'global')
+        if router_cls == 'global':
+            from rapidsms.router import router as globalrouter
+            self.router = globalrouter
+        else:
+            self.router = get_router(router_cls)()
+
         self._init_log(logging.WARNING)
         
         if self.router.backends or self.router.apps:
@@ -107,21 +115,28 @@ class TestScript (TransactionTestCase, LoggerMixin):
             raise Exception("Can't start router -- it doesn't exist!  "
                             "Did you override setUp and forget to call "
                             "the base class?")
-        # Router.start blocks until Router.stop is called, so start it in a
-        # separate thread so it can process our mock messages asynchronously
-        threading.Thread(target=self.router.start).start()
 
-        # HACK: wait for the router to be ready
-        # to accept our incoming messages
-        while not self.router.accepting:
-            time.sleep(0.2)
+        if hasattr(self.router.start, 'blocks') and self.router.start.blocks:
+            # Router.start blocks until Router.stop is called, so start it in a
+            # separate thread so it can process our mock messages asynchronously
+            threading.Thread(target=self.router.start).start()
+        else:
+            # If Router.start does not block, just call it normally
+            self.router.start()
+
+        if hasattr(self.router, 'accepting'):
+            # HACK: wait for the router to be ready
+            # to accept our incoming messages
+            while not self.router.accepting:
+                time.sleep(0.2)
 
     def stopRouter (self):
         self.router.stop()
 
-        # HACK: wait for the router to stop
-        while self.router.accepting:
-            time.sleep(0.1)
+        if hasattr(self.router, 'accepting'):
+            # HACK: wait for the router to stop
+            while self.router.accepting:
+                time.sleep(0.1)
 
     def sendMessage (self, num, txt, date=None):
         if date is None:
@@ -130,9 +145,10 @@ class TestScript (TransactionTestCase, LoggerMixin):
         msg.received_at = date
         self.backend.route(msg)
 
-        # wait until the router has finished
-        # processing this incoming message
-        self.router.join()
+        if hasattr(self.router, 'join'):
+            # wait until the router has finished
+            # processing this incoming message
+            self.router.join()
 
     def receiveMessage (self):
         return self.backend.next_outgoing_message()
@@ -144,26 +160,44 @@ class TestScript (TransactionTestCase, LoggerMixin):
             messages.append(msg)
             msg = self.receiveMessage()
         return messages
-
+    
+    def _checkAgainstMessage(self, num, txt, last_msg, msg):
+        self.assertEquals(msg.peer, num, "Expected to respond to "
+                          "%s, but message was sent to %s.\n"
+                          "Message: '%s'" % (num, msg.peer,
+                                             last_msg))
+        self.assertEquals(msg.text, txt, "\nMessage: %s\nReceived "
+                          "text: %s\nExpected text: %s\n" %
+                          (last_msg, msg.text,txt))
+        
+    
+    def _checkAgainstMessages(self, num, txt, last_msg, msgs):
+        self.assertTrue(len(msgs) != 0, "Message was ignored.\n"
+                        "Message: '%s'\nExpecting: '%s'" %
+                        (last_msg, txt))
+        for i, msg in enumerate(msgs):
+            try:
+                self._checkAgainstMessage(num, txt, last_msg, msg)
+                return i
+            except AssertionError:
+                # only raise this up if we've exhausted all our candidates
+                if i == len(msgs) - 1: raise 
+                    
     def runParsedScript (self, cmds):
         self.startRouter()
         try:
             last_msg = ''
+            msgs = []
             for num, date, dir, txt in cmds:
                 if dir == ">":
                     self.sendMessage(num, txt, date)
                 elif dir == "<":
-                    msg = self.receiveMessage()
-                    self.assertTrue(msg is not None, "Message was ignored.\n"
-                                    "Message: '%s'\nExpecting: '%s'" %
-                                    (last_msg, txt))
-                    self.assertEquals(msg.peer, num, "Expected to respond to "
-                                      "%s, but message was sent to %s.\n"
-                                      "Message: '%s'" % (num, msg.peer,
-                                                         last_msg))
-                    self.assertEquals(msg.text, txt, "\nMessage: %s\nReceived "
-                                      "text: %s\nExpected text: %s\n" %
-                                      (last_msg, msg.text,txt))
+                    if len(msgs) == 0:
+                        # only reload when we've exhausted our cache of messages
+                        msgs = self.receiveAllMessages()
+                    match = self._checkAgainstMessages(num, txt, last_msg, msgs)
+                    msgs.pop(match)
+
                 last_msg = txt
         finally:
             self.stopRouter()

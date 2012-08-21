@@ -7,5 +7,8 @@ from . import views
 urlpatterns = patterns('',
     url(r'^$',
         views.messaging,
-        name="messaging")
+        name="messaging"),
+    url(r'^send/$',
+        views.send,
+        name="send_message")
 )

@@ -49,7 +49,6 @@ max-messages = 0
 get-url = http://127.0.0.1:8081/?id=%p&text=%a&charset=%C&coding=%c
 """
 
-from rapidsms.backends.http import RapidHttpBacked
 
 import copy
 import urllib
@@ -57,8 +56,9 @@ import urllib2
 from datetime import datetime
 
 from django.http import HttpResponse, HttpResponseBadRequest
+from rapidsms.backends.http import RapidHttpBackend
 
-class KannelBackend(RapidHttpBacked):
+class KannelBackend(RapidHttpBackend):
     """
     Backend for use with the Kannel SMS Gateway.
     """
@@ -92,7 +92,7 @@ class KannelBackend(RapidHttpBacked):
         if charset and not isinstance(sms, unicode):
             sms = sms.decode(charset)
         try:
-            msg = super(RapidHttpBacked, self).message(sender, sms, now)
+            msg = super(RapidHttpBackend, self).message(sender, sms, now)
         except:
             self.exception('failed to create message in RapidSMS')
             raise
@@ -116,3 +116,4 @@ class KannelBackend(RapidHttpBacked):
             return
         self.info('SENT')
         self.debug('response body: %s' % response.read())
+        return True
