@@ -14,5 +14,5 @@ RAPIDSMS_ROUTER
 
 Default: ``'rapidsms.router.blocking.BlockingRouter'``
 
-The router used to handle incoming and outgoing messages. For the list of
+The router is used to handle incoming and outgoing messages. For the list of
 available routers see :doc:`/topics/router`.
