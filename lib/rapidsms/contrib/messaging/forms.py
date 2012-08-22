@@ -1,7 +1,8 @@
 from django import forms
 
-from rapidsms.router import get_router
 from rapidsms.models import Contact
+
+from rapidsms.messages.router_api import handle_outgoing
 
 
 class MessageForm(forms.Form):
@@ -14,8 +15,7 @@ class MessageForm(forms.Form):
 		self.fields['recipients'].queryset = recipients.distinct()
 
 	def send(self):
-	    router = get_router()()
 	    for recipient in self.cleaned_data['recipients']:
-	        router.handle_outgoing(self.cleaned_data['text'],
-	                               connection=recipient.default_connection)
+	        handle_outgoing(self.cleaned_data['text'],
+	                        connection=recipient.default_connection)
 	    return self.cleaned_data['recipients']
