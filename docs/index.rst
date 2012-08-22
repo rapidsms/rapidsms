@@ -34,6 +34,7 @@ Destinations
 **The development process**
 
 * :doc:`Settings <ref/settings>`
+* Extending core RapidSMS models
 * Testing
 * Deployment
 
