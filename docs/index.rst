@@ -23,6 +23,42 @@ RapidSMS is a free and open-source framework for dynamic data collection, logist
 Destinations
 =============
 
+**Architecture**
+
+* Overview
+* :doc:`Router <topics/router>`
+* Applications
+* Backends
+* Messages
+
+**The development process**
+
+* :doc:`Settings <ref/settings>`
+* Extending core RapidSMS models
+* Testing
+* Deployment
+
+**RapidSMS contrib applications**
+
+* ``contrib.default``
+* ``contrib.echo``
+* ``contrib.export``
+* ``contrib.handlers``
+* ``contrib.httptester``
+* ``contrib.locations``
+* ``contrib.messagelog``
+* ``contrib.messaging``
+* ``contrib.registration``
+* ``contrib.scheduler``
+
+**The RapidSMS open-source project**
+
+* About this documentation
+* Team of core committers
+* How to get involved
+* Release notes and upgrading instructions
+
+
 :doc:`Installation <main/installation>`
 
 How to install RapidSMS on your computer and how to get started with community-contributed apps or developing your own.
