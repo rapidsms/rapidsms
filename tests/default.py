@@ -1,11 +1,9 @@
 import os
 import sys
 
-jenkins = []
 db_name = 'test_rapidsms'
 db_engine = os.environ.get('DBENGINE', 'sqlite3')
-if 'ci' in sys.argv:
-    db_name = "rapidsms_{0}".format(os.environ.get('TESTENV', db_name))
+db_name = "rapidsms_{0}".format(os.environ.get('TESTENV', db_name))
 
 TEST_RUNNER = "django_nose.NoseTestSuiteRunner"
 
@@ -65,30 +63,4 @@ RAPIDSMS_TABS = [
     ("rapidsms.contrib.locations.views.locations",          "Map"),
     ("rapidsms.contrib.scheduler.views.index",              "Event Scheduler"),
     ("rapidsms.contrib.httptester.views.generate_identity", "Message Tester"),
-]
-
-# Only test these modules when using continuous integration ('ci' flag)
-CI_APPS = [
-    # Root level modules
-    'rapidsms.forms',
-    'rapidsms.models',
-    'rapidsms.views',
-    # Sub folders
-    'rapidsms.apps',
-    'rapidsms.backends',
-    'rapidsms.management',
-    'rapidsms.messages',
-    'rapidsms.router',
-    'rapidsms.tests',
-    'rapidsms.utils',
-    # Contrib apps
-    'rapidsms.contrib.default',
-    'rapidsms.contrib.export',
-    'rapidsms.contrib.handlers',
-    'rapidsms.contrib.httptester',
-    'rapidsms.contrib.locations',
-    'rapidsms.contrib.messagelog',
-    'rapidsms.contrib.messaging',
-    'rapidsms.contrib.registration',
-    'rapidsms.contrib.echo',
 ]

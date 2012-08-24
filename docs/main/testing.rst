@@ -9,9 +9,9 @@ Quickstart
 The easiest way to run the unit tests in a new install is to run the following from the project root::
 
 	pip install -r pip-requires.txt
-	python run_tests.py --settings=tests.ci
+	python run_tests.py --settings=tests.default
 
-The settings found in the /tests/ci.py module are intended as the default settings file for running tests. You can tell the test runner what settings file to use with the --settings flag or by setting your DJANGO_SETTINGS_MODULE environment variable.
+The settings found in the /tests/default.py module are intended as the default settings file for running tests. You can tell the test runner what settings file to use with the --settings flag or by setting your DJANGO_SETTINGS_MODULE environment variable.
 
 Testing Multiple Environments
 =============================
@@ -42,5 +42,5 @@ Using Setup.py
 Your DJANGO_SETTINGS_MODULE must be set	in order for the test suite using setup.py.
 Running the following will install test dependencies and run the unit tests in one step, but without the option of a coverage report::
 
-    export DJANGO_SETTINGS_MODULE=tests.ci
+    export DJANGO_SETTINGS_MODULE=tests.default
     ./setup.py test

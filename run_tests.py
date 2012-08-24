@@ -5,14 +5,7 @@ import os
 import sys
 
 
-default_options = {
-    'verbosity': 1,
-    'interactive': True,
-    'failfast': False,
-}
-
-
-def run_tests(options=None, ci=False):
+def run_tests(options, ci=False):
     from django.conf import settings
     if ci:
         settings.NOSE_ARGS = [
@@ -22,27 +15,23 @@ def run_tests(options=None, ci=False):
         ]
     from django.test.utils import get_runner
     TestRunner = get_runner(settings)
-    if options:
-        test_runner = TestRunner(verbosity=int(options.verbosity),
-                                 interactive=options.interactive,
-                                 failfast=False)
-    else:
-        test_runner = TestRunner(**default_options)
+    test_runner = TestRunner(verbosity=int(options.verbosity),
+                             interactive=options.interactive,
+                             failfast=False)
     failures = test_runner.run_tests(['rapidsms', ])
     sys.exit(failures)
 
 
-if __name__ == '__main__':
+def main():
     from optparse import OptionParser
     usage = "%prog [options] [module module module ...]"
     parser = OptionParser(usage=usage)
     parser.add_option('-v', '--verbosity', action='store', dest='verbosity',
-                      default=str(default_options['verbosity']),
-                      type='choice', choices=['0', '1', '2', '3'],
+                      default=1, type='choice', choices=['0', '1', '2', '3'],
                       help='Verbosity level; 0=minimal output, 1=normal '
                            'output, 2=all output')
     parser.add_option('--noinput', action='store_false', dest='interactive',
-                      default=default_options['interactive'],
+                      default=True,
                       help='Tells Django to NOT prompt the user for input of '
                            'any kind.')
     parser.add_option('--settings',
@@ -65,3 +54,7 @@ if __name__ == '__main__':
     # because nosetests would also interpret the argument.
     ci = os.environ.get('CI', False)
     run_tests(options, ci)
+
+
+if __name__ == '__main__':
+    main()

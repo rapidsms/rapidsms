@@ -35,5 +35,5 @@ setup(
 
     description="Build SMS applications with Python and Django",
     url="http://github.com/rapidsms/rapidsms",
-    test_suite="run_tests.run_tests",
+    test_suite="run_tests.main",
 )
