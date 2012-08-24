@@ -5,7 +5,14 @@ import os
 import sys
 
 
-def run_tests(options, ci=False):
+default_options = {
+    'verbosity': 1,
+    'interactive': True,
+    'failfast': False,
+}
+
+
+def run_tests(options=None, ci=False):
     from django.conf import settings
     if ci:
         settings.NOSE_ARGS = [
@@ -15,8 +22,12 @@ def run_tests(options, ci=False):
         ]
     from django.test.utils import get_runner
     TestRunner = get_runner(settings)
-    test_runner = TestRunner(verbosity=int(options.verbosity),
-                             interactive=options.interactive, failfast=False)
+    if options:
+        test_runner = TestRunner(verbosity=int(options.verbosity),
+                                 interactive=options.interactive,
+                                 failfast=False)
+    else:
+        test_runner = TestRunner(**default_options)
     failures = test_runner.run_tests(['rapidsms', ])
     sys.exit(failures)
 
@@ -26,11 +37,12 @@ if __name__ == '__main__':
     usage = "%prog [options] [module module module ...]"
     parser = OptionParser(usage=usage)
     parser.add_option('-v', '--verbosity', action='store', dest='verbosity',
-                      default='1', type='choice', choices=['0', '1', '2', '3'],
+                      default=str(default_options['verbosity']),
+                      type='choice', choices=['0', '1', '2', '3'],
                       help='Verbosity level; 0=minimal output, 1=normal '
                            'output, 2=all output')
     parser.add_option('--noinput', action='store_false', dest='interactive',
-                      default=True,
+                      default=default_options['interactive'],
                       help='Tells Django to NOT prompt the user for input of '
                            'any kind.')
     parser.add_option('--settings',

@@ -39,6 +39,8 @@ If you are using tox, this environment variable is set to 1 automatically.
 Using Setup.py
 =================
 
+Your DJANGO_SETTINGS_MODULE must be set	in order for the test suite using setup.py.
 Running the following will install test dependencies and run the unit tests in one step, but without the option of a coverage report::
 
-	./setup test --settings=tests.ci
+    export DJANGO_SETTINGS_MODULE=tests.ci
+    ./setup.py test
