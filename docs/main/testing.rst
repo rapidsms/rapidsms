@@ -6,9 +6,12 @@ RapidSMS uses `nose <http://pypi.python.org/pypi/nose/>`_ to run its test suite 
 Quickstart
 ==========
 
-The python module ``run_tests.py`` is provided as the simplest method of running the test suite. The test suite can also be run by executing ``python setup.py test``, which installs the test dependencies and runs this module. The dependencies in pip-requires.txt will need to be installed with ``pip install -r pip-requires.txt`` for run_tests.py to run properly.
+The easiest way to run the unit tests in a new install is to run the following from the project root::
 
-The settings found in the /tests/ci.py module are intended as the default settings file for running tests. You can tell the test runner to use this settings file by using the --settings flag as in: ``./run_tests.py --settings=tests.ci``. You can also set your DJANGO_SETTINGS_MODULE environment variable equal to tests.ci and omit this flag.
+	pip install -r pip-requires.txt
+	python run_tests.py --settings=tests.ci
+
+The settings found in the /tests/ci.py module are intended as the default settings file for running tests. You can tell the test runner what settings file to use with the --settings flag or by setting your DJANGO_SETTINGS_MODULE environment variable.
 
 Testing Multiple Environments
 =============================
@@ -26,9 +29,16 @@ You can also add additional environments or change other parts of the configurat
 Continuous Integration and Coverage Reports
 ===========================================
 If desired, the test suite can produce a Cobertura coverage report for use with continuous integration software.
-Setting the environment variable CI to 1 before running the test suite with produce a coverage report in the coverage.xml file.
-For example, the following produces a coverage.xml file and prints a coverage report for the test suite in the current environment:
+Setting the environment variable CI to 1 before running the test suite will produce a coverage report in the coverage.xml file.
+For example, the following produces a coverage.xml file and prints a coverage report for the test suite in the current environment::
 
-	``CI=1; ./run_tests.py``
+	CI=1; ./run_tests.py
 
 If you are using tox, this environment variable is set to 1 automatically.
+
+Using Setup.py
+=================
+
+Running the following will install test dependencies and run the unit tests in one step, but without the option of a coverage report::
+
+	./setup test --settings=tests.ci
