@@ -7,6 +7,12 @@ from rapidsms.apps.base import AppBase
 from .models import Message
 
 
+try:
+    from django.utils.timezone import now as datetime_now
+except ImportError:
+    datetime_now = datetime.datetime.now
+
+
 class App(AppBase):
     def _who(self, msg):
         to_return = {}
@@ -18,7 +24,7 @@ class App(AppBase):
 
     def _log(self, direction, who, text):
         return Message.objects.create(
-            date=datetime.datetime.now(),
+            date=datetime_now(),
             direction=direction,
             text=text,
             **who)
