@@ -3,6 +3,25 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
+.. toctree::
+    :hidden:
+    :glob:
+
+    configuration/*
+    design/*
+    examples/*
+    installation/*
+    internals/*
+    internals/contributing/*
+    internals/roadmap/*
+    main/*
+    messaging/*
+    misc/*
+    ref/*
+    releases/*
+    topics/*
+
+
 RapidSMS Documentation
 =======================
 
@@ -92,7 +111,7 @@ A FAQ containing Frequently Asked Questions
 
 How to get involved and contribute to RapidSMS
 
-:doc:`Testing <main/testing>`
+:doc:`Testing <misc/testing>`
 
 How to run the test suite for RapidSMS
 

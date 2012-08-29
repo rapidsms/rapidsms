@@ -1,9 +1,3 @@
-.. toctree::
-    :hidden:
-
-    0.9.7.rst
-
-
 ================================================
 RapidSMS 0.9.7 release notes - UNDER DEVELOPMENT
 ================================================
@@ -13,7 +7,7 @@ RapidSMS 0.9.7 release notes - UNDER DEVELOPMENT
 
 Welcome to RapidSMS 0.9.7!
 
-These release notes cover the new features in 0.9.7, as well as some `backwards-incompatible-changes`_ you'll want to be aware of when upgrading from RapidSMS 0.9.6a or older versions. We also provide a `migration guide`_ to help you port your 0.9.6 projects and apps to 0.9.7 to take advantage of the new features.
+These release notes cover the new features in 0.9.7, as well as some `backwards-incompatible-changes`_ you'll want to be aware of when upgrading from RapidSMS 0.9.6a or older versions. We also provide a :doc:`migration guide <0.9.7_upgrade_guide>` to help you port your 0.9.6 projects and apps to 0.9.7 to take advantage of the new features.
 
 
 Overview
@@ -135,7 +129,7 @@ Prior to 0.9.7, ``TestScript`` would instantiate the route process (with blockin
 Backwards-incompatible changes in RapidSMS 0.9.7
 ================================================
 
-In the goal of improving the RapidSMS core, we have made a number of backwards-incompatible changes. If you have apps written against RapidSMS 0.9.6 that you need to port, see our `migration guide`_.
+In the goal of improving the RapidSMS core, we have made a number of backwards-incompatible changes. If you have apps written against RapidSMS 0.9.6 that you need to port, see our :doc:`migration guide <0.9.7_upgrade_guide>`.
 
 
 Supporting Django 1.3+
@@ -147,7 +141,7 @@ RapidSMS is no longer compatible with any version of Django prior to 1.3.
 Static media handled by django.contrib.staticfiles
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-RapidSMS 0.9.7 supports out-of-the-box use of ``django.core.staticfiles`` (included by default in Django 1.3.x and above). The ``rapidsms.urls.static_media`` module has been removed in favor of using this app. New projects generated using ``rapidsms-admin.py startproject`` are automatically configured to work with staticfiles. See the `migration guide`_ for more information on upgrading existing projects.
+RapidSMS 0.9.7 supports out-of-the-box use of ``django.core.staticfiles`` (included by default in Django 1.3.x and above). The ``rapidsms.urls.static_media`` module has been removed in favor of using this app. New projects generated using ``rapidsms-admin.py startproject`` are automatically configured to work with staticfiles. See the :doc:`migration guide <0.9.7_upgrade_guide>` for more information on upgrading existing projects.
 
 
 .. _completely removed all other backends:
@@ -201,6 +195,3 @@ Prior to 0.9.7, ``rapidsms.contrib.messaging`` contained a utility function to s
       File "../rapidsms/lib/rapidsms/contrib/messaging/utils.py", line 2, in send_message
         raise DeprecationWarning("rapidsms.contrib.messaging.utils is deprecated")
     DeprecationWarning: rapidsms.contrib.messaging.utils is deprecated
-
-
-.. _migration guide: 0.9.7_upgrade_guide.html
