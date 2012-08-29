@@ -2,48 +2,58 @@
 RapidSMS 0.9.7 release notes - UNDER DEVELOPMENT
 ================================================
 
-This page documents release notes for the as-yet-unreleased RapidSMS
-0.9.7. As such, it's tentative and subject to change. It provides
-up-to-date information for those who are following trunk.
+.. ATTENTION::
+  This page documents release notes for the as-yet-unreleased RapidSMS 0.9.7. As such, it's tentative and subject to change. It provides up-to-date information for those who are following trunk.
 
 Welcome to RapidSMS 0.9.7!
 
-These release notes cover the features in 0.9.7, as well
-as some `backwards-incompatible-changes`_ you'll want to be aware of 
-when upgrading from RapidSMS 0.9.6a or older versions.
+These release notes cover the new features in 0.9.7, as well as some `backwards-incompatible-changes`_ you'll want to be aware of when upgrading from RapidSMS 0.9.6a or older versions. We also provide a :doc:`migration guide <0.9.7_upgrade_guide>` to help you port your 0.9.6 projects and apps to 0.9.7 to take advantage of the new features.
+
 
 Overview
 ========
 
 RapidSMS 0.9.7's focus has mostly been on decoupling the RapidSMS route process in several key places to begin processing all SMSes in normal HTTP requests. This also includes making it possible to swap the Router class that RapidSMS uses via a setting in the settings file. The key changes are as follows:
 
-* Removal of the bucket, email, irc, and gsm backends. 
+* Removal of the bucket, email, irc, gsm, and smtp backends. 
 * Dividing the Router logic into BaseRouter, BlockingRouter, and LegacyRouter classes.
 * ...
+
 
 What's new in RapidSMS 0.9.7
 ============================
 
-A new Router
+The major highlights of RapidSMS 0.9.7 are:
+
+
+A new router
 ~~~~~~~~~~~~
 
-RapidSMS 0.9.7 supplies the following built-in routers:
+RapidSMS 0.9.7 supplies the two built-in routers, which extend from ``rapidsms.router.base.BaseRouter``:
 
-* **BaseRouter:** The base router class that all routers should extend from.
-* **BlockingRouter:** The default router that processes messages in real time.
-* **LegacyRouter:** The legacy, blocking router that spins up threads for apps and backends. This should only be use for legacy purposes.
+* **BlockingRouter**: The default router that processes messages in real time.
+* **LegacyRouter**: The legacy, blocking router that spins up threads for apps and backends. This should only be use for legacy purposes.
 
-RAPIDSMS_ROUTER setting
-~~~~~~~~~~~~~~~~~~~~~~~
+We also support creation of custom router classes.  All routers should extend from the ``BaseRouter`` class.
 
-RapidSMS now allows you to specify the router class to use by defining ``RAPIDSMS_ROUTER``. This now defaults to ``rapidsms.router.blocking.BlockingRouter``, but you can change this in settings.py::
+
+Added RAPIDSMS_ROUTER setting
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+RapidSMS now allows you to specify the primary router class to use by defining ``RAPIDSMS_ROUTER`` in settings. This defaults to ``rapidsms.router.blocking.BlockingRouter``, but you can change this in settings.py:
+
+.. code-block:: python
 
     RAPIDSMS_ROUTER = 'myproject.router.MyRouter'
 
-get_router()
-~~~~~~~~~~~~
 
-A new utility function, ``get_router``, provides the ability to retrieve the settings-defined router. This helper function allows your app to remain router independent::
+Added ``get_router()`` utility
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+A new utility function, ``get_router``, provides the ability to retrieve the settings-defined router. This helper function allows your app to remain router independent:
+
+.. code-block:: python
+    :linenos:
 
     from rapidsms.router import get_router
 
@@ -51,24 +61,32 @@ A new utility function, ``get_router``, provides the ability to retrieve the set
         router = get_router()()
         router.handle_outgoing(text, recipient.default_connection)
 
-Backends are now Django apps
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Backends are Django apps
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+RapidSMS backends are now apps (rather than modules) in the ``rapidsms.backends`` directory. RapidSMS provides two built-in backend apps: ``http`` and ``kannel``. We have `completely removed all other backends`_ from the RapidSMS core.
+
+We also support creation of custom backend apps. Backend classes should extend from the classes found in ``rapidsms.backends.base``.
 
 
+Updated ``http`` and ``kannel`` backends
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Updated http backend
-~~~~~~~~~~~~~~~~~~~~
+TODO
 
 
+Added ``MockBackendRouter`` class
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-MockBackendRouter
-~~~~~~~~~~~~~~~~~
-
-``MockBackendRouter`` is a unittest mix-in class that provides a mock backend to use with the ``BlockingRouter``. The following example from ``contrib.messaging`` illustrates how you can test that inbound messages route to the mock backend outbox.
+``MockBackendRouter`` is a unit test mix-in class that provides a mock backend to use with the ``BlockingRouter``. The following example from ``contrib.messaging`` illustrates how you can test that inbound messages route to the mock backend outbox.
 
 .. code-block:: python
     :linenos:
-    :emphasize-lines: 14,16
+    :emphasize-lines: 17, 19
+
+    from django.test import TestCase
+    from rapidsms.tests.harness.base import MockBackendRouter
 
     class MessagingTest(MockBackendRouter, TestCase):
 
@@ -87,10 +105,11 @@ MockBackendRouter
             self.assertEqual(response.status_code, 200)
             self.assertEqual(self.outbox[0].text, data['text'])
 
-TestScript
-~~~~~~~~~~
 
-Prior to 0.9.7, ``TestScript`` would instantiate the route process (with blocking backends) to allow for testing of the entire routing stack. This was a useful function, but in practice was unstable and caused tests to hang indefinitely. In 0.9.7, ``TestScript`` has been updated to work with ``BockingRouter`` and functions much in the same way. Here's an example testing the EchoApp:
+Updated ``TestScript``
+~~~~~~~~~~~~~~~~~~~~~~
+
+Prior to 0.9.7, ``TestScript`` would instantiate the route process (with blocking backends) to allow for testing of the entire routing stack. This was a useful function, but in practice was unstable and caused tests to hang indefinitely. In 0.9.7, ``TestScript`` has been updated to work with ``BlockingRouter``, and it functions much in the same way as before. Here's an example testing the EchoApp:
 
 .. code-block:: python
     :linenos:
@@ -104,30 +123,53 @@ Prior to 0.9.7, ``TestScript`` would instantiate the route process (with blockin
                 2345678901 < 2345678901: echo?
             """)
 
+
 .. _backwards-incompatible-changes:
 
-Backwards-incompatible changes in 0.9.7
-=======================================
+Backwards-incompatible changes in RapidSMS 0.9.7
+================================================
+
+In the goal of improving the RapidSMS core, we have made a number of backwards-incompatible changes. If you have apps written against RapidSMS 0.9.6 that you need to port, see our :doc:`migration guide <0.9.7_upgrade_guide>`.
+
+
+Supporting Django 1.3+
+~~~~~~~~~~~~~~~~~~~~~~
+
+RapidSMS is no longer compatible with any version of Django prior to 1.3.
+
+
+Static media handled by django.contrib.staticfiles
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+RapidSMS 0.9.7 supports out-of-the-box use of ``django.core.staticfiles`` (included by default in Django 1.3.x and above). The ``rapidsms.urls.static_media`` module has been removed in favor of using this app. New projects generated using ``rapidsms-admin.py startproject`` are automatically configured to work with staticfiles. See the :doc:`migration guide <0.9.7_upgrade_guide>` for more information on upgrading existing projects.
+
+
+.. _completely removed all other backends:
 
 Removal of backends
 ~~~~~~~~~~~~~~~~~~~
 
-The following backend packages were removed:
+We removed several rarely-used or outdated backend packages from the core:
 
 * ``rapidsms.backends.bucket``
 * ``rapidsms.backends.email``
 * ``rapidsms.backends.irc``
 * ``rapidsms.backends.gsm``
+* ``rapidsms.backends.smtp``
 
-Removal of rapidsms.contrib.ajax
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The ``ajax`` app has been removed from ``rapidsms.contrib`` and therefore you must remove it from your ``INSTALLED_APPS``.
+Removal of ``rapidsms.contrib.ajax`` app
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Removal of OutgoingMessage.send
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The ``rapidsms.contrib.ajax`` app has been removed.
 
-Since the global router was removed in RapidSMS 0.9.7, ``OutgoingMessage.send`` will no longer work. You should use ``router.outgoing(message)`` instead. An exception will be raised if you use ``OutgoingMessage.send``::
+
+Removal of ``OutgoingMessage.send``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Since the global router was removed in RapidSMS 0.9.7, ``OutgoingMessage.send`` will no longer work. You should use ``router.outgoing(message)`` instead. An exception will be raised if you use ``OutgoingMessage.send``:
+
+.. code-block:: python
 
     >>> from rapidsms.messages.outgoing import OutgoingMessage
     >>> message = OutgoingMessage(conn, "hello?")
@@ -138,10 +180,13 @@ Since the global router was removed in RapidSMS 0.9.7, ``OutgoingMessage.send`` 
         raise NoRouterError('The global router has been removed from RapidSMS. '
     rapidsms.errors.NoRouterError: The global router has been removed from RapidSMS. You must send the this message by calling router.outgoing(message).
 
-Removal of send_message
-~~~~~~~~~~~~~~~~~~~~~~~
 
-Prior to 0.9.7, ``rapidsms.contrib.messaging`` contained a utility function to send a message to the Router process. This relied on the ``contrib.ajax``'s ``call_router`` function to pass messages to the Router via the ajax app running in the Router thread. send_message has been removed and you should now use ``Router.outgoing`` directly. Using send_message will now raise an exception::
+Removal of ``send_message``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Prior to 0.9.7, ``rapidsms.contrib.messaging`` contained a utility function to send a message to the Router process. This relied on the ``contrib.ajax``'s ``call_router`` function to pass messages to the Router via the ajax app running in the Router thread. send_message has been removed and you should now use ``Router.outgoing`` directly. Using send_message will now raise an exception:
+
+.. code-block:: python
 
     >>> from rapidsms.contrib.messaging.utils import send_message 
     >>> send_message(conn, "hello?")
@@ -150,42 +195,3 @@ Prior to 0.9.7, ``rapidsms.contrib.messaging`` contained a utility function to s
       File "../rapidsms/lib/rapidsms/contrib/messaging/utils.py", line 2, in send_message
         raise DeprecationWarning("rapidsms.contrib.messaging.utils is deprecated")
     DeprecationWarning: rapidsms.contrib.messaging.utils is deprecated
-
-Static media handled by django.contrib.staticfiles
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-RapidSMS 0.9.7 supports out-of-the-box use of ``django.core.staticfiles``
-(included by default in Django 1.3.x and above). The 
-``rapidsms.urls.static_media`` module has been removed in favor of using this
-app. New projects generated using ```rapidsms-admin.py startproject``` are 
-automatically configured to work with staticfiles. To upgrade existing 
-projects, follow these instructions:
-
-1. Add ``"django.contrib.staticfiles"`` to ``settings.INSTALLED_APPS``.
-2. Add ``"django.core.context_processors.static"`` to 
-   ``settings.CONTEXT_PROCESSORS``.
-3. Remove references to ``rapidsms.urls.static_media`` from ``urls.py`` or 
-   anywhere else in your project - this should now be handled by the classes
-   listed in ``settings.STATICFILES_FINDERS``. By default, RapidSMS uses these
-   finders:
-
-.. code-block:: python
-    
-    STATICFILES_FINDERS = (
-        "django.contrib.staticfiles.finders.FileSystemFinder",
-        "django.contrib.staticfiles.finders.AppDirectoriesFinder",
-    )
-
-4. Define the URL prefix for static files in ``settings.STATIC_URL``. This 
-   value should be distinct from ``settings.MEDIA_URL``.
-5. Define the absolute path to the directory to which static files should 
-   be collected in ``settings.STATIC_ROOT``.
-6. Each app should maintain its static media in the ``static/`` subfolder. (If 
-   you have any other directories in which static files are maintained, list 
-   them in ``settings.STATICFILES_DIRS``.) We have adopted the convention of 
-   keeping the app's static files in a subfolder of ``static/`` with the same
-   name as the app. For example, the static file located at 
-   ``myapp/static/myapp/stylesheets/myapp.css`` will be available at 
-   ``{{ STATIC_URL }}myapp/stylesheets/myapp.css``.
-7. Ensure that URLs to static files in your templates use ``{{ STATIC_URL }}``
-   rather than ``{{ MEDIA_URL }}`` to locate static files.

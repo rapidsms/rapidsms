@@ -1,4 +1,4 @@
-In order for this tutorial to make sense you first have to have a Multi-tech modem attached to your computer and we documented that process here: :doc:`Using The Multi-tech Modem With Windows <windows/modem>`
+In order for this tutorial to make sense you first have to have a Multi-tech modem attached to your computer and we documented that process here: :doc:`Using The Multi-tech Modem With Windows <windows-modem>`
 
 In order to get the MultiTech Modem to create a Data Connection and allow us to use the internet we discovered that you have to use the built in windows utility rasdial. It is not necessary to pass any AT commands to the modem. (In Linux you can use wvdial to do the same thing.)
 
