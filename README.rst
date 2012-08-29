@@ -50,7 +50,7 @@ The ``runrouter`` management command starts the router, sends and receives SMS (
 Getting Help
 ============
 
-Right now, RapidSMS isn't very well documented. We're working on that on `the RapidSMS wiki`_, but you may find more useful information on `the mailing list` for the time being.
+The current documentation is at http://rapidsms.readthedocs.org/. For community policies and ongoing dicussions, you can also take a look at `the RapidSMS wiki`_, but you may find more useful information on `the mailing list` for the time being.
 
 .. _the RapidSMS wiki: http://docs.rapidsms.org
 .. _the mailing list: http://groups.google.com/group/rapidsms
