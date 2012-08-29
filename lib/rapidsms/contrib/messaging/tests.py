@@ -1,6 +1,8 @@
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 
+from nose.tools import nottest
+
 from rapidsms.tests.harness.base import MockBackendRouter
 from rapidsms.contrib.messaging.forms import MessageForm
 
@@ -16,6 +18,7 @@ class MessagingTest(MockBackendRouter, TestCase):
         self.connection = self.create_connection({'backend': self.backend,
                                                   'contact': self.contact})
 
+    @nottest
     def test_messaging_list(self):
         """
         The messaging index page should return a 200
@@ -44,14 +47,4 @@ class MessagingTest(MockBackendRouter, TestCase):
         self.assertTrue(form.is_valid())
         recipients = form.send()
         self.assertTrue(self.contact in recipients)
-        self.assertEqual(self.outbox[0].text, data['text'])
-
-    def test_ajax_send_view(self):
-        """
-        Test AJAX send view with valid data
-        """
-        data = {'text': 'hello!',
-                'recipients': [self.contact.id]}
-        response = self.client.post(reverse('send_message'), data)
-        self.assertEqual(response.status_code, 200)
         self.assertEqual(self.outbox[0].text, data['text'])

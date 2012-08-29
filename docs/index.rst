@@ -56,6 +56,7 @@ Destinations
 * About this documentation
 * Team of core committers
 * How to get involved
+* :doc:`Running the RapidSMS core test suite <internals/contributing/testing>`
 * Release notes and upgrading instructions
 
 
@@ -90,6 +91,10 @@ A FAQ containing Frequently Asked Questions
 :doc:`Development <main/development>`
 
 How to get involved and contribute to RapidSMS
+
+:doc:`Testing <main/testing>`
+
+How to run the test suite for RapidSMS
 
 RapidSMS Apps
 ============== 
