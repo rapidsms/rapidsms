@@ -8,7 +8,10 @@ import rapidsms.contrib.messagelog.app
 
 class MessageLogTest(CreateDataTest, TestCase):
     def test_messagelog(self):
+        """Make sure Django 1.4 timezone aware datetimes don't disrupt _log"""
+
         app = rapidsms.contrib.messagelog.app.App(None)
-        # Invoke _log, make sure it doesn't blow up regardless of Django version
+        # Invoke _log, make sure it doesn't blow up regardless of Django
+        # version. See issue #171 for more details.
         contact = self.create_contact()
         app._log('I', {'contact': contact}, "text")
