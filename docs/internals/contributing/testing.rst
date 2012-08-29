@@ -11,16 +11,16 @@ The easiest way to run the unit tests in a new install is to run the following f
 	pip install -r pip-requires.txt
 	python run_tests.py --settings=tests.default
 
-The settings found in the /tests/default.py module are intended as the default settings file for running tests. You can tell the test runner what settings file to use with the --settings flag or by setting your DJANGO_SETTINGS_MODULE environment variable.
+The settings found in the /tests/default.py module are intended as the default settings file for running tests. You can tell the test runner what settings file to use with the --settings flag or by setting your ``DJANGO_SETTINGS_MODULE`` environment variable.
 
 Testing Multiple Environments
 =============================
 RapidSMS uses `Tox <http://tox.readthedocs.org/en/latest/index.html>`_ to run the test suite in a variety of environments. The environments included in the tox.ini file are:
 
- * `py2.6-1.3` - Test using Python 2.6 and Django 1.3.x
- * `py2.6-1.4` - Test using Python 2.6 and Django 1.4.x
- * `py2.7-1.3` - Test using Python 2.7 and Django 1.3.x
- * `py2.7-1.4` - Test using Python 2.7 and Django 1.4.x
+ * ``py2.6-1.3`` - Test using Python 2.6 and Django 1.3.x
+ * ``py2.6-1.4`` - Test using Python 2.6 and Django 1.4.x
+ * ``py2.7-1.3`` - Test using Python 2.7 and Django 1.3.x
+ * ``py2.7-1.4`` - Test using Python 2.7 and Django 1.4.x
 
 You can run any of the environments listed above using: ``tox -e <name>``. Using ``tox`` on its own runs the test suite against each of these environments.
 
