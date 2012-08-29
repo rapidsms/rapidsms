@@ -1,13 +1,14 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
+from nose.tools import assert_equals, nottest
 
-from nose.tools import assert_equals
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from django.test.client import Client
 
 
+@nottest
 def test_login():
     c = Client()
     login_url = reverse("rapidsms.views.login")
