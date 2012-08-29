@@ -56,6 +56,7 @@ Destinations
 * About this documentation
 * Team of core committers
 * How to get involved
+* :doc:`Running the RapidSMS core test suite <internals/contributing/testing>`
 * Release notes and upgrading instructions
 
 
@@ -91,6 +92,10 @@ A FAQ containing Frequently Asked Questions
 
 How to get involved and contribute to RapidSMS
 
+:doc:`Testing <main/testing>`
+
+How to run the test suite for RapidSMS
+
 RapidSMS Apps
 ============== 
 
@@ -124,6 +129,10 @@ Find out how you can edit this wiki and what markup it uses
 :doc:`Tutorial Videos <misc/tutorial-videos>`
 
 Tips on recording RapidSMS tutorial videos in Linux
+
+:doc:`Kannel Configuration <configuration/kannel>`
+
+Configuring RapidSMS to work with the Kannel SMS gateway
 
 :doc:`In Development <misc/indevelopment>`
 
