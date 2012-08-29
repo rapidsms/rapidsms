@@ -56,6 +56,7 @@ Destinations
 * About this documentation
 * Team of core committers
 * How to get involved
+* :doc:`Running the RapidSMS core test suite <internals/contributing/testing>`
 * Release notes and upgrading instructions
 
 
