@@ -2,7 +2,6 @@ import datetime
 
 from rapidsms.conf import settings
 from rapidsms.models import Connection, Backend
-from rapidsms.utils.modules import try_import
 
 
 def receive(text, backend_name=None, identity=None, connection=None,
@@ -19,7 +18,6 @@ def receive(text, backend_name=None, identity=None, connection=None,
     from rapidsms.messages import IncomingMessage
     message = IncomingMessage(connection, text, datetime.datetime.now(),
                               fields=fields)
-
     router = get_router()()
     router.start()
     router.incoming(message)
