@@ -1,6 +1,5 @@
 import datetime
 
-from rapidsms.conf import settings
 from rapidsms.models import Connection, Backend
 
 
