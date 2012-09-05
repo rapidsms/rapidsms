@@ -36,3 +36,4 @@ def get_router():
 def get_test_router():
     return import_class(getattr(settings, 'TEST_RAPIDSMS_ROUTER',
                         'rapidsms.router.blocking.BlockingRouter'))
+get_test_router.__test__ = False
