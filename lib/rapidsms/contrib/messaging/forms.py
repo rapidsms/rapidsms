@@ -2,7 +2,7 @@ from django import forms
 
 from rapidsms.models import Contact
 
-from rapidsms.router import receive
+from rapidsms.router import send
 
 
 class MessageForm(forms.Form):
@@ -16,6 +16,6 @@ class MessageForm(forms.Form):
 
 	def send(self):
 	    for recipient in self.cleaned_data['recipients']:
-	        receive(self.cleaned_data['text'],
-	                connection=recipient.default_connection)
+	        send(self.cleaned_data['text'],
+	             connection=recipient.default_connection)
 	    return self.cleaned_data['recipients']
