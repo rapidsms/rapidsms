@@ -5,8 +5,8 @@ from rapidsms.models import Connection, Backend
 from rapidsms.utils.modules import try_import
 
 
-def handle_incoming(text, backend_name=None, identity=None, connection=None,
-                    fields=None):
+def receive(text, backend_name=None, identity=None, connection=None,
+            fields=None):
     """
     Takes an incoming message from a backend and passes it to a router for
     processing.  If a ``connection`` is passed, ``backend_name`` and
@@ -27,7 +27,7 @@ def handle_incoming(text, backend_name=None, identity=None, connection=None,
     return message
 
 
-def handle_outgoing(text, backend_name=None, identity=None, connection=None):
+def send(text, backend_name=None, identity=None, connection=None):
     """
     Takes an outgoing message passes it to a router for processing.  If a 
     ``connection`` is passed, ``backend_name`` and ``identity`` are ignored.

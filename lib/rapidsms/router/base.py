@@ -275,3 +275,7 @@ class BaseRouter(object, LoggerMixin):
                 if continue_sending is False:
                     self.warning("Message cancelled")
                     return False
+
+        # send message using specified backend
+        msg.sent = self.backends[msg.connection.backend.name].send(msg)
+        return msg.sent
