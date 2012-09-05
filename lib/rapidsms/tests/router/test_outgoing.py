@@ -23,11 +23,3 @@ class OutgoingTest(MockBackendRouter, TestCase):
         self.router.outgoing(msg)
         self.assertTrue(msg.sent)
         self.assertEqual(msg, self.outbox[0])
-
-    def test_handle_outgoing_with_connection(self):
-        """
-        Router.handle_outgoing with a connection
-        """
-        self.router.handle_outgoing('hello!', connection=self.connection)
-        self.assertEqual('hello!', self.outbox[0].text)
-        self.assertEqual(self.connection, self.outbox[0].connection)

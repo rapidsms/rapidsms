@@ -2,7 +2,7 @@ from django.test import TestCase
 
 from rapidsms.messages.outgoing import OutgoingMessage
 from rapidsms.messages.incoming import IncomingMessage
-from rapidsms.messages.router_api import handle_incoming
+from rapidsms.router import receive
 
 from rapidsms.router.test import BlockingRouter
 from rapidsms.tests.harness.base import MockBackendRouter
@@ -22,11 +22,11 @@ class OutgoingTest(MockBackendRouter, TestCase):
         self.assertEqual(message.fields['extra-field'], fields['extra-field'])
 
     def test_saved_message_fields_handle_incoming(self):
-        """ Extra data should preserve through handle_incoming """
+        """ Extra data should preserve through router.receive """
         connection = self.create_connection()
         fields = {'extra-field': 'extra-value'}
-        message = handle_incoming('test incoming message',
-                                  connection=connection, fields=fields)
+        message = receive('test incoming message',
+                          connection=connection, fields=fields)
         self.assertTrue('extra-field' in message.fields)
         self.assertEqual(message.fields['extra-field'], fields['extra-field'])
 

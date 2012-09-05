@@ -1,15 +1,11 @@
-# this is here to get around circular imports for now.  methods here will
-# move to rapidsms.router once that gets revamped
 import datetime
 
-from ..conf import settings
-from ..router import get_router
-from ..models import Connection, Backend
-from ..utils.modules import try_import
+from rapidsms.conf import settings
+from rapidsms.models import Connection, Backend
 
 
-def handle_incoming(text, backend_name=None, identity=None, connection=None,
-                    fields=None):
+def receive(text, backend_name=None, identity=None, connection=None,
+            fields=None):
     """
     Takes an incoming message from a backend and passes it to a router for
     processing.  If a ``connection`` is passed, ``backend_name`` and
@@ -18,7 +14,8 @@ def handle_incoming(text, backend_name=None, identity=None, connection=None,
     if not connection:
         backend, _ = Backend.objects.get_or_create(name=backend_name)
         connection, _ = backend.connection_set.get_or_create(identity=identity)
-    from ..messages import IncomingMessage
+    from rapidsms.router import get_router
+    from rapidsms.messages import IncomingMessage
     message = IncomingMessage(connection, text, datetime.datetime.now(),
                               fields=fields)
     router = get_router()()
@@ -28,7 +25,7 @@ def handle_incoming(text, backend_name=None, identity=None, connection=None,
     return message
 
 
-def handle_outgoing(text, backend_name=None, identity=None, connection=None):
+def send(text, backend_name=None, identity=None, connection=None):
     """
     Takes an outgoing message passes it to a router for processing.  If a 
     ``connection`` is passed, ``backend_name`` and ``identity`` are ignored.
@@ -36,7 +33,8 @@ def handle_outgoing(text, backend_name=None, identity=None, connection=None):
     if not connection:
         backend, _ = Backend.objects.get_or_create(name=backend_name)
         connection, _ = backend.connection_set.get_or_create(identity=identity)
-    from ..messages import OutgoingMessage
+    from rapidsms.router import get_router
+    from rapidsms.messages import OutgoingMessage
     message = OutgoingMessage(connection, text)
     router = get_router()()
     router.start()

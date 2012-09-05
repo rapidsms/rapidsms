@@ -232,13 +232,3 @@ class LegacyRouter(BaseRouter):
         # we are no longer interested in this message... but some crazy
         # synchronous backends might be, so mark it as processed.
         msg.processed = True
-
-    def outgoing(self, msg):
-        """
-        Run the outgoing app phases on the message, and then send it now.
-        """
-        super(LegacyRouter, self).outgoing(msg)
-        backend_name = msg.connection.backend.name
-        msg.sent = router.backends[backend_name].send(msg)
-        if msg.sent: msg.sent_at = datetime.now()
-        return msg.sent
