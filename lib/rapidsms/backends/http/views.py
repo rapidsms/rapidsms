@@ -5,7 +5,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 
 from rapidsms.log.mixin import LoggerMixin
-from rapidsms.messages.router_api import handle_incoming
+from rapidsms.router import handle_incoming
 
 from .forms import GenericHttpForm
 

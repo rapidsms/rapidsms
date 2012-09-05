@@ -2,6 +2,8 @@ from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.importlib import import_module
 
+from rapidsms.router.api import handle_incoming, handle_outgoing
+
 __all__ = ['import_class', 'get_router', 'get_test_router']
 
 def import_class(import_path):

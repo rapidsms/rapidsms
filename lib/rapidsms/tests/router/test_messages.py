@@ -2,7 +2,7 @@ from django.test import TestCase
 
 from rapidsms.messages.outgoing import OutgoingMessage
 from rapidsms.messages.incoming import IncomingMessage
-from rapidsms.messages.router_api import handle_incoming
+from rapidsms.router import handle_incoming
 
 from rapidsms.router.test import BlockingRouter
 from rapidsms.tests.harness.base import MockBackendRouter

@@ -1,11 +1,8 @@
-# this is here to get around circular imports for now.  methods here will
-# move to rapidsms.router once that gets revamped
 import datetime
 
-from ..conf import settings
-from ..router import get_router
-from ..models import Connection, Backend
-from ..utils.modules import try_import
+from rapidsms.conf import settings
+from rapidsms.models import Connection, Backend
+from rapidsms.utils.modules import try_import
 
 
 def handle_incoming(text, backend_name=None, identity=None, connection=None,
@@ -18,9 +15,11 @@ def handle_incoming(text, backend_name=None, identity=None, connection=None,
     if not connection:
         backend, _ = Backend.objects.get_or_create(name=backend_name)
         connection, _ = backend.connection_set.get_or_create(identity=identity)
-    from ..messages import IncomingMessage
+    from rapidsms.router import get_router
+    from rapidsms.messages import IncomingMessage
     message = IncomingMessage(connection, text, datetime.datetime.now(),
                               fields=fields)
+
     router = get_router()()
     router.start()
     router.incoming(message)
@@ -36,7 +35,8 @@ def handle_outgoing(text, backend_name=None, identity=None, connection=None):
     if not connection:
         backend, _ = Backend.objects.get_or_create(name=backend_name)
         connection, _ = backend.connection_set.get_or_create(identity=identity)
-    from ..messages import OutgoingMessage
+    from rapidsms.router import get_router
+    from rapidsms.messages import OutgoingMessage
     message = OutgoingMessage(connection, text)
     router = get_router()()
     router.start()

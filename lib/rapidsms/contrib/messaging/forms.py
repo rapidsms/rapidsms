@@ -2,7 +2,7 @@ from django import forms
 
 from rapidsms.models import Contact
 
-from rapidsms.messages.router_api import handle_outgoing
+from rapidsms.router import handle_outgoing
 
 
 class MessageForm(forms.Form):
