@@ -17,7 +17,7 @@ You can extend any outgoing message using OutgoingMessage.append(self, string). 
 
     message.append('come back soon!')
 
-You can insert variables using OutgoingMessage.append(self, template, **kwargs). For example::
+You can insert variables using `OutgoingMessage.append(self, template, **kwargs)`. For example::
 
     message.append('come back in %(num_days)s days!', {'num_days':3})
 
@@ -28,7 +28,7 @@ aka writing apps that can support multiple different translations
 
 Mark all strings needing translation in web template html, apps.py, and views.py
 
-For web templates (*.html), this means that you'll need to:
+For web templates (\*.html), this means that you'll need to:
 * Add `{% load i18n %}` to the top
 * Tag strings like `{% trans "hello world" %}`
 * For web views (typically views.py) and sms apps (app.py), this means that you will add:

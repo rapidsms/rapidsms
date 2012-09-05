@@ -68,7 +68,7 @@ You should see a file called ".gitconfig" appear in your home directory with thi
 Installing RapidSMS
 --------------------
 
-Go to :doc:`Installation <../installation>` for more info
+Go to :doc:`Installation <../main/installation>` for more info
 
 Working with the code in Eclipse
 ---------------------------------

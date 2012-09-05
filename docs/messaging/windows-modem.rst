@@ -94,7 +94,7 @@ Your multitech modem is now able to access the internet over the mobile gprs net
 Notes
 ======
 
-* we used the number *99# and no username or password for MTN
-* we used the number *99***1# and no username or password for Zain
+* we used the number `*99#` and no username or password for MTN
+* we used the number `*99***1#` and no username or password for Zain
 * we used com11 and had to disconnect hyperterminal to access to it.
 * Only one type of service can access the port at a time.
