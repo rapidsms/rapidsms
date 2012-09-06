@@ -7,7 +7,7 @@ from django.utils.translation.trans_real import translation
 from .base import MessageBase
 from ..errors import NoRouterError
 from ..conf import settings
-from .router_api import handle_outgoing
+from rapidsms.router.api import send
 
 
 class OutgoingMessage(MessageBase):
@@ -75,5 +75,5 @@ class OutgoingMessage(MessageBase):
         the new interface for sending messages.
         """
         # TODO decide if this API is deprecated and add a deprecation warning if so
-        handle_outgoing(self.text, connection=self.connection)
+        send(self.text, connection=self.connection)
         self.sent = True
