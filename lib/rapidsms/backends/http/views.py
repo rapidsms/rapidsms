@@ -5,7 +5,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 
 from rapidsms.log.mixin import LoggerMixin
-from rapidsms.messages.router_api import handle_incoming
+from rapidsms.router import receive
 
 from .forms import GenericHttpForm
 
@@ -40,7 +40,7 @@ class BaseHttpBackendView(FormMixin, LoggerMixin, ProcessFormView):
         router for processing.
         """
         data = form.get_incoming_data()
-        handle_incoming(data['text'], self.backend_name, data['identity'])
+        receive(data['text'], self.backend_name, data['identity'])
         return HttpResponse('OK')
 
     def form_invalid(self, form):

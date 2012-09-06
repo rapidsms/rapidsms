@@ -10,7 +10,7 @@ A brief overview of the structure of the source code for RapidSMS
 
 A brief overview describing the technical architecture of RapidSMS. What is an app, what is a backend, etc
 
-:doc:`Backends Overview <../design/backends-overview.rst>`
+:doc:`Backends Overview <../design/backends-overview>`
 
 A brief overview of backends and how to add them and remove them from RapidSMS
 
