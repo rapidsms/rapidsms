@@ -111,11 +111,7 @@ class BaseRouter(object, LoggerMixin):
         """
 
         for app in self.apps:
-            try:
-                app.start()
-
-            except:
-                app.exception()
+            app.start()
 
     def _stop_all_apps(self):
         """
@@ -123,11 +119,7 @@ class BaseRouter(object, LoggerMixin):
         """
 
         for app in self.apps:
-            try:
-                app.stop()
-
-            except:
-                app.exception()
+            app.stop()
 
     def start(self):
         """
@@ -211,12 +203,8 @@ class BaseRouter(object, LoggerMixin):
                     self.debug("In %s app" % app)
                     handled = False
 
-                    try:
-                        func = getattr(app, phase)
-                        handled = func(msg)
-
-                    except Exception, err:
-                        app.exception()
+                    func = getattr(app, phase)
+                    handled = func(msg)
 
                     # during the _filter_ phase, an app can return True
                     # to abort ALL further processing of this message
