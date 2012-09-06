@@ -72,13 +72,16 @@ class MockBackendRouter(CustomRouter):
     Test exentions with BlockingRouter and MockBackend, and utility functions
     to examine outgoing messages
     """
-    backends = {'mock': {'ENGINE': backend.MockBackend}}
+    backends = {'mockbackend': {'ENGINE': backend.MockBackend}}
 
     def _post_rapidsms_teardown(self):
         super(MockBackendRouter, self)._post_rapidsms_teardown()
-        if hasattr(backend, 'outbox'):
-            backend.outbox = []
+        self.clear()
 
     @property
     def outbox(self):
         return backend.outbox
+
+    def clear(self):
+        if hasattr(backend, 'outbox'):
+            backend.outbox = []
