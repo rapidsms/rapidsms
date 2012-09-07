@@ -29,13 +29,30 @@ The major highlights of RapidSMS 0.10.0 are:
 A new router
 ~~~~~~~~~~~~
 
-RapidSMS 0.10.0 supplies the two built-in routers, which extend from ``rapidsms.router.base.BaseRouter``:
-
-* **BlockingRouter**: The default router that processes messages in real time.
-* **LegacyRouter**: The legacy, blocking router that spins up threads for apps and backends. This should only be use for legacy purposes.
+RapidSMS 0.10.0 supplies one built-in router, **BlockingRouter**. This is the default router that processes messages in real time.
 
 We also support creation of custom router classes.  All routers should extend from the ``BaseRouter`` class.
 
+
+Removal of threaded router
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+In 0.9.x, the RapidSMS router used Python's `threading
+<http://docs.python.org/library/threading.html>`_ module to encapsulate
+backends into indepedent threads. Using this model, backends can operate
+independently from one another, blocking for I/O and waiting for external
+service calls. Many of the original backends operated in this way. For example,
+``rapidsms.backends.http`` started a `HTTP server
+<https://github.com/rapidsms/rapidsms/blob/
+a7a0fccffa582d5c3cd320bd659cd2bd95785a51/lib/rapidsms/backends/http.py>`_ to
+listen on a specified port and ``rapidsms.backends.gsm`` communicated directly
+with a `GSM modem
+<https://github.com/rapidsms/rapidsms/blob/a7a0fccffa582d5c3cd320
+bd659cd2bd95785a51/lib/rapidsms/backends/gsm.py>`_. While this method provided RapidSMS with a routing architecture, the need for a non-threaded system grew due to the following reasons:
+
+* Thread interaction was complicated and not always intuitive.
+* If the route process died unexpectedly, all backends (and hence message  processing) were brought offline.
+* Automated testing was difficult and inefficient, because the router (and all its threads) needed to be started/stopped for each test.
 
 Added RAPIDSMS_ROUTER setting
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
