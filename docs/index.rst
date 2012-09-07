@@ -42,6 +42,12 @@ RapidSMS is a free and open-source framework for dynamic data collection, logist
 Destinations
 =============
 
+**Getting Started**
+
+* Overview
+* Installation
+* Tutorial
+
 **Architecture**
 
 * Overview
