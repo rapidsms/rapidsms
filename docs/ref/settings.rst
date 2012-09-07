@@ -10,7 +10,7 @@ default values.
 RAPIDSMS_ROUTER
 ----------------------
 
-.. versionadded:: 0.9.7
+.. versionadded:: 0.10.0
 
 Default: ``'rapidsms.router.blocking.BlockingRouter'``
 

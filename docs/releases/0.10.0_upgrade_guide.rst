@@ -1,17 +1,17 @@
-===================================================
-Migrating your Project from RapidSMS 0.9.6 to 0.9.7
-===================================================
+====================================================
+Migrating your Project from RapidSMS 0.9.6 to 0.10.0
+====================================================
 
-RapidSMS 0.9.7 breaks compatibility with 0.9.6 in some areas. This guide will help you port 0.9.6 projects and apps to 0.9.7. We describe the changes that most users will need to make, as well as `less-common compatibility issues`_ to look for if your code is still breaking.
+RapidSMS 0.10.0 breaks compatibility with 0.9.6 in some areas. This guide will help you port 0.9.6 projects and apps to 0.10.0. We describe the changes that most users will need to make, as well as `less-common compatibility issues`_ to look for if your code is still breaking.
 
 .. Note::
-   See the `0.9.7 release notes`_. That document explains the new features in RapidSMS more deeply; this porting guide is more concerned with helping you quickly update your code.
+   See the `0.10.0 release notes`_. That document explains the new features in RapidSMS more deeply; this porting guide is more concerned with helping you quickly update your code.
 
 
 Upgrade to Django>=1.3.
 =======================
 
-RapidSMS 0.9.7 will only support Django 1.3 or newer.
+RapidSMS 0.10.0 will only support Django 1.3 or newer.
 
 - `Django 1.3 release notes`_
 - `Django 1.4 release notes`_
@@ -20,7 +20,7 @@ RapidSMS 0.9.7 will only support Django 1.3 or newer.
 Choose a router.
 ================
 
-The global router located at ``rapidsms.router.Router`` has been removed. All routers now extend from a new base class, ``rapidsms.router.base.BaseRouter``. RapidSMS 0.9.7 offers two built-in router options, as well as support for third-party routers.
+The global router located at ``rapidsms.router.Router`` has been removed. All routers now extend from a new base class, ``rapidsms.router.base.BaseRouter``. RapidSMS 0.10.0 offers two built-in router options, as well as support for third-party routers.
 
 A new setting, ``RAPIDSMS_ROUTER``, allows you to specify the primary router class to use. A new utility function, ``rapidsms.router.get_router``, retrieves the router defined in ``RAPIDSMS_ROUTER`` so that your project can remain router-independent.
 
@@ -35,14 +35,14 @@ We have moved the legacy Router code, with functionality largely unchanged, to `
 BlockingRouter
 ~~~~~~~~~~~~~~
 
-``rapidsms.router.blocking.BlockingRouter`` is the default value for ``RAPIDSMS_ROUTER``. We strongly recommend moving to this router over the legacy router, as it offers improvements enumerated in the `0.9.7 release notes`_.
+``rapidsms.router.blocking.BlockingRouter`` is the default value for ``RAPIDSMS_ROUTER``. We strongly recommend moving to this router over the legacy router, as it offers improvements enumerated in the `0.10.0 release notes`_.
 
 Custom Router
 ~~~~~~~~~~~~~
 
 ``BlockingRouter`` is sufficient for development or for small applications. However, it will not scale to applications with many concurrent users. If you are running such an application, you might consider writing your own router or finding a third-party router. All custom routers should extend from ``rapidsms.router.base.BaseRouter``.
 
-.. Two popular existing third-party routers are `threadless-router`_ and `rapidsms-httprouter`_. These do not yet support RapidSMS 0.9.7.
+.. Two popular existing third-party routers are `threadless-router`_ and `rapidsms-httprouter`_. These do not yet support RapidSMS 0.10.0.
 
 
 Remove calls to ``OutgoingMessage.send``.
@@ -89,7 +89,7 @@ If you used any of these backends, you must update your code to use a different 
 Use ``django.contrib.staticfiles``.
 ===================================
 
-The ``rapidsms.urls.static_media`` module has been removed from RapidSMS 0.9.7 in favor of using ``django.core.staticfiles`` (which is included by default in Django 1.3.x and above). To upgrade your project, take the following steps:
+The ``rapidsms.urls.static_media`` module has been removed from RapidSMS 0.10.0 in favor of using ``django.core.staticfiles`` (which is included by default in Django 1.3.x and above). To upgrade your project, take the following steps:
 
 1. Add ``"django.contrib.staticfiles"`` to ``settings.INSTALLED_APPS``.
 2. Add ``"django.core.context_processors.static"`` to ``settings.CONTEXT_PROCESSORS``.
@@ -117,11 +117,11 @@ The following changes are smaller, more localized changes. They should only affe
 TestScript
 ~~~~~~~~~~
 
-Prior to 0.9.7, ``TestScript`` would instantiate the routing process (with blocking backends) to allow for testing of the entire routing stack. In the new release, ``TestScript`` has been updated to work with ``BlockingRouter``. In most cases, the changes to the ``TestScript`` class should not affect how you write your test code.
+Prior to 0.10.0, ``TestScript`` would instantiate the routing process (with blocking backends) to allow for testing of the entire routing stack. In the new release, ``TestScript`` has been updated to work with ``BlockingRouter``. In most cases, the changes to the ``TestScript`` class should not affect how you write your test code.
 
 
-.. _RapidSMS 0.9.7: https://github.com/rapidsms/rapidsms/
-.. _0.9.7 release notes: http://rapidsms.readthedocs.org/en/feature-new-routing/releases/0.9.7.html
+.. _RapidSMS 0.10.0: https://github.com/rapidsms/rapidsms/
+.. _0.10.0 release notes: http://rapidsms.readthedocs.org/en/feature-new-routing/releases/0.10.0.html
 .. _Django 1.3 release notes: https://docs.djangoproject.com/en/dev/releases/1.3/
 .. _Django 1.4 release notes: https://docs.djangoproject.com/en/dev/releases/1.4/
 .. _threadless-router: https://github.com/caktus/rapidsms-threadless-router

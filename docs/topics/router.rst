@@ -33,7 +33,7 @@ settings file. Here's an explanation of all available values for
 BlockingRouter
 --------------
 
-.. versionadded:: 0.9.7
+.. versionadded:: 0.10.0
 
 The ``BlockingRouter`` is the most basic and easy to use router included with
 RapidSMS. For this reason it is also the default router. As it's name suggests,
@@ -78,7 +78,7 @@ In this scenario, these settings were used::
 LegacyRouter
 ------------
 
-.. versionadded:: 0.9.7
+.. versionadded:: 0.10.0
 
 The ``LegacyRouter`` is a port of the default (and only) router in RapidSMS
 0.9.6a and earlier.

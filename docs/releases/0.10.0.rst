@@ -1,35 +1,35 @@
-================================================
-RapidSMS 0.9.7 release notes - UNDER DEVELOPMENT
-================================================
+=================================================
+RapidSMS 0.10.0 release notes - UNDER DEVELOPMENT
+=================================================
 
 .. ATTENTION::
-  This page documents release notes for the as-yet-unreleased RapidSMS 0.9.7. As such, it's tentative and subject to change. It provides up-to-date information for those who are following trunk.
+  This page documents release notes for the as-yet-unreleased RapidSMS 0.10.0. As such, it's tentative and subject to change. It provides up-to-date information for those who are following trunk.
 
-Welcome to RapidSMS 0.9.7!
+Welcome to RapidSMS 0.10.0!
 
-These release notes cover the new features in 0.9.7, as well as some `backwards-incompatible-changes`_ you'll want to be aware of when upgrading from RapidSMS 0.9.6a or older versions. We also provide a :doc:`migration guide <0.9.7_upgrade_guide>` to help you port your 0.9.6 projects and apps to 0.9.7 to take advantage of the new features.
+These release notes cover the new features in 0.10.0, as well as some `backwards-incompatible-changes`_ you'll want to be aware of when upgrading from RapidSMS 0.9.6a or older versions. We also provide a :doc:`migration guide <0.10.0_upgrade_guide>` to help you port your 0.9.6 projects and apps to 0.10.0 to take advantage of the new features.
 
 
 Overview
 ========
 
-RapidSMS 0.9.7's focus has mostly been on decoupling the RapidSMS route process in several key places to begin processing all SMSes in normal HTTP requests. This also includes making it possible to swap the Router class that RapidSMS uses via a setting in the settings file. The key changes are as follows:
+RapidSMS 0.10.0's focus has mostly been on decoupling the RapidSMS route process in several key places to begin processing all SMSes in normal HTTP requests. This also includes making it possible to swap the Router class that RapidSMS uses via a setting in the settings file. The key changes are as follows:
 
 * Removal of the bucket, email, irc, gsm, and smtp backends. 
 * Dividing the Router logic into BaseRouter, BlockingRouter, and LegacyRouter classes.
 * ...
 
 
-What's new in RapidSMS 0.9.7
-============================
+What's new in RapidSMS 0.10.0
+=============================
 
-The major highlights of RapidSMS 0.9.7 are:
+The major highlights of RapidSMS 0.10.0 are:
 
 
 A new router
 ~~~~~~~~~~~~
 
-RapidSMS 0.9.7 supplies the two built-in routers, which extend from ``rapidsms.router.base.BaseRouter``:
+RapidSMS 0.10.0 supplies the two built-in routers, which extend from ``rapidsms.router.base.BaseRouter``:
 
 * **BlockingRouter**: The default router that processes messages in real time.
 * **LegacyRouter**: The legacy, blocking router that spins up threads for apps and backends. This should only be use for legacy purposes.
@@ -109,7 +109,7 @@ Added ``MockBackendRouter`` class
 Updated ``TestScript``
 ~~~~~~~~~~~~~~~~~~~~~~
 
-Prior to 0.9.7, ``TestScript`` would instantiate the route process (with blocking backends) to allow for testing of the entire routing stack. This was a useful function, but in practice was unstable and caused tests to hang indefinitely. In 0.9.7, ``TestScript`` has been updated to work with ``BlockingRouter``, and it functions much in the same way as before. Here's an example testing the EchoApp:
+Prior to 0.10.0, ``TestScript`` would instantiate the route process (with blocking backends) to allow for testing of the entire routing stack. This was a useful function, but in practice was unstable and caused tests to hang indefinitely. In 0.10.0, ``TestScript`` has been updated to work with ``BlockingRouter``, and it functions much in the same way as before. Here's an example testing the EchoApp:
 
 .. code-block:: python
     :linenos:
@@ -126,10 +126,10 @@ Prior to 0.9.7, ``TestScript`` would instantiate the route process (with blockin
 
 .. _backwards-incompatible-changes:
 
-Backwards-incompatible changes in RapidSMS 0.9.7
-================================================
+Backwards-incompatible changes in RapidSMS 0.10.0
+=================================================
 
-In the goal of improving the RapidSMS core, we have made a number of backwards-incompatible changes. If you have apps written against RapidSMS 0.9.6 that you need to port, see our :doc:`migration guide <0.9.7_upgrade_guide>`.
+In the goal of improving the RapidSMS core, we have made a number of backwards-incompatible changes. If you have apps written against RapidSMS 0.9.6 that you need to port, see our :doc:`migration guide <0.10.0_upgrade_guide>`.
 
 
 Supporting Django 1.3+
@@ -141,7 +141,7 @@ RapidSMS is no longer compatible with any version of Django prior to 1.3.
 Static media handled by django.contrib.staticfiles
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-RapidSMS 0.9.7 supports out-of-the-box use of ``django.core.staticfiles`` (included by default in Django 1.3.x and above). The ``rapidsms.urls.static_media`` module has been removed in favor of using this app. New projects generated using ``rapidsms-admin.py startproject`` are automatically configured to work with staticfiles. See the :doc:`migration guide <0.9.7_upgrade_guide>` for more information on upgrading existing projects.
+RapidSMS 0.10.0 supports out-of-the-box use of ``django.core.staticfiles`` (included by default in Django 1.3.x and above). The ``rapidsms.urls.static_media`` module has been removed in favor of using this app. New projects generated using ``rapidsms-admin.py startproject`` are automatically configured to work with staticfiles. See the :doc:`migration guide <0.10.0_upgrade_guide>` for more information on upgrading existing projects.
 
 
 .. _completely removed all other backends:
@@ -167,7 +167,7 @@ The ``rapidsms.contrib.ajax`` app has been removed.
 Removal of ``OutgoingMessage.send``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Since the global router was removed in RapidSMS 0.9.7, ``OutgoingMessage.send`` will no longer work. You should use ``router.outgoing(message)`` instead. An exception will be raised if you use ``OutgoingMessage.send``:
+Since the global router was removed in RapidSMS 0.10.0, ``OutgoingMessage.send`` will no longer work. You should use ``router.outgoing(message)`` instead. An exception will be raised if you use ``OutgoingMessage.send``:
 
 .. code-block:: python
 
@@ -184,7 +184,7 @@ Since the global router was removed in RapidSMS 0.9.7, ``OutgoingMessage.send`` 
 Removal of ``send_message``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Prior to 0.9.7, ``rapidsms.contrib.messaging`` contained a utility function to send a message to the Router process. This relied on the ``contrib.ajax``'s ``call_router`` function to pass messages to the Router via the ajax app running in the Router thread. send_message has been removed and you should now use ``Router.outgoing`` directly. Using send_message will now raise an exception:
+Prior to 0.10.0, ``rapidsms.contrib.messaging`` contained a utility function to send a message to the Router process. This relied on the ``contrib.ajax``'s ``call_router`` function to pass messages to the Router via the ajax app running in the Router thread. send_message has been removed and you should now use ``Router.outgoing`` directly. Using send_message will now raise an exception:
 
 .. code-block:: python
 

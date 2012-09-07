@@ -161,7 +161,7 @@ Table of Contents
 =================
 
 .. toctree::
-   releases/0.9.7.rst
+   releases/0.10.0.rst
 
 
 Indices and tables
