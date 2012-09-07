@@ -60,7 +60,7 @@ Destinations
 
 * :doc:`Settings <ref/settings>`
 * Extending core RapidSMS models
-* Testing
+* :doc:`Testing <topics/testing>`
 * Deployment
 
 **RapidSMS contrib applications**
