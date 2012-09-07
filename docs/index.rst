@@ -48,7 +48,7 @@ Destinations
 * :doc:`Router <topics/router>`
 * Applications
 * Backends
-* Messages
+* :doc:`Messaging <topics/messaging>`
 
 **The development process**
 
