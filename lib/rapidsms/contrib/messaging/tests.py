@@ -14,7 +14,7 @@ class MessagingTest(MockBackendRouter, TestCase):
 
     def setUp(self):
         self.contact = self.create_contact()
-        self.backend = self.create_backend({'name': 'mock'})
+        self.backend = self.create_backend({'name': 'mockbackend'})
         self.connection = self.create_connection({'backend': self.backend,
                                                   'contact': self.contact})
 

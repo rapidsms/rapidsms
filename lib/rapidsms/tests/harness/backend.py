@@ -11,8 +11,11 @@ class MockBackend(BackendBase):
 
     def __init__(self, *args, **kwargs):
         super(MockBackend, self).__init__(*args, **kwargs)
-        self.messages = []
+        self.clear()
 
+    def clear(self):
+        self.messages = []
+    
     def send(self, msg):
         self.messages.append(msg)
         outbox.append(msg)

@@ -7,6 +7,7 @@ from django.utils.translation.trans_real import translation
 from .base import MessageBase
 from ..errors import NoRouterError
 from ..conf import settings
+from rapidsms.router.api import send
 
 
 class OutgoingMessage(MessageBase):
@@ -73,6 +74,6 @@ class OutgoingMessage(MessageBase):
         Raises an exception to help developers upgrade legacy code to use
         the new interface for sending messages.
         """
-        raise NoRouterError('The global router has been removed from RapidSMS. '
-                            'You must send the this message by calling '
-                            'router.outgoing(message).')
+        # TODO decide if this API is deprecated and add a deprecation warning if so
+        send(self.text, connection=self.connection)
+        self.sent = True

@@ -1,37 +1,24 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-
-import urllib
-import urllib2
-from copy import copy
-from django.utils.simplejson import JSONDecoder
-from rapidsms.conf import settings
-from . import exceptions
+import warnings
+from rapidsms.router import get_router
 
 
 def call_router(app, action, **kwargs):
     """
     TODO: docs
     """
-
+    warnings.warn("call_router is deprecated and will be removed in a future "
+                  "release. Please see the docs.", DeprecationWarning, stacklevel=2)
     post = kwargs if len(kwargs) else None
-    (status, content_type, body) = request(
-        "%s/%s" % (app, action),
-        post=post)
+    return request("%s/%s" % (app, action), post=post)
 
-    # if the response was encoded json, decode it before returning
-    if content_type == "application/json":
-        return JSONDecoder().decode(body)
 
-    # return plain text as-is
-    elif content_type == "text/plain":
-        return body
-
-    # other content types must be dealt with by 'request'
-    raise exceptions.MalformedRouterResponse(
-        "The call_router helper can only return decoded JSON or plain" +\
-        "text responses. The content_type was: %s" % content_type)
+def _find_app(app_name):
+    for app in get_router().apps:
+        if app.name == name:
+            app = app
 
 
 def request(path, get=None, post=None, encoding=None):
@@ -41,54 +28,34 @@ def request(path, get=None, post=None, encoding=None):
     returned HTTP status, content-type, and body.
     """
 
-    # build the url to the http server running in the app. encoding
-    # doesn't apply here, since the query string only supports ASCII:
-    # http://www.w3.org/TR/REC-html40/interact/forms.html#idx-POST-1
-    query = "?%s" % urllib.urlencode(get) if (get is not None) else ""
-    url = "http://%s:%d/%s%s" % (
-        settings.AJAX_PROXY_HOST,
-        settings.AJAX_PROXY_PORT,
-        path, query)
+    path_parts = path.split("/")
 
-    # if *post* quacks like a QuerySet, it can urlencode itself, taking
-    # its own character encoding into account. which is nice.
-    if hasattr(post, "urlencode"):
-        encoding = post.encoding()
-        data = post.urlencode()
+    # abort if the url didn't look right
+    if len(path_parts) != 2:
+        str_ = "Malformed URL: %s" % url
+        raise Exception(str_)
 
-    # ...but if it's just a dict, we have no idea what we're encoding,
-    # so let's pretend that it's the django default
+    # resolve the first part of the url into an app (via the
+    # router), and abort if it wasn't valid
+    app_name = path_parts[0]
+    app = _find_app(app_name)
+    if app is None:
+        str_ = "Invalid app: %s" % app_name
+        raise Exception(str_)
+
+    # same for the request name within the app
+    meth_name = "ajax_%s_%s" % (self.command, path_parts[1])
+    if not hasattr(app, meth_name):
+        str_ = "Invalid method: %s.%s" %\
+            (app.__class__.__name__, meth_name)
+        raise Exception(str_)
+
+    # everything appears to be well, so call the  target method,
+    # and return the response (as a string, for now)
+    method = getattr(app, meth_name)
+    if get:
+        return method(**get)
+    elif post:
+        return method(**post)
     else:
-        encoding = settings.DEFAULT_CHARSET
-        # urlencode only takes bytes, so we need to encode
-        # whatever charset we're using as bytes
-        data = None
-        if post is not None:
-            encoded_post = dict([k, v.encode(encoding)] for k, v in post.items())
-            data = urllib.urlencode(encoded_post)
-    
-    # build the content-type header, including the character set
-    # that we just encoded the POST data into
-    headers = {
-        "content-type": "%s; charset=%s" % (
-            "application/x-www-form-urlencoded",
-            encoding) }
-
-    try:
-
-        # do the subrequest; this might raise
-        req = urllib2.Request(url, data, headers)
-        res = urllib2.urlopen(req)
-
-        # it worked!
-        content_type = res.info()["content-type"]
-        return (res.code, content_type, res.read())
-
-    # the server returned an error
-    except urllib2.HTTPError, err:
-        raise exceptions.RouterError(
-            err.code, err.info()["content-type"], err.read())
-
-    # the router couldn't be reached
-    except urllib2.URLError, err:
-        raise exceptions.RouterNotResponding
+        return method()

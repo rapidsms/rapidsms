@@ -41,7 +41,7 @@ class TestScript(MockBackendRouter):
         kwargs = {}
         if self.apps:
             kwargs['apps'] = self.apps
-        self.backend = self.create_backend({'name': 'mock'})
+        self.backend = self.create_backend({'name': 'mockbackend'})
         self.router = BlockingRouter(**kwargs)
         self.router.start()
 
@@ -93,8 +93,10 @@ class TestScript(MockBackendRouter):
     def _checkAgainstMessage(self, num, txt, last_msg, msg):
         self.assertEquals(msg.peer, num, "Expected to respond to "
                           "%s, but message was sent to %s.\n"
-                          "Message: '%s'" % (num, msg.peer,
-                                             last_msg))
+                          "\nMessage: %s\nReceived "
+                          "text: %s\nExpected text: %s\n" % (num, msg.peer,
+                                             last_msg, msg.text, txt))
+                                             
         self.assertEquals(msg.text, txt, "\nMessage: %s\nReceived "
                           "text: %s\nExpected text: %s\n" %
                           (last_msg, msg.text,txt))
@@ -127,4 +129,5 @@ class TestScript(MockBackendRouter):
             last_msg = txt
 
     def runScript(self, script):
+        self.clear() # make sure the outbox is empty
         self.runParsedScript(self.parseScript(script))
