@@ -1,7 +1,12 @@
 Testing RapidSMS Applications
 =============================
 
-Automated testing is an extremely useful tool and, therefore, we recomend writing tests for all RapidSMS applications and projects. Tests provide a way to repeatedly ensure that your code functions as expected and that new code doesn't break existing functionality.
+Automated testing is an extremely useful tool and, therefore, we recomend
+writing tests for all RapidSMS applications and projects. Tests provide a way
+to repeatedly ensure that your code functions as expected and that new code
+doesn't break existing functionality.
+
+This document outlines the tools and best practices for writing RapidSMS tests.
 
 Prerequisites
 -------------
@@ -20,10 +25,14 @@ Additionally, since much of RapidSMS is Django-powered, these docs will not
 cover testing standard Django aspects (views, models, etc.), but rather focus
 on the areas unique to RapidSMS itself, specifically messaging and the router.
 
+.. _what to test
+
 What To Test
 ************
 
-Let's start with an example. Say you've written a quiz application, ``QuizMe``, that will send a question if you text the letter ``q`` to RapidSMS::
+Let's start with an example. Say you've written a quiz application,
+``QuizMe``, that will send a question if you text the letter ``q`` to
+RapidSMS::
 
     You: q
     RapidSMS: What color is the ocean? Answer with 'q ocean <answer>'
@@ -37,13 +46,16 @@ Additionally, if no questions exist, the application will inform you::
     You: q
     RapidSMS: No questions exist.
 
-While the application is conceptually simple, determining what and how to test can be a daunting task. To start, let's look a few areas that we could test:
+While the application is conceptually simple, determining what and how to test
+can be a daunting task. To start, let's look a few areas that we could test:
 
 * **Message parsing.** How does the application know the difference between ``q`` and ``q ocean blue``? Will it be confused by other input, like ``q   ocean   blue`` or ``quality``?
 * **Workflow.** What happens when there aren't any questions in the database?
 * **Logic testing.** Is the answer correct?
 
-How to test these aspects is another question. Generally speaking, it's best practice, and conceptually the easiest, to test the smallest units of your code. For example, say you have a function to test if an answer is correct::
+How to test these aspects is another question. Generally speaking, it's best
+practice, and conceptually the easiest, to test the smallest units of your
+code. For example, say you have a function to test if an answer is correct::
 
     class QuizMeApp(AppBase):
 
@@ -54,9 +66,13 @@ How to test these aspects is another question. Generally speaking, it's best pra
             answer = question.correct_answer.lower()
             return guess == answer
 
-Writing a test that uses ``check_answer`` directly will verify the correctness of that function alone. With that test written, you can write higher level tests knowing that ``check_answer`` is covered and will only fail if the logic changes inside of it.
+Writing a test that uses ``check_answer`` directly will verify the correctness
+of that function alone. With that test written, you can write higher level
+tests knowing that ``check_answer`` is covered and will only fail if the logic
+changes inside of it.
 
-The following sections describe the various methods and tools to use for testing your RapidSMS applications.
+The following sections describe the various methods and tools to use for
+testing your RapidSMS applications.
 
 Testing Methods
 ---------------
@@ -103,3 +119,67 @@ types of input.
 This method is useful for testing specific, low-level components of your
 application. Since the routing architecture isn't loaded, these tests will
 also execute very quickly.
+
+Scripted Tests
+**************
+
+You can write high-level integration tests for your applications by using the
+``TestScript`` framework. ``TestScript`` allows you to write message *scripts*
+(akin to a movie script), similar to our example in the `What To Test`_ section
+above::
+
+    You: q
+    RapidSMS: What color is the ocean? Answer with 'q ocean <answer>'
+    You: q ocean blue
+    RapidSMS: Correct!
+
+The main difference is the syntax::
+
+    1112223333 > q
+    1112223333 < What color is the ocean? Answer with 'q ocean <answer>'
+    1112223333 > q ocean blue
+    1112223333 < Correct!
+
+The script is interpreted like so:
+
+* **number > message-text**
+    * Represents an incoming message from **number** whose contents is **message-text**
+* **number < message-text**
+    * Represents an outoing message sent to **number** whose contents is **message-text**
+
+The entire script is parsed and executed against the RapidSMS router.
+
+Example
+~~~~~~~
+
+To use this functionality in your test suite, you simply need to extend from
+``TestScript`` to get access to ``runScript``::
+
+    from django.test import TestCase
+    from rapidsms.tests.harness.scripted import TestScript
+    from quizme.app import QuizMeApp
+    from quizme.models import Question
+
+    class QuizMeScriptTest(TestScript, TestCase):
+        apps = (QuizMeApp,)
+
+        def test_correct_script(self):
+            """Test full script with correct answer"""
+
+            Question.objects.create(short_name='ocean',
+                                    text="What color is the ocean?",
+                                    correct_answer='Blue')
+            self.runScript("""
+                1112223333 > q
+                1112223333 < What color is the ocean? Answer with 'q ocean <answer>'
+                1112223333 > q ocean blue
+                1112223333 < Correct!
+            """)
+
+This example uses ``runScript`` to execute the interaction against the RapidSMS
+router. ``apps`` must be defined at the class level to tell the test suite
+which apps the router should load. In this case, only one app was required,
+``QuizMeApp``.
+
+This test method is particularly useful when executing high-level integration
+tests across multiple RapidSMS applications.
