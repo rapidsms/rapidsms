@@ -6,6 +6,7 @@ from django.conf import settings
 from rapidsms.models import Backend, Contact, Connection
 from rapidsms.tests.harness import backend
 from rapidsms.log.mixin import LoggerMixin
+from rapidsms.router import send, receive
 
 
 __all__ = ('CustomRouter', 'MockBackendRouter', 'CreateDataTest')
@@ -85,3 +86,15 @@ class MockBackendRouter(CustomRouter):
     def clear(self):
         if hasattr(backend, 'outbox'):
             backend.outbox = []
+
+    def receive(self, text, backend_name='mockbackend', identity=None,
+                connection=None, fields=None):
+        """receive wrapper to use mockbackend by default"""
+        return receive(text, backend_name=backend_name, identity=identity,
+                       connection=connection, fields=fields)
+
+    def send(self, text, backend_name='mockbackend', identity=None,
+             connection=None):
+        """send wrapper to use mockbackend by default"""
+        return send(text, backend_name=backend_name, identity=identity,
+                    connection=connection)
