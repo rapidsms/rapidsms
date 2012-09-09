@@ -20,8 +20,8 @@ Additionally, since much of RapidSMS is Django-powered, these docs will not
 cover testing standard Django aspects (views, models, etc.), but rather focus
 on the areas unique to RapidSMS itself, specifically messaging and the router.
 
-Testing Concepts
-----------------
+What To Test
+************
 
 Let's start with an example. Say you've written a quiz application, ``QuizMe``, that will send a question if you text the letter ``q`` to RapidSMS::
 
@@ -57,3 +57,49 @@ How to test these aspects is another question. Generally speaking, it's best pra
 Writing a test that uses ``check_answer`` directly will verify the correctness of that function alone. With that test written, you can write higher level tests knowing that ``check_answer`` is covered and will only fail if the logic changes inside of it.
 
 The following sections describe the various methods and tools to use for testing your RapidSMS applications.
+
+Testing Methods
+---------------
+
+Application Logic
+*****************
+
+If you have application logic that doesn't depend on message processing
+directly, you can always test it indepdently of the router API. RapidSMS
+applications are just Python classes, so you can construct your app inside of
+your test suite. For example::
+
+    from django.test import TestCase
+    from rapidsms.router.test import TestRouter
+    from quizme.app import QuizMeApp
+
+    class QuizMeLogicTest(TestCase):
+
+        def setUp(self):
+            # construct the app we want to test with the TestRouter
+            self.app = QuizMeApp(TestRouter())
+
+        def test_inquiry(self):
+            """Messages with only the letter "q" are quiz messages"""
+
+            self.assertTrue(self.app.is_quiz("q"))
+
+        def test_inquiry_whitespace(self):
+            """Message inquiry whitespace shouldn't matter"""
+
+            self.assertTrue(self.app.is_quiz(" q "))
+
+        def test_inquiry_skip(self):
+            """Only messages starting with the letter q should be considered"""
+
+            self.assertFalse(self.app.is_quiz("quantity"))
+            self.assertFalse(self.app.is_quiz("quality 50"))
+
+This example tests the logic of ``QuizMeApp.is_quiz``, which is used to
+determine whether or not the text message is related to the quiz application.
+The app is constructed with ``TestRouter`` and tests ``is_quiz`` with various
+types of input.
+
+This method is useful for testing specific, low-level components of your
+application. Since the routing architecture isn't loaded, these tests will
+also execute very quickly.
