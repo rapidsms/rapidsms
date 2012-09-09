@@ -117,10 +117,6 @@ A FAQ containing Frequently Asked Questions
 
 How to get involved and contribute to RapidSMS
 
-:doc:`Testing <misc/testing>`
-
-How to run the test suite for RapidSMS
-
 RapidSMS Apps
 ============== 
 
