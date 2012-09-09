@@ -25,7 +25,7 @@ Additionally, since much of RapidSMS is Django-powered, these docs will not
 cover testing standard Django aspects (views, models, etc.), but rather focus
 on the areas unique to RapidSMS itself, specifically messaging and the router.
 
-.. _what to test
+.. _what-to-test:
 
 What To Test
 ************
@@ -77,6 +77,102 @@ testing your RapidSMS applications.
 Testing Methods
 ---------------
 
+.. _general-testing:
+
+General Testing
+***************
+
+RapidSMS provides a suite of test harness tools, but the most flexible and
+natural tool is ``MockBackendRouter``. ``MockBackendRouter`` extends from
+``CustomRouter``, which allows you to specify the router and backends to use
+for each test. ``MockBackendRouter`` takes this a step further to setup a test
+backend that can be examined during the testing process.
+
+.. class:: CustomRouter
+
+    .. attribute:: router_class
+
+        String to override :setting:`RAPIDSMS_ROUTER` during testing. Defaults to ``'rapidsms.router.blocking.BlockingRouter'``.
+
+    .. attribute:: backends
+
+        Dictionary of backends to use during testing.
+
+.. class:: MockBackendRouter
+
+    .. attribute:: backends
+
+        Defaults to ``{'mockbackend': {'ENGINE': backend.MockBackend}}``.
+
+    .. attribute:: outbox
+
+        The list of outgoing messages sent through ``mockbackend``.
+
+    .. method:: clear()
+
+        Manually empty the outbox of ``mockbackend``.
+
+    .. method:: receive(text, backend_name='mockbackend', identity=None, connection=None, fields=None)
+
+        A wrapper around the ``receive`` API that defaults to using ``mockbackend``. See :ref:`receiving-messages`.
+
+    .. method:: send(text, backend_name='mockbackend', identity=None, connection=None)
+
+        A wrapper around the ``send`` API that defaults to using ``mockbackend``. See :ref:`sending-messages`.
+
+Examples
+~~~~~~~~
+
+Outbox Testing
+^^^^^^^^^^^^^^
+
+``MockBackendRouter`` provides full access to analyze sent messages. For
+example, if you want to make sure the proper response was sent after receiving
+a message, you can use the ``outbox`` property::
+
+    from django.test import TestCase
+    from rapidsms.tests.harness.base import MockBackendRouter
+
+    class QuizMeGeneralTest(MockBackendRouter, TestCase):
+
+        def test_no_questions(self):
+            """Outbox should contain a message explaining no questions exist"""
+
+            self.receive('q', identity='1112223333')
+            self.assertEqual(self.outbox[0].text, 'No questions exist.')
+
+This example uses ``self.receive`` to pass a new message to the router. The
+test then examines ``self.outbox`` to make sure the proper message was sent in
+response.
+
+Database Interaction
+^^^^^^^^^^^^^^^^^^^^
+
+``MockBackendRouter`` provides flexible means to check application state,
+including the database. Here's an example of a test that examines the database
+after receiving a message::
+
+    from django.test import TestCase
+    from rapidsms.tests.harness.base import MockBackendRouter
+    from quizme.models import Question, Answer
+
+    class QuizMeGeneralTest(MockBackendRouter, TestCase):
+
+        def test_question_answer(self):
+            """Outbox should contain question promt and answer should be recorded in database"""
+
+            Question.objects.create(short_name='ocean',
+                                    text="What color is the ocean?",
+                                    correct_answer='Blue')
+            msg = self.receive('q ocean blue', identity='1112223333')
+            # user should receive "correct" response
+            self.assertEqual(self.outbox[0].text, 'Correct!')
+            # answer from this interaction should be stored in database
+            answer = Answer.objects.all()[0]
+            self.assertTrue(answer.correct)
+            self.assertEqual(msg.connection, answer.connection)
+
+
 Application Logic
 *****************
 
@@ -125,8 +221,8 @@ Scripted Tests
 
 You can write high-level integration tests for your applications by using the
 ``TestScript`` framework. ``TestScript`` allows you to write message *scripts*
-(akin to a movie script), similar to our example in the `What To Test`_ section
-above::
+(akin to a movie script), similar to our example in the :ref:`what-to-test`
+section above::
 
     You: q
     RapidSMS: What color is the ocean? Answer with 'q ocean <answer>'
@@ -182,4 +278,6 @@ which apps the router should load. In this case, only one app was required,
 ``QuizMeApp``.
 
 This test method is particularly useful when executing high-level integration
-tests across multiple RapidSMS applications.
+tests across multiple RapidSMS applications. However, you're limited to the
+test script. If you need more fined grained access, like checking the state of
+the database in the middle of a script, you should use :ref:`general-testing`.

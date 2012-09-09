@@ -6,6 +6,8 @@ Messaging
 
 A clean, simple API is provided to send and receive messages in RapidSMS. For most cases, you'll just need to use the ``send`` and ``receive`` functions outlined below.
 
+.. _receiving-messages:
+
 Receiving Messages
 ------------------
 
@@ -17,6 +19,8 @@ Here's an example using ``receive``::
     receive("echo hello", identity="12223334444", backend_name="example-backend")
 
 This sends a message to the router saying ``echo hello`` was received on the ``example-backend`` from number ``12223334444``. You can find more examples of ``receive`` in the official RapidSMS `backends <https://github.com/rapidsms/rapidsms/tree/feature/new-routing/lib/rapidsms/backends>`_.
+
+.. _sending-messages:
 
 Sending Messages
 ----------------
