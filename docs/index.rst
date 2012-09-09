@@ -139,10 +139,6 @@ How to get RapidSMS's open source license for PyCharm, JetBrains Python/Django I
 
 Internationalization
 
-:doc:`Testing <misc/testing>`
-
-Writing and running tests
-
 :doc:`Editing <misc/editing>`
 
 Find out how you can edit this wiki and what markup it uses
