@@ -59,6 +59,7 @@ Destinations
 **The development process**
 
 * :doc:`Settings <ref/settings>`
+* :doc:`Internationalization <topics/i18n>`
 * :doc:`Extending core RapidSMS models <topics/extensible-models>`
 * :doc:`Testing <topics/testing>`
 * :doc:`Deployment <topics/deployment>`
@@ -111,9 +112,9 @@ Misc
 
 How to get RapidSMS's open source license for PyCharm, JetBrains Python/Django IDE.
 
-:doc:`i18n <misc/i18n>`
 
-Internationalization
+
+
 
 :doc:`Editing <misc/editing>`
 
