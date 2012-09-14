@@ -44,8 +44,8 @@ Destinations
 
 **Getting Started**
 
-* Overview
-* Installation
+* :doc:`Overview <intro/overview>`
+* :doc:`Installation <intro/install>`
 * Tutorial
 
 **Architecture**
@@ -59,22 +59,22 @@ Destinations
 **The development process**
 
 * :doc:`Settings <ref/settings>`
-* Extending core RapidSMS models
+* :doc:`Extending core RapidSMS models <topics/extensible-models>`
 * :doc:`Testing <topics/testing>`
 * Deployment
 
 **RapidSMS contrib applications**
 
-* ``contrib.default``
-* ``contrib.echo``
-* ``contrib.export``
-* ``contrib.handlers``
-* ``contrib.httptester``
-* ``contrib.locations``
-* ``contrib.messagelog``
-* ``contrib.messaging``
-* ``contrib.registration``
-* ``contrib.scheduler``
+* default
+* echo
+* export
+* :doc:`handlers <topics/contrib/handlers>`
+* httptester
+* locations
+* messagelog
+* messaging
+* registration
+* scheduler
 
 **The RapidSMS open-source project**
 
@@ -84,18 +84,9 @@ Destinations
 * :doc:`Running the RapidSMS core test suite <internals/contributing/testing>`
 * Release notes and upgrading instructions
 
-
-:doc:`Installation <main/installation>`
-
-How to install RapidSMS on your computer and how to get started with community-contributed apps or developing your own.
-
 :doc:`Rapid SMS Explained <main/rapidsms-explained>`
 
 Various pages providing overviews, repository structures, and the technical architecture of RapidSMS. Think of this as a "RapidSMS for Dummies" type of section. A good place to peruse and learn concepts and vocabulary before digging into the code.
-
-:doc:`RapidSMS Examples <main/rapidsms-examples>`
-
-A few code examples of simple RapidSMS concepts.
 
 :doc:`Sending and Receiving SMS <main/send-recv-sms>`
 
