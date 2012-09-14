@@ -85,14 +85,7 @@ Destinations
 * :doc:`How to get involved <internals/contributing/release-process>`
 * :doc:`GitHub group and repositories <internals/contributing/repository>`
 * :doc:`Running the RapidSMS core test suite <internals/contributing/testing>`
-* Release notes and upgrading instructions
-
-Table of Contents
-=================
-
-.. toctree::
-   releases/0.10.0.rst
-
+* :doc:`Release notes and upgrading instructions <releases/index>`
 
 Indices and tables
 ==================
