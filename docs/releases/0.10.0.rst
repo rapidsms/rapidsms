@@ -16,7 +16,8 @@ Overview
 RapidSMS 0.10.0's focus has mostly been on decoupling the RapidSMS route process in several key places to begin processing all SMSes in normal HTTP requests. This also includes making it possible to swap the Router class that RapidSMS uses via a setting in the settings file. The key changes are as follows:
 
 * Removal of the bucket, email, irc, gsm, and smtp backends. 
-* Dividing the Router logic into BaseRouter, BlockingRouter, and LegacyRouter classes.
+* Dividing the Router logic into BaseRouter and BlockingRouter classes.
+* Removal of the legacy persistent threaded router.
 * ...
 
 
