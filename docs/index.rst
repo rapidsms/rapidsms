@@ -80,7 +80,7 @@ Destinations
 
 * About this documentation
 * Team of core committers
-* How to get involved
+* :doc:`How to get involved <internals/contributing/release-process>`
 * :doc:`Running the RapidSMS core test suite <internals/contributing/testing>`
 * Release notes and upgrading instructions
 
@@ -99,10 +99,6 @@ Tips and tricks for when you're ready to shove RapidSMS into the real world
 :doc:`FAQ <main/faq>`
 
 A FAQ containing Frequently Asked Questions
-
-:doc:`Development <main/development>`
-
-How to get involved and contribute to RapidSMS
 
 RapidSMS Apps
 ============== 
