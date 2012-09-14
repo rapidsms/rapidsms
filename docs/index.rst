@@ -61,7 +61,7 @@ Destinations
 * :doc:`Settings <ref/settings>`
 * :doc:`Extending core RapidSMS models <topics/extensible-models>`
 * :doc:`Testing <topics/testing>`
-* Deployment
+* :doc:`Deployment <topics/deployment>`
 
 **RapidSMS contrib applications**
 
