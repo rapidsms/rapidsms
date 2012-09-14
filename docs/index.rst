@@ -20,6 +20,7 @@
     ref/*
     releases/*
     topics/*
+    topics/backends/*
 
 
 RapidSMS Documentation
@@ -53,7 +54,7 @@ Destinations
 * Overview
 * :doc:`Router <topics/router>`
 * Applications
-* Backends
+* **Backends:** :doc:`Overview <topics/backends/index>` | :doc:`Kannel <topics/backends/kannel>`
 * :doc:`Messaging <topics/messaging>`
 
 **The development process**
@@ -121,10 +122,6 @@ Find out how you can edit this wiki and what markup it uses
 :doc:`Tutorial Videos <misc/tutorial-videos>`
 
 Tips on recording RapidSMS tutorial videos in Linux
-
-:doc:`Kannel Configuration <configuration/kannel>`
-
-Configuring RapidSMS to work with the Kannel SMS gateway
 
 :doc:`In Development <misc/indevelopment>`
 
