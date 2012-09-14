@@ -1,8 +1,8 @@
 =================================================
-RapidSMS 0.96.0 release notes
+RapidSMS 0.9.6 release notes
 =================================================
 
-Welcome to RapidSMS 0.96.0!
+Welcome to RapidSMS 0.9.6!
 
 Extensible Models
 ------------------
