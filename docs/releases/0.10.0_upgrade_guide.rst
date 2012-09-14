@@ -24,14 +24,6 @@ The global router located at ``rapidsms.router.Router`` has been removed. All ro
 
 A new setting, ``RAPIDSMS_ROUTER``, allows you to specify the primary router class to use. A new utility function, ``rapidsms.router.get_router``, retrieves the router defined in ``RAPIDSMS_ROUTER`` so that your project can remain router-independent.
 
-LegacyRouter
-~~~~~~~~~~~~
-
-.. WARNING::
-   This router should only be used for legacy purposes, as it is no longer being supported. We recommend changing to ``BlockingRouter`` or a third-party router.
-
-We have moved the legacy Router code, with functionality largely unchanged, to ``rapidsms.router.legacy.LegacyRouter``. You will need to change your router import statements to import this router from the new location. Using this router should require few if any other changes to your legacy project's code.
-
 BlockingRouter
 ~~~~~~~~~~~~~~
 

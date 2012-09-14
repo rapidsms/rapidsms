@@ -7,7 +7,7 @@ from nose.tools import assert_equals, assert_raises, assert_true
 from django.core.exceptions import ImproperlyConfigured
 
 from rapidsms.apps.base import AppBase
-from rapidsms.router.legacy import BaseRouter
+from rapidsms.router.base import BaseRouter
 
 
 def test_router_finds_apps():
