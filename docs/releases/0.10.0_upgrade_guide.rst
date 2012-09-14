@@ -78,10 +78,6 @@ RapidSMS provides two built-in backend apps: ``http`` and ``kannel``. We have co
 
 If you used any of these backends, you must update your code to use a different backend. For many use cases, the ``kannel`` backend will be a good replacement for the ``gsm`` backend. If none of the remaining backends suit the needs of your project, you may write a custom backend app. Backend classes should extend from the classes found in ``rapidsms.backends.base``.
 
-
-.. _less-common compatibility issues:
-
-
 Use ``django.contrib.staticfiles``.
 ===================================
 
@@ -103,6 +99,12 @@ The ``rapidsms.urls.static_media`` module has been removed from RapidSMS 0.10.0 
 6. Each app should maintain its static media in the ``static/`` subfolder. (If you have any other directories in which static files are maintained, list them in ``settings.STATICFILES_DIRS``.) We have adopted the convention of keeping the app's static files in a subfolder of ``static/`` with the same name as the app. For example, the static file located at ``myapp/static/myapp/stylesheets/myapp.css`` will be available at ``{{ STATIC_URL }}myapp/stylesheets/myapp.css``.
 7. Ensure that URLs to static files in your templates use ``{{ STATIC_URL }}`` rather than ``{{ MEDIA_URL }}`` to locate static files.
 
+Refactor stateful applications to use the database or cache
+===========================================================
+
+Some RapidSMS applications in the community may use the ``App`` instance (or module-level variables in Python) to store persistent state information about the application.  Now that routers are constructed and destroyed for every incoming message, state information stored on apps will not persist between requests.  Code that makes this assumption should be refactored to use a database or cache to store data that need to persist between requests.
+
+.. _less-common compatibility issues:
 
 Less-common changes
 ===================
