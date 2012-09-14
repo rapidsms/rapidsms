@@ -80,7 +80,7 @@ Destinations
 
 **The RapidSMS open-source project**
 
-* :doc:`About this documentation <internals/contributing/overview>`
+* :doc:`About this documentation <internals/contributing/overview>` | :doc:`License <internals/contributing/license>`
 * Team of core committers
 * :doc:`How to get involved <internals/contributing/release-process>`
 * :doc:`GitHub group and repositories <internals/contributing/repository>`
