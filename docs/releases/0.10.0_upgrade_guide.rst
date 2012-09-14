@@ -8,8 +8,8 @@ RapidSMS 0.10.0 breaks compatibility with 0.9.6 in some areas. This guide will h
    See the `0.10.0 release notes`_. That document explains the new features in RapidSMS more deeply; this porting guide is more concerned with helping you quickly update your code.
 
 
-Upgrade to Django>=1.3.
-=======================
+Upgrade to Django>=1.3
+======================
 
 RapidSMS 0.10.0 will only support Django 1.3 or newer.
 
@@ -17,8 +17,8 @@ RapidSMS 0.10.0 will only support Django 1.3 or newer.
 - `Django 1.4 release notes`_
 
 
-Choose a router.
-================
+Choose a router
+===============
 
 The global router located at ``rapidsms.router.Router`` has been removed. All routers now extend from a new base class, ``rapidsms.router.base.BaseRouter``. RapidSMS 0.10.0 offers one built-in router option, as well as support for third-party routers.
 
@@ -41,8 +41,8 @@ Custom Router
 .. One popular existing third-party router is `rapidsms-celery-router <https://github.com/rapidsms/rapidsms-celery-router>`_, which using a message queue such as RabbitMQ and Celery to queue incoming and outgoing messages for processing.
 
 
-Update old backends.
-====================
+Update old backends
+===================
 
 RapidSMS backends are now apps (rather than modules) in the ``rapidsms.backends`` directory. You may not need to update your imports the main backend classes live in the ``__init__.py`` file of their app.
 
@@ -54,10 +54,19 @@ RapidSMS provides two built-in backend apps: ``http`` and ``kannel``. We have co
 * ``rapidsms.backends.irc``
 * ``rapidsms.backends.smtp``
 
-If you used any of these backends, you must update your code to use a different backend. For many use cases, the ``kannel`` backend will be a good replacement for the ``gsm`` backend. If none of the remaining backends suit the needs of your project, you may write a custom backend app. Backend classes should extend from the classes found in ``rapidsms.backends.base``.  For more information, please see the Kannel backend documentation.
+Upgrading to Kannel
+~~~~~~~~~~~~~~~~~~~
 
-Remove ``rapidsms.contrib.ajax``.
-=================================
+If you used PyGSM or one of the other non-HTTP backends, you must update your code to use a different backend. For many use cases, the ``kannel`` backend will be a good replacement for the ``gsm`` backend. For more information about configuring RapidSMS to use Kannel, please see the :doc:`Kannel backend documentation </topics/backends/kannel>`.
+
+Other backends
+~~~~~~~~~~~~~~
+
+If none of the new backends suit the needs of your project, you may write a custom backend app. Backend classes should extend from the classes found in ``rapidsms.backends.base``.  
+
+
+Remove ``rapidsms.contrib.ajax``
+================================
 
 We have removed the ``rapidsms.contrib.ajax`` app. You should update your settings, URL configuration, and other project code to reflect this change.
 
@@ -66,14 +75,14 @@ We have removed the ``rapidsms.contrib.ajax`` app. You should update your settin
 3. Remove ajax URLs from your URL configuration file.
 
 
-Remove calls to ``rapidsms.contrib.messaging.send_message``.
-============================================================
+Remove calls to ``rapidsms.contrib.messaging.send_message``
+===========================================================
 
 As the method ``rapidsms.contrib.messaging.send_message`` relied upon ``rapidsms.contrib.ajax`` functionality, it has been deprecated and will raise a warning when used. All calls to ``send_message`` should be replaced with calls to ``router.outgoing``.
 
 
-Use ``django.contrib.staticfiles``.
-===================================
+Use ``django.contrib.staticfiles``
+==================================
 
 The ``rapidsms.urls.static_media`` module has been removed from RapidSMS 0.10.0 in favor of using ``django.core.staticfiles`` (which is included by default in Django 1.3.x and above). To upgrade your project, take the following steps:
 
