@@ -88,10 +88,6 @@ Destinations
 
 Various pages providing overviews, repository structures, and the technical architecture of RapidSMS. Think of this as a "RapidSMS for Dummies" type of section. A good place to peruse and learn concepts and vocabulary before digging into the code.
 
-:doc:`Sending and Receiving SMS <main/send-recv-sms>`
-
-How to get SMS into the real world (modems, gateways, etc.)
-
 :doc:`Differences with the new and old RapidSMS <main/differences>`
 
 Here is a short explanation of a few of the new things that RapidSMS has for those who are used to the old RapidSMS. Also includes instructions for porting your apps to work with the latest version RapidSMS.
