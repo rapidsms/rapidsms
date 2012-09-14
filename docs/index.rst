@@ -52,10 +52,9 @@ Destinations
 **Architecture**
 
 * Overview
-* :doc:`Router <topics/router>`
+* **Router:** :doc:`Overview <topics/router>` | :doc:`Messaging <topics/messaging>`
 * Applications
-* **Backends:** :doc:`Overview <topics/backends/index>` | :doc:`Kannel <topics/backends/kannel>`
-* :doc:`Messaging <topics/messaging>`
+* **Backends:** :doc:`Overview <topics/backends/index>` | :doc:`Kannel <topics/backends/kannel>` | :doc:`Vumi <topics/backends/vumi>` | :doc:`3rd Party <topics/backends/3rd-party>`
 
 **The development process**
 
@@ -82,6 +81,7 @@ Destinations
 * About this documentation
 * Team of core committers
 * :doc:`How to get involved <internals/contributing/release-process>`
+* :doc:`GitHub group and repositories <internals/contributing/repository>`
 * :doc:`Running the RapidSMS core test suite <internals/contributing/testing>`
 * Release notes and upgrading instructions
 
