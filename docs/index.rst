@@ -48,6 +48,7 @@ Destinations
 * :doc:`Overview <intro/overview>`
 * :doc:`Installation <intro/install>`
 * :doc:`Tutorial <intro/tutorial>` | :doc:`Tutorial Videos <intro/tutorial-videos>`
+* :doc:`Frequently Asked Questions <intro/faq>`
 
 **Architecture**
 
@@ -85,25 +86,6 @@ Destinations
 * :doc:`GitHub group and repositories <internals/contributing/repository>`
 * :doc:`Running the RapidSMS core test suite <internals/contributing/testing>`
 * Release notes and upgrading instructions
-
-:doc:`Rapid SMS Explained <main/rapidsms-explained>`
-
-Various pages providing overviews, repository structures, and the technical architecture of RapidSMS. Think of this as a "RapidSMS for Dummies" type of section. A good place to peruse and learn concepts and vocabulary before digging into the code.
-
-:doc:`FAQ <main/faq>`
-
-A FAQ containing Frequently Asked Questions
-
-Misc
-=====
-
-:doc:`PyCharm License <misc/pycharm-license>`
-
-How to get RapidSMS's open source license for PyCharm, JetBrains Python/Django IDE.
-
-
-
-Tips on recording RapidSMS tutorial videos in Linux
 
 Table of Contents
 =================
