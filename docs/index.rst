@@ -53,8 +53,8 @@ Destinations
 
 * Overview
 * **Router:** :doc:`Overview <topics/router>` | :doc:`Messaging <topics/messaging>`
-* Applications
-* **Backends:** :doc:`Overview <topics/backends/index>` | :doc:`Kannel <topics/backends/kannel>` | :doc:`Vumi <topics/backends/vumi>` | :doc:`3rd Party <topics/backends/3rd-party>`
+* **Applications:** :doc:`Overview <topics/applications/index>` | :doc:`Community apps <topics/applications/community>`
+* **Backends:** :doc:`Overview <topics/backends/index>` | :doc:`Kannel <topics/backends/kannel>` | :doc:`Vumi <topics/backends/vumi>` | :doc:`Community backends <topics/backends/community>`
 
 **The development process**
 
@@ -94,27 +94,12 @@ Various pages providing overviews, repository structures, and the technical arch
 
 A FAQ containing Frequently Asked Questions
 
-RapidSMS Apps
-============== 
-
-One day soon, all usable RapidSMS apps will be found or linked to from the following repositories:
-
-* http://github.com/rapidsms/rapidsms-contrib-apps-dev (optional apps, restricted committers)
-
-* http://github.com/rapidsms/rapidsms-community-apps-dev (optional apps, open committers)
-
-* http://github.com/nyaruka/rapidsms-xforms (interactive form builder)
-
 Misc
 =====
 
 :doc:`PyCharm License <misc/pycharm-license>`
 
 How to get RapidSMS's open source license for PyCharm, JetBrains Python/Django IDE.
-
-
-
-
 
 :doc:`Editing <misc/editing>`
 
