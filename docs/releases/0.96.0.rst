@@ -1,5 +1,8 @@
-New things to RapidSMS (and maybe for Django devs as well)
-===========================================================
+=================================================
+RapidSMS 0.96.0 release notes
+=================================================
+
+Welcome to RapidSMS 0.96.0!
 
 Extensible Models
 ------------------
