@@ -41,6 +41,21 @@ Custom Router
 .. One popular existing third-party router is `rapidsms-celery-router <https://github.com/rapidsms/rapidsms-celery-router>`_, which using a message queue such as RabbitMQ and Celery to queue incoming and outgoing messages for processing.
 
 
+Update old backends.
+====================
+
+RapidSMS backends are now apps (rather than modules) in the ``rapidsms.backends`` directory. You may not need to update your imports the main backend classes live in the ``__init__.py`` file of their app.
+
+RapidSMS provides two built-in backend apps: ``http`` and ``kannel``. We have completely removed these backends from the RapidSMS core:
+
+* ``rapidsms.backends.bucket``
+* ``rapidsms.backends.email``
+* ``rapidsms.backends.gsm``
+* ``rapidsms.backends.irc``
+* ``rapidsms.backends.smtp``
+
+If you used any of these backends, you must update your code to use a different backend. For many use cases, the ``kannel`` backend will be a good replacement for the ``gsm`` backend. If none of the remaining backends suit the needs of your project, you may write a custom backend app. Backend classes should extend from the classes found in ``rapidsms.backends.base``.  For more information, please see the Kannel backend documentation.
+
 Remove ``rapidsms.contrib.ajax``.
 =================================
 
@@ -56,21 +71,6 @@ Remove calls to ``rapidsms.contrib.messaging.send_message``.
 
 As the method ``rapidsms.contrib.messaging.send_message`` relied upon ``rapidsms.contrib.ajax`` functionality, it has been deprecated and will raise a warning when used. All calls to ``send_message`` should be replaced with calls to ``router.outgoing``.
 
-
-Update old backends.
-====================
-
-RapidSMS backends are now apps (rather than modules) in the ``rapidsms.backends`` directory. You may not need to update your imports the main backend classes live in the ``__init__.py`` file of their app.
-
-RapidSMS provides two built-in backend apps: ``http`` and ``kannel``. We have completely removed these backends from the RapidSMS core:
-
-* ``rapidsms.backends.bucket``
-* ``rapidsms.backends.email``
-* ``rapidsms.backends.gsm``
-* ``rapidsms.backends.irc``
-* ``rapidsms.backends.smtp``
-
-If you used any of these backends, you must update your code to use a different backend. For many use cases, the ``kannel`` backend will be a good replacement for the ``gsm`` backend. If none of the remaining backends suit the needs of your project, you may write a custom backend app. Backend classes should extend from the classes found in ``rapidsms.backends.base``.
 
 Use ``django.contrib.staticfiles``.
 ===================================
