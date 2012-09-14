@@ -79,7 +79,7 @@ Destinations
 
 **The RapidSMS open-source project**
 
-* About this documentation
+* :doc:`About this documentation <internals/contributing/overview>`
 * Team of core committers
 * :doc:`How to get involved <internals/contributing/release-process>`
 * :doc:`GitHub group and repositories <internals/contributing/repository>`
@@ -101,17 +101,9 @@ Misc
 
 How to get RapidSMS's open source license for PyCharm, JetBrains Python/Django IDE.
 
-:doc:`Editing <misc/editing>`
-
-Find out how you can edit this wiki and what markup it uses
-
 :doc:`Tutorial Videos <misc/tutorial-videos>`
 
 Tips on recording RapidSMS tutorial videos in Linux
-
-:doc:`In Development <misc/indevelopment>`
-
-A list of other repositories, all works in progress, of new apps for RapidSMS
 
 Table of Contents
 =================
