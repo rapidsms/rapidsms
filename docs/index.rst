@@ -47,7 +47,7 @@ Destinations
 
 * :doc:`Overview <intro/overview>`
 * :doc:`Installation <intro/install>`
-* Tutorial
+* :doc:`Tutorial <intro/tutorial>` | :doc:`Tutorial Videos <intro/tutorial-videos>`
 
 **Architecture**
 
@@ -101,7 +101,7 @@ Misc
 
 How to get RapidSMS's open source license for PyCharm, JetBrains Python/Django IDE.
 
-:doc:`Tutorial Videos <misc/tutorial-videos>`
+
 
 Tips on recording RapidSMS tutorial videos in Linux
 
