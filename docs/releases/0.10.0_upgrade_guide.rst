@@ -22,12 +22,12 @@ Choose a router.
 
 The global router located at ``rapidsms.router.Router`` has been removed. All routers now extend from a new base class, ``rapidsms.router.base.BaseRouter``. RapidSMS 0.10.0 offers one built-in router option, as well as support for third-party routers.
 
-A new setting, ``RAPIDSMS_ROUTER``, allows you to specify the primary router class to use. A new utility function, ``rapidsms.router.get_router``, retrieves the router defined in ``RAPIDSMS_ROUTER`` so that your project can remain router-independent.
+A new setting, :setting:`RAPIDSMS_ROUTER`, allows you to specify the primary router class to use. A new utility function, ``rapidsms.router.get_router``, retrieves the router defined in :setting:`RAPIDSMS_ROUTER` so that your project can remain router-independent.
 
 BlockingRouter
 ~~~~~~~~~~~~~~
 
-``rapidsms.router.blocking.BlockingRouter`` is the default value for ``RAPIDSMS_ROUTER``.  This router processes messages within the HTTP request/response cycle and does not perform any additional queuing of messages.  It simplifies testing and development, and also works well will Kannel or other message gateways for small- to medium-sized RapidSMS sites.  You may wish to specify the router in your settings file explicitly as follows:
+``rapidsms.router.blocking.BlockingRouter`` is the default value for :setting:`RAPIDSMS_ROUTER`.  This router processes messages within the HTTP request/response cycle and does not perform any additional queuing of messages.  It simplifies testing and development, and also works well will Kannel or other message gateways for small- to medium-sized RapidSMS sites.  You may wish to specify the router in your settings file explicitly as follows:
 
 .. code-block:: python
 
@@ -39,12 +39,6 @@ Custom Router
 ``BlockingRouter`` is sufficient for many applications, but applications handling hundreds of messages per second or more may require custom routing logic. If you are running such an application, you might consider writing your own router or finding a third-party router that fits your needs. All custom routers should extend from ``rapidsms.router.base.BaseRouter``.
 
 .. One popular existing third-party router is `rapidsms-celery-router <https://github.com/rapidsms/rapidsms-celery-router>`_, which using a message queue such as RabbitMQ and Celery to queue incoming and outgoing messages for processing.
-
-
-Remove calls to ``OutgoingMessage.send``.
-=========================================
-
-Because the global router was removed, calls to ``OutgoingMessage.send`` will no longer work. All calls to this method should be changed to ``router.outgoing(message)``.
 
 
 Remove ``rapidsms.contrib.ajax``.
