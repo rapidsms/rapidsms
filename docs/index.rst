@@ -52,7 +52,7 @@ Destinations
 
 **Architecture**
 
-* Overview
+* :doc:`RapidSMS Architecture Overview <topics/architecture>`
 * **Router:** :doc:`Overview <topics/router>` | :doc:`Messaging <topics/messaging>`
 * **Applications:** :doc:`Overview <topics/applications/index>` | :doc:`Community apps <topics/applications/community>`
 * **Backends:** :doc:`Overview <topics/backends/index>` | :doc:`Kannel <topics/backends/kannel>` | :doc:`Vumi <topics/backends/vumi>` | :doc:`Community backends <topics/backends/community>`
