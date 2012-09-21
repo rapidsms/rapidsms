@@ -75,46 +75,6 @@ In this scenario, these settings were used::
         },
     }
 
-LegacyRouter
-------------
-
-.. versionadded:: 0.10.0
-
-The ``LegacyRouter`` is a port of the default (and only) router in RapidSMS
-0.9.6a and earlier.
-
-.. note::
-
-    The ``LegacyRouter`` uses Python's `threading
-    <http://docs.python.org/library/threading.html>`_ module to encapsulate
-    backends into indepedent threads. Using this model, backends can operate
-    independently from one another, blocking for I/O and waiting for external
-    service calls. Many of the original backends operated in this way. For example,
-    ``rapidsms.backends.http`` started a `HTTP server
-    <https://github.com/rapidsms/rapidsms/blob/
-    a7a0fccffa582d5c3cd320bd659cd2bd95785a51/lib/rapidsms/backends/http.py>`_ to
-    listen on a specified port and ``rapidsms.backends.gsm`` communicated directly
-    with a `GSM modem
-    <https://github.com/rapidsms/rapidsms/blob/a7a0fccffa582d5c3cd320
-    bd659cd2bd95785a51/lib/rapidsms/backends/gsm.py>`_. While this method provided RapidSMS with a routing architecture, the need for a pluggable system grew due to the following reasons:
-
-    * Thread interaction was complicated and not always intuitive.
-    * If the route process died unexpectedly, all backends (and hence message  processing) were brought offline.
-    * Automated testing was difficult and inefficient, because the router (and all its threads) needed to be started/stopped for each test.
-
-``LegacyRouter`` can be used by setting :setting:`RAPIDSMS_ROUTER` to the
-following::
-
-    RAPIDSMS_ROUTER = 'rapidsms.router.legacy.LegacyRouter'
-
-Once configured, you use the ``runrouter`` management command (in a separate
-shell from ``runserver``, if developing locally) to start the router. For
-example::
-
-    $ ./manage.py runrouter
-    [legacyrouter]: Starting RapidSMS...
-    ...
-
 Using a custom router
 ---------------------
 

@@ -175,7 +175,7 @@ a backup first if you'd like)::
     accepted-smsc = FAKE
     # don't send a reply here (it'll come through sendsms):
     max-messages = 0
-    get-url = http://127.0.0.1:8080/?id=%p&text=%a&charset=%C&coding=%c
+    get-url = http://127.0.0.1:8000/backend/kannel-fake-smsc/?id=%p&text=%a&charset=%C&coding=%c
 
 You'll notice the file includes a file called ``modems.conf`` at the top.  You
 can copy this file from where Ubuntu installed it as follows::
@@ -222,8 +222,6 @@ in your ``settings.py`` file::
         # other backends, if any
         "kannel-fake-smsc" : {
             "ENGINE":  "rapidsms.backends.kannel",
-            "host": "127.0.0.1",
-            "port": 8080,
             "sendsms_url": "http://127.0.0.1:13013/cgi-bin/sendsms",
             "sendsms_params": {"smsc": "FAKE",
                                "from": "123", # not set automatically by SMSC
@@ -235,9 +233,30 @@ in your ``settings.py`` file::
         },
     }
 
-Now, you should be able to run the RapidSMS router::
 
-    ./manage.py runrouter
+.. versionchanged:: 0.10.0
+    ``"host"`` and ``"port"`` should no longer be included in the backend
+    configuration.
+
+Next, you need to add an endpoint to your ``urls.py`` for the newly created
+backend.  You can do this like so::
+
+    from django.conf.urls.defaults import *
+    from rapidsms.backends.kannel.views import KannelBackendView
+    
+    urlpatterns = patterns('',
+        # ...
+        url(r"^backend/kannel-fake-smsc/$",
+            KannelBackendView.as_view(backend_name="kannel-fake-smsc")),
+    )
+
+You can make the Django URL pattern whatever you like, but the convention is
+to make it ``backend/`` followed by the name of your backend (from the settings
+file) and a final ``/``.
+
+Now, you should be able to start RapidSMS like so::
+
+    ./manage.py runserver
 
 And test connection using the ``echo`` app in RapidSMS (if installed in your
 project)::
@@ -281,7 +300,7 @@ send incoming messages from the modem to RapidSMS via HTTP::
     accepted-smsc = usb0-modem
     # don't send a reply here (it'll come through sendsms):
     max-messages = 0
-    get-url = http://127.0.0.1:8081/?id=%p&text=%a&charset=%C&coding=%c
+    get-url = http://127.0.0.1:8000/backend/kannel-usb0-smsc/?id=%p&text=%a&charset=%C&coding=%c
 
 Make sure to restart Kannel to reload the configuration::
 
@@ -298,8 +317,6 @@ USB modem you configured above in Kannel::
         # ...
         "kannel-usb0-smsc" : {
             "ENGINE":  "rapidsms.backends.kannel",
-            "host": "127.0.0.1",
-            "port": 8081,
             "sendsms_url": "http://127.0.0.1:13013/cgi-bin/sendsms",
             "sendsms_params": {"smsc": "usb0-modem",
                                "from": "+SIMphonenumber", # not set automatically by SMSC
@@ -311,14 +328,31 @@ USB modem you configured above in Kannel::
         },
     }
 
-Now, the next time you call ``./manage.py runrouter``, you should see two
-Kannel backends get created (one for the fake SMSC and one for the GSM modem).
+.. versionchanged:: 0.10.0
+    ``"host"`` and ``"port"`` should no longer be included in the backend
+    configuration.
+
+Next, you need to add an endpoint to your ``urls.py`` for the newly created
+backend.  You can do this like so::
+
+    from django.conf.urls.defaults import *
+    from rapidsms.backends.kannel.views import KannelBackendView
+    
+    urlpatterns = patterns('',
+        # ...
+        url(r"^backend/kannel-usb0-smsc/$",
+            KannelBackendView.as_view(backend_name="kannel-usb0-smsc")),
+    )
+
+Now, the next time you call ``./manage.py runserver``, Django should begin
+processing requests for both the Kannel backends that you created (one for the
+fake SMSC and one for the GSM modem).
 
 Troubleshooting
 ===============
 
 For help troubleshooting, please carefully review the relevant log files in
-``/var/log/kannel`` as well as the output of the ``./manage.py runrouter``
+``/var/log/kannel`` as well as the output of the ``./manage.py runserver``
 command.  For additional help configuring Kannel, review the
 `Kannel user guide <http://www.kannel.org/userguide.shtml>`_ or subscribe to the
 `Kannel users mailing list <http://www.kannel.org/lists.shtml>`_.

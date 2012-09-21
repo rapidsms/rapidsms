@@ -99,6 +99,11 @@ How can I send messages from the web interface?
 ================================================
 TODO
 
+Is there a PyCharm license for RapidSMS?
+========================================
+
+JetBrains has very kindly contributed an open source license for use of PyCharm in developing RapidSMS. If you are an active RapidSMS developer, you can obtain your license by writing to the owners of the RapidSMS Google Group. You can do so by clicking the "Send Email To Owner" link on the RapidSMS Google Group About Page here: http://groups.google.com/group/rapidsms/about
+
 What is the License for RapidSMS?
 ==================================
 

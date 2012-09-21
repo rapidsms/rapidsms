@@ -20,6 +20,7 @@
     ref/*
     releases/*
     topics/*
+    topics/backends/*
 
 
 RapidSMS Documentation
@@ -44,123 +45,47 @@ Destinations
 
 **Getting Started**
 
-* Overview
-* Installation
-* Tutorial
+* :doc:`Overview <intro/overview>`
+* :doc:`Installation <intro/install>`
+* :doc:`Tutorial <intro/tutorial>` | :doc:`Tutorial Videos <intro/tutorial-videos>`
+* :doc:`Frequently Asked Questions <intro/faq>`
 
 **Architecture**
 
-* Overview
-* :doc:`Router <topics/router>`
-* Applications
-* Backends
-* :doc:`Messaging <topics/messaging>`
+* :doc:`RapidSMS Architecture Overview <topics/architecture>`
+* **Router:** :doc:`Overview <topics/router>` | :doc:`Messaging <topics/messaging>`
+* **Applications:** :doc:`Overview <topics/applications/index>` | :doc:`Community apps <topics/applications/community>`
+* **Backends:** :doc:`Overview <topics/backends/index>` | :doc:`Kannel <topics/backends/kannel>` | :doc:`Vumi <topics/backends/vumi>` | :doc:`Community backends <topics/backends/community>`
 
 **The development process**
 
 * :doc:`Settings <ref/settings>`
-* Extending core RapidSMS models
+* :doc:`Internationalization <topics/i18n>`
+* :doc:`Extending core RapidSMS models <topics/extensible-models>`
 * :doc:`Testing <topics/testing>`
-* Deployment
+* :doc:`Deployment <topics/deployment>`
 
 **RapidSMS contrib applications**
 
-* ``contrib.default``
-* ``contrib.echo``
-* ``contrib.export``
-* ``contrib.handlers``
-* ``contrib.httptester``
-* ``contrib.locations``
-* ``contrib.messagelog``
-* ``contrib.messaging``
-* ``contrib.registration``
-* ``contrib.scheduler``
+* default
+* echo
+* export
+* :doc:`handlers <topics/contrib/handlers>`
+* httptester
+* locations
+* messagelog
+* messaging
+* registration
+* scheduler
 
 **The RapidSMS open-source project**
 
-* About this documentation
+* :doc:`About this documentation <internals/contributing/overview>` | :doc:`License <internals/contributing/license>`
 * Team of core committers
-* How to get involved
+* :doc:`How to get involved <internals/contributing/release-process>`
+* :doc:`GitHub group and repositories <internals/contributing/repository>`
 * :doc:`Running the RapidSMS core test suite <internals/contributing/testing>`
-* Release notes and upgrading instructions
-
-
-:doc:`Installation <main/installation>`
-
-How to install RapidSMS on your computer and how to get started with community-contributed apps or developing your own.
-
-:doc:`Rapid SMS Explained <main/rapidsms-explained>`
-
-Various pages providing overviews, repository structures, and the technical architecture of RapidSMS. Think of this as a "RapidSMS for Dummies" type of section. A good place to peruse and learn concepts and vocabulary before digging into the code.
-
-:doc:`RapidSMS Examples <main/rapidsms-examples>`
-
-A few code examples of simple RapidSMS concepts.
-
-:doc:`Sending and Receiving SMS <main/send-recv-sms>`
-
-How to get SMS into the real world (modems, gateways, etc.)
-
-:doc:`Differences with the new and old RapidSMS <main/differences>`
-
-Here is a short explanation of a few of the new things that RapidSMS has for those who are used to the old RapidSMS. Also includes instructions for porting your apps to work with the latest version RapidSMS.
-
-:doc:`Deployment <main/deployment>`
-
-Tips and tricks for when you're ready to shove RapidSMS into the real world
-
-:doc:`FAQ <main/faq>`
-
-A FAQ containing Frequently Asked Questions
-
-:doc:`Development <main/development>`
-
-How to get involved and contribute to RapidSMS
-
-RapidSMS Apps
-============== 
-
-One day soon, all usable RapidSMS apps will be found or linked to from the following repositories:
-
-* http://github.com/rapidsms/rapidsms-contrib-apps-dev (optional apps, restricted committers)
-
-* http://github.com/rapidsms/rapidsms-community-apps-dev (optional apps, open committers)
-
-* http://github.com/nyaruka/rapidsms-xforms (interactive form builder)
-
-Misc
-=====
-
-:doc:`PyCharm License <misc/pycharm-license>`
-
-How to get RapidSMS's open source license for PyCharm, JetBrains Python/Django IDE.
-
-:doc:`i18n <misc/i18n>`
-
-Internationalization
-
-:doc:`Editing <misc/editing>`
-
-Find out how you can edit this wiki and what markup it uses
-
-:doc:`Tutorial Videos <misc/tutorial-videos>`
-
-Tips on recording RapidSMS tutorial videos in Linux
-
-:doc:`Kannel Configuration <configuration/kannel>`
-
-Configuring RapidSMS to work with the Kannel SMS gateway
-
-:doc:`In Development <misc/indevelopment>`
-
-A list of other repositories, all works in progress, of new apps for RapidSMS
-
-Table of Contents
-=================
-
-.. toctree::
-   releases/0.10.0.rst
-
+* :doc:`Release notes and upgrading instructions <releases/index>`
 
 Indices and tables
 ==================

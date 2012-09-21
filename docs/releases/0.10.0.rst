@@ -16,7 +16,8 @@ Overview
 RapidSMS 0.10.0's focus has mostly been on decoupling the RapidSMS route process in several key places to begin processing all SMSes in normal HTTP requests. This also includes making it possible to swap the Router class that RapidSMS uses via a setting in the settings file. The key changes are as follows:
 
 * Removal of the bucket, email, irc, gsm, and smtp backends. 
-* Dividing the Router logic into BaseRouter, BlockingRouter, and LegacyRouter classes.
+* Dividing the Router logic into BaseRouter and BlockingRouter classes.
+* Removal of the legacy persistent threaded router.
 * ...
 
 
@@ -29,18 +30,35 @@ The major highlights of RapidSMS 0.10.0 are:
 A new router
 ~~~~~~~~~~~~
 
-RapidSMS 0.10.0 supplies the two built-in routers, which extend from ``rapidsms.router.base.BaseRouter``:
-
-* **BlockingRouter**: The default router that processes messages in real time.
-* **LegacyRouter**: The legacy, blocking router that spins up threads for apps and backends. This should only be use for legacy purposes.
+RapidSMS 0.10.0 supplies one built-in router, **BlockingRouter**. This is the default router that processes messages in real time.
 
 We also support creation of custom router classes.  All routers should extend from the ``BaseRouter`` class.
 
 
+Removal of threaded router
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+In 0.9.x, the RapidSMS router used Python's `threading
+<http://docs.python.org/library/threading.html>`_ module to encapsulate
+backends into indepedent threads. Using this model, backends can operate
+independently from one another, blocking for I/O and waiting for external
+service calls. Many of the original backends operated in this way. For example,
+``rapidsms.backends.http`` started a `HTTP server
+<https://github.com/rapidsms/rapidsms/blob/
+a7a0fccffa582d5c3cd320bd659cd2bd95785a51/lib/rapidsms/backends/http.py>`_ to
+listen on a specified port and ``rapidsms.backends.gsm`` communicated directly
+with a `GSM modem
+<https://github.com/rapidsms/rapidsms/blob/a7a0fccffa582d5c3cd320
+bd659cd2bd95785a51/lib/rapidsms/backends/gsm.py>`_. While this method provided RapidSMS with a routing architecture, the need for a non-threaded system grew due to the following reasons:
+
+* Thread interaction was complicated and not always intuitive.
+* If the route process died unexpectedly, all backends (and hence message  processing) were brought offline.
+* Automated testing was difficult and inefficient, because the router (and all its threads) needed to be started/stopped for each test.
+
 Added RAPIDSMS_ROUTER setting
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-RapidSMS now allows you to specify the primary router class to use by defining ``RAPIDSMS_ROUTER`` in settings. This defaults to ``rapidsms.router.blocking.BlockingRouter``, but you can change this in settings.py:
+RapidSMS now allows you to specify the primary router class to use by defining :setting:`RAPIDSMS_ROUTER` in settings. This defaults to ``rapidsms.router.blocking.BlockingRouter``, but you can change this in settings.py:
 
 .. code-block:: python
 
@@ -162,23 +180,6 @@ Removal of ``rapidsms.contrib.ajax`` app
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The ``rapidsms.contrib.ajax`` app has been removed.
-
-
-Removal of ``OutgoingMessage.send``
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Since the global router was removed in RapidSMS 0.10.0, ``OutgoingMessage.send`` will no longer work. You should use ``router.outgoing(message)`` instead. An exception will be raised if you use ``OutgoingMessage.send``:
-
-.. code-block:: python
-
-    >>> from rapidsms.messages.outgoing import OutgoingMessage
-    >>> message = OutgoingMessage(conn, "hello?")
-    >>> message.send()
-    Traceback (most recent call last):
-      File "<stdin>", line 1, in <module>
-      File "../rapidsms/lib/rapidsms/messages/outgoing.py", line 74, in send
-        raise NoRouterError('The global router has been removed from RapidSMS. '
-    rapidsms.errors.NoRouterError: The global router has been removed from RapidSMS. You must send the this message by calling router.outgoing(message).
 
 
 Removal of ``send_message``

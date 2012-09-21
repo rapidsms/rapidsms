@@ -1,3 +1,17 @@
+RapidSMS Apps
+=============
+
+One day soon, all usable RapidSMS apps will be found or linked to from the following repositories:
+
+* http://github.com/rapidsms/rapidsms-contrib-apps-dev (optional apps, restricted committers)
+
+* http://github.com/rapidsms/rapidsms-community-apps-dev (optional apps, open committers)
+
+* http://github.com/nyaruka/rapidsms-xforms (interactive form builder)
+
+Community Apps
+--------------
+
 This is a list of apps that are known to be currently in development, but exist in other repositories on github:
 
 * An application describing common models for the health domain: http://github.com/unicefuganda/rapidsms-healthmodels
