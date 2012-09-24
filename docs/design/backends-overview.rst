@@ -1,62 +1,70 @@
-Backends are the way RapidSMS interacts with external messages. Backends receive messages from external sources and delivers messages from Applications to external sources.
+RapidSMS Backends
+=================
 
-By default, RapidSMS responds to messages using the same backend on which it received the message. So emails coming in through the Emailbackend will go out through the Emailbackend, and messages received through a GSM Modem will go out through the same GSM modem. This is just the default though; you can manually re-route messages in code.
+Overview
+-----------------
+Backends are used to define the way RapidSMS sends messages over an external source. To handle incoming requests, RapidSMS backends make use of Django url routing and class based views to handle incoming HTTP requests, which contain data from SMS messages. When messages are received by a RapidSMS project, they are handled in the following workflow::
 
-Backends are configured in settings.py and when RapidSMS is installed there are no backends configured. Backends are composed of a "backend name" and a dictionary. The only required key in the dictionary is the "Engine" which is a python module path. Other keys in the dictionary are used for configuration. Backends are deliberately similar to the Django projects database structure
+    1. Data from a text message is received over an HTTP request.
+    2. The HTTP request is routed through an urls.py module. Each url pattern is paired directly with the backend view to be used for processing.
+    3. This backend view takes the HTTP request and passes it into a backend form.
+    4. This backend form cleans the message data and checks its validity.
+    5. If the message is valid, message data is sent in an HTTP request to the RapidSMS router for delivery. The router will send outgoing messages through the channels defined by the backend.
+    6. An HTTP response is sent to the HTTP request sender with an HTTP status code to indicate that the message was recieved and passed to the router for processing successfully or that there was an error.
 
-and an example GSM backend would look like this::
+N.B. - The HTTP response from a backend view does not necessarily indicate that the resulting SMS messages were sent by the router, only that the incoming message was added to the queue for processing.
 
-    "Zain": {
-        "ENGINE": "rapidsms.backends.gsm",
-        "PORT": "/dev/ttyUSB1"
-    },
 
-Note that multiple backends can use the same engine. So you could plug 3 modems into your machine and run each of them at the same time using RapidSMS.
+Configuration
+-------------
 
-A useful backend to configure after installing RapidSMS is the "bucket" backend. This is a testing backend that is used by the message tester.
-::
+Backends for a RapidSMS project are configured in settings.py as well as one or more urls.py files. Some further details on each are provided below.
+    1. The settings.py configuration defines a list of backends to use, each with a unique name and a path to the backend module to use. The same backend module can be included more than once, each with a unique backend name.
+    2. The urls.py file(s) define the endpoints that accept HTTP requests and the backend names (as defined in settings.py) that handle each.
 
-    "message_tester": {
-        "ENGINE": "rapidsms.backends.bucket"
-    }
 
-To add that to your RapidSMS install paste it between in the `INSTALLED_BACKENDS` section of setting.py::
-
-    INSTALLED_BACKENDS = {
-    }
-
-turns into::
+Configuring settings.py
+-----------------------
+The INSTALLED_BACKENDS dictionary in settings.py defines the list of backends to use. This setting is not provided in the default installation as individual project needs vary. The INSTALLED_BACKENDS setting mimics the structure of the Django DATABASES setting, and has the following
+general format::
 
     INSTALLED_BACKENDS = {
         "message_tester": {
-            "ENGINE": "rapidsms.backends.bucket"
-        }
+            "ENGINE": "rapidsms.contrib.httptester.backend",
+        },
     }
+
+Each value in INSTALLED_BACKENDS is a dictionary of the format::
+
+    "backend_name": {
+        "ENGINE": "path.to.backend",
+    }
+
+"ENGINE" is the only required key of this dictionary, and defines the python path to the backend to use. Other key value pairs can be used to configure options specific to each backend.
+
+
+Configuring urls.py
+-------------------
+
+An example urls.py pattern that routes /httptester/ to the 'message_tester' backend defined in settings.py is shown below::
+
+    url(r'^httptester/$', 'rapidsms.contrib.httptester.views.generate_identity',
+        {'backend_name': 'message_tester'}, name='httptester-index'),
+
+As this url pattern demonstrates, the declaration follows Django url pattern conventions and takes a `backend_name` kwarg to define the backend that will handle requests to this url.
+
 
 Backends That Ship with RapidSMS
 ==================================
 
-Backends that come with the new version of RapidSMS include:
+Some backends have been deprecated in 0.10 in favor of using HTTP based backends for improved testability and scalability. These include the bucket, GSM, email, IRC, and smpp backends.
 
-* `bucket backend <http://github.com/rapidsms/rapidsms/blob/master/lib/rapidsms/backends/bucket.py>`_
-* `email backend <http://github.com/rapidsms/rapidsms/blob/master/lib/rapidsms/backends/email.py>`_
-* `gsm backend <http://github.com/rapidsms/rapidsms/blob/master/lib/rapidsms/backends/gsm.py>`_
-* `irc backend <http://github.com/rapidsms/rapidsms/blob/master/lib/rapidsms/backends/irc.py>`_
-* `smpp backend <http://github.com/rapidsms/rapidsms/blob/master/lib/rapidsms/backends/smpp.py>`_
+Backends that come with the 0.10 version of RapidSMS include:
+
 * `http backend <http://github.com/rapidsms/rapidsms/blob/master/lib/rapidsms/backends/http.py>`_
 * `kannel backend <http://github.com/rapidsms/rapidsms/blob/master/lib/rapidsms/backends/kannel.py>`_
 
-Each of these is known to work with the new version of RapidSMS.
 
-Writing your own backend
-==========================
+Backends that do not ship with RapidSMS core, but are compatible with version 0.10 include:
 
-bucket backend is a good example of the most barebones backend you can write (the 'hello world' of backends, if you will). Backends should extend BackendBase and implement a few functions:
-
-* Configure (optional)
-* Receive
-* Send
-
-`Receive`'s main job is to call `self.router.incoming_message(msg)`, in order to dispatch any messages received from the outside world to the RapidSMS router.
-
-Send is called by the RapidSMS router in order to order to dispatch any messages received from the router to the outside world.
+* `twilio backend <https://github.com/caktus/rapidsms-twilio`_
