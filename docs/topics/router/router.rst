@@ -75,6 +75,8 @@ In this scenario, these settings were used::
         },
     }
 
+.. _custom-router:
+
 Using a custom router
 ---------------------
 
@@ -87,3 +89,6 @@ with RapidSMS, use the Python import path to the router class for the
 
 If you're building your own router, you can use the standard routers
 as reference implementations.
+
+Please see :doc:`Community Routers <community>` for a list of
+community-maintained routers.

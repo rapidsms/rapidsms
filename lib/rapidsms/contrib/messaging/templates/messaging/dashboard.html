@@ -1,10 +1,15 @@
 {% extends "layout.html" %}
 
+{% block stylesheets %}
+{{ block.super }}
+<link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}messaging/stylesheets/messaging.css" />
+{% endblock %}
+
 {% load paginator_tags %}
 {% block javascripts %}
 {{ block.super }}
-<script type="text/javascript" src="{{ MEDIA_URL }}messaging/js/jquery.simplyCountable.js"></script>
-<script type="text/javascript" src="{{ MEDIA_URL }}messaging/js/csrf_ajax.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}messaging/javascripts/jquery.simplyCountable.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}messaging/javascripts/csrf_ajax.js"></script>
 <script type="text/javascript">
     var REC = "recipients";
     
