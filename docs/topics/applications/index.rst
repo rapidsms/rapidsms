@@ -31,7 +31,7 @@ after receiving the message 'ping':
             return False
 
 The ``send`` and ``receive`` methods in the
-:doc:`router api <topics/router/messaging>` abstract the logic needed for
+:doc:`router api </topics/router/messaging>` abstract the logic needed for
 routing messages to applications. The following example provides a simplified
 overview of how this is done:
 
@@ -64,7 +64,7 @@ Application and router behavior in RapidSMS are intertwined. In this section,
 we focus on the behavior specific to applications, with references to some key
 areas where this behavior is tied in with the router. For more information
 about routing messages through applications, see the
-:doc:`router documentation <topics/router/index>`.
+:doc:`router documentation </topics/router/index>`.
 
 Application Discovery
 =====================
