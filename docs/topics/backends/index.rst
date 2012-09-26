@@ -40,6 +40,23 @@ As this url pattern demonstrates, the declaration uses the Django URL pattern de
 
 See :ref:`kannel_configuration` for more information about setting up the kannel backend.
 
+
+Backends That Ship with RapidSMS
+--------------------------------
+
+Some backends have been deprecated in 0.10 in favor of using HTTP based backends for improved testability and scalability. These include the bucket, GSM, email, IRC, and smpp backends.
+
+Backends that come with the 0.10 version of RapidSMS include:
+
+* `http backend <http://github.com/rapidsms/rapidsms/blob/master/lib/rapidsms/backends/http.py>`_
+* `kannel backend <http://github.com/rapidsms/rapidsms/blob/master/lib/rapidsms/backends/kannel.py>`_
+
+
+Backends that do not ship with RapidSMS core, but are compatible with version 0.10 include:
+
+* `twilio backend <https://github.com/caktus/rapidsms-twilio`_
+
+
 Example Configuration
 ---------------------
 The following is intended to serve as a simple example of configuring a backend in the settings.py and urls.py modules and testing it out with some HTTP requests.
@@ -63,22 +80,11 @@ The following is intended to serve as a simple example of configuring a backend 
 * Now in a python shell::
 
     >>> import urllib
+    >>> import urllib2
     >>> data = urllib.urlencode({
         'identity': '1112223333', 'text': 'echo hello'})
-    >>> urllib.urlopen('http://localhost:8000/backends/httptester/', data).read()
+    >>> request = urllib2.urlopen('http://localhost:8000/backends/httptester/', data)
+    >>> request.code
+    200
+    >>> request.read()
     'OK'
-
-Backends That Ship with RapidSMS
---------------------------------
-
-Some backends have been deprecated in 0.10 in favor of using HTTP based backends for improved testability and scalability. These include the bucket, GSM, email, IRC, and smpp backends.
-
-Backends that come with the 0.10 version of RapidSMS include:
-
-* `http backend <http://github.com/rapidsms/rapidsms/blob/master/lib/rapidsms/backends/http.py>`_
-* `kannel backend <http://github.com/rapidsms/rapidsms/blob/master/lib/rapidsms/backends/kannel.py>`_
-
-
-Backends that do not ship with RapidSMS core, but are compatible with version 0.10 include:
-
-* `twilio backend <https://github.com/caktus/rapidsms-twilio`_
