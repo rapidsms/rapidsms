@@ -1,3 +1,5 @@
+.. _kannel_configuration:
+
 ===============================
 Setting up RapidSMS with Kannel
 ===============================
