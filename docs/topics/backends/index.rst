@@ -40,6 +40,34 @@ As this url pattern demonstrates, the declaration uses the Django URL pattern de
 
 See :ref:`kannel_configuration` for more information about setting up the kannel backend.
 
+Example Configuration
+---------------------
+The following is intended to serve as a simple example of configuring a backend in the settings.py and urls.py modules and testing it out with some HTTP requests.
+
+* Include the following in urls.py::
+
+    from rapidsms.backends.http.views import GenericHttpBackendView
+
+    urlpatterns = patterns('',
+        url(r'^backends/httptester/$', GenericHttpBackendView.as_view('httptester')),
+    )
+
+* Include the following in settings.py::
+
+    INSTALLED_BACKENDS = {
+        "httptester": {
+            "ENGINE": "rapidsms.contrib.httptester.backend",
+        },
+    }
+
+* Now in a python shell::
+
+    >>> import urllib
+    >>> data = urllib.urlencode({
+        'identity': '1112223333', 'text': 'echo hello'})
+    >>> urllib.urlopen('http://localhost:8000/backends/httptester/', data).read()
+    'OK'
+
 Backends That Ship with RapidSMS
 --------------------------------
 
