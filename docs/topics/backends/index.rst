@@ -5,14 +5,15 @@ RapidSMS Backends
 
 Overview
 -----------------
+
 Backends are used to define the way RapidSMS sends messages over an external source. To handle incoming requests, RapidSMS backends make use of Django url routing and class based views to handle incoming HTTP requests, which contain data from SMS messages. When messages are received by a RapidSMS project, they are handled in the following workflow::
 
-    1. Data from a text message is received over an HTTP request.
-    2. The HTTP request is routed through an urls.py module. Each url pattern is paired directly with the backend view to be used for processing.
-    3. This backend view takes the HTTP request and passes it into a backend form.
-    4. This backend form cleans the message data and checks its validity.
-    5. If the message is valid, message data is sent to the RapidSMS router for delivery via the messaging API. The router will send outgoing messages through the channels defined by the backend.
-    6. An HTTP response is sent to the HTTP request sender with an HTTP status code to indicate that the message was recieved and passed to the router for processing successfully or that there was an error.
+1. Data from a text message is received over an HTTP request.
+2. The HTTP request is routed through an urls.py module. Each url pattern is paired directly with the backend view to be used for processing.
+3. This backend view takes the HTTP request and passes it into a backend form.
+4. This backend form cleans the message data and checks its validity.
+5. If the message is valid, message data is sent to the RapidSMS router for delivery via the :doc:`messaging API </topics/router/messaging>` . The router will send outgoing messages through the channels defined by the backend.
+6. An HTTP response is sent to the HTTP request sender with an HTTP status code to indicate that the message was recieved and passed to the router for processing successfully or that there was an error.
 
 N.B. - The HTTP response from a backend view does not necessarily indicate that the resulting SMS messages were sent by the router, only that the incoming message was added to the queue for processing.
 
@@ -22,9 +23,9 @@ Configuration
 
 Backends for a RapidSMS project are configured in settings.py as well as one or more urls.py files. The following is a general description of this seperation::
 
-    1. The settings.py configuration defines a list of backends to use, each with a unique name and a python path to the backend module to use.
-       The same backend module can be included more than once, each with a unique backend name.
-    2. The urls.py file(s) define the endpoints that accept HTTP requests and the backend names (as defined in settings.py) that handle each.
+1. The settings.py configuration defines a list of backends to use, each with a unique name and a python path to the backend module to use.
+   The same backend module can be included more than once, each with a unique backend name.
+2. The urls.py file(s) define the endpoints that accept HTTP requests and the backend names (as defined in settings.py) that handle each.
 
 The backend settings configuration is accomplished in the :setting:`INSTALLED_BACKENDS` setting.
 
