@@ -89,3 +89,29 @@ The following is intended to serve as a simple example of configuring a backend 
     200
     >>> request.read()
     'OK'
+
+
+Custom Backends
+---------------
+
+The simplest way to create a custom backend is to subclass the GenericHTTPBackendView as follows::
+
+    from rapidsms.backends.http.views import GenericHttpBackendView
+
+    class CustomHttpBackendView(GenericHttpBackendView):
+        params = {
+            'identity_name': 'phone',
+            'text_name': 'message',
+        }
+
+The params dictionary contains key value pairs that map internal names to the keys used in requests to the backend. In the above example, an HTTP request would provide 'phone' and 'message'. Assuming the URL pattern '^backends/customhttp/$' points to this custom backend, a request to this backend might look like the following::
+
+    >>> import urllib
+    >>> import urllib2
+    >>> data = urllib.urlencode({
+        'phone': '1112223333', 'message': 'ping'})
+    >>> request = urllib2.urlopen('http://localhost:8000/backends/customhttp/', data)
+    >>> request.code
+    200
+    >>> request.read()
+    'OK'
