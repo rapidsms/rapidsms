@@ -6,7 +6,7 @@ RapidSMS Backends
 Overview
 -----------------
 
-Backends are used to define the way RapidSMS sends messages over an external source. To handle incoming requests, RapidSMS backends make use of Django url routing and class based views to handle incoming HTTP requests, which contain data from SMS messages. When messages are received by a RapidSMS project, they are handled in the following workflow::
+Backends are used to define the way RapidSMS sends messages over an external source. To handle incoming requests, RapidSMS backends make use of Django url routing and class based views to handle incoming HTTP requests, which contain data from SMS messages. When messages are received by a RapidSMS project, they are handled in the following workflow:
 
 1. Data from a text message is received over an HTTP request.
 2. The HTTP request is routed through an urls.py module. Each url pattern is paired directly with the backend view to be used for processing.
@@ -94,7 +94,7 @@ The following is intended to serve as a simple example of configuring a backend 
 Custom Backends
 ---------------
 
-The simplest way to create a custom backend is to subclass the GenericHTTPBackendView as follows::
+The simplest type of custom backend is an http backend that needs to accept parameters other than 'identity' and 'text'. To create such a custom backend, one can subclass the GenericHTTPBackendView as follows::
 
     from rapidsms.backends.http.views import GenericHttpBackendView
 
@@ -104,14 +104,79 @@ The simplest way to create a custom backend is to subclass the GenericHTTPBacken
             'text_name': 'message',
         }
 
-The params dictionary contains key value pairs that map internal names to the keys used in requests to the backend. In the above example, an HTTP request would provide 'phone' and 'message'. Assuming the URL pattern '^backends/customhttp/$' points to this custom backend, a request to this backend might look like the following::
+The params dictionary contains key value pairs that map internal names to the keys used in requests to the backend. In the above example, an HTTP request would provide 'phone' and 'message' parameters.
+
+This backend would be registered in :setting:`INSTALLED_BACKENDS` with::
+
+    INSTALLED_BACKENDS = {
+        "customhttp": {
+            "ENGINE": "rapidsms.contrib.httptester.backend",
+        },
+    }
+
+An URL pattern for this backend might look like::
+
+
+    from project_name.app_name.views import CustomHttpBackendView
+
+    urlpatterns = patterns('',
+        url(r'^backends/httptester/$', CustomHttpBackendView.as_view('customhttp')),
+    )
+
+A request to this backend might look like the following::
 
     >>> import urllib
     >>> import urllib2
     >>> data = urllib.urlencode({
         'phone': '1112223333', 'message': 'ping'})
-    >>> request = urllib2.urlopen('http://localhost:8000/backends/customhttp/', data)
+    >>> request = urllib2.urlopen(
+            http://localhost:8000/backends/customhttp/', data)
     >>> request.code
     200
     >>> request.read()
     'OK'
+
+
+Using Custom Backend Forms
+--------------------
+
+Another custom backend might neccesitate handling more parameters in the request, or validating the incoming data differently. Such a backend would need to use its own form and is demonstrated below::
+
+    from .forms import ExtraParamsHttpBackendForm
+    from rapidsms.backends.http.views import GenericHttpBackendView
+
+    class ExtraParamsHttpBackendView(GenericHttpBackendView):
+        form_class = ExtraParamsHttpBackendForm
+
+forms.py in this application would have the following definition::
+
+    from django import forms
+    from rapidsms.backends.http.forms import BaseHttpForm
+
+    class ExtraParamsHttpBackendForm(BaseHttpForm):
+        extra = forms.TextField()
+
+        def get_incoming_data(self):
+            fields = self.cleaned_data.copy()
+            return {'identity': self.cleaned_data['indentity_name'],
+                    'text': self.cleaned_data['text_name'],
+                    'extra': self.cleaned_data['extra']}
+
+Data coming into this backend would require an 'extra' parameter, which would be passed onto the message queue.
+
+An example of a backend form with custom validation is here::
+
+    from django import forms
+    from rapidsms.backends.http.forms import BaseHttpForm
+
+    MY_NUMBER = '1231231234'
+
+    class OnlyTextMeHttpBackendForm(BaseHttpForm):
+
+        def clean_text_name:
+            text_name = self.cleaned_data.get('text_name')
+            if text_name != MY_NUMBER:
+                raise forms.ValidationError(
+                    'SMS received from number other than {0}'.format(MY_NUMBER)
+                )
+            return text_name
