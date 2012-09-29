@@ -46,7 +46,7 @@ Destinations
 **Getting Started**
 
 * :doc:`Overview <intro/overview>`
-* :doc:`Installation <intro/install>`
+* :doc:`Installation <intro/install/index>`
 * :doc:`Tutorial <intro/tutorial>` | :doc:`Tutorial Videos <intro/tutorial-videos>`
 * :doc:`Frequently Asked Questions <intro/faq>`
 
