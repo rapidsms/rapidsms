@@ -32,5 +32,5 @@ Installation Guides
 Typically, you'll either create a new RapidSMS project or add RapidSMS to an
 existing project. Please follow the guides below for more information:
 
-* Starting a new project
-* Adding RapidSMS to an existing Django project
+* :doc:`New RapidSMS project template <project-template>`
+* :doc:`Adding RapidSMS to an existing Django project <existing-django-project>`
