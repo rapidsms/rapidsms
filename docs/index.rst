@@ -26,23 +26,6 @@
 RapidSMS Documentation
 =======================
 
-RapidSMS is a free and open-source framework for dynamic data collection, logistics coordination and communication, leveraging basic short message service (SMS) mobile phone technology. It is written in Python and uses Django.
-
-* **Website**: http://www.rapidsms.org/
-
-* **Documentation**: http://rapidsms.readthedocs.org/
-
-* **Code**: http://github.com/rapidsms/rapidsms
-
-* **Google Group**: http://groups.google.com/group/rapidsms
-
-* **Youtube Channel**: http://www.youtube.com/user/rapidsmsdev
-
-* **RapidSMS IRC Channel archives**: http://irc.rapidsms.org (#RapidSMS also accessible via browser at http://webchat.freenode.net/)
-
-Destinations
-=============
-
 **Getting Started**
 
 * :doc:`Overview <intro/overview>`
