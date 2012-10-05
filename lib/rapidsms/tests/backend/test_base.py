@@ -90,9 +90,9 @@ def test_backend_routes_messages():
 
 
 def test_backend_finds_valid_backend_classes():
-    backend = BackendBase.find('rapidsms.backends.http')
-    from rapidsms.backends.http import RapidHttpBackend
-    assert_equals(backend, RapidHttpBackend)
+    backend = BackendBase.find('rapidsms.backends.kannel.outgoing')
+    from rapidsms.backends.kannel.outgoing import KannelBackend
+    assert_equals(backend, KannelBackend)
 
 
 def test_backend_can_be_started_and_stopped():
