@@ -6,9 +6,7 @@ from rapidsms.backends.base import BackendBase
 
 
 class KannelBackend(BackendBase):
-    """
-    Backend for use with the Kannel SMS Gateway.
-    """
+    """Backend for use with the Kannel SMS Gateway."""
 
     def configure(self, sendsms_url='http://127.0.0.1:13013/cgi-bin/sendsms',
                   sendsms_params=None, charset=None, coding=None,
@@ -19,14 +17,19 @@ class KannelBackend(BackendBase):
         self.coding = coding or 0
         self.encode_errors = encode_errors or 'ignore'
 
+    def prepare_message(self, message):
+        """Prepare URL query string with message context."""
+        query = copy.copy(self.sendsms_params)
+        query['to'] = message.connection.identity
+        query['text'] = message.text.encode(self.charset, self.encode_errors)
+        query['coding'] = self.coding
+        query['charset'] = self.charset
+        return query
+
     def send(self, message):
+        """Open request to Kannel instance."""
         self.info('Sending message: %s' % message)
-        url_args = copy.copy(self.sendsms_params)
-        url_args['to'] = message.connection.identity
-        url_args['text'] = message.text.encode(self.charset,
-                                               self.encode_errors)
-        url_args['coding'] = self.coding
-        url_args['charset'] = self.charset
+        url_args = self.prepare_message(message)
         url = '?'.join([self.sendsms_url, urllib.urlencode(url_args)])
         try:
             self.debug('Opening URL: %s' % url)
