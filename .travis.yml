@@ -12,3 +12,6 @@ script: python run_tests.py --settings=tests.default
 branches:
   only:
     - "feature/new-routing"
+notifications:
+  irc:
+    - "irc.freenode.org#rapidsms"
