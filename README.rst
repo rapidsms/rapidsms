@@ -1,6 +1,11 @@
 RapidSMS
 ========
 
+.. image::
+    https://secure.travis-ci.org/rapidsms/rapidsms.png?branch=feature/new-routing
+    :alt: Build Status
+    :target: https://secure.travis-ci.org/rapidsms/rapidsms
+
 RapidSMS is a free and open source framework for building interactive SMS applications, which integrates tightly with `Django`_ to provide a rich reporting interface. It was created by the Innovation Team at `UNICEF`_, and is under development by `the RapidSMS Team`_.
 
 .. _Django: http://djangoproject.com
