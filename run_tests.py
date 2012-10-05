@@ -53,6 +53,7 @@ def main():
     # I couldn't figure out how to get "CI" in as a command line argument,
     # because nosetests would also interpret the argument.
     ci = os.environ.get('CI', False)
+    ci = False
     run_tests(options, ci)
 
 
