@@ -41,7 +41,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'RapidSMS'
-copyright = u'2011, RapidSMS'
+copyright = u'2012, RapidSMS. Sphinx-powered using a <a href="https://github.com/mitsuhiko/flask-sphinx-themes">custom</a> theme'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
