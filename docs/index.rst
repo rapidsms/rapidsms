@@ -7,20 +7,20 @@
     :hidden:
     :glob:
 
-    configuration/*
     design/*
-    examples/*
-    installation/*
     internals/*
     internals/contributing/*
     internals/roadmap/*
-    main/*
-    messaging/*
-    misc/*
+    intro/*
+    intro/install/*
     ref/*
     releases/*
     topics/*
+    topics/applications/*
     topics/backends/*
+    topics/contrib/*
+    topics/router/*
+    _themes/*
 
 
 RapidSMS Documentation
