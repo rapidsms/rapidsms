@@ -50,7 +50,7 @@ Release: v\ |version|. (:doc:`Installation <intro/install/index>`)
 * :doc:`Testing <topics/testing>`
 * :doc:`Deployment <topics/deployment>`
 
-**RapidSMS contrib applications**
+**RapidSMS contrib applications** (:doc:`Overview <topics/contrib/index>`)
 
 * default
 * echo
