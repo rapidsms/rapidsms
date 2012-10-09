@@ -11,6 +11,20 @@ PyPi_)::
 
     pip install rapidsms
 
+Installation Guides
+-------------------
+
+Typically, you'll either create a new RapidSMS project or add RapidSMS to an
+existing project. Please follow the guides below for more information:
+
+* :doc:`New RapidSMS project template <project-template>`
+* :doc:`Adding RapidSMS to an existing Django project <existing-django-project>`
+
+.. _installing-development-version:
+
+Installing the latest development version
+-----------------------------------------
+
 The latest development version is available in our `Git repository`_. Get it
 using this shell command, which requires Git_::
 
@@ -25,12 +39,3 @@ You can also download `a zipped archive`_ of the development version.
 .. _Git repository: https://github.com/rapidsms/rapidsms
 .. _Git: http://git-scm.com/
 .. _a zipped archive: https://github.com/rapidsms/rapidsms/zipball/master
-
-Installation Guides
-------------------
-
-Typically, you'll either create a new RapidSMS project or add RapidSMS to an
-existing project. Please follow the guides below for more information:
-
-* :doc:`New RapidSMS project template <project-template>`
-* :doc:`Adding RapidSMS to an existing Django project <existing-django-project>`
