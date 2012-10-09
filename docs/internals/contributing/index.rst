@@ -54,6 +54,8 @@ Submitting code
 
 #. Send a pull request and request feedback on `rapidsms-dev`_.
 
+#. Sign the :ref:`Contributor Licence Agreement <contributor-license-agreements>`.
+
 .. _coding-standards:
 
 Coding standards and best practicies

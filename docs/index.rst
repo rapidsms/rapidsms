@@ -65,9 +65,9 @@ Release: v\ |version|. (:doc:`Installation <intro/install/index>`)
 
 **The RapidSMS open-source project**
 
-* :doc:`About this documentation <internals/contributing/overview>` | :doc:`License <internals/contributing/license>`
-* Team of core committers
 * :doc:`How to get involved <internals/contributing/index>`
+* :doc:`About this documentation <internals/contributing/overview>`
+* :doc:`License <internals/contributing/license>`
 * :doc:`Running the RapidSMS core test suite <internals/contributing/testing>`
 * :doc:`Release notes and upgrading instructions <releases/index>`
 
