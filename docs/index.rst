@@ -68,7 +68,6 @@ Release: v\ |version|. (:doc:`Installation <intro/install/index>`)
 * :doc:`About this documentation <internals/contributing/overview>` | :doc:`License <internals/contributing/license>`
 * Team of core committers
 * :doc:`How to get involved <internals/contributing/index>`
-* :doc:`GitHub group and repositories <internals/contributing/repository>`
 * :doc:`Running the RapidSMS core test suite <internals/contributing/testing>`
 * :doc:`Release notes and upgrading instructions <releases/index>`
 
