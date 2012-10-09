@@ -38,6 +38,11 @@ Submitting code
    start   a discussion around a   feature idea or a bug. Send a message to the
    `rapidsms-dev`_ mailing list to request feedback.
 
+#. If you're working on a large patch, we highly recommend creating a `wiki 
+   page`_ under the RapidSMS GitHub account. Use the wiki page to outline the
+   motivation behind the patch and to document decisions made on the 
+   `rapidsms-dev`_ mailing list. `Router decoupling and HTTP message processing`_, `Bulk Messaging API`_, and `Scheduling`_ are good examples.
+
 #. Fork the repository on GitHub to start making your changes (relative to the
    master branch).
 
@@ -144,3 +149,7 @@ __ http://docutils.sourceforge.net/
 .. _reStructuredText Primer: http://sphinx.pocoo.org/rest.html#rst-primer
 .. _Sphinx-specific markup: http://sphinx.pocoo.org/markup/index.html#sphinxmarkup
 .. _documentation label: https://github.com/rapidsms/rapidsms/issues?labels=documentation&page=1&state=open
+.. _Router decoupling and HTTP message processing: https://github.com/rapidsms/rapidsms/wiki/Router-decoupling-and-HTTP-message-processing
+.. _Bulk Messaging API: https://github.com/rapidsms/rapidsms/wiki/Bulk-Messaging-API
+.. _Scheduling: https://github.com/rapidsms/rapidsms/wiki/Scheduling
+.. _wiki page: https://github.com/rapidsms/rapidsms/wiki/_pages
