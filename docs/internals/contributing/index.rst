@@ -33,26 +33,26 @@ And, of course, you can help out by working *on* RapidSMS.
 Submitting code
 ---------------
 
-* Check for open issues or open a fresh issue in the `ticket tracker`_ to start
-  a discussion around a   feature idea or a bug. Send a message to the
-  `rapidsms-dev`_ mailing list to request feedback.
+#. Check for open issues or open a fresh issue in the `ticket tracker`_ to
+   start   a discussion around a   feature idea or a bug. Send a message to the
+   `rapidsms-dev`_ mailing list to request feedback.
 
-* Fork the repository on GitHub to start making your changes (relative to the
-  master branch).
+#. Fork the repository on GitHub to start making your changes (relative to the
+   master branch).
 
-* Follow the RapidSMS :ref:`coding standards <coding-standards>`.
+#. Follow the RapidSMS :ref:`coding standards <coding-standards>`.
 
-* Write a test which shows that the bug was fixed or that the feature works as
-  expected.
+#. Write a test which shows that the bug was fixed or that the feature works as
+   expected.
 
-* Run the RapidSMS :doc:`test suite <testing>` to make sure nothing unexpected 
-  broke. We only accept pull requests with passing tests.
+#. Run the RapidSMS :doc:`test suite <testing>` to make sure nothing unexpected
+   broke. We only accept pull requests with passing tests.
 
-* Write new or update old documentation to describe the changes you made.
+#. Write new or update old documentation to describe the changes you made.
 
-* Make sure to add yourself to AUTHORS.
+#. Make sure to add yourself to `AUTHORS`_.
 
-* Send a pull request and request feedback on `rapidsms-dev`_. 
+#. Send a pull request and request feedback on `rapidsms-dev`_.
 
 .. _coding-standards:
 
@@ -81,3 +81,4 @@ Coding standards and best practicies
 .. _webchat: http://webchat.freenode.net?channels=rapidsms
 .. _ticket tracker: https://github.com/rapidsms/rapidsms/issues?state=open
 .. _pull requests: https://github.com/rapidsms/rapidsms/pulls
+.. _AUTHORS: https://github.com/rapidsms/rapidsms/blob/feature/new-routing/AUTHORS
