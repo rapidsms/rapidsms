@@ -55,11 +55,11 @@ Submitting code
 
 #. Send a pull request and request feedback on `rapidsms-dev`_.
 
-#. Sign the :ref:`Contributor Licence Agreement <contributor-license-agreements>`.
+#. Sign the :ref:`Contributor License Agreement <contributor-license-agreements>`.
 
 .. _coding-standards:
 
-Coding standards and best practicies
+Coding standards and best practices
 ************************************
 
 #. Follow `PEP8 style conventions <http://www.python.org/dev/peps/pep-0008/>`_.
