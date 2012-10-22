@@ -23,7 +23,7 @@ N.B. - The HTTP response from a backend view does not necessarily indicate that 
 Configuration
 -------------
 
-Backends for a RapidSMS project are configured in settings.py as well as one or more urls.py files. The following is a general description of this seperation::
+Backends for a RapidSMS project are configured in settings.py as well as one or more urls.py files. The following is a general description of this seperation:
 
 1. The settings.py configuration defines a list of backends to use, each with a unique name and a python path to the backend module to use.
    The same backend module can be included more than once, each with a unique backend name.
@@ -51,13 +51,8 @@ Some backends have been deprecated in 0.10 in favor of using HTTP based backends
 
 Backends that come with the 0.10 version of RapidSMS include:
 
-* `http backend <http://github.com/rapidsms/rapidsms/blob/master/lib/rapidsms/backends/http.py>`_
-* `kannel backend <http://github.com/rapidsms/rapidsms/blob/master/lib/rapidsms/backends/kannel.py>`_
-
-
-Backends that do not ship with RapidSMS core, but are compatible with version 0.10 include:
-
-* `twilio backend <https://github.com/caktus/rapidsms-twilio`_
+* HTTP backend
+* :ref:`Kannel backend <kannel_configuration>`
 
 
 Example Configuration
@@ -140,7 +135,7 @@ A request to this backend might look like the following::
 
 
 Using Custom Backend Forms
---------------------
+--------------------------
 
 Another custom backend might neccesitate handling more parameters in the request, or validating the incoming data differently. Such a backend would need to use its own form and is demonstrated below::
 
