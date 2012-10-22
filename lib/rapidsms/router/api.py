@@ -1,6 +1,6 @@
 import datetime
 
-from rapidsms.models import Connection, Backend
+from rapidsms.models import Backend
 
 
 def receive(text, backend_name=None, identity=None, connection=None,
@@ -26,7 +26,7 @@ def receive(text, backend_name=None, identity=None, connection=None,
 
 def send(text, backend_name=None, identity=None, connection=None):
     """
-    Takes an outgoing message passes it to a router for processing.  If a 
+    Takes an outgoing message passes it to a router for processing.  If a
     ``connection`` is passed, ``backend_name`` and ``identity`` are ignored.
     """
     if not connection:

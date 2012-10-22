@@ -7,46 +7,31 @@
     :hidden:
     :glob:
 
-    configuration/*
     design/*
-    examples/*
-    installation/*
     internals/*
     internals/contributing/*
     internals/roadmap/*
-    main/*
-    messaging/*
-    misc/*
+    intro/*
+    intro/install/*
     ref/*
     releases/*
     topics/*
+    topics/applications/*
     topics/backends/*
+    topics/contrib/*
+    topics/router/*
+    _themes/*
 
 
 RapidSMS Documentation
 =======================
 
-RapidSMS is a free and open-source framework for dynamic data collection, logistics coordination and communication, leveraging basic short message service (SMS) mobile phone technology. It is written in Python and uses Django.
-
-* **Website**: http://www.rapidsms.org/
-
-* **Documentation**: http://rapidsms.readthedocs.org/
-
-* **Code**: http://github.com/rapidsms/rapidsms
-
-* **Google Group**: http://groups.google.com/group/rapidsms
-
-* **Youtube Channel**: http://www.youtube.com/user/rapidsmsdev
-
-* **RapidSMS IRC Channel archives**: http://irc.rapidsms.org (#RapidSMS also accessible via browser at http://webchat.freenode.net/)
-
-Destinations
-=============
+Release: v\ |version|. (:doc:`Installation <intro/install/index>`)
 
 **Getting Started**
 
 * :doc:`Overview <intro/overview>`
-* :doc:`Installation <intro/install>`
+* :doc:`Installation <intro/install/index>`
 * :doc:`Tutorial <intro/tutorial>` | :doc:`Tutorial Videos <intro/tutorial-videos>`
 * :doc:`Frequently Asked Questions <intro/faq>`
 
@@ -65,7 +50,7 @@ Destinations
 * :doc:`Testing <topics/testing>`
 * :doc:`Deployment <topics/deployment>`
 
-**RapidSMS contrib applications**
+**RapidSMS contrib applications** (:doc:`Overview <topics/contrib/index>`)
 
 * default
 * echo
@@ -80,12 +65,10 @@ Destinations
 
 **The RapidSMS open-source project**
 
-* :doc:`About this documentation <internals/contributing/overview>` | :doc:`License <internals/contributing/license>`
-* Team of core committers
-* :doc:`How to get involved <internals/contributing/release-process>`
-* :doc:`GitHub group and repositories <internals/contributing/repository>`
+* :doc:`How to get involved <internals/contributing/index>`
 * :doc:`Running the RapidSMS core test suite <internals/contributing/testing>`
 * :doc:`Release notes and upgrading instructions <releases/index>`
+* :doc:`License <internals/contributing/license>`
 
 Indices and tables
 ==================
@@ -93,4 +76,3 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-

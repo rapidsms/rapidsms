@@ -11,7 +11,6 @@ setup(
     license="BSD",
 
     install_requires = [
-        "django",
         "django-nose",
         "djtables",
         "djappsettings"

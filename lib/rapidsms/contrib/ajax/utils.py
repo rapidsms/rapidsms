@@ -12,7 +12,7 @@ def call_router(app, action, **kwargs):
     warnings.warn("call_router is deprecated and will be removed in a future "
                   "release. Please see the docs.", DeprecationWarning, stacklevel=2)
     post = kwargs if len(kwargs) else None
-    return request("%s/%s" % (app, action), post=post)
+    return _request("%s/%s" % (app, action), post=post)
 
 
 def _find_app(app_name):
@@ -21,11 +21,12 @@ def _find_app(app_name):
             app = app
 
 
-def request(path, get=None, post=None, encoding=None):
+def _request(path, get=None, post=None, encoding=None):
     """
-    Send an HTTP request to the RapidSMS router, via the AJAX app (which
-    must be running for this to work), and return a tuple containing the
-    returned HTTP status, content-type, and body.
+    This is a temporary backwards-compatibility stub that allows call_router()
+    to continue to work (to a point) after the switch to HTTP-only routing.  It
+    works by finding the given method on the app class and calling it directly,
+    rather than calling the method remotely over HTTP the way it did previously.
     """
 
     path_parts = path.split("/")
