@@ -1,5 +1,4 @@
 from rapidsms.router.blocking import BlockingRouter
-
 from rapidsms.router.celery.tasks import rapidsms_handle_message
 
 
