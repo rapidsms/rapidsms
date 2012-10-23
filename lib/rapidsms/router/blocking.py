@@ -3,7 +3,6 @@ import copy
 from django.conf import settings
 
 from .base import BaseRouter
-from ..models import Backend, Contact, Connection
 
 
 class BlockingRouter(BaseRouter):
