@@ -8,6 +8,7 @@ env:
 install:
   - pip install -q Django==$DJANGO_VERSION
   - pip install . --use-mirrors
+  - pip install -r tests/requirements/base.txt
 script: python run_tests.py --settings=tests.default
 branches:
   only:
