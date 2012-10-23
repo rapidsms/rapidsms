@@ -130,6 +130,7 @@ All routers should extend from ``rapidsms.router.base.BaseRouter``. The
 implementations of all router methods. Subclasses may override the default
 methods to enhance convenience or optimize performance.
 
+.. router:: BlockingRouter
 .. _blocking-router:
 
 BlockingRouter
