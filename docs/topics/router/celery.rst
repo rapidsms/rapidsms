@@ -76,7 +76,7 @@ All logging specific to :router:`CeleryRouter` is handled through the
 ``rapidsms.router.celery`` name. For example, if you have a ``file`` handler defined, you can capture all messages using the following configuration::
 
     LOGGING_CONFIG = {
-        'celery_router': {
+        'rapidsms.router.celery': {
             'handlers': ['file'],
             'level': 'DEBUG',
         },
@@ -86,11 +86,11 @@ Currently, there are only two child loggers: one for the router and one for the
 Celery task. You can capture their messages independently like so::
 
     LOGGING_CONFIG = {
-        'celery_router.router': {
+        'rapidsms.router.celery.router': {
             'handlers': ['file'],
             'level': 'INFO',
         },
-        'celery_router.tasks.rapidsms_handle_message': {
+        'rapidsms.router.celery.tasks.rapidsms_handle_message': {
             'handlers': ['file'],
             'level': 'DEBUG',
         },
