@@ -38,7 +38,7 @@ Release: v\ |version|. (:doc:`Installation <intro/install/index>`)
 **Architecture**
 
 * :doc:`RapidSMS Architecture Overview <topics/architecture>`
-* **Router:** :doc:`Overview <topics/router/index>` | :doc:`Messaging <topics/router/messaging>` | :doc:`Community routers <topics/router/community>`
+* **Router:** :doc:`Overview <topics/router/index>` | :doc:`Messaging <topics/router/messaging>` | :doc:`CeleryRouter <topics/router/celery>` | :doc:`Community routers <topics/router/community>`
 * **Applications:** :doc:`Overview <topics/applications/index>` | :doc:`Community apps <topics/applications/community>`
 * **Backends:** :doc:`Overview <topics/backends/index>` | :doc:`Kannel <topics/backends/kannel>` | :doc:`Vumi <topics/backends/vumi>` | :doc:`Community backends <topics/backends/community>`
 
