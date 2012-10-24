@@ -34,7 +34,7 @@ class EagerBackendTest(MockBackendRouter, TestCase):
 
     router_class = 'rapidsms.router.celery.CeleryRouter'
     backends = {'mockbackend': {'ENGINE': MockBackend,
-                                'rapidsms.router.celery.eager': True}}
+                                'router.celery.eager': True}}
 
     def test_outgoing(self):
         """Eager backends should call rapidsms_handle_message directly"""
