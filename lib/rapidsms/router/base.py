@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
 
+import warnings
+
 from django.dispatch import Signal
 
 from ..log.mixin import LoggerMixin
@@ -256,3 +258,15 @@ class BaseRouter(object, LoggerMixin):
         # send message using specified backend
         msg.sent = self.backends[msg.connection.backend.name].send(msg)
         return msg.sent
+
+    def incoming(self, msg):
+        """Legacy support for Router.incoming() -- Deprecated"""
+        msg = "Router.incoming is deprecated. Please use receive_incoming."
+        warnings.warn(msg)
+        self.receive_incoming(msg)
+
+    def outgoing(self, msg):
+        """Legacy support for Router.outgoing() -- Deprecated"""
+        msg = "Router.outgoing is deprecated. Please use send_outgoing."
+        warnings.warn(msg)
+        self.send_outgoing(msg)

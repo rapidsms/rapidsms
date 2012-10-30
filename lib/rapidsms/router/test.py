@@ -33,4 +33,3 @@ class NoOpTestRouter(TestRouter):
         if not hasattr(self, '_outgoing'):
             self._outgoing = []
         self._outgoing.append(msg)
-
