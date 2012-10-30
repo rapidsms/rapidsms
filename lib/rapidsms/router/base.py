@@ -178,8 +178,7 @@ class BaseRouter(object, LoggerMixin):
           An opportunity to clean up anything started during earlier phases.
         """
 
-        self.info("Incoming (%s): %s" %\
-            (msg.connection, msg.text))
+        self.info("Incoming (%s): %s" % (msg.connection, msg.text))
 
         try:
             for phase in self.incoming_phases:
