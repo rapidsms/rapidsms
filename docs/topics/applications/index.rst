@@ -74,12 +74,12 @@ Incoming Message Processing
    See also the :ref:`router documentation on incoming message processing
    <router-incoming>`.
 
-The router receives each incoming message through its ``incoming`` method.
-In ``BaseRouter.incoming``, the message is passed sequentially to the router's
-associated applications in each of five processing phases. Applications
-provide the code to execute each phase. The router provides hooks which allow
-an application to filter out a message, skip phases, or stop further
-processing.
+The router receives each incoming message through its ``incoming`` method. In
+``BaseRouter.receive_incoming``, the message is passed sequentially to the
+router's associated applications in each of five processing phases.
+Applications provide the code to execute each phase. The router provides hooks
+which allow an application to filter out a message, skip phases, or stop
+further processing.
 
 .. IMPORTANT::
    The order in which the router chooses applications to process messages is
@@ -170,13 +170,13 @@ Outgoing Message Processing
 
 The router receives each outgoing message through its ``outgoing`` method.
 Messages are processed in a manner similar to incoming messages, except only
-one phase, *outgoing*, is defined. In ``BaseRouter.outgoing``, the message
-is processed sequentially by the router's associated applications. However,
-the applications are called in reverse order with respect to the order they
-are called in ``BaseRouter.incoming``, so the first application called to
+one phase, *outgoing*, is defined. In ``BaseRouter.send_outgoing``, the message
+is processed sequentially by the router's associated applications. However, the
+applications are called in reverse order with respect to the order they are
+called in ``BaseRouter.receive_incoming``, so the first application called to
 process an incoming message is the last application that is called to process
-an outgoing message. If any application returns ``True`` during the
-*outgoing* phase, all further processing of the message will be aborted.
+an outgoing message. If any application returns ``True`` during the *outgoing*
+phase, all further processing of the message will be aborted.
 
 The logic for the *outgoing* phase is defined in a method of the same name
 in the ``AppBase`` class. By default, no action is taken during this phase.
