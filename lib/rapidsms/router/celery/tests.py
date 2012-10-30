@@ -51,7 +51,7 @@ class HandleMessageTaskTest(MockBackendRouter, TestCase):
         """BlockingRouter.incoming should be called if incoming is True"""
 
         message = Mock()
-        with patch.object(BlockingRouter, 'incoming') as mock_method:
+        with patch.object(BlockingRouter, 'receive_incoming') as mock_method:
             rapidsms_handle_message(message, incoming=True)
         mock_method.assert_called_once_with(message)
 
@@ -59,6 +59,6 @@ class HandleMessageTaskTest(MockBackendRouter, TestCase):
         """BlockingRouter.outgoing should be called if outgoing is True"""
 
         message = Mock()
-        with patch.object(BlockingRouter, 'outgoing') as mock_method:
+        with patch.object(BlockingRouter, 'send_outgoing') as mock_method:
             rapidsms_handle_message(message, incoming=False)
         mock_method.assert_called_once_with(message)

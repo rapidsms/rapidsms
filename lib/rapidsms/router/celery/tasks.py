@@ -17,9 +17,9 @@ def rapidsms_handle_message(msg, incoming=True):
     try:
         router.start()
         if incoming:
-            router.incoming(msg)
+            router.receive_incoming(msg)
         else:
-            router.outgoing(msg)
+            router.send_outgoing(msg)
         router.stop()
     except Exception, e:
         logger.exception(e)

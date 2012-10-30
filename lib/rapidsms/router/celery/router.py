@@ -25,8 +25,8 @@ class CeleryRouter(BlockingRouter):
             self.debug('Executing asynchronously')
             rapidsms_handle_message.delay(msg, incoming)
 
-    def incoming(self, msg):
+    def receive_incoming(self, msg):
         self._queue_message(msg, incoming=True)
 
-    def outgoing(self, msg):
+    def send_outgoing(self, msg):
         self._queue_message(msg, incoming=False)

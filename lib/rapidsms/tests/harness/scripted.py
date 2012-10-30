@@ -74,7 +74,7 @@ class TestScript(MockBackendRouter):
         connection, _ = Connection.objects.get_or_create(backend=self.backend,
                                                          identity=num)
         msg = IncomingMessage(connection, txt, date)
-        self.router.incoming(msg)
+        self.router.receive_incoming(msg)
 
     def receiveMessage(self):
         try:

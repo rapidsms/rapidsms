@@ -154,9 +154,9 @@ class BaseRouter(object, LoggerMixin):
         Queue or send immediately the incoming message.  Defaults to sending
         the message immediately.
         """
-        self.incoming(msg)
+        self.receive_incoming(msg)
 
-    def incoming(self, msg):
+    def receive_incoming(self, msg):
         """
         Incoming phases:
 
@@ -224,7 +224,7 @@ class BaseRouter(object, LoggerMixin):
         except StopIteration:
             pass
 
-    def outgoing(self, msg):
+    def send_outgoing(self, msg):
         """
         """
 
