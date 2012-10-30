@@ -81,10 +81,10 @@ Incoming Messages
    See also the :ref:`application documentation on incoming message processing
    <application-incoming>`.
 
-In ``BaseRouter.incoming``, the incoming message is processed in five phases.
-Each application provides code for executing the phases. The router method
-defines hooks which allow an application to filter out a message, skip phases,
-or stop further processing.
+In ``BaseRouter.receive_incoming``, the incoming message is processed in five
+phases. Each application provides code for executing the phases. The router
+method defines hooks which allow an application to filter out a message, skip
+phases, or stop further processing.
 
 1. :ref:`filter <phase-filter>` - **Optionally abort all further processing of
    the incoming message (including cleanup).**
@@ -98,10 +98,10 @@ or stop further processing.
 The order in which the router chooses applications to process messages is
 extremely important, because each application will have the opportunity to
 block subsequent applications from processing a message. In
-``BaseRouter.incoming``, the message is processed by applications in the order
-they are listed in the ``apps`` list property. For ``BlockingRouter``, this
-means that messages are processed by applications in the order they are listed
-in :setting:`INSTALLED_APPS`.
+``BaseRouter.receive_incoming``, the message is processed by applications in
+the order they are listed in the ``apps`` list property. For
+``BlockingRouter``, this means that messages are processed by applications in
+the order they are listed in :setting:`INSTALLED_APPS`.
 
 .. _router-outgoing:
 
@@ -112,12 +112,12 @@ Outgoing Messages
    See also the :ref:`application documentation on outgoing message
    processing <application-outgoing>`.
 
-In ``BaseRouter.outgoing``, the outgoing message is processed sequentially by
-the applications listed in the ``apps`` list property. However, the
+In ``BaseRouter.send_outgoing``, the outgoing message is processed sequentially
+by the applications listed in the ``apps`` list property. However, the
 applications are called in reverse order with respect to the order they are
-called in ``BaseRouter.incoming``, so the first application called to process
-an incoming message is the last application that is called to process an
-outgoing message. If any application returns ``True`` during the *outgoing*
+called in ``BaseRouter.receive_incoming``, so the first application called to
+process an incoming message is the last application that is called to process
+an outgoing message. If any application returns ``True`` during the *outgoing*
 phase, all further processing of the message will be aborted.
 
 .. _router-types:
@@ -165,8 +165,9 @@ you may provide specific classes or Django apps in which to search in the
     >>> router.backends
     {'message_tester': <backend: message_tester>}
 
-``BlockingRouter`` also overrides ``BaseRouter.incoming`` to automatically
-handle (via the ``outgoing`` method) responses to the incoming message.
+``BlockingRouter`` also overrides ``BaseRouter.receive_incoming`` to
+automatically handle (via the ``outgoing`` method) responses to the incoming
+message.
 
 .. _custom-router:
 

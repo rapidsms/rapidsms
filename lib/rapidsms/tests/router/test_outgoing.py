@@ -20,6 +20,6 @@ class OutgoingTest(MockBackendRouter, TestCase):
         and set message.sent flag respectively
         """
         msg = OutgoingMessage(self.connection, 'hello!')
-        self.router.outgoing(msg)
+        self.router.send_outgoing(msg)
         self.assertTrue(msg.sent)
         self.assertEqual(msg, self.outbox[0])

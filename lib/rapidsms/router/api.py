@@ -19,7 +19,7 @@ def receive(text, backend_name=None, identity=None, connection=None,
                               fields=fields)
     router = get_router()()
     router.start()
-    router.incoming(message)
+    router.receive_incoming(message)
     router.stop()
     return message
 
@@ -37,6 +37,6 @@ def send(text, backend_name=None, identity=None, connection=None):
     message = OutgoingMessage(connection, text)
     router = get_router()()
     router.start()
-    router.outgoing(message)
+    router.send_outgoing(message)
     router.stop()
     return message

@@ -25,9 +25,9 @@ class BlockingRouter(BaseRouter):
             engine = parsed_conf.pop('ENGINE')
             self.add_backend(name, engine, parsed_conf)
 
-    def incoming(self, msg):
+    def receive_incoming(self, msg):
         # process incoming phases
-        super(BlockingRouter, self).incoming(msg)
+        super(BlockingRouter, self).receive_incoming(msg)
         # handle message responses from within router
         for response in msg.responses:
-            self.outgoing(response)
+            self.send_outgoing(response)

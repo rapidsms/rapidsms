@@ -24,13 +24,12 @@ class NoOpTestRouter(TestRouter):
     Django view side of backend apps.
     """
 
-    def incoming(self, msg):
+    def receive_incoming(self, msg):
         if not hasattr(self, '_incoming'):
             self._incoming = []
         self._incoming.append(msg)
 
-    def outgoing(self, msg):
+    def send_outgoing(self, msg):
         if not hasattr(self, '_outgoing'):
             self._outgoing = []
         self._outgoing.append(msg)
-

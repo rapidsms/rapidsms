@@ -67,10 +67,10 @@ def test_router_calls_all_app_phases():
     router = BaseRouter()
     app = MockApp(router)
     router.apps.append(app)
-    router.incoming(MockMsg())
+    router.receive_incoming(MockMsg())
     assert_equals(app.called_phases, app.incoming_phases)
     app.called_phases = []
-    router.outgoing(MockMsg())
+    router.send_outgoing(MockMsg())
     assert_equals(app.called_phases, app.outgoing_phases)
     app.called_phases = []
     router.start()
