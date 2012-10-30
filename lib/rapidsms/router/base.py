@@ -1,11 +1,6 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
 
-
-import sys
-import traceback
-import time
-
 from django.dispatch import Signal
 
 from ..log.mixin import LoggerMixin
@@ -21,19 +16,16 @@ class BaseRouter(object, LoggerMixin):
     incoming_phases = ("filter", "parse", "handle", "default", "cleanup")
     outgoing_phases = ("outgoing",)
 
-    pre_start  = Signal(providing_args=["router"])
+    pre_start = Signal(providing_args=["router"])
     post_start = Signal(providing_args=["router"])
-    pre_stop   = Signal(providing_args=["router"])
-    post_stop  = Signal(providing_args=["router"])
+    pre_stop = Signal(providing_args=["router"])
+    post_stop = Signal(providing_args=["router"])
 
     def __init__(self):
-
         self.apps = []
         self.backends = {}
         self.logger = None
-
         self.running = False
-        """TODO: Docs"""
 
     def add_app(self, module_name):
         """
@@ -52,14 +44,13 @@ class BaseRouter(object, LoggerMixin):
         return app
 
     def get_app(self, module_name):
-        """Get a handle to one of our apps by module name.""" 
+        """Get a handle to one of our apps by module name."""
         cls = AppBase.find(module_name)
-        if cls is None: return None
-        
+        if cls is None:
+            return None
         for app in self.apps:
             if type(app) == cls:
                 return app
-            
         raise KeyError("The %s app was not found in the router!" % module_name)
 
     def add_backend(self, name, module_name, config=None):
@@ -219,18 +210,18 @@ class BaseRouter(object, LoggerMixin):
                     elif phase == "handle":
                         if handled is True:
                             self.debug("Short-circuited")
-                            # mark the message handled to avoid the 
+                            # mark the message handled to avoid the
                             # default phase firing unnecessarily
                             msg.handled = True
                             break
-                    
+
                     elif phase == "default":
                         # allow default phase of apps to short circuit
-                        # for prioritized contextual responses.   
+                        # for prioritized contextual responses.
                         if handled is True:
                             self.debug("Short-circuited default")
                             break
-                        
+
         except StopIteration:
             pass
 
@@ -238,8 +229,7 @@ class BaseRouter(object, LoggerMixin):
         """
         """
 
-        self.info("Outgoing (%s): %s" %\
-            (msg.connection, msg.text))
+        self.info("Outgoing (%s): %s" % (msg.connection, msg.text))
 
         for phase in self.outgoing_phases:
             self.debug("Out %s phase" % phase)
@@ -255,7 +245,7 @@ class BaseRouter(object, LoggerMixin):
                     func = getattr(app, phase)
                     continue_sending = func(msg)
 
-                except Exception, err:
+                except Exception:
                     app.exception()
 
                 # during any outgoing phase, an app can return True to
