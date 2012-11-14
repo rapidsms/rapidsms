@@ -148,7 +148,8 @@ class Backend(BackendBase):
             message.subject = subject
             return message
             
-        message = self.message(from_user, message_body.get_payload(), date)
+        body_nolb = message_body.get_payload().replace('\r','').replace('\n','')
+        message = self.message(from_user, body_nolb, date)
         message.subject = subject
         message.mime_type = message_body.get_content_type()
         return message
