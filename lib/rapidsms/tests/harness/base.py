@@ -6,7 +6,7 @@ from django.conf import settings
 from rapidsms.models import Backend, Contact, Connection
 from rapidsms.tests.harness import backend
 from rapidsms.log.mixin import LoggerMixin
-from rapidsms.router import send, receive
+from rapidsms.router import send, receive, lookup_connections
 from rapidsms.messages.outgoing import OutgoingMessage
 
 
@@ -107,14 +107,8 @@ class MockBackendRouter(CustomRouter):
         if hasattr(backend, 'outbox'):
             backend.outbox = []
 
-    def receive(self, text, backend_name='mockbackend', identity=None,
-                connection=None, fields=None):
-        """receive wrapper to use mockbackend by default"""
-        return receive(text, backend_name=backend_name, identity=identity,
-                       connection=connection, fields=fields)
-
-    def send(self, text, backend_name='mockbackend', identity=None,
-             connection=None):
-        """send wrapper to use mockbackend by default"""
-        return send(text, backend_name=backend_name, identity=identity,
-                    connection=connection)
+    def lookup_connections(self, backend='mockbackend', identities=None):
+        """loopup_connections wrapper to use mockbackend by default"""
+        if not identities:
+            identities = []
+        return lookup_connections(backend, identities)
