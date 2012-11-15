@@ -32,14 +32,13 @@ Release: v\ |version|. (:doc:`Installation <intro/install/index>`)
 
 * :doc:`Overview <intro/overview>`
 * :doc:`Installation <intro/install/index>`
-* :doc:`Tutorial <intro/tutorial>` | :doc:`Tutorial Videos <intro/tutorial-videos>`
 
 **Architecture**
 
 * :doc:`RapidSMS Architecture Overview <topics/architecture>`
 * **Router:** :doc:`Overview <topics/router/index>` | :doc:`Messaging <topics/router/messaging>` | :doc:`CeleryRouter <topics/router/celery>`
 * **Applications:** :doc:`Overview <topics/applications/index>` | :doc:`Community apps <topics/applications/community>`
-* **Backends:** :doc:`Overview <topics/backends/index>` | :doc:`Kannel <topics/backends/kannel>` | :doc:`Vumi <topics/backends/vumi>` | :doc:`Community backends <topics/backends/community>`
+* **Backends:** :doc:`Overview <topics/backends/index>` | :doc:`Kannel <topics/backends/kannel>`
 
 **The development process**
 
