@@ -6,9 +6,7 @@ from rapidsms.models import Backend
 
 def receive(text, connection, fields=None):
     """
-    Takes an incoming message from a backend and passes it to a router for
-    processing.  If a ``connection`` is passed, ``backend_name`` and
-    ``identity`` are ignored.
+    Creates an incoming messages and passes it to the router for processing.
     """
     from rapidsms.router import get_router
     from rapidsms.messages import IncomingMessage
@@ -23,8 +21,8 @@ def receive(text, connection, fields=None):
 
 def send(text, connections):
     """
-    Takes an outgoing message passes it to a router for processing.  If a
-    ``connection`` is passed, ``backend_name`` and ``identity`` are ignored.
+    Creates an outgoing message and passes it to the router to be processed
+    and sent via the respective backend.
     """
     from rapidsms.router import get_router
     from rapidsms.messages import OutgoingMessage
@@ -42,7 +40,7 @@ def send(text, connections):
 
 
 def lookup_connections(backend, identities):
-    """Return connections associated with backend and identities"""
+    """Return connections associated with backend and identities."""
     if isinstance(backend, basestring):
         backend, _ = Backend.objects.get_or_create(name=backend)
     connections = []
