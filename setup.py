@@ -7,24 +7,24 @@ from setuptools import setup, find_packages
 
 setup(
     name="RapidSMS",
-    version="0.9.6a",
+    version="0.10.0",
     license="BSD",
 
-    install_requires = [
+    install_requires=[
         "django-nose",
         "djtables",
         "djappsettings"
     ],
 
-    test_requires = [
+    test_requires=[
         "nose",
     ],
 
-    scripts = ["bin/rapidsms-admin.py"],
+    scripts=["bin/rapidsms-admin.py"],
 
-    package_dir = {"": "lib"},
-    packages = find_packages("lib",exclude=['*.pyc']),
-    include_package_data = True,
+    package_dir={"": "lib"},
+    packages=find_packages("lib", exclude=['*.pyc']),
+    include_package_data=True,
 
     author="RapidSMS development community",
     author_email="rapidsms@googlegroups.com",
