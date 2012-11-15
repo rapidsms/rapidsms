@@ -2,7 +2,7 @@ from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.importlib import import_module
 
-from rapidsms.router.api import receive, send
+from rapidsms.router.api import receive, send, lookup_connections
 
 __all__ = ['import_class', 'get_router', 'get_test_router']
 

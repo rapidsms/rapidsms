@@ -5,7 +5,7 @@ import os
 import sys
 
 
-def run_tests(options, ci=False):
+def run_tests(options, args, ci=False):
     from django.conf import settings
     if ci:
         settings.NOSE_ARGS = [
@@ -18,7 +18,9 @@ def run_tests(options, ci=False):
     test_runner = TestRunner(verbosity=int(options.verbosity),
                              interactive=options.interactive,
                              failfast=False)
-    failures = test_runner.run_tests(['rapidsms', ])
+    if not args:
+        args = ['rapidsms']
+    failures = test_runner.run_tests(args)
     sys.exit(failures)
 
 
@@ -54,7 +56,7 @@ def main():
     # because nosetests would also interpret the argument.
     ci = os.environ.get('CI', False)
     ci = False
-    run_tests(options, ci)
+    run_tests(options, ci=ci, args=args)
 
 
 if __name__ == '__main__':
