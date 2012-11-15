@@ -185,7 +185,7 @@ The ``rapidsms.contrib.ajax`` app has been removed.
 Removal of ``send_message``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Prior to 0.10.0, ``rapidsms.contrib.messaging`` contained a utility function to send a message to the Router process. This relied on the ``contrib.ajax``'s ``call_router`` function to pass messages to the Router via the ajax app running in the Router thread. send_message has been removed and you should now use ``Router.outgoing`` directly. Using send_message will now raise an exception:
+Prior to 0.10.0, ``rapidsms.contrib.messaging`` contained a utility function to send a message to the Router process. This relied on the ``contrib.ajax``'s ``call_router`` function to pass messages to the Router via the ajax app running in the Router thread. send_message has been removed and you should now use ``rapidsms.router.send`` (see :ref:`sending-messages`). Using send_message will now raise an exception:
 
 .. code-block:: python
 

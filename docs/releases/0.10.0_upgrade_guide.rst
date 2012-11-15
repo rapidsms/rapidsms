@@ -78,7 +78,7 @@ We have removed the ``rapidsms.contrib.ajax`` app. You should update your settin
 Remove calls to ``rapidsms.contrib.messaging.send_message``
 ===========================================================
 
-As the method ``rapidsms.contrib.messaging.send_message`` relied upon ``rapidsms.contrib.ajax`` functionality, it has been deprecated and will raise a warning when used. All calls to ``send_message`` should be replaced with calls to ``router.outgoing``.
+As the method ``rapidsms.contrib.messaging.send_message`` relied upon ``rapidsms.contrib.ajax`` functionality, it has been deprecated and will raise a warning when used. All calls to ``send_message`` should be replaced with calls to ``rapidsms.router.send`` (see :ref:`sending-messages`).
 
 
 Use ``django.contrib.staticfiles``
