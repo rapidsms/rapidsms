@@ -13,7 +13,7 @@ from .forms import GenericHttpForm
 class BaseHttpBackendView(FormMixin, LoggerMixin, ProcessFormView):
 
     backend_name = None
-    http_method_names = [] # must set in child class
+    http_method_names = []  # must set in child class
 
     @method_decorator(csrf_exempt)
     def dispatch(self, *args, **kwargs):

@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.test import TestCase, RequestFactory
 from django.core.urlresolvers import reverse
 from django.conf.urls.defaults import *
@@ -20,6 +19,7 @@ urlpatterns = patterns('',
     url(r"^(?P<backend_name>[\w-]+)/$", views.GenericHttpBackendView.as_view(),
         kwargs=post_view_kwargs, name='generic-http-post-view'),
 )
+
 
 class HttpTestMixin(object):
 
