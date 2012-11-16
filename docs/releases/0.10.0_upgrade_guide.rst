@@ -110,7 +110,7 @@ Some RapidSMS applications in the community may use the ``App`` instance (or mod
 Scheduler refactor
 ==================
 
-``rapidsms.contrib.scheduler`` is currently incompatible with v0.10.0. Until we release a compatible version, we recomend investigating cron-style methods or using Celery's `periodic tasks`_.
+``rapidsms.contrib.scheduler`` is currently incompatible with v0.10.0. Until we release a compatible version, we recommend investigating cron-style methods or using Celery's `periodic tasks`_.
 
 .. _less-common compatibility issues:
 

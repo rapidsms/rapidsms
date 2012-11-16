@@ -39,7 +39,7 @@ Removal of threaded router
 
 In 0.9.x, the RapidSMS router used Python's `threading
 <http://docs.python.org/library/threading.html>`_ module to encapsulate
-backends into indepedent threads. Using this model, backends can operate
+backends into independent threads. Using this model, backends can operate
 independently from one another, blocking for I/O and waiting for external
 service calls. Many of the original backends operated in this way. For example,
 ``rapidsms.backends.http`` started a `HTTP server
