@@ -1,9 +1,6 @@
-=================================================
-RapidSMS 0.10.0 release notes - UNDER DEVELOPMENT
-=================================================
-
-.. ATTENTION::
-  This page documents release notes for the as-yet-unreleased RapidSMS 0.10.0. As such, it's tentative and subject to change. It provides up-to-date information for those who are following trunk.
+=============================
+RapidSMS 0.10.0 release notes
+=============================
 
 Welcome to RapidSMS 0.10.0!
 
@@ -15,10 +12,12 @@ Overview
 
 RapidSMS 0.10.0's focus has mostly been on decoupling the RapidSMS route process in several key places to begin processing all SMSes in normal HTTP requests. This also includes making it possible to swap the Router class that RapidSMS uses via a setting in the settings file. The key changes are as follows:
 
+* Improved documentation (what you're reading now!)
+* Improved test coverage and made it easier to test your RapidSMS apps.
+* Added support for ``django.contrib.staticfiles``.
 * Removal of the bucket, email, irc, gsm, and smtp backends. 
-* Dividing the Router logic into BaseRouter and BlockingRouter classes.
+* Dividing the Router logic into ``BaseRouter`` and ``BlockingRouter`` classes, and the addition of a Celery-powered router, ``CeleryRouter``.
 * Removal of the legacy persistent threaded router.
-* ...
 
 
 What's new in RapidSMS 0.10.0
@@ -86,12 +85,6 @@ Backends are Django apps
 RapidSMS backends are now apps (rather than modules) in the ``rapidsms.backends`` directory. RapidSMS provides two built-in backend apps: ``http`` and ``kannel``. We have `completely removed all other backends`_ from the RapidSMS core.
 
 We also support creation of custom backend apps. Backend classes should extend from the classes found in ``rapidsms.backends.base``.
-
-
-Updated ``http`` and ``kannel`` backends
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-TODO
 
 
 Added ``MockBackendRouter`` class
@@ -196,3 +189,11 @@ Prior to 0.10.0, ``rapidsms.contrib.messaging`` contained a utility function to 
       File "../rapidsms/lib/rapidsms/contrib/messaging/utils.py", line 2, in send_message
         raise DeprecationWarning("rapidsms.contrib.messaging.utils is deprecated")
     DeprecationWarning: rapidsms.contrib.messaging.utils is deprecated
+
+
+Scheduler refactor
+~~~~~~~~~~~~~~~~~~
+
+``rapidsms.contrib.scheduler`` still exists, but is currently incompatible
+with 0.10.0. We plan to support the scheduler in the next minor RapidSMS
+release.

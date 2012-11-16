@@ -1,4 +1,4 @@
-RapidSMS Architecture Overview
+RapidSMS architecture overview
 ==============================
 
 .. image:: /_static/rapidsms-architecture.png

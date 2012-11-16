@@ -26,7 +26,7 @@
 RapidSMS Documentation
 =======================
 
-Release: v\ |version|. (:doc:`Installation <intro/install/index>`)
+Release: v\ |version|. (:doc:`Installation <intro/install/index>`, :doc:`Release Notes <releases/index>`)
 
 **Getting Started**
 
@@ -35,7 +35,7 @@ Release: v\ |version|. (:doc:`Installation <intro/install/index>`)
 
 **Architecture**
 
-* :doc:`RapidSMS Architecture Overview <topics/architecture>`
+* :doc:`RapidSMS architecture overview <topics/architecture>`
 * **Router:** :doc:`Overview <topics/router/index>` | :doc:`Messaging <topics/router/messaging>` | :doc:`CeleryRouter <topics/router/celery>`
 * **Applications:** :doc:`Overview <topics/applications/index>` | :doc:`Community apps <topics/applications/community>`
 * **Backends:** :doc:`Overview <topics/backends/index>` | :doc:`Kannel <topics/backends/kannel>`

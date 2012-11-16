@@ -7,7 +7,7 @@ Installing RapidSMS
     installing RapidSMS.
 
 The recommended way to install RapidSMS is with Pip_ (since it's available on
-PyPi_)::
+PyPI_)::
 
     pip install rapidsms
 
@@ -18,7 +18,7 @@ Typically, you'll either create a new RapidSMS project or add RapidSMS to an
 existing project. Please follow the guides below for more information:
 
 * :doc:`New RapidSMS project template <project-template>`
-* :doc:`Adding RapidSMS to an existing Django project <existing-django-project>`
+* :doc:`Adding RapidSMS to an existing Django project <existing-project>`
 
 .. _installing-development-version:
 
@@ -33,7 +33,7 @@ using this shell command, which requires Git_::
 You can also download `a zipped archive`_ of the development version.
 
 .. _Pip: http://pip.openplans.org/
-.. _PyPi: http://pypi.python.org/
+.. _PyPI: http://pypi.python.org/
 .. _Django: https://www.djangoproject.com/
 .. _Django installation instructions: https://docs.djangoproject.com/en/dev/intro/install/
 .. _Git repository: https://github.com/rapidsms/rapidsms

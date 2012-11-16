@@ -107,6 +107,11 @@ Refactor stateful applications to use the database or cache
 
 Some RapidSMS applications in the community may use the ``App`` instance (or module-level variables in Python) to store persistent state information about the application.  Now that routers are constructed and destroyed for every incoming message, state information stored on apps will not persist between requests.  Code that makes this assumption should be refactored to use a database or cache to store data that need to persist between requests.
 
+Scheduler refactor
+==================
+
+``rapidsms.contrib.scheduler`` is currently incompatible with v0.10.0. Until we release a compatible version, we recomend investigating cron-style methods or using Celery's `periodic tasks`_.
+
 .. _less-common compatibility issues:
 
 Less-common changes
@@ -128,3 +133,4 @@ Prior to 0.10.0, ``TestScript`` would instantiate the routing process (with bloc
 .. _threadless-router: https://github.com/caktus/rapidsms-threadless-router
 .. _http-router: https://github.com/caktus/rapidsms-threadless-router/
 .. _rapidsms-httprouter: https://github.com/nyaruka/rapidsms-httprouter/
+.. _periodic tasks: http://docs.celeryproject.org/en/latest/userguide/periodic-tasks.html
