@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.core.urlresolvers import reverse
 from django.conf.urls.defaults import *
 
-from rapidsms.tests.harness import RouterTest
+from rapidsms.tests.harness import RapidTest
 from rapidsms.backends.http import views
 from rapidsms.backends.http.forms import BaseHttpForm, GenericHttpForm
 
@@ -63,9 +63,10 @@ class HttpFormTest(TestCase):
                          incoming_data['connection'].backend.name)
 
 
-class HttpViewTest(RouterTest, TestCase):
+class HttpViewTest(RapidTest):
 
     urls = 'rapidsms.backends.http.tests'
+    process_messages = False
 
     def setUp(self):
         self.http_backend_url = reverse('http-backend')
