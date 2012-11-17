@@ -45,10 +45,20 @@ class HttpFormTest(TestCase):
         form = GenericHttpForm(data, backend_name='http-backend')
         self.assertFalse(form.is_valid())
 
-    def test_get_incoming_data(self):
+    def test_not_implemented_get_incoming_data(self):
         """Subclasses must implement get_incoming_data."""
         form = BaseHttpForm(backend_name='http-backend')
         self.assertRaises(NotImplementedError, form.get_incoming_data)
+
+    def test_get_incoming_data(self):
+        """get_incoming_data should return matching text and connection."""
+        data = {'identity': '1112223333', 'text': 'hi there'}
+        form = GenericHttpForm(data, backend_name='http-backend')
+        form.is_valid()
+        incoming_data = form.get_incoming_data()
+        self.assertEqual(data['text'], incoming_data['text'])
+        self.assertEqual(data['identity'],
+                         incoming_data['connection'].identity)
 
 
 class HttpViewTest(RouterTest, TestCase):
@@ -94,3 +104,12 @@ class HttpViewTest(RouterTest, TestCase):
         data = {'bad-phone': '1112223333', 'bad-message': 'hi there'}
         response = self.client.post(self.custom_http_backend_url, data)
         self.assertEqual(response.status_code, 400)
+
+    def test_valid_post_message(self):
+        """Valid POSTs should pass message object to router."""
+        data = {'identity': '1112223333', 'text': 'hi there'}
+        self.client.post(self.http_backend_url, data)
+        message = self.inbound[0]
+        self.assertEqual(data['text'], message.text)
+        self.assertEqual(data['identity'],
+                         message.connection.identity)
