@@ -10,3 +10,9 @@ core.*
 *.sqlite3
 dist
 build
+_build
+.tox/
+.coverage
+*.log
+*.egg
+coverage.xml

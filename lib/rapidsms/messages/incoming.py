@@ -15,12 +15,14 @@ class IncomingMessage(MessageBase):
     useful when instantiated by RapidSMS backends or test harnesses.
     """
 
-    def __init__(self, connection, text, received_at=None, sent_at=None):
+    def __init__(self, connection, text, received_at=None, sent_at=None,
+                 fields=None):
         MessageBase.__init__(self, connection, text)
-        
+
         self.sent_at = sent_at
         self.received_at = received_at or datetime.now()
         self.responses = []
+        self.fields = fields
 
         # store the text AGAIN, somewhere that it really shouldn't
         # be messed with. some apps may choose to fudge with the
@@ -92,7 +94,8 @@ class IncomingMessage(MessageBase):
         You really should. It's rather exciting.
         """
 
-        msg = cls(self.connection, template, **kwargs)
+        msg = cls(connection=self.connection, template=template,
+                  in_reply_to=self, **kwargs)
         self.responses.append(msg)
         return msg
 

@@ -4,7 +4,6 @@
 
 import re
 import types
-import threading
 from functools import wraps
 from django import template
 from django.conf import settings
