@@ -1,12 +1,9 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-import os
-
 from django.conf import settings
 
 from rapidsms.router.base import BaseRouter
-from rapidsms.backends.base import BackendBase
 
 from rapidsms.tests.harness.base import CreateDataTest
 from rapidsms.tests.harness.router import CustomRouter, MockBackendRouter
@@ -19,7 +16,7 @@ class setting(object):
     """
     A context manager for the Django settings module that lets you
     override settings while running tests, e.g.:
-    
+
     with setting(RAPIDSMS_ROUTER='foo.bar.Class'):
         assert_equals(get_router(), foo.bar.Class)
     """
