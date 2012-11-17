@@ -12,6 +12,7 @@ from rapidsms.apps.base import AppBase
 from rapidsms.tests.harness.base import CreateDataTest
 from rapidsms.tests.harness.router import CustomRouter, MockBackendRouter
 from rapidsms.tests.harness.scripted import TestScript
+from rapidsms.tests.harness.backend import MockBackend
 
 
 class setting(object):
@@ -49,27 +50,6 @@ class MockRouter (BaseRouter):
     def stop (self):
         self.running = False
         self.stop_all_backends()
-
-
-class MockBackend(BackendBase):
-    """
-    A simple mock backend, modeled after the BucketBackend
-    """
-
-    def __init__(self, *args, **kwargs):
-        super(MockBackend, self).__init__(*args, **kwargs)
-        self.bucket = []
-        self.outgoing_bucket = []
-
-    def send(self, msg):
-        self.bucket.append(msg)
-        self.outgoing_bucket.append(msg)
-        return True
-
-    def next_outgoing_message(self):
-        if len(self.outgoing_bucket) == 0:
-            return None
-        return self.outgoing_bucket.pop(0)
 
 
 # a subclass of App with all the moving parts replaced
