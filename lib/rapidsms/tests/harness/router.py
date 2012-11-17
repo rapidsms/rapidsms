@@ -3,6 +3,7 @@ from django.conf import settings
 from rapidsms.tests.harness.base import CreateDataTest
 from rapidsms.tests.harness import backend
 from rapidsms.router import lookup_connections
+from rapidsms.router.test import inbound, outbound, clear
 
 
 __all__ = ('CustomRouter', 'MockBackendRouter')
@@ -55,3 +56,23 @@ class MockBackendRouter(CustomRouter):
         if not identities:
             identities = []
         return lookup_connections(backend, identities)
+
+
+class RouterTest(CustomRouter):
+
+    router_class = 'rapidsms.router.test.TestRouter'
+
+    def _post_rapidsms_teardown(self):
+        super(RouterTest, self)._post_rapidsms_teardown()
+        self.clear()
+
+    @property
+    def inbound(self):
+        return inbound
+
+    @property
+    def outbound(self):
+        return outbound
+
+    def clear(self):
+        clear()
