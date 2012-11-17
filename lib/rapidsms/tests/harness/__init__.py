@@ -7,12 +7,12 @@ from django.conf import settings
 
 from rapidsms.router.base import BaseRouter
 from rapidsms.backends.base import BackendBase
-from rapidsms.apps.base import AppBase
 
 from rapidsms.tests.harness.base import CreateDataTest
 from rapidsms.tests.harness.router import CustomRouter, MockBackendRouter
 from rapidsms.tests.harness.scripted import TestScript
 from rapidsms.tests.harness.backend import MockBackend
+from rapidsms.tests.harness.app import MockApp, EchoApp
 
 
 class setting(object):
@@ -50,33 +50,3 @@ class MockRouter (BaseRouter):
     def stop (self):
         self.running = False
         self.stop_all_backends()
-
-
-# a subclass of App with all the moving parts replaced
-class MockApp(AppBase):
-    def __init__(self, *args, **kwargs):
-        super(MockApp, self).__init__(*args, **kwargs)
-        self.calls = []
-
-    def start (self):
-        self.calls.append(("start",))
-
-    def parse (self, message):
-        self.calls.append(("parse", message))
-
-    def handle (self, message):
-        self.calls.append(("handle", message))
-
-    def cleanup (self, message):
-        self.calls.append(("cleanup", message))
-
-    def outgoing (self, message):
-        self.calls.append(("outgoing", message))
-
-    def stop (self):
-        self.calls.append(("stop",))
-
-class EchoApp (MockApp):
-    def handle (self, message):
-        MockApp.handle(self, message)
-        message.respond(message.peer + ": " + message.text)
