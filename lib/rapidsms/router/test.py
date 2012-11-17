@@ -9,6 +9,12 @@ inbound = []
 outbound = []
 
 
+def clear():
+    """Clear inbound and outbound values."""
+    del inbound[:]
+    del outbound[:]
+
+
 class TestRouter(BlockingRouter):
     """BlockingRouter that doesn't load apps and backends by default."""
 
@@ -19,9 +25,7 @@ class TestRouter(BlockingRouter):
         kwargs['apps'] = kwargs.get('apps', [])
         kwargs['backends'] = kwargs.get('backends', {})
         super(TestRouter, self).__init__(*args, **kwargs)
-        # clear inbound/outbound values
-        del inbound[:]
-        del outbound[:]
+        clear()
 
     def receive_incoming(self, msg):
         """Save all inbound messages locally for test inspection"""
