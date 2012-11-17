@@ -1,30 +1,14 @@
-from django.test import TestCase
-
-from rapidsms.messages.outgoing import OutgoingMessage
-from rapidsms.messages.incoming import IncomingMessage
 from rapidsms.router import receive, send
-
-from rapidsms.router.test import BlockingRouter
-from rapidsms.tests.harness import MockBackendRouter
+from rapidsms.tests.harness import RapidTest
 
 
-class RouterAPITest(MockBackendRouter, TestCase):
+class RouterAPITest(RapidTest):
     """Tests for rapidsms.router.api"""
 
-    router_class = 'rapidsms.router.test.NoOpTestRouter'
-
-    def test_receive_with_connection(self):
-        """Receive accepts an identity/backend_name combo"""
-
-        connection = self.create_connection()
-        message = receive("echo hello", connection)
-        self.assertEqual(message.connection.identity, connection.identity)
-        self.assertEqual(message.connection.backend.name,
-                         connection.backend.name)
+    process_messages = False
 
     def test_send_with_connection(self):
-        """Send accepts a single connection"""
-
+        """Send accepts a single connection."""
         connection = self.create_connection()
         messages = send("echo hello", connection)
         self.assertEqual(messages[0].connection.identity, connection.identity)
@@ -32,8 +16,7 @@ class RouterAPITest(MockBackendRouter, TestCase):
                          connection.backend.name)
 
     def test_send_with_connections(self):
-        """Send accepts a list of connections"""
-
+        """Send accepts a list of connections."""
         connections = [self.create_connection(), self.create_connection()]
         messages = send("echo hello", connections)
         self.assertEqual(len(messages), 2)
@@ -41,3 +24,12 @@ class RouterAPITest(MockBackendRouter, TestCase):
                          connections[0].identity)
         self.assertEqual(messages[0].connection.backend.name,
                          connections[0].backend.name)
+
+    def test_saved_message_fields_receive(self):
+        """Extra data should persist through receive."""
+        connection = self.create_connection()
+        fields = {'extra-field': 'extra-value'}
+        message = receive('test incoming message',
+                          connection=connection, fields=fields)
+        self.assertTrue('extra-field' in message.fields)
+        self.assertEqual(message.fields['extra-field'], fields['extra-field'])
