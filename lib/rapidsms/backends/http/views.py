@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.views.generic.edit import FormMixin, ProcessFormView
 from django.utils.decorators import method_decorator
@@ -26,6 +25,12 @@ class BaseHttpBackendView(FormMixin, LoggerMixin, ProcessFormView):
             self.backend_name = kwargs['backend_name']
         return super(BaseHttpBackendView, self).dispatch(*args, **kwargs)
 
+    def get_form_kwargs(self):
+        """Always pass backend_name into __init__"""
+        kwargs = super(BaseHttpBackendView, self).get_form_kwargs()
+        kwargs['backend_name'] = self.backend_name
+        return kwargs
+
     def get(self, request, *args, **kwargs):
         """
         All this view does is processing inbound messages, and they may come
@@ -40,7 +45,7 @@ class BaseHttpBackendView(FormMixin, LoggerMixin, ProcessFormView):
         router for processing.
         """
         data = form.get_incoming_data()
-        receive(data['text'], self.backend_name, data['identity'])
+        receive(**data)
         return HttpResponse('OK')
 
     def form_invalid(self, form):
@@ -62,12 +67,13 @@ class GenericHttpBackendView(BaseHttpBackendView):
     # override these in your base class or URLconf, if needed
     form_class = GenericHttpForm
     http_method_names = ['get', 'post']
-    params = {'identity_name': 'identity', 'text_name': 'text'}
+    params = None
 
     def get_form_kwargs(self):
         kwargs = super(GenericHttpBackendView, self).get_form_kwargs()
         # pass the identity and text field names into the form
-        kwargs.update(self.params)
+        if self.params:
+            kwargs.update(self.params)
         # if we accept GETs instead of POSTs and this request is a GET,
         # pass the GET parameters into the form
         if 'get' in self.http_method_names and self.request.method == 'GET':

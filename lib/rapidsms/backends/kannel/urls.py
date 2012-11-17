@@ -4,6 +4,7 @@ from rapidsms.backends.kannel import views
 
 
 urlpatterns = patterns('',
-    url(r"^(?P<backend_name>[\w-]+)/$", views.KannelBackendView.as_view(),
+    url(r"^backend/kannel/$",
+        views.KannelBackendView.as_view(backend_name='kannel-backend'),
         name='kannel-backend'),
 )

@@ -6,6 +6,7 @@ from rapidsms.tests.harness.base import CustomRouter
 from rapidsms.tests.harness.base import CreateDataTest
 
 from rapidsms.backends.kannel import KannelBackend
+from rapidsms.backends.kannel.forms import KannelForm
 
 
 class KannelTestMixin(object):
@@ -14,7 +15,7 @@ class KannelTestMixin(object):
 
     def setUp(self):
         self.rf = RequestFactory()
-        self.url = reverse('kannel-backend', args=['kannel-backend'])
+        self.url = reverse('kannel-backend')
         self.view = views.KannelBackendView.as_view(backend_name='kannel-backend')
 
     def _get(self, data={}):
@@ -22,22 +23,18 @@ class KannelTestMixin(object):
         return self.view(request)
 
 
-class KannelTest(KannelTestMixin, TestCase):
+class KannelFormTest(KannelTestMixin, TestCase):
 
     def test_valid_form(self):
         """ Form should be valid if GET keys match configuration """
-        view = views.KannelBackendView()
         data = {'id': '1112223333', 'text': 'hi there'}
-        view.request = self.rf.get(self.url, data)
-        form = view.get_form(view.get_form_class())
+        form = KannelForm(data, backend_name='kannel-backend')
         self.assertTrue(form.is_valid())
 
     def test_invalid_form(self):
         """ Form is invalid if POST keys don't match configuration """
-        view = views.KannelBackendView()
         data = {'invalid-phone': '1112223333', 'invalid-message': 'hi there'}
-        view.request = self.rf.get(self.url, data)
-        form = view.get_form(view.get_form_class())
+        form = KannelForm(data, backend_name='kannel-backend')
         self.assertFalse(form.is_valid())
 
 

@@ -16,7 +16,7 @@ class KannelBackendView(BaseHttpBackendView):
 
     def get_form_kwargs(self):
         kwargs = super(KannelBackendView, self).get_form_kwargs()
-        kwargs['data'] = self.request.GET # passes request.GET to the form
+        kwargs['data'] = self.request.GET  # passes request.GET to the form
         return kwargs
 
     def form_valid(self, form):

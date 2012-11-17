@@ -20,5 +20,6 @@ class KannelForm(BaseHttpForm):
         return text
 
     def get_incoming_data(self):
-        return {'identity': self.cleaned_data['id'],
+        connections = self.lookup_connections([self.cleaned_data['id']])
+        return {'connection': connections[0],
                 'text': self.cleaned_data['text']}
