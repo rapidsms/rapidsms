@@ -1,58 +1,74 @@
-from django.test import TestCase, RequestFactory
+from django.test import TestCase
 from django.core.urlresolvers import reverse
+from django.conf.urls.defaults import *
 
 from rapidsms.backends.kannel import views
-from rapidsms.tests.harness.base import CustomRouter
-from rapidsms.tests.harness.base import CreateDataTest
-
 from rapidsms.backends.kannel import KannelBackend
 from rapidsms.backends.kannel.forms import KannelForm
+from rapidsms.tests.harness import RapidTest, CreateDataTest
 
 
-class KannelTestMixin(object):
-
-    urls = 'rapidsms.backends.kannel.urls'
-
-    def setUp(self):
-        self.rf = RequestFactory()
-        self.url = reverse('kannel-backend')
-        self.view = views.KannelBackendView.as_view(backend_name='kannel-backend')
-
-    def _get(self, data={}):
-        request = self.rf.get(self.url, data)
-        return self.view(request)
+urlpatterns = patterns('',
+    url(r"^backend/kannel/$",
+        views.KannelBackendView.as_view(backend_name='kannel-backend'),
+        name='kannel-backend'),
+)
 
 
-class KannelFormTest(KannelTestMixin, TestCase):
+class KannelFormTest(TestCase):
 
     def test_valid_form(self):
-        """ Form should be valid if GET keys match configuration """
+        """Form should be valid if GET keys match configuration."""
         data = {'id': '1112223333', 'text': 'hi there'}
         form = KannelForm(data, backend_name='kannel-backend')
         self.assertTrue(form.is_valid())
 
     def test_invalid_form(self):
-        """ Form is invalid if POST keys don't match configuration """
+        """Form is invalid if POST keys don't match configuration."""
         data = {'invalid-phone': '1112223333', 'invalid-message': 'hi there'}
         form = KannelForm(data, backend_name='kannel-backend')
         self.assertFalse(form.is_valid())
 
+    def test_get_incoming_data(self):
+        """get_incoming_data should return matching text and connection."""
+        data = {'id': '1112223333', 'text': 'hi there'}
+        form = KannelForm(data, backend_name='kannel-backend')
+        form.is_valid()
+        incoming_data = form.get_incoming_data()
+        self.assertEqual(data['text'], incoming_data['text'])
+        self.assertEqual(data['id'],
+                         incoming_data['connection'].identity)
+        self.assertEqual('kannel-backend',
+                         incoming_data['connection'].backend.name)
 
-class KannelViewTest(CustomRouter, KannelTestMixin, TestCase):
 
-    router_class = 'rapidsms.router.test.NoOpTestRouter'
+class KannelViewTest(RapidTest):
+
+    urls = 'rapidsms.backends.kannel.tests'
+    process_messages = False
 
     def test_valid_response_get(self):
-        """ HTTP 200 should return if form is valid """
+        """HTTP 200 should return if data is valid."""
         data = {'id': '1112223333', 'text': 'hi there'}
-        response = self._get(data)
+        response = self.client.get(reverse('kannel-backend'), data)
         self.assertEqual(response.status_code, 200)
 
     def test_invalid_response(self):
-        """ HTTP 400 should return if form is invalid """
+        """HTTP 400 should return if data is invalid."""
         data = {'invalid-phone': '1112223333', 'message': 'hi there'}
-        response = self._get(data)
+        response = self.client.get(reverse('kannel-backend'), data)
         self.assertEqual(response.status_code, 400)
+
+    def test_valid_post_message(self):
+        """Valid POSTs should pass message object to router."""
+        data = {'id': '1112223333', 'text': 'hi there'}
+        self.client.get(reverse('kannel-backend'), data)
+        message = self.inbound[0]
+        self.assertEqual(data['text'], message.text)
+        self.assertEqual(data['id'],
+                         message.connection.identity)
+        self.assertEqual('kannel-backend',
+                         message.connection.backend.name)
 
 
 class KannelSendTest(CreateDataTest, TestCase):

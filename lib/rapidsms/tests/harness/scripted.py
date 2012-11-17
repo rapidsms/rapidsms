@@ -5,7 +5,7 @@ import re
 from datetime import datetime
 
 from rapidsms.router.test import BlockingRouter
-from rapidsms.tests.harness.base import MockBackendRouter
+from rapidsms.tests.harness import MockBackendRouter
 from rapidsms.models import Backend, Contact, Connection
 from rapidsms.messages.incoming import IncomingMessage
 

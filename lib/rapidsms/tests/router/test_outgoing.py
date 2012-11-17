@@ -2,7 +2,7 @@ from django.test import TestCase
 
 from rapidsms.router.test import BlockingRouter
 from rapidsms.messages.outgoing import OutgoingMessage
-from rapidsms.tests.harness.base import MockBackendRouter
+from rapidsms.tests.harness import MockBackendRouter
 
 
 class OutgoingTest(MockBackendRouter, TestCase):

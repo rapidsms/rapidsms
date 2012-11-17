@@ -5,13 +5,13 @@ from rapidsms.backends.http.views import BaseHttpBackendView
 
 
 class KannelBackendView(BaseHttpBackendView):
-    """ Backend view for handling inbound SMSes from Kannel """
+    """Backend view for handling inbound SMSes from Kannel."""
 
     http_method_names = ['get']
     form_class = KannelForm
 
     def get(self, *args, **kwargs):
-        """ Kannel issues a GET instead of a POST, so pass it to post() here """
+        """Kannel issues a GET instead of a POST, so pass it to post() here."""
         return self.post(*args, **kwargs)
 
     def get_form_kwargs(self):

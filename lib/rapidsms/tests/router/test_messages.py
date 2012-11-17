@@ -1,19 +1,11 @@
-from django.test import TestCase
-
-from rapidsms.messages.outgoing import OutgoingMessage
 from rapidsms.messages.incoming import IncomingMessage
-from rapidsms.router import receive
-
-from rapidsms.router.test import BlockingRouter
-from rapidsms.tests.harness.base import MockBackendRouter
+from rapidsms.tests.harness import RapidTest
 
 
-class OutgoingTest(MockBackendRouter, TestCase):
-
-    router_class = 'rapidsms.router.test.TestRouter'
+class MessagesTest(RapidTest):
 
     def test_saved_message_fields(self):
-        """ Extra data should be attached to IncomingMessage """
+        """Extra data should be attached to IncomingMessage."""
         connection = self.create_connection()
         fields = {'extra-field': 'extra-value'}
         message = IncomingMessage(connection, 'test incoming message',
@@ -21,17 +13,8 @@ class OutgoingTest(MockBackendRouter, TestCase):
         self.assertTrue('extra-field' in message.fields)
         self.assertEqual(message.fields['extra-field'], fields['extra-field'])
 
-    def test_saved_message_fields_handle_incoming(self):
-        """ Extra data should preserve through router.receive """
-        connection = self.create_connection()
-        fields = {'extra-field': 'extra-value'}
-        message = receive('test incoming message',
-                          connection=connection, fields=fields)
-        self.assertTrue('extra-field' in message.fields)
-        self.assertEqual(message.fields['extra-field'], fields['extra-field'])
-
     def test_outgoing_message_link(self):
-        """ Extra data should be attached to response (OutgoingMessage) """
+        """Extra data should be attached to response (OutgoingMessage)."""
         connection = self.create_connection()
         fields = {'extra-field': 'extra-value'}
         message = IncomingMessage(connection, 'test incoming message',

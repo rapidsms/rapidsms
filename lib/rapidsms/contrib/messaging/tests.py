@@ -3,7 +3,7 @@ from django.core.urlresolvers import reverse
 
 from nose.tools import nottest
 
-from rapidsms.tests.harness.base import MockBackendRouter
+from rapidsms.tests.harness import MockBackendRouter
 from rapidsms.contrib.messaging.forms import MessageForm
 
 
