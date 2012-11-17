@@ -9,6 +9,10 @@ from rapidsms.router.base import BaseRouter
 from rapidsms.backends.base import BackendBase
 from rapidsms.apps.base import AppBase
 
+from rapidsms.tests.harness.base import CreateDataTest
+from rapidsms.tests.harness.router import CustomRouter, MockBackendRouter
+from rapidsms.tests.harness.scripted import TestScript
+
 
 class setting(object):
     """

@@ -5,7 +5,7 @@ from rapidsms.messages.incoming import IncomingMessage
 from rapidsms.router import receive, send
 
 from rapidsms.router.test import BlockingRouter
-from rapidsms.tests.harness.base import MockBackendRouter
+from rapidsms.tests.harness import MockBackendRouter
 
 
 class RouterAPITest(MockBackendRouter, TestCase):

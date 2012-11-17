@@ -2,7 +2,7 @@ from mock import patch, Mock
 
 from django.test import TestCase
 
-from rapidsms.tests.harness.base import MockBackendRouter
+from rapidsms.tests.harness import MockBackendRouter
 from rapidsms.tests.harness.backend import MockBackend
 
 from rapidsms.router.blocking import BlockingRouter

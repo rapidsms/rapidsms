@@ -2,7 +2,7 @@ from django.test import TestCase, RequestFactory
 from django.core.urlresolvers import reverse
 from django.conf.urls.defaults import *
 
-from rapidsms.tests.harness.base import CustomRouter
+from rapidsms.tests.harness import CustomRouter
 
 from . import views
 from .forms import BaseHttpForm, GenericHttpForm

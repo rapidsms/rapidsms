@@ -2,8 +2,8 @@ from django.test import TestCase, RequestFactory
 from django.core.urlresolvers import reverse
 
 from rapidsms.backends.kannel import views
-from rapidsms.tests.harness.base import CustomRouter
-from rapidsms.tests.harness.base import CreateDataTest
+from rapidsms.tests.harness import CustomRouter
+from rapidsms.tests.harness import CreateDataTest
 
 from rapidsms.backends.kannel import KannelBackend
 from rapidsms.backends.kannel.forms import KannelForm
