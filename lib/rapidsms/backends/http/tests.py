@@ -59,6 +59,8 @@ class HttpFormTest(TestCase):
         self.assertEqual(data['text'], incoming_data['text'])
         self.assertEqual(data['identity'],
                          incoming_data['connection'].identity)
+        self.assertEqual('http-backend',
+                         incoming_data['connection'].backend.name)
 
 
 class HttpViewTest(RouterTest, TestCase):
@@ -113,3 +115,13 @@ class HttpViewTest(RouterTest, TestCase):
         self.assertEqual(data['text'], message.text)
         self.assertEqual(data['identity'],
                          message.connection.identity)
+        self.assertEqual('http-backend',
+                         message.connection.backend.name)
+
+    def test_valid_post_message_backend_name(self):
+        """Created message/connection should be from custom http backend"""
+        data = {'phone': '1112223333', 'message': 'hi there'}
+        self.client.post(self.custom_http_backend_url, data)
+        message = self.inbound[0]
+        self.assertEqual('custom-http-backend',
+                         message.connection.backend.name)
