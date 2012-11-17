@@ -39,22 +39,6 @@ class setting(object):
                 setattr(settings, k, v)
 
 
-# a really dumb Logger stand-in
-class MockLogger (list):
-    def __init__(self):
-        # enable logging during tests with an
-        # environment variable, since the runner
-        # doesn't seem to have args
-        self.to_console = os.environ.get("verbose", False)
-
-    def write (self, *args):
-        if self.to_console:
-            if len(args) == 3:
-                print args[2]
-            else:    
-                print args[2] % args[3:]
-        self.append(args)
-
 # a subclass of BaseRouter with all the moving parts replaced
 class MockRouter (BaseRouter):
     def start (self):
