@@ -2,10 +2,13 @@ from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.importlib import import_module
 
+from rapidsms.router.api import receive, send, lookup_connections
 
-def get_router(import_path):
+__all__ = ['import_class', 'get_router', 'get_test_router']
+
+def import_class(import_path):
     """
-    Imports and returns the router class described by import_path, where
+    Imports and returns the class described by import_path, where
     import_path is the full Python path to the class.
     """
     try:
@@ -24,12 +27,13 @@ def get_router(import_path):
         raise ImproperlyConfigured('Module "%s" does not define a "%s" '
                                    'class.' % (module, classname))
 
-# TODO: remove this global singleton
-# a single instance of the router singleton is available globally, like
-# the db connection. it shouldn't be necessary to muck with this very
-# often (since most interaction with the Router happens within an App or
-# Backend, which have their own .router property), but when it is, it
-# should be done via this process global
-Router = get_router(getattr(settings, 'RAPIDSMS_ROUTER',
-                    'rapidsms.router.legacy.LegacyRouter'))
-router = Router()
+
+def get_router():
+    return import_class(getattr(settings, 'RAPIDSMS_ROUTER',
+                        'rapidsms.router.blocking.BlockingRouter'))
+
+
+def get_test_router():
+    return import_class(getattr(settings, 'TEST_RAPIDSMS_ROUTER',
+                        'rapidsms.router.blocking.BlockingRouter'))
+get_test_router.__test__ = False

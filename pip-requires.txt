@@ -1,4 +1,0 @@
-django>=1.2.3
-django-nose>=0.1.2
-djtables>=0.1.1
-djappsettings>=0.1.0

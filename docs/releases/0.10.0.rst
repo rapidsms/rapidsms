@@ -1,0 +1,199 @@
+=============================
+RapidSMS 0.10.0 release notes
+=============================
+
+Welcome to RapidSMS 0.10.0!
+
+These release notes cover the new features in 0.10.0, as well as some `backwards-incompatible-changes`_ you'll want to be aware of when upgrading from RapidSMS 0.9.6a or older versions. We also provide a :doc:`migration guide <0.10.0_upgrade_guide>` to help you port your 0.9.6 projects and apps to 0.10.0 to take advantage of the new features.
+
+
+Overview
+========
+
+RapidSMS 0.10.0's focus has mostly been on decoupling the RapidSMS route process in several key places to begin processing all SMSes in normal HTTP requests. This also includes making it possible to swap the Router class that RapidSMS uses via a setting in the settings file. The key changes are as follows:
+
+* Improved documentation (what you're reading now!)
+* Improved test coverage and made it easier to test your RapidSMS apps.
+* Added support for ``django.contrib.staticfiles``.
+* Removal of the bucket, email, irc, gsm, and smtp backends. 
+* Dividing the Router logic into ``BaseRouter`` and ``BlockingRouter`` classes, and the addition of a Celery-powered router, ``CeleryRouter``.
+* Removal of the legacy persistent threaded router.
+
+
+What's new in RapidSMS 0.10.0
+=============================
+
+The major highlights of RapidSMS 0.10.0 are:
+
+
+A new router
+~~~~~~~~~~~~
+
+RapidSMS 0.10.0 supplies one built-in router, **BlockingRouter**. This is the default router that processes messages in real time.
+
+We also support creation of custom router classes.  All routers should extend from the ``BaseRouter`` class.
+
+
+Removal of threaded router
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+In 0.9.x, the RapidSMS router used Python's `threading
+<http://docs.python.org/library/threading.html>`_ module to encapsulate
+backends into independent threads. Using this model, backends can operate
+independently from one another, blocking for I/O and waiting for external
+service calls. Many of the original backends operated in this way. For example,
+``rapidsms.backends.http`` started a `HTTP server
+<https://github.com/rapidsms/rapidsms/blob/
+a7a0fccffa582d5c3cd320bd659cd2bd95785a51/lib/rapidsms/backends/http.py>`_ to
+listen on a specified port and ``rapidsms.backends.gsm`` communicated directly
+with a `GSM modem
+<https://github.com/rapidsms/rapidsms/blob/a7a0fccffa582d5c3cd320
+bd659cd2bd95785a51/lib/rapidsms/backends/gsm.py>`_. While this method provided RapidSMS with a routing architecture, the need for a non-threaded system grew due to the following reasons:
+
+* Thread interaction was complicated and not always intuitive.
+* If the route process died unexpectedly, all backends (and hence message  processing) were brought offline.
+* Automated testing was difficult and inefficient, because the router (and all its threads) needed to be started/stopped for each test.
+
+Added RAPIDSMS_ROUTER setting
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+RapidSMS now allows you to specify the primary router class to use by defining :setting:`RAPIDSMS_ROUTER` in settings. This defaults to ``rapidsms.router.blocking.BlockingRouter``, but you can change this in settings.py:
+
+.. code-block:: python
+
+    RAPIDSMS_ROUTER = 'myproject.router.MyRouter'
+
+
+Added ``get_router()`` utility
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+A new utility function, ``get_router``, provides the ability to retrieve the settings-defined router. This helper function allows your app to remain router independent:
+
+.. code-block:: python
+    :linenos:
+
+    from rapidsms.router import get_router
+
+    def send(recipient, text):
+        router = get_router()()
+        router.handle_outgoing(text, recipient.default_connection)
+
+
+Backends are Django apps
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+RapidSMS backends are now apps (rather than modules) in the ``rapidsms.backends`` directory. RapidSMS provides two built-in backend apps: ``http`` and ``kannel``. We have `completely removed all other backends`_ from the RapidSMS core.
+
+We also support creation of custom backend apps. Backend classes should extend from the classes found in ``rapidsms.backends.base``.
+
+
+Added ``MockBackendRouter`` class
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+``MockBackendRouter`` is a unit test mix-in class that provides a mock backend to use with the ``BlockingRouter``. The following example from ``contrib.messaging`` illustrates how you can test that inbound messages route to the mock backend outbox.
+
+.. code-block:: python
+    :linenos:
+    :emphasize-lines: 17, 19
+
+    from django.test import TestCase
+    from rapidsms.tests.harness.base import MockBackendRouter
+
+    class MessagingTest(MockBackendRouter, TestCase):
+
+        def setUp(self):
+            self.contact = self.create_contact()
+            self.backend = self.create_backend({'name': 'mock'})
+            self.connection = self.create_connection({'backend': self.backend,
+                                                      'contact': self.contact})
+
+        def test_ajax_send_view(self):
+            """
+            Test AJAX send view with valid data
+            """
+            data = {'text': 'hello!', 'recipients': [self.contact.id]}
+            response = self.client.post(reverse('send_message'), data)
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(self.outbox[0].text, data['text'])
+
+
+Updated ``TestScript``
+~~~~~~~~~~~~~~~~~~~~~~
+
+Prior to 0.10.0, ``TestScript`` would instantiate the route process (with blocking backends) to allow for testing of the entire routing stack. This was a useful function, but in practice was unstable and caused tests to hang indefinitely. In 0.10.0, ``TestScript`` has been updated to work with ``BlockingRouter``, and it functions much in the same way as before. Here's an example testing the EchoApp:
+
+.. code-block:: python
+    :linenos:
+
+    class EchoTest(TestScript):
+        apps = (EchoApp,)
+
+        def testRunScript(self):
+            self.runScript("""
+                2345678901 > echo?
+                2345678901 < 2345678901: echo?
+            """)
+
+
+.. _backwards-incompatible-changes:
+
+Backwards-incompatible changes in RapidSMS 0.10.0
+=================================================
+
+In the goal of improving the RapidSMS core, we have made a number of backwards-incompatible changes. If you have apps written against RapidSMS 0.9.6 that you need to port, see our :doc:`migration guide <0.10.0_upgrade_guide>`.
+
+
+Supporting Django 1.3+
+~~~~~~~~~~~~~~~~~~~~~~
+
+RapidSMS is no longer compatible with any version of Django prior to 1.3.
+
+
+Static media handled by django.contrib.staticfiles
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+RapidSMS 0.10.0 supports out-of-the-box use of ``django.core.staticfiles`` (included by default in Django 1.3.x and above). The ``rapidsms.urls.static_media`` module has been removed in favor of using this app. New projects generated using ``rapidsms-admin.py startproject`` are automatically configured to work with staticfiles. See the :doc:`migration guide <0.10.0_upgrade_guide>` for more information on upgrading existing projects.
+
+
+.. _completely removed all other backends:
+
+Removal of backends
+~~~~~~~~~~~~~~~~~~~
+
+We removed several rarely-used or outdated backend packages from the core:
+
+* ``rapidsms.backends.bucket``
+* ``rapidsms.backends.email``
+* ``rapidsms.backends.irc``
+* ``rapidsms.backends.gsm``
+* ``rapidsms.backends.smtp``
+
+
+Removal of ``rapidsms.contrib.ajax`` app
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The ``rapidsms.contrib.ajax`` app has been removed.
+
+
+Removal of ``send_message``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Prior to 0.10.0, ``rapidsms.contrib.messaging`` contained a utility function to send a message to the Router process. This relied on the ``contrib.ajax``'s ``call_router`` function to pass messages to the Router via the ajax app running in the Router thread. send_message has been removed and you should now use ``rapidsms.router.send`` (see :ref:`sending-messages`). Using send_message will now raise an exception:
+
+.. code-block:: python
+
+    >>> from rapidsms.contrib.messaging.utils import send_message 
+    >>> send_message(conn, "hello?")
+    Traceback (most recent call last):
+      File "<stdin>", line 1, in <module>
+      File "../rapidsms/lib/rapidsms/contrib/messaging/utils.py", line 2, in send_message
+        raise DeprecationWarning("rapidsms.contrib.messaging.utils is deprecated")
+    DeprecationWarning: rapidsms.contrib.messaging.utils is deprecated
+
+
+Scheduler refactor
+~~~~~~~~~~~~~~~~~~
+
+``rapidsms.contrib.scheduler`` still exists, but is currently incompatible
+with 0.10.0. We plan to support the scheduler in the next minor RapidSMS
+release.

@@ -3,68 +3,43 @@
 
 
 from random import randint
+
 from django.template import RequestContext
 from django.shortcuts import render_to_response
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
-from django.views.decorators.http import require_GET, require_POST
-from rapidsms.contrib.ajax.exceptions import RouterNotResponding
 from . import forms
-from . import utils
+from . import storage
 
-
-def _redirect(identity):
-    url = reverse(message_tester, kwargs={ "identity": identity })
-    return HttpResponseRedirect(url)
-
-
-def generate_identity(req):
+def generate_identity(request, backend_name):
     identity = randint(111111, 999999)
-    return _redirect(identity)
+    return HttpResponseRedirect(reverse(message_tester,
+                                        args=[backend_name, identity]))
 
 
-def message_tester(req, identity):
-    if req.method == "POST":
-        form = forms.MessageForm(req.POST)
-
+def message_tester(request, backend_name, identity):
+    if request.method == "POST":
+        form = forms.MessageForm(request.POST)
         if form.is_valid():
             cd = form.cleaned_data
             identity = cd["identity"]
-
-            if "bulk" in req.FILES:
-                for line in req.FILES["bulk"]:
-                    utils.send_test_message(
-                        identity=identity,
-                        text=line)
-
+            if "bulk" in request.FILES:
+                for line in request.FILES["bulk"]:
+                    storage.store_and_queue(identity, line)
             # no bulk file was submitted, so use the "single message"
             # field. this may be empty, which is fine, since contactcs
             # can (and will) submit empty sms, too.
             else:
-                utils.send_test_message(
-                    identity=identity,
-                    text=cd["text"])
-
-            return _redirect(cd["identity"])
+                storage.store_and_queue(backend_name, identity, cd["text"])
+            url = reverse(message_tester, args=[backend_name, identity])
+            return HttpResponseRedirect(url)
 
     else:
-        form = forms.MessageForm({
-            "identity": identity })
-
-    # attempt to fetch the message log from the router, but don't expode
-    # if it's not available. (the router probably just isn't running.)
-    try:
-        router_available = True
-        message_log = utils.get_message_log()
-
-    except RouterNotResponding:
-        router_available = False
-        message_log = None
-
-    return render_to_response(
-        "httptester/index.html", {
-            "router_available": router_available,
-            "message_log": message_log,
-            "message_form": form
-        }, context_instance=RequestContext(req)
-    )
+        form = forms.MessageForm({"identity": identity})
+    context = {
+        "router_available": True,
+        "message_log": storage.get_messages(),
+        "message_form": form
+    }
+    return render_to_response("httptester/index.html", context,
+                              context_instance=RequestContext(request))

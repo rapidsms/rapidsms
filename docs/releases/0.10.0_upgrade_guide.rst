@@ -1,0 +1,136 @@
+====================================================
+Migrating your Project from RapidSMS 0.9.6 to 0.10.0
+====================================================
+
+RapidSMS 0.10.0 breaks compatibility with 0.9.6 in some areas. This guide will help you port 0.9.6 projects and apps to 0.10.0. We describe the changes that most users will need to make, as well as `less-common compatibility issues`_ to look for if your code is still breaking.
+
+.. Note::
+   See the `0.10.0 release notes`_. That document explains the new features in RapidSMS more deeply; this porting guide is more concerned with helping you quickly update your code.
+
+
+Upgrade to Django>=1.3
+======================
+
+RapidSMS 0.10.0 will only support Django 1.3 or newer.
+
+- `Django 1.3 release notes`_
+- `Django 1.4 release notes`_
+
+
+Choose a router
+===============
+
+The global router located at ``rapidsms.router.Router`` has been removed. All routers now extend from a new base class, ``rapidsms.router.base.BaseRouter``. RapidSMS 0.10.0 offers one built-in router option, as well as support for third-party routers.
+
+A new setting, :setting:`RAPIDSMS_ROUTER`, allows you to specify the primary router class to use. A new utility function, ``rapidsms.router.get_router``, retrieves the router defined in :setting:`RAPIDSMS_ROUTER` so that your project can remain router-independent.
+
+BlockingRouter
+~~~~~~~~~~~~~~
+
+``rapidsms.router.blocking.BlockingRouter`` is the default value for :setting:`RAPIDSMS_ROUTER`.  This router processes messages within the HTTP request/response cycle and does not perform any additional queuing of messages.  It simplifies testing and development, and also works well will Kannel or other message gateways for small- to medium-sized RapidSMS sites.  You may wish to specify the router in your settings file explicitly as follows:
+
+.. code-block:: python
+
+    RAPIDSMS_ROUTER = 'rapidsms.router.blocking.BlockingRouter'
+
+Custom Router
+~~~~~~~~~~~~~
+
+``BlockingRouter`` is sufficient for many applications, but applications handling hundreds of messages per second or more may require custom routing logic. If you are running such an application, you might consider writing your own router or finding a third-party router that fits your needs. All custom routers should extend from ``rapidsms.router.base.BaseRouter``.
+
+.. One popular existing third-party router is `rapidsms-celery-router <https://github.com/rapidsms/rapidsms-celery-router>`_, which using a message queue such as RabbitMQ and Celery to queue incoming and outgoing messages for processing.
+
+
+Update old backends
+===================
+
+RapidSMS backends are now apps (rather than modules) in the ``rapidsms.backends`` directory. You may not need to update your imports the main backend classes live in the ``__init__.py`` file of their app.
+
+RapidSMS provides two built-in backend apps: ``http`` and ``kannel``. We have completely removed these backends from the RapidSMS core:
+
+* ``rapidsms.backends.bucket``
+* ``rapidsms.backends.email``
+* ``rapidsms.backends.gsm``
+* ``rapidsms.backends.irc``
+* ``rapidsms.backends.smtp``
+
+Upgrading to Kannel
+~~~~~~~~~~~~~~~~~~~
+
+If you used PyGSM or one of the other non-HTTP backends, you must update your code to use a different backend. For many use cases, the ``kannel`` backend will be a good replacement for the ``gsm`` backend. For more information about configuring RapidSMS to use Kannel, please see the :doc:`Kannel backend documentation </topics/backends/kannel>`.
+
+Other backends
+~~~~~~~~~~~~~~
+
+If none of the new backends suit the needs of your project, you may write a custom backend app. Backend classes should extend from the classes found in ``rapidsms.backends.base``.  
+
+
+Remove ``rapidsms.contrib.ajax``
+================================
+
+We have removed the ``rapidsms.contrib.ajax`` app. You should update your settings, URL configuration, and other project code to reflect this change.
+
+1. Remove ``rapid.contrib.ajax`` from ``settings.INSTALLED_APPS``.
+2. Remove ``rapid.contrib.ajax`` from ``settings.TEST_EXCLUDED_APPS``.
+3. Remove ajax URLs from your URL configuration file.
+
+
+Remove calls to ``rapidsms.contrib.messaging.send_message``
+===========================================================
+
+As the method ``rapidsms.contrib.messaging.send_message`` relied upon ``rapidsms.contrib.ajax`` functionality, it has been deprecated and will raise a warning when used. All calls to ``send_message`` should be replaced with calls to ``rapidsms.router.send`` (see :ref:`sending-messages`).
+
+
+Use ``django.contrib.staticfiles``
+==================================
+
+The ``rapidsms.urls.static_media`` module has been removed from RapidSMS 0.10.0 in favor of using ``django.core.staticfiles`` (which is included by default in Django 1.3.x and above). To upgrade your project, take the following steps:
+
+1. Add ``"django.contrib.staticfiles"`` to ``settings.INSTALLED_APPS``.
+2. Add ``"django.core.context_processors.static"`` to ``settings.CONTEXT_PROCESSORS``.
+3. Remove references to ``rapidsms.urls.static_media`` from your URL configuration or other places in your project. The location of static files should now be handled by the classes listed in ``settings.STATICFILES_FINDERS``. By default, RapidSMS requires these finders:
+
+.. code-block:: python
+
+    STATICFILES_FINDERS = (
+        "django.contrib.staticfiles.finders.FileSystemFinder",
+        "django.contrib.staticfiles.finders.AppDirectoriesFinder",
+    )
+
+4. Define the URL prefix for static files in ``settings.STATIC_URL``. This value should be distinct from ``settings.MEDIA_URL``.
+5. Define the absolute path of the directory to which static files should be collected in ``settings.STATIC_ROOT``.
+6. Each app should maintain its static media in the ``static/`` subfolder. (If you have any other directories in which static files are maintained, list them in ``settings.STATICFILES_DIRS``.) We have adopted the convention of keeping the app's static files in a subfolder of ``static/`` with the same name as the app. For example, the static file located at ``myapp/static/myapp/stylesheets/myapp.css`` will be available at ``{{ STATIC_URL }}myapp/stylesheets/myapp.css``.
+7. Ensure that URLs to static files in your templates use ``{{ STATIC_URL }}`` rather than ``{{ MEDIA_URL }}`` to locate static files.
+
+Refactor stateful applications to use the database or cache
+===========================================================
+
+Some RapidSMS applications in the community may use the ``App`` instance (or module-level variables in Python) to store persistent state information about the application.  Now that routers are constructed and destroyed for every incoming message, state information stored on apps will not persist between requests.  Code that makes this assumption should be refactored to use a database or cache to store data that need to persist between requests.
+
+Scheduler refactor
+==================
+
+``rapidsms.contrib.scheduler`` is currently incompatible with v0.10.0. Until we release a compatible version, we recommend investigating cron-style methods or using Celery's `periodic tasks`_.
+
+.. _less-common compatibility issues:
+
+Less-common changes
+===================
+
+The following changes are smaller, more localized changes. They should only affect more advanced users, but it's probably worth reading through the list and checking your code for these things.
+
+
+TestScript
+~~~~~~~~~~
+
+Prior to 0.10.0, ``TestScript`` would instantiate the routing process (with blocking backends) to allow for testing of the entire routing stack. In the new release, ``TestScript`` has been updated to work with ``BlockingRouter``. In most cases, the changes to the ``TestScript`` class should not affect how you write your test code.
+
+
+.. _RapidSMS 0.10.0: https://github.com/rapidsms/rapidsms/
+.. _0.10.0 release notes: http://rapidsms.readthedocs.org/en/feature-new-routing/releases/0.10.0.html
+.. _Django 1.3 release notes: https://docs.djangoproject.com/en/dev/releases/1.3/
+.. _Django 1.4 release notes: https://docs.djangoproject.com/en/dev/releases/1.4/
+.. _threadless-router: https://github.com/caktus/rapidsms-threadless-router
+.. _http-router: https://github.com/caktus/rapidsms-threadless-router/
+.. _rapidsms-httprouter: https://github.com/nyaruka/rapidsms-httprouter/
+.. _periodic tasks: http://docs.celeryproject.org/en/latest/userguide/periodic-tasks.html

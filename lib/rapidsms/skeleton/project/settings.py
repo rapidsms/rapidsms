@@ -37,8 +37,8 @@ INSTALLED_BACKENDS = {
     #    "PORT": "/dev/ttyUSB1"
     #},
     "message_tester": {
-        "ENGINE": "rapidsms.backends.bucket",
-    }
+        "ENGINE": "rapidsms.contrib.httptester.backend",
+    },
 }
 
 
@@ -53,7 +53,6 @@ INSTALLED_APPS = [
 
     # common dependencies (which don't clutter up the ui).
     "rapidsms.contrib.handlers",
-    "rapidsms.contrib.ajax",
 
     # enable the django admin using a little shim app (which includes
     # the required urlpatterns), and a bunch of undocumented apps that
@@ -194,7 +193,6 @@ TEST_EXCLUDED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.auth",
     "rapidsms",
-    "rapidsms.contrib.ajax",
     "rapidsms.contrib.httptester",
 ]
 

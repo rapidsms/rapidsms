@@ -1,10 +1,7 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
 
-
-import sys
-import traceback
-import time
+import warnings
 
 from django.dispatch import Signal
 
@@ -21,20 +18,16 @@ class BaseRouter(object, LoggerMixin):
     incoming_phases = ("filter", "parse", "handle", "default", "cleanup")
     outgoing_phases = ("outgoing",)
 
-    pre_start  = Signal(providing_args=["router"])
+    pre_start = Signal(providing_args=["router"])
     post_start = Signal(providing_args=["router"])
-    pre_stop   = Signal(providing_args=["router"])
-    post_stop  = Signal(providing_args=["router"])
-
+    pre_stop = Signal(providing_args=["router"])
+    post_stop = Signal(providing_args=["router"])
 
     def __init__(self):
-
         self.apps = []
         self.backends = {}
         self.logger = None
-
         self.running = False
-        """TODO: Docs"""
 
     def add_app(self, module_name):
         """
@@ -42,23 +35,24 @@ class BaseRouter(object, LoggerMixin):
         the list of apps to be notified of incoming messages. Return the
         app instance.
         """
-
-        cls = AppBase.find(module_name)
-        if cls is None: return None
-
+        if isinstance(module_name, basestring):
+            cls = AppBase.find(module_name)
+        elif issubclass(module_name, AppBase):
+            cls = module_name
+        if not cls:
+            return None
         app = cls(self)
         self.apps.append(app)
         return app
 
     def get_app(self, module_name):
-        """Get a handle to one of our apps by module name.""" 
+        """Get a handle to one of our apps by module name."""
         cls = AppBase.find(module_name)
-        if cls is None: return None
-        
+        if cls is None:
+            return None
         for app in self.apps:
             if type(app) == cls:
                 return app
-            
         raise KeyError("The %s app was not found in the router!" % module_name)
 
     def add_backend(self, name, module_name, config=None):
@@ -67,10 +61,12 @@ class BaseRouter(object, LoggerMixin):
         to the dict of backends to be polled for incoming messages, once
         the router is started. Return the backend instance.
         """
-
-        cls = BackendBase.find(module_name)
-        if cls is None: return None
-
+        if isinstance(module_name, basestring):
+            cls = BackendBase.find(module_name)
+        elif issubclass(module_name, BackendBase):
+            cls = module_name
+        if not cls:
+            raise ValueError('No such backend "%s"' % module_name)
         config = self._clean_backend_config(config or {})
         backend = cls(self, name, **config)
         self.backends[name] = backend
@@ -108,11 +104,7 @@ class BaseRouter(object, LoggerMixin):
         """
 
         for app in self.apps:
-            try:
-                app.start()
-
-            except:
-                app.exception()
+            app.start()
 
     def _stop_all_apps(self):
         """
@@ -120,11 +112,7 @@ class BaseRouter(object, LoggerMixin):
         """
 
         for app in self.apps:
-            try:
-                app.stop()
-
-            except:
-                app.exception()
+            app.stop()
 
     def start(self):
         """
@@ -168,9 +156,9 @@ class BaseRouter(object, LoggerMixin):
         Queue or send immediately the incoming message.  Defaults to sending
         the message immediately.
         """
-        self.incoming(msg)
+        self.receive_incoming(msg)
 
-    def incoming(self, msg):
+    def receive_incoming(self, msg):
         """
         Incoming phases:
 
@@ -192,8 +180,7 @@ class BaseRouter(object, LoggerMixin):
           An opportunity to clean up anything started during earlier phases.
         """
 
-        self.info("Incoming (%s): %s" %\
-            (msg.connection, msg.text))
+        self.info("Incoming (%s): %s" % (msg.connection, msg.text))
 
         try:
             for phase in self.incoming_phases:
@@ -208,12 +195,8 @@ class BaseRouter(object, LoggerMixin):
                     self.debug("In %s app" % app)
                     handled = False
 
-                    try:
-                        func = getattr(app, phase)
-                        handled = func(msg)
-
-                    except Exception, err:
-                        app.exception()
+                    func = getattr(app, phase)
+                    handled = func(msg)
 
                     # during the _filter_ phase, an app can return True
                     # to abort ALL further processing of this message
@@ -228,27 +211,26 @@ class BaseRouter(object, LoggerMixin):
                     elif phase == "handle":
                         if handled is True:
                             self.debug("Short-circuited")
-                            # mark the message handled to avoid the 
+                            # mark the message handled to avoid the
                             # default phase firing unnecessarily
                             msg.handled = True
                             break
-                    
+
                     elif phase == "default":
                         # allow default phase of apps to short circuit
-                        # for prioritized contextual responses.   
+                        # for prioritized contextual responses.
                         if handled is True:
                             self.debug("Short-circuited default")
                             break
-                        
+
         except StopIteration:
             pass
 
-    def outgoing(self, msg):
+    def send_outgoing(self, msg):
         """
         """
 
-        self.info("Outgoing (%s): %s" %\
-            (msg.connection, msg.text))
+        self.info("Outgoing (%s): %s" % (msg.connection, msg.text))
 
         for phase in self.outgoing_phases:
             self.debug("Out %s phase" % phase)
@@ -264,7 +246,7 @@ class BaseRouter(object, LoggerMixin):
                     func = getattr(app, phase)
                     continue_sending = func(msg)
 
-                except Exception, err:
+                except Exception:
                     app.exception()
 
                 # during any outgoing phase, an app can return True to
@@ -272,3 +254,19 @@ class BaseRouter(object, LoggerMixin):
                 if continue_sending is False:
                     self.warning("Message cancelled")
                     return False
+
+        # send message using specified backend
+        msg.sent = self.backends[msg.connection.backend.name].send(msg)
+        return msg.sent
+
+    def incoming(self, msg):
+        """Legacy support for Router.incoming() -- Deprecated"""
+        msg = "Router.incoming is deprecated. Please use receive_incoming."
+        warnings.warn(msg)
+        self.receive_incoming(msg)
+
+    def outgoing(self, msg):
+        """Legacy support for Router.outgoing() -- Deprecated"""
+        msg = "Router.outgoing is deprecated. Please use send_outgoing."
+        warnings.warn(msg)
+        self.send_outgoing(msg)

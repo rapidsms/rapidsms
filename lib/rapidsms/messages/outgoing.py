@@ -13,7 +13,8 @@ class OutgoingMessage(MessageBase):
     """
     """
 
-    def __init__(self, connection=None, template=None, **kwargs):
+    def __init__(self, connection=None, template=None, in_reply_to=None,
+                 **kwargs):
         self._parts = []
         
         if template is not None:
@@ -21,6 +22,7 @@ class OutgoingMessage(MessageBase):
 
         self._connection = connection
         self.sent_at = None
+        self.in_reply_to = in_reply_to
 
 
     @property
@@ -68,34 +70,10 @@ class OutgoingMessage(MessageBase):
 
     def send(self):
         """
-        Send this message via the router, triggering the _outgoing_
-        phase (giving any app the opportunity to modify or cancel it).
-        Return True if the message was sent successfully.
-
-        If the router is not running (as is usually the case outside of
-        the ``runrouter`` process), NoRouterError is raised.
-
-        Warning: This method blocks the current thread until the backend
-        accepts or rejects the message, which takes as long as it takes.
-        There is currently no way to send messages asynchronously.
+        Raises an exception to help developers upgrade legacy code to use
+        the new interface for sending messages.
         """
-
-        from rapidsms.router import router
-
-        if not router.running:
-            raise NoRouterError()
-
-        return router.outgoing(self)
-
-
-    def send_now(self):
-        """
-        Send this message immediately via the physical backend. This
-        should probably only be called by the Router.
-        """
-
-        from ..router import router
-        backend_name = self.connection.backend.name
-        self.sent = router.backends[backend_name].send(self)
-        if self.sent: self.sent_at = datetime.now()
-        return self.sent
+        # TODO decide if this API is deprecated and add a deprecation warning if so
+        from rapidsms.router.api import send
+        send(self.text, connection=self.connection)
+        self.sent = True
