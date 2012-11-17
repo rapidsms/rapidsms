@@ -1,9 +1,10 @@
 from django.conf import settings
+from django.test import TestCase, TransactionTestCase
 
 from rapidsms.tests.harness.base import CreateDataTest
 from rapidsms.tests.harness import backend
 from rapidsms.router import lookup_connections
-from rapidsms.router.test import inbound, outbound, clear
+from rapidsms.router.test import inbound, outbound, reset_router
 
 
 __all__ = ('CustomRouter', 'MockBackendRouter')
@@ -64,7 +65,7 @@ class RouterTest(CustomRouter):
 
     def _post_rapidsms_teardown(self):
         super(RouterTest, self)._post_rapidsms_teardown()
-        self.clear()
+        self.reset_router()
 
     @property
     def inbound(self):
@@ -74,5 +75,13 @@ class RouterTest(CustomRouter):
     def outbound(self):
         return outbound
 
-    def clear(self):
-        clear()
+    def reset_router(self):
+        reset_router()
+
+
+class RapidTest(RouterTest, TestCase):
+    pass
+
+
+class RapidTransactionTest(RouterTest, TransactionTestCase):
+    pass

@@ -6,7 +6,9 @@ from django.conf import settings
 from rapidsms.router.test import TestRouter
 
 from rapidsms.tests.harness.base import CreateDataTest
-from rapidsms.tests.harness.router import (CustomRouter, MockBackendRouter, RouterTest)
+from rapidsms.tests.harness.router import (CustomRouter, MockBackendRouter,
+                                           RouterTest, RapidTest,
+                                           RapidTransactionTest)
 from rapidsms.tests.harness.scripted import TestScript
 from rapidsms.tests.harness.backend import MockBackend
 from rapidsms.tests.harness.app import MockApp, EchoApp
