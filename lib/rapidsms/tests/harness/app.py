@@ -2,7 +2,7 @@ from rapidsms.apps.base import AppBase
 
 
 class MockApp(AppBase):
-    """A subclass of App with all the moving parts replaced."""
+    """A subclass of AppBase with all the moving parts replaced."""
 
     def __init__(self, *args, **kwargs):
         super(MockApp, self).__init__(*args, **kwargs)
@@ -28,7 +28,7 @@ class MockApp(AppBase):
 
 
 class EchoApp(MockApp):
-    """Barebones echo app"""
+    """Barebones echo app."""
 
     def handle(self, message):
         MockApp.handle(self, message)
