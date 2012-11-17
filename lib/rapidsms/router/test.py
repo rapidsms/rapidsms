@@ -7,10 +7,13 @@ from rapidsms.router.blocking import BlockingRouter
 
 inbound = []
 outbound = []
+process_messages = True
 
 
-def clear():
+def reset_router():
     """Clear inbound and outbound values."""
+    global process_messages
+    process_messages = True
     del inbound[:]
     del outbound[:]
 
@@ -25,17 +28,18 @@ class TestRouter(BlockingRouter):
         kwargs['apps'] = kwargs.get('apps', [])
         kwargs['backends'] = kwargs.get('backends', {})
         super(TestRouter, self).__init__(*args, **kwargs)
-        clear()
 
     def receive_incoming(self, msg):
         """Save all inbound messages locally for test inspection"""
         inbound.append(msg)
-        super(TestRouter, self).receive_incoming(msg)
+        if process_messages:
+            super(TestRouter, self).receive_incoming(msg)
 
     def send_outgoing(self, msg):
         """Save all outbound messages locally for test inspection"""
         outbound.append(msg)
-        super(TestRouter, self).send_outgoing(msg)
+        if process_messages:
+            super(TestRouter, self).send_outgoing(msg)
 
 
 class NoOpTestRouter(TestRouter):

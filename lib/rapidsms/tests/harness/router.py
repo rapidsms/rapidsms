@@ -4,7 +4,7 @@ from django.test import TestCase, TransactionTestCase
 from rapidsms.tests.harness.base import CreateDataTest
 from rapidsms.tests.harness import backend
 from rapidsms.router import lookup_connections
-from rapidsms.router.test import inbound, outbound, reset_router
+from rapidsms.router import test as test_router
 
 
 __all__ = ('CustomRouter', 'MockBackendRouter')
@@ -62,6 +62,12 @@ class MockBackendRouter(CustomRouter):
 class RouterTest(CustomRouter):
 
     router_class = 'rapidsms.router.test.TestRouter'
+    process_messages = True  # setting to False will disable router phases
+
+    def _pre_rapidsms_setup(self):
+        super(RouterTest, self)._pre_rapidsms_setup()
+        self.reset_router()
+        test_router.process_messages = self.process_messages
 
     def _post_rapidsms_teardown(self):
         super(RouterTest, self)._post_rapidsms_teardown()
@@ -69,14 +75,14 @@ class RouterTest(CustomRouter):
 
     @property
     def inbound(self):
-        return inbound
+        return test_router.inbound
 
     @property
     def outbound(self):
-        return outbound
+        return test_router.outbound
 
     def reset_router(self):
-        reset_router()
+        test_router.reset_router()
 
 
 class RapidTest(RouterTest, TestCase):
