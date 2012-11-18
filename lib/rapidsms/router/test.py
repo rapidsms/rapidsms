@@ -5,14 +5,16 @@ Router that can be used for testing
 from rapidsms.router.blocking import BlockingRouter
 
 
+apps = None
 inbound = []
 outbound = []
 disable_phases = False
 
 
-def reset_router():
+def reset_state():
     """Clear inbound and outbound values."""
-    global disable_phases
+    global disable_phases, apps
+    apps = None
     disable_phases = False
     del inbound[:]
     del outbound[:]
@@ -25,8 +27,8 @@ class TestRouter(BlockingRouter):
         """
         Allow apps and backends to be customized, otherwise leave empty
         """
-        kwargs['apps'] = kwargs.get('apps', [])
-        kwargs['backends'] = kwargs.get('backends', {})
+        if apps is not None:
+            kwargs['apps'] = kwargs.get('apps', apps)
         super(TestRouter, self).__init__(*args, **kwargs)
 
     def receive_incoming(self, msg):
