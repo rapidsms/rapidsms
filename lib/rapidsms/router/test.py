@@ -7,13 +7,13 @@ from rapidsms.router.blocking import BlockingRouter
 
 inbound = []
 outbound = []
-disable_phases = True
+disable_phases = False
 
 
 def reset_router():
     """Clear inbound and outbound values."""
     global disable_phases
-    disable_phases = True
+    disable_phases = False
     del inbound[:]
     del outbound[:]
 
