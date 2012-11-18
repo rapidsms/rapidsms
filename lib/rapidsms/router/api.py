@@ -6,7 +6,7 @@ from rapidsms.models import Backend
 
 def receive(text, connection, fields=None):
     """
-    Creates an incoming messages and passes it to the router for processing.
+    Creates an incoming message and passes it to the router for processing.
     """
     from rapidsms.router import get_router
     from rapidsms.messages import IncomingMessage

@@ -16,7 +16,7 @@ Receiving Messages
 .. function:: receive(text, connection, fields=None)
     :module: rapidsms.router.api
 
-    Creates an incoming messages and passes it to the router for processing.
+    Creates an incoming message and passes it to the router for processing.
 
     :param text: text message
     :param connection: RapidSMS connection object
