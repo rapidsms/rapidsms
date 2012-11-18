@@ -6,13 +6,13 @@ from rapidsms.log.mixin import LoggerMixin
 from rapidsms.messages.outgoing import OutgoingMessage
 
 
-__all__ = ('CreateDataTest',)
+__all__ = ('CreateDataMixin',)
 
 
 UNICODE_CHARS = [unichr(x) for x in xrange(1, 0xD7FF)]
 
 
-class CreateDataTest(object, LoggerMixin):
+class CreateDataMixin(object, LoggerMixin):
     """Base test case that provides helper functions to create data"""
 
     def random_string(self, length=255, extra_chars=''):

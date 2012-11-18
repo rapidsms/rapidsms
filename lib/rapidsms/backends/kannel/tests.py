@@ -5,7 +5,7 @@ from django.conf.urls.defaults import *
 from rapidsms.backends.kannel import views
 from rapidsms.backends.kannel import KannelBackend
 from rapidsms.backends.kannel.forms import KannelForm
-from rapidsms.tests.harness import RapidTest, CreateDataTest
+from rapidsms.tests.harness import RapidTest, CreateDataMixin
 
 
 urlpatterns = patterns('',
@@ -71,7 +71,7 @@ class KannelViewTest(RapidTest):
                          message.connection.backend.name)
 
 
-class KannelSendTest(CreateDataTest, TestCase):
+class KannelSendTest(CreateDataMixin, TestCase):
 
     def test_outgoing_keys(self):
         """Outgoing POST data should contain the proper keys."""

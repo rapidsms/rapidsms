@@ -2,11 +2,11 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 from django.test import TestCase
-from rapidsms.tests.harness.base import CreateDataTest
+from rapidsms.tests.harness.base import CreateDataMixin
 import rapidsms.contrib.messagelog.app
 
 
-class MessageLogTest(CreateDataTest, TestCase):
+class MessageLogTest(CreateDataMixin, TestCase):
     def test_messagelog(self):
         """Make sure Django 1.4 timezone aware datetimes don't disrupt _log"""
 

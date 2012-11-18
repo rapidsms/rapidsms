@@ -1,6 +1,6 @@
 from django.conf import settings
 
-from rapidsms.tests.harness.base import CreateDataTest
+from rapidsms.tests.harness import CreateDataMixin
 from rapidsms.tests.harness import backend
 from rapidsms.router import lookup_connections
 from rapidsms.router import test as test_router
@@ -9,7 +9,7 @@ from rapidsms.router import test as test_router
 __all__ = ('CustomRouter', 'MockBackendRouter')
 
 
-class CustomRouter(CreateDataTest):
+class CustomRouterMixin(CreateDataMixin):
     """
     Inheritable TestCase-like object that allows Router customization
     """
@@ -28,11 +28,11 @@ class CustomRouter(CreateDataTest):
 
     def __call__(self, result=None):
         self._pre_rapidsms_setup()
-        super(CustomRouter, self).__call__(result)
+        super(CustomRouterMixin, self).__call__(result)
         self._post_rapidsms_teardown()
 
 
-class MockBackendRouter(CustomRouter):
+class MockBackendRouter(CustomRouterMixin):
     """
     Test exentions with BlockingRouter and MockBackend, and utility functions
     to examine outgoing messages
@@ -58,7 +58,7 @@ class MockBackendRouter(CustomRouter):
         return lookup_connections(backend, identities)
 
 
-class TestRouterMixin(CustomRouter):
+class TestRouterMixin(CustomRouterMixin):
 
     router_class = 'rapidsms.router.test.TestRouter'
     disable_phases = False  # setting to True will disable router phases
