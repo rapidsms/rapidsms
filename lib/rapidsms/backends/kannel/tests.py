@@ -45,7 +45,7 @@ class KannelFormTest(TestCase):
 class KannelViewTest(RapidTest):
 
     urls = 'rapidsms.backends.kannel.tests'
-    process_messages = False
+    disable_phases = True
 
     def test_valid_response_get(self):
         """HTTP 200 should return if data is valid."""

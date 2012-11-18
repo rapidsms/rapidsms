@@ -7,13 +7,13 @@ from rapidsms.router.blocking import BlockingRouter
 
 inbound = []
 outbound = []
-process_messages = True
+disable_phases = True
 
 
 def reset_router():
     """Clear inbound and outbound values."""
-    global process_messages
-    process_messages = True
+    global disable_phases
+    disable_phases = True
     del inbound[:]
     del outbound[:]
 
@@ -32,11 +32,15 @@ class TestRouter(BlockingRouter):
     def receive_incoming(self, msg):
         """Save all inbound messages locally for test inspection"""
         inbound.append(msg)
-        if process_messages:
-            super(TestRouter, self).receive_incoming(msg)
+        # short-circut router phases if disabled
+        if disable_phases:
+            return
+        super(TestRouter, self).receive_incoming(msg)
 
     def send_outgoing(self, msg):
         """Save all outbound messages locally for test inspection"""
         outbound.append(msg)
-        if process_messages:
-            super(TestRouter, self).send_outgoing(msg)
+        # short-circut router phases if disabled
+        if disable_phases:
+            return
+        super(TestRouter, self).send_outgoing(msg)

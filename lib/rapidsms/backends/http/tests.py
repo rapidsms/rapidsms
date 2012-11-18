@@ -66,7 +66,7 @@ class HttpFormTest(TestCase):
 class HttpViewTest(RapidTest):
 
     urls = 'rapidsms.backends.http.tests'
-    process_messages = False
+    disable_phases = True
 
     def setUp(self):
         self.http_backend_url = reverse('http-backend')

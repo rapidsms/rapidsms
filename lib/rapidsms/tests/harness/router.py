@@ -61,12 +61,12 @@ class MockBackendRouter(CustomRouter):
 class TestRouterMixin(CustomRouter):
 
     router_class = 'rapidsms.router.test.TestRouter'
-    process_messages = True  # setting to False will disable router phases
+    disable_phases = False  # setting to True will disable router phases
 
     def _pre_rapidsms_setup(self):
         super(TestRouterMixin, self)._pre_rapidsms_setup()
         self.reset_router()
-        test_router.process_messages = self.process_messages
+        test_router.disable_phases = self.disable_phases
 
     def _post_rapidsms_teardown(self):
         super(TestRouterMixin, self)._post_rapidsms_teardown()

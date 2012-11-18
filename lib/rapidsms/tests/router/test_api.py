@@ -5,7 +5,7 @@ from rapidsms.tests.harness import RapidTest
 class RouterAPITest(RapidTest):
     """Tests for rapidsms.router.api"""
 
-    process_messages = False
+    disable_phases = True
 
     def test_send_with_connection(self):
         """Send accepts a single connection."""
