@@ -40,21 +40,3 @@ class TestRouter(BlockingRouter):
         outbound.append(msg)
         if process_messages:
             super(TestRouter, self).send_outgoing(msg)
-
-
-class NoOpTestRouter(TestRouter):
-    """
-    BlockingRouter that short circuits incoming and outgoing messages before
-    passing them to the backend.  This should only be used for testing the
-    Django view side of backend apps.
-    """
-
-    def receive_incoming(self, msg):
-        if not hasattr(self, '_incoming'):
-            self._incoming = []
-        self._incoming.append(msg)
-
-    def send_outgoing(self, msg):
-        if not hasattr(self, '_outgoing'):
-            self._outgoing = []
-        self._outgoing.append(msg)
