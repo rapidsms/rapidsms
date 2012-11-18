@@ -10,7 +10,7 @@ from rapidsms.models import Backend, Contact, Connection
 from rapidsms.messages.incoming import IncomingMessage
 
 
-class TestScript(MockBackendRouter):
+class TestScriptMixin(MockBackendRouter):
     """
     The scripted.TestScript class subclasses unittest.TestCase
     and allows you to define unit tests for your RapidSMS apps

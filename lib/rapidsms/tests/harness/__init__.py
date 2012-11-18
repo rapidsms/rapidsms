@@ -2,16 +2,33 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 from django.conf import settings
+from django.test import TestCase, TransactionTestCase
 
 from rapidsms.router.test import TestRouter
 
 from rapidsms.tests.harness.base import CreateDataTest
 from rapidsms.tests.harness.router import (CustomRouter, MockBackendRouter,
-                                           RouterTest, RapidTest,
-                                           RapidTransactionTest)
-from rapidsms.tests.harness.scripted import TestScript
+                                           TestRouterMixin)
+from rapidsms.tests.harness.scripted import TestScriptMixin
 from rapidsms.tests.harness.backend import MockBackend
 from rapidsms.tests.harness.app import MockApp, EchoApp
+
+
+class RapidTest(TestRouterMixin, TestCase):
+    pass
+
+
+class RapidTransactionTest(TestRouterMixin, TransactionTestCase):
+    pass
+
+
+class TestScript(TestScriptMixin, TestCase):
+    pass
+
+
+class MockRouter(TestRouter):
+    """Legacy support for MockRouter import."""
+    pass
 
 
 class setting(object):
@@ -37,8 +54,3 @@ class setting(object):
         for k, v in self.saved_settings.items():
             if v != self.default_value:
                 setattr(settings, k, v)
-
-
-class MockRouter(TestRouter):
-    """Legacy support for MockRouter import."""
-    pass
