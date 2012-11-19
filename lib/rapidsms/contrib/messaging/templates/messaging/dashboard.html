@@ -60,7 +60,7 @@
             text = $("#compose").val();
             if (rec.length > 0 && text.length > 0) {
                 // do post
-                $.ajax({url: "{% url send_message %}", 
+                $.ajax({url: "{% url 'send_message' %}", 
                         type: "POST",
                         data: {"recipients": rec, "text": text},
                         success: function(msg) {
