@@ -28,14 +28,15 @@ RapidSMS uses `Tox <http://tox.readthedocs.org/en/latest/index.html>`_ to run
 the test suite in a variety of environments. The environments included in the
 tox.ini file are:
 
- * ``py2.6-1.3`` - Test using Python 2.6 and Django 1.3.x
- * ``py2.6-1.4`` - Test using Python 2.6 and Django 1.4.x
- * ``py2.7-1.3`` - Test using Python 2.7 and Django 1.3.x
- * ``py2.7-1.4`` - Test using Python 2.7 and Django 1.4.x
+ * ``py26-1.3.X`` - Test using Python 2.6 and Django 1.3.X
+ * ``py26-1.4.X`` - Test using Python 2.6 and Django 1.4.X
+ * ``py26-trunk`` - Test using Python 2.6 and Django master
+ * ``py27-1.3.X`` - Test using Python 2.7 and Django 1.3.x
+ * ``py27-1.4.X`` - Test using Python 2.7 and Django 1.4.x
+ * ``py27-trunk`` - Test using Python 2.7 and Django master
 
 You can run any of the environments listed above using: ``tox -e <name>``.
-Using ``tox`` on its own runs the test suite against each of these
-environments.
+Using ``tox`` on its own runs the test suite against all environments.
 
 You can also add additional environments or change other parts of the
 configuration in your local copy of the tox.ini by following the `tox
