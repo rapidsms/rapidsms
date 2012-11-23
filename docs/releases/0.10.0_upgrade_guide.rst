@@ -5,7 +5,10 @@ Migrating your Project from RapidSMS 0.9.6 to 0.10.0
 RapidSMS 0.10.0 breaks compatibility with 0.9.6 in some areas. This guide will help you port 0.9.6 projects and apps to 0.10.0. We describe the changes that most users will need to make, as well as `less-common compatibility issues`_ to look for if your code is still breaking.
 
 .. Note::
-   See the `0.10.0 release notes`_. That document explains the new features in RapidSMS more deeply; this porting guide is more concerned with helping you quickly update your code.
+
+   See the :doc:`0.10.0 release notes <0.10.0>`. That document explains the new
+   features in RapidSMS more deeply; this porting guide is more concerned with
+   helping you quickly update your code.
 
 
 Upgrade to Django>=1.3
