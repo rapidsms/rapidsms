@@ -145,7 +145,7 @@ __ http://docutils.sourceforge.net/
 .. _webchat: http://webchat.freenode.net?channels=rapidsms
 .. _ticket tracker: https://github.com/rapidsms/rapidsms/issues?state=open
 .. _pull requests: https://github.com/rapidsms/rapidsms/pulls
-.. _AUTHORS: https://github.com/rapidsms/rapidsms/blob/feature/new-routing/AUTHORS
+.. _AUTHORS: https://github.com/rapidsms/rapidsms/blob/master/AUTHORS
 .. _reStructuredText Primer: http://sphinx.pocoo.org/rest.html#rst-primer
 .. _Sphinx-specific markup: http://sphinx.pocoo.org/markup/index.html#sphinxmarkup
 .. _documentation label: https://github.com/rapidsms/rapidsms/issues?labels=documentation&page=1&state=open
