@@ -58,7 +58,7 @@ messages, and gluing together your applications and backends. RapidSMS provides 
 
 Please see the :doc:`router documentation <router/index>` for more information.
 
-.. _full-sized version: https://raw.github.com/rapidsms/rapidsms/feature/new-routing/docs/_static/rapidsms-architecture.png
+.. _full-sized version: https://raw.github.com/rapidsms/rapidsms/master/docs/_static/rapidsms-architecture.png
 .. _GSM modem: http://en.wikipedia.org/wiki/GSM
 .. _Twilio: http://www.twilio.com/
 .. _Clickatell: http://www.clickatell.com/
