@@ -5,19 +5,19 @@
 from random import randint
 
 from django.template import RequestContext
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, redirect
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from . import forms
 from . import storage
 
-def generate_identity(request, backend_name):
-    identity = randint(111111, 999999)
-    return HttpResponseRedirect(reverse(message_tester,
-                                        args=[backend_name, identity]))
+
+def generate_identity(request, backend_name="httptester"):
+    """Simple view to generate a random identity"""
+    return redirect("httptester", randint(111111, 999999))
 
 
-def message_tester(request, backend_name, identity):
+def message_tester(request, identity, backend_name="httptester"):
     if request.method == "POST":
         form = forms.MessageForm(request.POST)
         if form.is_valid():
