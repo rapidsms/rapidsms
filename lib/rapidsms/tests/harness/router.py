@@ -32,32 +32,6 @@ class CustomRouterMixin(CreateDataMixin):
         self._post_rapidsms_teardown()
 
 
-class MockBackendRouter(CustomRouterMixin):
-    """
-    Test exentions with BlockingRouter and MockBackend, and utility functions
-    to examine outgoing messages
-    """
-    backends = {'mockbackend': {'ENGINE': backend.MockBackend}}
-
-    def _post_rapidsms_teardown(self):
-        super(MockBackendRouter, self)._post_rapidsms_teardown()
-        self.clear()
-
-    @property
-    def outbox(self):
-        return backend.outbox
-
-    def clear(self):
-        if hasattr(backend, 'outbox'):
-            backend.outbox = []
-
-    def lookup_connections(self, backend='mockbackend', identities=None):
-        """loopup_connections wrapper to use mockbackend by default"""
-        if not identities:
-            identities = []
-        return lookup_connections(backend, identities)
-
-
 class TestRouterMixin(CustomRouterMixin):
 
     disable_phases = False  # setting to True will disable router phases
