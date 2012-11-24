@@ -60,30 +60,38 @@ class MockBackendRouter(CustomRouterMixin):
 
 class TestRouterMixin(CustomRouterMixin):
 
-    router_class = 'rapidsms.router.test.TestRouter'
+    router = None
     disable_phases = False  # setting to True will disable router phases
-    apps = None
     backends = {'mockbackend': {'ENGINE': backend.MockBackend}}
 
     def _pre_rapidsms_setup(self):
+        self.set_router()
         super(TestRouterMixin, self)._pre_rapidsms_setup()
-        self.reset_state()
-        test_router.disable_phases = self.disable_phases
-        test_router.apps = self.apps
 
     def _post_rapidsms_teardown(self):
         super(TestRouterMixin, self)._post_rapidsms_teardown()
-        self.reset_state()
+        self.router = None
+
+    def set_router(self):
+        kwargs = {'diable_phases': self.disable_phases}
+        if hasattr(self, 'apps'):
+            kwargs['apps'] = self.apps
+        if hasattr(self, 'backends'):
+            kwargs['backends'] = self.backends
+        self.router = test_router.TestRouter(**kwargs)
+        self.router.disable_phases = self.disable_phases
+        # set RAPIDSMS_ROUTER to our newly created instance
+        self.router_class = self.router
 
     @property
     def inbound(self):
         """Messages passed to Router.receive_incoming"""
-        return test_router.inbound
+        return self.router.inbound
 
     @property
     def outbound(self):
         """Messages passed to Router.send_outgoing"""
-        return test_router.outbound
+        return self.router.outbound
 
     @property
     def outbox(self):
@@ -91,7 +99,6 @@ class TestRouterMixin(CustomRouterMixin):
         return backend.outbox
 
     def reset_state(self):
-        test_router.reset_state()
         backend.reset_state()
 
     def lookup_connections(self, identities, backend='mockbackend'):

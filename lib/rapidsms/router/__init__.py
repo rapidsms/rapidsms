@@ -6,6 +6,7 @@ from rapidsms.router.api import receive, send, lookup_connections
 
 __all__ = ['import_class', 'get_router', 'get_test_router']
 
+
 def import_class(import_path):
     """
     Imports and returns the class described by import_path, where
@@ -29,8 +30,11 @@ def import_class(import_path):
 
 
 def get_router():
-    return import_class(getattr(settings, 'RAPIDSMS_ROUTER',
-                        'rapidsms.router.blocking.BlockingRouter'))
+    router = getattr(settings, 'RAPIDSMS_ROUTER',
+                     'rapidsms.router.blocking.BlockingRouter')
+    if isinstance(router, basestring):
+        router = import_class(router)()
+    return router
 
 
 def get_test_router():
