@@ -5,7 +5,10 @@ Migrating your Project from RapidSMS 0.9.6 to 0.10.0
 RapidSMS 0.10.0 breaks compatibility with 0.9.6 in some areas. This guide will help you port 0.9.6 projects and apps to 0.10.0. We describe the changes that most users will need to make, as well as `less-common compatibility issues`_ to look for if your code is still breaking.
 
 .. Note::
-   See the `0.10.0 release notes`_. That document explains the new features in RapidSMS more deeply; this porting guide is more concerned with helping you quickly update your code.
+
+   See the :doc:`0.10.0 release notes <0.10.0>`. That document explains the new
+   features in RapidSMS more deeply; this porting guide is more concerned with
+   helping you quickly update your code.
 
 
 Upgrade to Django>=1.3
@@ -127,7 +130,6 @@ Prior to 0.10.0, ``TestScript`` would instantiate the routing process (with bloc
 
 
 .. _RapidSMS 0.10.0: https://github.com/rapidsms/rapidsms/
-.. _0.10.0 release notes: http://rapidsms.readthedocs.org/en/feature-new-routing/releases/0.10.0.html
 .. _Django 1.3 release notes: https://docs.djangoproject.com/en/dev/releases/1.3/
 .. _Django 1.4 release notes: https://docs.djangoproject.com/en/dev/releases/1.4/
 .. _threadless-router: https://github.com/caktus/rapidsms-threadless-router

@@ -74,6 +74,6 @@ class OutgoingMessage(MessageBase):
         the new interface for sending messages.
         """
         # TODO decide if this API is deprecated and add a deprecation warning if so
-        from rapidsms.router.api import send
-        send(self.text, connection=self.connection)
+        from rapidsms.router import send
+        send(self.text, self.connection)
         self.sent = True

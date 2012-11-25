@@ -7,7 +7,7 @@ reporting interface. It was created by the Innovation Team at `UNICEF`_, and is
 under development by `the RapidSMS Team`_.
 
 .. image::
-    https://secure.travis-ci.org/rapidsms/rapidsms.png?branch=feature/new-routing
+    https://secure.travis-ci.org/rapidsms/rapidsms.png?branch=master
     :alt: Build Status
     :target: https://secure.travis-ci.org/rapidsms/rapidsms
 
