@@ -2,7 +2,7 @@ from django.conf import settings
 
 from rapidsms.tests.harness import CreateDataMixin
 from rapidsms.tests.harness import backend
-from rapidsms.router import lookup_connections
+from rapidsms.router import lookup_connections, send, receive
 from rapidsms.router import test as test_router
 
 
@@ -10,9 +10,8 @@ __all__ = ('CustomRouter', 'MockBackendRouter')
 
 
 class CustomRouterMixin(CreateDataMixin):
-    """
-    Inheritable TestCase-like object that allows Router customization
-    """
+    """Inheritable TestCase-like object that allows Router customization."""
+
     router_class = 'rapidsms.router.blocking.BlockingRouter'
     backends = {}
 
@@ -31,8 +30,21 @@ class CustomRouterMixin(CreateDataMixin):
         super(CustomRouterMixin, self).__call__(result)
         self._post_rapidsms_teardown()
 
+    def receive(self, text, connection, fields=None):
+        """receive() API wrapper."""
+        return receive(text, connection, fields)
+
+    def send(self, text, connections):
+        """send() API wrapper."""
+        return send(text, connections)
+
+    def lookup_connections(self, backend, identities):
+        """loopup_connections() API wrapper."""
+        return lookup_connections(backend, identities)
+
 
 class TestRouterMixin(CustomRouterMixin):
+    """Test extension that uses TestRouter"""
 
     disable_phases = False  # setting to True will disable router phases
     backends = {'mockbackend': {'ENGINE': backend.MockBackend}}
@@ -67,9 +79,10 @@ class TestRouterMixin(CustomRouterMixin):
         return self.router.backends['mockbackend'].messages
 
     def clear_sent_messages(self):
-        """Messages passed to MockBackend.send"""
+        """Clear messages sent to the mockbackend."""
         self.router.backends['mockbackend'].clear()
 
     def lookup_connections(self, identities, backend='mockbackend'):
         """loopup_connections wrapper to use mockbackend by default"""
-        return lookup_connections(backend, identities)
+        return super(TestRouterMixin, self).lookup_connections(backend,
+                                                               identities)
