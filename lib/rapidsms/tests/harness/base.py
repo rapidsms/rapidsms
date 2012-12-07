@@ -51,7 +51,7 @@ class CreateDataMixin(object, LoggerMixin):
 
     def create_outgoing_message(self, data={}):
         defaults = {
-            'text': self.random_string(10),
+            'template': self.random_string(10),
         }
         defaults.update(data)
         if 'connection' not in defaults:

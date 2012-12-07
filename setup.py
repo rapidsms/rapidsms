@@ -1,8 +1,18 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-
+import os
 from setuptools import setup, find_packages
+
+
+def read_file(filename):
+    """Read a file into a string"""
+    path = os.path.abspath(os.path.dirname(__file__))
+    filepath = os.path.join(path, filename)
+    try:
+        return open(filepath).read()
+    except IOError:
+        return ''
 
 
 setup(
@@ -33,6 +43,7 @@ setup(
     maintainer_email="rapidsms@googlegroups.com",
 
     description="Build SMS applications with Python and Django",
+    long_description=read_file('README.rst'),
     url="http://github.com/rapidsms/rapidsms",
     test_suite="run_tests.main",
     classifiers=[

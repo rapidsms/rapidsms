@@ -18,6 +18,7 @@ def store_message(direction, identity, text):
 
 
 def store_and_queue(backend_name, identity, text):
-    from rapidsms.router import receive
+    from rapidsms.router import receive, lookup_connections
     store_message('in', identity, text)
-    receive(text, backend_name, identity)
+    connection = lookup_connections(backend_name, [identity])[0]
+    receive(text, connection)
