@@ -259,12 +259,11 @@ Example
 To use this functionality in your test suite, you simply need to extend from
 ``TestScript`` to get access to ``runScript``::
 
-    from django.test import TestCase
     from rapidsms.tests.harness.scripted import TestScript
     from quizme.app import QuizMeApp
     from quizme.models import Question
 
-    class QuizMeScriptTest(TestScript, TestCase):
+    class QuizMeScriptTest(TestScript):
         apps = (QuizMeApp,)
 
         def test_correct_script(self):
