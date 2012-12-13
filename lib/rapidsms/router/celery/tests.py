@@ -2,16 +2,16 @@ from mock import patch, Mock
 
 from django.test import TestCase
 
-from rapidsms.tests.harness import MockBackendRouter
+from rapidsms.tests.harness import CustomRouterMixin
 from rapidsms.tests.harness.backend import MockBackend
 
 from rapidsms.router.blocking import BlockingRouter
-from rapidsms.router import send, receive
+from rapidsms.router import send, receive, lookup_connections
 from rapidsms.router.celery import CeleryRouter
 from rapidsms.router.celery.tasks import rapidsms_handle_message
 
 
-class CeleryRouterTest(MockBackendRouter, TestCase):
+class CeleryRouterTest(CustomRouterMixin, TestCase):
     """Tests for the CeleryRouter proxy class"""
 
     router_class = 'rapidsms.router.celery.CeleryRouter'
@@ -20,7 +20,8 @@ class CeleryRouterTest(MockBackendRouter, TestCase):
         """Received messages should call _queue_message with incoming=True"""
 
         with patch.object(CeleryRouter, '_queue_message') as mock_method:
-            connections = self.lookup_connections(identities=['1112223333'])
+            connections = lookup_connections("mockbackend",
+                                             identities=['1112223333'])
             message = receive("test", connections[0])
         mock_method.assert_called_once_with(message, incoming=True)
 
@@ -28,12 +29,13 @@ class CeleryRouterTest(MockBackendRouter, TestCase):
         """Sent messages should call _queue_message with incoming=False"""
 
         with patch.object(CeleryRouter, '_queue_message') as mock_method:
-            connections = self.lookup_connections(identities=['1112223333'])
+            connections = lookup_connections("mockbackend",
+                                             identities=['1112223333'])
             messages = send("test", connections)
         mock_method.assert_called_once_with(messages[0], incoming=False)
 
 
-class EagerBackendTest(MockBackendRouter, TestCase):
+class EagerBackendTest(CustomRouterMixin, TestCase):
 
     router_class = 'rapidsms.router.celery.CeleryRouter'
     backends = {'mockbackend': {'ENGINE': MockBackend,
@@ -43,12 +45,13 @@ class EagerBackendTest(MockBackendRouter, TestCase):
         """Eager backends should call rapidsms_handle_message directly"""
 
         with patch('rapidsms.router.celery.tasks.rapidsms_handle_message') as mock_method:
-            connections = self.lookup_connections(identities=['1112223333'])
+            connections = lookup_connections("mockbackend",
+                                             identities=['1112223333'])
             receive("test", connections[0])
         mock_method.assert_called_once()
 
 
-class HandleMessageTaskTest(MockBackendRouter, TestCase):
+class HandleMessageTaskTest(CustomRouterMixin, TestCase):
     """Tests specific to the rapidsms_handle_message Celery task"""
 
     def test_incoming_method_call(self):

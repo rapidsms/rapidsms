@@ -1,31 +1,16 @@
 from rapidsms.backends.base import BackendBase
 
 
-outbox = []
-
-
-def reset_state():
-    del outbox[:]
-
-
 class MockBackend(BackendBase):
-    """Simple backend that stores sent messages to global variable"""
+    """Simple backend that stores sent messages."""
 
     def __init__(self, *args, **kwargs):
         super(MockBackend, self).__init__(*args, **kwargs)
-        self.clear()
+        self.messages = []
 
     def clear(self):
-        self.messages = []
-        reset_state()
+        del self.messages[:]
 
     def send(self, msg):
         self.messages.append(msg)
-        outbox.append(msg)
         return True
-
-    def next_outgoing_message(self):
-        try:
-            outbox.pop(0)
-        except IndexError:
-            return None

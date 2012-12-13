@@ -10,7 +10,7 @@ def receive(text, connection, fields=None):
     """
     from rapidsms.router import get_router
     from rapidsms.messages import IncomingMessage
-    router = get_router()()
+    router = get_router()
     router.start()
     message = IncomingMessage(connection, text, datetime.datetime.now(),
                               fields=fields)
@@ -28,7 +28,7 @@ def send(text, connections):
     from rapidsms.messages import OutgoingMessage
     if not isinstance(connections, collections.Iterable):
         connections = [connections]
-    router = get_router()()
+    router = get_router()
     router.start()
     messages = []
     for connection in connections:

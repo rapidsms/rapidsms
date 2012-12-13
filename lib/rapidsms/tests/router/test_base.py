@@ -1,4 +1,4 @@
-from nose.tools import assert_equals, assert_raises
+from nose.tools import assert_equals, assert_raises, assert_true
 
 from django.utils.functional import curry
 from django.core.exceptions import ImproperlyConfigured
@@ -28,7 +28,7 @@ def test_get_router():
     with setting(RAPIDSMS_ROUTER='rapidsms.tests.router.bad_module.MockRouter'):
         assert_raises(ImproperlyConfigured, get_router)
     with setting(RAPIDSMS_ROUTER='rapidsms.tests.router.test_base.MockRouter'):
-        assert_equals(get_router(), MockRouter)
+        assert_true(isinstance(get_router(), MockRouter))
 
 
 def test_get_test_router():
