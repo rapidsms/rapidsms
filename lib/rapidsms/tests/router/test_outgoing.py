@@ -1,11 +1,9 @@
-from django.test import TestCase
-
 from rapidsms.router.test import BlockingRouter
 from rapidsms.messages.outgoing import OutgoingMessage
-from rapidsms.tests.harness import MockBackendRouter
+from rapidsms.tests.harness import RapidTest
 
 
-class OutgoingTest(MockBackendRouter, TestCase):
+class OutgoingTest(RapidTest):
 
     def setUp(self):
         self.contact = self.create_contact()
@@ -22,4 +20,4 @@ class OutgoingTest(MockBackendRouter, TestCase):
         msg = OutgoingMessage(self.connection, 'hello!')
         self.router.send_outgoing(msg)
         self.assertTrue(msg.sent)
-        self.assertEqual(msg, self.outbox[0])
+        self.assertEqual(msg, self.sent_messages[0])

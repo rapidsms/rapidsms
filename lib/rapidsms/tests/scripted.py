@@ -1,10 +1,9 @@
 import warnings
 
-from django.test import TestCase
 from rapidsms.tests.harness import TestScript as TestScriptMixin
 
 
-class TestScript(TestScriptMixin, TestCase):
+class TestScript(TestScriptMixin):
 
     def startRouter(self):
         warnings.warn("startRouter is deprecated and will be removed in a future "
