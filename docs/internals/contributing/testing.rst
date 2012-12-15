@@ -59,4 +59,4 @@ setup.py. Running the following will install test dependencies and run the unit
 tests in one step, but without the option of a coverage report::
 
     export DJANGO_SETTINGS_MODULE=tests.default
-    ./setup.py test
+    python setup.py test
