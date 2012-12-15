@@ -17,7 +17,7 @@ def read_file(filename):
 
 setup(
     name="RapidSMS",
-    version="0.10.0",
+    version=__import__('rapidsms').__version__,
     license="BSD",
 
     install_requires=[
