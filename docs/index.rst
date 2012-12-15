@@ -26,7 +26,7 @@
 RapidSMS Documentation
 =======================
 
-Release: v\ |version|. (:doc:`Installation <intro/install/index>`, :doc:`Release Notes <releases/index>`)
+Release: v\ |release|. (:doc:`Installation <intro/install/index>`, :doc:`Release Notes <releases/index>`)
 
 **Getting Started**
 
