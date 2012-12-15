@@ -32,8 +32,7 @@ setup(
 
     scripts=["bin/rapidsms-admin.py"],
 
-    package_dir={"": "lib"},
-    packages=find_packages("lib", exclude=['*.pyc']),
+    packages=find_packages(exclude=['*.pyc']),
     include_package_data=True,
 
     author="RapidSMS development community",
