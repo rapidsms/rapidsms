@@ -64,8 +64,3 @@ RAPIDSMS_TABS = [
     ("rapidsms.contrib.scheduler.views.index",              "Event Scheduler"),
     ("rapidsms.contrib.httptester.views.generate_identity", "Message Tester"),
 ]
-
-NOSE_ARGS = [
-    '--with-coverage',
-    '--cover-package=rapidsms',
-]

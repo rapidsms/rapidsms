@@ -21,6 +21,14 @@ settings file for running tests. You can tell the test runner what settings
 file to use with the --settings flag or by setting your
 ``DJANGO_SETTINGS_MODULE`` environment variable.
 
+Coverage
+--------
+
+To see code coverage while running the tests, you can use the supplied
+``coverage`` settings file::
+
+    python run_tests.py --settings=tests.coverage
+
 Testing multiple environments
 -----------------------------
 
@@ -42,19 +50,6 @@ You can also add additional environments or change other parts of the
 configuration in your local copy of the tox.ini by following the `tox
 configuration specification
 <http://tox.readthedocs.org/en/latest/config.html>`_ docs.
-
-Continuous integration and coverage reports
--------------------------------------------
-
-If desired, the test suite can produce a Cobertura coverage report for use with
-continuous integration software. Setting the environment variable CI to 1
-before running the test suite will produce a coverage report in the
-coverage.xml file. For example, the following produces a coverage.xml file and
-prints a coverage report for the test suite in the current environment::
-
-	CI=1; ./run_tests.py
-
-If you are using tox, this environment variable is set to 1 automatically.
 
 Using setup.py
 --------------
