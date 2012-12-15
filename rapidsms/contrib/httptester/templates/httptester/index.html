@@ -1,0 +1,88 @@
+{% extends "layout-split-2.html" %}
+{% load forms_tags %}
+
+{% block title %}Message Tester - {{ block.super }}{% endblock %}
+
+{% block stylesheets %}
+{{ block.super }}
+<link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}httptester/stylesheets/httptester.css" />
+{% endblock %}
+
+{% block javascripts %}
+{{ block.super }}
+<script type="text/javascript">
+	(function($) {
+		$(function() {
+			$("#id_text").keypress(function(ev) {
+				if (ev.keyCode == 13 && !ev.shiftKey) {
+					$(this).closest("form").submit();
+					$("#id_submit").focus();
+					ev.preventDefault();
+				}
+			}).focus();
+		});
+	})(jQuery);
+</script>
+{% endblock %}
+
+{% block left %}
+<div class="module">
+	<h2>Message Tester</h2>
+
+	<form action="" method="post" enctype="multipart/form-data">
+		{% render_form message_form %}
+		{% csrf_token %}
+
+		<div class="submit">
+			<input type="submit" id="id_submit" value="Send" />
+		</div>
+	</form>
+</div>
+{% endblock %}
+
+{% block right %}
+<div class="module">
+	<h2>Log</h2>
+	<table id="log" class="sortable">
+		<thead>
+			<tr>
+				<th class="phone"><a href="">Phone Number</a></th>
+				<th class="text"><a href="">Message Text</a></th>
+			</tr>
+		</thead>
+		<tbody>{% if message_log %}{% for msg in message_log %}
+			<tr class="{{ msg.direction }}">
+				<td>
+					{{ msg.identity }}{% ifequal msg.direction "in" %}
+					<span title="Incoming (You sent this message to RapidSMS)">&raquo;</span>{% endifequal %}{% ifequal msg.direction "out" %}
+					<span title="Outgoing (You received this message from RapidSMS)">&laquo;</span>{% endifequal %}
+				</td>
+				<td class="text">{{ msg.text }}</td>
+			</tr>{% endfor %}{% else %}{% if router_available %}
+			<tr class="no-data look-left">
+				<td colspan="2">
+					<p>
+						You haven't sent or received any test messages yet.<br />
+						Use the form on the left to get started.
+					</p>
+				</td>
+			</tr>{% else %}
+			<tr class="no-data error">
+				<td colspan="2">
+					<p>
+						The RapidSMS router could not be reached.<br />
+						Please check that it is running.
+					</p>
+				</td>
+			</tr>{% endif %}{% endif %}
+		</tbody>
+		<tfoot>
+			<tr>
+				<td colspan="2">
+					<span>Paginator!</span>
+				</td>
+			</tr>
+		</tfoot>
+	</table>
+</div>
+{% endblock %}

@@ -1,0 +1,23 @@
+=============================
+RapidSMS 0.11.0 release notes
+=============================
+
+Welcome to RapidSMS 0.11.0! These release notes cover the new features in the
+yet-to-be-released 0.11.0.
+
+
+What's New
+==========
+
+ * Simplified testing with introduction of ``RapidTest`` class. See :ref:`rapidtest`. This includes:
+    * Add ``RapidTest`` and ``RapidTransactionTest`` base classes
+    * Modify ``get_router()`` to return an instantiated object rather than a class
+    * Update ``TestRouterMixin`` to patch ``RAPIDSMS_ROUTER`` directly with instantiated ``TestRouter``
+    * Remove global variables/state from ``TestRouter``
+    * Clean up documentation to focus more on ``RapidTest`` and ``RapidTransactionTest`` classes
+    * Remove ``MockBackendRouter`` test class
+    * Update ``TestScript`` to use ``RapidTest``
+ * Moved official RapidSMS version to ``rapidsms.__version__``. Reference it directly from docs and setup.py.
+ * Added coverage reports to core test suite. See :doc:`../internals/contributing/testing`.
+ * Moved ``rapidsms`` module to root level of repository.
+ * Added ``docs`` environment to tox setup.

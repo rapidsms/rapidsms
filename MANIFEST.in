@@ -1,5 +1,21 @@
-include LICENSE
 include README.rst
-recursive-include lib *
-recursive-exclude lib/rapidsms/contrib .git*
-recursive-exclude lib/rapidsms/contrib/.git *
+include AUTHORS
+include LICENSE
+include MANIFESET.in
+recursive-include bin *
+recursive-include tests *
+recursive-include rapidsms/static *
+recursive-include rapidsms/templates *
+recursive-include rapidsms/contrib/httptester/static *
+recursive-include rapidsms/contrib/httptester/templates *
+recursive-include rapidsms/contrib/locations/static *
+recursive-include rapidsms/contrib/locations/templates *
+recursive-include rapidsms/contrib/messagelog/static *
+recursive-include rapidsms/contrib/messagelog/templates *
+recursive-include rapidsms/contrib/messaging/static *
+recursive-include rapidsms/contrib/messaging/templates *
+recursive-include rapidsms/contrib/registration/static *
+recursive-include rapidsms/contrib/registration/templates *
+recursive-include rapidsms/contrib/scheduler/static *
+recursive-include rapidsms/contrib/scheduler/templates *
+recursive-exclude * *.py[co]
