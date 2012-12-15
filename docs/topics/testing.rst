@@ -85,6 +85,8 @@ General Testing
 RapidSMS provides a suite of test harness tools. Below you'll find a collection
 of ``TestCase`` extensions to make testing your RapidSMS applications easier.
 
+.. _rapidtest:
+
 RapidTest
 ~~~~~~~~~
 
