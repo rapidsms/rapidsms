@@ -13,7 +13,7 @@ The easiest way to run the unit tests in a new install is to run the following
 from the project root::
 
     python setup.py develop
-    pip install -r tests/requirements/base.txt
+    pip install -r tests/requirements/dev.txt
     python run_tests.py --settings=tests.default
 
 The settings found in the /tests/default.py module are intended as the default
