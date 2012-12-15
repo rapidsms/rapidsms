@@ -17,5 +17,7 @@ What's New
     * Clean up documentation to focus more on ``RapidTest`` and ``RapidTransactionTest`` classes
     * Remove ``MockBackendRouter`` test class
     * Update ``TestScript`` to use ``RapidTest``
- * Store RapidSMS version in ``rapidsms.__version__`` and reference it directly from docs and setup.py.
- * Add coverage reports to core test suite. See :doc:`../internals/contributing/testing`.
+ * Moved official RapidSMS version to ``rapidsms.__version__``. Reference it directly from docs and setup.py.
+ * Added coverage reports to core test suite. See :doc:`../internals/contributing/testing`.
+ * Moved ``rapidsms`` module to root level of repository.
+ * Added ``docs`` environment to tox setup.
