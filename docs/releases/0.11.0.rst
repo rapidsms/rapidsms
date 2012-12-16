@@ -21,3 +21,6 @@ What's New
  * Added coverage reports to core test suite. See :doc:`../internals/contributing/testing`.
  * Moved ``rapidsms`` module to root level of repository.
  * Added ``docs`` environment to tox setup.
+ * Documented django-celery 3.0+ dependency.
+ * Removed ``rapidsms.skeleton`` package and ``startproject`` command override. See :doc:`../intro/install/project-template` to use the new project template.
+ * Removed ``runrouter`` management command.
