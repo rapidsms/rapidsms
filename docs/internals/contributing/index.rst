@@ -83,6 +83,59 @@ Coding standards and best practices
     #!/usr/bin/env python
     # vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
 
+Using virtualenv
+****************
+
+We highly recommend using `virtualenv`_ and `virtualenvwrapper`_ to work on
+RapidSMS core. These tools provide isolated Python environments, which are more
+practical than installing packages system wide. They also allow installing
+packages without administrator privileges. This section will outline the steps
+to setup RapidSMS core so that you can edit it while working on a RapidSMS
+project.
+
+1. **Install virtualenv and virtualenvwrapper.** Use pip to install the latest
+   version (and upgrade if you have an older copy):
+
+.. code-block:: bash
+
+    sudo pip install --upgrade virtualenv
+    sudo pip install --upgrade virtualenvwrapper
+
+Then follow the `virtualenvwrapper install docs`_ to setup your shell properly.
+
+2. **Create a new virtual environment for RapidSMS.** Now we'll create a new
+   virtual environment to isolate our development:
+
+.. code-block:: bash
+
+    mkvirtualenv --distribute rapidsms
+
+3. **Install RapidSMS in development mode.** This install is done in such a
+   way that changes to the RapidSMS source are immediately available in your
+   project, without needing to run a build or install step after each change.
+   To do this, navigate to the RapidSMS clone on your file system and use
+   distribute's `develop`_ command:
+
+.. code-block:: bash
+
+    cd <your-rapidsms-clone>
+    python setup.py develop
+
+4. **Setup your project.** Now we can use our new virtual environment with a
+   RapidSMS project to test changes and modifications. You can use an existing
+   project or create a a new project (e.g. using the :doc:`../..
+   /intro/install/project-template`).
+
+5. **Remember to activate your virtualenv.** If you restart or need to return
+   to your virtualenv at any point, you can easily reactivate it:
+
+.. code-block:: bash
+
+    workon rapidsms
+
+Now any changes made to your local RapidSMS clone will be reflected immediately
+while editing your project.
+
 .. _writing-documentation:
 
 Writing documentation
@@ -153,3 +206,7 @@ __ http://docutils.sourceforge.net/
 .. _Bulk Messaging API: https://github.com/rapidsms/rapidsms/wiki/Bulk-Messaging-API
 .. _Scheduling: https://github.com/rapidsms/rapidsms/wiki/Scheduling
 .. _wiki page: https://github.com/rapidsms/rapidsms/wiki/_pages
+.. _virtualenv: http://rapidsms.readthedocs.org/
+.. _virtualenvwrapper: http://virtualenvwrapper.readthedocs.org/en/latest/
+.. _virtualenvwrapper install docs: http://virtualenvwrapper.readthedocs.org/en/latest/install.html
+.. _develop: http://packages.python.org/distribute/setuptools.html#develop-deploy-the-project-source-in-development-mode
