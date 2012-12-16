@@ -51,9 +51,8 @@ Sending Messages
     :param text: text message
     :param connection: a single or list of RapidSMS connection objects
 
-It's just as easy to send a message using RapidSMS. Similar to ``recieve``,
-backends will primarliy use ``send``, but you can send a message from anywhere
-within your application.
+It's just as easy to send a message using RapidSMS. You can send a message from
+anywhere within your application.
 
 Here's an example using ``send``::
 
