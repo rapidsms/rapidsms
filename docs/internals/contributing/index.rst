@@ -123,8 +123,8 @@ Then follow the `virtualenvwrapper install docs`_ to setup your shell properly.
 
 4. **Setup your project.** Now we can use our new virtual environment with a
    RapidSMS project to test changes and modifications. You can use an existing
-   project or create a a new project (e.g. using the :doc:`../..
-   /intro/install/project-template`).
+   project or create a a new project (e.g. using the
+   :doc:`../../intro/install/project-template`).
 
 5. **Remember to activate your virtualenv.** If you restart or need to return
    to your virtualenv at any point, you can easily reactivate it:
