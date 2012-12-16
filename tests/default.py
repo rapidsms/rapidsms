@@ -54,7 +54,7 @@ PASSWORD_HASHERS = (
     'django.contrib.auth.hashers.MD5PasswordHasher',
 )
 
-ROOT_URLCONF = "rapidsms.skeleton.project.urls"
+ROOT_URLCONF = "tests.urls"
 
 RAPIDSMS_TABS = [
     ("rapidsms.contrib.messagelog.views.message_log",       "Message Log"),
