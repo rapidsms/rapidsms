@@ -18,7 +18,7 @@ Installation
 
 .. note::
 
-    :router:`CeleryRouter` depends on `django-celery`_. Please follow the
+    :router:`CeleryRouter` depends on `django-celery`_ 3.0+. Please follow the
     django-celery `setup instructions`_ before proceeding.
 
 Add ``rapidsms.router.celery`` to ``INSTALLED_APPS``:

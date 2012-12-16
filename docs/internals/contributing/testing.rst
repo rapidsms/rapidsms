@@ -9,6 +9,12 @@ automated to run in several environments and can include coverage reports.
 Quickstart
 ----------
 
+.. note::
+
+    The RapidSMS core test suite includes some tests that depend on
+    `django-celery`_ 3.0+. If you install the requirements file listed below,
+    all tests should pass properly.
+
 The easiest way to run the unit tests in a new install is to run the following
 from the project root::
 
@@ -63,3 +69,5 @@ tests in one step, but without the option of a coverage report::
 
     export DJANGO_SETTINGS_MODULE=tests.default
     python setup.py test
+
+.. _django-celery: http://pypi.python.org/pypi/django-celery
