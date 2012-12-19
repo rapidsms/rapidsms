@@ -13,7 +13,6 @@ class LoggerMixin():
     tweaks.
     """
 
-
     def _logger_name(self):
         """
         Returns the name of the log which will receive messages emitted
@@ -22,7 +21,6 @@ class LoggerMixin():
         hierarchy clear.
         """
         return type(self).__name__.lower()
-
 
     @property
     def _logger(self):
@@ -37,39 +35,32 @@ class LoggerMixin():
 
         return logging.getLogger(name)
 
-
     def log(self, *args, **kwargs):
         return self._logger.log(*args, **kwargs)
-
 
     def debug(self, *args, **kwargs):
         """Logs a 'msg % args' with severity DEBUG."""
         return self.log(logging.DEBUG, *args, **kwargs)
 
-
     def info(self, *args, **kwargs):
         """Logs a 'msg % args' with severity INFO."""
         return self.log(logging.INFO, *args, **kwargs)
-
 
     def warning(self, *args, **kwargs):
         """Logs a 'msg % args' with severity WARNING."""
         return self.log(logging.WARNING, *args, **kwargs)
 
-    warn  = warning
-
+    warn = warning
 
     def error(self, *args, **kwargs):
         """Logs a 'msg % args' with severity ERROR."""
         return self.log(logging.ERROR, *args, **kwargs)
-
 
     def critical(self, *args, **kwargs):
         """Logs a 'msg % args' with severity CRITICAL."""
         return self.log(logging.CRITICAL, *args, **kwargs)
 
     fatal = critical
-
 
     def exception(self, *args, **kwargs):
         """
