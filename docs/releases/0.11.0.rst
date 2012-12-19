@@ -13,6 +13,7 @@ Welcome to RapidSMS 0.11.0! These release notes cover the new features 0.11.0.
 What's New
 ==========
 
+ * Use ``load url from future`` in templates to support Django 1.3-1.5. Thanks `@miclovich <https://github.com/miclovich>`_!
  * Simplified testing with introduction of ``RapidTest`` class. See :ref:`rapidtest`. This includes:
     * Add ``RapidTest`` and ``RapidTransactionTest`` base classes
     * Modify ``get_router()`` to return an instantiated object rather than a class
