@@ -1,4 +1,5 @@
 {% extends "layout-split-2.html" %}
+{% load url from future %}
 {% block title %}Goodbye{% endblock %}
 {% block content %}
 
@@ -6,6 +7,6 @@
 
 <p>Please come again.</p>
 
-<a href="{% url rapidsms-login %}">Log in again</a>
+<a href="{% url 'rapidsms-login' %}">Log in again</a>
 
 {% endblock %}
