@@ -36,11 +36,10 @@ class IncomingMessage(MessageBase):
         # can only send messages in response to the incoming http
         # request; so they have to wait until processing is done.
         self.processed = False
-        
-        # a message can be marked "handled" by any app, which will
-        # short-circuit the default phase in the router.  
-        self._handled = False
 
+        # a message can be marked "handled" by any app, which will
+        # short-circuit the default phase in the router.
+        self._handled = False
 
     @property
     def raw_text(self):
@@ -50,24 +49,22 @@ class IncomingMessage(MessageBase):
 
         return self._raw_text
 
-
     @property
     def date(self):
         return self.received_at
 
-    
     def __get_handled(self):
         """
         Whether the message has been handled or responded to.
-        """  
+        """
         # The internal flag is checked first, but if not set
         # then assume anyone who responded wanted it handled
         return self._handled or len(self.responses) > 0
 
-    def __set_handled(self,val):
+    def __set_handled(self, val):
         self._handled = val
-        
-    handled = property(__get_handled,__set_handled)
+
+    handled = property(__get_handled, __set_handled)
 
     def flush_responses(self):
         """
@@ -78,7 +75,6 @@ class IncomingMessage(MessageBase):
         while self.responses:
             self.responses.pop(0).send()
 
-
     def respond(self, template=None, cls=OutgoingMessage, **kwargs):
         """
         Instantiates a new OutgoingMessage object bound to the same connection
@@ -86,19 +82,18 @@ class IncomingMessage(MessageBase):
         the flush method is called.
 
         Optionally, the class (*cls*) of the outgoing message can be given, to
-        give a hint about the contents of the message, which can be introspected
-        by other apps during the outgoing phase(s).
+        give a hint about the contents of the message, which can be
+        introspected by other apps during the outgoing phase(s).
 
         Any additional keyword arguments given are passed along to the outgoing
-        message class initialize. See OutgoingMessage.__init__ for more on that.
-        You really should. It's rather exciting.
+        message class initialize. See OutgoingMessage.__init__ for more on
+        that.  You really should. It's rather exciting.
         """
 
         msg = cls(connection=self.connection, template=template,
                   in_reply_to=self, **kwargs)
         self.responses.append(msg)
         return msg
-
 
     def error(self, text, **kwargs):
         """
