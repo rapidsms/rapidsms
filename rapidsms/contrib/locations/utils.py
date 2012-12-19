@@ -15,7 +15,7 @@ def get_model(name):
         if type._meta.module_name == name:
             return type
 
-    raise StandardError("There is no Location subclass named '%s'"  % name)
+    raise StandardError("There is no Location subclass named '%s'" % name)
 
 
 def form_for_model(model):

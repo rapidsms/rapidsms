@@ -10,7 +10,7 @@ from django import forms
 # form. this is a little hack to shrink the field.
 class SmallFileField(forms.FileField):
     def widget_attrs(self, widget):
-        return { "size": 10 }
+        return {"size": 10}
 
 
 class MessageForm(forms.Form):
@@ -25,7 +25,7 @@ class MessageForm(forms.Form):
         required=False,
         widget=forms.widgets.Textarea({
             "cols": 30,
-            "rows": 4 }))
+            "rows": 4}))
 
     bulk = SmallFileField(
         label="Multiple Messages",

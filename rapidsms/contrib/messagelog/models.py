@@ -2,8 +2,7 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 
-from django.db import models, connection
-from django.db.backends.util import typecast_timestamp
+from django.db import models
 from django.core.exceptions import ValidationError
 from rapidsms.models import Contact, Connection
 
@@ -14,11 +13,11 @@ DIRECTION_CHOICES = (
 
 
 class Message(models.Model):
-    contact    = models.ForeignKey(Contact, null=True)
+    contact = models.ForeignKey(Contact, null=True)
     connection = models.ForeignKey(Connection, null=True)
-    direction  = models.CharField(max_length=1, choices=DIRECTION_CHOICES)
-    date       = models.DateTimeField()
-    text       = models.TextField()
+    direction = models.CharField(max_length=1, choices=DIRECTION_CHOICES)
+    date = models.DateTimeField()
+    text = models.TextField()
 
     def save(self, *args, **kwargs):
         """
@@ -33,10 +32,10 @@ class Message(models.Model):
                 "not both) must be provided to save the object")
 
         elif (self.connection and self.contact and \
-              self.contact!= self.connection.contact):
+              self.contact != self.connection.contact):
 
             raise ValidationError(
-                "The connection and contact you tried to save "  
+                "The connection and contact you tried to save "
                 "did not match! You need to pick one or the other.")
 
         elif self.connection is not None and \
@@ -44,9 +43,9 @@ class Message(models.Model):
             # set the contact here as well, even if they didn't
             # do it explicitly.  If the contact's number changes
             # we still might want to know who it originally came
-            # in from.  
+            # in from.
             self.contact = self.connection.contact
-        
+
         # all is well; save the object as usual
         models.Model.save(self, *args, **kwargs)
 
@@ -58,8 +57,10 @@ class Message(models.Model):
     def __unicode__(self):
 
         # crop the text (to avoid exploding the admin)
-        if len(self.text) < 60: str = self.text
-        else: str = "%s..." % (self.text[0:57])
+        if len(self.text) < 60:
+            str = self.text
+        else:
+            str = "%s..." % (self.text[0:57])
 
         to_from = (self.direction == "I") and "to" or "from"
         return "%s (%s %s)" % (str, to_from, self.who)
