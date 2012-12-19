@@ -1,4 +1,5 @@
 {% extends "layout-split-2.html" %}
+{% load url from future %}
 {% load forms_tags %}
 {% block title %}Login{% endblock %}
 {% block content %}
@@ -15,7 +16,7 @@
 <h1>Please log in to RapidSMS</h1>
 
 
-<form method="post" action="{% url rapidsms-login %}">
+<form method="post" action="{% url 'rapidsms-login' %}">
 <table>
 <tr>
     <td>{{ form.username.label_tag }}</td>
