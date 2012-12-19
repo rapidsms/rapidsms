@@ -80,7 +80,7 @@ class TestScriptMixin(TestRouterMixin):
                           "%s, but message was sent to %s.\n"
                           "\nMessage: %s\nReceived "
                           "text: %s\nExpected text: %s\n" % (num, msg.peer,
-                                             last_msg, msg.text, txt))
+                          last_msg, msg.text, txt))
 
         self.assertEquals(msg.text, txt, "\nMessage: %s\nReceived "
                           "text: %s\nExpected text: %s\n" %

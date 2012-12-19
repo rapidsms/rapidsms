@@ -18,7 +18,8 @@ def test_login():
 
     # check that visitors can log in successfully.
     u = User.objects.create_user("testuser", "user@example.com", "testpass")
-    response = c.post(login_url, {'username': "testuser", 'password': "testpass"})
+    response = c.post(login_url,
+                      {'username': "testuser", 'password': "testpass"})
     assert_equals(response.status_code, 302)
 
     # clean up.

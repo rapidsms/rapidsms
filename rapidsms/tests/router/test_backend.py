@@ -26,15 +26,15 @@ def test_router_downcases_backend_configs():
     """
     router = BaseRouter()
     test_backend = "rapidsms.backends.base"
-    test_conf = { "a": 1, "B": 2, "Cc": 3 }
+    test_conf = {"a": 1, "B": 2, "Cc": 3}
 
     backend = router.add_backend("mockbackend", test_backend, test_conf)
 
     assert_equals(len(backend._config), 3)
-    assert_equals("a"  in backend._config, True)
-    assert_equals("b"  in backend._config, True)
+    assert_equals("a" in backend._config, True)
+    assert_equals("b" in backend._config, True)
     assert_equals("cc" in backend._config, True)
-    assert_equals("B"  in backend._config, False)
+    assert_equals("B" in backend._config, False)
     assert_equals("Cc" in backend._config, False)
 
 
