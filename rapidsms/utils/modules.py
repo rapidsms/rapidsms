@@ -4,7 +4,6 @@
 
 import os
 import sys
-import traceback
 
 
 def try_import(module_name):
@@ -149,7 +148,7 @@ def get_class(module, superclass=None):
         raise(AttributeError("Module %s contains multiple %s (%s)." %
             (module.__name__, desc, names)))
 
-    else: # len < 1
+    else:  # len < 1
         raise(AttributeError("Module %s contains no %s." %
             (module.__name__, desc)))
 
