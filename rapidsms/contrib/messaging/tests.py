@@ -1,13 +1,12 @@
-from django.test import TestCase
 from django.core.urlresolvers import reverse
 
 from nose.tools import nottest
 
-from rapidsms.tests.harness import MockBackendRouter
+from rapidsms.tests.harness import RapidTest
 from rapidsms.contrib.messaging.forms import MessageForm
 
 
-class MessagingTest(MockBackendRouter, TestCase):
+class MessagingTest(RapidTest):
     """
     Test rapidsms.contrib.messaging form and views
     """
@@ -35,7 +34,7 @@ class MessagingTest(MockBackendRouter, TestCase):
                 'recipients': [self.contact.id, connectionless_contact.pk]}
         form = MessageForm(data)
         self.assertTrue('recipients' in form.errors)
-        self.assertEqual(len(self.outbox), 0)
+        self.assertEqual(len(self.outbound), 0)
 
     def test_valid_send_data(self):
         """
@@ -47,4 +46,4 @@ class MessagingTest(MockBackendRouter, TestCase):
         self.assertTrue(form.is_valid())
         recipients = form.send()
         self.assertTrue(self.contact in recipients)
-        self.assertEqual(self.outbox[0].text, data['text'])
+        self.assertEqual(self.outbound[0].text, data['text'])

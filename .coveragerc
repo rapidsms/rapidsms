@@ -1,0 +1,3 @@
+[run]
+source = rapidsms
+omit = */tests*,*/migrations/*

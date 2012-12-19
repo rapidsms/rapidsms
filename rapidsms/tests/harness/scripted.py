@@ -4,18 +4,16 @@
 import re
 from datetime import datetime
 
-from rapidsms.router.test import BlockingRouter
-from rapidsms.tests.harness import MockBackendRouter
-from rapidsms.models import Backend, Contact, Connection
-from rapidsms.messages.incoming import IncomingMessage
+from rapidsms.router import receive
+from rapidsms.tests.harness import TestRouterMixin
 
 
-class TestScriptMixin(MockBackendRouter):
+class TestScriptMixin(TestRouterMixin):
     """
     The scripted.TestScript class subclasses unittest.TestCase
     and allows you to define unit tests for your RapidSMS apps
     in the form of a 'conversational' script:
-    
+
         from myapp.app import App as MyApp
         from rapidsms.tests.scripted import TestScript
 
@@ -35,29 +33,18 @@ class TestScriptMixin(MockBackendRouter):
     unittest.TestCase subclass (so you could, for example, call
     unittest.main()).
     """
-    apps = None
-
-    def setUp(self):
-        kwargs = {}
-        if self.apps:
-            kwargs['apps'] = self.apps
-        self.backend = self.create_backend({'name': 'mockbackend'})
-        self.router = BlockingRouter(**kwargs)
-        self.router.start()
-
-    def tearDown(self):
-        self.router.stop()
 
     def assertInteraction(self, script):
         self.runParsedScript(self.parseScript(script))
 
     @classmethod
     def parseScript(cls, script):
-        cmds  = []
+        cmds = []
         for line in map(lambda(x): x.strip(), script.split("\n")):
-            if not line or line.startswith("#"): continue
+            if not line or line.startswith("#"):
+                continue
             tokens = re.split(r'([<>])', line, 1)
-            num, dir, txt = map(lambda (x):x.strip(), tokens)
+            num, dir, txt = map(lambda (x): x.strip(), tokens)
             # allow users to optionally put dates in the number
             # 19232922@200804150730
             if "@" in num:
@@ -71,14 +58,12 @@ class TestScriptMixin(MockBackendRouter):
     def sendMessage(self, num, txt, date=None):
         if date is None:
             date = datetime.now()
-        connection, _ = Connection.objects.get_or_create(backend=self.backend,
-                                                         identity=num)
-        msg = IncomingMessage(connection, txt, date)
-        self.router.receive_incoming(msg)
+        connection = self.lookup_connections([num])[0]
+        receive(txt, connection)
 
     def receiveMessage(self):
         try:
-            return self.outbox.pop(0)
+            return self.sent_messages.pop(0)
         except IndexError:
             return None
 
@@ -96,10 +81,10 @@ class TestScriptMixin(MockBackendRouter):
                           "\nMessage: %s\nReceived "
                           "text: %s\nExpected text: %s\n" % (num, msg.peer,
                                              last_msg, msg.text, txt))
-                                             
+
         self.assertEquals(msg.text, txt, "\nMessage: %s\nReceived "
                           "text: %s\nExpected text: %s\n" %
-                          (last_msg, msg.text,txt))
+                          (last_msg, msg.text, txt))
 
     def _checkAgainstMessages(self, num, txt, last_msg, msgs):
         self.assertTrue(len(msgs) != 0, "Message was ignored.\n"
@@ -111,7 +96,8 @@ class TestScriptMixin(MockBackendRouter):
                 return i
             except AssertionError:
                 # only raise this up if we've exhausted all our candidates
-                if i == len(msgs) - 1: raise 
+                if i == len(msgs) - 1:
+                    raise
 
     def runParsedScript(self, cmds):
         last_msg = ''
@@ -129,5 +115,5 @@ class TestScriptMixin(MockBackendRouter):
             last_msg = txt
 
     def runScript(self, script):
-        self.clear() # make sure the outbox is empty
+        self.clear_sent_messages()  # make sure the outbox is empty
         self.runParsedScript(self.parseScript(script))

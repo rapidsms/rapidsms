@@ -82,81 +82,91 @@ Testing Methods
 General Testing
 ***************
 
-RapidSMS provides a suite of test harness tools, but the most flexible and
-natural tool is ``MockBackendRouter``. ``MockBackendRouter`` extends from
-``CustomRouter``, which allows you to specify the router and backends to use
-for each test. ``MockBackendRouter`` takes this a step further to setup a test
-backend that can be examined during the testing process.
+RapidSMS provides a suite of test harness tools. Below you'll find a collection
+of ``TestCase`` extensions to make testing your RapidSMS applications easier.
 
-.. class:: CustomRouter
+.. _rapidtest:
 
-    .. attribute:: router_class
+RapidTest
+~~~~~~~~~
 
-        String to override :setting:`RAPIDSMS_ROUTER` during testing. Defaults to ``'rapidsms.router.blocking.BlockingRouter'``.
+The ``RapidTest`` class provides a simple test environment to analyze sent and
+received messages. You can inspect messages processed by the router and, if
+needed, see if messages were delivered to a special backend, ``mockbackend``.
+Let's take a look at a simple example::
 
-    .. attribute:: backends
+    from rapidsms.tests.harness import RapidTest
 
-        Dictionary of backends to use during testing.
+    class QuizMeStackTest(RapidTest):
 
-.. class:: MockBackendRouter
+        def test_no_questions(self):
+            """Outbox should contain message explaining no questions exist"""
+            self.receive('q', self.lookup_connections('1112223333')[0])
+            self.assertEqual(self.outbound[0].text, 'No questions exist.')
 
-    .. attribute:: backends
+In this example, we want to make sure that texting ``q`` into our application
+will return the proper message if no questions exist in our database. We use
+``receive`` to communicate to the router and ``lookup_connections`` to create a
+``connection`` object to bundle with the message. Our app will respond with a
+special message, ``No questions exist``, if the database isn't populated, so we
+inspect the ``outbound`` property to see if it contains the proper message
+text. That's it! With just a few lines we were able to send a message through
+the entire routing stack and verify the functionality of our application.
 
-        Defaults to ``{'mockbackend': {'ENGINE': backend.MockBackend}}``.
+.. class:: RapidTest
 
-    .. attribute:: outbox
+    .. attribute:: inbound
 
-        The list of outgoing messages sent through ``mockbackend``.
+        The list of message objects received by the router.
 
-    .. method:: clear()
+    .. attribute:: outbound
+
+        The list of message objects sent by the router.
+
+    .. attribute:: sent_messages
+
+        The list of message objects sent to ``mockbackend``.
+
+    .. attribute:: disable_phases
+
+        If enabled, messages will not be processed through the router phases.
+        This is useful if you're not interested in testing application logic.
+        For example, backends may use this flag to ensure messages are sent to
+        the router, but don't want the message to be processed.
+
+    .. attribute:: apps
+
+        A list of app classes to load, rather than ``INSTALLED_APPS``, when the
+        router is initialized.
+
+    .. method:: clear_sent_messages()
 
         Manually empty the outbox of ``mockbackend``.
 
-    .. method:: receive(text, backend_name='mockbackend', identity=None, connection=None, fields=None)
+    .. method:: receive(text, connections)
 
-        A wrapper around the ``receive`` API that defaults to using ``mockbackend``. See :ref:`receiving-messages`.
+        A wrapper around the ``receive`` API. See :ref:`receiving-messages`.
 
-    .. method:: send(text, backend_name='mockbackend', identity=None, connection=None)
+    .. method:: send(text, connections, fields=None)
 
-        A wrapper around the ``send`` API that defaults to using ``mockbackend``. See :ref:`sending-messages`.
+        A wrapper around the ``send`` API. See :ref:`sending-messages`.
 
-Examples
-~~~~~~~~
+    .. method:: lookup_connections(backend='mockbackend', identities)
 
-Outbox Testing
-^^^^^^^^^^^^^^
+        A wrapper around the ``lookup_connections`` API. See :ref:`connection_lookup`.
 
-``MockBackendRouter`` provides full access to analyze sent messages. For
-example, if you want to make sure the proper response was sent after receiving
-a message, you can use the ``outbox`` property::
-
-    from django.test import TestCase
-    from rapidsms.tests.harness.base import MockBackendRouter
-
-    class QuizMeGeneralTest(MockBackendRouter, TestCase):
-
-        def test_no_questions(self):
-            """Outbox should contain a message explaining no questions exist"""
-
-            self.receive('q', identity='1112223333')
-            self.assertEqual(self.outbox[0].text, 'No questions exist.')
-
-This example uses ``self.receive`` to pass a new message to the router. The
-test then examines ``self.outbox`` to make sure the proper message was sent in
-response.
 
 Database Interaction
 ^^^^^^^^^^^^^^^^^^^^
 
-``MockBackendRouter`` provides flexible means to check application state,
-including the database. Here's an example of a test that examines the database
-after receiving a message::
+``RapidTeset`` provides flexible means to check application state, including
+the database. Here's an example of a test that examines the database after
+receiving a message::
 
-    from django.test import TestCase
-    from rapidsms.tests.harness.base import MockBackendRouter
+    from rapidsms.tests.harness import RapidTest
     from quizme.models import Question, Answer
 
-    class QuizMeGeneralTest(MockBackendRouter, TestCase):
+    class QuizMeGeneralTest(RapidTest):
 
         def test_question_answer(self):
             """Outbox should contain question promt and answer should be recorded in database"""
@@ -164,9 +174,9 @@ after receiving a message::
             Question.objects.create(short_name='ocean',
                                     text="What color is the ocean?",
                                     correct_answer='Blue')
-            msg = self.receive('q ocean blue', identity='1112223333')
+            msg = self.receive('q ocean blue', self.lookup_connections('1112223333')[0])
             # user should receive "correct" response
-            self.assertEqual(self.outbox[0].text, 'Correct!')
+            self.assertEqual(self.outbound[0].text, 'Correct!')
             # answer from this interaction should be stored in database
             answer = Answer.objects.all()[0]
             self.assertTrue(answer.correct)
@@ -251,12 +261,11 @@ Example
 To use this functionality in your test suite, you simply need to extend from
 ``TestScript`` to get access to ``runScript``::
 
-    from django.test import TestCase
     from rapidsms.tests.harness.scripted import TestScript
     from quizme.app import QuizMeApp
     from quizme.models import Question
 
-    class QuizMeScriptTest(TestScript, TestCase):
+    class QuizMeScriptTest(TestScript):
         apps = (QuizMeApp,)
 
         def test_correct_script(self):
@@ -281,3 +290,98 @@ This test method is particularly useful when executing high-level integration
 tests across multiple RapidSMS applications. However, you're limited to the
 test script. If you need more fined grained access, like checking the state of
 the database in the middle of a script, you should use :ref:`general-testing`.
+
+
+Test Helpers
+************
+
+Below you'll find a list of mixin classes to help ease unit testing. Most of
+these mixin classes are used by the RapidSMS test classes for convenience, but
+you can also use these test helpers independently if needed.
+
+
+CreateDataMixin
+~~~~~~~~~~~~~~~
+
+The ``CreateDataMixin`` class can be used with standard ``TestCase`` classes to
+make it easier to create common RapidSMS models and objects. For example::
+
+    from django.test import TestCase
+    from rapidsms.tests.harness import CreateDataMixin
+
+    class ExampleTest(CreateDataMixin, TestCase):
+
+        def test_my_app_function(self):
+            contact1 = self.create_contact()
+            contact2 = self.create_contact({'name': 'John Doe'})
+            connection = self.create_connection({'contact': contact1})
+            text = self.random_string()
+            # ...
+
+.. class:: CreateDataMixin
+
+    .. method:: random_string(length=255, extra_chars='')
+
+        Generate a random string of characters.
+
+        :param length: Length of generated string.
+        :param extra_chars: Additional characters to include in generated string.
+
+    .. method:: random_unicode_string(max_length=255)
+
+        Generate a random string of unicode characters.
+
+        :param length: Length of generated string.
+
+    .. method:: create_backend(data={})
+
+        Create and return RapidSMS backend object. A random ``name`` will be created if not specified in ``data`` attribute.
+
+        :param data: Optional dictionary of field name/value pairs to pass to the object's ``create`` method.
+
+    .. method:: create_contact(data={})
+
+        Create and return RapidSMS contact object. A random ``name`` will be created if not specified in ``data`` attribute.
+
+        :param data: Optional dictionary of field name/value pairs to pass to the object's ``create`` method.
+
+    .. method:: create_connection(data={})
+
+        Create and return RapidSMS connection object. A random ``identity`` and ``backend`` will be created if not specified in ``data`` attribute.
+
+        :param data: Optional dictionary of field name/value pairs to pass to the object's ``create`` method.
+
+    .. method:: create_outgoing_message(data={})
+
+        Create and return RapidSMS OutgoingMessage object. A random ``template`` will be created if not specified in ``data`` attribute.
+
+        :param data: Optional dictionary of field name/value pairs to pass to ``OutgoingMessage.__init__``.
+
+CustomRouterMixin
+~~~~~~~~~~~~~~~~~
+
+The ``CustomRouterMixin`` class allows you to override the :setting:`RAPIDSMS_ROUTER` and :setting:`INSTALLED_BACKENDS` settings. For example:
+
+.. code-block:: python
+
+    from django.test import TestCase
+    from rapidsms.tests.harness import CustomRouterMixin
+
+    class ExampleTest(CustomRouterMixin, TestCase)):
+
+        router_class = 'path.to.router'
+        backends = {'my-backend': {'ENGINE': 'path.to.backend'}}
+
+        def test_sample(self):
+            # this test will use specified router and backends
+            pass
+
+.. class:: CustomRouterMixin
+
+    .. attribute:: router_class
+
+        String to override :setting:`RAPIDSMS_ROUTER` during testing. Defaults to ``'rapidsms.router.blocking.BlockingRouter'``.
+
+    .. attribute:: backends
+
+        Dictionary to override :setting:`INSTALLED_BACKENDS` during testing. Defaults to ``{}``.

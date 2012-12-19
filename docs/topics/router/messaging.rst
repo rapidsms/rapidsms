@@ -35,7 +35,7 @@ Here's an example using ``receive``::
 
 This sends a message to the router saying ``echo hello`` was received from a
 ``connection`` object. You can find more examples of ``receive`` in the
-official RapidSMS `backends <https://github.com/rapidsms/rapidsms/tree/master/lib/rapidsms/backends>`_.
+official RapidSMS `backends <https://github.com/rapidsms/rapidsms/tree/master/rapidsms/backends>`_.
 
 .. _sending-messages:
 
@@ -51,9 +51,8 @@ Sending Messages
     :param text: text message
     :param connection: a single or list of RapidSMS connection objects
 
-It's just as easy to send a message using RapidSMS. Similar to ``recieve``,
-backends will primarliy use ``send``, but you can send a message from anywhere
-within your application.
+It's just as easy to send a message using RapidSMS. You can send a message from
+anywhere within your application.
 
 Here's an example using ``send``::
 
@@ -62,7 +61,7 @@ Here's an example using ``send``::
 
 This sends ``echo hello`` to the identity and backend associated with the
 ``connection`` object.  You can find more examples of ``send`` in the official
-RapidSMS `backends <https://github.com/rapidsms/rapidsms/tree/master/lib/rapidsms/backends>`_.
+RapidSMS `backends <https://github.com/rapidsms/rapidsms/tree/master/rapidsms/backends>`_.
 
 .. _connection_lookup:
 
