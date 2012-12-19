@@ -2,11 +2,8 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 
-import os
-from copy import copy
 from django import template
 from django.template.loader import get_template
-from rapidsms.utils.modules import try_import
 from ..conf import settings
 
 register = template.Library()
@@ -32,15 +29,15 @@ class RegionNode(template.Node):
 
         short_module_names = [
             module_name.split(".")[-1]
-            for module_name in settings.INSTALLED_APPS ]
+            for module_name in settings.INSTALLED_APPS]
 
         template_names = [
             "%s/regions/%s.html" % (short_module_name, region_name)
-            for short_module_name in short_module_names ]
+            for short_module_name in short_module_names]
 
         strings = filter(None, [
             self._render_to_string(template_name, context)
-            for template_name in template_names ])
+            for template_name in template_names])
 
         if len(strings) == 0:
             return ""
