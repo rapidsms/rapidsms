@@ -1,4 +1,5 @@
 {% extends "locations/base.html" %}
+{% load url from future %}
 {% load self_link %}
 
 {% block title %}{% if location %}Edit {{ location }}{% else %}Add a Location{% endif %}{% endblock %}
