@@ -122,7 +122,7 @@ Then follow the `virtualenvwrapper install docs`_ to setup your shell properly.
     python setup.py develop
 
 4. **Setup your project.** Now we can use our new virtual environment with a
-   RapidSMS project to test changes and modifications. You can create a a new
+   RapidSMS project to test changes and modifications. You can create a new
    project (e.g. by :ref:`installing-rapidsms-project-template`).
 
 5. **Remember to activate your virtualenv.** If you restart or need to return
