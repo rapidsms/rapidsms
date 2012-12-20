@@ -38,15 +38,16 @@ Submitting code
    start   a discussion around a   feature idea or a bug. Send a message to the
    `rapidsms-dev`_ mailing list to request feedback.
 
-#. If you're working on a large patch, we highly recommend creating a `wiki 
+#. If you're working on a large patch, we highly recommend creating a `wiki
    page`_ under the RapidSMS GitHub account. Use the wiki page to outline the
-   motivation behind the patch and to document decisions made on the 
+   motivation behind the patch and to document decisions made on the
    `rapidsms-dev`_ mailing list. `Router decoupling and HTTP message processing`_, `Bulk Messaging API`_, and `Scheduling`_ are good examples.
 
 #. Fork the repository on GitHub to start making your changes (relative to the
    master branch).
 
-#. Follow the RapidSMS :ref:`coding standards <coding-standards>`.
+#. Follow the RapidSMS :ref:`coding standards <coding-standards>` and run the
+   :ref:`PEP 8 adherence tool <pep-eight-adherence>`.
 
 #. Write a test which shows that the bug was fixed or that the feature works as
    expected.

@@ -35,6 +35,8 @@ To see code coverage while running the tests, you can use the supplied
 
     python run_tests.py --settings=tests.coverage
 
+.. _pep-eight-adherence:
+
 PEP 8 Style Guidelines Adherence
 --------------------------------
 
