@@ -122,9 +122,8 @@ Then follow the `virtualenvwrapper install docs`_ to setup your shell properly.
     python setup.py develop
 
 4. **Setup your project.** Now we can use our new virtual environment with a
-   RapidSMS project to test changes and modifications. You can use an existing
-   project or create a a new project (e.g. using the
-   :doc:`../../intro/install/project-template`).
+   RapidSMS project to test changes and modifications. You can create a new
+   project (e.g. by :ref:`installing-rapidsms-project-template`).
 
 5. **Remember to activate your virtualenv.** If you restart or need to return
    to your virtualenv at any point, you can easily reactivate it:
@@ -158,6 +157,10 @@ development version of RapidSMS from the source code repository
 
 Using Sphinx
 ************
+
+Before building the documentation, you must have a version of RapidSMS
+installed.  See the :ref:`installing-development-version` guide for
+instructions on installing RapidSMS.
 
 We use the Sphinx__ documentation system (based on docutils__). To actually
 build the documentation locally, you'll currently need to install Sphinx::
