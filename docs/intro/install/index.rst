@@ -13,8 +13,8 @@ PyPI_)::
 
 .. _installing-rapidsms-project-template:
 
-Installing RapidSMS project template
-------------------------------------
+Installing the RapidSMS project template
+----------------------------------------
 
 If you're starting a new RapidSMS project, you can use the `RapidSMS project
 template`_. The template is a `custom project template`_ for Django 1.4 and
