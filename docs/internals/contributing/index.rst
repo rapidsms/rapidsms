@@ -158,6 +158,9 @@ development version of RapidSMS from the source code repository
 Using Sphinx
 ************
 
+installed.  See the :ref:`installing-development-version` guide for
+instructions on installing RapidSMS.
+
 We use the Sphinx__ documentation system (based on docutils__). To actually
 build the documentation locally, you'll currently need to install Sphinx::
 
