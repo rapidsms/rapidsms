@@ -6,9 +6,9 @@ env:
   - DJANGO_VERSION=1.3.5
   - DJANGO_VERSION=1.4.3
 install:
-  - pip install -q Django==$DJANGO_VERSION
-  - pip install . --use-mirrors
-  - pip install -r tests/requirements/base.txt
+  - pip install -q --use-mirrors Django==$DJANGO_VERSION pep8
+  - pip install -q . --use-mirrors
+  - pip install -q -r tests/requirements/base.txt
 script: python run_tests.py --settings=tests.default
 after_script:
     - pep8 --count --statistics --exclude=scheduler,locations,ajax ./rapidsms/
