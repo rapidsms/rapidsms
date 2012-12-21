@@ -158,6 +158,7 @@ development version of RapidSMS from the source code repository
 Using Sphinx
 ************
 
+Before building the documentation, you must have a version of RapidSMS
 installed.  See the :ref:`installing-development-version` guide for
 instructions on installing RapidSMS.
 
