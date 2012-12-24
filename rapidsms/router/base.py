@@ -4,6 +4,7 @@
 import warnings
 
 from django.dispatch import Signal
+from django.db.models.query import QuerySet
 
 from ..log.mixin import LoggerMixin
 from ..backends.base import BackendBase
@@ -229,7 +230,6 @@ class BaseRouter(object, LoggerMixin):
     def send_outgoing(self, msg):
         """
         """
-
         self.info("Outgoing (%s): %s" % (msg.connection, msg.text))
 
         for phase in self.outgoing_phases:
@@ -255,8 +255,27 @@ class BaseRouter(object, LoggerMixin):
                     self.warning("Message cancelled")
                     return False
 
+        return self.send_via_backend(msg)
+
+    def send_to_backend(self, msg):
         # send message using specified backend
-        msg.sent = self.backends[msg.connection.backend.name].send(msg)
+        # msg.sent = self.backends[msg.connection.backend.name].send(msg)
+        if isinstance(msg.connections, QuerySet):
+            backend_names = msg.connections.values_list('backend__name')
+            for backend_name in backend_names:
+                msg.connections = msg.connections.filter(backend__name=backend_name)
+                self.backends[backend_name].send(msg)
+        else:
+            backends = {}
+            for connection in msg.connections:
+                if connection.backend.name not in backends:
+                    backends[connection.backend.name] = []
+                backends[connection.backend.name].append(connection)
+            for backend_name, connections in backends.iteritems():
+                msg.connections = connections
+                # maybe a pre-send on backend to do work before queing?
+                self.backends[backend_name].send(msg)
+
         return msg.sent
 
     def incoming(self, msg):

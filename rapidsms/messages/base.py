@@ -3,8 +3,8 @@
 
 
 class MessageBase(object):
-    def __init__(self, connection, text=None):
-        self._connection = connection
+    def __init__(self, connections, text):
+        self._connections = connections
         self.text = text
 
     def __unicode__(self):
@@ -12,11 +12,11 @@ class MessageBase(object):
 
     @property
     def connection(self):
-        return self._connection
+        return self._connections[0]
 
     @property
     def contact(self):
-        return self._connection.contact
+        return self._connections[0].contact
 
     @property
     def peer(self):
@@ -28,4 +28,4 @@ class MessageBase(object):
         like "mobile_number", which is all kinds of wrong.
         """
 
-        return self.connection.identity
+        return self.connections[0].identity

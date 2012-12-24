@@ -30,13 +30,15 @@ def send(text, connections):
         connections = [connections]
     router = get_router()
     router.start()
-    messages = []
-    for connection in connections:
-        message = OutgoingMessage(connection, text)
-        router.send_outgoing(message)
-        messages.append(message)
+    message = OutgoingMessage(connections, text)
+    router.send_outgoing(message)
+    # messages = []
+    # for connection in connections:
+    #     message = OutgoingMessage(connection, text)
+    #     router.send_outgoing(message)
+    #     messages.append(message)
     router.stop()
-    return messages
+    return message
 
 
 def lookup_connections(backend, identities):
