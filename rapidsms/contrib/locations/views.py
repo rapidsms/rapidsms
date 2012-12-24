@@ -6,8 +6,6 @@ from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
-from django.views.decorators.http import require_GET, require_http_methods
-from rapidsms.utils import web_message
 from rapidsms.conf import settings
 from .forms import *
 from .models import *
@@ -26,7 +24,6 @@ def _breadcrumbs(location=None, first_caption="Planet Earth"):
 
     if location is not None:
         for loc in location.path:
-            type = ContentType.objects.get_for_model(loc)
             url = reverse(locations, args=(loc.uid,))
             breadcrumbs.append((loc, url))
 
@@ -111,9 +108,11 @@ def locations(req, location_uid=None):
         if form.is_valid():
             model = form.save()
 
-            if req.POST.get("parent_type", None) and req.POST.get("parent_id", None):
+            if req.POST.get("parent_type", None) and req.POST.get(
+                    "parent_id", None):
                 parent_class = utils.get_model(req.POST["parent_type"])
-                parent = get_object_or_404(parent_class, pk=req.POST["parent_id"])
+                parent = get_object_or_404(parent_class,
+                                            pk=req.POST["parent_id"])
                 model.parent = parent
                 model.save()
 

@@ -35,6 +35,19 @@ To see code coverage while running the tests, you can use the supplied
 
     python run_tests.py --settings=tests.coverage
 
+.. _pep-eight-adherence:
+
+PEP 8 Style Guidelines Adherence
+--------------------------------
+
+RapidSMS adheres to the Python `PEP 8
+<http://www.python.org/dev/peps/pep-0008/>`_ style guidelines for all Python
+source outside of the ``docs/`` directory.  As such, please check your code
+against the PEP 8 specification by using the ``pep8`` linting tool in your
+RapidSMS directory before submitting patches for review::
+
+    pep8 ./
+
 Testing multiple environments
 -----------------------------
 

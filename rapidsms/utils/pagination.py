@@ -5,7 +5,8 @@
 from django.core.paginator import Paginator, EmptyPage, InvalidPage
 
 
-def paginated(req, query_set, per_page=None, default_page=1, prefix="", wrapper=None):
+def paginated(req, query_set, per_page=None, default_page=1, prefix="",
+              wrapper=None):
     if per_page is None:
         from ..conf import settings
         per_page = settings.PAGINATOR_OBJECTS_PER_PAGE
@@ -19,7 +20,7 @@ def paginated(req, query_set, per_page=None, default_page=1, prefix="", wrapper=
     # be overridden. (the template provides no interface for this yet.)
     if (prefix + "per-page") in req.GET:
         try:
-            per_page = int(req.GET[prefix+"per-page"])
+            per_page = int(req.GET[prefix + "per-page"])
 
         # if it was provided, it must be valid
         except ValueError:
@@ -32,15 +33,17 @@ def paginated(req, query_set, per_page=None, default_page=1, prefix="", wrapper=
 
     try:
         if (prefix + "page") in req.GET:
-            page = int(req.GET[prefix+"page"])
+            page = int(req.GET[prefix + "page"])
 
         else:
             # if the default page was negative, count backwards from the
             # last page. this is handy for skipping to the latest page
             # in a stream of information (like a message log), rather
             # than displaying it backwards to suit the paginator.
-            if default_page >= 0: page = default_page
-            else: page = paginator.num_pages + (default_page+1)
+            if default_page >= 0:
+                page = default_page
+            else:
+                page = paginator.num_pages + (default_page + 1)
 
         # try to switch to the *page*. (might raise.)
         objects = paginator.page(page)

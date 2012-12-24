@@ -3,7 +3,7 @@
 
 """
 NOTE FOR PYGSM USERS: Scheduler launches and runs in a separate thread.
-If using it to send scheduled messages with pygsm, make sure pygsm is 
+If using it to send scheduled messages with pygsm, make sure pygsm is
 thread-safe.
 
 To use this app, simply create and save EventSchedule instances.
@@ -15,11 +15,12 @@ What this gives us that other solutions don't seem to (yet) is:
 * platform-independent
 * integration with rapidsms router (doesn't require manually launching
 another cron process)
-* specification of schedules with minute/hour/day/month granularity, 
+* specification of schedules with minute/hour/day/month granularity,
 including python datetime built-in knowledge of short months, etc.
 
 Other django cron solutions out there include:
-http://www.djangosnippets.org/snippets/1348/ - non-persistent, standalone process
+http://www.djangosnippets.org/snippets/1348/
+    - non-persistent, standalone process
 http://code.google.com/p/django-cron/ - run_every x seconds
 various solutions using linux cron + os.setupenviron
 """
@@ -31,41 +32,44 @@ from datetime import datetime, timedelta
 from rapidsms.apps.base import AppBase
 from rapidsms.contrib.scheduler.models import EventSchedule
 
+
 class App (AppBase):
     """ This app provides cron-like functionality for scheduled tasks,
     as defined in the django model EventSchedule
-    
+
     """
     bootstrapped = False
 
-    def start (self):
+    def start(self):
         if not self.bootstrapped:
             # interval to check for scheduled events (in seconds)
             schedule_interval = 60
             # launch scheduling_thread
-            self.schedule_thread = SchedulerThread(self.router, schedule_interval)
+            self.schedule_thread = SchedulerThread(self.router,
+                                                    schedule_interval)
             self.schedule_thread.start()
             self.bootstrapped = True
 
-    def stop (self):
+    def stop(self):
         self.schedule_thread.stop()
 
     def ajax_POST_run_schedule(self, params, form):
         '''
         Triggers a schedule via the ajax app. You can call this method
         via the ajax app by posting to the url:
-           
+
             ajax/messaging/run_schedule
-           
+
 \        '''
         schedule = EventSchedule.objects.get(pk=form["schedule_pk"])
         schedule.run(self.router)
         return True
 
+
 class SchedulerThread (threading.Thread):
     _speedup = None
-    
-    def __init__ (self, router, schedule_interval):
+
+    def __init__(self, router, schedule_interval):
         super(SchedulerThread, self).__init__(\
             target=self.scheduler_loop,\
             args=(schedule_interval,))
@@ -79,17 +83,17 @@ class SchedulerThread (threading.Thread):
 
     def stopped(self):
         return self._stop.isSet()
-    
+
     def _debug_speedup(self, minutes=0, hours=0, days=0):
-        """ This function is purely for the sake of debugging/unit-tests 
+        """ This function is purely for the sake of debugging/unit-tests
         It specifies a time interval in minutes by which the scheduler
         loop jumps ahead. This makes it possible to test long-term intervals
         quickly.
-        
+
         Arguments: speedup - speedup interval in minutes
         """
         self._speedup = timedelta(minutes=minutes, hours=hours, days=days)
-            
+
     def scheduler_loop(self, interval=60):
         now = datetime.now()
         while not self.stopped():
@@ -102,19 +106,20 @@ class SchedulerThread (threading.Thread):
                         schedule.run(self._router)
                 except Exception, e:
                     # Don't prevent exceptions from killing the thread
-                    self._router.error("Problem in scheduler for: %s. %s" % (schedule,
-                                                                             e.message))
-                    
-            if self._speedup is not None: # debugging/testing only!
+                    self._router.error("Problem in scheduler for: %s. %s"
+                        % (schedule, e.message))
+
+            if self._speedup is not None:  # debugging/testing only!
                 now = now + self._speedup
                 time.sleep(1)
-            else: 
+            else:
                 next_run = now + timedelta(seconds=interval)
                 updated_now = datetime.now()
                 while updated_now < next_run:
-                    # we add another second since system time runs at microsecond accuracy
+                    # we add another second since system time runs at
+                    #   microsecond accuracy
                     # whereas python time is only second accuracy
-                    time.sleep((next_run - updated_now + timedelta(seconds=1)).seconds)
+                    time.sleep((next_run - updated_now +
+                                timedelta(seconds=1)).seconds)
                     updated_now = datetime.now()
                 now = next_run
-

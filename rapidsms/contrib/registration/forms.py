@@ -10,7 +10,7 @@ from django import forms
 # form. this is a little hack to shrink the field.
 class SmallFileField(forms.FileField):
     def widget_attrs(self, widget):
-        return { "size": 10 }
+        return {"size": 10}
 
 
 class BulkRegistrationForm(forms.Form):

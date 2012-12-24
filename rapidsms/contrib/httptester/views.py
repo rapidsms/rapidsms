@@ -11,6 +11,7 @@ from django.http import HttpResponseRedirect
 from . import forms
 from . import storage
 
+
 def generate_identity(request, backend_name):
     identity = randint(111111, 999999)
     return HttpResponseRedirect(reverse(message_tester,

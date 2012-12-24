@@ -57,7 +57,8 @@ class OutgoingMessage(MessageBase):
         Raises an exception to help developers upgrade legacy code to use
         the new interface for sending messages.
         """
-        # TODO decide if this API is deprecated and add a deprecation warning if so
+        # TODO decide if this API is deprecated and add a
+        #   deprecation warning if so
         from rapidsms.router import send
         send(self.text, self.connection)
         self.sent = True

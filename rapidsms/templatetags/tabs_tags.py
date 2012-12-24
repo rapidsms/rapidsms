@@ -3,12 +3,9 @@
 
 
 import re
-import types
-from functools import wraps
 from django import template
 from django.conf import settings
-from django.core.urlresolvers import get_resolver, reverse, RegexURLPattern
-from django.utils.importlib import import_module
+from django.core.urlresolvers import reverse
 from django.template import Variable
 
 register = template.Library()
@@ -40,8 +37,8 @@ class Tab(object):
 
     @property
     def caption_slug(self):
-        slug = self.caption.lower().replace(' ', '-') # convert spaces to '-'
-        slug = re.sub(r'\W', '', slug) # remove any remaining non-word chars
+        slug = self.caption.lower().replace(' ', '-')  # convert spaces to '-'
+        slug = re.sub(r'\W', '', slug)  # remove any remaining non-word chars
         return slug
 
 
@@ -53,11 +50,12 @@ class TabsNode(template.Node):
         self.varname = varname
 
     def render(self, context):
-        # try to find a request variable, but don't blow up entirely if we don't find it
+        # try to find a request variable, but don't blow up entirely if we
+        #   don't find it
         # (this no blow up property is mostly used during testing)
         try:
             request = Variable("request").resolve(context)
-        except Exception as e:
+        except Exception:
             return ""
 
         for tab in self.tabs:

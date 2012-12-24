@@ -12,5 +12,7 @@ overriden by the project author in the top-level ``settings.py``.
 .. _djappsettings: http://github.com/adammck/djappsettings
 """
 
-try: from djappsettings import settings
-except: from django.conf import settings
+try:
+    from djappsettings import settings
+except:
+    from django.conf import settings

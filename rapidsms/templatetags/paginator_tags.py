@@ -22,20 +22,18 @@ def paginator(objects):
     page_param = prefix + "page"
 
     def _link(page_number):
-        return _self_link(objects.request,
-            **{ page_param: page_number })
+        return _self_link(objects.request, **{page_param: page_number})
 
     def _page(number):
         return {
             "number": number,
             "link": _link(number),
-            "active": (objects.number == number) }
-
+            "active": (objects.number == number)}
 
     # TODO: gah, extract this junk a private method
-    max_page_links    = settings.PAGINATOR_MAX_PAGE_LINKS
-    last_page_number  = objects.paginator.num_pages + 1
-    last_low_number   = math.floor(max_page_links / 2)
+    max_page_links = settings.PAGINATOR_MAX_PAGE_LINKS
+    last_page_number = objects.paginator.num_pages + 1
+    last_low_number = math.floor(max_page_links / 2)
     first_high_number = last_page_number - math.ceil(max_page_links / 2)
 
     page_links = [
@@ -49,20 +47,20 @@ def paginator(objects):
 
     subcontext = {
         "dom_id":     dom_id,
-        "page_links": page_links }
+        "page_links": page_links}
 
     # if we're viewing the first page, the  << first and < prev links
     # are replaced with spans.
     if objects.number > 1:
         subcontext.update({
             "first_page_link": _link(1),
-            "prev_page_link":  _link(objects.previous_page_number()) })
+            "prev_page_link":  _link(objects.previous_page_number())})
 
     # likewise for the last page.
     if objects.number < objects.paginator.num_pages:
         subcontext.update({
             "next_page_link":  _link(objects.next_page_number()),
-            "last_page_link":  _link(objects.paginator.num_pages) })
+            "last_page_link":  _link(objects.paginator.num_pages)})
 
     return subcontext
 
