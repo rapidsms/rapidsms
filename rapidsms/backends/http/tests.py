@@ -15,13 +15,16 @@ class CustomHttpBackend(views.GenericHttpBackendView):
 
 
 urlpatterns = patterns('',
-    url(r"^backend/http/$",
-        views.GenericHttpBackendView.as_view(backend_name='http-backend'),
-        name='http-backend'),
-    url(r"^backend/http-custom/$",
-        CustomHttpBackend.as_view(),
-        name='custom-http-backend'),
-)
+                       url(r"^backend/http/$",
+                           views.GenericHttpBackendView.as_view(
+                               backend_name='http-backend'),
+                           name='http-backend'
+                           ),
+                       url(r"^backend/http-custom/$",
+                           CustomHttpBackend.as_view(),
+                           name='custom-http-backend'
+                           ),
+                       )
 
 
 class HttpFormTest(TestCase):
