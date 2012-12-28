@@ -25,7 +25,7 @@ def paginated(req, query_set, per_page=None, default_page=1, prefix="",
         # if it was provided, it must be valid
         except ValueError:
             raise ValueError("Invalid per-page parameter: %r" %
-                (req.GET[prefix + "per-page"]))
+                            (req.GET[prefix + "per-page"]))
 
     # create the paginator early, so we can check that the page number
     # is valid, and (maybe) apply *wrapper* to this page's objects.
@@ -52,8 +52,7 @@ def paginated(req, query_set, per_page=None, default_page=1, prefix="",
     # no links to an invalid page, so coercing it to assume "page=xyz"
     # means "page=1" would just mask bugs
     except (ValueError, EmptyPage, InvalidPage):
-        raise ValueError("Invalid Page: %r" %
-            (req.GET[prefix + "page"]))
+        raise ValueError("Invalid Page: %r" % (req.GET[prefix + "page"]))
 
     # if a wrapper function was provided, call it for each object on the
     # page, and replace the list with the result. TODO: make it lazy!
