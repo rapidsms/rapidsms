@@ -2,7 +2,6 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 
-import os
 import datetime
 from subprocess import Popen, PIPE
 from django.conf import settings
@@ -26,9 +25,9 @@ def database(req):
             (settings.DATABASE_NAME)
 
     else:
-        return HttpResponse(
-            "Sorry, %s databases are not supported yet." %\
-                (settings.DATABASE_ENGINE),
+        return http.HttpResponse(
+            "Sorry, %s databases are not "
+            "supported yet." % (settings.DATABASE_ENGINE),
             content_type="text/plain",
             status=500)
 

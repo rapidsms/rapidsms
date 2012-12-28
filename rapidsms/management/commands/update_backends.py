@@ -8,16 +8,17 @@ from ...conf import settings
 
 
 class Command(NoArgsCommand):
-    help = "Creates an instance of the Backend model stub for each running backend."
-
+    help = "Creates an instance of the Backend model stub for each " +\
+        "running backend."
 
     def handle_noargs(self, **options):
         verbosity = int(options.get("verbosity", 1))
 
         # fetch all of the backends (identified by their
         # name) that we already have instances for
-        known_backend_names = list(Backend.objects\
-            .values_list("name", flat=True))
+        known_backend_names = list(
+            Backend.objects.values_list("name", flat=True)
+        )
 
         # find any running backends which currently
         # don't have instances, and fill in the gaps

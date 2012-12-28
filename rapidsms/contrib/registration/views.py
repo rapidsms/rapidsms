@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-import csv
-
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
@@ -14,6 +12,7 @@ from rapidsms.models import Connection
 from rapidsms.models import Backend
 from .tables import ContactTable
 from .forms import BulkRegistrationForm
+
 
 @transaction.commit_on_success
 def registration(req, pk=None):
@@ -44,8 +43,8 @@ def registration(req, pk=None):
                 # TODO deal with errors!
                 backend = Backend.objects.get(name=backend_name)
 
-                connection = Connection(backend=backend, identity=identity,\
-                    contact=contact)
+                connection = Connection(backend=backend, identity=identity,
+                                        contact=contact)
                 connection.save()
 
             return HttpResponseRedirect(

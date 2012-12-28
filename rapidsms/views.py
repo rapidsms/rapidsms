@@ -17,8 +17,8 @@ def dashboard(req):
 
 
 def login(req, template_name="rapidsms/login.html"):
-    return django_login(req, **{"template_name" : template_name})
+    return django_login(req, **{"template_name": template_name})
 
 
 def logout(req, template_name="rapidsms/loggedout.html"):
-    return django_logout(req, **{"template_name" : template_name})
+    return django_logout(req, **{"template_name": template_name})

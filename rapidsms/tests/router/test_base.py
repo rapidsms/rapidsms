@@ -23,20 +23,26 @@ def test_import_class():
 
 
 def test_get_router():
-    with setting(RAPIDSMS_ROUTER='rapidsms.tests.router.test_base.BadClassName'):
-        assert_raises(ImproperlyConfigured, get_router)
-    with setting(RAPIDSMS_ROUTER='rapidsms.tests.router.bad_module.MockRouter'):
-        assert_raises(ImproperlyConfigured, get_router)
-    with setting(RAPIDSMS_ROUTER='rapidsms.tests.router.test_base.MockRouter'):
-        assert_true(isinstance(get_router(), MockRouter))
+    bad_module_router = 'rapidsms.tests.router.bad_module.MockRouter'
+    bad_class_router = 'rapidsms.tests.router.test_base.BadClassName'
+    good_mock_router = 'rapidsms.tests.router.test_base.MockRouter'
+    with setting(RAPIDSMS_ROUTER=bad_module_router):
+            assert_raises(ImproperlyConfigured, get_router)
+    with setting(RAPIDSMS_ROUTER=bad_class_router):
+            assert_raises(ImproperlyConfigured, get_router)
+    with setting(RAPIDSMS_ROUTER=good_mock_router):
+            assert_true(isinstance(get_router(), MockRouter))
 
 
 def test_get_test_router():
-    with setting(TEST_RAPIDSMS_ROUTER='rapidsms.tests.router.test_base.BadClassName'):
+    bad_module_router = 'rapidsms.tests.router.bad_module.MockRouter'
+    bad_class_router = 'rapidsms.tests.router.test_base.BadClassName'
+    good_mock_router = 'rapidsms.tests.router.test_base.MockRouter'
+    with setting(TEST_RAPIDSMS_ROUTER=bad_module_router):
         assert_raises(ImproperlyConfigured, get_test_router)
-    with setting(TEST_RAPIDSMS_ROUTER='rapidsms.tests.router.bad_module.MockRouter'):
+    with setting(TEST_RAPIDSMS_ROUTER=bad_class_router):
         assert_raises(ImproperlyConfigured, get_test_router)
-    with setting(TEST_RAPIDSMS_ROUTER='rapidsms.tests.router.test_base.MockRouter'):
+    with setting(TEST_RAPIDSMS_ROUTER=good_mock_router):
         assert_equals(get_test_router(), MockRouter)
 
 
@@ -59,7 +65,7 @@ def test_router_calls_all_app_phases():
 
         def __init__(self, router):
             phases = self.start_phases + self.incoming_phases +\
-                     self.outgoing_phases + self.stop_phases
+                self.outgoing_phases + self.stop_phases
             for phase in phases:
                 setattr(self, phase, curry(self._append_phase, phase))
             super(MockApp, self).__init__(router)

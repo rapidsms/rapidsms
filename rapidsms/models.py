@@ -2,10 +2,8 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 
-from datetime import datetime
 from django.db import models
 from .utils.modules import try_import, get_classes
-from .errors import NoConnectionError, MessageSendingError
 from .conf import settings
 
 
@@ -30,7 +28,7 @@ def _find_extensions(app_label, model_name):
         app_label, model_name.lower())
     modules = filter(None, [
         try_import("%s.%s" % (app_name, suffix))
-        for app_name in settings.INSTALLED_APPS ])
+        for app_name in settings.INSTALLED_APPS])
 
     for module in modules:
         for cls in get_classes(module, models.Model):
@@ -84,14 +82,16 @@ class App(models.Model):
 
 
 class ContactBase(models.Model):
-    name  = models.CharField(max_length=100, blank=True)
+    name = models.CharField(max_length=100, blank=True)
 
     # the spec: http://www.w3.org/International/articles/language-tags/Overview
     # reference:http://www.iana.org/assignments/language-subtag-registry
-    language = models.CharField(max_length=6, blank=True, help_text=
-        "The language which this contact prefers to communicate in, as "
-        "a W3C language tag. If this field is left blank, RapidSMS will "
-        "default to: " + settings.LANGUAGE_CODE)
+    language = models.CharField(max_length=6, blank=True,
+                                help_text="The language which this contact "
+                                "prefers to communicate in, as a W3C "
+                                "language tag. If this field is left blank, "
+                                "RapidSMS will default to: " +
+                                settings.LANGUAGE_CODE)
 
     class Meta:
         abstract = True
@@ -112,7 +112,7 @@ class ContactBase(models.Model):
         """
         Return the default connection for this person.
         """
-        # TODO: this is defined totally arbitrarily for a future 
+        # TODO: this is defined totally arbitrarily for a future
         # sane implementation
         if self.connection_set.count() > 0:
             return self.connection_set.all()[0]
@@ -124,9 +124,9 @@ class Contact(ContactBase):
 
 
 class ConnectionBase(models.Model):
-    backend  = models.ForeignKey(Backend)
+    backend = models.ForeignKey(Backend)
     identity = models.CharField(max_length=100)
-    contact  = models.ForeignKey(Contact, null=True, blank=True)
+    contact = models.ForeignKey(Contact, null=True, blank=True)
 
     class Meta:
         abstract = True

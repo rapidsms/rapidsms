@@ -61,23 +61,24 @@ def _apps():
     2. Django contrib apps should be excluded, because the "auth" app
        has an unrelated "handlers" module. (If I'd noticed that when I
        created this app, I may have named it differently. Sorry.)
-    
-    3. If any other app defines a "handlers" module, it can be added 
+
+    3. If any other app defines a "handlers" module, it can be added
        to settings.RAPIDSMS_HANDLERS_EXCLUDE_APPS to not be loaded
     """
-    
+
     def _in_exclusions(module_name):
-        settings_exclusions = getattr(settings, "RAPIDSMS_HANDLERS_EXCLUDE_APPS", [])
+        settings_exclusions = getattr(settings,
+                                      "RAPIDSMS_HANDLERS_EXCLUDE_APPS", [])
         return module_name == "rapidsms.contrib.handlers" \
-               or module_name.startswith("django.contrib.") \
-               or module_name in settings_exclusions
+            or module_name.startswith("django.contrib.") \
+            or module_name in settings_exclusions
 
     return [
         module_name
         for module_name in settings.INSTALLED_APPS
         if not _in_exclusions(module_name)]
 
-           
+
 def _handlers(module_name):
     """
     Return a list of handlers (subclasses of app.handlers.HandlerBase)
@@ -98,8 +99,7 @@ def _handlers(module_name):
 
     if not hasattr(handlers_module, "__path__"):
         raise Exception(
-            "Module %s must be a directory." %
-                (handlers_module.__name__))
+            "Module %s must be a directory." % (handlers_module.__name__))
 
     files = find_python_files(
         handlers_module.__path__[0])

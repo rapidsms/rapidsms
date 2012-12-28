@@ -2,7 +2,6 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 
-import re
 from django.db import models
 from django.utils.html import escape
 from django.contrib.contenttypes.models import ContentType
@@ -17,7 +16,7 @@ class Point(models.Model):
     Spatialite to build right now...
     """
 
-    latitude  = models.DecimalField(max_digits=13, decimal_places=10)
+    latitude = models.DecimalField(max_digits=13, decimal_places=10)
     longitude = models.DecimalField(max_digits=13, decimal_places=10)
 
     def __unicode__(self):
@@ -27,18 +26,20 @@ class Point(models.Model):
         return '<%s: %s>' %\
             (type(self).__name__, self)
 
+
 class LocationType(models.Model):
     """
     This model represents the 'type' of Location, as an option for a
     simpler way of having a location heirarchy without having different
-    classes for each location type (as is supported by the generic 
-    relation to parent).  
+    classes for each location type (as is supported by the generic
+    relation to parent).
     """
     name = models.CharField(max_length=100)
     slug = models.SlugField(unique=True, primary_key=True)
 
     def __unicode__(self):
         return self.name
+
 
 class Location(models.Model):
     """
@@ -48,28 +49,26 @@ class Location(models.Model):
     """
 
     __metaclass__ = ExtensibleModelBase
-
     point = models.ForeignKey(Point, null=True, blank=True)
-
-    type = models.ForeignKey(LocationType, related_name="locations", blank=True, null=True)
+    type = models.ForeignKey(LocationType, related_name="locations",
+                             blank=True, null=True)
     parent_type = models.ForeignKey(ContentType, null=True, blank=True)
-    parent_id   = models.PositiveIntegerField(null=True, blank=True)
-    parent      = generic.GenericForeignKey("parent_type", "parent_id")
-
+    parent_id = models.PositiveIntegerField(null=True, blank=True)
+    parent = generic.GenericForeignKey("parent_type", "parent_id")
 
     # choices for the Location.direction method.
     # (values stolen from label-overlay.js)
     class Direction:
         CENTER = "center"
-        ABOVE  = "above"
-        RIGHT  = "right"
-        BELOW  = "below"
-        LEFT   = "left"
+        ABOVE = "above"
+        RIGHT = "right"
+        BELOW = "below"
+        LEFT = "left"
 
     def __unicode__(self):
         """
         """
-        
+
         return getattr(self, "name", "#%d" % self.pk)
 
     @property

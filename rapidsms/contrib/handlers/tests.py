@@ -16,9 +16,9 @@ def test_get_handlers():
         settings.EXCLUDED_HANDLERS)
 
     # clear current settings, to test in a predictable environment.
-    settings.INSTALLED_APPS     = []
+    settings.INSTALLED_APPS = []
     settings.INSTALLED_HANDLERS = None
-    settings.EXCLUDED_HANDLERS  = None
+    settings.EXCLUDED_HANDLERS = None
 
     try:
         assert_equal(get_handlers(), [])
@@ -48,6 +48,5 @@ def test_get_handlers():
     # always restore pre-test settings.
     finally:
         settings.INSTALLED_APPS,\
-        settings.INSTALLED_HANDLERS,\
-        settings.EXCLUDED_HANDLERS = _settings
-
+            settings.INSTALLED_HANDLERS,\
+            settings.EXCLUDED_HANDLERS = _settings

@@ -44,7 +44,9 @@ class EagerBackendTest(CustomRouterMixin, TestCase):
     def test_outgoing(self):
         """Eager backends should call rapidsms_handle_message directly"""
 
-        with patch('rapidsms.router.celery.tasks.rapidsms_handle_message') as mock_method:
+        with patch(
+            'rapidsms.router.celery.tasks.rapidsms_handle_message'
+        ) as mock_method:
             connections = lookup_connections("mockbackend",
                                              identities=['1112223333'])
             receive("test", connections[0])

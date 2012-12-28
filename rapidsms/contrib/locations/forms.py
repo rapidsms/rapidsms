@@ -10,8 +10,7 @@ from .models import *
 
 
 class PointWidget(widgets.MultiWidget):
-    default_attrs = {
-        "size": 6 }
+    default_attrs = {"size": 6}
 
     def __init__(self, attrs=None):
         attrs_ = self.default_attrs.copy()
@@ -34,7 +33,7 @@ class PointField(fields.MultiValueField):
 
     default_error_messages = {
         "invalid_lat": _(u"Enter a valid latitude."),
-        "invalid_lng": _(u"Enter a valid longitude.") }
+        "invalid_lng": _(u"Enter a valid longitude.")}
 
     def __init__(self, *args, **kwargs):
         errors = self.default_error_messages.copy()
@@ -52,7 +51,8 @@ class PointField(fields.MultiValueField):
             min_value=-180,
             max_value=180)
 
-        super(PointField, self).__init__((lat_field, lng_field), *args, **kwargs)
+        super(PointField, self).__init__((lat_field, lng_field),
+                                         *args, **kwargs)
 
     def compress(self, data_list):
         if data_list:

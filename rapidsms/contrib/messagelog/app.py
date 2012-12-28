@@ -16,8 +16,10 @@ except ImportError:
 class App(AppBase):
     def _who(self, msg):
         to_return = {}
-        if msg.contact:    to_return["contact"]    = msg.contact 
-        if msg.connection: to_return["connection"] = msg.connection 
+        if msg.contact:
+            to_return["contact"] = msg.contact
+        if msg.connection:
+            to_return["connection"] = msg.connection
         if not to_return:
             raise ValueError
         return to_return
@@ -34,5 +36,5 @@ class App(AppBase):
         # want a handle to them
         msg.logger_msg = self._log("I", self._who(msg), msg.raw_text)
 
-    def outgoing(self, msg): 
+    def outgoing(self, msg):
         msg.logger_msg = self._log("O", self._who(msg), msg.text)

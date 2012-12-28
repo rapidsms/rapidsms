@@ -16,8 +16,7 @@ class Command(NoArgsCommand):
 
         # fetch all of the apps (identified by their module name,
         # which is unique) that we already have objects for
-        known_module_names = list(App.objects\
-            .values_list("module", flat=True))
+        known_module_names = list(App.objects.values_list("module", flat=True))
 
         # find any running apps which currently
         # don't have objects, and fill in the gaps

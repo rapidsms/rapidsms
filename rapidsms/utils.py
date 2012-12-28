@@ -4,6 +4,7 @@
 import pytz
 from datetime import datetime
 
+
 def empty_str(in_str):
     """
     Simple helper to return True if the passed
@@ -14,15 +15,16 @@ def empty_str(in_str):
         raise TypeError('Arg must be None or a string type')
 
     return in_str is None or \
-        len(in_str.strip())==0
+        len(in_str.strip()) == 0
+
 
 def to_naive_utc_dt(dt):
     """
-    Converts a datetime to a naive datetime (no tzinfo) 
+    Converts a datetime to a naive datetime (no tzinfo)
     as follows:
 
     if inbound dt is already naive, it just returns it
-    
+
     if inbound is timezone aware, converts it to UTC,
     then strips the tzinfo
 
@@ -34,6 +36,7 @@ def to_naive_utc_dt(dt):
         return dt
 
     return dt.astimezone(pytz.utc).replace(tzinfo=None)
+
 
 def to_aware_utc_dt(dt):
     """
@@ -59,21 +62,19 @@ def to_aware_utc_dt(dt):
     return dt.astimezone(pytz.utc)
 
 
-
 def timedelta_as_minutes(td):
     """
     Returns the value of the entire timedelta as
     integer minutes, rounded down
-    
+
     """
-    return timedelta_as_seconds(td)/60
+    return timedelta_as_seconds(td) / 60
 
 
 def timedelta_as_seconds(td):
     '''
     Returns the value of the entire timedelta as
     integer seconds, rounded down
-    
+
     '''
-    return td.days*86400+td.seconds
-    
+    return td.days * 86400 + td.seconds
