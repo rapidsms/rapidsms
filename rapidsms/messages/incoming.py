@@ -3,16 +3,13 @@
 
 
 from datetime import datetime
-from .base import MessageBase
-from .outgoing import OutgoingMessage
-from .error import ErrorMessage
+from rapidsms.messages.base import MessageBase
+from rapidsms.messages.outgoing import OutgoingMessage
+from rapidsms.messages.error import ErrorMessage
 
 
 class IncomingMessage(MessageBase):
-    """
-    This class represents, naturally, an incoming message. It is probably only
-    useful when instantiated by RapidSMS backends or test harnesses.
-    """
+    """Inbound message that provides an API to generate responses."""
 
     def __init__(self, *args, **kwargs):
         self.received_at = kwargs.pop('received_at', datetime.now())
