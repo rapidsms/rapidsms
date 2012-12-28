@@ -9,22 +9,22 @@ class MockApp(AppBase):
         self.calls = []
 
     def start(self):
-        self.calls.append(("start",))
+        self.calls.append("start")
 
     def parse(self, message):
-        self.calls.append(("parse", message))
+        self.calls.append("parse")
 
     def handle(self, message):
-        self.calls.append(("handle", message))
+        self.calls.append("handle")
 
     def cleanup(self, message):
-        self.calls.append(("cleanup", message))
+        self.calls.append("cleanup")
 
     def outgoing(self, message):
-        self.calls.append(("outgoing", message))
+        self.calls.append("outgoing")
 
     def stop(self):
-        self.calls.append(("stop",))
+        self.calls.append("stop")
 
 
 class EchoApp(MockApp):

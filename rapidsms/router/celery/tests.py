@@ -31,8 +31,8 @@ class CeleryRouterTest(CustomRouterMixin, TestCase):
         with patch.object(CeleryRouter, '_queue_message') as mock_method:
             connections = lookup_connections("mockbackend",
                                              identities=['1112223333'])
-            messages = send("test", connections)
-        mock_method.assert_called_once_with(messages[0], incoming=False)
+            message = send("test", connections)
+        mock_method.assert_called_once_with(message, incoming=False)
 
 
 class EagerBackendTest(CustomRouterMixin, TestCase):

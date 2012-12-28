@@ -14,6 +14,7 @@ class OutgoingMessage(MessageBase):
     def __init__(self, *args, **kwargs):
         self.in_reply_to = kwargs.pop('in_reply_to', None)
         super(OutgoingMessage, self).__init__(*args, **kwargs)
+        self.sent = False
 
     @property
     def language(self):
@@ -32,21 +33,17 @@ class OutgoingMessage(MessageBase):
     def append(self, template, **kwargs):
         self._parts.append((template, kwargs))
 
-    def __repr__(self):
-        return "<OutgoingMessage (%s): %s>" %\
-            (self.language, self.text)
-
     def _render_part(self, template, **kwargs):
         t = translation(self.language)
         tmpl = t.gettext(template)
         return tmpl % kwargs
 
-    @property
-    def text(self):
-        return unicode(" ".join([
-            self._render_part(template, **kwargs)
-            for template, kwargs in self._parts
-        ]))
+    # @property
+    # def text(self):
+    #     return unicode(" ".join([
+    #         self._render_part(template, **kwargs)
+    #         for template, kwargs in self._parts
+    #     ]))
 
     @property
     def date(self):

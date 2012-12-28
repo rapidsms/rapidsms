@@ -57,9 +57,9 @@ class CreateDataMixin(object, LoggerMixin):
     def create_outgoing_message(self, data={}):
         """Create and return RapidSMS OutgoingMessage object."""
         defaults = {
-            'template': self.random_string(10),
+            'text': self.random_string(10),
         }
         defaults.update(data)
         if 'connection' not in defaults:
-            defaults['connection'] = self.create_connection()
+            defaults['connections'] = [self.create_connection()]
         return OutgoingMessage(**defaults)

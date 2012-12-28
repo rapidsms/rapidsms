@@ -12,7 +12,8 @@ def receive(text, connection, fields=None):
     from rapidsms.messages import IncomingMessage
     router = get_router()
     router.start()
-    message = IncomingMessage(connection, text, datetime.datetime.now(),
+    message = IncomingMessage(connections=[connection], text=text,
+                              received_at=datetime.datetime.now(),
                               fields=fields)
     router.receive_incoming(message)
     router.stop()

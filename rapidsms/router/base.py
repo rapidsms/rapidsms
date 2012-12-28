@@ -228,42 +228,43 @@ class BaseRouter(object, LoggerMixin):
             pass
 
     def send_outgoing(self, msg):
-        """
-        """
-        self.info("Outgoing (%s): %s" % (msg.connection, msg.text))
+        """Process outgoing message through phases and pass to backend(s)."""
+        self.info("Outgoing: %s" % msg)
+        continue_sending = self.process_outgoing_phases(msg)
+        if continue_sending:
+            return self.send_to_backend(msg)
 
+    def process_outgoing_phases(self, msg):
+        """Process message through outgoing phases and apps."""
         for phase in self.outgoing_phases:
             self.debug("Out %s phase" % phase)
             continue_sending = True
-
             # call outgoing phases in the opposite order of the incoming
-            # phases, so the first app called with an  incoming message
+            # phases, so the first app called with an incoming message
             # is the last app called with an outgoing message
             for app in reversed(self.apps):
                 self.debug("Out %s app" % app)
-
                 try:
                     func = getattr(app, phase)
                     continue_sending = func(msg)
-
                 except Exception:
                     app.exception()
-
                 # during any outgoing phase, an app can return True to
                 # abort ALL further processing of this message
                 if continue_sending is False:
                     self.warning("Message cancelled")
                     return False
-
-        return self.send_via_backend(msg)
+        return True
 
     def send_to_backend(self, msg):
+        """Pass processed message to backend(s)."""
         # send message using specified backend
         # msg.sent = self.backends[msg.connection.backend.name].send(msg)
         if isinstance(msg.connections, QuerySet):
             backend_names = msg.connections.values_list('backend__name')
             for backend_name in backend_names:
-                msg.connections = msg.connections.filter(backend__name=backend_name)
+                msg.connections = \
+                    msg.connections.filter(backend__name=backend_name)
                 self.backends[backend_name].send(msg)
         else:
             backends = {}

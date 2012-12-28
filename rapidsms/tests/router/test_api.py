@@ -10,19 +10,19 @@ class RouterAPITest(RapidTest):
     def test_send_with_connection(self):
         """Send accepts a single connection."""
         connection = self.create_connection()
-        messages = send("echo hello", connection)
-        self.assertEqual(messages[0].connection.identity, connection.identity)
-        self.assertEqual(messages[0].connection.backend.name,
+        message = send("echo hello", connection)
+        self.assertEqual(message.connection.identity, connection.identity)
+        self.assertEqual(message.connection.backend.name,
                          connection.backend.name)
 
     def test_send_with_connections(self):
         """Send accepts a list of connections."""
         connections = [self.create_connection(), self.create_connection()]
-        messages = send("echo hello", connections)
-        self.assertEqual(len(messages), 2)
-        self.assertEqual(messages[0].connection.identity,
+        message = send("echo hello", connections)
+        self.assertEqual(len(message.connections), 2)
+        self.assertEqual(message.connection.identity,
                          connections[0].identity)
-        self.assertEqual(messages[0].connection.backend.name,
+        self.assertEqual(message.connection.backend.name,
                          connections[0].backend.name)
 
     def test_saved_message_fields_receive(self):

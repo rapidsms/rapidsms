@@ -4,7 +4,6 @@
 import re
 from datetime import datetime
 
-from rapidsms.router import receive
 from rapidsms.tests.harness import TestRouterMixin
 
 
@@ -58,8 +57,7 @@ class TestScriptMixin(TestRouterMixin):
     def sendMessage(self, num, txt, date=None):
         if date is None:
             date = datetime.now()
-        connection = self.lookup_connections([num])[0]
-        receive(txt, connection)
+        self.receive(text=txt, connection=self.lookup_connections([num])[0])
 
     def receiveMessage(self):
         try:
