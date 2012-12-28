@@ -30,7 +30,7 @@ class LoggerMixin():
         # doesn't bother, resulting in an obscure explosion for non-strings
         if not isinstance(name, basestring):
             raise TypeError(
-                "%s._logger_name returned '%r' (%s). (wanted a string)" %\
+                "%s._logger_name returned '%r' (%s). (wanted a string)" %
                 (type(self).__name__, name, type(name).__name__))
 
         return logging.getLogger(name)
