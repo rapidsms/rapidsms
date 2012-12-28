@@ -48,5 +48,5 @@ def test_get_handlers():
     # always restore pre-test settings.
     finally:
         settings.INSTALLED_APPS,\
-        settings.INSTALLED_HANDLERS,\
-        settings.EXCLUDED_HANDLERS = _settings
+            settings.INSTALLED_HANDLERS,\
+            settings.EXCLUDED_HANDLERS = _settings

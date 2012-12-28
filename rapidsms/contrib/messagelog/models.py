@@ -26,20 +26,20 @@ class Message(models.Model):
         the object as usual.
         """
 
-        if (self.contact or self.connection) is None:
+        if self.contact or self.connection is None:
             raise ValidationError(
                 "A valid (not null) contact or connection (but "
                 "not both) must be provided to save the object")
 
-        elif (self.connection and self.contact and \
+        elif (self.connection and self.contact and
               self.contact != self.connection.contact):
 
             raise ValidationError(
                 "The connection and contact you tried to save "
                 "did not match! You need to pick one or the other.")
 
-        elif self.connection is not None and \
-             self.connection.contact is not None:
+        elif (self.connection is not None and
+              self.connection.contact is not None):
             # set the contact here as well, even if they didn't
             # do it explicitly.  If the contact's number changes
             # we still might want to know who it originally came
