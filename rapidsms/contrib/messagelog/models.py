@@ -26,7 +26,7 @@ class Message(models.Model):
         the object as usual.
         """
 
-        if self.contact or self.connection is None:
+        if (self.contact or self.connection) is None:
             raise ValidationError(
                 "A valid (not null) contact or connection (but "
                 "not both) must be provided to save the object")
