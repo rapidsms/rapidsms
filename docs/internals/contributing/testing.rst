@@ -46,7 +46,7 @@ source outside of the ``docs/`` directory.  As such, please check your code
 against the PEP 8 specification by using the ``pep8`` linting tool in your
 RapidSMS directory before submitting patches for review::
 
-    pep8 ./
+    pep8 --count --statistics --exclude=scheduler,locations,ajax ./rapidsms/
 
 Testing multiple environments
 -----------------------------
