@@ -28,11 +28,10 @@ class AppBase(object, LoggerMixin):
             app_class = None
         return app_class
 
-
     def __init__(self, router):
         self.router = router
 
-    def _logger_name(self): # pragma: no cover
+    def _logger_name(self):  # pragma: no cover
         return "app/%s" % self.name
 
     @property
@@ -52,16 +51,31 @@ class AppBase(object, LoggerMixin):
             self.name
 
     # router events
-    def start (self): pass
-    def stop  (self): pass
+    def start(self):
+        pass
+
+    def stop(self):
+        pass
 
     # incoming phases
-    def filter   (self, msg): pass
-    def parse    (self, msg): pass
-    def handle   (self, msg): pass
-    def default  (self, msg): pass
-    def catch    (self, msg): pass
-    def cleanup  (self, msg): pass
+    def filter(self, msg):
+        pass
+
+    def parse(self, msg):
+        pass
+
+    def handle(self, msg):
+        pass
+
+    def default(self, msg):
+        pass
+
+    def catch(self, msg):
+        pass
+
+    def cleanup(self, msg):
+        pass
 
     # outgoing phases:
-    def outgoing (self, msg): pass
+    def outgoing(self, msg):
+        pass

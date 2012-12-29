@@ -20,7 +20,7 @@ class App(AppBase):
             return None
 
     def parse(self, msg):
-        
+
         # if this message ends in "at SOMEWHERE",
         # we have work to do. otherwise, ignore it
         m = self.PATTERN.match(msg.text)
@@ -35,10 +35,10 @@ class App(AppBase):
 
             # location = self.__find_location(locCode)
             # location.village = village
-            
+
             #msg.location = location
             msg.location = self.__find_location(text)
-            
+
             # strip the location tag from the message,
             # so other apps don't have to deal with it
             msg.text = m.group(1)

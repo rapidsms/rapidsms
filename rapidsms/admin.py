@@ -5,9 +5,11 @@
 from django.contrib import admin
 from .models import App, Backend, Connection, Contact
 
+
 class ConnectionInline(admin.TabularInline):
     model = Connection
     extra = 1
+
 
 class ContactAdmin(admin.ModelAdmin):
     inlines = [

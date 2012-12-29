@@ -13,5 +13,3 @@ def web_message(req, msg, link=None):
             "link": link
         }, context_instance=RequestContext(req)
     )
-
-
