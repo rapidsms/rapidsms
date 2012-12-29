@@ -37,12 +37,12 @@ class PhaseTest(RapidTest):
         """Single connection should only create 1 message."""
         identities = ['1112223333']
         self.send('test', self.lookup_connections(identities))
-        self.assertEqual(1, len(self.sent_messages[0].connections))
+        self.assertEqual(1, len(self.sent_messages[0]['identities']))
         self.assertEqual(1, len(self.sent_messages))
 
     def test_multiple_connection_outgoing_message_count(self):
         """Multiple connections should only create 1 message."""
         identities = ['1112223333', '9998887777']
         self.send('test', self.lookup_connections(identities))
-        self.assertEqual(2, len(self.sent_messages[0].connections))
+        self.assertEqual(2, len(self.sent_messages[0]['identities']))
         self.assertEqual(1, len(self.sent_messages))

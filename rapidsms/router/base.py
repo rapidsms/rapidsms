@@ -272,7 +272,7 @@ class BaseRouter(object, LoggerMixin):
         grouped_identities = self.group_outgoing_identities(msg)
         for backend_name, identities in grouped_identities.iteritems():
             backend = self.backends[backend_name]
-            backend.send(msg.text, identities)
+            backend.send(text=msg.text, identities=identities)
         # send message using specified backend
         # msg.sent = self.backends[msg.connection.backend.name].send(msg)
         # if isinstance(msg.connections, QuerySet):
