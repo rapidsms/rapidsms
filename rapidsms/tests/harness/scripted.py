@@ -59,18 +59,9 @@ class TestScriptMixin(TestRouterMixin):
             date = datetime.now()
         self.receive(text=txt, connection=self.lookup_connections([num])[0])
 
-    def receiveMessage(self):
-        try:
-            return self.sent_messages.pop(0)
-        except IndexError:
-            return None
-
     def receiveAllMessages(self):
-        messages = []
-        msg = self.receiveMessage()
-        while msg is not None:
-            messages.append(msg)
-            msg = self.receiveMessage()
+        messages = self.outbound
+        self.router.outbound = []
         return messages
 
     def _checkAgainstMessage(self, num, txt, last_msg, msg):
