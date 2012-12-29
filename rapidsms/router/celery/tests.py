@@ -25,15 +25,6 @@ class CeleryRouterTest(CustomRouterMixin, TestCase):
             message = receive("test", connections[0])
         mock_method.assert_called_once_with(message, incoming=True)
 
-    def test_outgoing(self):
-        """Sent messages should call _queue_message with incoming=False"""
-
-        with patch.object(CeleryRouter, '_queue_message') as mock_method:
-            connections = lookup_connections("mockbackend",
-                                             identities=['1112223333'])
-            message = send("test", connections)
-        mock_method.assert_called_once_with(message, incoming=False)
-
 
 class EagerBackendTest(CustomRouterMixin, TestCase):
 

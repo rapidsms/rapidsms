@@ -1,5 +1,6 @@
 from rapidsms.router.blocking import BlockingRouter
-from rapidsms.router.celery.tasks import rapidsms_handle_message
+from rapidsms.router.celery.tasks import (rapidsms_handle_message,
+                                          queue_to_send)
 
 
 class CeleryRouter(BlockingRouter):
@@ -28,5 +29,9 @@ class CeleryRouter(BlockingRouter):
     def receive_incoming(self, msg):
         self._queue_message(msg, incoming=True)
 
-    def send_outgoing(self, msg):
-        self._queue_message(msg, incoming=False)
+    def send_to_backend(self, msg):
+        """Pass processed message to backend(s)."""
+        grouped_identities = self.group_outgoing_identities(msg)
+        for backend_name, identities in grouped_identities.iteritems():
+            queue_to_send.delay(backend_name=backend_name, text=msg.text,
+                                identities=identities)
