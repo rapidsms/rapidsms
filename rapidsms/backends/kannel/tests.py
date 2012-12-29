@@ -9,10 +9,11 @@ from rapidsms.tests.harness import RapidTest, CreateDataMixin
 
 
 urlpatterns = patterns('',
-    url(r"^backend/kannel/$",
-        views.KannelBackendView.as_view(backend_name='kannel-backend'),
-        name='kannel-backend'),
-)
+                       url(r"^backend/kannel/$",
+                           views.KannelBackendView.as_view(
+                               backend_name='kannel-backend'),
+                           name='kannel-backend'),
+                       )
 
 
 class KannelFormTest(TestCase):

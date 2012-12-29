@@ -43,8 +43,8 @@ def registration(req, pk=None):
                 # TODO deal with errors!
                 backend = Backend.objects.get(name=backend_name)
 
-                connection = Connection(backend=backend, identity=identity,\
-                    contact=contact)
+                connection = Connection(backend=backend, identity=identity,
+                                        contact=contact)
                 connection.save()
 
             return HttpResponseRedirect(

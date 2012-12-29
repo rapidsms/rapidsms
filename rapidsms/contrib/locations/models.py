@@ -49,11 +49,9 @@ class Location(models.Model):
     """
 
     __metaclass__ = ExtensibleModelBase
-
     point = models.ForeignKey(Point, null=True, blank=True)
-
     type = models.ForeignKey(LocationType, related_name="locations",
-                                blank=True, null=True)
+                             blank=True, null=True)
     parent_type = models.ForeignKey(ContentType, null=True, blank=True)
     parent_id = models.PositiveIntegerField(null=True, blank=True)
     parent = generic.GenericForeignKey("parent_type", "parent_id")

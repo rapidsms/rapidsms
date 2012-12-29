@@ -68,10 +68,10 @@ def _apps():
 
     def _in_exclusions(module_name):
         settings_exclusions = getattr(settings,
-            "RAPIDSMS_HANDLERS_EXCLUDE_APPS", [])
+                                      "RAPIDSMS_HANDLERS_EXCLUDE_APPS", [])
         return module_name == "rapidsms.contrib.handlers" \
-               or module_name.startswith("django.contrib.") \
-               or module_name in settings_exclusions
+            or module_name.startswith("django.contrib.") \
+            or module_name in settings_exclusions
 
     return [
         module_name
@@ -99,8 +99,7 @@ def _handlers(module_name):
 
     if not hasattr(handlers_module, "__path__"):
         raise Exception(
-            "Module %s must be a directory." %
-                (handlers_module.__name__))
+            "Module %s must be a directory." % (handlers_module.__name__))
 
     files = find_python_files(
         handlers_module.__path__[0])

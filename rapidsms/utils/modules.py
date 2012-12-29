@@ -146,11 +146,11 @@ def get_class(module, superclass=None):
     if len(classes) > 1:
         names = ", ".join([cls.__name__ for cls in classes])
         raise(AttributeError("Module %s contains multiple %s (%s)." %
-            (module.__name__, desc, names)))
+                            (module.__name__, desc, names)))
 
     else:  # len < 1
         raise(AttributeError("Module %s contains no %s." %
-            (module.__name__, desc)))
+                            (module.__name__, desc)))
 
 
 def get_package_path(package_name):
@@ -174,6 +174,4 @@ def get_package_path(package_name):
 
     # wrap with a better message
     except AttributeError:
-        raise(AttributeError(
-            '%r is not a package' %
-                (package_name)))
+        raise(AttributeError('%r is not a package' % (package_name)))

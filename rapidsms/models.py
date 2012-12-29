@@ -87,9 +87,11 @@ class ContactBase(models.Model):
     # the spec: http://www.w3.org/International/articles/language-tags/Overview
     # reference:http://www.iana.org/assignments/language-subtag-registry
     language = models.CharField(max_length=6, blank=True,
-        help_text="The language which this contact prefers to communicate in, as "
-        "a W3C language tag. If this field is left blank, RapidSMS will "
-        "default to: " + settings.LANGUAGE_CODE)
+                                help_text="The language which this contact "
+                                "prefers to communicate in, as a W3C "
+                                "language tag. If this field is left blank, "
+                                "RapidSMS will default to: " +
+                                settings.LANGUAGE_CODE)
 
     class Meta:
         abstract = True
