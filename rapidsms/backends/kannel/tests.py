@@ -87,7 +87,8 @@ class KannelSendTest(CreateDataMixin, TestCase):
             "encode_errors": "ignore",
         }
         backend = KannelBackend(None, "kannel", **config)
-        data = backend.prepare_message(message)
+        data = backend.prepare_message(message.text,
+                                       [message.connections[0].identity])
         self.assertEqual(config['sendsms_params']['smsc'], data['smsc'])
         self.assertEqual(config['sendsms_params']['from'], data['from'])
         self.assertEqual(config['sendsms_params']['username'],
@@ -113,5 +114,6 @@ class KannelSendTest(CreateDataMixin, TestCase):
             "encode_errors": "ignore",
         }
         backend = KannelBackend(None, "kannel", **config)
-        data = backend.prepare_message(message)
+        data = backend.prepare_message(message.text,
+                                       [message.connections[0].identity])
         self.assertEqual(data['text'].decode('UTF-8'), message.text)

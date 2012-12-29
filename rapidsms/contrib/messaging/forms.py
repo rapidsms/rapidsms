@@ -15,6 +15,8 @@ class MessageForm(forms.Form):
         self.fields['recipients'].queryset = recipients.distinct()
 
     def send(self):
+        connections = []
         for recipient in self.cleaned_data['recipients']:
-            send(self.cleaned_data['text'], recipient.default_connection)
+            connections.append(recipient.default_connection)
+        send(self.cleaned_data['text'], connections)
         return self.cleaned_data['recipients']

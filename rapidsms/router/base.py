@@ -3,6 +3,8 @@
 
 import warnings
 
+from collections import defaultdict
+
 from django.dispatch import Signal
 from django.db.models.query import QuerySet
 
@@ -228,7 +230,7 @@ class BaseRouter(object, LoggerMixin):
             pass
 
     def send_outgoing(self, msg):
-        """Process outgoing message through phases and pass to backend(s)."""
+        """Process message through outgoing phases and pass to backend(s)."""
         self.info("Outgoing: %s" % msg)
         continue_sending = self.process_outgoing_phases(msg)
         if continue_sending:
@@ -256,27 +258,29 @@ class BaseRouter(object, LoggerMixin):
                     return False
         return True
 
+    def group_outgoing_identities(self, msg):
+        """Return a dictionary of backend_name -> identities for a message."""
+        grouped_identities = defaultdict(list)
+        for connection in msg.connections:
+            backend_name = connection.backend.name
+            identity = connection.identity
+            grouped_identities[backend_name].append(identity)
+        return grouped_identities
+
     def send_to_backend(self, msg):
         """Pass processed message to backend(s)."""
+        grouped_identities = self.group_outgoing_identities(msg)
+        for backend_name, identities in grouped_identities.iteritems():
+            backend = self.backends[backend_name]
+            backend.send(msg.text, identities)
         # send message using specified backend
         # msg.sent = self.backends[msg.connection.backend.name].send(msg)
-        if isinstance(msg.connections, QuerySet):
-            backend_names = msg.connections.values_list('backend__name')
-            for backend_name in backend_names:
-                msg.connections = \
-                    msg.connections.filter(backend__name=backend_name)
-                self.backends[backend_name].send(msg)
-        else:
-            backends = {}
-            for connection in msg.connections:
-                if connection.backend.name not in backends:
-                    backends[connection.backend.name] = []
-                backends[connection.backend.name].append(connection)
-            for backend_name, connections in backends.iteritems():
-                msg.connections = connections
-                # maybe a pre-send on backend to do work before queing?
-                self.backends[backend_name].send(msg)
-
+        # if isinstance(msg.connections, QuerySet):
+        #     backend_names = msg.connections.values_list('backend__name')
+        #     for backend_name in backend_names:
+        #         msg.connections = \
+        #             msg.connections.filter(backend__name=backend_name)
+        #         self.backends[backend_name].send(msg)
         return msg.sent
 
     def incoming(self, msg):

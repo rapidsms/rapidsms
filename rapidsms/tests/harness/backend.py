@@ -11,6 +11,6 @@ class MockBackend(BackendBase):
     def clear(self):
         del self.messages[:]
 
-    def send(self, msg):
-        self.messages.append(msg)
+    def send(self, text, identities):
+        self.messages.append((text, identities))
         return True

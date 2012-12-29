@@ -17,19 +17,19 @@ class KannelBackend(BackendBase):
         self.coding = coding or 0
         self.encode_errors = encode_errors or 'ignore'
 
-    def prepare_message(self, message):
+    def prepare_message(self, text, identities):
         """Prepare URL query string with message context."""
         query = copy.copy(self.sendsms_params)
-        query['to'] = message.connection.identity
-        query['text'] = message.text.encode(self.charset, self.encode_errors)
+        query['to'] = ' '.join(identities)
+        query['text'] = text.encode(self.charset, self.encode_errors)
         query['coding'] = self.coding
         query['charset'] = self.charset
         return query
 
-    def send(self, message):
+    def send(self, text, identities):
         """Open request to Kannel instance."""
-        self.info('Sending message: %s' % message)
-        url_args = self.prepare_message(message)
+        self.info('Sending message: %s' % text)
+        url_args = self.prepare_message(text, identities)
         url = '?'.join([self.sendsms_url, urllib.urlencode(url_args)])
         try:
             self.debug('Opening URL: %s' % url)
