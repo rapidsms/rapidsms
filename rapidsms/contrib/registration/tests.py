@@ -1,3 +1,4 @@
+from nose.tools import nottest
 
 from rapidsms.tests.scripted import TestScript
 
@@ -10,6 +11,7 @@ class TestRegister(TestScript):
           8005551212 < Thank you for registering, as someuser!
         """)
 
+    @nottest
     def testLang(self):
         self.assertInteraction("""
           8005551212 > lang english
