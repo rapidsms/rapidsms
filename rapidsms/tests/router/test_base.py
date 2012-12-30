@@ -51,6 +51,7 @@ def test_router_calls_all_app_phases():
         connection = None
         text = ''
         handled = False
+        sent = True
 
     class MockApp(AppBase):
         start_phases = ["start"]

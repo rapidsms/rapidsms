@@ -1,26 +1,7 @@
 from rapidsms.router.test import BlockingRouter
 from rapidsms.messages.outgoing import OutgoingMessage
 from rapidsms.tests.harness import RapidTest, MockApp
-
-
-class OutgoingTest(RapidTest):
-
-    def setUp(self):
-        self.contact = self.create_contact()
-        self.backend = self.create_backend({'name': 'mockbackend'})
-        self.connection = self.create_connection({'backend': self.backend,
-                                                  'contact': self.contact})
-        self.router = BlockingRouter()
-
-    # def test_outgoing(self):
-    #     """
-    #     Router.outgoing should call backend.send() method
-    #     and set message.sent flag respectively
-    #     """
-    #     self.send('test', self.lookup_connections('1112223333')[0])
-    #     self.router.send_outgoing(msg)
-    #     self.assertTrue(msg.sent)
-    #     self.assertEqual(msg, self.sent_messages[0])
+from rapidsms.models import Connection
 
 
 class RouterOutgoingPhases(RapidTest):
@@ -61,7 +42,7 @@ class RouterOutgoingPhases(RapidTest):
         self.assertEqual(1, len(self.sent_messages))
 
 
-class PhaseTest(RapidTest):
+class OutgoingTest(RapidTest):
 
     apps = (MockApp,)
 
@@ -78,3 +59,25 @@ class PhaseTest(RapidTest):
         self.send('test', self.lookup_connections(identities))
         self.assertEqual(2, len(self.sent_messages[0]['identities']))
         self.assertEqual(1, len(self.sent_messages))
+
+    def test_group_outgoing_identities(self):
+        """group_outgoing_identities() should group connections by backend."""
+        mockbackend_connections = self.lookup_connections([1112223333])
+        other_connections = self.lookup_connections([2223334444, 9998887777],
+                                                    backend='other')
+        connections = mockbackend_connections + other_connections
+        msg = self.create_outgoing_message(data={'connections': connections})
+        grouped_identities = self.router.group_outgoing_identities(msg)
+        self.assertEqual(2, len(grouped_identities.keys()))
+        self.assertEqual(1, len(grouped_identities['mockbackend']))
+        self.assertEqual(2, len(grouped_identities['other']))
+
+    def test_group_outgoing_identities_with_queryset(self):
+        """group_outgoing_identities() should accept a QuerySet."""
+        connection1 = self.create_connection(data={'identity': '1112223333'})
+        connection2 = self.create_connection(data={'identity': '9998887777'})
+        connections = Connection.objects.all()
+        msg = self.create_outgoing_message(data={'connections': connections})
+        grouped_identities = self.router.group_outgoing_identities(msg)
+        self.assertTrue(connection1.backend.name in grouped_identities)
+        self.assertTrue(connection2.backend.name in grouped_identities)

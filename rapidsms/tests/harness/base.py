@@ -60,6 +60,6 @@ class CreateDataMixin(object, LoggerMixin):
             'text': self.random_string(10),
         }
         defaults.update(data)
-        if 'connection' not in defaults:
+        if 'connections' not in defaults:
             defaults['connections'] = [self.create_connection()]
         return OutgoingMessage(**defaults)
