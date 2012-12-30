@@ -1,7 +1,5 @@
-from rapidsms.router.test import BlockingRouter
-from rapidsms.messages.outgoing import OutgoingMessage
-from rapidsms.tests.harness import RapidTest, MockApp
 from rapidsms.models import Connection
+from rapidsms.tests.harness import RapidTest, MockApp
 
 
 class RouterOutgoingPhases(RapidTest):
