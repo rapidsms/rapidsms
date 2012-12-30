@@ -1,10 +1,22 @@
+from rapidsms.messages.base import MessageBase
 from rapidsms.messages.incoming import IncomingMessage
+from rapidsms.messages.outgoing import OutgoingMessage
 from rapidsms.tests.harness import RapidTest
 
 
 class MessagesTest(RapidTest):
 
     disable_phases = True
+
+    def test_message_id(self):
+        """All message objects should have IDs."""
+        connections = [self.create_connection()]
+        msg = MessageBase(text="test", connections=connections)
+        self.assertTrue(msg.id is not None)
+        msg = IncomingMessage(text="test", connections=connections)
+        self.assertTrue(msg.id is not None)
+        msg = OutgoingMessage(text="test", connections=connections)
+        self.assertTrue(msg.id is not None)
 
     def test_saved_message_fields(self):
         """Extra data should be attached to IncomingMessage."""
