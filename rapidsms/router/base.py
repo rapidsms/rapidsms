@@ -234,7 +234,7 @@ class BaseRouter(object, LoggerMixin):
         self.info("Outgoing: %s" % msg)
         continue_sending = self.process_outgoing_phases(msg)
         if continue_sending:
-            self.send_to_backend(msg)
+            self.backend_preparation(msg)
 
     def process_outgoing_phases(self, msg):
         """Process message through outgoing phases and apps."""
@@ -259,6 +259,16 @@ class BaseRouter(object, LoggerMixin):
         msg.processed = True
         return True
 
+    def backend_preparation(self, msg):
+        """
+        Prepare message for backend processing. This includes grouping
+        connections by backend and calling send_to_backend() with each group.
+        """
+        context = msg.extra_backend_context()
+        grouped_identities = self.group_outgoing_identities(msg)
+        for backend_name, identities in grouped_identities.iteritems():
+            self.send_to_backend(backend_name, msg.text, identities, context)
+
     def group_outgoing_identities(self, msg):
         """Return a dictionary of backend_name -> identities for a message."""
         grouped_identities = defaultdict(list)
@@ -276,12 +286,10 @@ class BaseRouter(object, LoggerMixin):
                 grouped_identities[backend_name].append(identity)
         return grouped_identities
 
-    def send_to_backend(self, msg):
-        """Pass processed message to backend(s)."""
-        grouped_identities = self.group_outgoing_identities(msg)
-        for backend_name, identities in grouped_identities.iteritems():
-            backend = self.backends[backend_name]
-            backend.send(text=msg.text, identities=identities)
+    def send_to_backend(self, backend_name, text, identities, context):
+        """Send message context to specified backend."""
+        backend = self.backends[backend_name]
+        backend.send(text=text, identities=identities, context=context)
 
     def incoming(self, msg):
         """Legacy support for Router.incoming() -- Deprecated"""
