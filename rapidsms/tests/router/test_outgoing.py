@@ -22,6 +22,15 @@ class RouterOutgoingPhases(RapidTest):
         continue_sending = self.router.process_outgoing_phases(msg)
         self.assertFalse(continue_sending)
 
+    def test_proccessed_flag_set(self):
+        """
+        BaseMessage.processed should be set to True after
+        outgoing phase processing.
+        """
+        msg = self.create_outgoing_message()
+        self.router.process_outgoing_phases(msg)
+        self.assertTrue(msg.processed)
+
     def test_return_value(self):
         """
         Returning False from App.outgoing should prevent messages

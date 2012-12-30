@@ -256,6 +256,7 @@ class BaseRouter(object, LoggerMixin):
                 if continue_sending is False:
                     self.warning("Message cancelled")
                     return False
+        msg.processed = True
         return True
 
     def group_outgoing_identities(self, msg):
