@@ -27,13 +27,13 @@ def rapidsms_handle_message(msg, incoming=True):
 
 
 @task()
-def queue_to_send(backend_name, text, identities):
+def queue_to_send(backend_name, id_, text, identities, context):
     logger = rapidsms_handle_message.get_logger()
     router = BlockingRouter()
     try:
         router.start()
         backend = router.backends[backend_name]
-        backend.send(text=text, identities=identities)
+        backend.send(id_, text=text, identities=identities, context=context)
         router.stop()
     except Exception, e:
         logger.exception(e)

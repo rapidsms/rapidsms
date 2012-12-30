@@ -26,7 +26,7 @@ class KannelBackend(BackendBase):
         query['charset'] = self.charset
         return query
 
-    def send(self, text, identities):
+    def send(self, id_, text, identities, context):
         """Open request to Kannel instance."""
         self.info('Sending message: %s' % text)
         url_args = self.prepare_message(text, identities)

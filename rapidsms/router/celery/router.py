@@ -29,9 +29,7 @@ class CeleryRouter(BlockingRouter):
     def receive_incoming(self, msg):
         self._queue_message(msg, incoming=True)
 
-    def send_to_backend(self, msg):
+    def send_to_backend(self, backend_name, id_, text, identities, context):
         """Pass processed message to backend(s)."""
-        grouped_identities = self.group_outgoing_identities(msg)
-        for backend_name, identities in grouped_identities.iteritems():
-            queue_to_send.delay(backend_name=backend_name, text=msg.text,
-                                identities=identities)
+        queue_to_send.delay(backend_name=backend_name, id_=id_, text=text,
+                            identities=identities, context=context)

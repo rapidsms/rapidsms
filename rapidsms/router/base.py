@@ -267,7 +267,8 @@ class BaseRouter(object, LoggerMixin):
         context = msg.extra_backend_context()
         grouped_identities = self.group_outgoing_identities(msg)
         for backend_name, identities in grouped_identities.iteritems():
-            self.send_to_backend(backend_name, msg.text, identities, context)
+            self.send_to_backend(backend_name, msg.id, msg.text, identities,
+                                 context)
 
     def group_outgoing_identities(self, msg):
         """Return a dictionary of backend_name -> identities for a message."""
@@ -286,10 +287,11 @@ class BaseRouter(object, LoggerMixin):
                 grouped_identities[backend_name].append(identity)
         return grouped_identities
 
-    def send_to_backend(self, backend_name, text, identities, context):
+    def send_to_backend(self, backend_name, id_, text, identities, context):
         """Send message context to specified backend."""
         backend = self.backends[backend_name]
-        backend.send(text=text, identities=identities, context=context)
+        backend.send(id_=id_, text=text, identities=identities,
+                     context=context)
 
     def incoming(self, msg):
         """Legacy support for Router.incoming() -- Deprecated"""
