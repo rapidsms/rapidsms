@@ -7,24 +7,31 @@ class MockApp(AppBase):
     def __init__(self, *args, **kwargs):
         super(MockApp, self).__init__(*args, **kwargs)
         self.calls = []
+        self.return_values = {}
 
     def start(self):
         self.calls.append("start")
+        return self.return_values.get('start', None)
 
     def parse(self, message):
         self.calls.append("parse")
+        return self.return_values.get('parse', None)
 
     def handle(self, message):
         self.calls.append("handle")
+        return self.return_values.get('handle', None)
 
     def cleanup(self, message):
         self.calls.append("cleanup")
+        return self.return_values.get('cleanup', None)
 
     def outgoing(self, message):
         self.calls.append("outgoing")
+        return self.return_values.get('outgoing', None)
 
     def stop(self):
         self.calls.append("stop")
+        return self.return_values.get('stop', None)
 
 
 class EchoApp(MockApp):

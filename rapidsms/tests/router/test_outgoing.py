@@ -23,7 +23,7 @@ class OutgoingTest(RapidTest):
     #     self.assertEqual(msg, self.sent_messages[0])
 
 
-class PhaseTest(RapidTest):
+class RouterOutgoingPhases(RapidTest):
 
     apps = (MockApp,)
 
@@ -32,6 +32,38 @@ class PhaseTest(RapidTest):
         self.send('test', self.lookup_connections('1112223333'))
         app = self.router.apps[0]
         self.assertTrue('outgoing' in app.calls)
+
+    def test_process_outgoing_phases_return_value(self):
+        """
+        Returning False from App.outgoing should cause
+        Router.process_outgoing_phases() to return False as well.
+        """
+        self.router.apps[0].return_values['outgoing'] = False
+        msg = self.create_outgoing_message()
+        continue_sending = self.router.process_outgoing_phases(msg)
+        self.assertFalse(continue_sending)
+
+    def test_return_value(self):
+        """
+        Returning False from App.outgoing should prevent messages
+        being passed to the backends.
+        """
+        self.router.apps[0].return_values['outgoing'] = False
+        self.send('test', self.lookup_connections('1112223333'))
+        self.assertEqual(0, len(self.sent_messages))
+
+    def test_outgoing_exception(self):
+        """App exceptions shouldn't hault message processing."""
+        def outgoing_exception(message):
+            raise Exception("Error!")
+        self.router.apps[0].outgoing = outgoing_exception
+        self.send('test', self.lookup_connections('1112223333'))
+        self.assertEqual(1, len(self.sent_messages))
+
+
+class PhaseTest(RapidTest):
+
+    apps = (MockApp,)
 
     def test_single_connection_outgoing_message_count(self):
         """Single connection should only create 1 message."""
