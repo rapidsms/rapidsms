@@ -3,10 +3,6 @@ RapidSMS 0.11.0 release notes
 =============================
 
 
-.. warning::
-
-    RapidSMS v0.11.0 is currently under development and has not been released.
-
 Welcome to RapidSMS 0.11.0! These release notes cover the new features 0.11.0.
 
 
@@ -28,6 +24,6 @@ What's New
  * Moved ``rapidsms`` module to root level of repository.
  * Added ``docs`` environment to tox setup.
  * Documented django-celery 3.0+ dependency.
- * Removed ``rapidsms.skeleton`` package and ``startproject`` command override. See :doc:`../intro/install/project-template` to use the new project template.
+ * Removed ``rapidsms.skeleton`` package and ``startproject`` command override See :ref:`installing-rapidsms-project-template` to use the new project template.
  * Removed ``runrouter`` management command.
  * Fixed a few typos in the Messaging API docs.
