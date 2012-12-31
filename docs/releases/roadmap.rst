@@ -28,8 +28,8 @@ v0.13.0
 * Update contrib applications to meet base standard as per this `review <https://groups.google.com/forum/#!topic/rapidsms-dev/34AOL5S0Xr8>`_
 
 
-v0.12.0
--------
+v0.12.0 - Next Release
+----------------------
 * *Expected release date:* Janurary, 2013
 * `GitHub Milestone <https://github.com/rapidsms/rapidsms/issues?milestone=4&page=1&state=open>`_
 
@@ -40,9 +40,9 @@ v0.12.0
 * Finalize and merge the `Vumi backend pull request`_
 
 
-v0.11.0 - Next Release
-----------------------
-* *Expected release date:* December, 2012
+v0.11.0
+-------
+* *Release date:* December 31, 2012
 * :doc:`0.11.0`
 * `GitHub Milestone <https://github.com/rapidsms/rapidsms/issues?milestone=2&page=1&state=open>`_
 

@@ -49,7 +49,7 @@ Sending Messages
     and sent via the respective backend.
 
     :param text: text message
-    :param connection: a single or list of RapidSMS connection objects
+    :param connections: a single or list of RapidSMS connection objects
 
 It's just as easy to send a message using RapidSMS. You can send a message from
 anywhere within your application.
@@ -57,10 +57,10 @@ anywhere within your application.
 Here's an example using ``send``::
 
     from rapidsms.router import send
-    send("hello", connection)
+    send("hello", connections)
 
-This sends ``echo hello`` to the identity and backend associated with the
-``connection`` object.  You can find more examples of ``send`` in the official
+This sends ``echo hello`` to each identity and backend associated with the
+``connections`` object.  You can find more examples of ``send`` in the official
 RapidSMS `backends <https://github.com/rapidsms/rapidsms/tree/master/rapidsms/backends>`_.
 
 .. _connection_lookup:
@@ -74,7 +74,7 @@ Connection Lookup
     Return connections associated with backend and identities.
 
     :param backend: backend name (as a string) or RapidSMS backend object
-    :param connection: list of identities associated
+    :param identities: list of identities associated
 
 Since most of the time you'll need to find connections for a backend and phone
 number, RapidSMS has a helper function, ``lookup_connections``, to do the
