@@ -5,6 +5,6 @@ from django.conf.urls.defaults import *
 from .. import views
 
 urlpatterns = patterns('',
-                       url(r'^login/$', views.login, name='rapidsms-login'),
-                       url(r'^logout/$', views.logout, name='rapidsms-logout'),
-                       )
+    url(r'^login/$', views.login, name='rapidsms-login'),
+    url(r'^logout/$', views.logout, name='rapidsms-logout'),
+)
