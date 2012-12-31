@@ -16,6 +16,7 @@ class VumiForm(BaseHttpForm):
 
     def get_incoming_data(self):
         fields = self.cleaned_data.copy()
-        return {'identity': self.cleaned_data['from_addr'],
+        connections = self.lookup_connections([self.cleaned_data['from_addr']])
+        return {'connection': connections[0],
                 'text': self.cleaned_data['content'],
                 'fields': fields}

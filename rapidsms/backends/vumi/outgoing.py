@@ -6,14 +6,14 @@ from rapidsms.backends.base import BackendBase
 
 
 class VumiBackend(BackendBase):
-    """ Outgoing SMS backend for Vumi """
+    """Outgoing SMS backend for Vumi."""
 
     def configure(self, vumi_url, vumi_credentials, **kwargs):
         self.vumi_url = vumi_url
         self.vumi_credentials = vumi_credentials
 
     def _build_request(self, message):
-        """ Construct outbound Request object based on context """
+        """Construct outbound Request object based on context."""
         request = urllib2.Request(self.vumi_url)
         context = {'content': message.text,
                    'to_addr': message.connection.identity,
