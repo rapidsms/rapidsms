@@ -6,6 +6,6 @@ from . import views
 
 
 urlpatterns = patterns('',
-   url(r'^$', views.registration, name="registration"),
-   url(r'^(?P<pk>\d+)/edit/$', views.registration, name="registration_edit"),
+    url(r'^$', views.registration, name="registration"),
+    url(r'^(?P<pk>\d+)/edit/$', views.registration, name="registration_edit"),
 )
