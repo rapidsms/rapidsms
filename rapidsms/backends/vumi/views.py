@@ -1,7 +1,13 @@
+import logging
+
+from django.http import HttpResponse
 from django.utils import simplejson as json
 
 from rapidsms.backends.vumi.forms import VumiForm
 from rapidsms.backends.http.views import BaseHttpBackendView
+
+
+logger = logging.getLogger(__name__)
 
 
 class VumiBackendView(BaseHttpBackendView):
@@ -15,5 +21,13 @@ class VumiBackendView(BaseHttpBackendView):
     def get_form_kwargs(self):
         """Load JSON POST data."""
         kwargs = super(VumiBackendView, self).get_form_kwargs()
-        kwargs['data'] = json.loads(self.request.raw_post_data)
+        try:
+            kwargs['data'] = json.loads(self.request.raw_post_data)
+        except Exception, e:
+            logger.exception(e)
         return kwargs
+
+    def form_valid(self, form):
+        super(VumiBackendView, self).form_valid(form)
+        # return 200 for Vumi
+        return HttpResponse('')

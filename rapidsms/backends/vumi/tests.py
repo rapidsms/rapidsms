@@ -113,14 +113,13 @@ class VumiSendTest(CreateDataMixin, TestCase):
         self.assertRaises(TypeError, VumiBackend, None, "vumi")
 
     def test_outgoing_keys(self):
-        """ Vumi requires JSON to include to_adr and content """
+        """Vumi requires JSON to include to_addr and content."""
         message = self.create_outgoing_message()
-        config = {
-            "vumi_url": "http://example.com",
-            "vumi_credentials": {'username': 'user', 'password': 'pass'},
-        }
+        config = {"sendsms_url": "http://example.com"}
         backend = VumiBackend(None, "kannel", **config)
-        request = backend._build_request(message)
-        self.assertEqual(request.get_full_url(), "http://example.com")
-        self.assertTrue('to_addr' in request.get_data())
-        self.assertTrue('content' in request.get_data())
+        kwargs = backend.prepare_request(message.id, message.text,
+                                         [message.connections[0].identity], {})
+        self.assertEqual(kwargs['url'], config['sendsms_url'])
+        data = json.loads(kwargs['data'])
+        self.assertEqual(data['to_addr'], [message.connections[0].identity])
+        self.assertEqual(data['content'], message.text)

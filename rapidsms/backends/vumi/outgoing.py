@@ -1,4 +1,5 @@
-import urllib2
+import copy
+import requests
 
 from django.utils import simplejson as json
 
@@ -8,40 +9,25 @@ from rapidsms.backends.base import BackendBase
 class VumiBackend(BackendBase):
     """Outgoing SMS backend for Vumi."""
 
-    def configure(self, vumi_url, vumi_credentials, **kwargs):
-        self.vumi_url = vumi_url
-        self.vumi_credentials = vumi_credentials
+    def configure(self, sendsms_url, sendsms_params=None, **kwargs):
+        self.sendsms_url = sendsms_url
+        self.sendsms_params = sendsms_params or {}
 
-    def _build_request(self, message):
-        """Construct outbound Request object based on context."""
-        request = urllib2.Request(self.vumi_url)
-        context = {'content': message.text,
-                   'to_addr': message.connection.identity,
-                   'session_event': None}
-        if message.in_reply_to:
-            message_id = message.in_reply_to.fields['message_id']
-            context['in_reply_to'] = message_id
-        request.add_data(json.dumps(context))
-        return request
+    def prepare_request(self, id_, text, identities, context):
+        """Construct outbound data for requests.post."""
+        kwargs = {'url': self.sendsms_url,
+                  'headers': {'content-type': 'application/json'}}
+        payload = copy.copy(self.sendsms_params)
+        payload.update({'content': text, 'to_addr': identities,
+                        'session_event': None})
+        if 'in_reply_to' in context:
+            message_id = context['in_reply_to'].fields['message_id']
+            payload['in_reply_to'] = message_id
+        kwargs['data'] = json.dumps(payload)
+        return kwargs
 
-    def send(self, message):
-        self.info('Sending message: %s' % message)
-        request = self._build_request(message)
-        # use HTTP Basic Authentication if credentials are provided
-        if self.vumi_credentials:
-            password_mgr = urllib2.HTTPPasswordMgrWithDefaultRealm()
-            password_mgr.add_password(None, self.vumi_url,
-                                      self.vumi_credentials['username'],
-                                      self.vumi_credentials['password'])
-            handler = urllib2.HTTPBasicAuthHandler(password_mgr)
-        else:
-            handler = urllib2.HTTPHandler()
-        opener = urllib2.build_opener(handler)
-        try:
-            self.debug('Sending: %s' % request.get_full_url())
-            response = opener.open(request)
-        except Exception, e:
-            self.exception(e)
-            return
-        self.info('SENT')
-        self.debug(response)
+    def send(self, id_, text, identities, context={}):
+        self.info('Sending message: %s' % text)
+        kwargs = self.prepare_request(id_, text, identities, context)
+        r = requests.post(**kwargs)
+        self.debug(r)

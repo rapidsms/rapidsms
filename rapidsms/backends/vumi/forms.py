@@ -8,7 +8,7 @@ class VumiForm(BaseHttpForm):
     to_addr = forms.CharField()
     from_addr = forms.CharField()
     in_reply_to = forms.CharField(required=False)
-    session_event = forms.CharField()
+    session_event = forms.CharField(required=False)
     content = forms.CharField()
     transport_name = forms.CharField()
     transport_type = forms.CharField()
