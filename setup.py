@@ -24,6 +24,7 @@ setup(
         "django-nose",
         "djtables",
         "djappsettings"
+        "requests",
     ],
 
     test_requires=[
