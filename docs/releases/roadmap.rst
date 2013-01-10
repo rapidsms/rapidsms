@@ -6,23 +6,10 @@ Below you'll find a rough outline of planned milestones and releases for
 RapidSMS. For a list of official releases, please see the :doc:`index`.
 
 
-v1.0.0
-------
-
-* *Expected release date:* May, 2013
-
-**Goals**
-
-* Write a tutorial similar to the Django tutorial for beginners
-* Finish documentation for new core features
-* Write release notes for v1.0
-* Finish development on outstanding core features and bugs
-
-
 New RapidSMS website
 --------------------
 
-* *Expected release date:* April, 2013
+* *Expected release date:* May, 2013
 
 **Goals**
 
@@ -31,6 +18,19 @@ New RapidSMS website
 * Provide a page to track 3rd party reusable apps and backends
 * Blog syndication (community page)
 * Migrate existing content to new platform
+
+
+v1.0.0
+------
+
+* *Expected release date:* April, 2013
+
+**Goals**
+
+* Write a tutorial similar to the Django tutorial for beginners
+* Finish documentation for new core features
+* Write release notes for v1.0
+* Finish development on outstanding core features and bugs
 
 
 v0.14.0
