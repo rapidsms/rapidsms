@@ -17,9 +17,9 @@ class CustomRouterMixin(CreateDataMixin):
 
     def _pre_rapidsms_setup(self):
         self._INSTALLED_BACKENDS = getattr(settings, 'INSTALLED_BACKENDS', {})
-        setattr(settings, 'INSTALLED_BACKENDS', self.backends)
+        self.set_backends()
         self._RAPIDSMS_ROUTER = getattr(settings, 'RAPIDSMS_ROUTER', None)
-        setattr(settings, 'RAPIDSMS_ROUTER', self.router_class)
+        self.set_router()
 
     def _post_rapidsms_teardown(self):
         setattr(settings, 'INSTALLED_BACKENDS', self._INSTALLED_BACKENDS)
@@ -37,6 +37,12 @@ class CustomRouterMixin(CreateDataMixin):
     def send(self, text, connections):
         """send() API wrapper."""
         return send(text, connections)
+
+    def set_backends(self):
+        setattr(settings, 'INSTALLED_BACKENDS', self.backends)
+
+    def set_router(self):
+        setattr(settings, 'RAPIDSMS_ROUTER', self.router_class)
 
     def lookup_connections(self, backend, identities):
         """loopup_connections() API wrapper."""
@@ -62,6 +68,7 @@ class TestRouterMixin(CustomRouterMixin):
         self.router = test_router.TestRouter(**kwargs)
         # set RAPIDSMS_ROUTER to our newly created instance
         self.router_class = self.router
+        super(TestRouterMixin, self).set_router()
 
     @property
     def inbound(self):
