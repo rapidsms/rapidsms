@@ -7,11 +7,11 @@ from .utils import get_handlers
 
 
 class App(AppBase):
+
     def start(self):
         """
         Spiders all apps, and registers all available handlers.
         """
-
         self.handlers = get_handlers()
 
         if len(self.handlers):
@@ -26,7 +26,6 @@ class App(AppBase):
         the order that they're called in. (This is intended to force
         handlers to be as reluctant as possible.)
         """
-
         for handler in self.handlers:
             if handler.dispatch(self.router, msg):
                 self.info("Incoming message handled by %s" % handler.__name__)

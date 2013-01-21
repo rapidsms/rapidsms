@@ -3,17 +3,18 @@
 
 
 import re
+
 from django.core.exceptions import ObjectDoesNotExist
+
 from .base import BaseHandler
 
 
 class KeywordHandler(BaseHandler):
-
     """
     This handler type can be subclassed to create simple keyword-based
-    handlers. When a message is received, it is checked against the
-    mandatory ``keyword`` attribute (a regular expression) for a prefix
-    match. For example::
+    handlers. When a message is received, it is checked against the mandatory
+    ``keyword`` attribute (a regular expression) for a prefix match. For
+    example::
 
         >>> class AbcHandler(KeywordHandler):
         ...    keyword = "abc"
@@ -24,8 +25,8 @@ class KeywordHandler(BaseHandler):
         ...    def handle(self, text):
         ...        self.respond("You said: %s." % text)
 
-    If the keyword is matched and followed by some text, the ``handle``
-    method is called::
+    If the keyword is matched and followed by some text, the ``handle`` method
+    is called::
 
         >>> AbcHandler.test("abc")
         ['Here is some help.']
@@ -35,8 +36,8 @@ class KeywordHandler(BaseHandler):
         >>> AbcHandler.test("abc waffles")
         ['You said: waffles.']
 
-    All other messages are silently ignored (as usual), to allow other
-    apps or handlers to catch them.
+    All other messages are silently ignored (as usual), to allow other apps or
+    handlers to catch them.
     """
 
     @classmethod
@@ -47,7 +48,6 @@ class KeywordHandler(BaseHandler):
 
     @classmethod
     def dispatch(cls, router, msg):
-
         keyword = cls._keyword()
         if keyword is None:
             return False
