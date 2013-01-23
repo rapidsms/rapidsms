@@ -79,12 +79,33 @@ class OutgoingTest(RapidTest):
         self.assertEqual(1, len(grouped_identities['mockbackend']))
         self.assertEqual(2, len(grouped_identities['other']))
 
-    def test_group_outgoing_identities_with_queryset(self):
-        """group_outgoing_identities() should accept a QuerySet."""
-        connection1 = self.create_connection(data={'identity': '1112223333'})
-        connection2 = self.create_connection(data={'identity': '9998887777'})
-        connections = Connection.objects.all()
-        msg = self.create_outgoing_message(data={'connections': connections})
+
+class OutgoingQuerysetTest(RapidTest):
+
+    apps = (MockApp,)
+
+    def setUp(self):
+        self.conn1 = self.create_connection(data={'identity': '1112223333'})
+        self.conn2 = self.create_connection(data={'identity': '9998887777'})
+        self.conns = Connection.objects.all()
+
+    def test_group_does_not_contain_embedded_lists(self):
+        """Using QuerySets should return a flat list of identities."""
+
+        msg = self.create_outgoing_message(data={'connections': self.conns})
         grouped_identities = self.router.group_outgoing_identities(msg)
-        self.assertTrue(connection1.backend.name in grouped_identities)
-        self.assertTrue(connection2.backend.name in grouped_identities)
+        backend_name = self.conn1.backend.name
+        self.assertEqual(grouped_identities[backend_name][0],
+                         self.conn1.identity)
+
+    def test_distinct_grouping(self):
+        """Connections should be grouped by backend name only once."""
+
+        # create second connection using the same backend
+        self.create_connection(data={'identity': '77766655555',
+                                     'backend': self.conn1.backend})
+        self.conns = Connection.objects.all()
+        msg = self.create_outgoing_message(data={'connections': self.conns})
+        grouped_identities = self.router.group_outgoing_identities(msg)
+        backend_name = self.conn1.backend.name
+        self.assertEqual(len(grouped_identities[backend_name]), 2)

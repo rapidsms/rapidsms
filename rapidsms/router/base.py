@@ -276,10 +276,10 @@ class BaseRouter(object, LoggerMixin):
         if isinstance(msg.connections, QuerySet):
             backend_names = msg.connections.values_list('backend__name',
                                                         flat=True)
-            for backend_name in backend_names:
+            for backend_name in backend_names.distinct():
                 identities = msg.connections.filter(backend__name=backend_name)
                 identities = identities.values_list('identity', flat=True)
-                grouped_identities[backend_name].append(list(identities))
+                grouped_identities[backend_name].extend(list(identities))
         else:
             for connection in msg.connections:
                 backend_name = connection.backend.name
