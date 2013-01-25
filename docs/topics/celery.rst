@@ -3,14 +3,19 @@ Using Celery for Scheduling Tasks
 =================================
 
 You can use any scheduling mechanism supported by Django, but there are
-some advantages to using `Celery <http://celeryproject.org/>`_.
+some advantages to using `Celery`_.
+It's supported, scales well, and works well with Django. Given its wide use,
+there are lots of resources to help learn and use it. And once learned, that
+knowledge is likely to be useful on other projects.
 
+You will also need to follow the setup instructions here if you are
+using RapidSMS's :router:`CeleryRouter`.
 
 TODO
 ====
 
-- list the advantages of Celery
-- running processes in background, controlling them
+- running processes in background, controlling them: actually that would be
+  a good separate topic
 - more scaling? queues?
 - HA?  probably beyond this guide
 
@@ -48,7 +53,8 @@ ask Celery to run it every hour. The task runs and puts the data
 in the database, and then your Web application has access to the
 latest weather report.
 
-A task is just a Python function.  You can think of scheduling a task as
+A `task`_
+is just a Python function.  You can think of scheduling a task as
 a time-delayed call to the function. For example, you might ask Celery
 to call your function ``task1`` with arguments ``(1, 3, 3)`` after five
 minutes.  Or you could have your function ``batchjob`` called every
@@ -59,7 +65,9 @@ environment as the rest of your application's code, so they can access
 the same database and Django settings. There are a few differences to keep
 in mind, but we'll cover those later.
 
-When a task is ready to be run, Celery puts it on a `queue`, a list of
+When a task is ready to be run, Celery puts it on a
+`queue`_,
+a list of
 tasks that are ready to be run. You can have many queues, but we'll assume
 a single queue here for simplicity.
 
@@ -77,7 +85,8 @@ do some work.
 Installing celery locally
 =========================
 
-Installing celery for local use with Django is trivial:
+Installing celery for `local use with Django`_ is trivial - just install
+`django-celery`_:
 
 .. code-block:: bash
 
@@ -87,21 +96,22 @@ Configuring Django for Celery
 =============================
 
 To get started, we'll just get Celery configured to use with ``runserver``.
-We'll use a Django database for the Celery `broker`, which we will explain
-more about later. For now, you just need to know that Celery needs a broker
-and we can get by using Django itself during development.
+For the Celery `broker`_, which we will explain more about later, we'll use a
+`Django database broker implementation`_. For now, you just need to know that
+Celery needs a broker and we can get by using Django itself during development.
 
 In your Django ``settings.py`` file:
 
 1. Add these lines:
 
 .. code-block:: python
+    :linenos:
 
     import djcelery
     djcelery.setup_loader()
     BROKER_URL = 'django://'
 
-The first two lines are always needed. The third configures Celery to use its
+The first two lines are always needed. Line 3 configures Celery to use its
 Django broker.
 
 2. Add ``djcelery`` and ``kombu.transport.django`` to ``INSTALLED_APPS``:
@@ -118,8 +128,7 @@ Django broker.
 `djcelery` is always needed. `kombu.transport.django` is the Django-based
 broker, for use mainly during development.
 
-3. Create celery's database tables. If using
-`South <http://south.readthedocs.org/en/latest/>`_ for schema migrations:
+3. Create celery's database tables. If using `South`_ for schema migrations:
 
 .. code-block:: bash
 
@@ -149,8 +158,8 @@ and decorate them.  Here's a trivial ``tasks.py``:
         return x + y
 
 When ``djcelery.setup_loader()`` runs from your settings file, Celery will
-look through your ``INSTALLED_APPS`` for ``tasks.py`` modules, find the functions
-marked as tasks, and register them for use as tasks.
+`look through`_ your ``INSTALLED_APPS`` for ``tasks.py`` modules, find the
+functions marked as tasks, and register them for use as tasks.
 
 Marking a function as a task doesn't prevent calling it normally. You
 can still call it: ``z = add(1, 2)`` and it will work exactly as before. Marking
@@ -171,7 +180,7 @@ just adding ``.delay`` to the name of our task:
 
 Celery will add the task to its queue (`"call myapp.tasks.add(2, 2)"`) and return
 immediately. As soon as an idle worker sees it at the head of the queue, the
-worker will remove it from the queue, then execute:
+worker will remove it from the queue, then execute it:
 
 .. code-block:: python
 
@@ -182,7 +191,8 @@ worker will remove it from the queue, then execute:
 .. admonition:: Import names
 
     It's important that your task is always imported and refered to using the
-    same package name. For example, depending on how your Python path is set up,
+    `same package name`_.
+    For example, depending on how your Python path is set up,
     it might be possible to refer to it as either
     ``myproject.myapp.tasks.add`` or ``myapp.tasks.add``.  Or from
     ``myapp.views``, you might import it as ``.tasks.add``. But Celery has no
@@ -199,7 +209,7 @@ Testing it
 Start a worker
 --------------
 
-As we've already mentioned, a separate process, the `worker`, has to be running
+As we've already mentioned, a separate process, the `worker`_, has to be running
 to actually execute your Celery tasks.  Here's how we can start a worker for
 our development needs.
 
@@ -208,7 +218,7 @@ development environment - activate your virtual environment, or add
 things to your Python path, whatever you do so that you `could` use
 ``runserver`` to run your project.
 
-Now you can start a worker in that shell:
+Now you can `start a worker`_ in that shell:
 
 .. code-block:: bash
 
@@ -243,7 +253,7 @@ still apply:
 
 - Get the simplest possible configuration working first.
 - Use the python debugger and print statements to see what's going on.
-- Turn up logging levels (e.g. --loglevel on the worker) to get more insight.
+- Turn up logging levels (e.g. ``--loglevel debug`` on the worker) to get more insight.
 
 There are also some tools that are unique to Celery.
 
@@ -256,7 +266,7 @@ In your Django settings, you can add:
 
     CELERY_ALWAYS_EAGER = True
 
-and Celery will bypass the entire scheduling mechanism and call your code
+and Celery will `bypass the entire scheduling mechanism`_ and call your code
 directly.
 
 In other words, with ``CELERY_ALWAYS_EAGER = True``, these two statements run
@@ -292,9 +302,8 @@ getting executed.
 Check the results
 -----------------
 
-Anytime you schedule a task, Celery returns an
-`AsyncResult <http://docs.celeryproject.org/en/latest/reference/celery.result.html#celery.result.AsyncResult>`_
-object. You can save that object, and then use it later to see if the task
+Anytime you schedule a task, Celery returns an `AsyncResult`_ object. You can
+save that object, and then use it later to see if the task
 has been executed, whether it was successful, and what the result was.
 
 .. code-block:: python
@@ -319,7 +328,7 @@ Periodic Scheduling
 ===================
 
 Another common case is running a task on a regular schedule.  Celery implements
-this using another process, `celerybeat`. Celerybeat runs continually, and
+this using another process, `celerybeat`_. Celerybeat runs continually, and
 whenever it's time for a scheduled task to run, celerybeat queues it for
 execution.
 
@@ -334,7 +343,7 @@ set up your Django environment, then:
     $ python manage.py celery beat
 
 There are several ways to tell celery to run a task on a schedule.  We're going
-to look at storing the schedules in a Django database table.  This allows you
+to look at `storing the schedules in a Django database table`_. This allows you
 to easily change the schedules, even while Django and Celery are running.
 
 Add this setting:
@@ -344,7 +353,7 @@ Add this setting:
     CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
 
 You can now add schedules by opening the Django admin and going to
-`/admin/djcelery/periodictask/ </admin/djcelery/periodictask/>`_.
+`/admin/djcelery/periodictask/`_.
 Here's what adding a new periodic task looks like:
 
 .. image:: /_static/add_task.png
@@ -369,7 +378,7 @@ Here's what adding a new periodic task looks like:
     schedule. This is pretty simple, e.g. to run every 5 minutes, set
     "Every" to 5 and "Period" to minutes.
 
-:Crontab: Use this, instead of `Interval`, if you want your task to run at
+:Crontab: Use `crontab`_, instead of `Interval`, if you want your task to run at
     specific times.  Use the green "+" and fill in the minute, hour, day of week,
     day of month, and day of year. You can use "*" in any field in place of
     a specific value, but be careful - if you use "*" in the Minute field, your
@@ -378,7 +387,7 @@ Here's what adding a new periodic task looks like:
     "7", and the remaining fields to "*".
 
 :Arguments: If you need to pass arguments to your task, you can open this
-    section and set *args and **kwargs.
+    section and set \*args and \*\*kwargs.
 
 :Execution Options: Advanced settings that we won't go into here.
 
@@ -388,16 +397,15 @@ Default schedules
 If you want some of your tasks to have default schedules, and not have
 to rely on someone setting them up in the database after installing
 your app, you can use Django fixtures to provide your schedules as
-`initial data <https://docs.djangoproject.com/en/1.3/howto/initial-data/#providing-initial-data-with-fixtures>`_
-for your app.
+`initial data`_ for your app.
 
 - Set up the schedules you want in your database.
 
-- Dump the data in json format:
+- Dump the schedules in json format:
 
 .. code-block:: bash
 
-    $ django-admin.py dumpdata --indent=2 your-app-label >filename.json
+    $ python manage.py dumpdata djcelery --indent=2 --exclude=djcelery.taskmeta >filename.json
 
 - Create a ``fixtures`` directory inside your app
 
@@ -413,7 +421,7 @@ for your app.
 
 .. code-block:: bash
 
-    $ django-admin.py loaddata <your-app-label/fixtures/your-filename.json
+    $ python manage.py loaddata <your-app-label/fixtures/your-filename.json
 
 Deploying celery for production
 ===============================
@@ -426,10 +434,10 @@ Broker
 ------
 
 Celery uses a broker to queue up tasks and pass them to the workers. We
-were using a simple broker that just runs in Django, but we need something
-more stable and scalable for production.
+were using a simple broker that just runs in Django, but that broker is
+not intended for production use. We need something more stable and scalable.
 
-The most widely used broker is `RabbitMQ <http://www.rabbitmq.com>`_. It's
+The most widely used broker is `RabbitMQ`_. It's
 very stable, very scalable, and available for Linux, Windows, and Mac OS X.
 
 If you're using Ubuntu or Debian, you should be able to just run:
@@ -439,14 +447,13 @@ If you're using Ubuntu or Debian, you should be able to just run:
     $ sudo apt-get install rabbitmq-server
 
 and get a working version. If you want the latest, greatest, look at the
-`Installing on Debian <http://www.rabbitmq.com/install-debian.html>`_
-page.
+`Installing on Debian`_ page.
 
 
 Otherwise, go to the
-`download page <http://www.rabbitmq.com/download.html>`_
-and follow the instructions there to install the RabbitMQ server. You
-don't need the client, as Celery comes with that support built-in.
+`RabbitMQ download page`_ and follow the instructions there to install the
+RabbitMQ server. You don't need the client, as Celery comes with that support
+built-in.
 
 You'll only need one RabbitMQ server instance running, even for very large
 sites.
@@ -464,29 +471,22 @@ name the new user ``rabbituser``; you can use any name you want.
     # This next line might not work on versions before 3.0; if so, just ignore
     $ sudo rabbitmqctl set_user_tags rabbituser administrator
 
-Now, you'll need to make a few changes to your Django settings.  Remove
-the old ``BROKER_URL`` setting and remove ``kombu.transport.django`` from
-``INSTALLED_APPS``:
+Now, you'll need to make a few changes to your Django settings.
 
-.. code-block:: python
+* Remove the old ``BROKER_URL`` setting.
 
-      DELETE --> BROKER_URL = 'django://'--
-      INSTALLED_APPS = (
-           ...
-      DELETE -->     'kombu.transport.django',--
-           ...
-      )
+* Remove ``kombu.transport.django`` from ``INSTALLED_APPS``.
 
-Now create a new ``BROKER_URL`` setting that tells Celery how to connect
-to your RabbitMQ server:
+* Create a new ``BROKER_URL`` setting that tells Celery how to connect
+  to your RabbitMQ server:
 
 .. code-block:: python
 
     BROKER_URL = 'amqp://rabbituser:password@rabbitmqserverhost:5672//'
 
-Finally, if you hadn't already, start rabbitmq. If you installed on
-Linux, it's probably already running, and configured to start automatically
-when Linux restarts.
+* Start rabbitmq. (If you installed on
+  Linux, it's probably already running, and configured to start automatically
+  when Linux restarts.)
 
 After making these changes, everything should be working as before. Verify
 that you can schedule tasks and they are executed by the workers.
@@ -516,7 +516,7 @@ To enable the web interface:
     $
 
 Now you should be able to go to
-`http://localhost:15672/ <http://localhost:15672/>`_, log in with the rabbit
+`http://localhost:15672/`_, log in with the rabbit
 user created earlier, and use the management interface.  (If you keep getting
 login failures, double-check that the user was tagged `administrator` earlier.)
 
@@ -534,7 +534,7 @@ action.
 Workers
 -------
 
-In production, you'll still start workers with
+In production, you'll still start workers with the command:
 
 .. code-block:: bash
 
@@ -569,6 +569,11 @@ To see other options:
 
     $ python manage.py celery beat --help
 
+Managing all these processes
+----------------------------
+
+
+
 
 Hints and Tips
 ==============
@@ -582,11 +587,12 @@ database might have changed. If the task then does something to the model
 object and saves it, those changes in the database are overwritten by
 older data.
 
-It's almost always safer to pass the record's key, and look up the object
-again in the task:
+It's almost always safer to save the object, pass the record's key, and look
+up the object again in the task:
 
 .. code-block:: python
 
+    myobject.save()
     mytask.delay(myobject.pk)
 
     ...
@@ -624,3 +630,27 @@ either not relevant to Django users or more advanced:
 
 * `Tasks <http://docs.celeryproject.org/en/latest/userguide/tasks.html>`_
 * `Periodic Tasks <http://docs.celeryproject.org/en/latest/userguide/periodic-tasks.html>`_
+
+.. _Celery: http://celeryproject.org/
+.. _task: http://docs.celeryproject.org/en/latest/userguide/tasks.html
+.. _queue: http://docs.celeryproject.org/en/latest/getting-started/introduction.html#what-is-a-task-queue
+.. _local use with Django: http://docs.celeryproject.org/en/latest/django/first-steps-with-django.html
+.. _django-celery: http://pypi.python.org/pypi/django-celery
+.. _broker: http://docs.celeryproject.org/en/latest/getting-started/first-steps-with-celery.html#choosing-a-broker
+.. _Django database broker implementation: http://docs.celeryproject.org/en/latest/getting-started/brokers/django.html
+.. _South: http://south.readthedocs.org/en/latest/
+.. _look through: http://docs.celeryproject.org/en/latest/django/first-steps-with-django.html#defining-and-calling-tasks
+.. _same package name: http://docs.celeryproject.org/en/latest/userguide/tasks.html#task-naming-relative-imports
+.. _worker: http://docs.celeryproject.org/en/latest/userguide/workers.html
+.. _start a worker: http://docs.celeryproject.org/en/latest/django/first-steps-with-django.html#starting-the-worker-process
+.. _bypass the entire scheduling mechanism: http://docs.celeryproject.org/en/latest/configuration.html?highlight=eager#std:setting-CELERY_ALWAYS_EAGER
+.. _AsyncResult: http://docs.celeryproject.org/en/latest/reference/celery.result.html#celery.result.AsyncResult
+.. _celerybeat: http://docs.celeryproject.org/en/latest/userguide/periodic-tasks.html
+.. _storing the schedules in a Django database table: http://docs.celeryproject.org/en/latest/userguide/periodic-tasks.html#using-custom-scheduler-classes
+.. _/admin/djcelery/periodictask/: /admin/djcelery/periodictask/
+.. _crontab: http://docs.celeryproject.org/en/latest/userguide/periodic-tasks.html#crontab-schedules
+.. _initial data: https://docs.djangoproject.com/en/1.3/howto/initial-data/#providing-initial-data-with-fixtures
+.. _RabbitMQ: http://www.rabbitmq.com
+.. _Installing on Debian: http://www.rabbitmq.com/install-debian.html
+.. _RabbitMQ download page: http://www.rabbitmq.com/download.html
+.. _http://localhost:15672/: http://localhost:15672/

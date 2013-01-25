@@ -37,7 +37,7 @@ Release: v\ |release|. (:doc:`Installation <intro/install/index>`, :doc:`Release
 
 * :doc:`RapidSMS architecture overview <topics/architecture>`
 * **Router:** :doc:`Overview <topics/router/index>` | :doc:`Messaging <topics/router/messaging>` | :doc:`CeleryRouter <topics/router/celery>`
-* **Applications:** :doc:`Overview <topics/applications/index>` | :doc:`Scheduling Tasks with Celery <topics/applications/celery>` | :doc:`Community apps <topics/applications/community>`
+* **Applications:** :doc:`Overview <topics/applications/index>` | :doc:`Community apps <topics/applications/community>`
 * **Backends:** :doc:`Overview <topics/backends/index>` | :doc:`Kannel <topics/backends/kannel>`
 
 **The development process**
@@ -47,6 +47,7 @@ Release: v\ |release|. (:doc:`Installation <intro/install/index>`, :doc:`Release
 * :doc:`Extending core RapidSMS models <topics/extensible-models>`
 * :doc:`Front end <topics/frontend>`
 * :doc:`Testing <topics/testing>`
+* :doc:`Scheduling Tasks with Celery <topics/celery>`
 * :doc:`Deployment <topics/deployment>`
 
 **RapidSMS contrib applications** (:doc:`Overview <topics/contrib/index>`)
