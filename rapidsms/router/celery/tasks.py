@@ -1,39 +1,32 @@
-from celery import task
+import celery
+from celery.utils.log import get_task_logger
 
 from rapidsms.router.blocking import BlockingRouter
 
 
-@task()
-def rapidsms_handle_message(msg, incoming=True):
-    """Simple Celery task to process messages via BlockingRouter."""
+logger = get_task_logger(__name__)
 
-    logger = rapidsms_handle_message.get_logger()
-    if incoming:
-        direction_name = 'incoming'
-    else:
-        direction_name = 'outgoing'
-    logger.debug('New %s message: %s' % (direction_name, msg))
+
+@celery.task
+def receive_async(msg):
+    """Task used to send inbound message through router phases."""
     router = BlockingRouter()
     try:
         router.start()
-        if incoming:
-            router.receive_incoming(msg)
-        else:
-            router.send_outgoing(msg)
+        router.receive_incoming(msg)
         router.stop()
     except Exception, e:
         logger.exception(e)
-    logger.debug('Complete')
 
 
-@task()
-def queue_to_send(backend_name, id_, text, identities, context):
-    logger = rapidsms_handle_message.get_logger()
+@celery.task
+def send_async(backend_name, id_, text, identities, context):
+    """Task used to send outgoing messages to backends."""
     router = BlockingRouter()
     try:
         router.start()
-        backend = router.backends[backend_name]
-        backend.send(id_, text=text, identities=identities, context=context)
+        router.send_to_backend(backend_name=backend_name, id_=id_, text=text,
+                               identities=identities, context=context)
         router.stop()
     except Exception, e:
         logger.exception(e)

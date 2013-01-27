@@ -1,6 +1,5 @@
 from rapidsms.router.blocking import BlockingRouter
-from rapidsms.router.celery.tasks import (rapidsms_handle_message,
-                                          queue_to_send)
+from rapidsms.router.celery.tasks import receive_async, send_async
 
 
 class CeleryRouter(BlockingRouter):
@@ -10,26 +9,32 @@ class CeleryRouter(BlockingRouter):
         # override default logger name to be more explicit
         return __name__
 
-    def _queue_message(self, msg, incoming):
-        eager = False
-        backend_name = msg.connection.backend.name
+    def is_eager(self, backend_name):
+        """Backends can manually specify whether or not celery is eager."""
         try:
             backend = self.backends[backend_name]
         except KeyError:
-            backend = None
-        if backend:
-            eager = backend._config.get('router.celery.eager', False)
-        if eager:
-            self.debug('Executing in current process')
-            rapidsms_handle_message(msg, incoming)
-        else:
-            self.debug('Executing asynchronously')
-            rapidsms_handle_message.delay(msg, incoming)
+            return False
+        return backend._config.get('router.celery.eager', False)
 
     def receive_incoming(self, msg):
-        self._queue_message(msg, incoming=True)
+        """Queue message to be processed in the background."""
+        eager = self.is_eager(msg.connection.backend.name)
+        if eager:
+            self.debug('Executing in current process')
+            receive_async(msg)
+        else:
+            self.debug('Executing asynchronously')
+            receive_async.delay(msg)
 
     def send_to_backend(self, backend_name, id_, text, identities, context):
         """Pass processed message to backend(s)."""
-        queue_to_send.delay(backend_name=backend_name, id_=id_, text=text,
-                            identities=identities, context=context)
+        eager = self.is_eager(backend_name)
+        if eager:
+            self.debug('Executing in current process')
+            send_async(backend_name=backend_name, id_=id_, text=text,
+                       identities=identities, context=context)
+        else:
+            self.debug('Executing asynchronously')
+            send_async.delay(backend_name=backend_name, id_=id_, text=text,
+                             identities=identities, context=context)

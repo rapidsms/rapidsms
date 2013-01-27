@@ -4,6 +4,7 @@ import random
 from rapidsms.models import Backend, Contact, Connection
 from rapidsms.log.mixin import LoggerMixin
 from rapidsms.messages.outgoing import OutgoingMessage
+from rapidsms.messages.incoming import IncomingMessage
 
 
 __all__ = ('CreateDataMixin',)
@@ -63,3 +64,13 @@ class CreateDataMixin(object, LoggerMixin):
         if 'connections' not in defaults:
             defaults['connections'] = [self.create_connection()]
         return OutgoingMessage(**defaults)
+
+    def create_incoming_message(self, data={}):
+        """Create and return RapidSMS IncomingMessage object."""
+        defaults = {
+            'text': self.random_string(10),
+        }
+        defaults.update(data)
+        if 'connections' not in defaults:
+            defaults['connections'] = [self.create_connection()]
+        return IncomingMessage(**defaults)
