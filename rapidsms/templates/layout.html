@@ -30,65 +30,68 @@
     </head>
 
 	<body>
-		{% region "top" %}
-		{% block header %}
-            <div class="navbar navbar-inverse navbar-fixed-top">
-                <div class="navbar-inner">
-                    <div class="container-fluid">
-                        <a href="/" class="brand">
-                            <img alt="RapidSMS Logo" width="100" src="{{ STATIC_URL }}rapidsms/images/rapidsms-logo.png"/>
-                        </a>
-                        <div class="nav-collapse collapse">
-                            <ul class="nav">
-                                {% get_tabs as tabs %}
-                                {% for tab in tabs %}
-                                <li class="app-{{ tab.caption_slug }}{% if tab.is_active %} active{% endif %}">
-                                    <a href="{{ tab.url }}"><span>{{ tab.caption }}</span></a>
+            {% region "top" %}
+		    {% block header %}
+
+            <div class="container-fluid">
+                <div class="navbar navbar-inverse navbar-fixed-top">
+                    <div class="navbar-inner">
+                        <div class="row-fluid">
+                            <a href="/" class="brand">
+                                <img alt="RapidSMS Logo" width="100" src="{{ STATIC_URL }}rapidsms/images/rapidsms-logo.png"/>
+                            </a>
+                            <div class="nav-collapse collapse">
+                                <ul class="nav">
+                                    {% get_tabs as tabs %}
+                                    {% for tab in tabs %}
+                                    <li class="app-{{ tab.caption_slug }}{% if tab.is_active %} active{% endif %}">
+                                        <a href="{{ tab.url }}"><span>{{ tab.caption }}</span></a>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            {% block auth %}
+                            <ul class="nav pull-right">
+                                <li>
+                                {% if user.is_authenticated %}
+                                    <a href="{% url 'rapidsms-logout' %}">{% trans "Log out" %} {{ user.username }}</a>{% else %}
+                                    <a href="{% url 'rapidsms-login' %}">{% trans "Log in" %}</a>
+                                {% endif %}
                                 </li>
-                                {% endfor %}
                             </ul>
+                           {% endblock %}
                         </div>
-                        {% block auth %}
-                        <ul class="nav pull-right">
-                            <li>
-                            {% if user.is_authenticated %}
-                                <a href="{% url 'rapidsms-logout' %}">{% trans "Log out" %} {{ user.username }}</a>{% else %}
-                                <a href="{% url 'rapidsms-login' %}">{% trans "Log in" %}</a>
-                            {% endif %}
-                            </li>
-                        </ul>
-                        {% endblock %}
                     </div>
                 </div>
-            </div>
-    		{% block page_tabs %}
+        		{% block page_tabs %}
+        		{% endblock %}
+
+    		    {% endblock %}
+
+    		{% block breadcrumbs %}{% if breadcrumbs %}
+    		<div class="row-fluid">{% for caption, url in breadcrumbs %}
+    			<a href="{{ url }}">{{ caption }}</a>{% if not forloop.last %}
+    			<span>&raquo;</span>{% endif %}{% endfor %}
+    		</div>{% endif %}
     		{% endblock %}
-		{% endblock %}
 
-		{% block breadcrumbs %}{% if breadcrumbs %}
-		<div id="breadcrumbs">{% for caption, url in breadcrumbs %}
-			<a href="{{ url }}">{{ caption }}</a>{% if not forloop.last %}
-			<span>&raquo;</span>{% endif %}{% endfor %}
-		</div>{% endif %}
-		{% endblock %}
+    		<div class="row-fluid">
+    			{% block content %}{% endblock %}
+    		</div>
 
-		<div id="inner">
-			{% block content %}{% endblock %}
-		</div>
+            {% block footer %}
+            <footer class="row-fluid">
+                <p>
+                    Copyright &copy; 2008 &#8211; 2011
+                    <a href="http://unicef.org">UNICEF</a> et al.<br />
+                    <a href="http://github.com/rapidsms/rapidsms">RapidSMS</a> is available under
+                    <a href="http://github.com/rapidsms/rapidsms/raw/master/LICENSE">the BSD license</a>.
+                </p>
 
-		{% block footer %}
-		<div id="footer">
-			<p class="rights">
-				Copyright &copy; 2008 &#8211; 2011
-				<a href="http://unicef.org">UNICEF</a> et al.<br />
-				<a href="http://github.com/rapidsms/rapidsms">RapidSMS</a> is available under
-				<a href="http://github.com/rapidsms/rapidsms/raw/master/LICENSE">the BSD license</a>.
-			</p>
-
-			{% region "footer" %}
-		</div>
-		{% endblock %}
-
-		{% region "bottom" %}
+                {% region "footer" %}
+            </footer>
+            {% endblock %}
+            {% region "bottom" %}
+    </div>
 	</body>
 </html>
