@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-
 from rapidsms.conf import settings
 from rapidsms.utils.modules import find_python_files, get_class, try_import
 
@@ -16,7 +15,6 @@ def get_handlers():
     but can be explicitly specified by the ``INSTALLED_HANDLERS`` and
     ``EXCLUDED_HANDLERS`` settings. (Both lists of module prefixes.)
     """
-
     handlers = _find_handlers(_apps())
 
     # if we're explicitly selecting handlers, filter out all those which
@@ -24,12 +22,19 @@ def get_handlers():
     if settings.INSTALLED_HANDLERS is not None:
         copy = [handler for handler in handlers]
         handlers = []
-        while len(copy) > 0:
-            for prefix in settings.INSTALLED_HANDLERS:
-                if copy[-1].__module__.startswith(prefix):
-                    handlers.append(copy[-1])
-                    break
-            copy.pop()
+        for prefix in settings.INSTALLED_HANDLERS:
+            prev_length = len(copy)
+            curr_length = prev_length
+            i = 0
+            while i < curr_length:
+                if copy[i].__module__.startswith(prefix):
+                    handlers.append(copy.pop(i))
+                    curr_length -= 1
+                else:
+                    i += 1
+            if prev_length == curr_length:
+                msg = "No handler matching '%s' was found." % prefix
+                raise HandlerError(msg)
 
     # likewise, in reverse, for EXCLUDED_HANDLERS.
     if settings.EXCLUDED_HANDLERS is not None:
@@ -45,7 +50,6 @@ def _find_handlers(app_names):
     """
     Return a list of all handlers defined in ``app_names``.
     """
-
     handlers = []
 
     for module_name in app_names:
@@ -96,7 +100,6 @@ def _handlers(module_name):
     can't be opened. All exceptions raised while importing handlers are
     allowed to propagate, to avoid masking errors.
     """
-
     handlers_module = try_import(
         "%s.handlers" % module_name)
 

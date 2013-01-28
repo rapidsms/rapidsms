@@ -5,6 +5,8 @@ from django.test import TestCase
 
 from rapidsms.contrib.echo.handlers.echo import EchoHandler
 from rapidsms.contrib.echo.handlers.ping import PingHandler
+
+from rapidsms.contrib.handlers.exceptions import HandlerError
 from rapidsms.contrib.handlers.utils import get_handlers
 
 try:
@@ -73,9 +75,11 @@ class TestGetHandlers(TestCase):
         self._check_get_handlers(PingHandler, EchoHandler)
 
     def test_installed_handlers__no_installed_apps(self):
-        """App should handle when an INSTALLED_HANDLER can't be found."""
+        """App should raise an error when an INSTALLED_HANDLER is not found."""
         self.settings['INSTALLED_HANDLERS'] = [self.PING_HANDLER]
-        self._check_get_handlers()
+        with self.assertRaises(HandlerError):
+            with override_settings(**self.settings):
+                get_handlers()
 
     def test_installed_app(self):
         """App should use prefix matching to determine handlers to include."""
