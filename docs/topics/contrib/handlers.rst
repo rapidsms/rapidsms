@@ -52,10 +52,10 @@ simple, keyword-based application::
                 self.help()
 
 Your handler must define three things: `keyword`, `help()`, and `handle(text)`.
-When a message is received that begins with the keyword (case insensitive),
-the remaining text is passed to the `handle` method of the class. If no
-additional non-whitespace text is included with the message, `help` is called
-instead. For example::
+When a message is received that begins with the keyword (case insensitive;
+leading whitespace is allowed), the remaining text is passed to the `handle`
+method of the class. If no additional non-whitespace text is included with the
+message, `help` is called instead. For example::
 
     > latrine
     < Send LATRINE FULL or LATRINE EMPTY.
@@ -69,6 +69,17 @@ instead. For example::
 All non-matching messages are silently ignored to allow other applications and
 handlers to catch them.
 
+.. TIP::
+   Technically speaking, the incoming message text is compared to a regular
+   expression pattern::
+
+       pattern = re.compile(r"^\s*(?:%s)(?:[\s,;:]+(.+))?$" % keyword,
+                            re.IGNORECASE)
+
+   The most common use case is to look for a single exact-match keyword.
+   However, one could also match multiple keywords, for example
+   `keyword = "register|reg|join"`.
+
 .. _pattern-handler:
 
 PatternHandler
@@ -79,9 +90,8 @@ PatternHandler
    write patterns with enough flexibility to be used in the real world.
    However, it is very handy for prototyping, and can be easily upgraded later.
 
-The `handlers` contrib app also provides a `PatternHandler` class, which can
-be subclassed to create applications which respond to a message based on
-whether a specific pattern is matched::
+The `PatternHandler` class can be subclassed to create applications which
+respond to a message when a specific pattern is matched::
 
     from rapidsms.contrib.handlers.handlers.pattern import PatternHandler
 
@@ -94,26 +104,33 @@ whether a specific pattern is matched::
             self.respond("%d + %d = %d" % (a, b, total))
 
 Your handler must define `pattern` and `handle(*args)`. The pattern is
-case-insensitive, but must otherwise be precisely matched (for example, no
+case-insensitive, but must otherwise be matched precisely as written (for
+example, the handler pattern written above would not accept leading or
+trailing whitespace, but the pattern ``r"^(\d+) plus (\d+)\s*$"`` would allow
 trailing whitespace). When the pattern is matched, the `handle` method is
-called with the captures as arguments. As an example, the above application
-could create the following conversation::
+called with the captures as arguments. As an example, the above handler could
+create the following conversation::
 
     > 1 plus 2
     < 1 + 2 = 3
 
-Like the `KeywordHandler`, the `PatternHandler` silently ignores all
-non-matching messages to allow other apps and handlers to catch them.
+Like `KeywordHandler`, each `PatternHandler` silently ignores all non-matching
+messages to allow other handlers and applications to catch them.
 
 BaseHandler
 -----------
 
 All handlers, including the `KeywordHandler` and `PatternHandler`, are derived
-from the `BaseHandler` class. All instances of `BaseHandler` have access to
-`self.msg` and `self.router`, as well as the methods `self.respond` and
-`self.respond_error` (which respond to the instance's message). They also can
-use the `test` method, which creates a simple environment for testing a
-handler's response to a specific message::
+from the `BaseHandler` class. When extending from `BaseHandler`, one must
+always override the class method `dispatch`, which should return `True` when
+it handles a message.
+
+All instances of `BaseHandler` have access to `self.msg` and `self.router`, as
+well as the methods `self.respond` and `self.respond_error` (which respond to
+the instance's message).
+
+`BaseHandler` also defines the class method `test`, which creates a simple
+environment for testing a handler's response to a specific message text::
 
     >>> from rapidsms.contrib.handlers.handlers.base import BaseHandler
     >>> class AlwaysHandler(BaseHandler):
@@ -124,14 +141,19 @@ handler's response to a specific message::
     ...        msg.respond("yyy")
     ...        return True
 
-    >>> AlwaysHandler.test('anything')
-    ['xxx', 'yyy']
+    >>> AlwaysHandler.test("anything")
+    ["xxx", "yyy"]
 
-.. IMPORTANT::
-   It is important to note that the first handler to accept the message will
-   block all others. The order in which the handlers are called is not
-   guaranteed, so each handler should be as conservative as possible when
-   choosing to respond to a message.
+Calling Handlers
+================
+
+When a message is received, the `handlers` application calls `dispatch` on
+each of the handlers it loaded during :ref:`handler discovery
+<handler-discovery>`.
+
+The first handler to accept the message will block all others. The order in
+which the handlers are called is not guaranteed, so each handler should be as
+conservative as possible when choosing to respond to a message.
 
 .. _handler-discovery:
 
@@ -150,13 +172,21 @@ be configured using the following project settings:
   handlers from any Django app included in this list.
 
 - :setting:`INSTALLED_HANDLERS` - If this list is not `None`, the application
-  will load only handlers that are included in this list.
+  will load only handlers in modules that are included in this list.
 
-- :setting:`EXCLUDED_HANDLERS` - The application will not load any handler
-  that is included in this list.
+- :setting:`EXCLUDED_HANDLERS` - The application will not load any handler in
+  a module that is included in this list.
 
 .. NOTE::
    Prefix matching is used to determine which handlers are described in
    :setting:`INSTALLED_HANDLERS` and :setting:`EXCLUDED_HANDLERS`. The module
    name of each handler is compared to each value in these settings to see if
-   it *starts with* the value.
+   it starts with the value. For example, consider the `rapidsms.contrib.echo`
+   application which contains the `echo` handler and the `ping` handler:
+
+      - "rapidsms.contrib.echo.handlers.echo" would match only the `echo`
+        handler,
+      - "rapidsms.contrib.echo" would match both the `echo` and the `ping`
+        handlers,
+      - "rapidsms.contrib" would match all handlers in any RapidSMS contrib
+        app, including both in `rapidsms.contrib.echo`.
