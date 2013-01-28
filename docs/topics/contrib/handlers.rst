@@ -35,18 +35,18 @@ simple, keyword-based application::
 
     from rapidsms.contrib.handlers.handlers.keyword import KeywordHandler
 
-    class LatrineHandler(KeywordHandler):
-        keyword = "latrine"
+    class LightHandler(KeywordHandler):
+        keyword = "light"
 
         def help(self):
-            self.respond("Send LATRINE FULL or LATRINE EMPTY.")
+            self.respond("Send LIGHT ON or LIGHT OFF.")
 
         def handle(self, text):
-            if text.upper() == "FULL":
-                self.respond("Please empty the latrine.")
+            if text.upper() == "ON":
+                self.respond("The light is now turned on.")
 
-            elif text.upper() == "EMPTY":
-                self.respond("That's great news.")
+            elif text.upper() == "OFF":
+                self.respond("Thanks for turning off the light!")
 
             else:
                 self.help()
@@ -57,14 +57,15 @@ leading whitespace is allowed), the remaining text is passed to the `handle`
 method of the class. If no additional non-whitespace text is included with the
 message, `help` is called instead. For example::
 
-    > latrine
-    < Send LATRINE FULL or LATRINE EMPTY.
-    > latrine full
-    < Please empty the latrine.
-    > latrine empty
-    < That's great news.
-    > latrine something else
-    < Send LATRINE FULL or LATRINE EMPTY.
+    > light
+    < Send LIGHT ON or LIGHT OFF.
+    > light on
+    < The light is now turned on.
+    > light off
+    < Thanks for turning off the light!
+    > light something else
+    > light on
+    < Send LIGHT ON or LIGHT OFF.
 
 All non-matching messages are silently ignored to allow other applications and
 handlers to catch them.
