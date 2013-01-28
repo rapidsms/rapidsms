@@ -9,7 +9,7 @@ from rapidsms.contrib.handlers.utils import get_handlers
 
 try:
     from django.test.utils import override_settings
-except:
+except ImportError:
     from rapidsms.tests.harness import setting as override_settings
 
 
@@ -53,7 +53,7 @@ class TestGetHandlers(TestCase):
         self.settings['INSTALLED_APPS'] = [self.ECHO_APP]
         self._check_get_handlers(EchoHandler, PingHandler)
 
-    def test_installed_handlers__installed_apps(self):
+    def test_installed_handler__installed_apps(self):
         """
         App should only include handlers listed in INSTALLED_HANDLERS, if it
         is defined.
@@ -61,6 +61,16 @@ class TestGetHandlers(TestCase):
         self.settings['INSTALLED_APPS'] = [self.ECHO_APP]
         self.settings['INSTALLED_HANDLERS'] = [self.PING_HANDLER]
         self._check_get_handlers(PingHandler)
+
+    def test_installed_handlers__installed_apps(self):
+        """
+        App should only include handlers listedin INSTALLED_HANDLERS, if it
+        is defined.
+        """
+        self.settings['INSTALLED_APPS'] = [self.ECHO_APP]
+        self.settings['INSTALLED_HANDLERS'] = [self.PING_HANDLER,
+                                               self.ECHO_HANDLER]
+        self._check_get_handlers(PingHandler, EchoHandler)
 
     def test_installed_handlers__no_installed_apps(self):
         """App should handle when an INSTALLED_HANDLER can't be found."""

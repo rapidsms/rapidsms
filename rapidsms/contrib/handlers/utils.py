@@ -4,6 +4,8 @@
 
 from rapidsms.conf import settings
 from rapidsms.utils.modules import find_python_files, get_class, try_import
+
+from .exceptions import HandlerError
 from .handlers.base import BaseHandler
 
 
@@ -20,10 +22,14 @@ def get_handlers():
     # if we're explicitly selecting handlers, filter out all those which
     # are not matched by one (or more) prefixes in INSTALLED_HANDLERS.
     if settings.INSTALLED_HANDLERS is not None:
-        for prefix in settings.INSTALLED_HANDLERS:
-            handlers = [
-                handler for handler in handlers
-                if handler.__module__.startswith(prefix)]
+        copy = [handler for handler in handlers]
+        handlers = []
+        while len(copy) > 0:
+            for prefix in settings.INSTALLED_HANDLERS:
+                if copy[-1].__module__.startswith(prefix):
+                    handlers.append(copy[-1])
+                    break
+            copy.pop()
 
     # likewise, in reverse, for EXCLUDED_HANDLERS.
     if settings.EXCLUDED_HANDLERS is not None:
@@ -98,7 +104,7 @@ def _handlers(module_name):
         return []
 
     if not hasattr(handlers_module, "__path__"):
-        raise Exception(
+        raise HandlerError(
             "Module %s must be a directory." % (handlers_module.__name__))
 
     files = find_python_files(
