@@ -3,4 +3,5 @@
 
 from .keyword import *
 from .pattern import *
+from .app import *
 from .utils import *

@@ -1,19 +1,17 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-
 from rapidsms.apps.base import AppBase
 from .utils import get_handlers
 
 
 class App(AppBase):
 
-    def start(self):
-        """
-        Spiders all apps, and registers all available handlers.
-        """
-        self.handlers = get_handlers()
+    def __init__(self, router):
+        """Spiders all apps, and registers all available handlers."""
+        super(App, self).__init__(router)
 
+        self.handlers = get_handlers()
         if len(self.handlers):
             class_names = [cls.__name__ for cls in self.handlers]
             self.info("Registered: %s" % (", ".join(class_names)))
