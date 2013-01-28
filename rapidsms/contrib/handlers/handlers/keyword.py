@@ -6,6 +6,7 @@ import re
 
 from django.core.exceptions import ObjectDoesNotExist
 
+from ..exceptions import HandlerError
 from .base import BaseHandler
 
 
@@ -45,12 +46,11 @@ class KeywordHandler(BaseHandler):
         if hasattr(cls, "keyword"):
             prefix = r"^\s*(?:%s)(?:[\s,;:]+(.+))?$" % (cls.keyword)
             return re.compile(prefix, re.IGNORECASE)
+        raise HandlerError('KeywordHandler must define a keyword.')
 
     @classmethod
     def dispatch(cls, router, msg):
         keyword = cls._keyword()
-        if keyword is None:
-            return False
 
         match = keyword.match(msg.text)
         if match is None:

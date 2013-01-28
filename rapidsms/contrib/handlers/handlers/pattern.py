@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-
 import re
+
+from ..exceptions import HandlerError
 from .base import BaseHandler
 
 
@@ -48,13 +49,11 @@ class PatternHandler(BaseHandler):
     def _pattern(cls):
         if hasattr(cls, "pattern"):
             return re.compile(cls.pattern, re.IGNORECASE)
+        raise HandlerError('PatternHandler must define a pattern.')
 
     @classmethod
     def dispatch(cls, router, msg):
-
         pattern = cls._pattern()
-        if pattern is None:
-            return False
 
         match = pattern.match(msg.text)
         if match is None:
