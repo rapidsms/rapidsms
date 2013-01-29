@@ -118,6 +118,8 @@ create the following conversation::
 Like `KeywordHandler`, each `PatternHandler` silently ignores all non-matching
 messages to allow other handlers and applications to catch them.
 
+.. _base-handler:
+
 BaseHandler
 -----------
 
@@ -144,6 +146,8 @@ environment for testing a handler's response to a specific message text::
 
     >>> AlwaysHandler.test("anything")
     ["xxx", "yyy"]
+
+.. _calling-handlers:
 
 Calling Handlers
 ================
