@@ -64,7 +64,6 @@ message, `help` is called instead. For example::
     > light off
     < Thanks for turning off the light!
     > light something else
-    > light on
     < Send LIGHT ON or LIGHT OFF.
 
 All non-matching messages are silently ignored to allow other applications and
