@@ -36,8 +36,9 @@ For example::
 PingHandler
 -----------
 
-`PingHandler` is an extension of :ref:`BaseHandler <base-handler>` which
-handles messages with the (precise) text "ping" by responding with "pong".
+`PingHandler` is an extension of :ref:`BaseHandler <base-handler>`. It handles
+messages with the (precise) text "ping" by responding with "pong". Unlike
+many handlers, this one is case-sensitive and does not allow extra whitespace.
 This handler is useful for remotely checking that the router is alive.
 
 For example::
