@@ -55,10 +55,6 @@ class TestRouterMixin(CustomRouterMixin):
     disable_phases = False  # setting to True will disable router phases
     backends = {'mockbackend': {'ENGINE': backend.MockBackend}}
 
-    def _pre_rapidsms_setup(self):
-        self.set_router()
-        super(TestRouterMixin, self)._pre_rapidsms_setup()
-
     def set_router(self):
         kwargs = {'disable_phases': self.disable_phases}
         if hasattr(self, 'apps'):
