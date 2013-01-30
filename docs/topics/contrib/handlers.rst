@@ -69,6 +69,16 @@ message, `help` is called instead. For example::
 All non-matching messages are silently ignored to allow other applications and
 handlers to catch them.
 
+
+For example implementations of `KeywordHandler`, see
+
+- `rapidsms.contrib.echo.handlers.echo.EchoHandler
+  <https://github.com/rapidsms/rapidsms/blob/master/rapidsms/contrib/echo/handlers/echo.py>`_
+- `rapidsms.contrib.registration.handlers.register.RegistrationHandler
+  <https://github.com/rapidsms/rapidsms/blob/master/rapidsms/contrib/registration/handlers/register.py>`_
+- `rapidsms.contrib.registration.handlers.language.LanguageHandler
+  <https://github.com/rapidsms/rapidsms/blob/master/rapidsms/contrib/registration/handlers/language.py>`_
+
 .. TIP::
    Technically speaking, the incoming message text is compared to a regular
    expression pattern::
@@ -147,6 +157,10 @@ environment for testing a handler's response to a specific message text::
     >>> AlwaysHandler.test("anything")
     ["xxx", "yyy"]
 
+For an example implementation of a `BaseHandler`, see
+`rapidsms.contrib.echo.handlers.ping.PingHandler
+<https://github.com/rapidsms/rapidsms/blob/master/rapidsms/contrib/echo/handlers/ping.py>`_.
+
 .. _calling-handlers:
 
 Calling Handlers
@@ -176,8 +190,9 @@ be configured using the following project settings:
 - :setting:`RAPIDSMS_HANDLERS_EXCLUDE_APPS` - The application will not load
   handlers from any Django app included in this list.
 
-- :setting:`INSTALLED_HANDLERS` - If this list is not `None`, the application
-  will load only handlers in modules that are included in this list.
+- :setting:`INSTALLED_HANDLERS` - If this list is not ``None``, the
+  application will load only handlers in modules that are included in this
+  list.
 
 - :setting:`EXCLUDED_HANDLERS` - The application will not load any handler in
   a module that is included in this list.
