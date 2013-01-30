@@ -86,9 +86,10 @@ PatternHandler
 --------------
 
 .. NOTE::
-   Pattern-based handlers are not usually a good idea - it is cumbersome to
-   write patterns with enough flexibility to be used in the real world.
-   However, it is very handy for prototyping, and can be easily upgraded later.
+   Pattern-based handlers can work well for prototyping and simple use cases.
+   For more complex parsing and message handling, we recommend writing a
+   :doc:`RapidSMS application </topics/applications/index>` with a custom
+   :ref:`handle phase <phase-handle>`.
 
 The `PatternHandler` class can be subclassed to create applications which
 respond to a message when a specific pattern is matched::
