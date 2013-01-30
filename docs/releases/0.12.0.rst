@@ -13,5 +13,7 @@ Welcome to RapidSMS 0.12.0! These release notes cover the new features 0.12.0.
 What's New
 ==========
 
+* Added documentation and tests for :doc:`rapidsms.contrib.default
+  </topics/contrib/default>`.
 * Added documentation and tests for :doc:`rapidsms.contrib.echo
   </topics/contrib/echo>`.
