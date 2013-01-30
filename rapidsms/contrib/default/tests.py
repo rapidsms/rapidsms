@@ -28,8 +28,7 @@ class DefaultAppTest(RapidTest):
         # Add another app & reset the test router.
         self.apps = [ReturningEchoApp, 'rapidsms.contrib.default']
         self.set_router()
-        with override_settings(RAPIDSMS_ROUTER=self.router_class,
-                     DEFAULT_RESPONSE='hello'):
+        with override_settings(DEFAULT_RESPONSE='hello'):
             self.receive('ping', self.connection)
             self.assertEqual(len(self.outbound), 1)
             self.assertNotEqual(self.outbound[0].text, 'hello')
