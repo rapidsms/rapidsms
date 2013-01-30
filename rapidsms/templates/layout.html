@@ -12,7 +12,6 @@
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 
         {% block stylesheets %}
-        <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}rapidsms/stylesheets/layout.css" />
         <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}rapidsms/stylesheets/splits.css" />
         <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}rapidsms/stylesheets/modules.css" />
         <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}rapidsms/stylesheets/tables.css" />
@@ -20,6 +19,7 @@
         <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}rapidsms/stylesheets/icons.css" />
         <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}rapidsms/stylesheets/icons.css" />
         <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}bootstrap/css/bootstrap.min.css" />
+        <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}rapidsms/stylesheets/layout.css" />
         {% endblock %}
 
         {% block javascripts %}
@@ -34,7 +34,7 @@
 		    {% block header %}
 
             <div class="container-fluid">
-                <div class="navbar navbar-inverse navbar-fixed-top">
+                <div class="navbar navbar-blue navbar-fixed-top">
                     <div class="navbar-inner">
                         <div class="row-fluid">
                             <a href="/" class="brand">
