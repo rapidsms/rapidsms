@@ -32,7 +32,6 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.contenttypes",
     # rapidsms contrib apps.
-    "rapidsms.contrib.default",
     "rapidsms.contrib.export",
     "rapidsms.contrib.handlers",
     "rapidsms.contrib.httptester",
@@ -41,6 +40,7 @@ INSTALLED_APPS = [
     "rapidsms.contrib.messaging",
     "rapidsms.contrib.registration",
     "rapidsms.contrib.echo",
+    "rapidsms.contrib.default",  # Should be last
 ]
 
 SITE_ID = 1
