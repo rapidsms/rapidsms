@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     "rapidsms.contrib.messaging",
     "rapidsms.contrib.registration",
     "rapidsms.contrib.echo",
+
+    "rapidsms.router.db",
 ]
 
 SITE_ID = 1
@@ -64,3 +66,10 @@ RAPIDSMS_TABS = [
     ("rapidsms.contrib.scheduler.views.index",              "Event Scheduler"),
     ("rapidsms.contrib.httptester.views.generate_identity", "Message Tester"),
 ]
+
+import djcelery
+djcelery.setup_loader()
+
+CELERY_ALWAYS_EAGER = True
+CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
+BROKER_BACKEND = 'memory'

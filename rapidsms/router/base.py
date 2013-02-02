@@ -2,11 +2,15 @@
 # vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
 
 import warnings
+import datetime
 
 from collections import defaultdict
 
 from django.dispatch import Signal
 from django.db.models.query import QuerySet
+
+from rapidsms.messages.incoming import IncomingMessage
+from rapidsms.messages.outgoing import OutgoingMessage
 
 from ..log.mixin import LoggerMixin
 from ..backends.base import BackendBase
@@ -292,6 +296,17 @@ class BaseRouter(object, LoggerMixin):
         backend = self.backends[backend_name]
         backend.send(id_=id_, text=text, identities=identities,
                      context=context)
+
+    def new_incoming_message(self, connections, text, fields):
+        message = IncomingMessage(connections=connections, text=text,
+                                  received_at=datetime.datetime.now(),
+                                  fields=fields)
+        return message
+
+    def new_outgoing_message(self, connections, text, fields):
+        message = OutgoingMessage(connections=connections, text=text,
+                                  fields=fields)
+        return message
 
     def incoming(self, msg):
         """Legacy support for Router.incoming() -- Deprecated"""

@@ -1,4 +1,3 @@
-import datetime
 import collections
 
 from rapidsms.models import Backend
@@ -9,13 +8,12 @@ def receive(text, connection, fields=None):
     Creates an incoming message and passes it to the router for processing.
     """
     from rapidsms.router import get_router
-    from rapidsms.messages import IncomingMessage
     router = get_router()
     router.start()
-    message = IncomingMessage(connections=[connection], text=text,
-                              received_at=datetime.datetime.now(),
-                              fields=fields)
-    router.receive_incoming(message)
+    message = router.new_incoming_message(connections=[connection], text=text,
+                                          fields=fields)
+    if message:
+        router.receive_incoming(message)
     router.stop()
     return message
 
