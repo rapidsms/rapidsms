@@ -67,6 +67,8 @@ RAPIDSMS_TABS = [
     ("rapidsms.contrib.httptester.views.generate_identity", "Message Tester"),
 ]
 
+PROJECT_NAME = 'rapidsms-test-suite'
+
 import djcelery
 djcelery.setup_loader()
 

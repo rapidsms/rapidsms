@@ -24,18 +24,13 @@ def send(text, connections):
     and sent via the respective backend.
     """
     from rapidsms.router import get_router
-    from rapidsms.messages import OutgoingMessage
     if not isinstance(connections, collections.Iterable):
         connections = [connections]
     router = get_router()
     router.start()
-    message = OutgoingMessage(connections, text)
-    router.send_outgoing(message)
-    # messages = []
-    # for connection in connections:
-    #     message = OutgoingMessage(connection, text)
-    #     router.send_outgoing(message)
-    #     messages.append(message)
+    message = router.new_outgoing_message(connections=connections, text=text)
+    if message:
+        router.send_outgoing(message)
     router.stop()
     return message
 

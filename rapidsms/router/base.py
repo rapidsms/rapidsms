@@ -297,13 +297,13 @@ class BaseRouter(object, LoggerMixin):
         backend.send(id_=id_, text=text, identities=identities,
                      context=context)
 
-    def new_incoming_message(self, connections, text, fields):
+    def new_incoming_message(self, connections, text, fields=None):
         message = IncomingMessage(connections=connections, text=text,
                                   received_at=datetime.datetime.now(),
                                   fields=fields)
         return message
 
-    def new_outgoing_message(self, connections, text, fields):
+    def new_outgoing_message(self, connections, text, fields=None):
         message = OutgoingMessage(connections=connections, text=text,
                                   fields=fields)
         return message
