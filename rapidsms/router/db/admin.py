@@ -6,7 +6,7 @@ class MessageAdmin(admin.ModelAdmin):
     search_fields = ('text',)
     list_display = ('id', 'date', 'direction', 'text', 'status', 'updated',
                     'sent', 'delivered')
-    list_filter = ('status',)
+    list_filter = ('direction', 'status',)
     ordering = ('-updated',)
 
 
