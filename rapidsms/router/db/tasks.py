@@ -1,3 +1,5 @@
+import datetime
+
 import celery
 from celery.utils.log import get_task_logger
 from rapidsms.router.blocking import BlockingRouter
@@ -24,38 +26,45 @@ def receive(message_id):
     router.start()
     try:
         router.receive_incoming(message)
-    except Exception, e:
-        logger.exception(e)
-        dbm.status = "E"
-        dbm.save()
-        dbm.transmissions.update(status='E')
+    except Exception, exc:
+        logger.exception(exc)
+        dbm.transmissions.update(status='E', updated=datetime.datetime.now())
+        dbm.set_status()
     finally:
         router.stop()
     if dbm.status != 'E':
         # mark message as being received
-        dbm.status = "R"
-        dbm.save()
-        dbm.transmissions.update(status='R')
+        dbm.transmissions.update(status='R', updated=datetime.datetime.now())
+        dbm.set_status()
 
 
 @celery.task
 def send_transmissions(backend_id, message_id, transmission_ids):
+    """Send message to backend with provided transmissions. Retry if failed."""
     from rapidsms.models import Backend
     from rapidsms.router.db.models import Message, Transmission
     backend = Backend.objects.get(pk=backend_id)
     dbm = Message.objects.get(pk=message_id)
     transmissions = Transmission.objects.filter(id__in=transmission_ids)
+    # set (possibly reset) status to processing
+    transmissions.update(status='P')
     identities = transmissions.values_list('connection__identity', flat=True)
     router = BlockingRouter()
     router.start()
-    # TODO: retry task if backend fails to send
     try:
         router.send_to_backend(backend_name=backend.name, id_=dbm.pk,
                                text=dbm.text, identities=identities,
                                context={})
-    except Exception, e:
-        logger.exception(e)
-        dbm.status = "E"
-        dbm.save()
+    except Exception, exc:
+        # log error, update database statuses, and re-execute this task
+        logger.exception(exc)
+        Message.objects.filter(pk=message_id).update(status='E')
+        transmissions.update(status='E', updated=datetime.datetime.now())
+        raise send_transmissions.retry(exc=exc)
     finally:
         router.stop()
+    # no error occured, so mark these transmissions as sent
+    transmissions.update(status='S', sent=datetime.datetime.now())
+    # we don't know if there are more transmissions pending, so
+    # we always set the status at the end of each batch
+    dbm.set_status()

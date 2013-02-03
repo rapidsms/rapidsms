@@ -1,9 +1,11 @@
 from django.test import TestCase
 
 from rapidsms.models import Connection
-from rapidsms.tests.harness import CustomRouterMixin, MockBackend, ExceptionApp
+from rapidsms.tests.harness import (CustomRouterMixin, MockBackend,
+                                    ExceptionApp, RaisesBackend)
 from rapidsms.router.db import DatabaseRouter
 from rapidsms.router.db.models import Message
+from rapidsms.router.db.tasks import send_transmissions
 
 try:
     from django.test.utils import override_settings
@@ -11,8 +13,70 @@ except ImportError:
     from rapidsms.tests.harness import setting as override_settings
 
 
+class MessageStatusTest(CustomRouterMixin, TestCase):
+
+    router_class = 'rapidsms.router.db.DatabaseRouter'
+
+    def test_inbound_message_status_error(self):
+        """Message should be E if transmissions are E."""
+        dbm = Message.objects.create(text="test", direction="I")
+        dbm.transmissions.create(connection=self.create_connection(),
+                                 status='E')
+        self.assertEqual('E', dbm.set_status())
+
+    def test_inbound_message_status_queued(self):
+        """Message should be Q if transmissions are Q."""
+        dbm = Message.objects.create(text="test", direction="I")
+        dbm.transmissions.create(connection=self.create_connection(),
+                                 status='Q')
+        self.assertEqual('Q', dbm.set_status())
+
+    def test_inbound_message_status_received(self):
+        """Message should be R if transmissions are R."""
+        dbm = Message.objects.create(text="test", direction="I")
+        dbm.transmissions.create(connection=self.create_connection(),
+                                 status='R')
+        self.assertEqual('R', dbm.set_status())
+
+    def test_outbound_message_status_error(self):
+        """Any transmission marked E means the message should be E."""
+        dbm = Message.objects.create(text="test", direction="O")
+        dbm.transmissions.create(connection=self.create_connection(),
+                                 status='E')
+        dbm.transmissions.create(connection=self.create_connection(),
+                                 status='S')
+        self.assertEqual('E', dbm.set_status())
+
+    def test_outbound_message_status_processing(self):
+        """If transmissions aren't all sent or delivered, status shold be P."""
+        dbm = Message.objects.create(text="test", direction="O")
+        dbm.transmissions.create(connection=self.create_connection(),
+                                 status='Q')
+        dbm.transmissions.create(connection=self.create_connection(),
+                                 status='S')
+        self.assertEqual('P', dbm.set_status())
+
+    def test_outbound_message_status_sent(self):
+        """If not all messages are delivered, then status should be S."""
+        dbm = Message.objects.create(text="test", direction="O")
+        dbm.transmissions.create(connection=self.create_connection(),
+                                 status='S')
+        dbm.transmissions.create(connection=self.create_connection(),
+                                 status='D')
+        self.assertEqual('S', dbm.set_status())
+
+    def test_outbound_message_status_delivered(self):
+        """If all messages are delivered, then status should be S."""
+        dbm = Message.objects.create(text="test", direction="O")
+        dbm.transmissions.create(connection=self.create_connection(),
+                                 status='D')
+        dbm.transmissions.create(connection=self.create_connection(),
+                                 status='D')
+        self.assertEqual('D', dbm.set_status())
+
+
 @override_settings(INSTALLED_APPS=['rapidsms.contrib.echo'])
-class DatabaseRouterTest(CustomRouterMixin, TestCase):
+class DatabaseRouterReceiveTest(CustomRouterMixin, TestCase):
     """Tests for the DatabaseRouter class"""
 
     router_class = 'rapidsms.router.db.DatabaseRouter'
@@ -74,10 +138,63 @@ class DatabaseRouterTest(CustomRouterMixin, TestCase):
             transmission = dbm.transmissions.all()[0]
             self.assertEqual("E", transmission.status)
 
-    def test_send_queue(self):
-        """send() should create a DB message that's processing."""
+
+@override_settings(INSTALLED_APPS=['rapidsms.contrib.echo'])
+class DatabaseRouterSendTest(CustomRouterMixin, TestCase):
+    """Tests for the DatabaseRouter class"""
+
+    router_class = 'rapidsms.router.db.DatabaseRouter'
+    backends = {'mockbackend': {'ENGINE': MockBackend}}
+
+    def create_trans(self, s1='Q', s2='Q'):
         backend = self.create_backend(data={'name': 'mockbackend'})
-        connection = self.create_connection(data={'backend': backend})
-        self.send(text="foo", connections=[connection])
+        Connection.objects.bulk_create((
+            Connection(identity='1111111111', backend=backend),
+            Connection(identity='2222222222', backend=backend),
+            Connection(identity='3333333333', backend=backend),
+            Connection(identity='4444444444', backend=backend),
+        ))
+        dbm = Message.objects.create(text="test", direction="O")
+        for connection in Connection.objects.order_by('id')[:2]:
+            dbm.transmissions.create(connection=connection, status=s1)
+        for connection in Connection.objects.order_by('id')[2:]:
+            dbm.transmissions.create(connection=connection, status=s2)
+        ids = dbm.transmissions.order_by('id').values_list('id', flat=True)
+        trans1 = dbm.transmissions.filter(id__in=ids[:2])
+        trans2 = dbm.transmissions.filter(id__in=ids[2:])
+        return backend, dbm, trans1, trans2
+
+    def test_send_successful_status(self):
+        """Transmissions should be marked with S if no errors occured."""
+        # create 2 batches (queued, queued)
+        backend, dbm, t1, t2 = self.create_trans(s1='Q', s2='Q')
+        send_transmissions(backend.pk, dbm.pk, t1.values_list('id', flat=True))
+        status = t1.values_list('status', flat=True).distinct()[0]
+        self.assertEqual('S', status)
+
+    def test_send_successful_message_status(self):
+        """Message object should be updated if all transmissions were sent."""
+        # create 2 batches (sent, queued)
+        backend, dbm, t1, t2 = self.create_trans(s1='S', s2='Q')
+        send_transmissions(backend.pk, dbm.pk, t2.values_list('id', flat=True))
         dbm = Message.objects.all()[0]
-        self.assertEqual('P', dbm.status)
+        self.assertEqual('S', dbm.status)
+
+    def test_send_successful_message_status_previous_error(self):
+        """Message should be marked E even if current batch sends."""
+        # create 2 batches (error, queued)
+        backend, dbm, t1, t2 = self.create_trans(s1='E', s2='Q')
+        send_transmissions(backend.pk, dbm.pk, t2.values_list('id', flat=True))
+        dbm = Message.objects.all()[0]
+        self.assertEqual('E', dbm.status)
+
+    # not sure how to test this yet...
+    # def test_send_error(self):
+    #     """Message should be marked E even if current batch sends."""
+    #     backends = {'mockbackend': {'ENGINE': RaisesBackend}}
+    #     with override_settings(INSTALLED_BACKENDS=backends):
+    #         backend, dbm, t1, t2 = self.create_trans(s1='S', s2='Q')
+    #         send_transmissions(backend.pk, dbm.pk,
+    #                            t2.values_list('id', flat=True))
+    #         status = t2.values_list('status', flat=True).distinct()[0]
+    #         self.assertEqual('E', status)
