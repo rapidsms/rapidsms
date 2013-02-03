@@ -14,10 +14,12 @@ logger = get_task_logger(__name__)
 @celery.task
 def receive(message_id):
     """Retrieve message from DB and pass to BlockingRouter for processing."""
+    from rapidsms.models import Connection
     from rapidsms.router.db.models import Message
     dbm = Message.objects.get(pk=message_id)
     router = BlockingRouter()
-    connections = dbm.transmissions.values_list('connection', flat=True)
+    ids = dbm.transmissions.values_list('connection_id', flat=True)
+    connections = Connection.objects.filter(id__in=list(ids))
     # create new message for inbound processing
     message = router.new_incoming_message(connections=connections,
                                           text=dbm.text, fields=None)
