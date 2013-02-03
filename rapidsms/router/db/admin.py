@@ -3,11 +3,19 @@ from rapidsms.router.db.models import Message, Transmission
 
 
 class MessageAdmin(admin.ModelAdmin):
-    pass
+    search_fields = ('text',)
+    list_display = ('id', 'date', 'direction', 'text', 'status', 'updated',
+                    'sent', 'delivered')
+    list_filter = ('status',)
+    ordering = ('-updated',)
 
 
 class TransmissionAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('id', 'date', 'status', 'connection', 'updated', 'sent',
+                    'delivered')
+    ordering = ('-updated',)
+    list_filter = ('status',)
+    raw_id_fields = ('message', 'connection',)
 
 
 admin.site.register(Message, MessageAdmin)

@@ -67,3 +67,6 @@ class Transmission(models.Model):
     updated = models.DateTimeField(auto_now=True, null=True)
     sent = models.DateTimeField(null=True, blank=True)
     delivered = models.DateTimeField(null=True, blank=True)
+
+    def __unicode__(self):
+        return "%d: %s" % (self.pk, self.get_status_display())
