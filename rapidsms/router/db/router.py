@@ -1,5 +1,7 @@
+from django.db.models import Q
+
 from rapidsms.router.blocking import BlockingRouter
-from rapidsms.router.db.tasks import receive, send
+from rapidsms.router.db.tasks import receive, send_transmissions
 
 
 class DatabaseRouter(BlockingRouter):
@@ -23,5 +25,19 @@ class DatabaseRouter(BlockingRouter):
 
     def backend_preparation(self, msg):
         """Queue message in DB rather than passing directly to backends."""
+        # create queued message and associated transmissions
         dbm = self.queue_message("O", msg.connections, msg.text)
-        send.delay(message_id=dbm.pk)
+        # mark message as processing
+        dbm.status = "P"
+        dbm.save()
+        transmissions = dbm.transmissions
+        # divide transmissions by backend
+        backends = transmissions.values_list('connection__backend_id',
+                                             flat=True)
+        for backend_id in backends.distinct():
+            q = Q(connection__backend_id=backend_id)
+            # TODO: chunk transmissions into more managable lenths
+            chunk = transmissions.filter(q).values_list('pk', flat=True)
+            send_transmissions.delay(backend_id=backend_id,
+                                     message_id=dbm.pk,
+                                     transmission_ids=chunk)

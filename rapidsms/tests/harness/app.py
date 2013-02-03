@@ -40,3 +40,10 @@ class EchoApp(MockApp):
     def handle(self, message):
         MockApp.handle(self, message)
         message.respond(message.peer + ": " + message.text)
+
+
+class ExceptionApp(MockApp):
+    """App that raises an exception."""
+
+    def handle(self, message):
+        raise Exception('Error!')
