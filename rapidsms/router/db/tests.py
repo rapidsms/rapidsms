@@ -4,7 +4,7 @@ from rapidsms.models import Connection
 from rapidsms.tests.harness import (CustomRouterMixin, MockBackend,
                                     ExceptionApp, RaisesBackend)
 from rapidsms.router.db import DatabaseRouter
-from rapidsms.router.db.models import Message
+from rapidsms.router.db.models import Message, Transmission
 from rapidsms.router.db.tasks import send_transmissions
 
 try:
@@ -187,6 +187,20 @@ class DatabaseRouterSendTest(CustomRouterMixin, TestCase):
         send_transmissions(backend.pk, dbm.pk, t2.values_list('id', flat=True))
         dbm = Message.objects.all()[0]
         self.assertEqual('E', dbm.status)
+
+    def test_group_transmissions(self):
+        """Transmissions should be grouped by batch_size."""
+        # create 2 batches (queued, queued)
+        backend, dbm, t1, t2 = self.create_trans(s1='Q', s2='Q')
+        router = DatabaseRouter()
+        trans = list(router.group_transmissions(Transmission.objects.all(),
+                                                batch_size=2))
+        _, batch1 = trans[0]
+        _, batch2 = trans[1]
+        self.assertEqual(list(batch1.values_list('id', flat=True)),
+                         list(t1.values_list('id', flat=True)))
+        self.assertEqual(list(batch2.values_list('id', flat=True)),
+                         list(t2.values_list('id', flat=True)))
 
     # not sure how to test this yet...
     # def test_send_error(self):

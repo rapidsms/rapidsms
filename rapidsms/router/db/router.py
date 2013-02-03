@@ -25,6 +25,23 @@ class DatabaseRouter(BlockingRouter):
         # inbound processing will be handled within an async task
         return None
 
+    def group_transmissions(self, transmissions, batch_size=200):
+        start = 0
+        end = batch_size
+        # divide transmissions by backend
+        backends = transmissions.values_list('connection__backend_id',
+                                             flat=True)
+        for backend_id in backends.distinct():
+            q = Q(connection__backend_id=backend_id)
+            transmissions = transmissions.filter(q).order_by('id')
+            while True:
+                batch = transmissions[start:end]
+                if not batch.exists():
+                    break
+                yield backend_id, batch
+                start = end
+                end += batch_size
+
     def backend_preparation(self, msg):
         """Queue message in DB rather than passing directly to backends."""
         # create queued message and associated transmissions
@@ -32,14 +49,8 @@ class DatabaseRouter(BlockingRouter):
         # mark message as processing
         dbm.status = "P"
         dbm.save()
-        transmissions = dbm.transmissions
-        # divide transmissions by backend
-        backends = transmissions.values_list('connection__backend_id',
-                                             flat=True)
-        for backend_id in backends.distinct():
-            q = Q(connection__backend_id=backend_id)
-            # TODO: chunk transmissions into more managable lenths
-            chunk = transmissions.filter(q).values_list('pk', flat=True)
+        for backend_id, trans in self.group_transmissions(dbm.transmissions):
+            transmission_ids = trans.values_list('pk', flat=True)
             send_transmissions.delay(backend_id=backend_id,
                                      message_id=dbm.pk,
-                                     transmission_ids=chunk)
+                                     transmission_ids=transmission_ids)
