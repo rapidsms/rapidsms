@@ -8,12 +8,14 @@ class DatabaseRouter(BlockingRouter):
 
     def queue_message(self, direction, connections, text, fields=None):
         """Create Message and Transmission objects for messages."""
-        from rapidsms.router.db.models import Message
-        msg = Message.objects.create(text=text, direction=direction)
-        # TODO: update to use bulk insert ORM api
+        from rapidsms.router.db.models import Message, Transmission
+        dbm = Message.objects.create(text=text, direction=direction)
+        transmissions = []
         for connection in connections:
-            msg.transmissions.create(connection=connection, status='Q')
-        return msg
+            transmissions.append(Transmission(message=dbm, status='Q',
+                                              connection=connection))
+        Transmission.objects.bulk_create(transmissions)
+        return dbm
 
     def new_incoming_message(self, connections, text, fields=None):
         """Queue message in DB for async inbound processing."""
