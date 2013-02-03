@@ -26,6 +26,7 @@ class DatabaseRouter(BlockingRouter):
         return None
 
     def group_transmissions(self, transmissions, batch_size=200):
+        """Divide transmissions by backend and into manageable chunks."""
         start = 0
         end = batch_size
         # divide transmissions by backend
@@ -33,10 +34,13 @@ class DatabaseRouter(BlockingRouter):
                                              flat=True)
         for backend_id in backends.distinct():
             q = Q(connection__backend_id=backend_id)
+            # filter down based on this backend and order by ID
             transmissions = transmissions.filter(q).order_by('id')
             while True:
+                # divid transmissions into chunks of specified size
                 batch = transmissions[start:end]
                 if not batch.exists():
+                    # query returned no rows, so we've seen all transmissions
                     break
                 yield backend_id, batch
                 start = end
