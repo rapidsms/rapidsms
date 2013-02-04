@@ -21,12 +21,13 @@ STATUS_CHOICES = (
 
 class Message(models.Model):
     status = models.CharField(max_length=1, choices=STATUS_CHOICES,
-                              default='Q')
+                              default='Q', db_index=True)
     date = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True, null=True)
+    updated = models.DateTimeField(auto_now=True, null=True, db_index=True)
     sent = models.DateTimeField(null=True, blank=True)
     delivered = models.DateTimeField(null=True, blank=True)
-    direction = models.CharField(max_length=1, choices=DIRECTION_CHOICES)
+    direction = models.CharField(max_length=1, choices=DIRECTION_CHOICES,
+                                 db_index=True)
     text = models.TextField()
     external_id = models.CharField(max_length=1024, blank=True)
     in_response_to = models.ForeignKey('self', related_name='responses',
@@ -62,9 +63,10 @@ class Message(models.Model):
 class Transmission(models.Model):
     message = models.ForeignKey(Message, related_name='transmissions')
     connection = models.ForeignKey(Connection, related_name='transmissions')
-    status = models.CharField(max_length=1, choices=STATUS_CHOICES)
+    status = models.CharField(max_length=1, choices=STATUS_CHOICES,
+                              db_index=True)
     date = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True, null=True)
+    updated = models.DateTimeField(auto_now=True, null=True, db_index=True)
     sent = models.DateTimeField(null=True, blank=True)
     delivered = models.DateTimeField(null=True, blank=True)
 
