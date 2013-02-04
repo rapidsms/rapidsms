@@ -33,7 +33,7 @@ Many RapidSMS applications operate based on whether a message begins with a
 specific keyword. By subclassing `KeywordHandler`, you can easily create a
 simple, keyword-based application::
 
-    from rapidsms.contrib.handlers.handlers.keyword import KeywordHandler
+    from rapidsms.contrib.handlers import KeywordHandler
 
     class LightHandler(KeywordHandler):
         keyword = "light"
@@ -104,7 +104,7 @@ PatternHandler
 The `PatternHandler` class can be subclassed to create applications which
 respond to a message when a specific pattern is matched::
 
-    from rapidsms.contrib.handlers.handlers.pattern import PatternHandler
+    from rapidsms.contrib.handlers import PatternHandler
 
     class SumHandler(PatternHandler):
         pattern = r"^(\d+) plus (\d+)$"
@@ -145,7 +145,7 @@ the instance's message).
 `BaseHandler` also defines the class method `test`, which creates a simple
 environment for testing a handler's response to a specific message text::
 
-    >>> from rapidsms.contrib.handlers.handlers.base import BaseHandler
+    >>> from rapidsms.contrib.handlers import BaseHandler
     >>> class AlwaysHandler(BaseHandler):
     ...
     ...    @classmethod

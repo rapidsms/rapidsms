@@ -4,8 +4,8 @@
 from rapidsms.messages import IncomingMessage
 from rapidsms.tests.harness import RapidTest
 
+from rapidsms.contrib.handlers import BaseHandler
 from rapidsms.contrib.handlers.exceptions import HandlerError
-from rapidsms.contrib.handlers.handlers.base import BaseHandler
 from rapidsms.contrib.handlers.tests.harness import EchoKeywordHandler
 from rapidsms.contrib.handlers.tests.harness import AdditionPatternHandler
 
