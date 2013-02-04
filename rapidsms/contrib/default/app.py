@@ -11,4 +11,6 @@ class App(AppBase):
     def default(self, msg):
         response = settings.DEFAULT_RESPONSE
         if response is not None:
-            msg.error(response, project_name=settings.PROJECT_NAME)
+            if hasattr(settings, 'PROJECT_NAME') and settings.PROJECT_NAME:
+                response = response % {'project_name': settings.PROJECT_NAME}
+            msg.error(response)

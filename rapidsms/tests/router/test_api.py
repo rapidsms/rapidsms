@@ -1,5 +1,7 @@
 from rapidsms.router import receive, send
 from rapidsms.tests.harness import RapidTest
+from rapidsms.messages.incoming import IncomingMessage
+from rapidsms.messages.outgoing import OutgoingMessage
 
 
 class RouterAPITest(RapidTest):
@@ -33,3 +35,11 @@ class RouterAPITest(RapidTest):
                           connection=connection, fields=fields)
         self.assertTrue('extra-field' in message.fields)
         self.assertEqual(message.fields['extra-field'], fields['extra-field'])
+
+    def test_new_incoming_message_class(self):
+        """Make sure you can customize the incoming message class."""
+        class TestIncomingMessage(IncomingMessage):
+            pass
+        msg = self.receive("echo hello", self.create_connection(),
+                           class_=TestIncomingMessage)
+        self.assertTrue(isinstance(msg, TestIncomingMessage))

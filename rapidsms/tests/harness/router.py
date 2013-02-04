@@ -30,13 +30,13 @@ class CustomRouterMixin(CreateDataMixin):
         super(CustomRouterMixin, self).__call__(result)
         self._post_rapidsms_teardown()
 
-    def receive(self, text, connection, fields=None):
+    def receive(self, text, connection, **kwargs):
         """receive() API wrapper."""
-        return receive(text, connection, fields)
+        return receive(text, connection, **kwargs)
 
-    def send(self, text, connections):
+    def send(self, text, connections, **kwargs):
         """send() API wrapper."""
-        return send(text, connections)
+        return send(text, connections, **kwargs)
 
     def set_backends(self):
         setattr(settings, 'INSTALLED_BACKENDS', self.backends)
