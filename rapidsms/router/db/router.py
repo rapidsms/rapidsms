@@ -52,6 +52,7 @@ class DatabaseRouter(BlockingRouter):
         dbm = self.queue_message("O", msg.connections, msg.text)
         # mark message as processing
         dbm.status = "P"
+        # set in_response_to db field if available
         if msg.in_response_to and hasattr(msg.in_response_to, 'db'):
             dbm.in_response_to = msg.in_response_to.db
         dbm.save()
