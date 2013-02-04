@@ -108,12 +108,12 @@ class BaseRouterTest(harness.CreateDataMixin, TestCase):
         incoming_message = self.create_incoming_message()
         msg = router.new_outgoing_message(text="foo", connections=[connection],
                                           fields=fields,
-                                          in_reply_to=incoming_message)
+                                          in_response_to=incoming_message)
         self.assertTrue(isinstance(msg, OutgoingMessage))
         self.assertEqual("foo", msg.text)
         self.assertEqual(connection, msg.connections[0])
         self.assertEqual(fields['foo'], msg.fields['foo'])
-        self.assertEqual(incoming_message, msg.in_reply_to)
+        self.assertEqual(incoming_message, msg.in_response_to)
 
     def test_new_outgoing_message_class(self):
         """Make sure you can customize the outgoing message class."""

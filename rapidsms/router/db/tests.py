@@ -3,8 +3,7 @@ from mock import patch
 from django.test import TestCase
 
 from rapidsms.models import Connection
-from rapidsms.tests.harness import (CustomRouterMixin, MockBackend,
-                                    ExceptionApp, RaisesBackend)
+from rapidsms.tests import harness
 from rapidsms.router.db import DatabaseRouter
 from rapidsms.router.db.models import Message, Transmission
 from rapidsms.router.db.tasks import send_transmissions
@@ -15,7 +14,7 @@ except ImportError:
     from rapidsms.tests.harness import setting as override_settings
 
 
-class MessageStatusTest(CustomRouterMixin, TestCase):
+class MessageStatusTest(harness.CustomRouterMixin, TestCase):
 
     router_class = 'rapidsms.router.db.DatabaseRouter'
 
@@ -78,11 +77,11 @@ class MessageStatusTest(CustomRouterMixin, TestCase):
 
 
 @override_settings(INSTALLED_APPS=['rapidsms.contrib.echo'])
-class DatabaseRouterReceiveTest(CustomRouterMixin, TestCase):
+class DatabaseRouterReceiveTest(harness.CustomRouterMixin, TestCase):
     """Tests for the DatabaseRouter class"""
 
     router_class = 'rapidsms.router.db.DatabaseRouter'
-    backends = {'mockbackend': {'ENGINE': MockBackend}}
+    backends = {'mockbackend': {'ENGINE': harness.MockBackend}}
 
     def test_queue_status(self):
         """queue_message() should set the queued status."""
@@ -133,7 +132,7 @@ class DatabaseRouterReceiveTest(CustomRouterMixin, TestCase):
 
     def test_receive_status_with_error(self):
         """Inbound messages should be marked with E if an error occured."""
-        with override_settings(INSTALLED_APPS=[ExceptionApp]):
+        with override_settings(INSTALLED_APPS=[harness.ExceptionApp]):
             self.receive(text="foo", connection=self.create_connection())
             dbm = Message.objects.all()[0]
             self.assertEqual("E", dbm.status)
@@ -142,11 +141,11 @@ class DatabaseRouterReceiveTest(CustomRouterMixin, TestCase):
 
 
 @override_settings(INSTALLED_APPS=['rapidsms.contrib.echo'])
-class DatabaseRouterSendTest(CustomRouterMixin, TestCase):
+class DatabaseRouterSendTest(harness.CustomRouterMixin, TestCase):
     """Tests for the DatabaseRouter class"""
 
     router_class = 'rapidsms.router.db.DatabaseRouter'
-    backends = {'mockbackend': {'ENGINE': MockBackend}}
+    backends = {'mockbackend': {'ENGINE': harness.MockBackend}}
 
     def create_trans(self, s1='Q', s2='Q'):
         backend = self.create_backend(data={'name': 'mockbackend'})
@@ -203,6 +202,19 @@ class DatabaseRouterSendTest(CustomRouterMixin, TestCase):
                          list(t1.values_list('id', flat=True)))
         self.assertEqual(list(batch2.values_list('id', flat=True)),
                          list(t2.values_list('id', flat=True)))
+
+    def test_in_response_to(self):
+        """Make sure responses set the in_response_to DB fields."""
+        class ResponseApp(harness.MockApp):
+            def handle(self, msg):
+                msg.respond("pong")
+        with override_settings(INSTALLED_APPS=[ResponseApp]):
+            backend = self.create_backend(data={'name': 'mockbackend'})
+            connection = self.create_connection(data={'backend': backend})
+            self.receive(text="ping", connection=connection)
+            message = Message.objects.get(direction='I')
+            response = Message.objects.get(direction='O')
+            self.assertEqual(message.pk, response.in_response_to.pk)
 
     # not sure how to test this...
     # def test_send_error(self):

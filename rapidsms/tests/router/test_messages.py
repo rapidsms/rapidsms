@@ -34,8 +34,8 @@ class MessagesTest(RapidTest):
         message = IncomingMessage(connection, 'test incoming message',
                                   fields=fields)
         response = message.respond('response')
-        self.assertEqual(message, response['in_reply_to'])
-        self.assertTrue('extra-field' in response['in_reply_to'].fields)
+        self.assertEqual(message, response['in_response_to'])
+        self.assertTrue('extra-field' in response['in_response_to'].fields)
 
     def test_outgoing_message_send(self):
         """OutgoingMessage.send should use send() API correctly"""
@@ -56,4 +56,4 @@ class MessagesTest(RapidTest):
         self.assertEqual("test1", response1['text'])
         self.assertEqual(inbound_message.connections, response1['connections'])
         # reply_to should reference original message
-        self.assertEqual(inbound_message, response1['in_reply_to'])
+        self.assertEqual(inbound_message, response1['in_response_to'])

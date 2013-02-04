@@ -314,10 +314,10 @@ class BaseRouter(object, LoggerMixin):
                       received_at=datetime.datetime.now(), fields=fields)
 
     def new_outgoing_message(self, text, connections, fields=None,
-                             in_reply_to=None, class_=OutgoingMessage):
+                             in_response_to=None, class_=OutgoingMessage):
         """Create new outgoing message. Overridable by child-routers."""
         return class_(text=text, connections=connections, fields=fields,
-                      in_reply_to=in_reply_to)
+                      in_response_to=in_response_to)
 
     def incoming(self, msg):
         """Legacy support for Router.incoming() -- Deprecated"""

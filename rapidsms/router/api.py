@@ -18,7 +18,7 @@ def receive(text, connection, fields=None):
     return message
 
 
-def send(text, connections, fields=None, in_reply_to=None):
+def send(text, connections, fields=None, in_response_to=None):
     """
     Creates an outgoing message and passes it to the router to be processed
     and sent via the respective backend.
@@ -30,7 +30,7 @@ def send(text, connections, fields=None, in_reply_to=None):
     router.start()
     message = router.new_outgoing_message(text=text, connections=connections,
                                           fields=fields,
-                                          in_reply_to=in_reply_to)
+                                          in_response_to=in_response_to)
     if message:
         router.send_outgoing(message)
     router.stop()

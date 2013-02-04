@@ -52,6 +52,8 @@ class DatabaseRouter(BlockingRouter):
         dbm = self.queue_message("O", msg.connections, msg.text)
         # mark message as processing
         dbm.status = "P"
+        if msg.in_response_to and hasattr(msg.in_response_to, 'db'):
+            dbm.in_response_to = msg.in_response_to.db
         dbm.save()
         for backend_id, trans in self.group_transmissions(dbm.transmissions):
             transmission_ids = list(trans.values_list('pk', flat=True))

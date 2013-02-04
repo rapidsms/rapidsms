@@ -26,7 +26,7 @@ class IncomingMessage(MessageBase):
         Respond to this message. Router will process responses automatically.
         """
         context = {'text': text, 'connections': self.connections,
-                   'in_reply_to': self}
+                   'in_response_to': self}
         context.update(kwargs)
         self.responses.append(context)
         return context
