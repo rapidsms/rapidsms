@@ -17,9 +17,9 @@ class DatabaseRouter(BlockingRouter):
         Transmission.objects.bulk_create(transmissions)
         return dbm
 
-    def new_incoming_message(self, connections, text, fields=None):
+    def new_incoming_message(self, connections, text, **kwargs):
         """Queue message in DB for async inbound processing."""
-        dbm = self.queue_message("I", connections, text, fields)
+        dbm = self.queue_message("I", connections, text, **kwargs)
         receive.delay(message_id=dbm.pk)
         # don't return message to prevent futher processing
         # inbound processing will be handled within an async task

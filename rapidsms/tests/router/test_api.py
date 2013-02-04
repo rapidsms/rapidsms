@@ -36,10 +36,18 @@ class RouterAPITest(RapidTest):
         self.assertTrue('extra-field' in message.fields)
         self.assertEqual(message.fields['extra-field'], fields['extra-field'])
 
-    def test_new_incoming_message_class(self):
-        """Make sure you can customize the incoming message class."""
+    def test_receive_message_class(self):
+        """receive() should let you customize the incoming message class."""
         class TestIncomingMessage(IncomingMessage):
             pass
         msg = self.receive("echo hello", self.create_connection(),
                            class_=TestIncomingMessage)
+        self.assertTrue(isinstance(msg, TestIncomingMessage))
+
+    def test_send_message_class(self):
+        """send() should let you customize the outgoing message class."""
+        class TestIncomingMessage(OutgoingMessage):
+            pass
+        msg = self.send("hello", self.create_connection(),
+                        class_=TestIncomingMessage)
         self.assertTrue(isinstance(msg, TestIncomingMessage))

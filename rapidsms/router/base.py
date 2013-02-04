@@ -307,17 +307,17 @@ class BaseRouter(object, LoggerMixin):
         backend.send(id_=id_, text=text, identities=identities,
                      context=context)
 
-    def new_incoming_message(self, text, connections, fields=None,
-                             class_=IncomingMessage):
+    def new_incoming_message(self, text, connections, class_=IncomingMessage,
+                             **kwargs):
         """Create new incoming message. Overridable by child-routers."""
         return class_(text=text, connections=connections,
-                      received_at=datetime.datetime.now(), fields=fields)
+                      received_at=datetime.datetime.now(),
+                      **kwargs)
 
-    def new_outgoing_message(self, text, connections, fields=None,
-                             in_response_to=None, class_=OutgoingMessage):
+    def new_outgoing_message(self, text, connections, class_=OutgoingMessage,
+                             **kwargs):
         """Create new outgoing message. Overridable by child-routers."""
-        return class_(text=text, connections=connections, fields=fields,
-                      in_response_to=in_response_to)
+        return class_(text=text, connections=connections, **kwargs)
 
     def incoming(self, msg):
         """Legacy support for Router.incoming() -- Deprecated"""
