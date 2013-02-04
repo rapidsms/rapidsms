@@ -17,6 +17,19 @@ The default response to an `IncomingMessage` that is not handled by any other
 application. To include :setting:`PROJECT_NAME`, use ``'%(project_name)s'`` in
 the string.
 
+.. setting:: EXCLUDED_HANDLERS
+
+EXCLUDED_HANDLERS
+-----------------
+
+:App: :doc:`rapidsms.contrib.handlers </topics/contrib/handlers>`
+:Default: ``[]``
+
+The :doc:`rapidsms.contrib.handlers </topics/contrib/handlers>` application
+will not load any handler in a module that is in this list. The module name of
+each handler is compared to the value in this list using prefix matching. For
+more information, see :ref:`handler-discovery`.
+
 .. setting:: INSTALLED_BACKENDS
 
 INSTALLED_BACKENDS
@@ -50,6 +63,20 @@ Example configuration::
         },
     }
 
+.. setting:: INSTALLED_HANDLERS
+
+INSTALLED_HANDLERS
+------------------
+
+:App: :doc:`rapidsms.contrib.handlers </topics/contrib/handlers>`
+:Default: ``None``
+
+If this setting is not ``None``, the :doc:`rapidsms.contrib.handlers
+</topics/contrib/handlers>` application will only load handlers in modules
+that are in this list. The module name of each handler is compared to each
+value in this list using prefix matching. For more information see
+:ref:`handler-discovery`.
+
 .. setting:: PROJECT_NAME
 
 PROJECT_NAME
@@ -57,9 +84,21 @@ PROJECT_NAME
 
 :Default: ``'RapidSMS'``
 
-The name of your project. This is used by some apps such as
+The name of your project. This is used by some applications such as
 :doc:`rapidsms.contrib.default </topics/contrib/default>` to customize message
 responses.
+
+.. setting:: RAPIDSMS_HANDLERS_EXCLUDE_APPS
+
+RAPIDSMS_HANDLERS_EXCLUDE_APPS
+------------------------------
+
+:App: :doc:`rapidsms.contrib.handlers </topics/contrib/handlers>`
+:Default: ``[]``
+
+The :doc:`rapidsms.contrib.handlers </topics/contrib/handlers>` application
+will not load handlers from any Django app included in this list. For more
+information see :ref:`handler-discovery`.
 
 .. setting:: RAPIDSMS_ROUTER
 

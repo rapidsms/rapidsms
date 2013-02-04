@@ -17,3 +17,5 @@ What's New
   </topics/contrib/default>`.
 * Added documentation and tests for :doc:`rapidsms.contrib.echo
   </topics/contrib/echo>`.
+* Added documentation and tests for :doc:`rapidsms.contrib.handlers
+  </topics/contrib/handlers>`.
