@@ -52,6 +52,7 @@ def test_router_calls_all_app_phases():
         text = ''
         handled = False
         sent = True
+        responses = []
 
     class MockApp(AppBase):
         start_phases = ["start"]

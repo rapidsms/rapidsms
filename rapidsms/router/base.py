@@ -166,6 +166,14 @@ class BaseRouter(object, LoggerMixin):
         self.receive_incoming(msg)
 
     def receive_incoming(self, msg):
+        """Process message through incoming phases and send any responses."""
+        from rapidsms.router import send
+        continue_processing = self.process_incoming_phases(msg)
+        if continue_processing:
+            for response in msg.responses:
+                send(response.text, response.connections)
+
+    def process_incoming_phases(self, msg):
         """
         Incoming phases:
 
@@ -232,6 +240,8 @@ class BaseRouter(object, LoggerMixin):
 
         except StopIteration:
             pass
+
+        return True
 
     def send_outgoing(self, msg):
         """Process message through outgoing phases and pass to backend(s)."""

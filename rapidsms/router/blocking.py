@@ -25,11 +25,3 @@ class BlockingRouter(BaseRouter):
             engine = parsed_conf.pop('ENGINE')
             self.add_backend(name, engine, parsed_conf)
         self.start()  # legacy
-
-    def receive_incoming(self, msg):
-        from rapidsms.router import send
-        # process incoming phases
-        super(BlockingRouter, self).receive_incoming(msg)
-        # handle message responses from within router
-        for response in msg.responses:
-            send(response.text, response.connections)
