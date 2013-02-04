@@ -21,17 +21,15 @@ class IncomingMessage(MessageBase):
     def date(self):
         return self.received_at
 
-    def respond(self, text, class_=OutgoingMessage, **kwargs):
+    def respond(self, text, **kwargs):
         """
-        Instantiates a new OutgoingMessage object bound to the same
-        connection(s). Optionally, the class of the outgoing message can be
-        given, to give a hint about the contents of the message, which can be
-        introspected by other apps during the outgoing phase(s).
+        Respond to this message. Router will process responses automatically.
         """
-        msg = class_(connections=self.connections, text=text, in_reply_to=self,
-                     **kwargs)
-        self.responses.append(msg)
-        return msg
+        context = {'text': text, 'connections': self.connections,
+                   'in_reply_to': self}
+        context.update(kwargs)
+        self.responses.append(context)
+        return context
 
     def error(self, text, **kwargs):
         return self.respond(class_=ErrorMessage, text=text, **kwargs)

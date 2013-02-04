@@ -34,11 +34,26 @@ class MessagesTest(RapidTest):
         message = IncomingMessage(connection, 'test incoming message',
                                   fields=fields)
         response = message.respond('response')
-        self.assertEqual(message, response.in_reply_to)
-        self.assertTrue('extra-field' in response.in_reply_to.fields)
+        self.assertEqual(message, response['in_reply_to'])
+        self.assertTrue('extra-field' in response['in_reply_to'].fields)
 
     def test_outgoing_message_send(self):
         """OutgoingMessage.send should use send() API correctly"""
         message = self.create_outgoing_message()
         message.send()
         self.assertEqual(self.outbound[0].text, message.text)
+
+    def test_response_context(self):
+        """
+        InboundMessage responses should contain proper context for
+        creating OutboundMessages by the router.
+        """
+        inbound_message = self.create_incoming_message()
+        inbound_message.respond('test1')
+        inbound_message.respond('test2')
+        self.assertEqual(2, len(inbound_message.responses))
+        response1 = inbound_message.responses[0]
+        self.assertEqual("test1", response1['text'])
+        self.assertEqual(inbound_message.connections, response1['connections'])
+        # reply_to should reference original message
+        self.assertEqual(inbound_message, response1['in_reply_to'])

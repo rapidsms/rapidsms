@@ -170,8 +170,8 @@ class BaseRouter(object, LoggerMixin):
         from rapidsms.router import send
         continue_processing = self.process_incoming_phases(msg)
         if continue_processing:
-            for response in msg.responses:
-                send(response.text, response.connections)
+            for msg_context in msg.responses:
+                send(**msg_context)
 
     def process_incoming_phases(self, msg):
         """
@@ -307,16 +307,17 @@ class BaseRouter(object, LoggerMixin):
         backend.send(id_=id_, text=text, identities=identities,
                      context=context)
 
-    def new_incoming_message(self, connections, text, fields=None):
-        message = IncomingMessage(connections=connections, text=text,
-                                  received_at=datetime.datetime.now(),
-                                  fields=fields)
-        return message
+    def new_incoming_message(self, text, connections, fields=None,
+                             class_=IncomingMessage):
+        """Create new incoming message. Overridable by child-routers."""
+        return class_(text=text, connections=connections,
+                      received_at=datetime.datetime.now(), fields=fields)
 
-    def new_outgoing_message(self, connections, text, fields=None):
-        message = OutgoingMessage(connections=connections, text=text,
-                                  fields=fields)
-        return message
+    def new_outgoing_message(self, text, connections, fields=None,
+                             in_reply_to=None, class_=OutgoingMessage):
+        """Create new outgoing message. Overridable by child-routers."""
+        return class_(text=text, connections=connections, fields=fields,
+                      in_reply_to=in_reply_to)
 
     def incoming(self, msg):
         """Legacy support for Router.incoming() -- Deprecated"""

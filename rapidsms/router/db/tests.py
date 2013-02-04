@@ -1,3 +1,5 @@
+from mock import patch
+
 from django.test import TestCase
 
 from rapidsms.models import Connection
@@ -202,13 +204,14 @@ class DatabaseRouterSendTest(CustomRouterMixin, TestCase):
         self.assertEqual(list(batch2.values_list('id', flat=True)),
                          list(t2.values_list('id', flat=True)))
 
-    # not sure how to test this yet...
+    # not sure how to test this...
     # def test_send_error(self):
     #     """Message should be marked E even if current batch sends."""
     #     backends = {'mockbackend': {'ENGINE': RaisesBackend}}
-    #     with override_settings(INSTALLED_BACKENDS=backends):
-    #         backend, dbm, t1, t2 = self.create_trans(s1='S', s2='Q')
-    #         send_transmissions(backend.pk, dbm.pk,
-    #                            t2.values_list('id', flat=True))
-    #         status = t2.values_list('status', flat=True).distinct()[0]
-    #         self.assertEqual('E', status)
+    #     with patch.object(send_transmissions, 'retry') as mock_method:
+    #         with override_settings(INSTALLED_BACKENDS=backends):
+    #             backend, dbm, t1, t2 = self.create_trans(s1='S', s2='Q')
+    #             send_transmissions(backend.pk, dbm.pk,
+    #                                t2.values_list('id', flat=True))
+    #             status = t2.values_list('status', flat=True).distinct()[0]
+    #             self.assertEqual('E', status)
