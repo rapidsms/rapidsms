@@ -54,7 +54,7 @@ class DatabaseRouter(BlockingRouter):
         dbm.status = "P"
         dbm.save()
         for backend_id, trans in self.group_transmissions(dbm.transmissions):
-            transmission_ids = trans.values_list('pk', flat=True)
+            transmission_ids = list(trans.values_list('pk', flat=True))
             send_transmissions.delay(backend_id=backend_id,
                                      message_id=dbm.pk,
                                      transmission_ids=transmission_ids)
