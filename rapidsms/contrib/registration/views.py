@@ -14,8 +14,19 @@ from .tables import ContactTable
 from .forms import BulkRegistrationForm
 
 
+def registration(req):
+    return render_to_response("registration/dashboard.html",
+        {"contacts_table": ContactTable(Contact.objects.all(), request=req)},
+        context_instance=RequestContext(req))
+
+def contact_add(req):
+    pass
+
+def contact_bulk_add(req):
+    pass
+
 @transaction.commit_on_success
-def registration(req, pk=None):
+def contact_edit(req, pk=None):
     contact = None
 
     if pk is not None:
