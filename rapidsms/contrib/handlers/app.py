@@ -1,19 +1,17 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-
 from rapidsms.apps.base import AppBase
 from .utils import get_handlers
 
 
 class App(AppBase):
-    def start(self):
-        """
-        Spiders all apps, and registers all available handlers.
-        """
+
+    def __init__(self, router):
+        """Spiders all apps, and registers all available handlers."""
+        super(App, self).__init__(router)
 
         self.handlers = get_handlers()
-
         if len(self.handlers):
             class_names = [cls.__name__ for cls in self.handlers]
             self.info("Registered: %s" % (", ".join(class_names)))
@@ -26,7 +24,6 @@ class App(AppBase):
         the order that they're called in. (This is intended to force
         handlers to be as reluctant as possible.)
         """
-
         for handler in self.handlers:
             if handler.dispatch(self.router, msg):
                 self.info("Incoming message handled by %s" % handler.__name__)
