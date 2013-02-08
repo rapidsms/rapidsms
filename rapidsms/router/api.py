@@ -1,43 +1,37 @@
-import datetime
 import collections
 
 from rapidsms.models import Backend
 
 
-def receive(text, connection, fields=None):
+def receive(text, connection, **kwargs):
     """
     Creates an incoming message and passes it to the router for processing.
     """
     from rapidsms.router import get_router
-    from rapidsms.messages import IncomingMessage
     router = get_router()
     router.start()
-    message = IncomingMessage(connections=[connection], text=text,
-                              received_at=datetime.datetime.now(),
-                              fields=fields)
-    router.receive_incoming(message)
+    message = router.new_incoming_message(connections=[connection], text=text,
+                                          **kwargs)
+    if message:
+        router.receive_incoming(message)
     router.stop()
     return message
 
 
-def send(text, connections):
+def send(text, connections, **kwargs):
     """
     Creates an outgoing message and passes it to the router to be processed
     and sent via the respective backend.
     """
     from rapidsms.router import get_router
-    from rapidsms.messages import OutgoingMessage
     if not isinstance(connections, collections.Iterable):
         connections = [connections]
     router = get_router()
     router.start()
-    message = OutgoingMessage(connections, text)
-    router.send_outgoing(message)
-    # messages = []
-    # for connection in connections:
-    #     message = OutgoingMessage(connection, text)
-    #     router.send_outgoing(message)
-    #     messages.append(message)
+    message = router.new_outgoing_message(text=text, connections=connections,
+                                          **kwargs)
+    if message:
+        router.send_outgoing(message)
     router.stop()
     return message
 

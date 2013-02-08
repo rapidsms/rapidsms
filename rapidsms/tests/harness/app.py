@@ -13,6 +13,10 @@ class MockApp(AppBase):
         self.calls.append("start")
         return self.return_values.get('start', None)
 
+    def filter(self, message):
+        self.calls.append("filter")
+        return self.return_values.get('filter', None)
+
     def parse(self, message):
         self.calls.append("parse")
         return self.return_values.get('parse', None)
@@ -20,6 +24,10 @@ class MockApp(AppBase):
     def handle(self, message):
         self.calls.append("handle")
         return self.return_values.get('handle', None)
+
+    def default(self, message):
+        self.calls.append("default")
+        return self.return_values.get('default', None)
 
     def cleanup(self, message):
         self.calls.append("cleanup")
@@ -40,3 +48,10 @@ class EchoApp(MockApp):
     def handle(self, message):
         MockApp.handle(self, message)
         message.respond(message.peer + ": " + message.text)
+
+
+class ExceptionApp(MockApp):
+    """App that raises an exception."""
+
+    def handle(self, message):
+        raise Exception('Error!')

@@ -2,11 +2,15 @@
 # vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
 
 import warnings
+import datetime
 
 from collections import defaultdict
 
 from django.dispatch import Signal
 from django.db.models.query import QuerySet
+
+from rapidsms.messages.incoming import IncomingMessage
+from rapidsms.messages.outgoing import OutgoingMessage
 
 from ..log.mixin import LoggerMixin
 from ..backends.base import BackendBase
@@ -162,6 +166,14 @@ class BaseRouter(object, LoggerMixin):
         self.receive_incoming(msg)
 
     def receive_incoming(self, msg):
+        """Process message through incoming phases and send any responses."""
+        from rapidsms.router import send
+        continue_processing = self.process_incoming_phases(msg)
+        if continue_processing:
+            for msg_context in msg.responses:
+                send(**msg_context)
+
+    def process_incoming_phases(self, msg):
         """
         Incoming phases:
 
@@ -229,6 +241,8 @@ class BaseRouter(object, LoggerMixin):
         except StopIteration:
             pass
 
+        return True
+
     def send_outgoing(self, msg):
         """Process message through outgoing phases and pass to backend(s)."""
         self.info("Outgoing: %s" % msg)
@@ -292,6 +306,18 @@ class BaseRouter(object, LoggerMixin):
         backend = self.backends[backend_name]
         backend.send(id_=id_, text=text, identities=identities,
                      context=context)
+
+    def new_incoming_message(self, text, connections, class_=IncomingMessage,
+                             **kwargs):
+        """Create new incoming message. Overridable by child-routers."""
+        return class_(text=text, connections=connections,
+                      received_at=datetime.datetime.now(),
+                      **kwargs)
+
+    def new_outgoing_message(self, text, connections, class_=OutgoingMessage,
+                             **kwargs):
+        """Create new outgoing message. Overridable by child-routers."""
+        return class_(text=text, connections=connections, **kwargs)
 
     def incoming(self, msg):
         """Legacy support for Router.incoming() -- Deprecated"""

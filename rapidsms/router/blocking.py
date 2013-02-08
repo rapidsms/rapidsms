@@ -2,7 +2,7 @@ import copy
 
 from django.conf import settings
 
-from .base import BaseRouter
+from rapidsms.router.base import BaseRouter
 
 
 class BlockingRouter(BaseRouter):
@@ -25,10 +25,3 @@ class BlockingRouter(BaseRouter):
             engine = parsed_conf.pop('ENGINE')
             self.add_backend(name, engine, parsed_conf)
         self.start()  # legacy
-
-    def receive_incoming(self, msg):
-        # process incoming phases
-        super(BlockingRouter, self).receive_incoming(msg)
-        # handle message responses from within router
-        for response in msg.responses:
-            self.send_outgoing(response)

@@ -1,87 +1,126 @@
-from nose.tools import assert_equals, assert_raises, assert_true
-
-from django.utils.functional import curry
+from django.test import TestCase
 from django.core.exceptions import ImproperlyConfigured
-
-from rapidsms.tests.harness import setting
-from rapidsms.apps.base import AppBase
-from rapidsms.router import *
+from rapidsms.tests import harness
+from rapidsms.router import import_class, get_router, get_test_router
 from rapidsms.router.base import BaseRouter
+from rapidsms.messages.incoming import IncomingMessage
+from rapidsms.messages.outgoing import OutgoingMessage
+
+try:
+    from django.test.utils import override_settings
+except ImportError:
+    from rapidsms.tests.harness import setting as override_settings
 
 
 class MockRouter(object):
+    """Dummy class used to test importing with get_router()"""
     pass
 
 
-def test_import_class():
-    assert_raises(ImproperlyConfigured, import_class,
-                  'rapidsms.tests.router.test_base.BadClassName')
-    assert_raises(ImproperlyConfigured, import_class,
-                  'rapidsms.tests.router.bad_module.MockRouter')
-    assert_equals(import_class('rapidsms.tests.router.test_base.MockRouter'),
-                  MockRouter)
+class GetRouterTest(TestCase):
+    """Tests for the get_router() API."""
+
+    def test_import_class(self):
+        """import_class() should raise excpected exceptions."""
+        self.assertRaises(ImproperlyConfigured, import_class,
+                          'rapidsms.tests.router.test_base.BadClassName')
+        self.assertRaises(ImproperlyConfigured, import_class,
+                          'rapidsms.tests.router.bad_module.MockRouter')
+        self.assertEqual(
+            import_class('rapidsms.tests.router.test_base.MockRouter'),
+            MockRouter,
+        )
+
+    def test_get_router(self):
+        """Test exceptions for bad input given to get_router()"""
+        bad_module_router = 'rapidsms.tests.router.bad_module.MockRouter'
+        bad_class_router = 'rapidsms.tests.router.test_base.BadClassName'
+        good_mock_router = 'rapidsms.tests.router.test_base.MockRouter'
+        with override_settings(RAPIDSMS_ROUTER=bad_module_router):
+                self.assertRaises(ImproperlyConfigured, get_router)
+        with override_settings(RAPIDSMS_ROUTER=bad_class_router):
+                self.assertRaises(ImproperlyConfigured, get_router)
+        with override_settings(RAPIDSMS_ROUTER=good_mock_router):
+                self.assertTrue(isinstance(get_router(), MockRouter))
+
+    def test_get_test_router(self):
+        """Test exceptions for bad input given to get_test_router()"""
+        bad_module_router = 'rapidsms.tests.router.bad_module.MockRouter'
+        bad_class_router = 'rapidsms.tests.router.test_base.BadClassName'
+        good_mock_router = 'rapidsms.tests.router.test_base.MockRouter'
+        with override_settings(TEST_RAPIDSMS_ROUTER=bad_module_router):
+            self.assertRaises(ImproperlyConfigured, get_test_router)
+        with override_settings(TEST_RAPIDSMS_ROUTER=bad_class_router):
+            self.assertRaises(ImproperlyConfigured, get_test_router)
+        with override_settings(TEST_RAPIDSMS_ROUTER=good_mock_router):
+            self.assertEqual(get_test_router(), MockRouter)
 
 
-def test_get_router():
-    bad_module_router = 'rapidsms.tests.router.bad_module.MockRouter'
-    bad_class_router = 'rapidsms.tests.router.test_base.BadClassName'
-    good_mock_router = 'rapidsms.tests.router.test_base.MockRouter'
-    with setting(RAPIDSMS_ROUTER=bad_module_router):
-            assert_raises(ImproperlyConfigured, get_router)
-    with setting(RAPIDSMS_ROUTER=bad_class_router):
-            assert_raises(ImproperlyConfigured, get_router)
-    with setting(RAPIDSMS_ROUTER=good_mock_router):
-            assert_true(isinstance(get_router(), MockRouter))
+class BaseRouterTest(harness.CreateDataMixin, TestCase):
 
+    def test_router_incoming_phases(self):
+        """Incoming messages should trigger proper router phases."""
+        router = BaseRouter()
+        router.add_app(harness.MockApp)
+        router.receive_incoming(self.create_incoming_message())
+        self.assertEqual(set(router.apps[0].calls),
+                         set(router.incoming_phases))
 
-def test_get_test_router():
-    bad_module_router = 'rapidsms.tests.router.bad_module.MockRouter'
-    bad_class_router = 'rapidsms.tests.router.test_base.BadClassName'
-    good_mock_router = 'rapidsms.tests.router.test_base.MockRouter'
-    with setting(TEST_RAPIDSMS_ROUTER=bad_module_router):
-        assert_raises(ImproperlyConfigured, get_test_router)
-    with setting(TEST_RAPIDSMS_ROUTER=bad_class_router):
-        assert_raises(ImproperlyConfigured, get_test_router)
-    with setting(TEST_RAPIDSMS_ROUTER=good_mock_router):
-        assert_equals(get_test_router(), MockRouter)
+    def test_router_outgoing_phases(self):
+        """Outgoing messages should trigger proper router phases."""
+        router = BaseRouter()
+        router.add_app(harness.MockApp)
+        router.add_backend("mockbackend", harness.MockBackend)
+        backend = self.create_backend(data={'name': 'mockbackend'})
+        connection = self.create_connection(data={'backend': backend})
+        msg = self.create_outgoing_message(data={'connections': [connection]})
+        router.send_outgoing(msg)
+        self.assertEqual(set(router.apps[0].calls),
+                         set(router.outgoing_phases))
 
+    def test_new_incoming_message(self):
+        """BaseRouter should return a standard IncomingMessage by default."""
+        router = BaseRouter()
+        fields = {'foo': 'bar'}
+        connection = self.create_connection()
+        msg = router.new_incoming_message(text="foo", connections=[connection],
+                                          fields=fields)
+        self.assertTrue(isinstance(msg, IncomingMessage))
+        self.assertEqual("foo", msg.text)
+        self.assertEqual(connection, msg.connections[0])
+        self.assertEqual(fields['foo'], msg.fields['foo'])
 
-def test_router_calls_all_app_phases():
-    class MockMsg(object):
-        connection = None
-        text = ''
-        handled = False
-        sent = True
+    def test_new_incoming_message_class(self):
+        """Make sure you can customize the incoming message class."""
+        class TestIncomingMessage(IncomingMessage):
+            pass
+        connection = self.create_connection()
+        router = BaseRouter()
+        msg = router.new_incoming_message(text="foo", connections=[connection],
+                                          class_=TestIncomingMessage)
+        self.assertTrue(isinstance(msg, TestIncomingMessage))
 
-    class MockApp(AppBase):
-        start_phases = ["start"]
-        incoming_phases = ["filter", "parse", "handle", "default", "cleanup"]
-        outgoing_phases = ["outgoing"]
-        stop_phases = ["stop"]
-        called_phases = []
+    def test_new_outgoing_message(self):
+        """BaseRouter should return a standard OutgoingMessage by default."""
+        router = BaseRouter()
+        fields = {'foo': 'bar'}
+        connection = self.create_connection()
+        incoming_message = self.create_incoming_message()
+        msg = router.new_outgoing_message(text="foo", connections=[connection],
+                                          fields=fields,
+                                          in_response_to=incoming_message)
+        self.assertTrue(isinstance(msg, OutgoingMessage))
+        self.assertEqual("foo", msg.text)
+        self.assertEqual(connection, msg.connections[0])
+        self.assertEqual(fields['foo'], msg.fields['foo'])
+        self.assertEqual(incoming_message, msg.in_response_to)
 
-        def _append_phase(self, phase, *args, **kwargs):
-            self.called_phases.append(phase)
-            return False
-
-        def __init__(self, router):
-            phases = self.start_phases + self.incoming_phases +\
-                self.outgoing_phases + self.stop_phases
-            for phase in phases:
-                setattr(self, phase, curry(self._append_phase, phase))
-            super(MockApp, self).__init__(router)
-
-    router = BaseRouter()
-    app = MockApp(router)
-    router.apps.append(app)
-    router.receive_incoming(MockMsg())
-    assert_equals(app.called_phases, app.incoming_phases)
-    app.called_phases = []
-    router.send_outgoing(MockMsg())
-    assert_equals(app.called_phases, app.outgoing_phases)
-    app.called_phases = []
-    router.start()
-    assert_equals(app.called_phases, app.start_phases)
-    app.called_phases = []
-    router.stop()
-    assert_equals(app.called_phases, app.stop_phases)
+    def test_new_outgoing_message_class(self):
+        """Make sure you can customize the outgoing message class."""
+        class TestOutgoingMessage(OutgoingMessage):
+            pass
+        connection = self.create_connection()
+        router = BaseRouter()
+        msg = router.new_outgoing_message(text="foo", connections=[connection],
+                                          class_=TestOutgoingMessage)
+        self.assertTrue(isinstance(msg, TestOutgoingMessage))

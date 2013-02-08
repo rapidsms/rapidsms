@@ -14,3 +14,10 @@ class MockBackend(BackendBase):
     def send(self, **kwargs):
         self.messages.append(kwargs)
         return True
+
+
+class RaisesBackend(BackendBase):
+    """Simple backend that stores sent messages."""
+
+    def send(self, **kwargs):
+        raise Exception('Error!')
