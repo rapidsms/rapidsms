@@ -8,14 +8,17 @@ from uuid import uuid4
 class MessageBase(object):
     """Basic message representation with text and connection(s)."""
 
-    def __init__(self, connections, text, fields=None):
-        self.id = self.generate_id()
+    def __init__(self, connections, text, id_=None, in_response_to=None,
+                 fields=None):
+        self.id = id_ or self.generate_id()
         self.connections = connections
         self.text = text
         # save original text for future reference
         self.raw_text = copy.copy(self.text)
         # fields can be used to pass along arbitrary metadata
         self.fields = fields or {}
+        # link back to original message if this is a response
+        self.in_response_to = in_response_to
         # a message is considered "unprocessed" until rapidsms has
         # dispatched it to all apps.
         self.processed = False

@@ -158,14 +158,14 @@ class BaseRouter(object, LoggerMixin):
         self._stop_all_apps()
         self.info("Stopped")
 
-    def incoming_message(self, msg):
-        """
-        Queue or send immediately the incoming message.  Defaults to sending
-        the message immediately.
-        """
-        self.receive_incoming(msg)
-
     def receive_incoming(self, msg):
+        """
+        Queue or process the incoming message immediately. Defaults to
+        processing the message immediately.
+        """
+        self.process_incoming(msg)
+
+    def process_incoming(self, msg):
         """Process message through incoming phases and send any responses."""
         from rapidsms.router import send
         continue_processing = self.process_incoming_phases(msg)
@@ -244,6 +244,13 @@ class BaseRouter(object, LoggerMixin):
         return True
 
     def send_outgoing(self, msg):
+        """
+        Queue or process the outgoing message immediately. Defaults to
+        processing the message immediately.
+        """
+        self.process_outgoing(msg)
+
+    def process_outgoing(self, msg):
         """Process message through outgoing phases and pass to backend(s)."""
         self.info("Outgoing: %s" % msg)
         continue_sending = self.process_outgoing_phases(msg)

@@ -123,3 +123,14 @@ class VumiSendTest(CreateDataMixin, TestCase):
         data = json.loads(kwargs['data'])
         self.assertEqual(data['to_addr'], [message.connections[0].identity])
         self.assertEqual(data['content'], message.text)
+
+    def test_response_external_id(self):
+        """Vumi requires JSON to include to_addr and content."""
+        message = self.create_outgoing_message()
+        config = {"sendsms_url": "http://example.com"}
+        backend = VumiBackend(None, "kannel", **config)
+        kwargs = backend.prepare_request(message.id, message.text,
+                                         [message.connections[0].identity],
+                                         {'external_id': 'ASDF1234'})
+        data = json.loads(kwargs['data'])
+        self.assertEqual("ASDF1234", data['in_reply_to'])

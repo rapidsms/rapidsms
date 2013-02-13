@@ -12,8 +12,7 @@ def receive(text, connection, **kwargs):
     router.start()
     message = router.new_incoming_message(connections=[connection], text=text,
                                           **kwargs)
-    if message:
-        router.receive_incoming(message)
+    router.receive_incoming(message)
     router.stop()
     return message
 

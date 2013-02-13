@@ -139,6 +139,21 @@ class DatabaseRouterReceiveTest(harness.CustomRouterMixin, TestCase):
             transmission = dbm.transmissions.all()[0]
             self.assertEqual("E", transmission.status)
 
+    def test_receive_message_id(self):
+        """IncomingMessage.id should be set to the created database message."""
+        msg = self.receive(text="foo", connection=self.create_connection())
+        dbm = Message.objects.all()[0]
+        self.assertEqual(msg.id, dbm.pk)
+
+    def test_receive_external_id(self):
+        """Router should save external_id to database for future reference."""
+        fields = {'external_id': 'ASDF1234'}
+        msg = self.receive(text="foo", connection=self.create_connection(),
+                           fields=fields)
+        dbm = Message.objects.all()[0]
+        self.assertEqual("ASDF1234", msg.fields['external_id'])
+        self.assertEqual("ASDF1234", dbm.external_id)
+
 
 @override_settings(INSTALLED_APPS=['rapidsms.contrib.echo'])
 class DatabaseRouterSendTest(harness.CustomRouterMixin, TestCase):

@@ -20,9 +20,8 @@ class VumiBackend(BackendBase):
         payload = copy.copy(self.sendsms_params)
         payload.update({'content': text, 'to_addr': identities,
                         'session_event': None})
-        if 'in_reply_to' in context:
-            message_id = context['in_reply_to'].fields['message_id']
-            payload['in_reply_to'] = message_id
+        if 'external_id' in context:
+            payload['in_reply_to'] = context['external_id']
         kwargs['data'] = json.dumps(payload)
         return kwargs
 
