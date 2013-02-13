@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.core.urlresolvers import reverse
-from django.conf.urls.defaults import *
+from django.conf.urls import patterns, url
 from django.utils import simplejson as json
 
 from rapidsms.backends.vumi import views

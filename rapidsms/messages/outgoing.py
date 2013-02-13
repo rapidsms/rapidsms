@@ -9,7 +9,7 @@ class OutgoingMessage(MessageBase):
     """Outbound message that can easily be sent to the router."""
 
     def __init__(self, *args, **kwargs):
-        self.in_reply_to = kwargs.pop('in_reply_to', None)
+        self.in_response_to = kwargs.pop('in_response_to', None)
         self.received_at = kwargs.pop('sent_at', datetime.now())
         super(OutgoingMessage, self).__init__(*args, **kwargs)
         self.sent = False
@@ -22,7 +22,7 @@ class OutgoingMessage(MessageBase):
         """Specific metadata to be included when passed to backends."""
         return {
             'fields': self.fields,
-            'in_reply_to': self.in_reply_to,
+            'in_response_to': self.in_response_to,
         }
 
     def send(self):
