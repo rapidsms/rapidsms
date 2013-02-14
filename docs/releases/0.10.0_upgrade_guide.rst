@@ -90,7 +90,7 @@ Use ``django.contrib.staticfiles``
 The ``rapidsms.urls.static_media`` module has been removed from RapidSMS 0.10.0 in favor of using ``django.core.staticfiles`` (which is included by default in Django 1.3.x and above). To upgrade your project, take the following steps:
 
 1. Add ``"django.contrib.staticfiles"`` to ``settings.INSTALLED_APPS``.
-2. Add ``"django.core.context_processors.static"`` to ``settings.CONTEXT_PROCESSORS``.
+2. Add ``"django.core.context_processors.static"`` to ``settings.TEMPLATE_CONTEXT_PROCESSORS``.
 3. Remove references to ``rapidsms.urls.static_media`` from your URL configuration or other places in your project. The location of static files should now be handled by the classes listed in ``settings.STATICFILES_FINDERS``. By default, RapidSMS requires these finders:
 
 .. code-block:: python
