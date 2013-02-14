@@ -7,6 +7,8 @@ from rapidsms.tests import harness
 from rapidsms.router.db import DatabaseRouter
 from rapidsms.router.db.models import Message, Transmission
 from rapidsms.router.db.tasks import send_transmissions
+from rapidsms.backends.db.models import BackendMessage
+from rapidsms.backends.db.outgoing import DatabaseBackend
 
 try:
     from django.test.utils import override_settings
@@ -160,7 +162,7 @@ class DatabaseRouterSendTest(harness.CustomRouterMixin, TestCase):
     """Tests for the DatabaseRouter class"""
 
     router_class = 'rapidsms.router.db.DatabaseRouter'
-    backends = {'mockbackend': {'ENGINE': harness.MockBackend}}
+    backends = {'mockbackend': {'ENGINE': DatabaseBackend}}
 
     def create_trans(self, s1='Q', s2='Q'):
         backend = self.create_backend(data={'name': 'mockbackend'})
@@ -230,6 +232,27 @@ class DatabaseRouterSendTest(harness.CustomRouterMixin, TestCase):
             message = Message.objects.get(direction='I')
             response = Message.objects.get(direction='O')
             self.assertEqual(message.pk, response.in_response_to.pk)
+
+    def test_external_id(self):
+        """
+        Make sure external_id of original message makes it through to
+        the response outbound message.
+        """
+        backend = self.create_backend(data={'name': 'mockbackend'})
+        connection = Connection.objects.create(identity='1111111111',
+                                               backend=backend)
+        # create an inbound message with an external_id
+        message = Message.objects.create(text="message1", direction="I",
+                                         status='R', external_id='ASDF1324')
+        message.transmissions.create(connection=connection, status='R')
+        # create response with tie back to original message
+        response = Message.objects.create(text="message2", direction="O",
+                                          in_response_to=message)
+        t2 = message.transmissions.create(connection=connection, status='Q')
+        send_transmissions(backend.pk, response.pk, [t2.pk])
+        backend_message = BackendMessage.objects.all()[0]
+        # make sure backend message has the proper external id
+        self.assertEqual('ASDF1324', backend_message.external_id)
 
     # not sure how to test this...
     # def test_send_error(self):
