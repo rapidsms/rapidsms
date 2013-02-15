@@ -5,12 +5,9 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.db import transaction
 from django.shortcuts import render, get_object_or_404
-from rapidsms.forms import ContactForm
-from rapidsms.models import Contact
-from rapidsms.models import Connection
-from rapidsms.models import Backend
+from rapidsms.models import Contact, Connection, Backend
 from rapidsms.contrib.registration.tables import ContactTable
-from rapidsms.contrib.registration.forms import BulkRegistrationForm
+from rapidsms.contrib.registration.forms import BulkRegistrationForm, ContactForm
 
 
 def registration(request):

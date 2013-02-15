@@ -3,6 +3,13 @@
 
 
 from django import forms
+from rapidsms.models import Contact
+
+
+class ContactForm(forms.ModelForm):
+    class Meta:
+        model = Contact
+        exclude = ("connections",)
 
 
 # the built-in FileField doesn't specify the 'size' attribute, so the
