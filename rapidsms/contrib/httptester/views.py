@@ -6,11 +6,17 @@ from random import randint
 
 from django.template import RequestContext
 from django.shortcuts import render_to_response
+from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from . import forms
 from . import storage
 
+def default(request):
+    default_backend = settings.HTTPTESTER_BACKEND \
+        if hasattr(settings, 'HTTPTESTER_BACKEND') \
+        else settings.INSTALLED_BACKENDS.keys()[0]
+    return generate_identity(request, default_backend)
 
 def generate_identity(request, backend_name):
     identity = randint(111111, 999999)
