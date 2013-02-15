@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "rapidsms.contrib.registration",
     "rapidsms.contrib.echo",
     "rapidsms.router.db",
+    "rapidsms.backends.kannel",
 
     "rapidsms.contrib.default",  # Should be last
 ]
