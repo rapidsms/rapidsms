@@ -31,12 +31,8 @@ class KannelBackend(BackendBase):
         self.info('Sending message: %s' % text)
         url_args = self.prepare_message(text, identities)
         url = '?'.join([self.sendsms_url, urllib.urlencode(url_args)])
-        try:
-            self.debug('Opening URL: %s' % url)
-            response = urllib2.urlopen(url)
-        except:
-            self.exception('Failed to send message')
-            return
+        self.debug('Opening URL: %s' % url)
+        response = urllib2.urlopen(url)
         self.info('SENT')
         self.debug('response body: %s' % response.read())
         return True
