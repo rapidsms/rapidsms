@@ -1,0 +1,14 @@
+{% extends "registration/base.html" %}
+{% load url from future %}
+{% load forms_tags %}
+
+{% block content %}
+<form action="" method="post">
+    {% render_form contact_form %}
+    {% csrf_token %}
+
+    <div class="submit">
+        <input type="submit" name="submit" value="Save Contact" />
+    </div>
+</form>
+{% endblock %}
