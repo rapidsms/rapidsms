@@ -3,6 +3,7 @@
 
 import warnings
 import datetime
+import copy
 
 from collections import defaultdict
 
@@ -12,13 +13,13 @@ from django.db.models.query import QuerySet
 from rapidsms.messages.incoming import IncomingMessage
 from rapidsms.messages.outgoing import OutgoingMessage
 
-from ..log.mixin import LoggerMixin
-from ..backends.base import BackendBase
-from ..apps.base import AppBase
-from ..conf import settings
+from rapidsms.log.mixin import LoggerMixin
+from rapidsms.backends.base import BackendBase
+from rapidsms.apps.base import AppBase
+from rapidsms.conf import settings
 
 
-class BaseRouter(object, LoggerMixin):
+class BlockingRouter(object, LoggerMixin):
     """
     """
 
@@ -30,11 +31,23 @@ class BaseRouter(object, LoggerMixin):
     pre_stop = Signal(providing_args=["router"])
     post_stop = Signal(providing_args=["router"])
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         self.apps = []
         self.backends = {}
         self.logger = None
         self.running = False
+        apps = kwargs.pop('apps', settings.INSTALLED_APPS)
+        backends = kwargs.pop('backends', settings.INSTALLED_BACKENDS)
+        for name in apps:
+            try:
+                self.add_app(name)
+            except Exception as e:
+                self.exception(e)
+        for name, conf in backends.iteritems():
+            parsed_conf = copy.copy(conf)
+            engine = parsed_conf.pop('ENGINE')
+            self.add_backend(name, engine, parsed_conf)
+        self.start()  # legacy
 
     def add_app(self, module_name):
         """

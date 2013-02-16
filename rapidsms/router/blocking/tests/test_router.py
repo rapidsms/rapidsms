@@ -1,10 +1,87 @@
+from django.test import TestCase
+from rapidsms.tests import harness
+from rapidsms.router.blocking import BlockingRouter
+from rapidsms.messages.incoming import IncomingMessage
+from rapidsms.messages.outgoing import OutgoingMessage
 from rapidsms.models import Connection
-from rapidsms.tests.harness import RapidTest, MockApp
 
 
-class RouterOutgoingPhases(RapidTest):
+class BlockingRouterTest(harness.CreateDataMixin, TestCase):
+    """Test router phases and message classes."""
 
-    apps = (MockApp,)
+    def setUp(self):
+        self.router = BlockingRouter(apps=[], backends={})
+
+    def test_router_incoming_phases(self):
+        """Incoming messages should trigger proper router phases."""
+        self.router.add_app(harness.MockApp)
+        self.router.receive_incoming(self.create_incoming_message())
+        self.assertEqual(set(self.router.apps[0].calls),
+                         set(self.router.incoming_phases))
+
+    def test_router_outgoing_phases(self):
+        """Outgoing messages should trigger proper router phases."""
+        self.router.add_app(harness.MockApp)
+        self.router.add_backend("mockbackend", harness.MockBackend)
+        backend = self.create_backend(data={'name': 'mockbackend'})
+        connection = self.create_connection(data={'backend': backend})
+        msg = self.create_outgoing_message(data={'connections': [connection]})
+        self.router.send_outgoing(msg)
+        self.assertEqual(set(self.router.apps[0].calls),
+                         set(self.router.outgoing_phases))
+
+    def test_new_incoming_message(self):
+        """BaseRouter should return a standard IncomingMessage by default."""
+        fields = {'foo': 'bar'}
+        connection = self.create_connection()
+        msg = self.router.new_incoming_message(text="foo",
+                                               connections=[connection],
+                                               fields=fields)
+        self.assertTrue(isinstance(msg, IncomingMessage))
+        self.assertEqual("foo", msg.text)
+        self.assertEqual(connection, msg.connections[0])
+        self.assertEqual(fields['foo'], msg.fields['foo'])
+
+    def test_new_incoming_message_class(self):
+        """Make sure you can customize the incoming message class."""
+        class TestIncomingMessage(IncomingMessage):
+            pass
+        connection = self.create_connection()
+        msg = self.router.new_incoming_message(text="foo",
+                                               connections=[connection],
+                                               class_=TestIncomingMessage)
+        self.assertTrue(isinstance(msg, TestIncomingMessage))
+
+    def test_new_outgoing_message(self):
+        """BaseRouter should return a standard OutgoingMessage by default."""
+        fields = {'foo': 'bar'}
+        connection = self.create_connection()
+        incoming_message = self.create_incoming_message()
+        msg = self.router.new_outgoing_message(text="foo",
+                                               connections=[connection],
+                                               fields=fields,
+                                               in_response_to=incoming_message)
+        self.assertTrue(isinstance(msg, OutgoingMessage))
+        self.assertEqual("foo", msg.text)
+        self.assertEqual(connection, msg.connections[0])
+        self.assertEqual(fields['foo'], msg.fields['foo'])
+        self.assertEqual(incoming_message, msg.in_response_to)
+
+    def test_new_outgoing_message_class(self):
+        """Make sure you can customize the outgoing message class."""
+        class TestOutgoingMessage(OutgoingMessage):
+            pass
+        connection = self.create_connection()
+        msg = self.router.new_outgoing_message(text="foo",
+                                               connections=[connection],
+                                               class_=TestOutgoingMessage)
+        self.assertTrue(isinstance(msg, TestOutgoingMessage))
+
+
+class RouterOutgoingPhases(harness.RapidTest):
+    """Test router outgoing phases."""
+
+    apps = (harness.MockApp,)
 
     def test_outgoing_phase(self):
         """App.outgoing should be called for sent messages."""
@@ -48,11 +125,6 @@ class RouterOutgoingPhases(RapidTest):
         self.send('test', self.lookup_connections('1112223333'))
         self.assertEqual(1, len(self.sent_messages))
 
-
-class OutgoingTest(RapidTest):
-
-    apps = (MockApp,)
-
     def test_single_connection_outgoing_message_count(self):
         """Single connection should only create 1 message."""
         identities = ['1112223333']
@@ -80,9 +152,9 @@ class OutgoingTest(RapidTest):
         self.assertEqual(2, len(grouped_identities['other']))
 
 
-class OutgoingQuerysetTest(RapidTest):
+class OutgoingQuerysetTest(harness.RapidTest):
 
-    apps = (MockApp,)
+    apps = (harness.MockApp,)
 
     def setUp(self):
         self.conn1 = self.create_connection(data={'identity': '1112223333'})
