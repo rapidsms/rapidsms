@@ -1,12 +1,10 @@
-"""
-Router that can be used for testing
-"""
+"""Router that can be used for testing."""
 
 from rapidsms.router.blocking import BlockingRouter
 
 
 class TestRouter(BlockingRouter):
-    """BlockingRouter that doesn't load apps and backends by default."""
+    """Router that saves inbound/outbound messages for future inspection."""
 
     def __init__(self, *args, **kwargs):
         self.inbound = []
