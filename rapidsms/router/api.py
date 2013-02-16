@@ -29,8 +29,7 @@ def send(text, connections, **kwargs):
     router.start()
     message = router.new_outgoing_message(text=text, connections=connections,
                                           **kwargs)
-    if message:
-        router.send_outgoing(message)
+    router.send_outgoing(message)
     router.stop()
     return message
 

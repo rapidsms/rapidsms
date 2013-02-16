@@ -7,7 +7,7 @@ from django.test import TestCase, TransactionTestCase
 from rapidsms.router.test import TestRouter
 
 from rapidsms.tests.harness.base import CreateDataMixin
-from rapidsms.tests.harness.router import (CustomRouterMixin, TestRouterMixin)
+from rapidsms.tests.harness.router import (CustomRouterMixin, TestRouterMixin, DatabaseBackendMixin)
 from rapidsms.tests.harness.scripted import TestScriptMixin
 from rapidsms.tests.harness.backend import MockBackend, RaisesBackend
 from rapidsms.tests.harness.app import MockApp, EchoApp, ExceptionApp

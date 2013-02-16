@@ -18,23 +18,27 @@ class CeleryRouter(BlockingRouter):
         return backend._config.get('router.celery.eager', False)
 
     def receive_incoming(self, msg):
-        """Queue message to be processed in the background."""
+        """Queue incoming message to be processed in the background."""
         eager = self.is_eager(msg.connection.backend.name)
         if eager:
             self.debug('Executing in current process')
-            receive_async(msg)
+            receive_async(msg.text, msg.connections[0].pk)
         else:
             self.debug('Executing asynchronously')
-            receive_async.delay(msg)
+            receive_async.delay(msg.text, msg.connections[0].pk, msg.id,
+                                msg.fields)
 
-    def send_to_backend(self, backend_name, id_, text, identities, context):
-        """Pass processed message to backend(s)."""
-        eager = self.is_eager(backend_name)
-        if eager:
-            self.debug('Executing in current process')
-            send_async(backend_name=backend_name, id_=id_, text=text,
-                       identities=identities, context=context)
-        else:
-            self.debug('Executing asynchronously')
-            send_async.delay(backend_name=backend_name, id_=id_, text=text,
-                             identities=identities, context=context)
+    def backend_preparation(self, msg):
+        """Queue outbound message to be processed in the background."""
+        context = msg.extra_backend_context()
+        grouped_identities = self.group_outgoing_identities(msg)
+        for backend_name, identities in grouped_identities.iteritems():
+            eager = self.is_eager(backend_name)
+            if eager:
+                self.debug('Executing in current process')
+                send_async(backend_name, msg.id, msg.text, identities,
+                           context)
+            else:
+                self.debug('Executing asynchronously')
+                send_async.delay(backend_name, msg.id, msg.text, identities,
+                                 context)
