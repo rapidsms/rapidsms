@@ -1,13 +1,13 @@
 from django.test import TestCase
 from rapidsms.apps.base import AppBase
-from rapidsms.router.base import BaseRouter
+from rapidsms.router.blocking import BlockingRouter
 
 
 class RouterAppTest(TestCase):
     """BlockingRouter app tests."""
 
     def setUp(self):
-        self.router = BaseRouter(apps=[], backends={})
+        self.router = BlockingRouter(apps=[], backends={})
 
     def test_valid_app_path(self):
         """Valid RapidSMS app modules should load properly."""
