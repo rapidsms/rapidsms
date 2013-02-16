@@ -4,15 +4,11 @@
 import warnings
 import datetime
 import copy
-
 from collections import defaultdict
 
-from django.dispatch import Signal
 from django.db.models.query import QuerySet
-
 from rapidsms.messages.incoming import IncomingMessage
 from rapidsms.messages.outgoing import OutgoingMessage
-
 from rapidsms.log.mixin import LoggerMixin
 from rapidsms.backends.base import BackendBase
 from rapidsms.apps.base import AppBase
@@ -20,22 +16,15 @@ from rapidsms.conf import settings
 
 
 class BlockingRouter(object, LoggerMixin):
-    """
-    """
+    """Base RapidSMS router implementation."""
 
     incoming_phases = ("filter", "parse", "handle", "default", "cleanup")
     outgoing_phases = ("outgoing",)
-
-    pre_start = Signal(providing_args=["router"])
-    post_start = Signal(providing_args=["router"])
-    pre_stop = Signal(providing_args=["router"])
-    post_stop = Signal(providing_args=["router"])
 
     def __init__(self, *args, **kwargs):
         self.apps = []
         self.backends = {}
         self.logger = None
-        self.running = False
         apps = kwargs.pop('apps', settings.INSTALLED_APPS)
         backends = kwargs.pop('backends', settings.INSTALLED_BACKENDS)
         for name in apps:
