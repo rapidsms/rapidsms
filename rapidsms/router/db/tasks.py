@@ -18,7 +18,6 @@ def receive(message_id):
     dbm = Message.objects.get(pk=message_id)
     router = get_router()
     message = router.create_message_from_dbm(dbm)
-    router.start()
     try:
         # call process_incoming directly to skip receive_incoming
         router.process_incoming(message)
@@ -26,8 +25,6 @@ def receive(message_id):
         logger.exception(exc)
         dbm.transmissions.update(status='E', updated=datetime.datetime.now())
         dbm.set_status()
-    finally:
-        router.stop()
     if dbm.status != 'E':
         # mark message as being received
         dbm.transmissions.update(status='R', updated=datetime.datetime.now())
@@ -50,7 +47,6 @@ def send_transmissions(backend_id, message_id, transmission_ids):
     context = {}
     if dbm.in_response_to:
         context['external_id'] = dbm.in_response_to.external_id
-    router.start()
     try:
         router.send_to_backend(backend_name=backend.name, id_=dbm.pk,
                                text=dbm.text, identities=identities,
@@ -61,8 +57,6 @@ def send_transmissions(backend_id, message_id, transmission_ids):
         Message.objects.filter(pk=message_id).update(status='E')
         transmissions.update(status='E', updated=datetime.datetime.now())
         raise send_transmissions.retry(exc=exc)
-    finally:
-        router.stop()
     # no error occured, so mark these transmissions as sent
     transmissions.update(status='S', sent=datetime.datetime.now())
     # we don't know if there are more transmissions pending, so

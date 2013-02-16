@@ -7,13 +7,13 @@ from .utils import get_handlers
 
 
 class App(AppBase):
-    def start(self):
+
+    def __init__(self, *args, **kwargs):
         """
         Spiders all apps, and registers all available handlers.
         """
-
+        super(App, self).__init__(*args, **kwargs)
         self.handlers = get_handlers()
-
         if len(self.handlers):
             class_names = [cls.__name__ for cls in self.handlers]
             self.info("Registered: %s" % (", ".join(class_names)))

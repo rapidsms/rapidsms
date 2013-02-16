@@ -32,15 +32,6 @@ class BackendBase(object, LoggerMixin):
     def __repr__(self):
         return "<backend: %s>" % self.name
 
-    def start(self, legacy_behavior=False):
-        pass
-
-    def run(self):
-        pass
-
-    def stop(self):
-        pass
-
     @property
     def model(self):
         """Return RapidSMS model object for this backend."""

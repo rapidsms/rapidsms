@@ -17,10 +17,8 @@ def receive_async(text, connection_id, message_id, fields):
     message = router.new_incoming_message(text=text, connections=[connection],
                                           id_=message_id, fields=fields)
     try:
-        router.start()
         # call process_incoming directly to skip receive_incoming
         router.process_incoming(message)
-        router.stop()
     except Exception, e:
         logger.exception(e)
 
@@ -32,9 +30,7 @@ def send_async(backend_name, id_, text, identities, context):
     from rapidsms.router import get_router
     router = get_router()
     try:
-        router.start()
         router.send_to_backend(backend_name=backend_name, id_=id_, text=text,
                                identities=identities, context=context)
-        router.stop()
     except Exception, e:
         logger.exception(e)

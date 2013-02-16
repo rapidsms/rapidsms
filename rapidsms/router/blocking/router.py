@@ -47,7 +47,6 @@ class BlockingRouter(object, LoggerMixin):
             parsed_conf = copy.copy(conf)
             engine = parsed_conf.pop('ENGINE')
             self.add_backend(name, engine, parsed_conf)
-        self.start()  # legacy
 
     def add_app(self, module_name):
         """
@@ -103,73 +102,6 @@ class BlockingRouter(object, LoggerMixin):
             (key.lower(), val)
             for key, val in config.iteritems()
         ])
-
-    def _start_all_backends(self):
-        """
-        Start all backends registered in this router.
-        """
-        for backend in self.backends.values():
-            backend.start()
-
-    def _stop_all_backends(self):
-        """
-        Stop all backends registered in this router.
-        """
-        for backend in self.backends.values():
-            backend.stop()
-
-    def _start_all_apps(self):
-        """
-        Start all apps registered via Router.add_app.
-        """
-
-        for app in self.apps:
-            app.start()
-
-    def _stop_all_apps(self):
-        """
-        Stop all apps registered via Router.add_app.
-        """
-
-        for app in self.apps:
-            app.stop()
-
-    def start(self):
-        """
-        Start polling the backends registered via Router.add_backend for
-        incoming messages, and keep doing so until a KeyboardInterrupt
-        or SystemExit is raised, or Router.stop is called.
-        """
-
-        # dump some debug info for now
-        #self.info("BACKENDS: %r" % (self.backends))
-        #self.info("APPS: %r" % (self.apps))
-
-        self.info("Starting %s..." % settings.PROJECT_NAME)
-        self.pre_start.send(self)
-        self._start_all_backends()
-        self._start_all_apps()
-        self.running = True
-        self.debug("Started")
-
-    def stop(self, graceful=False):
-        """
-        Stop the router, which unblocks the Router.start method as soon
-        as possible. This may leave unprocessed messages in the incoming
-        or outgoing queues.
-
-        If the optional *graceful* argument is True, the router does its
-        best to avoid discarding any messages, by refusing to accept new
-        incoming messages and blocking (by calling Router.join) until
-        all currently pending messages are processed.
-        """
-
-        self.running = False
-
-        self.debug("Stopping...")
-        self._stop_all_backends()
-        self._stop_all_apps()
-        self.info("Stopped")
 
     def receive_incoming(self, msg):
         """

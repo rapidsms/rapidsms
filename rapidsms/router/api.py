@@ -9,11 +9,9 @@ def receive(text, connection, **kwargs):
     """
     from rapidsms.router import get_router
     router = get_router()
-    router.start()
     message = router.new_incoming_message(connections=[connection], text=text,
                                           **kwargs)
     router.receive_incoming(message)
-    router.stop()
     return message
 
 
@@ -26,11 +24,9 @@ def send(text, connections, **kwargs):
     if not isinstance(connections, collections.Iterable):
         connections = [connections]
     router = get_router()
-    router.start()
     message = router.new_outgoing_message(text=text, connections=connections,
                                           **kwargs)
     router.send_outgoing(message)
-    router.stop()
     return message
 
 
