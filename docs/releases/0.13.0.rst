@@ -14,6 +14,12 @@ when upgrading from RapidSMS 0.12.0.
 What's New
 ==========
 
+* Added support for sending bulk messages. This involved the following changes:
+    * Modified ``MessageBase`` to accept multiple connections.
+    * Updated ``send`` to pass multiple connections (within a message object) to the Router. The :doc:`Messaging API </topics/router/messaging>` already supported multiple connections, so the API did not change.
+    * Added ``send`` to ``rapidsms.backends.BackendBase`` to raise a ``NotImplementedError`` by default. Child classes must now override this function.
+    * Updated ``Backend.send`` to always expect multiple connections and changed the signature to accept ``text`` and ``identities``, rather than a message object.
+    * Updated :router:`BlockingRouter` to inspect outbound message connections, group by backend, and call ``backend.send`` for each one.
 * Added the database-powered :router:`DatabaseRouter`. The :router:`DatabaseRouter` stores all messages in the database and keeps track of recieved/sent state of each message. This is useful for monitoring the sending of large message volumes.
 * Added a backend for :doc:`Vumi </topics/backends/vumi>`.
 * Cleaned up admin for ``Connection`` to load faster with database JOINs.
