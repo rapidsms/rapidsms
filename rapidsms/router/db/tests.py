@@ -1,19 +1,11 @@
-from mock import patch
-
 from django.test import TestCase
+from django.test.utils import override_settings
 
 from rapidsms.models import Connection
 from rapidsms.tests import harness
 from rapidsms.router.db import DatabaseRouter
 from rapidsms.router.db.models import Message, Transmission
 from rapidsms.router.db.tasks import send_transmissions
-from rapidsms.backends.db.models import BackendMessage
-from rapidsms.backends.db.outgoing import DatabaseBackend
-
-try:
-    from django.test.utils import override_settings
-except ImportError:
-    from rapidsms.tests.harness import setting as override_settings
 
 
 class MessageStatusTest(harness.CustomRouterMixin, TestCase):
@@ -157,20 +149,18 @@ class DatabaseRouterReceiveTest(harness.CustomRouterMixin, TestCase):
         self.assertEqual("ASDF1234", dbm.external_id)
 
 
-@override_settings(INSTALLED_APPS=['rapidsms.contrib.echo'])
-class DatabaseRouterSendTest(harness.CustomRouterMixin, TestCase):
-    """Tests for the DatabaseRouter class"""
+@override_settings(INSTALLED_APPS=[harness.EchoApp])
+class DatabaseRouterSendTest(harness.DatabaseBackendMixin, TestCase):
+    """DatabaseRouter send tests."""
 
     router_class = 'rapidsms.router.db.DatabaseRouter'
-    backends = {'mockbackend': {'ENGINE': DatabaseBackend}}
 
     def create_trans(self, s1='Q', s2='Q'):
-        backend = self.create_backend(data={'name': 'mockbackend'})
         Connection.objects.bulk_create((
-            Connection(identity='1111111111', backend=backend),
-            Connection(identity='2222222222', backend=backend),
-            Connection(identity='3333333333', backend=backend),
-            Connection(identity='4444444444', backend=backend),
+            Connection(identity='1111111111', backend=self.backend),
+            Connection(identity='2222222222', backend=self.backend),
+            Connection(identity='3333333333', backend=self.backend),
+            Connection(identity='4444444444', backend=self.backend),
         ))
         dbm = Message.objects.create(text="test", direction="O")
         for connection in Connection.objects.order_by('id')[:2]:
@@ -180,7 +170,7 @@ class DatabaseRouterSendTest(harness.CustomRouterMixin, TestCase):
         ids = dbm.transmissions.order_by('id').values_list('id', flat=True)
         trans1 = dbm.transmissions.filter(id__in=ids[:2])
         trans2 = dbm.transmissions.filter(id__in=ids[2:])
-        return backend, dbm, trans1, trans2
+        return self.backend, dbm, trans1, trans2
 
     def test_send_successful_status(self):
         """Transmissions should be marked with S if no errors occured."""
@@ -222,37 +212,19 @@ class DatabaseRouterSendTest(harness.CustomRouterMixin, TestCase):
 
     def test_in_response_to(self):
         """Make sure responses set the in_response_to DB fields."""
-        class ResponseApp(harness.MockApp):
-            def handle(self, msg):
-                msg.respond("pong")
-        with override_settings(INSTALLED_APPS=[ResponseApp]):
-            backend = self.create_backend(data={'name': 'mockbackend'})
-            connection = self.create_connection(data={'backend': backend})
-            self.receive(text="ping", connection=connection)
-            message = Message.objects.get(direction='I')
-            response = Message.objects.get(direction='O')
-            self.assertEqual(message.pk, response.in_response_to.pk)
+        connection = self.lookup_connections(['1112223333'])[0]
+        self.receive(text="ping", connection=connection)
+        message = Message.objects.get(direction='I')
+        response = Message.objects.get(direction='O')
+        self.assertEqual(message.pk, response.in_response_to.pk)
 
-    def test_external_id(self):
-        """
-        Make sure external_id of original message makes it through to
-        the response outbound message.
-        """
-        backend = self.create_backend(data={'name': 'mockbackend'})
-        connection = Connection.objects.create(identity='1111111111',
-                                               backend=backend)
-        # create an inbound message with an external_id
-        message = Message.objects.create(text="message1", direction="I",
-                                         status='R', external_id='ASDF1324')
-        message.transmissions.create(connection=connection, status='R')
-        # create response with tie back to original message
-        response = Message.objects.create(text="message2", direction="O",
-                                          in_response_to=message)
-        t2 = message.transmissions.create(connection=connection, status='Q')
-        send_transmissions(backend.pk, response.pk, [t2.pk])
-        backend_message = BackendMessage.objects.all()[0]
-        # make sure backend message has the proper external id
-        self.assertEqual('ASDF1324', backend_message.external_id)
+    def test_in_response_to_external_id(self):
+        """DatabaseRouter should maintain external_id through responses."""
+        connection = self.lookup_connections(['1112223333'])[0]
+        msg = self.receive("test", connection,
+                           fields={'external_id': 'ABCD1234'})
+        backend_msg = self.sent_messages[0]
+        self.assertEqual(msg.fields['external_id'], backend_msg.external_id)
 
     # not sure how to test this...
     # def test_send_error(self):

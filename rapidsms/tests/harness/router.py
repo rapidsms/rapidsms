@@ -60,7 +60,7 @@ class DatabaseBackendMixin(CustomRouterMixin):
     backends = {'mockbackend': {'ENGINE': DatabaseBackend}}
 
     def setUp(self):
-        self.create_backend(data={'name': 'mockbackend'})
+        self.backend = self.create_backend(data={'name': 'mockbackend'})
         super(DatabaseBackendMixin, self).setUp()
 
     def lookup_connections(self, identities, backend='mockbackend'):
