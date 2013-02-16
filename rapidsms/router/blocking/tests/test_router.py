@@ -1,4 +1,5 @@
 from django.test import TestCase
+from django.test.utils import override_settings
 from rapidsms.tests import harness
 from rapidsms.router.blocking import BlockingRouter
 from rapidsms.messages.incoming import IncomingMessage
@@ -181,3 +182,16 @@ class OutgoingQuerysetTest(harness.RapidTest):
         grouped_identities = self.router.group_outgoing_identities(msg)
         backend_name = self.conn1.backend.name
         self.assertEqual(len(grouped_identities[backend_name]), 2)
+
+
+class ExternalIDTest(harness.DatabaseBackendMixin, TestCase):
+
+    def test_in_response_to_external_id(self):
+        """BlockingRouter should maintain external_id through responses."""
+        with override_settings(INSTALLED_APPS=[harness.EchoApp]):
+            connection = self.lookup_connections(['1112223333'])[0]
+            msg = self.receive("test", connection,
+                               fields={'external_id': 'ABCD1234'})
+            backend_msg = self.sent_messages[0]
+            self.assertEqual(msg.fields['external_id'],
+                             backend_msg.external_id)
