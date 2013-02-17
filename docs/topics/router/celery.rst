@@ -9,7 +9,7 @@ CeleryRouter
 :router:`BlockingRouter` processes messages synchronously in the main HTTP
 thread. This is fine for most scenarios, but in some cases you may wish to
 process messages outside of the HTTP request/response cycle to be more
-efficient. :router:`CeleryRouter` is a custom router that allows you queue
+efficient. :router:`CeleryRouter` is a custom router that allows you to queue
 messages for background processing. It's designed for projects that require
 high messages volumes and greater concurrency.
 
