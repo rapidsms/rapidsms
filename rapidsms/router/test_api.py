@@ -1,12 +1,10 @@
-from django.test import TestCase
 from django.test.utils import override_settings
 from django.core.exceptions import ImproperlyConfigured
 
-from rapidsms.router import receive, send
+from rapidsms.router import get_router, receive, send
 from rapidsms.tests import harness
 from rapidsms.messages.incoming import IncomingMessage
 from rapidsms.messages.outgoing import OutgoingMessage
-from rapidsms.router import import_class, get_router, get_test_router
 
 
 class MockRouter(object):
@@ -14,19 +12,10 @@ class MockRouter(object):
     pass
 
 
-class GetRouterTest(TestCase):
-    """Tests for the get_router() API."""
+class RouterAPITest(harness.RapidTest):
+    """Tests for rapidsms.router.api"""
 
-    def test_import_class(self):
-        """import_class() should raise excpected exceptions."""
-        self.assertRaises(ImproperlyConfigured, import_class,
-                          'rapidsms.tests.router.test_base.BadClassName')
-        self.assertRaises(ImproperlyConfigured, import_class,
-                          'rapidsms.tests.router.bad_module.MockRouter')
-        self.assertEqual(
-            import_class('rapidsms.router.test_api.MockRouter'),
-            MockRouter,
-        )
+    disable_phases = True
 
     def test_get_router(self):
         """Test exceptions for bad input given to get_router()"""
@@ -39,24 +28,6 @@ class GetRouterTest(TestCase):
                 self.assertRaises(ImproperlyConfigured, get_router)
         with override_settings(RAPIDSMS_ROUTER=good_mock_router):
                 self.assertTrue(isinstance(get_router(), MockRouter))
-
-    def test_get_test_router(self):
-        """Test exceptions for bad input given to get_test_router()"""
-        bad_module_router = 'rapidsms.tests.router.bad_module.MockRouter'
-        bad_class_router = 'rapidsms.tests.router.test_base.BadClassName'
-        good_mock_router = 'rapidsms.router.test_api.MockRouter'
-        with override_settings(TEST_RAPIDSMS_ROUTER=bad_module_router):
-            self.assertRaises(ImproperlyConfigured, get_test_router)
-        with override_settings(TEST_RAPIDSMS_ROUTER=bad_class_router):
-            self.assertRaises(ImproperlyConfigured, get_test_router)
-        with override_settings(TEST_RAPIDSMS_ROUTER=good_mock_router):
-            self.assertEqual(get_test_router(), MockRouter)
-
-
-class RouterAPITest(harness.RapidTest):
-    """Tests for rapidsms.router.api"""
-
-    disable_phases = True
 
     def test_send_with_connection(self):
         """Send accepts a single connection."""
