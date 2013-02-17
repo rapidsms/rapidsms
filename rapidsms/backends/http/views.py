@@ -6,7 +6,6 @@ from django.views.generic.edit import FormMixin, ProcessFormView
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 
-from rapidsms.log.mixin import LoggerMixin
 from rapidsms.router import receive
 
 from .forms import GenericHttpForm

@@ -3,6 +3,7 @@
 
 
 import logging
+import warnings
 
 
 class LoggerMixin():
@@ -36,6 +37,8 @@ class LoggerMixin():
         return logging.getLogger(name)
 
     def log(self, *args, **kwargs):
+        warnings.warn("LoggerMixin is deprecated; use the standard logging module instead",
+                      DeprecationWarning)
         return self._logger.log(*args, **kwargs)
 
     def debug(self, *args, **kwargs):

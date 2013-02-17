@@ -1,9 +1,12 @@
 import copy
 import requests
-
-from rapidsms.backends.base import BackendBase
+import logging
 
 from django.core.urlresolvers import reverse
+from rapidsms.backends.base import BackendBase
+
+
+logger = logging.getLogger(__name__)
 
 
 class KannelBackend(BackendBase):
@@ -44,7 +47,7 @@ class KannelBackend(BackendBase):
         return kwargs
 
     def send(self, id_, text, identities, context={}):
-        self.info('Sending message: %s' % text)
+        logger.info('Sending message: %s' % text)
         kwargs = self.prepare_request(id_, text, identities, context)
         r = requests.get(**kwargs)
-        self.debug(r)
+        logger.debug(r)

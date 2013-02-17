@@ -82,34 +82,6 @@ All logging specific to :router:`CeleryRouter` is handled through the
         },
     }
 
-Currently, there are only two child loggers: one for the router and one for the
-Celery task. You can capture their messages independently like so::
-
-    LOGGING_CONFIG = {
-        'rapidsms.router.celery.router': {
-            'handlers': ['file'],
-            'level': 'INFO',
-        },
-        'rapidsms.router.celery.tasks.rapidsms_handle_message': {
-            'handlers': ['file'],
-            'level': 'DEBUG',
-        },
-    }
-
-BlockingRouter
-**************
-
-:router:`CeleryRouter` uses :router:`BlockingRouter` to route
-messages. If you want to capture all router messages, make sure to add, in
-addition to the :router:`CeleryRouter` loggers, ``blockingrouter``::
-
-    LOGGING_CONFIG = {
-        'blockingrouter': {
-            'handlers': ['file'],
-            'level': 'DEBUG',
-        }
-    }
-
 .. _django-celery: http://pypi.python.org/pypi/django-celery
 .. _setup instructions: http://docs.celeryproject.org/en/latest/django/first-steps-with-django.html
 .. _calling tasks: http://docs.celeryproject.org/en/latest/userguide/calling.html

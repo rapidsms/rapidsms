@@ -29,6 +29,10 @@ What's New
 * The :doc:`Messaging API </topics/router/messaging>` now asks the router to instantiate incoming and outgoing messages via the ``new_incoming_message`` and ``new_outgoing_message`` methods. This allows the router to better customize the message classes.
 * Reworked the :router:`CeleryRouter` to pass identifiers, rather than instantiated objects, to background tasks. This avoids tasks possibly using outdated data when unpickling task arguments.
 * Removed ``rapidsms.tests.harness.setting``.
+* Deprecated ``rapidsms.log.mixin.LoggerMixin``. Please update all logging to use the standard logging module, like so::
+
+    import logging
+    logger = logging.getLogger(__name__)
 
 
 .. _backwards-incompatible-changes:

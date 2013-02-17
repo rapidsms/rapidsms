@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
 
+import logging
 import warnings
 import datetime
 import copy
@@ -9,13 +10,15 @@ from collections import defaultdict
 from django.db.models.query import QuerySet
 from rapidsms.messages.incoming import IncomingMessage
 from rapidsms.messages.outgoing import OutgoingMessage
-from rapidsms.log.mixin import LoggerMixin
 from rapidsms.backends.base import BackendBase
 from rapidsms.apps.base import AppBase
 from rapidsms.conf import settings
 
 
-class BlockingRouter(object, LoggerMixin):
+logger = logging.getLogger(__name__)
+
+
+class BlockingRouter(object):
     """Base RapidSMS router implementation."""
 
     incoming_phases = ("filter", "parse", "handle", "default", "cleanup")
@@ -24,14 +27,13 @@ class BlockingRouter(object, LoggerMixin):
     def __init__(self, *args, **kwargs):
         self.apps = []
         self.backends = {}
-        self.logger = None
         apps = kwargs.pop('apps', settings.INSTALLED_APPS)
         backends = kwargs.pop('backends', settings.INSTALLED_BACKENDS)
         for name in apps:
             try:
                 self.add_app(name)
             except Exception as e:
-                self.exception(e)
+                logger.exception(e)
         for name, conf in backends.iteritems():
             parsed_conf = copy.copy(conf)
             engine = parsed_conf.pop('ENGINE')
@@ -129,19 +131,19 @@ class BlockingRouter(object, LoggerMixin):
           An opportunity to clean up anything started during earlier phases.
         """
 
-        self.info("Incoming (%s): %s" % (msg.connection, msg.text))
+        logger.info("Incoming (%s): %s" % (msg.connection, msg.text))
 
         try:
             for phase in self.incoming_phases:
-                self.debug("In %s phase" % phase)
+                logger.debug("In %s phase" % phase)
 
                 if phase == "default":
                     if msg.handled:
-                        self.debug("Skipping phase")
+                        logger.debug("Skipping phase")
                         break
 
                 for app in self.apps:
-                    self.debug("In %s app" % app)
+                    logger.debug("In %s app" % app)
                     handled = False
 
                     func = getattr(app, phase)
@@ -151,7 +153,7 @@ class BlockingRouter(object, LoggerMixin):
                     # to abort ALL further processing of this message
                     if phase == "filter":
                         if handled is True:
-                            self.warning("Message filtered")
+                            logger.warning("Message filtered")
                             raise(StopIteration)
 
                     # during the _handle_ phase, apps can return True
@@ -159,7 +161,7 @@ class BlockingRouter(object, LoggerMixin):
                     # further apps from receiving the message
                     elif phase == "handle":
                         if handled is True:
-                            self.debug("Short-circuited")
+                            logger.debug("Short-circuited")
                             # mark the message handled to avoid the
                             # default phase firing unnecessarily
                             msg.handled = True
@@ -169,7 +171,7 @@ class BlockingRouter(object, LoggerMixin):
                         # allow default phase of apps to short circuit
                         # for prioritized contextual responses.
                         if handled is True:
-                            self.debug("Short-circuited default")
+                            logger.debug("Short-circuited default")
                             break
 
         except StopIteration:
@@ -186,7 +188,7 @@ class BlockingRouter(object, LoggerMixin):
 
     def process_outgoing(self, msg):
         """Process message through outgoing phases and pass to backend(s)."""
-        self.info("Outgoing: %s" % msg)
+        logger.info("Outgoing: %s" % msg)
         continue_sending = self.process_outgoing_phases(msg)
         if continue_sending:
             self.backend_preparation(msg)
@@ -194,22 +196,22 @@ class BlockingRouter(object, LoggerMixin):
     def process_outgoing_phases(self, msg):
         """Process message through outgoing phases and apps."""
         for phase in self.outgoing_phases:
-            self.debug("Out %s phase" % phase)
+            logger.debug("Out %s phase" % phase)
             continue_sending = True
             # call outgoing phases in the opposite order of the incoming
             # phases, so the first app called with an incoming message
             # is the last app called with an outgoing message
             for app in reversed(self.apps):
-                self.debug("Out %s app" % app)
+                logger.debug("Out %s app" % app)
                 try:
                     func = getattr(app, phase)
                     continue_sending = func(msg)
-                except Exception:
-                    app.exception()
+                except Exception, e:
+                    logger.exception(e)
                 # during any outgoing phase, an app can return True to
                 # abort ALL further processing of this message
                 if continue_sending is False:
-                    self.warning("Message cancelled")
+                    logger.warning("Message cancelled")
                     return False
         msg.processed = True
         return True

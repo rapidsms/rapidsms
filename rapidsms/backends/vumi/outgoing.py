@@ -1,9 +1,13 @@
 import copy
 import requests
+import logging
 
 from django.utils import simplejson as json
 
 from rapidsms.backends.base import BackendBase
+
+
+logger = logging.getLogger(__name__)
 
 
 class VumiBackend(BackendBase):
@@ -26,7 +30,7 @@ class VumiBackend(BackendBase):
         return kwargs
 
     def send(self, id_, text, identities, context={}):
-        self.info('Sending message: %s' % text)
+        logger.info('Sending message: %s' % text)
         kwargs = self.prepare_request(id_, text, identities, context)
         r = requests.post(**kwargs)
-        self.debug(r)
+        logger.debug(r)

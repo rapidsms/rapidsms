@@ -1,13 +1,14 @@
+import logging
+
 from rapidsms.router.blocking import BlockingRouter
 from rapidsms.router.celery.tasks import receive_async, send_async
 
 
+logger = logging.getLogger(__name__)
+
+
 class CeleryRouter(BlockingRouter):
     """Skeleton router only used to execute the Celery task."""
-
-    def _logger_name(self):
-        # override default logger name to be more explicit
-        return __name__
 
     def is_eager(self, backend_name):
         """Backends can manually specify whether or not celery is eager."""
@@ -21,10 +22,10 @@ class CeleryRouter(BlockingRouter):
         """Queue incoming message to be processed in the background."""
         eager = self.is_eager(msg.connection.backend.name)
         if eager:
-            self.debug('Executing in current process')
+            logger.debug('Executing in current process')
             receive_async(msg.text, msg.connections[0].pk)
         else:
-            self.debug('Executing asynchronously')
+            logger.debug('Executing asynchronously')
             receive_async.delay(msg.text, msg.connections[0].pk, msg.id,
                                 msg.fields)
 
@@ -35,10 +36,10 @@ class CeleryRouter(BlockingRouter):
         for backend_name, identities in grouped_identities.iteritems():
             eager = self.is_eager(backend_name)
             if eager:
-                self.debug('Executing in current process')
+                logger.debug('Executing in current process')
                 send_async(backend_name, msg.id, msg.text, identities,
                            context)
             else:
-                self.debug('Executing asynchronously')
+                logger.debug('Executing asynchronously')
                 send_async.delay(backend_name, msg.id, msg.text, identities,
                                  context)
