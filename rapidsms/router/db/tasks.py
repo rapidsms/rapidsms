@@ -11,13 +11,13 @@ logger = get_task_logger(__name__)
 
 
 @celery.task
-def receive(message_id):
+def receive_async(message_id, fields):
     """Retrieve message from DB and pass to BlockingRouter for processing."""
     from rapidsms.router.db.models import Message
     from rapidsms.router import get_router
     dbm = Message.objects.get(pk=message_id)
     router = get_router()
-    message = router.create_message_from_dbm(dbm)
+    message = router.create_message_from_dbm(dbm, fields)
     try:
         # call process_incoming directly to skip receive_incoming
         router.process_incoming(message)

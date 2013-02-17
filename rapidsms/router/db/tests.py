@@ -1,3 +1,5 @@
+from mock import patch
+
 from django.test import TestCase
 from django.test.utils import override_settings
 
@@ -5,7 +7,7 @@ from rapidsms.models import Connection
 from rapidsms.tests import harness
 from rapidsms.router.db import DatabaseRouter
 from rapidsms.router.db.models import Message, Transmission
-from rapidsms.router.db.tasks import send_transmissions
+from rapidsms.router.db.tasks import send_transmissions, receive_async
 
 
 class MessageStatusTest(harness.CustomRouterMixin, TestCase):
@@ -148,6 +150,14 @@ class DatabaseRouterReceiveTest(harness.CustomRouterMixin, TestCase):
         self.assertEqual("ASDF1234", msg.fields['external_id'])
         self.assertEqual("ASDF1234", dbm.external_id)
 
+    def test_create_message_from_dbm(self):
+        """Make sure the proper fields are passed through."""
+        router = DatabaseRouter()
+        dbm = router.queue_message(direction='I', text="foo",
+                                   connections=[self.create_connection()])
+        dbm2 = router.create_message_from_dbm(dbm, {'a': 'b'})
+        self.assertEqual({'a': 'b'}, dbm2.fields)
+
 
 @override_settings(INSTALLED_APPS=[harness.EchoApp])
 class DatabaseRouterSendTest(harness.DatabaseBackendMixin, TestCase):
@@ -225,6 +235,14 @@ class DatabaseRouterSendTest(harness.DatabaseBackendMixin, TestCase):
                            fields={'external_id': 'ABCD1234'})
         backend_msg = self.sent_messages[0]
         self.assertEqual(msg.fields['external_id'], backend_msg.external_id)
+
+    def test_receive_async_fields(self):
+        """Make sure the proper fields are passed to receive_async."""
+        with patch.object(receive_async, 'delay') as mock_method:
+            connections = self.lookup_connections(['1112223333'])
+            msg = self.receive("test", connections[0], fields={'a': 'b'})
+        mock_method.assert_called_once_with(message_id=msg.id,
+                                            fields=msg.fields)
 
     # not sure how to test this...
     # def test_send_error(self):

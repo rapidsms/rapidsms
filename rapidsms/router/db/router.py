@@ -1,7 +1,7 @@
 from django.db.models import Q
 
 from rapidsms.router.blocking import BlockingRouter
-from rapidsms.router.db.tasks import receive, send_transmissions
+from rapidsms.router.db.tasks import receive_async, send_transmissions
 from rapidsms.messages.incoming import IncomingMessage
 from rapidsms.messages.outgoing import OutgoingMessage
 
@@ -36,7 +36,7 @@ class DatabaseRouter(BlockingRouter):
 
     def receive_incoming(self, msg):
         """Queue message in DB for async inbound processing."""
-        receive.delay(message_id=msg.id)
+        receive_async.delay(message_id=msg.id, fields=msg.fields)
 
     def group_transmissions(self, transmissions, batch_size=200):
         """Divide transmissions by backend and into manageable chunks."""
@@ -75,7 +75,7 @@ class DatabaseRouter(BlockingRouter):
                                      message_id=dbm.pk,
                                      transmission_ids=transmission_ids)
 
-    def create_message_from_dbm(self, dbm, fetch_connections=True):
+    def create_message_from_dbm(self, dbm, fields={}, fetch_connections=True):
         from rapidsms.models import Connection
         if fetch_connections:
             ids = dbm.transmissions.values_list('connection_id', flat=True)
@@ -90,5 +90,5 @@ class DatabaseRouter(BlockingRouter):
         class_ = {'I': IncomingMessage, 'O': OutgoingMessage}[dbm.direction]
         msg = class_(**kwargs)
         msg.dbm = dbm
-        msg.fields['external_id'] = dbm.external_id
+        msg.fields = fields
         return msg
