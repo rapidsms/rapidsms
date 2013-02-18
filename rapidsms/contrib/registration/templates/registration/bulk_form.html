@@ -13,6 +13,9 @@
         </ul>
     </div>
     <div class="span8">
+        {% if csv_errors %}
+        <p style="color: red; font-weight: strong;">CSV Error: {{ csv_errors }}</p>
+        {% endif %}
         <form action="" method="post" enctype="multipart/form-data">
             {% render_form bulk_form %}
             {% csrf_token %}
