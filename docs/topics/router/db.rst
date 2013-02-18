@@ -35,7 +35,7 @@ Add ``rapidsms.router.db`` to ``INSTALLED_APPS``:
 
 This will register Celery tasks in ``rapidsms.router.db.tasks``.
 
-Set :setting:`RAPIDSMS_ROUTER` to use :router:`CeleryRouter`::
+Set :setting:`RAPIDSMS_ROUTER` to use :router:`DatabaseRouter`::
 
     RAPIDSMS_ROUTER = "rapidsms.router.db.DatabaseRouter"
 
