@@ -45,6 +45,16 @@ Run ``syncdb`` to create the necessary database tables::
 
 That's it!
 
+Celery workers
+--------------
+
+Finally, you'll need to run the celery worker command (in a separate shell from
+``runserver``) to begin consuming queued tasks::
+
+    python manage.py celeryd -lDEBUG
+
+Now your messages will be handled asynchronously with :router:`DatabaseRouter`.
+
 .. _django-celery: http://pypi.python.org/pypi/django-celery
 .. _setup instructions: http://docs.celeryproject.org/en/latest/django/first-steps-with-django.html
 .. _calling tasks: http://docs.celeryproject.org/en/latest/userguide/calling.html

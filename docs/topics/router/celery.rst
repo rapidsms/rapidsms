@@ -37,7 +37,18 @@ Set :setting:`RAPIDSMS_ROUTER` to use :router:`CeleryRouter`::
 
     RAPIDSMS_ROUTER = "rapidsms.router.celery.CeleryRouter"
 
-That's it! Now all incoming and outgoing messages will be queued using Celery.
+That's it!
+
+Celery workers
+--------------
+
+Finally, you'll need to run the celery worker command (in a separate shell from
+``runserver``) to begin consuming queued tasks::
+
+    python manage.py celeryd -lDEBUG
+
+Now your messages will be handled asynchronously with :router:`CeleryRouter`.
+
 
 Configuration
 -------------
