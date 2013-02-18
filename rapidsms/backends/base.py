@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-from rapidsms.utils.modules import try_import, get_class
+from rapidsms.utils.modules import import_class
 from rapidsms.log.mixin import LoggerMixin
 
 
@@ -10,10 +10,7 @@ class BackendBase(object, LoggerMixin):
 
     @classmethod
     def find(cls, module_name):
-        module = try_import(module_name)
-        if module is None:
-            return None
-        return get_class(module, cls)
+        return import_class(module_name, cls)
 
     def __init__(self, router, name, **kwargs):
         self.router = router

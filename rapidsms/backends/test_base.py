@@ -6,6 +6,10 @@ from rapidsms.models import Backend
 from rapidsms.backends.base import BackendBase
 
 
+class TestBackend(BackendBase):
+    pass
+
+
 class BackendBaseTest(TestCase):
 
     def test_backend_has_name(self):
@@ -29,7 +33,7 @@ class BackendBaseTest(TestCase):
         conf_backend = ConfigurableBackend(None, "mock", a=1, b=2)
         self.assertEquals(conf_backend.conf, {"a": 1, "b": 2})
 
-    def test_backend_finds_valid_backend_classes(self):
-        backend = BackendBase.find('rapidsms.backends.kannel.outgoing')
-        from rapidsms.backends.kannel.outgoing import KannelBackend
-        self.assertEquals(backend, KannelBackend)
+    def test_backend_finds_valid_backend_class(self):
+        """Class should be returned if valid."""
+        backend = BackendBase.find('rapidsms.backends.test_base.TestBackend')
+        self.assertEquals(TestBackend, backend)

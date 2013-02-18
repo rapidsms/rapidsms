@@ -158,7 +158,7 @@ you may provide specific classes or Django apps in which to search in the
     'rapidsms.contrib.locations', 'rapidsms.contrib.messagelog',
     ... (other Django apps) ...]
     >>> print settings.INSTALLED_BACKENDS
-    {'message_tester': {'ENGINE': 'rapidsms.contrib.httptester.backend'}}
+    {'message_tester': {'ENGINE': 'rapidsms.contrib.httptester.backend.HttpTesterCacheBackend'}}
     >>> router = BlockingRouter()
     >>> router.apps
     [<app: handlers>, <app: default>, <app: locations>, <app: messagelog>]

@@ -11,13 +11,14 @@ class RouterBackendTest(TestCase):
 
     def test_valid_backend_path(self):
         """Valid RapidSMS backend modules should load properly."""
-        backend = self.router.add_backend("backend", "rapidsms.backends.base")
+        backend = self.router.add_backend("backend",
+                                          "rapidsms.backends.base.BackendBase")
         self.assertEquals(1, len(self.router.backends.keys()))
         self.assertEquals(backend, self.router.backends["backend"])
 
     def test_router_downcases_backend_configs(self):
         """Backend configuration should automatically be lowercased."""
-        test_backend = "rapidsms.backends.base"
+        test_backend = "rapidsms.backends.base.BackendBase"
         test_conf = {"a": 1, "B": 2, "Cc": 3}
         backend = self.router.add_backend("backend", test_backend, test_conf)
         self.assertEquals(len(backend._config), 3)

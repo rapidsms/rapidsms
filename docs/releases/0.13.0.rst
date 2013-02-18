@@ -58,6 +58,27 @@ Make the following change to all of your ``urls.py``:
     -from django.conf.urls.defaults import *
     +from django.conf.urls import patterns, url
 
+Backend configuration must point to a class
+-------------------------------------------
+
+In previous versions of RapidSMS, you would define backends like so::
+
+        INSTALLED_BACKENDS = {
+            "kannel-fake-smsc" : {
+                "ENGINE":  "rapidsms.backends.kannel",
+            }
+        }
+
+Now, backends must specifiy the class::
+
+        INSTALLED_BACKENDS = {
+            "kannel-fake-smsc" : {
+                "ENGINE":  "rapidsms.backends.kannel.KannelBackend",
+            }
+        }
+
+This change was made to be more explicit. This also simplifies the importing architecture.
+
 Removed start/stop methods
 --------------------------
 

@@ -2,6 +2,7 @@
 # vim: ai ts=4 sts=4 et sw=4
 import os
 import sys
+import inspect
 
 from django.utils.importlib import import_module
 
@@ -30,6 +31,8 @@ def import_class(import_path, base_class=None):
     except AttributeError:
         raise ImportError('Module "%s" does not define a "%s" '
                                    'class.' % (module, class_name))
+    if not inspect.isclass(class_):
+        raise ImportError('%s is not a class.' % import_path)
     if base_class and not issubclass(class_, base_class):
         msg = "%s is not a subclass of %s" % (class_name, base_class.__name__)
         raise ImportError(msg)

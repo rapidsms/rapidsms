@@ -44,10 +44,10 @@ vary widely. This setting mimics the structure of the Django
 
     INSTALLED_BACKENDS = {
         'backend1_name': {
-            'ENGINE': 'path.to.backend1',
+            'ENGINE': 'path.to.backend1.BackendClass',
         },
         'backend2_name': {
-            'ENGINE': 'path.to.backend2',
+            'ENGINE': 'path.to.backend2.BackendClass',
         },
     }
 
@@ -59,7 +59,7 @@ Example configuration::
 
     INSTALLED_BACKENDS = {
         "message_tester": {
-            "ENGINE": "rapidsms.contrib.httptester.backend",
+            "ENGINE": "rapidsms.contrib.httptester.backend.HttpTesterCacheBackend",
         },
     }
 

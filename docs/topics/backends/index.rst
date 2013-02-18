@@ -71,7 +71,7 @@ The following is intended to serve as a simple example of configuring a backend 
 
     INSTALLED_BACKENDS = {
         "httptester": {
-            "ENGINE": "rapidsms.contrib.httptester.backend",
+            "ENGINE": "rapidsms.contrib.httptester.backend.HttpTesterCacheBackend",
         },
     }
 
@@ -107,7 +107,7 @@ This backend would be registered in :setting:`INSTALLED_BACKENDS` with::
 
     INSTALLED_BACKENDS = {
         "customhttp": {
-            "ENGINE": "rapidsms.contrib.httptester.backend",
+            "ENGINE": "rapidsms.contrib.httptester.backend.HttpTesterCacheBackend",
         },
     }
 

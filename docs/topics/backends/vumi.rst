@@ -102,12 +102,10 @@ simply add the following to your existing ``INSTALLED_BACKENDS`` configuration
 in your ``settings.py`` file::
 
     INSTALLED_BACKENDS = {
-        "message_tester": {
-            "ENGINE": "rapidsms.backends.bucket",
-        },
+        # ...
         # other backends, if any
         "vumi-fake-smsc" : {
-            "ENGINE":  "rapidsms.backends.vumi.outgoing",
+            "ENGINE":  "rapidsms.backends.vumi.VumiBackend",
             "sendsms_url": "http://127.0.0.1:9000/send/",
         },
     }
