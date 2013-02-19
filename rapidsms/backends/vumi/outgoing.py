@@ -13,9 +13,12 @@ logger = logging.getLogger(__name__)
 class VumiBackend(BackendBase):
     """Outgoing SMS backend for Vumi."""
 
-    def configure(self, sendsms_url, sendsms_params=None, **kwargs):
+    def configure(self, sendsms_url, sendsms_params=None, sendsms_user=None,
+                  sendsms_pass=None, **kwargs):
         self.sendsms_url = sendsms_url
         self.sendsms_params = sendsms_params or {}
+        self.sendsms_user = sendsms_user
+        self.sendsms_pass = sendsms_pass
 
     def prepare_request(self, id_, text, identities, context):
         """Construct outbound data for requests.post."""
@@ -26,6 +29,9 @@ class VumiBackend(BackendBase):
                         'session_event': None})
         if len(identities) == 1 and 'external_id' in context:
             payload['in_reply_to'] = context['external_id']
+        if self.sendsms_user and self.sendsms_pass:
+            kwargs['auth'] = (self.sendsms_user, self.sendsms_pass)
+        logger.debug(kwargs)
         kwargs['data'] = json.dumps(payload)
         return kwargs
 

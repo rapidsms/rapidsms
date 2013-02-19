@@ -146,3 +146,14 @@ class VumiSendTest(CreateDataMixin, TestCase):
                                          {'external_id': 'ASDF1234'})
         data = json.loads(kwargs['data'])
         self.assertTrue('in_reply_to' not in data)
+
+    def test_auth(self):
+        """Vumi backend shold use basic authentication if given user/pass."""
+        message = self.create_outgoing_message()
+        config = {"sendsms_url": "http://example.com",
+                  "sendsms_user": "username",
+                  "sendsms_pass": "password"}
+        backend = VumiBackend(None, "kannel", **config)
+        kwargs = backend.prepare_request(message.id, message.text,
+                                         [message.connections[0].identity], {})
+        self.assertTrue('auth' in kwargs)
