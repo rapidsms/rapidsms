@@ -49,7 +49,7 @@ def send_transmissions(backend_id, message_id, transmission_ids):
         context['external_id'] = dbm.in_response_to.external_id
     try:
         router.send_to_backend(backend_name=backend.name, id_=dbm.pk,
-                               text=dbm.text, identities=identities,
+                               text=dbm.text, identities=list(identities),
                                context=context)
     except Exception, exc:
         # log error, update database statuses, and re-execute this task
