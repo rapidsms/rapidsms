@@ -31,7 +31,6 @@ class VumiBackend(BackendBase):
             payload['in_reply_to'] = context['external_id']
         if self.sendsms_user and self.sendsms_pass:
             kwargs['auth'] = (self.sendsms_user, self.sendsms_pass)
-        logger.debug(kwargs)
         kwargs['data'] = json.dumps(payload)
         return kwargs
 
