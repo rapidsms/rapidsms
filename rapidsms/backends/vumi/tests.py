@@ -125,7 +125,7 @@ class VumiSendTest(CreateDataMixin, TestCase):
         self.assertEqual(data['content'], message.text)
 
     def test_response_external_id(self):
-        """Vumi requires JSON to include to_addr and content."""
+        """Make sure external_id context is sent to Vumi."""
         message = self.create_outgoing_message()
         config = {"sendsms_url": "http://example.com"}
         backend = VumiBackend(None, "kannel", **config)
@@ -134,3 +134,15 @@ class VumiSendTest(CreateDataMixin, TestCase):
                                          {'external_id': 'ASDF1234'})
         data = json.loads(kwargs['data'])
         self.assertEqual("ASDF1234", data['in_reply_to'])
+
+    def test_bulk_response_external_id(self):
+        """Only single messages should include in_response_to."""
+        conn1 = self.create_connection()
+        conn2 = self.create_connection()
+        config = {"sendsms_url": "http://example.com"}
+        backend = VumiBackend(None, "kannel", **config)
+        kwargs = backend.prepare_request("1234", "foo",
+                                         [conn1.identity, conn2.identity],
+                                         {'external_id': 'ASDF1234'})
+        data = json.loads(kwargs['data'])
+        self.assertTrue('in_reply_to' not in data)
