@@ -7,8 +7,8 @@ DatabaseRouter
 :router:`DatabaseRouter` provides the following functionality:
 
 * All inbound and outbound messages are stored in the database.
-* Inbound messages are processed asynchronously with Celery_.
-* Outbound messages are automatically split into batches for asynchronous sending.
+* Inbound and outbound messages are processed asynchronously with Celery_.
+* Outbound messages are automatically split into batches for sending.
 * Use of Django's `bulk create`_ to optimize database inserts.
 * Messages that fail to send will use `Celery's retry`_ mechanism.
 
@@ -55,6 +55,8 @@ Finally, you'll need to run the celery worker command (in a separate shell from
 
 Now your messages will be handled asynchronously with :router:`DatabaseRouter`.
 
+.. module:: rapidsms.router.db.models
+
 Database models
 ---------------
 
@@ -65,8 +67,6 @@ Message
 *******
 
 The ``Message`` model contains the context of a text message. For every associated ``Connection``, a ``Message`` has an associated ``Transmission``.
-
-.. module:: rapidsms.router.db.models
 
 .. class:: Message
 
