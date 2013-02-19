@@ -46,7 +46,7 @@ Run ``syncdb`` to create the necessary database tables::
 That's it!
 
 Celery workers
---------------
+**************
 
 Finally, you'll need to run the celery worker command (in a separate shell from
 ``runserver``) to begin consuming queued tasks::
@@ -54,6 +54,110 @@ Finally, you'll need to run the celery worker command (in a separate shell from
     python manage.py celeryd -lDEBUG
 
 Now your messages will be handled asynchronously with :router:`DatabaseRouter`.
+
+Database models
+---------------
+
+:router:`DatabaseRouter` utilizes two database models, ``Message`` and
+``Transmission``.
+
+Message
+*******
+
+The ``Message`` model contains the context of a text message. For every associated ``Connection``, a ``Message`` has an associated ``Transmission``.
+
+.. module:: rapidsms.router.db.models
+
+.. class:: Message
+
+    .. attribute:: direction
+
+        Required. Either ``I`` or ``O``.
+
+    .. attribute:: status
+
+        Required. See :ref:`message-status-values`.
+
+    .. attribute:: date
+
+        Required. Date/time when message was created.
+
+    .. attribute:: updated
+
+        Required. Last date/time the message was updated.
+
+    .. attribute:: sent
+
+        Date/time when all associated transmissions were sent.
+
+    .. attribute:: delivered
+
+        Date/time when all associated transmissions were delivered (requires backend functionality).
+
+    .. attribute:: text
+
+        Required. Message text.
+
+    .. attribute:: external_id
+
+        Optional. ID of message as defined by the associated backend.
+
+    .. attribute:: in_response_to
+
+        Optional. Foreign key to ``Message`` that generated this reply.
+
+Transmission
+************
+
+A ``Transmission`` represents the instance of a particular ``Message`` and ``Connection``.
+
+.. class:: Transmission
+
+    .. attribute:: message
+
+        Required. Foreign key to associated ``Message``.
+
+    .. attribute:: connection
+
+        Required. Foreign key to associated ``Connection``.
+
+    .. attribute:: status
+
+        Required. See :ref:`message-status-values`.
+
+    .. attribute:: date
+
+        Required. Date/time when transmission was created.
+
+    .. attribute:: updated
+
+        Required. Last date/time when transmission was updated.
+
+    .. attribute:: sent
+
+        Date/time when transmission was sent.
+
+    .. attribute:: delivered
+
+        Date/time when transmission was delivered (requires backend functionality).
+
+.. _message-status-values:
+
+Message status values
+*********************
+
+``Message`` and ``Transmission`` objects can have the follow status values:
+
+* Inbound values:
+    * ``Q`` - *Queued*: Message is queued and awaiting processing
+    * ``R`` - *Received*: Message has been processed and responses are queued
+    * ``E`` - *Errored*: An error occured durring processing
+* Outbound values:
+    * ``Q`` - *Queued*: Message is queued and awaiting processing
+    * ``P`` - *Processing*: Message is sending
+    * ``S`` - *Sent*: All associated transmissions have been sent
+    * ``D`` - *Delivered*: All associated transmissions have been delivered (requires backend functionality)
+    * ``E`` - *Errored*: An error occured durring processing
 
 .. _django-celery: http://pypi.python.org/pypi/django-celery
 .. _setup instructions: http://docs.celeryproject.org/en/latest/django/first-steps-with-django.html
