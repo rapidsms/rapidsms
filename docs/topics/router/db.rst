@@ -15,6 +15,15 @@ DatabaseRouter
 Similar to :router:`CeleryRouter`, :router:`DatabaseRouter` is designed for
 projects that require high messages volumes.
 
+How it works
+------------
+
+* Before doing any processing, an inbound message is loaded into the ``Message`` and ``Transmission`` models. A celery task is then queued to process the message asynchronously.
+* The celery task reconstructs the message object, fires up the router, and passes it off for inbound processing.
+* Any replies are loaded into the ``Message`` and ``Transmission`` models.
+* The router then divides the outbound messages by backend and queues tasks for sending chunks of messages to their respective backends.
+* As tasks complete, the status of the messages are updated in the database, including any errors that occurred.
+
 Installation
 ------------
 
@@ -151,13 +160,13 @@ Message status values
 * Inbound values:
     * ``Q`` - *Queued*: Message is queued and awaiting processing
     * ``R`` - *Received*: Message has been processed and responses are queued
-    * ``E`` - *Errored*: An error occured durring processing
+    * ``E`` - *Errored*: An error occurred during processing
 * Outbound values:
     * ``Q`` - *Queued*: Message is queued and awaiting processing
     * ``P`` - *Processing*: Message is sending
     * ``S`` - *Sent*: All associated transmissions have been sent
     * ``D`` - *Delivered*: All associated transmissions have been delivered (requires backend functionality)
-    * ``E`` - *Errored*: An error occured durring processing
+    * ``E`` - *Errored*: An error occurred during processing
 
 .. _django-celery: http://pypi.python.org/pypi/django-celery
 .. _setup instructions: http://docs.celeryproject.org/en/latest/django/first-steps-with-django.html
