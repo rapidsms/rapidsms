@@ -16,3 +16,4 @@ _build
 *.log
 *.egg
 coverage.xml
+htmlcov

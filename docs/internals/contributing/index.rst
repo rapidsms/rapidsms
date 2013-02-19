@@ -38,15 +38,16 @@ Submitting code
    start   a discussion around a   feature idea or a bug. Send a message to the
    `rapidsms-dev`_ mailing list to request feedback.
 
-#. If you're working on a large patch, we highly recommend creating a `wiki 
+#. If you're working on a large patch, we highly recommend creating a `wiki
    page`_ under the RapidSMS GitHub account. Use the wiki page to outline the
-   motivation behind the patch and to document decisions made on the 
+   motivation behind the patch and to document decisions made on the
    `rapidsms-dev`_ mailing list. `Router decoupling and HTTP message processing`_, `Bulk Messaging API`_, and `Scheduling`_ are good examples.
 
 #. Fork the repository on GitHub to start making your changes (relative to the
    master branch).
 
-#. Follow the RapidSMS :ref:`coding standards <coding-standards>`.
+#. Follow the RapidSMS :ref:`coding standards <coding-standards>` and run the
+   :ref:`PEP 8 adherence tool <pep-eight-adherence>`.
 
 #. Write a test which shows that the bug was fixed or that the feature works as
    expected.
@@ -83,6 +84,58 @@ Coding standards and best practices
     #!/usr/bin/env python
     # vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
 
+Using virtualenv
+****************
+
+We highly recommend using `virtualenv`_ and `virtualenvwrapper`_ to work on
+RapidSMS core. These tools provide isolated Python environments, which are more
+practical than installing packages system wide. They also allow installing
+packages without administrator privileges. This section will outline the steps
+to setup RapidSMS core so that you can edit it while working on a RapidSMS
+project.
+
+1. **Install virtualenv and virtualenvwrapper.** Use pip to install the latest
+   version (and upgrade if you have an older copy):
+
+.. code-block:: bash
+
+    sudo pip install --upgrade virtualenv
+    sudo pip install --upgrade virtualenvwrapper
+
+Then follow the `virtualenvwrapper install docs`_ to setup your shell properly.
+
+2. **Create a new virtual environment for RapidSMS.** Now we'll create a new
+   virtual environment to isolate our development:
+
+.. code-block:: bash
+
+    mkvirtualenv --distribute rapidsms
+
+3. **Install RapidSMS in development mode.** This install is done in such a
+   way that changes to the RapidSMS source are immediately available in your
+   project, without needing to run a build or install step after each change.
+   To do this, navigate to the RapidSMS clone on your file system and use
+   distribute's `develop`_ command:
+
+.. code-block:: bash
+
+    cd <your-rapidsms-clone>
+    python setup.py develop
+
+4. **Setup your project.** Now we can use our new virtual environment with a
+   RapidSMS project to test changes and modifications. You can create a new
+   project (e.g. by :ref:`installing-rapidsms-project-template`).
+
+5. **Remember to activate your virtualenv.** If you restart or need to return
+   to your virtualenv at any point, you can easily reactivate it:
+
+.. code-block:: bash
+
+    workon rapidsms
+
+Now any changes made to your local RapidSMS clone will be reflected immediately
+while editing your project.
+
 .. _writing-documentation:
 
 Writing documentation
@@ -105,6 +158,10 @@ development version of RapidSMS from the source code repository
 
 Using Sphinx
 ************
+
+Before building the documentation, you must have a version of RapidSMS
+installed.  See the :ref:`installing-development-version` guide for
+instructions on installing RapidSMS.
 
 We use the Sphinx__ documentation system (based on docutils__). To actually
 build the documentation locally, you'll currently need to install Sphinx::
@@ -145,7 +202,7 @@ __ http://docutils.sourceforge.net/
 .. _webchat: http://webchat.freenode.net?channels=rapidsms
 .. _ticket tracker: https://github.com/rapidsms/rapidsms/issues?state=open
 .. _pull requests: https://github.com/rapidsms/rapidsms/pulls
-.. _AUTHORS: https://github.com/rapidsms/rapidsms/blob/feature/new-routing/AUTHORS
+.. _AUTHORS: https://github.com/rapidsms/rapidsms/blob/master/AUTHORS
 .. _reStructuredText Primer: http://sphinx.pocoo.org/rest.html#rst-primer
 .. _Sphinx-specific markup: http://sphinx.pocoo.org/markup/index.html#sphinxmarkup
 .. _documentation label: https://github.com/rapidsms/rapidsms/issues?labels=documentation&page=1&state=open
@@ -153,3 +210,7 @@ __ http://docutils.sourceforge.net/
 .. _Bulk Messaging API: https://github.com/rapidsms/rapidsms/wiki/Bulk-Messaging-API
 .. _Scheduling: https://github.com/rapidsms/rapidsms/wiki/Scheduling
 .. _wiki page: https://github.com/rapidsms/rapidsms/wiki/_pages
+.. _virtualenv: http://rapidsms.readthedocs.org/
+.. _virtualenvwrapper: http://virtualenvwrapper.readthedocs.org/en/latest/
+.. _virtualenvwrapper install docs: http://virtualenvwrapper.readthedocs.org/en/latest/install.html
+.. _develop: http://packages.python.org/distribute/setuptools.html#develop-deploy-the-project-source-in-development-mode

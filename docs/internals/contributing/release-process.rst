@@ -117,7 +117,7 @@ Handy guide for adding your app to pypi: http://blog.nyaruka.com/adding-a-django
 Coding standards
 =================
 
-All code should be styled according to PEP 8 (http://www.python.org/dev/peps/pep-0008/)
+All code should be styled according to PEP 8 (http://www.python.org/dev/peps/pep-0008/) and tested using the :ref:`PEP 8 adherence tool <pep-eight-adherence>`.
 
 Indent each level four spaces. Be sure to use spaces, and not tabs.
 

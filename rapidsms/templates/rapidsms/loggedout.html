@@ -1,0 +1,12 @@
+{% extends "layout-split-2.html" %}
+{% load url from future %}
+{% block title %}Goodbye{% endblock %}
+{% block content %}
+
+<h1>Thanks for visiting RapidSMS!</h1>
+
+<p>Please come again.</p>
+
+<a href="{% url 'rapidsms-login' %}">Log in again</a>
+
+{% endblock %}

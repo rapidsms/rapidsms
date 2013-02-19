@@ -1,0 +1,61 @@
+{% extends "layout.html" %}
+{% load url from future %}
+{% block title %}Dashboard{% endblock %}
+
+{% block stylesheets %}
+{{ block.super }}
+<style type="text/css">
+	#inner {
+		margin: 4em 25%;
+	}
+
+	div.module div {
+		border: 1px solid #ddd;
+		border-top-color: #636363;
+		margin-top: -1px;
+	}
+
+	div.module p {
+		padding-left: 1em;
+		padding-right: 1em;
+	}
+
+	code, pre {
+		background: #ffe;
+	}
+
+	pre {
+		padding: 1em;
+		margin: 0;
+	}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="module">
+	<h2>Installation Successful!</h2>
+
+	<div>
+		<p>
+			See <a href="http://docs.rapidsms.org/Installation">the RapidSMS wiki</a>
+			to learn how to install community apps or create your own.
+		</p>
+
+		<p>
+			To replace this message with a different view, add a pattern in app's
+			<code>urls</code> module with the pattern: <code>r'^$</code>.
+		</p>
+
+		<p>
+			For example:
+		</p>
+
+		<pre>from django.conf.urls.defaults import *
+from myproject.myapp import views
+
+urlpatterns = patterns('',
+    url(r'^$', views.dashboard)
+)</pre>
+	</div>
+</div>
+{% endblock %}

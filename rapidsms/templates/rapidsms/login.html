@@ -1,0 +1,36 @@
+{% extends "layout-split-2.html" %}
+{% load url from future %}
+{% load forms_tags %}
+{% block title %}Login{% endblock %}
+{% block content %}
+
+{% if form.errors %}
+<p>Oops. Your username and password didn't match. Please try again.</p>
+{% endif %}
+
+{% if user.is_authenticated %}
+<p>You're already logged in!</p>
+
+{% else %}
+
+<h1>Please log in to RapidSMS</h1>
+
+
+<form method="post" action="{% url 'rapidsms-login' %}">
+<table>
+<tr>
+    <td>{{ form.username.label_tag }}</td>
+    <td>{{ form.username }}</td>
+</tr>
+<tr>
+    <td>{{ form.password.label_tag }}</td>
+    <td>{{ form.password }}</td>
+</tr>
+</table>
+{% csrf_token %}
+<input type="submit" value="login" />
+<input type="hidden" name="next" value="{{ next }}" />
+</form>
+
+{% endif %}
+{% endblock %}

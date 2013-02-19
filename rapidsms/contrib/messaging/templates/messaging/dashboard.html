@@ -1,0 +1,158 @@
+{% extends "layout.html" %}
+{% load url from future %}
+
+{% block stylesheets %}
+{{ block.super }}
+<link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}messaging/stylesheets/messaging.css" />
+{% endblock %}
+
+{% load paginator_tags %}
+{% block javascripts %}
+{{ block.super }}
+<script type="text/javascript" src="{{ STATIC_URL }}messaging/javascripts/jquery.simplyCountable.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}messaging/javascripts/csrf_ajax.js"></script>
+<script type="text/javascript">
+    var REC = "recipients";
+    
+    var update_ui = function() {
+        rec = $("body").data(REC);
+        if (rec.length == 1) {
+            $("#helptext").text("Sending to 1 person.");
+        } else {
+            $("#helptext").text("Sending to " + rec.length + " people.");
+        }
+    };
+    var reset = function() {
+        $("tr.contact").removeClass("selected");
+        $("body").data(REC, []);
+        $("#compose").val("");
+        $("#counter").html("140");
+        update_ui();
+    };
+
+    $(function(){
+        
+        // countable
+        $('#compose').simplyCountable();
+    
+        // initialize data 
+        $("body").data(REC, []);
+        
+        // contact add/remove
+        $("tr.contact").click(function() {
+            id = $(this).attr("id");
+            rec = $("body").data(REC);
+            if (rec.indexOf(id) != -1) {
+                rec.splice(rec.indexOf(id), 1);
+                $(this).removeClass("selected");
+            } else {
+                rec.push(id);
+                $(this).addClass("selected");
+            }
+            update_ui();
+            
+        });
+        
+        // send messages
+        $("#send").click(function() {
+            $("#notifications").removeClass("success error");
+            $("#notifications").html("");
+            rec = $("body").data(REC);
+            text = $("#compose").val();
+            if (rec.length > 0 && text.length > 0) {
+                // do post
+                $.ajax({url: "{% url 'send_message' %}", 
+                        type: "POST",
+                        data: {"recipients": rec, "text": text},
+                        success: function(msg) {
+                            $("#notifications").addClass("success");
+                            $("#notifications").html(msg);
+                        },
+                        error: function(msg) {
+                            $("#notifications").addClass("error");
+                            $("#notifications").html("<strong>Problem sending message! Please contact your administrator if this keeps happening</strong>");
+                        }
+                       });
+                reset();
+            } else {
+                $("#notifications").addClass("error");
+                var not_html = "<strong>Message NOT sent. Please correct the errors below</strong>";
+                if (rec.length == 0) {
+                    not_html = not_html + "<p>" + "Please specify at least one recipient." + "</p>";
+                } 
+                if (text.length == 0) {
+                    not_html = not_html + "<p>" + "You have to write a message." + "</p>";
+                }
+                $("#notifications").html(not_html);
+            }
+            
+        });
+    });
+    
+</script>
+{% endblock %}
+
+{% block content %}{% if filters %}
+<div class="split-4 filters">{% for filter in filters %}
+	<div class="{% ifequal forloop.counter 1 %}left{% endifequal %}{% ifequal forloop.counter 2 %}mid-left{% endifequal %}{% ifequal forloop.counter 3 %}mid-right{% endifequal %}{% ifequal forloop.counter 4 %}right{% endifequal %}">
+		<div class="module">
+			<h2>{{ filter.title }}</h2>
+			<ul>{% for item in filter.items %}
+				<li id="{{ item.uid }}"{% if item.parent_uid %} class="child-of-{{ item.parent_uid }}"{% endif %}>
+					<a href="">{{ item }}</a>
+				</li>{% endfor %}
+		</div>
+	</div>{% endfor %}
+</div>
+<div class="clear-hack"></div>{% endif %}
+<div id="notifications"></div>
+<div class="two-columns">
+	<div class="col-1">
+		<div class="module recipients">
+			<h2>Recipients</h2>
+			<table class="sortable" width="100%">
+				<thead>
+					<tr>
+						<th><a href="">Person</a></th>
+						<th><a href="">Phone Number</a></th>
+					</tr>
+				</thead>
+				<tbody>{% if people.object_list %}{% for person in people.object_list %}
+					<tr {% if person.default_connection %}class="contact"{% endif %} id="{{ person.pk }}">
+						<td>{{ person }}</td>
+						<td>{% if person.default_connection %}{{ person.default_connection.identity }}{% else %}no contact information{% endif %}</td>
+					</tr>{% endfor %}{% else %}
+					<tr class="no-data">
+						<td colspan="2">
+							No recipients yet.
+						</td>
+					</tr>
+					{% endif %}
+				</tbody>
+				<tfoot>
+					<tr>
+						<td colspan="2">
+							<div class="paginator">
+								{% paginator people %}
+							</div>
+						</td>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
+	</div>
+	<div class="col-2">
+		<div class="module contents">
+			<h2>Message</h2>
+			<p>You have <span id="counter"></span> characters left.  <span id="helptext">Sending to 0 people.</span></p>
+			<p></p> 
+			<div>
+				<textarea id="compose" cols="54" rows="5"></textarea>
+				<input type="button" id="send" class="send" value="Send Messages" />
+				<input type="button" class="cancel" value="Cancel" disabled="disabled" />
+			</div>
+		</div>
+	</div>
+</div>
+<div class="clear-hack"></div>
+{% endblock %}

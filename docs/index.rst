@@ -26,7 +26,7 @@
 RapidSMS Documentation
 =======================
 
-Release: v\ |version|. (:doc:`Installation <intro/install/index>`, :doc:`Release Notes <releases/index>`)
+Release: v\ |release|. (:doc:`Installation <intro/install/index>`, :doc:`Release Notes <releases/index>`)
 
 **Getting Started**
 
@@ -50,8 +50,8 @@ Release: v\ |version|. (:doc:`Installation <intro/install/index>`, :doc:`Release
 
 **RapidSMS contrib applications** (:doc:`Overview <topics/contrib/index>`)
 
-* default
-* echo
+* :doc:`default <topics/contrib/default>`
+* :doc:`echo <topics/contrib/echo>`
 * export
 * :doc:`handlers <topics/contrib/handlers>`
 * httptester
