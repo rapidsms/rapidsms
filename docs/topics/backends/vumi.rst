@@ -17,7 +17,7 @@ Using an SMPP simulator
 
 For local development, it's easy to setup an SMPP simulator for testing
 purposes. Vumi suggests using `SMPPSim <http://www.seleniumsoftware.com/user-
-guide.htm#intro>`_. SMPPSim is a testing utility which mimics the behaviour of
+guide.htm#intro>`_. SMPPSim is a testing utility which mimics the behavior of
 the Short Message Peer to Peer Protocol (SMPP) based Short Message Service
 Center (SMSC).
 
@@ -132,3 +132,20 @@ Now, you should be able to start RapidSMS like so::
 
 That's it! Now you can use SMPPSim to send mobile-originated (MO) messages
 through Vumi to RapidSMS.
+
+Authentication
+==============
+
+If you've enabled basic authentication on the Vumi side, you can configure the Vumi backend with a username and password:
+
+.. code-block:: python
+   :emphasize-lines: 5,6
+
+    INSTALLED_BACKENDS = {
+        "vumi-fake-smsc" : {
+            "ENGINE":  "rapidsms.backends.vumi.VumiBackend",
+            "sendsms_url": "http://127.0.0.1:9000/send/",
+            "sendsms_user": "username",
+            "sendsms_pass": "password",
+        },
+    }
