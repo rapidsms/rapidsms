@@ -8,7 +8,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from rapidsms.models import Contact, Connection, Backend
 from rapidsms.contrib.registration.tables import ContactTable
-from rapidsms.contrib.registration.forms import BulkRegistrationForm, ContactForm
+from rapidsms.contrib.registration.forms import BulkRegistrationForm, ContactForm, ConnectionFormSet
 
 
 def registration(request):
@@ -19,20 +19,25 @@ def registration(request):
 
 def contact_add(request):
     if request.method == 'POST':
-        contact_form = ContactForm(data=request.POST)
+        contact_form = ContactForm(request.POST)
         if contact_form.is_valid():
-            contact_form.save()
+            contact = contact_form.save(commit=False)
+            connection_formset = ConnectionFormSet(request.POST, instance=contact)
+            if connection_formset.is_valid():
+                contact.save()
+                connection_formset.save()
             return HttpResponseRedirect(reverse(registration))
-    else:
-        contact_form = ContactForm()
+    contact_form = ContactForm()
+    connection_formset = ConnectionFormSet(instance=Contact())
     return render(request, 'registration/contact_form.html', {
         'contact_form': contact_form,
+        'connection_formset': connection_formset,
         })
 
 
 @transaction.commit_on_success
 def contact_bulk_add(request):
-    bulk_form = BulkRegistrationForm(data=request.POST)
+    bulk_form = BulkRegistrationForm(request.POST)
 
     if request.method == "POST" and "bulk" in request.FILES:
         connections, contacts = [], []
@@ -63,20 +68,24 @@ def contact_bulk_add(request):
 
 
 def contact_edit(request, pk):
-    contact = get_object_or_404(Connection, pk=pk)
-
+    contact = get_object_or_404(Contact, pk=pk)
+    contact_form = ContactForm(instance=contact)
+    connection_formset = ConnectionFormSet(instance=contact)
     if request.method == "POST":
         if request.POST["submit"] == "Delete Contact":
             contact.delete()
-            return HttpResponseRedirect(
-                reverse(registration))
+            return HttpResponseRedirect(reverse(registration))
         else:
-            contact_form = Connection(instance=contact, data=request.POST)
-
+            contact_form = ContactForm(request.POST, instance=contact)
             if contact_form.is_valid():
-                contact = contact_form.save()
-                return HttpResponseRedirect(
-                    reverse(registration))
+                contact = contact_form.save(commit=False)
+                connection_formset = ConnectionFormSet(request.POST, instance=contact)
+                if connection_formset.is_valid():
+                    contact.save()
+                    connection_formset.save()
+                    return HttpResponseRedirect(reverse(registration))
     return render(request, "registration/contact_form.html", {
-            "contact": contact
+            "contact": contact,
+            "contact_form": contact_form,
+            'connection_formset': connection_formset,
         })

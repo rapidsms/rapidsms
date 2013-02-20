@@ -8,7 +8,7 @@ from djtables import Table, Column
 
 def _edit_link(cell):
     return reverse(
-        "registration_edit",
+        "contact_edit",
         args=[cell.row.pk])
 
 
