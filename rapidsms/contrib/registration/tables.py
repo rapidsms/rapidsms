@@ -12,14 +12,13 @@ def _edit_link(cell):
         args=[cell.row.pk])
 
 
-def _any_identity(cell):
-    if cell.object.connection_set.count() > 0:
-        return cell.object.connection_set.all()[0].identity
+def _identities(cell):
+    return ', '.join([x.identity for x in cell.object.connection_set.all()])
 
 
 class ContactTable(Table):
     name = Column(link=_edit_link)
-    identity = Column(value=_any_identity, sortable=False)
+    identity = Column(value=_identities, sortable=False)
 
     class Meta:
         order_by = 'name'
