@@ -2,23 +2,17 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 
-from django.core.urlresolvers import reverse
-from djtables import Table, Column
+from rapidsms.models import Contact
+import django_tables2 as tables
 
 
-def _edit_link(cell):
-    return reverse(
-        "contact_edit",
-        args=[cell.row.pk])
-
-
-def _identities(cell):
-    return ', '.join([x.identity for x in cell.object.connection_set.all()])
-
-
-class ContactTable(Table):
-    name = Column(link=_edit_link)
-    identity = Column(value=_identities, sortable=False)
+class ContactTable(tables.Table):
+    name = tables.LinkColumn('contact_edit', args=[tables.utils.A('pk')])
+    identities = tables.Column(empty_values=())
 
     class Meta:
-        order_by = 'name'
+        model = Contact
+        exclude = ('id', )
+
+    def render_identities(self, value, record):
+        return ', '.join([x.identity for x in record.connection_set.all()])

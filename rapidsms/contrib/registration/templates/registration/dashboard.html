@@ -1,6 +1,7 @@
 {% extends "registration/base.html" %}
 {% load url from future %}
 {% load forms_tags %}
+{% load django_tables2 %}
 
 {% block stylesheets %}
 {{ block.super }}
@@ -20,7 +21,7 @@
         </ul>
     </div>
     <div class="span8">
-        {{ contacts_table.as_html }}
+        {% render_table contacts_table %}
     </div>
 </div>
 

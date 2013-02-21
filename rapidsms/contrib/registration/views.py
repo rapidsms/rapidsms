@@ -12,8 +12,10 @@ from rapidsms.contrib.registration.forms import BulkRegistrationForm, ContactFor
 
 
 def registration(request):
+    contacts_table = ContactTable(Contact.objects.all(), template="django_tables2/bootstrap-tables.html")
+    contacts_table.paginate(page=request.GET.get('page', 1), per_page=10)
     return render(request, "registration/dashboard.html", {
-        "contacts_table": ContactTable(Contact.objects.all(), request=request)
+        "contacts_table": contacts_table,
         })
 
 
