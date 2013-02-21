@@ -28,3 +28,6 @@ Some apps and interfaces in the contrib repository include:
   basehandler makes it easy   to write more handlers echo app is an app that is
   merely a container for a   handler that echos a message. It is a good example
   to look at to see how   handlers work.
+
+* :doc:`Message Tester <httptester>`: Allows sending fake messages to RapidSMS
+  and seeing how RapidSMS responds.

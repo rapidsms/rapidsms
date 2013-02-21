@@ -59,21 +59,21 @@
                                 {% endif %}
                                 </li>
                             </ul>
-                           {% endblock %}
+                           {% endblock auth %}
                         </div>
                     </div>
                 </div>
         		{% block page_tabs %}
-        		{% endblock %}
+        		{% endblock page_tabs %}
 
-    		    {% endblock %}
+    		    {% endblock header %}
 
     		{% block breadcrumbs %}{% if breadcrumbs %}
     		<div class="row-fluid">{% for caption, url in breadcrumbs %}
     			<a href="{{ url }}">{{ caption }}</a>{% if not forloop.last %}
     			<span>&raquo;</span>{% endif %}{% endfor %}
     		</div>{% endif %}
-    		{% endblock %}
+    		{% endblock breadcrumbs %}
 
     		<div class="row-fluid">
     			{% block content %}{% endblock %}
@@ -90,7 +90,7 @@
 
                 {% region "footer" %}
             </footer>
-            {% endblock %}
+            {% endblock footer %}
             {% region "bottom" %}
     </div>
 	</body>

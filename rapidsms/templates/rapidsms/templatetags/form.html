@@ -1,14 +1,14 @@
 <div>{% if form.non_field_errors %}
-	<ul class="non-field-errors">{% for error in form.non_field_errors %}
-		<li>{{ error }}</li>{% endfor %}
+	<ul class="non-field-errors unstyled">{% for error in form.non_field_errors %}
+		<li class="text-error">{{ error }}</li>{% endfor %}
 	</ul>{% endif %}{% for field in form %}
 	
-	<div class="field {{ field.name }}{% if field.field.required %} required{% endif %}{% if field.errors %} error{% endif %}">
+	<div class="field control-group {{ field.name }}{% if field.field.required %} required{% endif %}{% if field.errors %} error{% endif %}">
 		{{ field.label_tag }}{% if field.errors %}
 		<ul class="errors">{% for error in field.errors %}
 			<li>{{ error }}</li>{% endfor %}
 		</ul>{% endif %}
 		{{ field }}{% if field.help_text %}
-		<p class="help">{{ field.help_text|safe }}</p>{% endif %}
+            <span class="help-block">{{ field.help_text|safe }}</span>{% endif %}
 	</div>{% endfor %}
 </div>

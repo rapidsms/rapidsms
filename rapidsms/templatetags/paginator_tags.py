@@ -33,8 +33,8 @@ def paginator(objects):
     # TODO: gah, extract this junk a private method
     max_page_links = settings.PAGINATOR_MAX_PAGE_LINKS
     last_page_number = objects.paginator.num_pages + 1
-    last_low_number = math.floor(max_page_links / 2)
-    first_high_number = last_page_number - math.ceil(max_page_links / 2)
+    last_low_number = int(math.floor(max_page_links / 2))
+    first_high_number = last_page_number - int(math.ceil(max_page_links / 2))
 
     page_links = [
         _page(number)

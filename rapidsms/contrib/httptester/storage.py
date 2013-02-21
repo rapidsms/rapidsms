@@ -1,24 +1,51 @@
+#!/usr/bin/env python
+# vim: ai ts=4 sts=4 et sw=4
+
 """ Store and get messages from cache """
 
-from django.core.cache import cache
-
-
-CACHE_KEY = 'rapidsms-httptester-cache'
+from .models import HttpTesterMessage
 
 
 def get_messages():
-    return cache.get(CACHE_KEY, [])
+    """Return a list of dictionaries with the message data"""
+    return HttpTesterMessage.objects.all().\
+        values('direction', 'identity', 'text')
 
 
 def store_message(direction, identity, text):
-    messages = get_messages()
-    data = {"identity": identity, "direction": direction, "text": text}
-    messages.append(data)
-    cache.set(CACHE_KEY, messages)
+    """
+
+    :param direction: "in" or "out" depending on whether the message
+       was sent to (into) RapidSMS, or out of RapidSMS.
+    :param identity: Phone number the message was sent from (in)
+       or to (out)
+    :param text: The message
+    """
+    HttpTesterMessage.objects.create(direction=direction, identity=identity,
+                                     text=text)
 
 
 def store_and_queue(backend_name, identity, text):
+    """Store a message in our log and send it into RapidSMS.
+
+    :param backend_name:
+    :param identity: Phone number the message will appear to come from
+    :param text: The message
+    """
     from rapidsms.router import receive, lookup_connections
     store_message('in', identity, text)
     connection = lookup_connections(backend_name, [identity])[0]
     receive(text, connection)
+
+
+def clear_messages(identity):
+    """Forget messages to/from this identity
+
+    :param identity: The phone number whose messages will be cleared
+    """
+    HttpTesterMessage.objects.filter(identity=identity).delete()
+
+
+def clear_all_messages():
+    """Forget all messages"""
+    HttpTesterMessage.objects.all().delete()
