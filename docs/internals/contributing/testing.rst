@@ -61,13 +61,11 @@ together or specific ones::
 
 The available environments are:
 
- * ``py26-1.3.X`` - Test using Python 2.6 and Django 1.3.X
  * ``py26-1.4.X`` - Test using Python 2.6 and Django 1.4.X
  * ``py26-trunk`` - Test using Python 2.6 and Django master
- * ``py27-1.3.X`` - Test using Python 2.7 and Django 1.3.x
  * ``py27-1.4.X`` - Test using Python 2.7 and Django 1.4.x
  * ``py27-trunk`` - Test using Python 2.7 and Django master
- * ``docs`` - Test buliding docs
+ * ``docs`` - Test building docs
 
 You can also add additional environments or change other parts of the
 configuration in your local copy of the tox.ini by following the `tox
