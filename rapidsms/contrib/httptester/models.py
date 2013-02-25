@@ -13,3 +13,8 @@ class HttpTesterMessage(models.Model):
     direction = models.CharField(max_length=1, choices=DIRECTION_CHOICES)
     identity = models.CharField(max_length=100)
     text = models.TextField()
+
+    class Meta(object):
+        # Ordering by id will order by when they were created, which is
+        # typically what we want
+        ordering = ['id']
