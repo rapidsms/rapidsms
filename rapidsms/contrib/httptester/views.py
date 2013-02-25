@@ -47,9 +47,9 @@ def message_tester(request, identity, backend_name="httptester"):
         if form.is_valid():
             cd = form.cleaned_data
             identity = cd["identity"]
-            if cd['clear_all']:
+            if 'clear-all-btn' in request.POST:
                 storage.clear_all_messages()
-            elif cd['clear']:
+            elif 'clear-btn' in request.POST:
                 storage.clear_messages(identity)
             else:
                 if "bulk" in request.FILES:

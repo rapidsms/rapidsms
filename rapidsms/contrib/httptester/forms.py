@@ -36,13 +36,6 @@ class MessageForm(forms.Form):
         help_text="Alternatively, upload a <em>plain text file</em> " +
                   "containing a single message per line.")
 
-    clear = forms.BooleanField(required=False,
-                               help_text="Clear saved messages to/from "
-                                         "this phone number")
-
-    clear_all = forms.BooleanField(required=False,
-                                   help_text="Clear all saved messages")
-
     def clean_identity(self):
         if 'identity' in self.cleaned_data:
             identity = self.cleaned_data['identity'].strip()
