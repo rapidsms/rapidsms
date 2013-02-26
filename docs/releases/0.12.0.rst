@@ -1,0 +1,26 @@
+=============================
+RapidSMS 0.12.0 release notes
+=============================
+
+
+.. warning::
+
+    RapidSMS v0.12.0 is currently under development and has not been released.
+
+Welcome to RapidSMS 0.12.0! These release notes cover the new features 0.12.0.
+
+Overview
+========
+
+What's New
+==========
+
+Supporting Django 1.4+
+~~~~~~~~~~~~~~~~~~~~~~
+
+RapidSMS is no longer compatible with any version of Django prior to 1.4.
+
+- `Django 1.4 release notes`_
+
+
+.. _Django 1.4 release notes: https://docs.djangoproject.com/en/dev/releases/1.4/

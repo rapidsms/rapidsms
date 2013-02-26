@@ -218,12 +218,9 @@ simply add the following to your existing ``INSTALLED_BACKENDS`` configuration
 in your ``settings.py`` file::
 
     INSTALLED_BACKENDS = {
-        "message_tester": {
-            "ENGINE": "rapidsms.backends.bucket",
-        },
-        # other backends, if any
+        # ...
         "kannel-fake-smsc" : {
-            "ENGINE":  "rapidsms.backends.kannel",
+            "ENGINE":  "rapidsms.backends.kannel.outgoing",
             "sendsms_url": "http://127.0.0.1:13013/cgi-bin/sendsms",
             "sendsms_params": {"smsc": "FAKE",
                                "from": "123", # not set automatically by SMSC
@@ -318,7 +315,7 @@ USB modem you configured above in Kannel::
     INSTALLED_BACKENDS = {
         # ...
         "kannel-usb0-smsc" : {
-            "ENGINE":  "rapidsms.backends.kannel",
+            "ENGINE":  "rapidsms.backends.kannel.outgoing",
             "sendsms_url": "http://127.0.0.1:13013/cgi-bin/sendsms",
             "sendsms_params": {"smsc": "usb0-modem",
                                "from": "+SIMphonenumber", # not set automatically by SMSC

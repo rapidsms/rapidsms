@@ -41,6 +41,13 @@ class BackendBase(object, LoggerMixin):
     def stop(self):
         pass
 
+    def send(self, message):
+        """
+        Send a message.
+        """
+        # subclasses should override this
+        raise NotImplementedError()
+
     @property
     def model(self):
         """Return RapidSMS model object for this backend."""

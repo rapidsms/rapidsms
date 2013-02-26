@@ -7,7 +7,8 @@ from rapidsms.apps.base import AppBase
 
 
 class App(AppBase):
+
     def default(self, msg):
-        if settings.DEFAULT_RESPONSE is not None:
-            msg.error(settings.DEFAULT_RESPONSE,
-                      project_name=settings.PROJECT_NAME)
+        response = settings.DEFAULT_RESPONSE
+        if response is not None:
+            msg.error(response, project_name=settings.PROJECT_NAME)

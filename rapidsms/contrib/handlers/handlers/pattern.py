@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-
 import re
+
+from ..exceptions import HandlerError
 from .base import BaseHandler
 
 
@@ -33,29 +34,26 @@ class PatternHandler(BaseHandler):
         >>> SumHandler.test("1 plus 2")
         ['1+2 = 3']
 
-    Note that the pattern is not mangled for flexibility (as it was in
-    previous versions of RapidSMS), so if you choose to deploy pattern
-    handlers, your incoming messages must match *precisely*. Perhaps
-    obviously, this won't work because of the trailing whitespace::
+    Note that the pattern must be matched *precisely* (excepting case
+    sensitivity). For example, this would not work because of the trailing
+    whitespace::
 
         >>> SumHandler.test("1 plus 2 ")
         False
 
-    All non-matching messages are silently ignored (as usual), to allow
-    other apps or handlers to catch them.
+    All non-matching messages are silently ignored, to allow other apps or
+    handlers to catch them.
     """
 
     @classmethod
     def _pattern(cls):
         if hasattr(cls, "pattern"):
             return re.compile(cls.pattern, re.IGNORECASE)
+        raise HandlerError('PatternHandler must define a pattern.')
 
     @classmethod
     def dispatch(cls, router, msg):
-
         pattern = cls._pattern()
-        if pattern is None:
-            return False
 
         match = pattern.match(msg.text)
         if match is None:
