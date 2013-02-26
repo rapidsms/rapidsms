@@ -12,6 +12,11 @@
 # serve to show the default.
 
 import sys, os
+
+# adding rapidsms to path; relative to `docs` folder
+RAPID_PATH, _ = os.path.split(os.path.dirname(__file__))
+sys.path.append(RAPID_PATH)
+
 import rapidsms
 
 # If extensions (or modules to document with autodoc) are in another directory,
