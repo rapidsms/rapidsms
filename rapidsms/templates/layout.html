@@ -10,6 +10,7 @@
 	<head>
 		<title>{% block title %}RapidSMS{% endblock %}</title>
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
         {% block stylesheets %}
         <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}rapidsms/stylesheets/splits.css" />
@@ -19,6 +20,7 @@
         <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}rapidsms/stylesheets/icons.css" />
         <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}rapidsms/stylesheets/icons.css" />
         <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}bootstrap/css/bootstrap.min.css" />
+        <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}bootstrap/css/bootstrap-responsive.css" >
         <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}rapidsms/stylesheets/layout.css" />
         {% endblock %}
 
@@ -33,23 +35,10 @@
             {% region "top" %}
 		    {% block header %}
 
-            <div class="container-fluid">
+            <div class="container-fluid page">
                 <div class="navbar navbar-blue navbar-fixed-top">
                     <div class="navbar-inner">
                         <div class="row-fluid">
-                            <a href="/" class="brand">
-                                <img alt="RapidSMS Logo" width="100" src="{{ STATIC_URL }}rapidsms/images/rapidsms-logo.png"/>
-                            </a>
-                            <div class="nav-collapse collapse">
-                                <ul class="nav">
-                                    {% get_tabs as tabs %}
-                                    {% for tab in tabs %}
-                                    <li class="app-{{ tab.caption_slug }}{% if tab.is_active %} active{% endif %}">
-                                        <a href="{{ tab.url }}"><span>{{ tab.caption }}</span></a>
-                                    </li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
                             {% block auth %}
                             <ul class="nav pull-right">
                                 <li>
@@ -60,6 +49,27 @@
                                 </li>
                             </ul>
                            {% endblock %}
+
+                            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                            </a>
+
+                            <a href="/" class="brand">
+                                <img alt="RapidSMS Logo" width="100" src="{{ STATIC_URL }}rapidsms/images/rapidsms-logo.png"/>
+                            </a>
+
+                            <div class="nav-collapse collapse">
+                                <ul class="nav">
+                                    {% get_tabs as tabs %}
+                                    {% for tab in tabs %}
+                                    <li class="app-{{ tab.caption_slug }}{% if tab.is_active %} active{% endif %}">
+                                        <a href="{{ tab.url }}"><span>{{ tab.caption }}</span></a>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -75,7 +85,7 @@
     		</div>{% endif %}
     		{% endblock %}
 
-    		<div class="row-fluid">
+    		<div class="row-fluid content">
     			{% block content %}{% endblock %}
     		</div>
 

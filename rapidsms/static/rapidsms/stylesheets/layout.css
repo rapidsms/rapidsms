@@ -1,12 +1,20 @@
 /* vim:set et ts=4 sw=4 */
 
 footer { background-color: #f5f5f5; padding: 10px;}
-.container-fluid {padding: 10px;}
-.row-fluid {padding: 10px;}
 
-body { margin-top: 40px; }
+body {padding-top: 80px;}
 
-table { width: 100%;}
+@media (max-width: 979px) {
+  body {padding-top: 0;}
+}
+@media (max-width: 767px) {
+  body {padding-top: 0;}
+}
+
+table {width: 100%;}
+
+.page {padding: 0;}
+.well {margin-left: 15px;}
 
 .navbar-blue .navbar-inner {
   background-color: #1b1b1b;
@@ -148,6 +156,7 @@ table { width: 100%;}
   filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
 }
 
+.navbar .btn-navbar {float: left;}
 .navbar-blue .btn-navbar:hover,
 .navbar-blue .btn-navbar:active,
 .navbar-blue .btn-navbar.active,
