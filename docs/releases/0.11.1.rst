@@ -1,0 +1,18 @@
+=============================
+RapidSMS 0.11.1 release notes
+=============================
+
+
+Welcome to RapidSMS 0.11.1! These release notes cover the new features 0.11.1.
+
+
+What's New
+==========
+
+* Fixed reference to ``settings.CONTEXT_PROCESSORS`` in the :doc:`0.10.0 migration guide <0.10.0_upgrade_guide>`.
+* Added ``send`` stub to ``rapidsms.backends.base.BaseBackend``.
+* Fixed doc reference to :doc:`Kannel backend</topics/backends/kannel>` path in :setting:`INSTALLED_BACKENDS`.
+* Added documentation and tests for :doc:`rapidsms.contrib.default
+  </topics/contrib/default>`, :doc:`rapidsms.contrib.echo
+  </topics/contrib/echo>`, and :doc:`rapidsms.contrib.handlers
+  </topics/contrib/handlers>`.
