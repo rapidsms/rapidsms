@@ -46,7 +46,7 @@ Usage
 The messaging front-end view displays a form through which you can write a
 text message and select its recipients. The recipient selector uses
 autocomplete to search through all RapidSMS contacts. You may select any
-number of recpients to receive the message.
+number of recipients to receive the message.
 
 When sending a message, the messaging app calls :func:`rapidsms.router.api.send`
 with the message text and ``recipient.default_connection`` for each recipient.

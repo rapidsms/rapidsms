@@ -28,6 +28,6 @@ urlpatterns = patterns('',
     (r'^registration/', include('rapidsms.contrib.registration.urls')),
     (r'^scheduler/', include('rapidsms.contrib.scheduler.urls')),
 
-    # Third pary URLs
+    # Third party URLs
     (r'^selectable/', include('selectable.urls')),
 )
