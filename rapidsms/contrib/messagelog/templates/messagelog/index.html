@@ -1,5 +1,7 @@
 {% extends "layout.html" %}
 
+{% load django_tables2 %}
+
 {% block title %}Message Log - {{ block.super }}{% endblock %}
 
 {% block stylesheets %}
@@ -9,7 +11,7 @@
 
 {% block content %}
 <div class="messages module">
-	<h2>Message Log</h2>
-	{{ messages_table.as_html }}
+    <h2>Message Log</h2>
+    {% render_table messages_table %}
 </div>
 {% endblock %}
