@@ -11,11 +11,10 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-import sys, os
+import sys
+import os
 
-# adding rapidsms to path; relative to `docs` folder
-RAPID_PATH, _ = os.path.split(os.path.dirname(__file__))
-sys.path.append(RAPID_PATH)
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
 import rapidsms
 
