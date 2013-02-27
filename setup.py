@@ -23,6 +23,7 @@ setup(
     install_requires=[
         "django-nose",
         "djtables",
+        "django-tables2",
         "djappsettings"
     ],
 
