@@ -70,16 +70,6 @@
                                     {% endfor %}
                                 </ul>
                             </div>
-                            {% block auth %}
-                            <ul class="nav pull-right">
-                                <li>
-                                {% if user.is_authenticated %}
-                                    <a href="{% url 'rapidsms-logout' %}">{% trans "Log out" %} {{ user.username }}</a>{% else %}
-                                    <a href="{% url 'rapidsms-login' %}">{% trans "Log in" %}</a>
-                                {% endif %}
-                                </li>
-                            </ul>
-                           {% endblock %}
                         </div>
                     </div>
                 </div>
