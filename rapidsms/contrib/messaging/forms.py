@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# vim: ai ts=4 sts=4 et sw=4
+
 from django import forms
 
 from rapidsms.models import Contact
@@ -5,7 +8,7 @@ from rapidsms.router import send
 
 from selectable.forms import AutoCompleteSelectMultipleField
 
-from rapidsms.contrib.messaging.lookups import ContactLookup
+from .lookups import ContactLookup
 
 
 class MessageForm(forms.Form):

@@ -1,9 +1,13 @@
+#!/usr/bin/env python
+# vim: ai ts=4 sts=4 et sw=4
+
 from django.core.urlresolvers import reverse
+
+from rapidsms.tests.harness import RapidTest
 
 from nose.tools import nottest
 
-from rapidsms.tests.harness import RapidTest
-from rapidsms.contrib.messaging.forms import MessageForm
+from .forms import MessageForm
 
 
 class MessagingTest(RapidTest):
