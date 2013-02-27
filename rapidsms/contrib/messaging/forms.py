@@ -23,4 +23,4 @@ class MessageForm(forms.Form):
     def send(self):
         for recipient in self.cleaned_data['recipients']:
             send(self.cleaned_data['message'], recipient.default_connection)
-        return self.cleaned_data['text'], self.cleaned_data['recipients']
+        return self.cleaned_data['message'], self.cleaned_data['recipients']

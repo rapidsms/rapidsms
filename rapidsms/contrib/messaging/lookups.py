@@ -8,6 +8,10 @@ from selectable.registry import registry
 
 
 class ContactLookup(ModelLookup):
+    """Contacts with a Connection."""
     model = Contact
+    filters = {
+        'connection__isnull': False,
+    }
     search_fields = ('name__icontains',)
 registry.register(ContactLookup)
