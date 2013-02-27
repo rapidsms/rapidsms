@@ -2,25 +2,67 @@
 RapidSMS 0.12.0 release notes
 =============================
 
-
-.. warning::
-
-    RapidSMS v0.12.0 is currently under development and has not been released.
-
-Welcome to RapidSMS 0.12.0! These release notes cover the new features 0.12.0.
-
 Overview
 ========
+
+Welcome to RapidSMS 0.12.0! These release notes cover the new features in 0.12.0
+as well as some `backwards incompatible changes in 0.12.0`_ you'll want to be
+aware of when upgrading from RapidSMS 0.11.0.
 
 What's New
 ==========
 
+Twitter Bootstrap
+-----------------
+
+The RapidSMS pages now use `Twitter Bootstrap`_ for a more up-to-date
+appearance.
+
+Contrib app updates
+-------------------
+
+Most of the contrib apps have been updated to use more up-to-date Django
+practices and to add documentation and tests.  A few obsolete apps have
+been removed.
+
+FIXME: document the deleted apps
+
 Supporting Django 1.4+
-~~~~~~~~~~~~~~~~~~~~~~
+--------------------------
 
 RapidSMS is no longer compatible with any version of Django prior to 1.4.
 
 - `Django 1.4 release notes`_
 
+.. _backwards incompatible changes in 0.12.0:
 
-.. _Django 1.4 release notes: https://docs.djangoproject.com/en/dev/releases/1.4/
+Backwards-incompatible changes in RapidSMS 0.12.0
+=================================================
+
+In the goal of improving the RapidSMS core, we have made a number of backwards-
+incompatible changes.
+
+Dropped Django 1.3 support
+--------------------------
+
+We decided to drop Django 1.3 support to take advantage of the functionality
+offered in Django 1.4+, including `bulk_create`_ and `override_settings`_.
+Please read the `Django 1.4 release notes`_ for upgrade instructions.
+
+We believe the most common changes effecting RapidSMS projects will be:
+
+    * Removal of `django.conf.urls.defaults`_
+
+Make the following change to all of your ``urls.py``:
+
+.. code-block:: diff
+
+    -from django.conf.urls.defaults import *
+    +from django.conf.urls import patterns, url
+
+
+.. _Twitter Bootstrap: http://twitter.github.com/bootstrap/
+.. _override_settings: https://docs.djangoproject.com/en/1.4/topics/testing/#django.test.utils.override_settings
+.. _bulk_create: https://docs.djangoproject.com/en/1.4/ref/models/querysets/#bulk-create
+.. _Django 1.4 release notes: https://docs.djangoproject.com/en/1.4/releases/1.4/
+.. _django.conf.urls.defaults: https://docs.djangoproject.com/en/1.4/releases/1.4/#django-conf-urls-defaults
