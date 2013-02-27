@@ -24,7 +24,8 @@ setup(
         "django-nose",
         "djtables",
         "django-tables2",
-        "djappsettings"
+        "djappsettings",
+        "django-selectable",
     ],
 
     test_requires=[
