@@ -27,9 +27,9 @@ class StorageTest(RapidTest):
         store_message(direction, identity, text)
         msgs = get_messages()
         msg = msgs[0]
-        self.assertEqual({'identity': identity,
-                          'direction': direction,
-                          'text': text}, msg)
+        self.assertEqual(identity, msg.identity)
+        self.assertEqual(direction, msg.direction)
+        self.assertEqual(text, msg.text)
 
     def test_clear(self):
         """We can clear messages for a given identity"""
@@ -42,7 +42,7 @@ class StorageTest(RapidTest):
         clear_messages(u"identity2")
         msgs = get_messages()
         for msg in msgs:
-            self.assertNotEqual(u"identity2", msg['identity'])
+            self.assertNotEqual(u"identity2", msg.identity)
 
     def test_clear_all(self):
         """We can clear all messages"""
@@ -76,9 +76,9 @@ class ViewTest(RapidTest):
         self.client.post(self.url, data)
         self.assertEqual(200, rsp.status_code)
         msg = get_messages()[0]
-        self.assertEqual({'identity': phone2,
-                          'direction': 'in',
-                          'text': message}, msg)
+        self.assertEqual(phone2, msg.identity)
+        self.assertEqual('in', msg.direction)
+        self.assertEqual(message, msg.text)
 
     def test_bulk(self):
         messages = ["message 1", "message 2", "message 3"]
@@ -92,16 +92,17 @@ class ViewTest(RapidTest):
         rsp = self.client.post(self.url, data)
         self.assertEqual(3, len(get_messages()))
         for i, m in enumerate(messages):
-            self.assertEqual(m, get_messages()[i]['text'])
+            self.assertEqual(m, get_messages()[i].text)
 
     @patch('rapidsms.contrib.httptester.storage.clear_messages')
     def test_clear_identity_messages(self, clear_messages):
         # Selecting the 'clear' button calls clear_messages for that phone #
         data = {
             'identity': self.phone,
-            'clear': True,
+            'clear-btn': True,
         }
         rsp = self.client.post(self.url, data)
+        self.assertEqual(302, rsp.status_code)
         self.assertEqual(self.phone, clear_messages.call_args[0][0])
 
     @patch('rapidsms.contrib.httptester.storage.clear_all_messages')
@@ -109,10 +110,11 @@ class ViewTest(RapidTest):
         # Selecting the 'clear all' button calls clear_all_messages
         data = {
             'identity': self.phone,
-            'clear_all': True,
+            'clear-all-btn': True,
         }
         rsp = self.client.post(self.url, data)
-        self.assertTrue(clear_all_messages.called)
+        self.assertEqual(302, rsp.status_code, msg=rsp.content)
+        self.assertTrue(clear_all_messages.called, msg=rsp.content)
 
     @patch('rapidsms.contrib.httptester.views.randint')
     def test_generate_identity(self, randint):

@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% load forms_tags %}
-{% load paginator_tags %}
+{% load django_tables2 %}
 
 {% block title %}Message Tester - {{ block.super }}{% endblock %}
 
@@ -19,6 +19,11 @@
 		});
 	})(jQuery);
 </script>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ block.super }}
+    <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}httptester/stylesheets/httptester.css" />
 {% endblock %}
 
 
@@ -42,48 +47,30 @@
         </div>
     </div>
     <div class="span8">
-            <h2>Log</h2>
-            <table id="log" class="sortable table table-striped table-bordered">
-                <thead>
-                <tr>
-                    <th class="phone"><a href="">Phone Number</a></th>
-                    <th class="text"><a href="">Message Text</a></th>
-                </tr>
-                </thead>
-                <tbody>{% if message_log %}{% for msg in message_log %}
-                    <tr class="{{ msg.direction }}">
-                        {% spaceless %}
-                        <td>
-                            {% ifequal msg.direction "in" %}<span title="Incoming (You sent this message to RapidSMS)">{{ msg.identity }}&nbsp;&raquo;</span>{% endifequal %}
-                            {% ifequal msg.direction "out" %}<span title="Outgoing (You received this message from RapidSMS)">{{ msg.identity }}&nbsp;&laquo;</span>{% endifequal %}
-                        </td>
-                        {% endspaceless %}
-                        <td class="text">{{ msg.text }}</td>
-                    </tr>{% endfor %}{% else %}{% if router_available %}
-                    <tr class="no-data look-left">
-                        <td colspan="2">
-                            <p>
-                                You haven't sent or received any test messages yet.<br />
-                                Use the form on the left to get started.
-                            </p>
-                        </td>
-                    </tr>{% else %}
-                    <tr class="no-data error">
-                        <td colspan="2">
-                            <p>
-                                The RapidSMS router could not be reached.<br />
-                                Please check that it is running.
-                            </p>
-                        </td>
-                    </tr>{% endif %}{% endif %}
-                </tbody>
-                <tfoot>
-                <tr>
+        <h2>Log</h2>
+
+        {% if messages_table.rows %}
+            {% render_table messages_table %}
+        {% else %}
+            <table>
+            {% if router_available %}
+                <tr class="no-data look-left">
                     <td colspan="2">
-                        {% paginator message_log %}
+                        <p>
+                            You haven't sent or received any test messages yet.<br />
+                            Use the form on the left to get started.
+                        </p>
                     </td>
-                </tr>
-                </tfoot>
+                </tr>{% else %}
+                <tr class="no-data error">
+                    <td colspan="2">
+                        <p>
+                            The RapidSMS router could not be reached.<br />
+                            Please check that it is running.
+                        </p>
+                    </td>
+                </tr>{% endif %}
             </table>
+        {% endif %}
     </div>
 {% endblock %}

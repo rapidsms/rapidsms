@@ -19,11 +19,13 @@
     </thead>
     <tbody>
         {% for row in table.page.object_list|default:table.rows %} {# support pagination #}
-        <tr class="{% cycle "odd" "even" %}">
-            {% for cell in row %}
-                <td>{{ cell }}</td>
-            {% endfor %}
-        </tr>
+            {% block table.tbody.row %}
+                <tr class="{% cycle "odd" "even" %}">
+                    {% for cell in row %}
+                        <td>{{ cell }}</td>
+                    {% endfor %}
+                </tr>
+            {% endblock table.tbody.row %}
         {% empty %}
         {% if table.empty_text %}
         <tr><td colspan="{{ table.columns|length }}">{{ table.empty_text }}</td></tr>

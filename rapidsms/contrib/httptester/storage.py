@@ -7,9 +7,8 @@ from .models import HttpTesterMessage
 
 
 def get_messages():
-    """Return a list of dictionaries with the message data"""
-    return HttpTesterMessage.objects.all().\
-        values('direction', 'identity', 'text')
+    """Return a queryset with the message data"""
+    return HttpTesterMessage.objects.all()
 
 
 def store_message(direction, identity, text):

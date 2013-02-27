@@ -7,11 +7,11 @@ from random import randint
 from django.shortcuts import render, redirect
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
-
-from rapidsms.utils.pagination import paginated
+from django_tables2 import RequestConfig
 
 from . import forms
 from . import storage
+from .tables import MessageTable
 
 
 def generate_identity(request, backend_name='message_tester'):
@@ -67,10 +67,13 @@ def message_tester(request, identity, backend_name="httptester"):
     else:
         form = forms.MessageForm({"identity": identity})
 
+    messages_table = MessageTable(storage.get_messages(),
+                                  template="httptester/table.html")
+    RequestConfig(request, paginate={"per_page": 25}).configure(messages_table)
+
     context = {
         "router_available": True,
-        "message_log": paginated(request, storage.get_messages(),
-                                 default_page=-1),
-        "message_form": form
+        "message_form": form,
+        'messages_table': messages_table,
     }
     return render(request, "httptester/index.html", context)
