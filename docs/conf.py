@@ -11,8 +11,8 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-import sys
 import os
+import sys
 
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
