@@ -57,7 +57,7 @@ Release: v\ |release|. (:doc:`Installation <intro/install/index>`, :doc:`Release
 * httptester
 * locations
 * messagelog
-* messaging
+* :doc:`messaging <topics/contrib/messaging>`
 * registration
 * scheduler
 
