@@ -1,5 +1,4 @@
 {% load url from future %}
-{% load tabs_tags %}
 {% load i18n %}
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
@@ -53,12 +52,7 @@
                             {#  Everything you want hidden at 940px or less, place within here #}
                             <div class="nav-collapse collapse">
                                 <ul class="nav">
-                                    {% get_tabs as tabs %}
-                                    {% for tab in tabs %}
-                                    <li class="app-{{ tab.caption_slug }}{% if tab.is_active %} active{% endif %}">
-                                        <a href="{{ tab.url }}"><span>{{ tab.caption }}</span></a>
-                                    </li>
-                                    {% endfor %}
+                                    {% include "rapidsms/_nav_bar.html" %}
                                 </ul>
                                 <ul class="nav pull-right">
                                     <li>
