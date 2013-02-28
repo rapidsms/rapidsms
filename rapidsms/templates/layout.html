@@ -1,5 +1,4 @@
 {% load url from future %}
-{% load region_tags %}
 {% load tabs_tags %}
 {% load i18n %}
 
@@ -32,7 +31,6 @@
     </head>
 
 	<body>
-            {% region "top" %}
 		    {% block header %}
 
             <div class="container-fluid page">
@@ -97,11 +95,12 @@
                     <a href="http://github.com/rapidsms/rapidsms">RapidSMS</a> is available under
                     <a href="http://github.com/rapidsms/rapidsms/raw/master/LICENSE">the BSD license</a>.
                 </p>
-
-                {% region "footer" %}
+                {% url 'rapidsms.contrib.export.views.database' as export_url %}
+                {% if export_url %}
+                    &bull; <a href="{{ export_url }}" class="db-export">Export to SQL</a>
+                {% endif %}
             </footer>
             {% endblock %}
-            {% region "bottom" %}
     </div>
 	</body>
 </html>

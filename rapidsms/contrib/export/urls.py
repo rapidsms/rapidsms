@@ -3,7 +3,7 @@
 
 
 from django.conf.urls import patterns, url
-from . import views
+from rapidsms.contrib.export import views
 
 
 urlpatterns = patterns('',
