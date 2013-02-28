@@ -32,7 +32,6 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.contenttypes",
     # rapidsms contrib apps.
-    "rapidsms.contrib.export",
     "rapidsms.contrib.handlers",
     "rapidsms.contrib.httptester",
     "rapidsms.contrib.locations",
