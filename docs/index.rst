@@ -58,7 +58,6 @@ Release: v\ |release|. (:doc:`Installation <intro/install/index>`, :doc:`Release
 * messagelog
 * :doc:`messaging <topics/contrib/messaging>`
 * registration
-* scheduler
 
 **The RapidSMS open-source project**
 
