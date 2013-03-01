@@ -1,8 +1,49 @@
 /* vim:set et ts=4 sw=4 */
 
-footer { background-color: #f5f5f5; padding: 10px;}
+/* Sticky footer styles
+      -------------------------------------------------- */
+/* From http://twitter.github.com/bootstrap/examples/sticky-footer-navbar.html */
 
-body {padding-top: 80px;}
+html, body {
+    height: 100%;   /* html & body cannot have any padding or margin */
+}
+
+/* Wrapper for page content to push down footer */
+#wrap {
+    min-height: 100%;
+    height: auto !important;
+    height: 100%;
+    /* Negative indent footer by its height */
+    margin: 0 auto -80px;
+}
+
+/* Set the fixed height of the footer here and above */
+#push,
+#footer {
+    height: 80px;
+}
+
+/* Make room for the top navbar above the main page so the navbar
+   doesn't float on top of the page heading
+ */
+#mainpage {
+    padding-top: 60px;
+}
+
+/* Lastly, apply responsive CSS fixes as necessary */
+@media (max-width: 767px) {
+    #footer {
+        margin-left: -20px;
+        margin-right: -20px;
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+}
+/* END sticky footer styles ------------------------------------- */
+
+#footer {
+    background-color: #f5f5f5;
+}
 
 @media (max-width: 979px) {
   body {padding-top: 0;}
