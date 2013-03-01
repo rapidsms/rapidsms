@@ -6,9 +6,9 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
-	<head>
-		<title>{% block title %}RapidSMS{% endblock %}</title>
-		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <head>
+        <title>{% block title %}RapidSMS{% endblock %}</title>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
         {% block stylesheets %}
@@ -30,9 +30,8 @@
         {% endblock %}
     </head>
 
-	<body>
-            {% region "top" %}
-		    {% block header %}
+    <body>
+            {% block header %}
 
             <div class="container-fluid page">
                 <div class="navbar navbar-blue navbar-fixed-top">
@@ -72,21 +71,21 @@
                         </div>
                     </div>
                 </div>
-        		{% block page_tabs %}
-        		{% endblock page_tabs %}
+                {% block page_tabs %}
+                {% endblock page_tabs %}
 
-    		    {% endblock header %}
+                {% endblock header %}
 
-    		{% block breadcrumbs %}{% if breadcrumbs %}
-    		<div class="row-fluid">{% for caption, url in breadcrumbs %}
-    			<a href="{{ url }}">{{ caption }}</a>{% if not forloop.last %}
-    			<span>&raquo;</span>{% endif %}{% endfor %}
-    		</div>{% endif %}
-    		{% endblock breadcrumbs %}
+            {% block breadcrumbs %}{% if breadcrumbs %}
+            <div class="row-fluid">{% for caption, url in breadcrumbs %}
+                <a href="{{ url }}">{{ caption }}</a>{% if not forloop.last %}
+                <span>&raquo;</span>{% endif %}{% endfor %}
+            </div>{% endif %}
+            {% endblock breadcrumbs %}
 
-    		<div class="row-fluid content">
-    			{% block content %}{% endblock %}
-    		</div>
+            <div class="row-fluid content">
+                {% block content %}{% endblock %}
+            </div>
 
             {% block footer %}
             <footer class="row-fluid">
@@ -103,5 +102,5 @@
             </footer>
             {% endblock %}
     </div>
-	</body>
+    </body>
 </html>
