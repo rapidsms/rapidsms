@@ -25,7 +25,6 @@ urlpatterns = patterns('',
     (r'^messagelog/', include('rapidsms.contrib.messagelog.urls')),
     (r'^messaging/', include('rapidsms.contrib.messaging.urls')),
     (r'^registration/', include('rapidsms.contrib.registration.urls')),
-    (r'^scheduler/', include('rapidsms.contrib.scheduler.urls')),
 
     # Third party URLs
     (r'^selectable/', include('selectable.urls')),
