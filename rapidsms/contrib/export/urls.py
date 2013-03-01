@@ -2,8 +2,8 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 
-from django.conf.urls.defaults import *
-from . import views
+from django.conf.urls import patterns, url
+from rapidsms.contrib.export import views
 
 
 urlpatterns = patterns('',

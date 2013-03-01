@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     # third party apps.
     "django_nose",
     "djtables",
+    "selectable",
     # django contrib apps
     "django.contrib.sites",
     "django.contrib.auth",
