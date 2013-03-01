@@ -15,6 +15,12 @@ Overview
 What's New
 ==========
 
+Apps removed
+~~~~~~~~~~~~
+
+- contrib.ajax
+- contrib.scheduler
+
 Supporting Django 1.4+
 ~~~~~~~~~~~~~~~~~~~~~~
 
