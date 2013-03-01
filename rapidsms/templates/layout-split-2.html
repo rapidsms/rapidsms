@@ -1,13 +1,9 @@
 {% extends "layout.html" %}
-{% load url from future %}
 {% block content %}
-<div class="two-columns">
-	<div class="col-1">
-		{% block left %}{% endblock %}
-	</div>
-	<div class="col-2">
-		{% block right %}{% endblock %}
-	</div>
-	<div class="clear-hack"></div>
+<div class="span6">
+    {% block left %}{% endblock %}
+</div>
+<div class="span6">
+    {% block right %}{% endblock %}
 </div>
 {% endblock %}
