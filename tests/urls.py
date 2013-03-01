@@ -17,7 +17,6 @@ urlpatterns = patterns('',
     url(r'^$', 'rapidsms.views.dashboard', name='rapidsms-dashboard'),
 
     # RapidSMS contrib app URLs
-    (r'^export/', include('rapidsms.contrib.export.urls')),
     url(r'^httptester/$',
         'rapidsms.contrib.httptester.views.generate_identity',
         {'backend_name': 'message_tester'}, name='httptester-index'),
