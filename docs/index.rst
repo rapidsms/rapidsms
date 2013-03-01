@@ -54,10 +54,10 @@ Release: v\ |release|. (:doc:`Installation <intro/install/index>`, :doc:`Release
 * :doc:`echo <topics/contrib/echo>`
 * export
 * :doc:`handlers <topics/contrib/handlers>`
-* httptester
+* :doc:`Message Tester <topics/contrib/httptester>`
 * locations
 * messagelog
-* messaging
+* :doc:`messaging <topics/contrib/messaging>`
 * registration
 * scheduler
 

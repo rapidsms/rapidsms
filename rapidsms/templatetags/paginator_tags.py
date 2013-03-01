@@ -33,17 +33,37 @@ def paginator(objects):
     # TODO: gah, extract this junk a private method
     max_page_links = settings.PAGINATOR_MAX_PAGE_LINKS
     last_page_number = objects.paginator.num_pages + 1
-    last_low_number = math.floor(max_page_links / 2)
-    first_high_number = last_page_number - math.ceil(max_page_links / 2)
+    last_low_number = int(math.floor(max_page_links / 2))
+    first_high_number = last_page_number - int(math.ceil(max_page_links / 2))
 
     page_links = [
         _page(number)
         for number in range(1, last_page_number)
-        if number <= last_low_number or number >= first_high_number]
+        if number <= last_low_number
+           or number == objects.number
+           or number >= first_high_number
+        ]
 
-    # if any pages were hidden, inject None, to be rendered as elipsis
+    # if any pages were hidden, inject None, to be rendered as ellipsis
     if max_page_links < last_page_number:
-        page_links.insert(last_low_number, None)
+        if last_low_number < objects.number < first_high_number:
+            # The active page was in the ellipsis'ed range, things get harder
+            if 2 == first_high_number - last_low_number:
+                # If that was the only page we'd otherwise have ellipsis'ed,
+                # we just don't need any ellipses
+                pass
+            else:
+                # We might need ellipses before and/or after the active page
+                if first_high_number - objects.number > 1:
+                    # We need ellipsis after the active page, which is currently
+                    # at index last_low_number + 1
+                    page_links.insert(last_low_number + 1, None)
+                if objects.number - last_low_number > 1:
+                    # We need ellipsis before the active page, which is still
+                    # at index last_low_number + 1
+                    page_links.insert(last_low_number, None)
+        else:
+            page_links.insert(last_low_number, None)
 
     subcontext = {
         "dom_id":     dom_id,
