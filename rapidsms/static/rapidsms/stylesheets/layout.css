@@ -14,13 +14,14 @@ html, body {
     height: auto !important;
     height: 100%;
     /* Negative indent footer by its height */
-    margin: 0 auto -80px;
+    margin: 0 auto -80px;  /* -80px is the negative of the footer height */
 }
 
 /* Set the fixed height of the footer here and above */
 #push,
 #footer {
-    height: 80px;
+    height: 80px;       /* Height of the footer */
+    padding-top: 10px;  /* A bit of space between main content and footer content */
 }
 
 /* Make room for the top navbar above the main page so the navbar
