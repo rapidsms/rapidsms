@@ -1,0 +1,13 @@
+<li><a href="#">Override rapidsms/_nav_bar.html to put in your own nav links</a></li>
+{% comment %}
+Example:
+
+{% load url from future %}
+
+<li><a href="{% url 'message_log' %}">Message Log</a></li>
+<li><a href="{% url 'registration' %}">Registration</a></li>
+<li><a href="{% url 'messaging' %}">Messaging</a></li>
+<li><a href="{% url 'locations' %}">Map</a></li>
+<li><a href="{% url 'scheduler' %}">Event Scheduler</a></li>
+<li><a href="{% url 'httptester' %}">Message Tester</a></li>
+{% endcomment %}

@@ -55,11 +55,3 @@ PASSWORD_HASHERS = (
 )
 
 ROOT_URLCONF = "tests.urls"
-
-RAPIDSMS_TABS = [
-    ("rapidsms.contrib.messagelog.views.message_log",       "Message Log"),
-    ("rapidsms.contrib.registration.views.registration",    "Registration"),
-    ("rapidsms.contrib.messaging.views.messaging",          "Messaging"),
-    ("rapidsms.contrib.locations.views.locations",          "Map"),
-    ("rapidsms.contrib.httptester.views.generate_identity", "Message Tester"),
-]
