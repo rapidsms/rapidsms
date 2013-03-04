@@ -46,8 +46,8 @@ source outside of the ``docs/`` directory.  As such, please check your code
 against the PEP 8 specification by using the ``pep8`` linting tool in your
 RapidSMS directory before submitting patches for review::
 
-    pep8 --exclude=scheduler,locations,ajax --filename=tests.py,urls.py --ignore=E128 ./rapidsms/
-    pep8 --exclude=scheduler,locations,ajax,urls.py,urls,tests.py ./rapidsms/
+    pep8 --exclude=locations --filename=tests.py,urls.py --ignore=E128 ./rapidsms/
+    pep8 --exclude=locations,urls.py,urls,tests.py ./rapidsms/
 
 Testing multiple environments
 -----------------------------

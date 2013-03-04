@@ -37,7 +37,7 @@
 <div class="pagination">
     <ul>
         <li class="prev {% if not table.page.has_previous %}disabled{% endif %}">
-            <a href="{% querystring table.prefixed_page_field=table.page.previous_page_number %}">Previous</a>
+            <a href="{% if table.page.has_previous %}{% querystring table.prefixed_page_field=table.page.previous_page_number %}{% endif %}">Previous</a>
         </li>
 
         {% for page in table.paginator.page_range %}
@@ -48,7 +48,7 @@
         {% endfor %}
 
         <li class="next {% if not table.page.has_next %}disabled{% endif %}">
-            <a href="{% querystring table.prefixed_page_field=table.page.next_page_number %}">Next</a>
+            <a href="{% if table.page.has_next %}{% querystring table.prefixed_page_field=table.page.next_page_number %}{% endif %}">Next</a>
         </li>
     </ul>
 </div>

@@ -15,6 +15,12 @@ Overview
 What's New
 ==========
 
+Apps removed
+~~~~~~~~~~~~
+
+- contrib.ajax
+- contrib.scheduler
+
 Supporting Django 1.4+
 ~~~~~~~~~~~~~~~~~~~~~~
 
@@ -24,3 +30,9 @@ RapidSMS is no longer compatible with any version of Django prior to 1.4.
 
 
 .. _Django 1.4 release notes: https://docs.djangoproject.com/en/dev/releases/1.4/
+
+Deprecations
+~~~~~~~~~~~~
+
+The ``layout.html`` base template has been deprecated. Please start extending
+``base.html`` instead. ``layout.html`` will continue to work for a while.
