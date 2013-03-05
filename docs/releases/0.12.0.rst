@@ -7,14 +7,16 @@ RapidSMS 0.12.0 release notes
 
     RapidSMS v0.12.0 is currently under development and has not been released.
 
-Welcome to RapidSMS 0.12.0! These release notes cover the new features 0.12.0.
+Welcome to RapidSMS 0.12.0! These release notes cover the new features
+in 0.12.0.
 
 Overview
 ========
 
 Welcome to RapidSMS 0.12.0! These release notes cover the new features in 0.12.0
 as well as some `backwards incompatible changes in 0.12.0`_ you'll want to be
-aware of when upgrading from RapidSMS 0.11.0.
+aware of when upgrading from RapidSMS 0.11.0.  Most RapidSMS sites and
+applications will require some changes when upgrading to RapidSMS 0.12.0.
 
 What's New
 ==========
@@ -23,7 +25,7 @@ Twitter Bootstrap
 -----------------
 
 The RapidSMS pages now use `Twitter Bootstrap`_ for a more up-to-date
-appearance.
+appearance.  See :doc:`/topics/frontend` for more.
 
 Contrib app updates
 -------------------
@@ -36,13 +38,7 @@ The apps that have been removed are:
 
 - rapidsms.contrib.ajax
 - rapidsms.contrib.export
-- rapidsms.contrib.scheduling
-
-Apps removed
-------------
-
-- contrib.ajax
-- contrib.scheduler
+- rapidsms.contrib.scheduler
 
 Supporting Django 1.4+
 --------------------------
@@ -59,16 +55,37 @@ Backwards-incompatible changes in RapidSMS 0.12.0
 In the goal of improving the RapidSMS core, we have made a number of backwards-
 incompatible changes.
 
+Change to Twitter Bootstrap
+---------------------------
+
+With the change to Twitter Bootstrap, the organization of pages has changed.
+Simple apps might continue to work okay, but any app that relied on the
+previous page structure to control styling or layout might need changes.
+
 Dropped Django 1.3 support
 --------------------------
 
 We decided to drop Django 1.3 support to take advantage of the functionality
 offered in Django 1.4+, including `bulk_create`_ and `override_settings`_.
-Please read the `Django 1.4 release notes`_ for upgrade instructions.
+Additionally, with the release of Django 1.5, Django 1.3 is no longer
+supported by the Django developers.
 
-We believe the most common changes effecting RapidSMS projects will be:
+Please read the `Django 1.4 release notes`_ for upgrade instructions,
+especially `Backwards incompatible changes in 1.4`_.
 
-    * Removal of `django.conf.urls.defaults`_
+Add Django 1.5 Support
+----------------------
+
+RapidSMS 0.12.0 should work correctly with Django 1.5, and we encourage
+upgrading to Django 1.5 when possible.
+
+Please read the `Django 1.5 release notes`_ for upgrade instructions,
+especially `Backwards incompatible changes in 1.5`_.
+
+We believe the most common changes affecting RapidSMS projects will be:
+
+Removal of `django.conf.urls.defaults`_
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Make the following change to all of your ``urls.py``:
 
@@ -76,6 +93,31 @@ Make the following change to all of your ``urls.py``:
 
     -from django.conf.urls.defaults import *
     +from django.conf.urls import patterns, url
+
+
+Change to the url template tag
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If any of your templates still use the old url template tag syntax, not
+quoting a literal url name, e.g.::
+
+    {% url url-name %}
+
+for Django 1.5 they must be changed to quote the url name (or use
+a variable whose value is a url name)::
+
+    {% url 'url-name' %}
+
+If you wish to maintain compability with Django 1.4, you can add
+``{% load url from future %}`` near the top of your template, e.g.::
+
+    {% load url from future %}
+
+    {% url 'url-name' %}
+
+which will turn on support for quoted url names in Django 1.4, and be harmless
+in later Django releases.
+
 
 RAPIDSMS_TABS setting removed
 -----------------------------
@@ -97,11 +139,17 @@ containing links.  For example:
     <li><a href="{% url 'messaging' %}">Messaging</a></li>
     <li><a href="{% url 'httptester' %}">Message Tester</a></li>
 
+Region tags removed
+-------------------
 
+These were in the base template.
 
 
 .. _Twitter Bootstrap: http://twitter.github.com/bootstrap/
 .. _override_settings: https://docs.djangoproject.com/en/1.4/topics/testing/#django.test.utils.override_settings
 .. _bulk_create: https://docs.djangoproject.com/en/1.4/ref/models/querysets/#bulk-create
 .. _Django 1.4 release notes: https://docs.djangoproject.com/en/1.4/releases/1.4/
+.. _Backwards incompatible changes in 1.4: https://docs.djangoproject.com/en/1.4/releases/1.4/#backwards-incompatible-changes-in-1-4
+.. _Django 1.5 release notes: https://docs.djangoproject.com/en/1.5/releases/1.5/
+.. _Backwards incompatible changes in 1.5: https://docs.djangoproject.com/en/1.5/releases/1.5/#backwards-incompatible-changes-in-1-5
 .. _django.conf.urls.defaults: https://docs.djangoproject.com/en/1.4/releases/1.4/#django-conf-urls-defaults
