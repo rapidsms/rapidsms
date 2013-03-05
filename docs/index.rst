@@ -54,7 +54,7 @@ Release: v\ |release|. (:doc:`Installation <intro/install/index>`, :doc:`Release
 * :doc:`default <topics/contrib/default>`
 * :doc:`echo <topics/contrib/echo>`
 * :doc:`handlers <topics/contrib/handlers>`
-* httptester
+* :doc:`Message Tester <topics/contrib/httptester>`
 * locations
 * messagelog
 * :doc:`messaging <topics/contrib/messaging>`
