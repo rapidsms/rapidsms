@@ -45,6 +45,7 @@ Release: v\ |release|. (:doc:`Installation <intro/install/index>`, :doc:`Release
 * :doc:`Settings <ref/settings>`
 * :doc:`Internationalization <topics/i18n>`
 * :doc:`Extending core RapidSMS models <topics/extensible-models>`
+* :doc:`Front end <topics/frontend>`
 * :doc:`Testing <topics/testing>`
 * :doc:`Deployment <topics/deployment>`
 
@@ -52,14 +53,12 @@ Release: v\ |release|. (:doc:`Installation <intro/install/index>`, :doc:`Release
 
 * :doc:`default <topics/contrib/default>`
 * :doc:`echo <topics/contrib/echo>`
-* export
 * :doc:`handlers <topics/contrib/handlers>`
 * httptester
 * locations
 * messagelog
-* messaging
+* :doc:`messaging <topics/contrib/messaging>`
 * registration
-* scheduler
 
 **The RapidSMS open-source project**
 

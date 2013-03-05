@@ -1,9 +1,20 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-
 from django import forms
+from rapidsms.models import Contact, Connection
 
+
+class ContactForm(forms.ModelForm):
+    class Meta:
+        model = Contact
+        exclude = ("connections",)
+
+ConnectionFormSet = forms.models.inlineformset_factory(
+    Contact,
+    Connection,
+    extra=1,
+    max_num=10)
 
 # the built-in FileField doesn't specify the 'size' attribute, so the
 # widget is rendered at its default width -- which is too wide for our

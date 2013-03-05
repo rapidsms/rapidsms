@@ -8,9 +8,11 @@ from .tables import MessageTable
 from .models import Message
 
 
-def message_log(req):
+def message_log(request):
+    messages_table = MessageTable(Message.objects.all(), template="django_tables2/bootstrap-tables.html")
+    messages_table.paginate(page=request.GET.get('page', 1), per_page=10)
     return render_to_response(
         "messagelog/index.html", {
-            "messages_table": MessageTable(Message.objects.all(), request=req)
-        }, context_instance=RequestContext(req)
+            "messages_table": messages_table,
+        }, context_instance=RequestContext(request)
     )

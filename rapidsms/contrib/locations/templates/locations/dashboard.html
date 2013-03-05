@@ -38,7 +38,7 @@
 
 		<tbody>{% for location in type.table.rows %}
 			<tr>
-				<th scope="row"><a href="{% url locations location.uid %}">{{ location }}</a></th>
+				<th scope="row"><a href="{% url 'locations' location.uid %}">{{ location }}</a></th>
 			</tr>{% empty %}
 			<tr class="no-data">
 				<td colspan="{{ num_columns }}">

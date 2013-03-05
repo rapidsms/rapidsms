@@ -2,6 +2,13 @@
 RapidSMS 0.12.0 release notes
 =============================
 
+
+.. warning::
+
+    RapidSMS v0.12.0 is currently under development and has not been released.
+
+Welcome to RapidSMS 0.12.0! These release notes cover the new features 0.12.0.
+
 Overview
 ========
 
@@ -30,6 +37,12 @@ The apps that have been removed are:
 - rapidsms.contrib.ajax
 - rapidsms.contrib.export
 - rapidsms.contrib.scheduling
+
+Apps removed
+------------
+
+- contrib.ajax
+- contrib.scheduler
 
 Supporting Django 1.4+
 --------------------------

@@ -80,7 +80,6 @@ This creates all tables except the core rapidsms tables::
      > django.contrib.contenttypes
      > rapidsms.contrib.locations
      > rapidsms.contrib.messagelog
-     > rapidsms.contrib.scheduler
      > testextensions_clash
 
     Not synced (use migrations):

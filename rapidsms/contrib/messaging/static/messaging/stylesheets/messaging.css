@@ -1,8 +1,11 @@
-.selected {
-    background-color: #fff6bf;
-}
+#notifications {max-width:767px;}
 
-.error, .notice, .success {padding:.8em;margin-bottom:1em;border:2px solid #ddd;}
-.error {background:#FBE3E4;color:#8a1f11;border-color:#FBC2C4;}
-.notice {background:#FFF6BF;color:#514721;border-color:#FFD324;}
-.success {background:#E6EFC2;color:#264409;border-color:#C6D880;}
+#send-message-form {border:0px;padding-left:0px;} /* Override RapidSMS styles */
+#send-message-form .group {margin-bottom:10px;min-width:300px;max-width:767px;}
+#send-message-form .count {font-style:italic;}
+#send-message-form .ui-widget {font-family:inherit;font-size:inherit;}
+#send-message-form #contact-field {width:300px;}
+#send-message-form #contact-field input {width:286px;margin-bottom:0px;}
+#send-message-form #message-field textarea {margin-bottom:0px;display:block;width:100%;min-height:75px;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box}
+#send-message-form #contacts {display:inline-block;}
+#send-message-form #contacts .label {margin:5px;padding:4px;}
