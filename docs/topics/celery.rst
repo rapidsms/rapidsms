@@ -499,10 +499,11 @@ Using Celery in production
 ==========================
 
 The Celery configuration described here is for convenience in development,
-and should never be used in production. See
-:doc:`Deployment </topics/deployment>`
-for information about deploying Celery for actual use.
+and should never be used in production.
 
+The most important change to make in production is to stop using
+`kombu.transport.django` as the broker, and switch to `RabbitMQ`_ or
+something equivalent that is robust and scalable.
 
 .. _Celery: http://celeryproject.org/
 .. _task: http://docs.celeryproject.org/en/latest/userguide/tasks.html
@@ -523,3 +524,4 @@ for information about deploying Celery for actual use.
 .. _/admin/djcelery/periodictask/: /admin/djcelery/periodictask/
 .. _crontab: http://docs.celeryproject.org/en/latest/userguide/periodic-tasks.html#crontab-schedules
 .. _initial data: https://docs.djangoproject.com/en/1.3/howto/initial-data/#providing-initial-data-with-fixtures
+.. _RabbitMQ: http://www.rabbitmq.com
