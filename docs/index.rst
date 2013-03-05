@@ -46,6 +46,7 @@ Release: v\ |release|. (:doc:`Installation <intro/install/index>`, :doc:`Release
 * :doc:`Internationalization <topics/i18n>`
 * :doc:`Extending core RapidSMS models <topics/extensible-models>`
 * :doc:`Testing <topics/testing>`
+* :doc:`Scheduling Tasks with Celery <topics/celery>`
 * :doc:`Deployment <topics/deployment>`
 
 **RapidSMS contrib applications** (:doc:`Overview <topics/contrib/index>`)
@@ -59,7 +60,6 @@ Release: v\ |release|. (:doc:`Installation <intro/install/index>`, :doc:`Release
 * messagelog
 * messaging
 * registration
-* scheduler
 
 **The RapidSMS open-source project**
 

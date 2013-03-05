@@ -195,6 +195,17 @@ this behavior has never been enforced. A "stopped" router can still receive
 messages and will route them to applications, even "stopped" applications. As
 we move toward v1.0, we expect to remove these methods from ``BaseApp``.
 
+.. _scheduling:
+
+Scheduling tasks
+================
+
+If your application needs to run tasks asynchronously, either on-demand
+or on a schedule, you can of course use any mechanism that works in Django.
+The RapidSMS project recommends using Celery, and there are some advantages
+to using Celery in RapidSMS applications compared to other schedulers.
+See :doc:`Using Celery for Scheduling Tasks <celery>`
+
 .. _other-applications:
 
 Contrib and Community Applications
