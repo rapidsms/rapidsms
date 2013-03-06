@@ -11,6 +11,20 @@ knowledge is likely to be useful on other projects.
 You will also need to follow the setup instructions here if you are
 using RapidSMS's :router:`CeleryRouter`.
 
+History
+=======
+
+After `discussion`_, ``rapidsms.contrib.scheduler`` was removed in
+:doc:`RapidSMS 0.12.0 </releases/0.12.0>` in favor of
+adopting a wider Django community standard, Celery.
+Celery provides all the functionality of the previous built-in scheduler,
+but has the advantage of providing a more general solution for
+asynchronous task execution. Please see the
+:doc:`0.12.0 Release Notes </releases/0.12.0>` for more details.
+
+.. _discussion: https://groups.google.com/forum/#!topic/rapidsms-dev/7yQvOXrl_zc
+
+
 Celery versions
 ===============
 

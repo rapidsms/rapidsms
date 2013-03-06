@@ -204,7 +204,7 @@ If your application needs to run tasks asynchronously, either on-demand
 or on a schedule, you can of course use any mechanism that works in Django.
 The RapidSMS project recommends using Celery, and there are some advantages
 to using Celery in RapidSMS applications compared to other schedulers.
-See :doc:`Using Celery for Scheduling Tasks <celery>`
+See :doc:`Using Celery for Scheduling Tasks </topics/celery>`
 
 .. _other-applications:
 
