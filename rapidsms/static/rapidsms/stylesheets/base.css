@@ -21,7 +21,6 @@ html, body {
 #push,
 #footer {
     height: 80px;       /* Height of the footer */
-    padding-top: 10px;  /* A bit of space between main content and footer content */
 }
 
 /* Make room for the top navbar above the main page so the navbar
