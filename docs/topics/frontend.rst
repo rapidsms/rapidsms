@@ -36,5 +36,40 @@ Keep these links short. If the links take up too much room on the page,
 they will wrap in the header, forcing the bottom of the page header
 down and overlapping part of the page.
 
+Login/Logout links
+~~~~~~~~~~~~~~~~~~
+
+The login or logout link can be removed or replaced by overriding the
+`login-link` block:
+
+.. code-block:: html
+
+     {% block login_link %}
+        <li>
+            {% block auth %}
+                {% if user.is_authenticated %}
+                    <a href="{% url 'rapidsms-logout' %}">{% trans "Log out" %} {{ user.username }}</a>
+                {% else %}
+                    <a href="{% url 'rapidsms-login' %}">{% trans "Log in" %}</a>
+                {% endif %}
+            {% endblock auth %}
+        </li>
+    {% endblock %}
+
+Admin link
+~~~~~~~~~~
+
+Similarly, a link to the Django admin is shown for staff users who
+are logged in. Change that by overriding the `admin-link` block:
+
+.. code-block:: html
+
+    {% block admin_link %}
+        {% if user.is_staff %}
+            <li>
+                <a href="{% url 'admin:index' %}">{% trans "Admin" %}</a>
+            </li>
+        {% endif %}
+    {% endblock %}
 
 .. _Twitter Bootstrap: http://twitter.github.com/bootstrap/
