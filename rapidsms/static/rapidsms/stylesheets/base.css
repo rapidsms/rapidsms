@@ -65,7 +65,7 @@ table {width: 100%;}
   background-image: -o-linear-gradient(top, #31c0d0, #2894c9);
   background-image: linear-gradient(to bottom, #31c0d0, #2894c9);
   background-repeat: repeat-x;
-  border-color: none;
+  border-style: none;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff31c0d0', endColorstr='#ff2894c9', GradientType=0);
 }
 
@@ -199,7 +199,6 @@ table {width: 100%;}
   color: #ffffff;
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
   background-color: #e0e0e0;
-  *background-color: #040404;
   background-image: -moz-linear-gradient(top, #151515, #2894ca);
   background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#151515), to(#2894ca));
   background-image: -webkit-linear-gradient(top, #151515, #2894ca);
@@ -220,7 +219,6 @@ table {width: 100%;}
 .navbar-blue .btn-navbar[disabled] {
   color: #ffffff;
   background-color: #2894ca;
-  *background-color: #000000;
 }
 
 .navbar-blue .btn-navbar:active,
