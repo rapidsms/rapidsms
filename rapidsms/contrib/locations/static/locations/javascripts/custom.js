@@ -32,7 +32,7 @@ jQuery(function() {
         var map;
         // create map and
         // turn off layer type selectors (terrain, satellite, road, etc)
-        map = new google.maps.Map($("div.container", this).get(0),{
+        map = new google.maps.Map($("div.map-container", this).get(0),{
             "mapTypeControl": false,
             "center": centerpoint
         });
