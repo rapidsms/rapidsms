@@ -43,50 +43,6 @@ div.module.collapsed {
         div.module.expanded  h2 span.toggler { background-image: url("../icons/silk/section_expanded--bright.png"); }
 
 
-
-
-/* module headers are mostly ripped off from  django admin, although
- * here, we never use <caption>, to keep things simple. (they have
- * surprisingly confusing layout rules.) */
-div.module h2,
-div.module h3 {
-    margin: 0;
-    background-repeat: repeat-x;
-    background-position: 0 100%;
-    white-space: nowrap;
-    font-weight: normal;
-    line-height: 1;
-    color: #fff;
-}
-
-    div.module h2 {
-        background-color: #000;
-        background-image: url("../images/h2-bg.png");
-        text-shadow: #000 2px 2px 1px;
-        padding: 0.3125em;
-        font-size: 160%;
-    }
-
-        /* less important info can  be wrapped in a span to dull it */
-        div.module h2 span {
-            text-shadow: none;
-            font-size: 62.5%;
-            opacity: 0.8;
-        }
-
-    /* subheaders are almost the same. to dull things, i just made the
-     * h2-bg image 80% opaque and re-saved it. STILL TODO: ask meghana
-     * to make this pretty */
-    div.module h3 {
-        background-image: url("../images/h3-bg.png");
-        background-color: #333;
-        padding: 0.5em;
-        font-size: 100%;
-    }
-
-
-
-
 /* modules can (optionally) include help text, to explain how they can
  * be used. this is hidden by module-help.js, if it's available, but
  * shouldn't be too verbose, in case it isn't */
