@@ -24,10 +24,13 @@ html, body {
 }
 
 /* Make room for the top navbar above the main page so the navbar
-   doesn't float on top of the page heading
+   doesn't float on top of the page heading. navbar rendering changes
+   below the first responsive break point, so don't do it there.
  */
-#mainpage {
-    padding-top: 60px;
+@media (min-width: 980px) {
+    #mainpage {
+        padding-top: 60px;
+    }
 }
 
 /* Lastly, apply responsive CSS fixes as necessary */
@@ -79,7 +82,7 @@ table {width: 100%;}
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
 }
 @media (max-width: 979px) {
-   .nav > li > a,
+    .navbar-inner .nav-collapse.in.collapse ul li a,
    .nav-collapse .dropdown-menu a {
        color: #FFFFFF ! important;
    }
