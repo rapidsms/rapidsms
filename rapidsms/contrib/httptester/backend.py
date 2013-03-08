@@ -4,7 +4,7 @@
 
 from rapidsms.backends.base import BackendBase
 
-from rapidsms.contrib.httptester.storage import store_message
+from .storage import store_message
 
 
 class HttpTesterCacheBackend(BackendBase):

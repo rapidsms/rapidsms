@@ -114,7 +114,6 @@ Revamp RapidSMS website
 
 Build extensible implementations of key RapidSMS core / contrib apps
 ********************************************************************
-* scheduler
 * locations
 * groups
 * Delivery: End of month 9
