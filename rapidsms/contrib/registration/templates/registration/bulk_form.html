@@ -3,7 +3,9 @@
 {% load forms_tags %}
 
 {% block content %}
-<div class="row-fluid">
+    {{ block.super }}
+
+    <div class="row-fluid">
     <div class="span3 well">
         <ul class="nav nav-list">
             <li class="nav-header">Actions</li>
