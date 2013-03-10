@@ -43,21 +43,6 @@ Backwards-incompatible changes in RapidSMS 0.13.0
 In the goal of improving the RapidSMS core, we have made a number of backwards-
 incompatible changes.
 
-Dropped Django 1.3 support
---------------------------
-
-We decided to drop Django 1.3 support to take advantage of the functionality
-offered in Django 1.4+, including `bulk_create`_ and `override_settings`_. Please read the `Django 1.4 release notes`_ for upgrade instructions. We believe the most common changes effecting RapidSMS projects will be:
-
-    * Removal of `django.conf.urls.defaults`_
-
-Make the following change to all of your ``urls.py``:
-
-.. code-block:: diff
-
-    -from django.conf.urls.defaults import *
-    +from django.conf.urls import patterns, url
-
 Backend configuration must point to a class
 -------------------------------------------
 
