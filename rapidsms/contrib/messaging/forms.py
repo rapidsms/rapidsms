@@ -23,5 +23,5 @@ class MessageForm(forms.Form):
         connections = []
         for recipient in self.cleaned_data['recipients']:
             connections.append(recipient.default_connection)
-        send(self.cleaned_data['text'], connections)
-        return self.cleaned_data['recipients']
+        send(self.cleaned_data['message'], connections)
+        return self.cleaned_data['message'], self.cleaned_data['recipients']

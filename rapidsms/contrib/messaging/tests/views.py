@@ -54,11 +54,11 @@ class TestSendView(RapidTest):
         """Posting valid data should cause a 200 response."""
         response = self.client.post(self.url, self.data)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(self.outbound), 2)
-        self.assertEqual(self.outbound[0].contact, self.contact1)
-        self.assertEqual(self.outbound[0].text, self.message)
-        self.assertEqual(self.outbound[1].contact, self.contact2)
-        self.assertEqual(self.outbound[1].text, self.message)
+        self.assertEqual(len(self.outbound), 1)
+        msg = self.outbound[0]
+        self.assertEqual(msg.text, self.message)
+        self.assertTrue(self.connection1 in msg.connections)
+        self.assertTrue(self.connection2 in msg.connections)
 
     def test_post_no_message(self):
         """A form validation error should cause a 400 response."""

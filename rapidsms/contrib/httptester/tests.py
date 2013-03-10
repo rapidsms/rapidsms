@@ -152,7 +152,7 @@ class BackendTest(RapidTest):
         # send calls store_message with the right args
         back = HttpTesterCacheBackend(self.router, 'backend')
         msg = self.create_outgoing_message()
-        back.send(msg)
+        back.send(msg.id, msg.text, [msg.connection.identity], {})
         self.assertTrue(store_message.called)
         self.assertEqual(('out', msg.connection.identity, msg.text),
                          store_message.call_args[0])
