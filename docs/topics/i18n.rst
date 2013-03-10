@@ -2,6 +2,8 @@
 Translation
 ===========
 
+.. module:: rapidsms.utils.translation
+
 RapidSMS uses Django's internationalization (i18n) architecture to allow you to
 make your project or application translatable. This documentation assumes
 you're already familiar with this architecture. If you're not, we recomend
