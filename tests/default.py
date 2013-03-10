@@ -25,6 +25,8 @@ INSTALLED_APPS = [
     # third party apps.
     "django_nose",
     "djtables",
+    "django_tables2",
+    "selectable",
     # django contrib apps
     "django.contrib.sites",
     "django.contrib.auth",
@@ -32,7 +34,6 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.contenttypes",
     # rapidsms contrib apps.
-    "rapidsms.contrib.export",
     "rapidsms.contrib.handlers",
     "rapidsms.contrib.httptester",
     "rapidsms.contrib.locations",
@@ -59,15 +60,6 @@ PASSWORD_HASHERS = (
 )
 
 ROOT_URLCONF = "tests.urls"
-
-RAPIDSMS_TABS = [
-    ("rapidsms.contrib.messagelog.views.message_log",       "Message Log"),
-    ("rapidsms.contrib.registration.views.registration",    "Registration"),
-    ("rapidsms.contrib.messaging.views.messaging",          "Messaging"),
-    ("rapidsms.contrib.locations.views.locations",          "Map"),
-    ("rapidsms.contrib.scheduler.views.index",              "Event Scheduler"),
-    ("rapidsms.contrib.httptester.views.generate_identity", "Message Tester"),
-]
 
 PROJECT_NAME = 'rapidsms-test-suite'
 
