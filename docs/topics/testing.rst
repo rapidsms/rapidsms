@@ -113,53 +113,26 @@ inspect the ``outbound`` property to see if it contains the proper message
 text. That's it! With just a few lines we were able to send a message through
 the entire routing stack and verify the functionality of our application.
 
-.. class:: RapidTest
-
-    .. attribute:: inbound
-
-        The list of message objects received by the router.
-
-    .. attribute:: outbound
-
-        The list of message objects sent by the router.
-
-    .. attribute:: sent_messages
-
-        The list of message objects sent to ``mockbackend``.
-
-    .. attribute:: disable_phases
-
-        If enabled, messages will not be processed through the router phases.
-        This is useful if you're not interested in testing application logic.
-        For example, backends may use this flag to ensure messages are sent to
-        the router, but don't want the message to be processed.
+.. autoclass:: rapidsms.tests.harness.RapidTest
+    :members: inbound, outbound, sent_messages, clear_sent_messages, receive, send, lookup_connections
 
     .. attribute:: apps
 
         A list of app classes to load, rather than ``INSTALLED_APPS``, when the
         router is initialized.
 
-    .. method:: clear_sent_messages()
+    .. attribute:: disable_phases = False
 
-        Manually empty the outbox of ``mockbackend``.
-
-    .. method:: receive(text, connections)
-
-        A wrapper around the ``receive`` API. See :ref:`receiving-messages`.
-
-    .. method:: send(text, connections, fields=None)
-
-        A wrapper around the ``send`` API. See :ref:`sending-messages`.
-
-    .. method:: lookup_connections(backend='mockbackend', identities)
-
-        A wrapper around the ``lookup_connections`` API. See :ref:`connection_lookup`.
+        If enabled, messages will not be processed through the router phases.
+        This is useful if you're not interested in testing application logic.
+        For example, backends may use this flag to ensure messages are sent to
+        the router, but don't want the message to be processed.
 
 
 Database Interaction
 ^^^^^^^^^^^^^^^^^^^^
 
-``RapidTeset`` provides flexible means to check application state, including
+``RapidTest`` provides flexible means to check application state, including
 the database. Here's an example of a test that examines the database after
 receiving a message::
 
