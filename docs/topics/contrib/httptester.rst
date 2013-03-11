@@ -1,10 +1,10 @@
-===========================================
-Message Tester: rapidsms.contrib.httptester
-===========================================
+===========================
+rapidsms.contrib.httptester
+===========================
 
 .. module:: rapidsms.contrib.httptester
 
-The Message Tester app allows sending fake messages to RapidSMS
+The `httptester` contrib application allows sending fake messages to RapidSMS
 and seeing how RapidSMS responds.
 
 .. _httptester-installation:
@@ -14,10 +14,8 @@ Installation
 
 To define and use Message Tester for your RapidSMS project, you will need to:
 
-1. Add `rapidsms.contrib.httptester` to :setting:`INSTALLED_APPS` in your
-   settings file:
-
-.. code-block:: python
+1. Add ``"rapidsms.contrib.httptester"`` to :setting:`INSTALLED_APPS` in your
+   settings file::
 
     INSTALLED_APPS = [
         ...
@@ -25,19 +23,15 @@ To define and use Message Tester for your RapidSMS project, you will need to:
         ...
     ]
 
-2. Add Message Tester's urls to your urlconf somewhere, e.g.
+2. Add `httptester` URLs to your urlconf::
 
-.. code-block:: python
-
-    urlpatterns = patterns('',
+    urlpatterns = patterns("",
         ...
-        (r'^httptester/', include('rapidsms.contrib.httptester.urls')),
+        (r"^httptester/", include("rapidsms.contrib.httptester.urls")),
         ...
     )
 
-3. Add the Message Tester backend to :setting:`INSTALLED_BACKENDS`:
-
-.. code-block:: python
+3. Add the Message Tester backend to :setting:`INSTALLED_BACKENDS`::
 
     INSTALLED_BACKENDS = {
         ...
@@ -47,23 +41,19 @@ To define and use Message Tester for your RapidSMS project, you will need to:
         ...
     }
 
-4. Add its view to the RapidSMS tabs:
-
-.. code-block:: python
-
-    RAPIDSMS_TABS = [
-        ...
-        ("rapidsms.contrib.httptester.views.generate_identity", "Message Tester"),
-        ...
-    ]
-
-5. Create Message Tester's database tables:
+4. Create database tables for the `httptester` models:
 
 .. code-block:: bash
 
     $ python manage.py syncdb
 
+5. Add a link to the Message Tester view from your ``rapidsms/_nav_bar.html``
+   template:
 
+.. code-block:: html
+
+    {% load url from future %}
+    <li><a href="{% "httptester-index" %}">Message Tester</a></li>
 
 .. _httptester-usage:
 
