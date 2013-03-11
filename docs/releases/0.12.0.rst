@@ -54,8 +54,10 @@ Overview: Updating to RapidSMS 0.12.0
 
 - Upgrade to at least `Django 1.4`_
 - If upgrading to `Django 1.5`_:
+
  - Verify `urls.py`_ files have been updated
  - Verify `url template tags`_ in templates have been updated
+
 - Set up rapidsms/_nav_bar.html to replace the `RAPIDSMS_TABS`_ setting
 - Add `django_tables2` and `django_selectable` to ``INSTALLED_APPS``
 - Remove references to `removed apps`_.
