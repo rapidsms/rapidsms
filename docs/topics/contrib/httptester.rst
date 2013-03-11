@@ -4,7 +4,7 @@ rapidsms.contrib.httptester
 
 .. module:: rapidsms.contrib.httptester
 
-The `httptester` contrib app allows sending fake messages to RapidSMS
+The `httptester` contrib application allows sending fake messages to RapidSMS
 and seeing how RapidSMS responds.
 
 .. _httptester-installation:
@@ -15,9 +15,7 @@ Installation
 To define and use Message Tester for your RapidSMS project, you will need to:
 
 1. Add ``"rapidsms.contrib.httptester"`` to :setting:`INSTALLED_APPS` in your
-   settings file:
-
-.. code-block:: python
+   settings file::
 
     INSTALLED_APPS = [
         ...
@@ -25,9 +23,7 @@ To define and use Message Tester for your RapidSMS project, you will need to:
         ...
     ]
 
-1. Add `httptester` URLs to your urlconf somewhere, for example:
-
-.. code-block:: python
+1. Add `httptester` URLs to your urlconf somewhere, for example::
 
     urlpatterns = patterns("",
         ...
@@ -35,9 +31,7 @@ To define and use Message Tester for your RapidSMS project, you will need to:
         ...
     )
 
-1. Add the Message Tester backend to :setting:`INSTALLED_BACKENDS`:
-
-.. code-block:: python
+1. Add the Message Tester backend to :setting:`INSTALLED_BACKENDS`::
 
     INSTALLED_BACKENDS = {
         ...
@@ -53,9 +47,7 @@ To define and use Message Tester for your RapidSMS project, you will need to:
 
     $ python manage.py syncdb
 
-1. Add the Message Tester view to the RapidSMS tabs:
-
-.. code-block:: python
+1. Add the Message Tester view to the RapidSMS tabs::
 
     RAPIDSMS_TABS = [
         ...

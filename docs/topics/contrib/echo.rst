@@ -4,7 +4,7 @@ rapidsms.contrib.echo
 
 .. module:: rapidsms.contrib.echo
 
-The `echo` contrib app is a collection of two simple :doc:`handlers
+The `echo` contrib application is a collection of two simple :doc:`handlers
 </topics/contrib/handlers>` that can assist you in remotely debugging your
 RapidSMS project.
 
@@ -13,7 +13,7 @@ RapidSMS project.
 Installation
 ============
 
-To use either of the echo or ping handlers, you must add both
+To use either of `EchoHandler` or `PingHandler`, you must add both
 ``"rapidsms.contrib.handlers"`` and ``"rapidsms.contrib.echo"`` to
 :setting:`INSTALLED_APPS` in your settings file::
 
