@@ -2,9 +2,12 @@ language: python
 python:
   - "2.7"
 env:
-  - TOXENV=py26-1.4.X,py27-1.4.X
-  - TOXENV=py26-1.5.X,py27-1.5.X
-  - TOXENV=py26-trunk,py27-trunk
+  - TOXENV=py26-1.4.X
+  - TOXENV=py27-1.4.X
+  - TOXENV=py26-1.5.X
+  - TOXENV=py27-1.5.X
+  - TOXENV=py26-trunk
+  - TOXENV=py27-trunk
   - TOXENV=docs
 install:
   - pip install -q tox --use-mirrors
@@ -15,7 +18,8 @@ after_script:
   - pep8 --exclude=scheduler,locations,ajax,urls.py,urls,tests.py ./rapidsms/
 matrix:
   allow_failures:
-    - env: TOXENV=py26-trunk,py27-trunk
+    - env: TOXENV=py26-trunk
+    - env: TOXENV=py27-trunk
 notifications:
   irc:
     - "irc.freenode.org#rapidsms"
