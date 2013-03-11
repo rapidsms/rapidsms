@@ -8,7 +8,7 @@ The `handler` contrib app provides three classes- `BaseHandler`,
 `KeywordHandler`, and `PatternHandler`- which can be extended to help you
 create RapidSMS applications quickly.
 
-.. _handler-installation:
+.. _handlers-installation:
 
 Installation
 ============
@@ -17,9 +17,9 @@ To define and use handlers for your RapidSMS project, you will need to
 add `rapidsms.contrib.handlers` to :setting:`INSTALLED_APPS` in your settings
 file. This application will load handlers according to the configuration
 parameters defined in your settings, as described in :ref:`handler discovery
-<handler-discovery>`.
+<handlers-discovery>`.
 
-.. _handler-usage:
+.. _handlers-usage:
 
 Usage
 =====
@@ -168,13 +168,13 @@ Calling Handlers
 
 When a message is received, the `handlers` application calls `dispatch` on
 each of the handlers it loaded during :ref:`handler discovery
-<handler-discovery>`.
+<handlers-discovery>`.
 
 The first handler to accept the message will block all others. The order in
 which the handlers are called is not guaranteed, so each handler should be as
 conservative as possible when choosing to respond to a message.
 
-.. _handler-discovery:
+.. _handlers-discovery:
 
 Handler Discovery
 =================

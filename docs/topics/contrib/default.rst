@@ -2,12 +2,35 @@
 rapidsms.contrib.default
 ========================
 
-Usage
-=====
+.. module:: rapidsms.contrib.default
 
 The `default` application allows your project to define a default response to
 an `IncomingMessage` that is not handled by any other application. The
 response string is defined in :setting:`DEFAULT_RESPONSE`.
+
+.. _default-installation:
+
+Installation
+============
+
+To use the `default` application, add 'rapidsms.contrib.default' to the end of
+:setting:`INSTALLED_APPS` in your settings file::
+
+    INSTALLED_APPS = [
+        # Your other installed apps
+        ...
+        "rapidsms.contrib.default"  # must be last
+    ]
+
+Depending on your project's router, you may need to add the `default`
+application to the router's associated applications. If you are using the
+:router:`BlockingRouter` or :router:`CeleryRouter`, RapidSMS applications
+defined in :setting:`INSTALLED_APPS` will be automatically loaded.
+
+.. _default-usage:
+
+Usage
+=====
 
 This application operates during the :ref:`default message processing stage
 <phase-default>`. It is very important that the router loads this application
@@ -27,19 +50,4 @@ By default, :setting:`DEFAULT_RESPONSE` is defined as::
 
     DEFAULT_RESPONSE = "Sorry, %(project_name)s could not understand your message."
 
-Installation
-============
 
-To use the `default` application, add 'rapidsms.contrib.default' to the end of
-:setting:`INSTALLED_APPS` in your settings file::
-
-    INSTALLED_APPS = [
-        # Your other installed apps
-        ...
-        "rapidsms.contrib.default"  # must be last
-    ]
-
-Depending on your project's router, you may need to add the `default`
-application to the router's associated applications. If you are using the
-:router:`BlockingRouter` or :router:`CeleryRouter`, RapidSMS applications
-defined in :setting:`INSTALLED_APPS` will be automatically loaded.

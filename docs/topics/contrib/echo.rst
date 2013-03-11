@@ -1,3 +1,4 @@
+=====================
 rapidsms.contrib.echo
 =====================
 
@@ -6,6 +7,8 @@ rapidsms.contrib.echo
 The `echo` contrib app is a collection of two simple :doc:`handlers
 </topics/contrib/handlers>` that can assist you in remotely debugging your
 RapidSMS project.
+
+.. _echo-installation:
 
 Installation
 ============
@@ -16,8 +19,12 @@ To use either of the echo or ping handlers, you must add both
 </topics/contrib/handlers>` for more information about how handlers are loaded
 and called.
 
+.. _echo-usage:
+
 Usage
 =====
+
+.. _echo-handler:
 
 EchoHandler
 -----------
@@ -32,6 +39,8 @@ For example::
     < To echo some text, send: ECHO <ANYTHING>
     > echo hello
     < hello
+
+.. _ping-handler:
 
 PingHandler
 -----------

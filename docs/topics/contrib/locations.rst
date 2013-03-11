@@ -1,6 +1,6 @@
-=========
-Locations
-=========
+==========================
+rapidsms.contrib.locations
+==========================
 
 .. module:: rapidsms.contrib.locations
 
@@ -13,7 +13,7 @@ Locations
 
 Locations allows you to easily map custom locations and points in your RapidSMS project.
 
-.. locations-installation:
+.. _locations-installation:
 
 Installation
 ============
@@ -59,7 +59,7 @@ To use Locations, you will need to:
 
     <li><a href="{% url 'locations' %}">Map</a></li>
 
-.. locations-usage:
+.. _locations-usage:
 
 Usage
 =====
