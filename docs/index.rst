@@ -50,15 +50,21 @@ Release: v\ |release|. (:doc:`Installation <intro/install/index>`, :doc:`Release
 * :doc:`Scheduling Tasks with Celery <topics/celery>`
 * :doc:`Deployment <topics/deployment>`
 
-**RapidSMS contrib applications** (:doc:`Overview <topics/contrib/index>`)
+**RapidSMS contrib applications**
 
-* :doc:`default <topics/contrib/default>`
-* :doc:`echo <topics/contrib/echo>`
-* :doc:`handlers <topics/contrib/handlers>`
-* :doc:`Message Tester <topics/contrib/httptester>`
-* :doc:`Locations <topics/contrib/locations>`
+* :doc:`default <topics/contrib/default>` - Sends a pre-defined default
+  response to messages that are not handled by any other application.
+* :doc:`echo <topics/contrib/echo>` - A collection of two simple handlers that
+  can assist you in remote debugging.
+* :doc:`handlers <topics/contrib/handlers>` - Extensible classes that help you
+  create RapidSMS applications quickly.
+* :doc:`httptester <topics/contrib/httptester>` - Helps you test your project
+  by sending fake messages to RapidSMS to see how it responds.
+* :doc:`locations <topics/contrib/locations>` - Defines the `Location` model,
+  which helps you map custom locations and points in your project.
 * messagelog
-* :doc:`messaging <topics/contrib/messaging>`
+* :doc:`messaging <topics/contrib/messaging>` - Provides a web interface
+  through which you can send messages to Contacts.
 * registration
 
 **The RapidSMS open-source project**
