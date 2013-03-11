@@ -12,15 +12,17 @@ Contacts through a web interface.
 Installation
 ============
 
-The `messaging` contrib application depends on `django-selectable
-<http://django-selectable.readthedocs.org/>`_ to create a recipient
-multi-selector with autocomplete on the front-end view. You can install
-`django-selectable` using pip::
+1. The `messaging` contrib application depends on `django-selectable
+   <http://django-selectable.readthedocs.org/>`_ to create a recipient
+   multi-selector with autocomplete on the front-end view. You can install
+   `django-selectable` using pip:
+
+.. code-block:: bash
 
     pip install django-selectable
 
-Next, you will need to add ``"rapidsms.contrib.messaging"`` and ``"selectable"``
-(if not already present) to :setting:`INSTALLED_APPS` in your settings file::
+2. Add ``"rapidsms.contrib.messaging"`` and ``"selectable"`` (if not already
+   present) to :setting:`INSTALLED_APPS` in your settings file::
 
     INSTALLED_APPS = [
         ...
@@ -29,12 +31,13 @@ Next, you will need to add ``"rapidsms.contrib.messaging"`` and ``"selectable"``
         ...
     ]
 
-Finally, you must add the URLs for `messaging` and `selectable` to your
-urlconf::
+3. Add URLs for `messaging` and `selectable` to your urlconf::
 
-    urlpatterns += ("",
+    urlpatterns = ("",
+        ...
         (r"^messaging/", include("rapidsms.contrib.messaging.urls")),
         (r"^selectable/", include("selectable.urls")),
+        ...
     )
 
 .. _messaging-usage:

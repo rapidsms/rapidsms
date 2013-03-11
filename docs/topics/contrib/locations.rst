@@ -22,11 +22,13 @@ Installation
 
 1. The `locations` contrib application depends on `djtables
    <https://pypi.python.org/pypi/djtables>`_ to display data. You can install
-   `djtables` using pip::
+   `djtables` using pip:
+
+.. code-block:: bash
 
     pip install djtables
 
-1. Add ``"rapidsms.contrib.locations"`` and ``"djtables"`` (if not already
+2. Add ``"rapidsms.contrib.locations"`` and ``"djtables"`` (if not already
    present) to :setting:`INSTALLED_APPS` in your settings file::
 
     INSTALLED_APPS = [
@@ -36,7 +38,7 @@ Installation
         ...
     ]
 
-1. Add `locations` URLs to your urlconf somewhere, for example::
+3. Add `locations` URLs to your urlconf::
 
     urlpatterns = patterns("",
         ...
@@ -44,13 +46,13 @@ Installation
         ...
     )
 
-1. Create database tables for the `locations` models:
+4. Create database tables for the `locations` models:
 
 .. code-block:: bash
 
     $ python manage.py syncdb
 
-1. If wanted, add a navigation item to your ``rapidsms/_nav_bar.html`` template:
+5. If wanted, add a navigation item to your ``rapidsms/_nav_bar.html`` template:
 
 .. code-block:: html
 

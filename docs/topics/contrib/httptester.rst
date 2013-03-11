@@ -23,7 +23,7 @@ To define and use Message Tester for your RapidSMS project, you will need to:
         ...
     ]
 
-1. Add `httptester` URLs to your urlconf somewhere, for example::
+2. Add `httptester` URLs to your urlconf::
 
     urlpatterns = patterns("",
         ...
@@ -31,7 +31,7 @@ To define and use Message Tester for your RapidSMS project, you will need to:
         ...
     )
 
-1. Add the Message Tester backend to :setting:`INSTALLED_BACKENDS`::
+3. Add the Message Tester backend to :setting:`INSTALLED_BACKENDS`::
 
     INSTALLED_BACKENDS = {
         ...
@@ -41,13 +41,13 @@ To define and use Message Tester for your RapidSMS project, you will need to:
         ...
     }
 
-1. Create database tables for the `httptester` models:
+4. Create database tables for the `httptester` models:
 
 .. code-block:: bash
 
     $ python manage.py syncdb
 
-1. Add a link to the Message Tester view from your ``rapidsms/_nav_bar.html``
+5. Add a link to the Message Tester view from your ``rapidsms/_nav_bar.html``
    template:
 
 .. code-block:: html
