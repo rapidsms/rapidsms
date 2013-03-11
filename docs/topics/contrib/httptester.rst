@@ -47,13 +47,13 @@ To define and use Message Tester for your RapidSMS project, you will need to:
 
     $ python manage.py syncdb
 
-1. Add the Message Tester view to the RapidSMS tabs::
+1. Add a link to the Message Tester view from your ``rapidsms/_nav_bar.html``
+   template:
 
-    RAPIDSMS_TABS = [
-        ...
-        ("rapidsms.contrib.httptester.views.generate_identity", "Message Tester"),
-        ...
-    ]
+.. code-block:: html
+
+    {% load url from future %}
+    <li><a href="{% "httptester-index" %}">Message Tester</a></li>
 
 .. _httptester-usage:
 
