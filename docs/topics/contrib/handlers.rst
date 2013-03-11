@@ -14,8 +14,16 @@ Installation
 ============
 
 To define and use handlers for your RapidSMS project, you will need to
-add `rapidsms.contrib.handlers` to :setting:`INSTALLED_APPS` in your settings
-file. This application will load handlers according to the configuration
+add ``"rapidsms.contrib.handlers"`` to :setting:`INSTALLED_APPS` in your
+settings file::
+
+    INSTALLED_APPS = [
+        ...
+        "rapidsms.contrib.handlers",
+        ...
+    ]
+
+This application will load handlers according to the configuration
 parameters defined in your settings, as described in :ref:`handler discovery
 <handlers-discovery>`.
 

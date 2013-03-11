@@ -14,7 +14,7 @@ Installation
 
 To define and use Message Tester for your RapidSMS project, you will need to:
 
-1. Add `rapidsms.contrib.httptester` to :setting:`INSTALLED_APPS` in your
+1. Add ``"rapidsms.contrib.httptester"`` to :setting:`INSTALLED_APPS` in your
    settings file:
 
 .. code-block:: python
@@ -25,17 +25,17 @@ To define and use Message Tester for your RapidSMS project, you will need to:
         ...
     ]
 
-2. Add Message Tester's urls to your urlconf somewhere, e.g.
+1. Add `httptester` URLs to your urlconf somewhere, for example:
 
 .. code-block:: python
 
-    urlpatterns = patterns('',
+    urlpatterns = patterns("",
         ...
-        (r'^httptester/', include('rapidsms.contrib.httptester.urls')),
+        (r"^httptester/", include("rapidsms.contrib.httptester.urls")),
         ...
     )
 
-3. Add the Message Tester backend to :setting:`INSTALLED_BACKENDS`:
+1. Add the Message Tester backend to :setting:`INSTALLED_BACKENDS`:
 
 .. code-block:: python
 
@@ -47,7 +47,13 @@ To define and use Message Tester for your RapidSMS project, you will need to:
         ...
     }
 
-4. Add its view to the RapidSMS tabs:
+1. Create database tables for the `httptester` models:
+
+.. code-block:: bash
+
+    $ python manage.py syncdb
+
+1. Add the Message Tester view to the RapidSMS tabs:
 
 .. code-block:: python
 
@@ -56,12 +62,6 @@ To define and use Message Tester for your RapidSMS project, you will need to:
         ("rapidsms.contrib.httptester.views.generate_identity", "Message Tester"),
         ...
     ]
-
-5. Create Message Tester's database tables:
-
-.. code-block:: bash
-
-    $ python manage.py syncdb
 
 .. _httptester-usage:
 

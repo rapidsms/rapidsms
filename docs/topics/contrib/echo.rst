@@ -14,10 +14,18 @@ Installation
 ============
 
 To use either of the echo or ping handlers, you must add both
-"rapidsms.contrib.handlers" and "rapidsms.contrib.echo" to
-:setting:`INSTALLED_APPS` in your settings file. See the :doc:`handlers docs
-</topics/contrib/handlers>` for more information about how handlers are loaded
-and called.
+``"rapidsms.contrib.handlers"`` and ``"rapidsms.contrib.echo"`` to
+:setting:`INSTALLED_APPS` in your settings file::
+
+    INSTALLED_APPS = [
+        ...
+        "rapidsms.contrib.handlers",
+        "rapidsms.contrib.echo",
+        ...
+    ]
+
+See the :doc:`handlers docs </topics/contrib/handlers>` for more information
+about how handlers are loaded and called.
 
 .. _echo-usage:
 

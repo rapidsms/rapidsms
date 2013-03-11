@@ -18,46 +18,46 @@ Locations allows you to easily map custom locations and points in your RapidSMS 
 Installation
 ============
 
-To use Locations, you will need to:
-
-1. Install ``djtables``::
+1. The `locations` contrib app depends on `djtables
+   <https://pypi.python.org/pypi/djtables>`_ to display data. You can install
+   `djtables` using pip::
 
     pip install djtables
 
-1. Add `rapidsms.contrib.locations` to :setting:`INSTALLED_APPS` in your
-   settings file:
+1. Add ``"rapidsms.contrib.locations"`` and ``"djtables"`` (if not already
+   present) to :setting:`INSTALLED_APPS` in your settings file:
 
 .. code-block:: python
 
     INSTALLED_APPS = [
         ...
         "rapidsms.contrib.locations",
+        "djtables",
         ...
     ]
 
-2. Add Locations' urls to your urlconf somewhere, e.g.
+1. Add `locations` URLs to your urlconf somewhere, for example:
 
 .. code-block:: python
 
-    urlpatterns = patterns('',
+    urlpatterns = patterns("",
         ...
-        (r'^locations/', include('rapidsms.contrib.locations.urls')),
+        (r"^locations/", include("rapidsms.contrib.locations.urls")),
         ...
     )
 
-3. Create Locations's database tables:
+1. Create database tables for the `locations` models:
 
 .. code-block:: bash
 
     $ python manage.py syncdb
 
-4. If wanted, add a navigation item to your ``rapidsms/_nav_bar.html`` template:
+1. If wanted, add a navigation item to your ``rapidsms/_nav_bar.html`` template:
 
 .. code-block:: html
 
     {% load url from future %}
-
-    <li><a href="{% url 'locations' %}">Map</a></li>
+    <li><a href="{% url "locations" %}">Map</a></li>
 
 .. _locations-usage:
 

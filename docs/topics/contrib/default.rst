@@ -13,19 +13,14 @@ response string is defined in :setting:`DEFAULT_RESPONSE`.
 Installation
 ============
 
-To use the `default` application, add 'rapidsms.contrib.default' to the end of
-:setting:`INSTALLED_APPS` in your settings file::
+To use the `default` application, add ``"rapidsms.contrib.default"`` to the end
+of :setting:`INSTALLED_APPS` in your settings file::
 
     INSTALLED_APPS = [
         # Your other installed apps
         ...
         "rapidsms.contrib.default"  # must be last
     ]
-
-Depending on your project's router, you may need to add the `default`
-application to the router's associated applications. If you are using the
-:router:`BlockingRouter` or :router:`CeleryRouter`, RapidSMS applications
-defined in :setting:`INSTALLED_APPS` will be automatically loaded.
 
 .. _default-usage:
 

@@ -19,23 +19,22 @@ multi-selector with autocomplete on the front-end view. You can install
 
     pip install django-selectable
 
-Next, you will need to add `rapidsms.contrib.messaging` and `selectable` (if
+Next, you will need to add ``"rapidsms.contrib.messaging"`` and ``"selectable"`` (if
 not already present) to :setting:`INSTALLED_APPS` in your settings file::
 
     INSTALLED_APPS = [
         ...
-        'rapidsms',
-        'rapidsms.contrib.messaging',
-        'selectable',
+        "rapidsms.contrib.messaging",
+        "selectable",
         ...
     ]
 
 Finally, you must add the URLs for `rapidsms.contrib.messaging` and
 `selectable` to your urlconf::
 
-    urlpatterns += ('',
-        (r'^messaging/', include('rapidsms.contrib.messaging.urls')),
-        (r'^selectable/', include('selectable.urls')),
+    urlpatterns += ("",
+        (r"^messaging/", include("rapidsms.contrib.messaging.urls")),
+        (r"^selectable/", include("selectable.urls")),
     )
 
 .. _messaging-usage:
