@@ -150,19 +150,17 @@ well as the methods `self.respond` and `self.respond_error` (which respond to
 the instance's message).
 
 `BaseHandler` also defines the class method `test`, which creates a simple
-environment for testing a handler's response to a specific message text::
+environment for testing a handler's response to a specific message text. If
+the handler ignores the message then ``False`` is returned. Otherwise a list
+containing the `text` property of each `OutgoingMessage` response, in the
+order which they were sent, is returned. (Note: the list may be empty.) For
+example::
 
-    >>> from rapidsms.contrib.handlers import BaseHandler
-    >>> class AlwaysHandler(BaseHandler):
-    ...
-    ...    @classmethod
-    ...    def dispatch(cls, router, msg):
-    ...        msg.respond("xxx")
-    ...        msg.respond("yyy")
-    ...        return True
-
-    >>> AlwaysHandler.test("anything")
-    ["xxx", "yyy"]
+    >>> from rapidsms.contrib.echo.handlers.echo import EchoHandler
+    >>> EchoHandler.test("not applicable")
+    False
+    >>> EchoHandler.test("echo hello!")
+    ["hello!"]
 
 For an example implementation of a `BaseHandler`, see
 `rapidsms.contrib.echo.handlers.ping.PingHandler
