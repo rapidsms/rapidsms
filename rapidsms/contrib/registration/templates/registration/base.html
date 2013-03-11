@@ -1,4 +1,4 @@
-{% extends "layout-split-2.html" %}
+{% extends "base.html" %}
 {% load url from future %}
 
 {% block stylesheets %}
@@ -7,3 +7,11 @@
 {% endblock %}
 
 {% block title %}Registration - {{ block.super }}{% endblock %}
+
+{% block content %}
+    <div class="row-fluid">
+        <div class="page-header">
+            <h1>Registration</h1>
+        </div>
+    </div>
+{% endblock %}

@@ -12,7 +12,7 @@ jQuery(function() {
             new google.maps.LatLng(40.745111, 18.265061)
         );
 
-        // blank layer of custom background images so googlemap's 
+        // blank layer of custom background images so googlemap's
         // road, terrain, etc layers are not shown behind our image
         var blankOverlayOptions = {
             getTileUrl: function(coord, zoom){
@@ -20,32 +20,32 @@ jQuery(function() {
             },
             tileSize: new google.maps.Size(128, 128),
             isPng: true,
-            center: centerpoint,
+            center: centerpoint
         };
 
         var blankMapType = new google.maps.ImageMapType(blankOverlayOptions);
         // zoom constrains, since our users won't need to zoom out
         // beyond our image
-        blankMapType.minZoom = 10; 
+        blankMapType.minZoom = 10;
         blankMapType.maxZoom = 15;
 
         var map;
-        // create map and 
+        // create map and
         // turn off layer type selectors (terrain, satellite, road, etc)
-        map = new google.maps.Map($("div.container", this).get(0),{
+        map = new google.maps.Map($("div.map-container", this).get(0),{
             "mapTypeControl": false,
-            "center": centerpoint 
+            "center": centerpoint
         });
 
         // set blank layer as the base layer
         map.mapTypes.set('blankbase', blankMapType);
-        map.setMapTypeId('blankbase'); 
+        map.setMapTypeId('blankbase');
         map.overlayMapTypes.insertAt(0, blankMapType);
 
         // set image as ground overlay in the lat/lng bounds
         // declared above
         var brinland = new google.maps.GroundOverlay(
-            "/static/locations/images/brinland.jpg", 
+            "/static/locations/images/brinland.jpg",
             brinlandbounds);
         brinland.setMap(map);
 
