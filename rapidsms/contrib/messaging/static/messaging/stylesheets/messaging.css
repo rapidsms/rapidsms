@@ -9,3 +9,4 @@
 #send-message-form #message-field textarea {margin-bottom:0px;display:block;width:100%;min-height:75px;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box}
 #send-message-form #recipients {display:inline-block;}
 #send-message-form #recipients .label {margin:5px;padding:4px;}
+#notes {margin-top:20px;}
