@@ -31,9 +31,9 @@ def paginator(context, page, prefix=""):
             "active": (page.number == number)}
 
     #border_links represent the first N pages and last N pages in the paginator
-    border_links = settings.PAGINATOR_BORDER_LINKS
+    border_links = min(settings.PAGINATOR_BORDER_LINKS, page.paginator.num_pages)
     #adjacent_links represents the N pages around the current page
-    adjacent_links = settings.PAGINATOR_ADJACENT_LINKS
+    adjacent_links = min(settings.PAGINATOR_ADJACENT_LINKS, page.paginator.num_pages)
     last_page_number = page.paginator.num_pages + 1
     page_links = []
 
@@ -44,7 +44,7 @@ def paginator(context, page, prefix=""):
         pages.add(p)
     #make sure that the adjacent links do not go outside of the page range
     first_adjacent = max(1, page.number - adjacent_links)
-    last_adjacent = min(page.number + adjacent_links+1, last_page_number)
+    last_adjacent = min(page.number + adjacent_links + 1, last_page_number)
     for p in range(first_adjacent, last_adjacent):
         pages.add(p)
     last_page = None
