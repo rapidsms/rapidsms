@@ -35,10 +35,11 @@ def paginator(context, page, prefix=""):
     #adjacent_links represents the N pages around the current page
     adjacent_links = min(settings.PAGINATOR_ADJACENT_LINKS, page.paginator.num_pages)
     last_page_number = page.paginator.num_pages + 1
-    page_links = []
 
+    pages = {page.number}
     #first set of border links
-    pages = {p for p in range(1, border_links + 1)}
+    for p in range(1, border_links + 1):
+        pages.add(p)
     #last border links
     for p in range(last_page_number - border_links, last_page_number):
         pages.add(p)
@@ -47,13 +48,20 @@ def paginator(context, page, prefix=""):
     last_adjacent = min(page.number + adjacent_links + 1, last_page_number)
     for p in range(first_adjacent, last_adjacent):
         pages.add(p)
-    last_page = None
-    for p in sorted(pages):
-        #if there is a gap in the list, add a None which will generate an elipsis
-        if last_page and last_page != p - 1:
+
+    page_links = []
+    pages = sorted(pages)
+    for i in range(len(pages) - 1):
+        page_links.append(_page(pages[i]))
+        gap = pages[i + 1] - pages[i]
+        if gap == 2:
+            #if the ellipsis would only cover 1 page, add that page.
+            page_links.append(_page(pages[i] + 1))
+        elif gap > 2:
+            #add an ellipsis when there is a gap in the pages.
             page_links.append(None)
-        last_page = p
-        page_links.append(_page(p))
+    if pages:
+        page_links.append(_page(pages[-1]))
 
     subcontext = {
         "dom_id":     dom_id,
