@@ -1,7 +1,7 @@
 Testing RapidSMS Applications
 =============================
 
-Automated testing is an extremely useful tool and, therefore, we recomend
+Automated testing is an extremely useful tool and, therefore, we recommend
 writing tests for all RapidSMS applications and projects. Tests provide a way
 to repeatedly ensure that your code functions as expected and that new code
 doesn't break existing functionality.
@@ -123,7 +123,8 @@ the entire routing stack and verify the functionality of our application.
 
     .. attribute:: disable_phases = False
 
-        If enabled, messages will not be processed through the router phases.
+        If ``disable_phases`` is True, messages will not be processed through
+        the router phases.
         This is useful if you're not interested in testing application logic.
         For example, backends may use this flag to ensure messages are sent to
         the router, but don't want the message to be processed.

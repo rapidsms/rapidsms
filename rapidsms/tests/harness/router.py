@@ -52,7 +52,8 @@ class CustomRouterMixin(CreateDataMixin):
 class TestRouterMixin(CustomRouterMixin):
     """Test extension that uses TestRouter"""
 
-    #: If enabled, messages will not be processed through the router phases.
+    #: If `disable_phases` is True, messages will not be processed through the
+    #: router phases.
     #: This is useful if you're not interested in testing application logic.
     #: For example, backends may use this flag to ensure messages are sent
     #: to the router, but don't want the message to be processed.
