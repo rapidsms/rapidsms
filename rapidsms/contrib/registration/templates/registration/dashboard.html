@@ -3,8 +3,7 @@
 {% load forms_tags %}
 {% load django_tables2 %}
 
-{% block stylesheets %}
-{{ block.super }}
+{% block extra_stylesheets %}
 <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}registration/stylesheets/dashboard.css" />
 {% endblock %}
 

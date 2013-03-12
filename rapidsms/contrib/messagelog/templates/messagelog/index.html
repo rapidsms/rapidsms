@@ -4,8 +4,7 @@
 
 {% block title %}Message Log - {{ block.super }}{% endblock %}
 
-{% block stylesheets %}
-{{ block.super }}
+{% block extra_stylesheets %}
 <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}messagelog/stylesheets/messagelog.css" />
 {% endblock %}
 

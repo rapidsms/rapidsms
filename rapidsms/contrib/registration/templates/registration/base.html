@@ -1,8 +1,7 @@
 {% extends "base.html" %}
 {% load url from future %}
 
-{% block stylesheets %}
-{{ block.super }}
+{% block extra_stylesheets %}
 <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}registration/stylesheets/base.css" />
 {% endblock %}
 
