@@ -1,6 +1,6 @@
-=========
-Locations
-=========
+==========================
+rapidsms.contrib.locations
+==========================
 
 .. module:: rapidsms.contrib.locations
 
@@ -8,65 +8,65 @@ Locations
 
     The fate of ``rapidsms.contrib.locations`` is currently up for debate in
     the RapidSMS community. It has been updated to run in RapidSMS v0.12.0+,
-    but not all functionality is supported. If you're interested in contributing to
-    Locations, please see this `message thread <https://groups.google.com/d/msg/rapidsms/oBQiDFNmKAc/hDKVD4C4AucJ>`_.
+    but not all functionality is supported. If you're interested in
+    contributing to Locations, please see this `message thread
+    <https://groups.google.com/d/msg/rapidsms/oBQiDFNmKAc/hDKVD4C4AucJ>`_.
 
-Locations allows you to easily map custom locations and points in your RapidSMS project.
+Locations allows you to easily map custom locations and points in your i
+RapidSMS project.
 
-.. locations-installation:
+.. _locations-installation:
 
 Installation
 ============
 
-To use Locations, you will need to:
+1. The `locations` contrib application depends on `djtables
+   <https://pypi.python.org/pypi/djtables>`_ to display data. You can install
+   `djtables` using pip:
 
-1. Install ``djtables``::
+.. code-block:: bash
 
     pip install djtables
 
-1. Add `rapidsms.contrib.locations` to :setting:`INSTALLED_APPS` in your
-   settings file:
-
-.. code-block:: python
+2. Add ``"rapidsms.contrib.locations"`` and ``"djtables"`` (if not already
+   present) to :setting:`INSTALLED_APPS` in your settings file::
 
     INSTALLED_APPS = [
         ...
         "rapidsms.contrib.locations",
+        "djtables",
         ...
     ]
 
-2. Add Locations' urls to your urlconf somewhere, e.g.
+3. Add `locations` URLs to your urlconf::
 
-.. code-block:: python
-
-    urlpatterns = patterns('',
+    urlpatterns = patterns("",
         ...
-        (r'^locations/', include('rapidsms.contrib.locations.urls')),
+        (r"^locations/", include("rapidsms.contrib.locations.urls")),
         ...
     )
 
-3. Create Locations's database tables:
+4. Create database tables for the `locations` models:
 
 .. code-block:: bash
 
     $ python manage.py syncdb
 
-4. If wanted, add a navigation item to your ``rapidsms/_nav_bar.html`` template:
+5. If wanted, add a navigation item to your ``rapidsms/_nav_bar.html`` template:
 
 .. code-block:: html
 
     {% load url from future %}
+    <li><a href="{% url "locations" %}">Map</a></li>
 
-    <li><a href="{% url 'locations' %}">Map</a></li>
-
-.. locations-usage:
+.. _locations-usage:
 
 Usage
 =====
 
 Locations will auto-generate a map and editing interface for any models that
-inherit from ``rapidsms.contrib.locations.models.Location``. For example, say
-you had an app called ``cities`` with a ``City`` model:
+inherit from `rapidsms.contrib.locations.models.Location`. For example, say
+you had an application called `cities` with a `City` model:
 
 .. code-block:: python
 
@@ -82,7 +82,7 @@ you had an app called ``cities`` with a ``City`` model:
             app_label = "cities"
             verbose_name_plural = "cities"
 
-To use Locations, you'd add ``cities`` to your installed apps:
+To use Locations, you'd add `cities` to your installed apps:
 
 .. code-block:: python
 
@@ -98,4 +98,4 @@ Create the necessary database tables:
 
     $ python manage.py syncdb
 
-Now visit the Map tab in your browser to see the ``City`` model.
+Now visit the Map tab in your browser to see the `City` model.

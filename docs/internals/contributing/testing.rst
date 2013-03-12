@@ -62,8 +62,10 @@ together or specific ones::
 The available environments are:
 
  * ``py26-1.4.X`` - Test using Python 2.6 and Django 1.4.X
+ * ``py26-1.5.X`` - Test using Python 2.6 and Django 1.5.X
  * ``py26-trunk`` - Test using Python 2.6 and Django master
  * ``py27-1.4.X`` - Test using Python 2.7 and Django 1.4.x
+ * ``py27-1.5.X`` - Test using Python 2.7 and Django 1.5.x
  * ``py27-trunk`` - Test using Python 2.7 and Django master
  * ``docs`` - Test building docs
 

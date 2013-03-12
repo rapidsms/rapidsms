@@ -1,17 +1,25 @@
 language: python
 python:
-  - "2.6"
   - "2.7"
 env:
-  - DJANGO_VERSION=1.4.5
+  - TOXENV=py26-1.4.X
+  - TOXENV=py27-1.4.X
+  - TOXENV=py26-1.5.X
+  - TOXENV=py27-1.5.X
+  - TOXENV=py26-trunk
+  - TOXENV=py27-trunk
+  - TOXENV=docs
 install:
-  - pip install -q --use-mirrors Django==$DJANGO_VERSION
-  - pip install -q . --use-mirrors
-  - pip install -q -r tests/requirements/dev.txt
-script: python run_tests.py --settings=tests.coverage
+  - pip install -q --use-mirrors tox==1.4.2 pep8==1.3.3
+script:
+  - tox
 after_script:
-    - pep8 --exclude=scheduler,locations,ajax --filename=tests.py,urls.py --ignore=E128 ./rapidsms/
-    - pep8 --exclude=scheduler,locations,ajax,urls.py,urls,tests.py ./rapidsms/
+  - pep8 --exclude=scheduler,locations,ajax --filename=tests.py,urls.py --ignore=E128 ./rapidsms/
+  - pep8 --exclude=scheduler,locations,ajax,urls.py,urls,tests.py ./rapidsms/
+matrix:
+  allow_failures:
+    - env: TOXENV=py26-trunk
+    - env: TOXENV=py27-trunk
 notifications:
   irc:
     - "irc.freenode.org#rapidsms"
