@@ -4,8 +4,8 @@
 #send-message-form .group {margin-bottom:10px;min-width:300px;max-width:767px;}
 #send-message-form .count {font-style:italic;}
 #send-message-form .ui-widget {font-family:inherit;font-size:inherit;}
-#send-message-form #contact-field {width:300px;}
-#send-message-form #contact-field input {width:286px;margin-bottom:0px;}
+#send-message-form #recipient-field {width:500px;}
+#send-message-form #recipient-field input {width:486px;margin-bottom:0px;}
 #send-message-form #message-field textarea {margin-bottom:0px;display:block;width:100%;min-height:75px;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box}
-#send-message-form #contacts {display:inline-block;}
-#send-message-form #contacts .label {margin:5px;padding:4px;}
+#send-message-form #recipients {display:inline-block;}
+#send-message-form #recipients .label {margin:5px;padding:4px;}

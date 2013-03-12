@@ -16,12 +16,16 @@ def messaging(request):
 
 @require_POST
 def send(request):
-    form = MessageForm(request.POST)
-    if form.is_valid():
-        try:
-            text, recipients = form.send()
-        except:
-            return HttpResponse("Unable to send messages.", status=500)
-        names = ', '.join(str(r) for r in recipients)
-        return HttpResponse("'%s' sent to %s" % (text, names))
-    return HttpResponseBadRequest(unicode(form.errors))
+    try:
+        form = MessageForm(request.POST)
+        if form.is_valid():
+            messages = form.send()
+            if len(messages) == 1:
+                return HttpResponse('Your message was sent to 1 recipient.')
+            else:
+                return HttpResponse('Your message was sent to {0} '
+                        'recipients.'.format(len(messages)))
+        else:
+            return HttpResponseBadRequest(unicode(form.errors))
+    except:
+        return HttpResponse("Unable to send message.", status=500)

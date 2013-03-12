@@ -1,26 +1,23 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-from rapidsms.models import Contact
+from rapidsms.models import Connection
 
 from selectable.base import ModelLookup
 from selectable.registry import registry
 
 
-class ContactLookup(ModelLookup):
-    """Contacts with a Connection."""
-    model = Contact
-    filters = {
-        'connection__isnull': False,
-    }
-    search_fields = ('name__icontains',)
+class ConnectionLookup(ModelLookup):
+    model = Connection
+    search_fields = ('identity__icontains', 'contact__name__icontains')
 
     def get_item_value(self, item):
         return self.get_item_label(item)
 
     def get_item_label(self, item):
-        if not item.name:
-            return item.default_connection.identity
-        return '{0} ({1})'.format(item.name, item.default_connection.identity)
+        conn_name = '{0} - {1}'.format(item.backend.name, item.identity)
+        if not item.contact or not item.contact.name:
+            return conn_name
+        return '{0} ({1})'.format(item.contact.name, conn_name)
 
-registry.register(ContactLookup)
+registry.register(ConnectionLookup)

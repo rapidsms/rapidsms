@@ -24,17 +24,17 @@
         });
     </script>
 
-    <!-- Scripts related to the contacts multi-selector. -->
+    <!-- Scripts related to the recipients multi-selector. -->
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.0/jquery-ui.min.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}selectable/js/jquery.dj.selectable.js"></script>
     <script type="text/javascript">
         // Override some of django-selectable's defaults to use Bootstrap,
-        // custom styles, and keep a count of the number of contacts.
+        // custom styles, and keep a count of the number of recipients.
         $.ui.djselectable.prototype._initDeck = function() {
             // Use a custom div to hold selected items, and
             // append it after the fieldset.
             var self = this;
-            self.deck = $("<div>").attr("id", "contacts").addClass("group");
+            self.deck = $("<div>").attr("id", "recipients").addClass("group");
             $(self.element).parent().after(this.deck);
             $(self.hiddenMultipleSelector).each(function (i, input) {
                 self._addDeckItem(input);
@@ -42,19 +42,19 @@
         };
         $.ui.djselectable.prototype._addDeckItem = function(input) {
             // Put all data inside of a Bootstrap label, and update
-            // the contact counter upon addition and removal.
+            // the recipient counter upon addition and removal.
             var self = this,
                 span = $("<span>").addClass("label").html(" " + $(input).attr("title")),
                 item = {element: self.element, input: input, wrapper: span, deck: self.deck};
             if (self._trigger("add", null, item) === false) {
                 input.remove();
             } else {
-                function update_contact_count() {
+                function update_recipient_count() {
                     var count = self.deck.children().length;
                     if (count === 1) {
-                        $("#contactcount").text("1 contact selected");
+                        $("#recipientcount").text("1 recipient selected");
                     } else {
-                        $("#contactcount").text(count + " contacts selected");
+                        $("#recipientcount").text(count + " recipients selected");
                     }
                 }
                 var button = self._removeButtonTemplate(item).click(function(event) {
@@ -62,11 +62,11 @@
                     if (self._trigger("remove", event, item) !== false) {
                         $(input).remove();
                         span.remove();
-                        update_contact_count();
+                        update_recipient_count();
                     }
                 });
                 span.append(span.prepend(button)).appendTo(self.deck);
-                update_contact_count();
+                update_recipient_count();
             }
         };
         $.ui.djselectable.prototype._removeButtonTemplate = function(item) {
@@ -89,13 +89,13 @@
         }
 
         $(function() {
-            // Activate the "remove all contacts" link.
-            $("#reset-contacts").click(function(event) {
+            // Activate the "remove all recipients" link.
+            $("#reset-recipients").click(function(event) {
                 event.preventDefault();
-                $.each($("#contacts").children(), function(i, contact) {
+                $.each($("#recipients").children(), function(i, recipient) {
                     // Trigger the update code in selectable that removes the
                     // visible div, removes the input element, and updates the total count.
-                    $(contact).find("a").click();
+                    $(recipient).find("a").click();
                 });
             });
 
@@ -113,7 +113,7 @@
                     addNotification("error", "You have to write a message.");
                     valid = false;
                 }
-                if ($("#contacts").children().length === 0) {
+                if ($("#recipients").children().length === 0) {
                     addNotification("error", "Please select at least one recipient.");
                     valid = false;
                 }
@@ -143,14 +143,13 @@
         <div id="notifications">{# Container for form errors and messages. #}</div>
         <form id="send-message-form">
             {% csrf_token %}
-            <fieldset id="contact-field" class="group">
-                {{ form.recipients }}
+            <fieldset id="recipient-field" class="group">
+                {{ form.connections }}
                 <div class="pull-right">
-                    <span id="contactcount" class="count">0 contacts selected</span>
-                    <span> &middot; <a href="" id="reset-contacts">remove all</a></span>
+                    <span id="recipientcount" class="count">0 recipients selected</span>
+                    <span> &middot; <a href="" id="reset-recipients">remove all</a></span>
                 </div>
             </fieldset>
-            {# The selected contacts will be put here using Javascript. #}
             <fieldset id="message-field" class="group">
                 {{ form.message }}
                 <div class="count pull-right">
