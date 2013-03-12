@@ -11,11 +11,11 @@
 		width: 1%;
 	}
 
-
 div.map {
 	border: 1px solid #000;
-	border-top: none;
 }
+
+    .map img{max-width: inherit;}
 
 	div.map div.label {
 		font-weight: bold;
@@ -24,7 +24,7 @@ div.map {
 		white-space: nowrap;
 	}
 
-	div.map div.container {
+	div.map div.map-container {
 		background: #f8f8ff;
 		height: 50em;
 	}

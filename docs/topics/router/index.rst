@@ -171,12 +171,15 @@ message.
 
 .. _custom-router:
 
-Custom Routers
---------------
+Using a custom router
+---------------------
 
 While RapidSMS includes support for a number of routers out-of-the-box,
-sometimes you might have need for a customized router. If you're building your
-own router, you can use the standard routers as reference implementations.
+sometimes you might want to use a customized router. To use an external router
+with RapidSMS, use the Python import path to the router class for the
+:setting:`RAPIDSMS_ROUTER` setting, like so::
 
-Please see :doc:`Community Routers <community>` for a directory of
-community-maintained routers that might be useful in your project.
+    RAPIDSMS_ROUTER = 'path.to.router'
+
+If you're building your own router, you can use the standard routers
+as reference implementations.

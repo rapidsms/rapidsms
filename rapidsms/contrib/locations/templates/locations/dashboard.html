@@ -17,7 +17,7 @@
 {% endblock %}
 
 {% block left %}{% if no_location_types %}
-<div class="module tables">
+<div>
 	<table>
 		<tbody>
 		<tr class="no-data error">
@@ -30,7 +30,7 @@
 		</tbody>
 	</table>
 </div>{% else %}{% for type in location_types %}
-<div class="module tables{% if type.is_empty %} collapsed{% endif %}">
+<div>
 	<h2>{{ type.plural|title }}</h2>
 	<table class="locations">
 		{% table_cols type.table %}
@@ -38,7 +38,7 @@
 
 		<tbody>{% for location in type.table.rows %}
 			<tr>
-				<th scope="row"><a href="{% url locations location.uid %}">{{ location }}</a></th>
+				<th scope="row"><a href="{% url 'locations' location.uid %}">{{ location }}</a></th>
 			</tr>{% empty %}
 			<tr class="no-data">
 				<td colspan="{{ num_columns }}">
@@ -54,11 +54,11 @@
 </div>{% endfor %}{% endif %}
 {% endblock %}
 
-{% block middle %}
-<div class="module">
+{% block right %}
+<div>
 	<h2>Map</h2>
 	<div class="map" lat="{{ default_latitude }}" lng="{{ default_longitude }}">
-		<div class="container"></div>
+		<div class="map-container"></div>
 
 		<ul class="labels">{% for type in location_types %}{% for location in type.locations %}
 			<li class="{{ location.css_class }}" direction="{{ location.direction }}" lat="{{ location.point.latitude }}" lng="{{ location.point.longitude }}">
@@ -66,14 +66,10 @@
 			</li>{% endfor %}{% endfor %}
 		</ul>
 	</div>
-	<div class="toolbar">
-		<a class="maximize">Maximize</a>
-	</div>
 </div>
-{% endblock %}
 
-{% block right %}{% for type in location_types %}
-<div class="module forms collapsed">
+{% for type in location_types %}
+<div>
 	<h2>Add a {{ type.singular|title }}</h2>
 	<form action="" method="post">
 		{% render_form type.form %}
