@@ -1,19 +1,25 @@
 <div class="pagination" id="{{ dom_id }}">
   <ul>
-    <li class="{% if not prev_page_link %}disabled{% endif %}">
-        <a href="{{ prev_page_link }}" class="prev">Prev</a>
-    </li>
+    {% if prev_page_link %}
+        <li><a href="{{ prev_page_link }}" class="prev">Prev</a></li>
+    {% else %}
+        <li class="disabled"><span class="prev">Prev</span></li>
+    {% endif %}
     {% for page in page_links %}
         {% if page %}
-            <li {% if page.active %}class="active"{% endif %}>
-                <a href="{{ page.link }}">{{ page.number }}</a>
-            </li>
+            {% if page.active %}
+                <li class="active"><span>{{ page.number }}</span></li>
+                {% else %}
+                <li><a href="{{ page.link }}">{{ page.number }}</a></li>
+            {% endif %}
         {% else %}
-            <li class="disabled"><a href="">...</a></li>
+            <li class="disabled"><span>...</span></li>
         {% endif %}
     {% endfor %}
-    <li class="{% if not next_page_link %}disabled{% endif %}">
-        <a href="{{ next_page_link }}" class="next">Next</a>
-    </li>
+    {% if next_page_link %}
+        <li><a href="{{ next_page_link }}" class="next">Next</a></li>
+    {% else %}
+        <li><span class="next">Next</span></li>
+    {% endif %}
   </ul>
 </div>
