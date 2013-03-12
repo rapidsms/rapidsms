@@ -6,12 +6,14 @@ from django.db import models
 from rapidsms.models import Contact, Connection
 
 
-DIRECTION_CHOICES = (
-    ("I", "Incoming"),
-    ("O", "Outgoing"))
-
-
 class Message(models.Model):
+    INCOMING = "I"
+    OUTGOING = "O"
+    DIRECTION_CHOICES = (
+        (INCOMING, "Incoming"),
+        (OUTGOING, "Outgoing"),
+    )
+
     contact = models.ForeignKey(Contact, null=True)
     connection = models.ForeignKey(Connection, null=True)
     direction = models.CharField(max_length=1, choices=DIRECTION_CHOICES)
@@ -52,5 +54,5 @@ class Message(models.Model):
         else:
             str = "%s..." % (self.text[0:57])
 
-        to_from = (self.direction == "I") and "to" or "from"
+        to_from = "to" if self.direction == self.INCOMING else "from"
         return "%s (%s %s)" % (str, to_from, self.who)
