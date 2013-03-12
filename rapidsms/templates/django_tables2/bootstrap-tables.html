@@ -1,5 +1,6 @@
 {% spaceless %}
 {% load django_tables2 %}
+{% load paginator_tags %}
 {% if table.page %}
 <div class="table-container">
 {% endif %}
@@ -19,13 +20,11 @@
     </thead>
     <tbody>
         {% for row in table.page.object_list|default:table.rows %} {# support pagination #}
-            {% block table.tbody.row %}
-                <tr class="{% cycle "odd" "even" %}">
-                    {% for cell in row %}
-                        <td>{{ cell }}</td>
-                    {% endfor %}
-                </tr>
-            {% endblock table.tbody.row %}
+        <tr class="{% cycle "odd" "even" %}">
+            {% for cell in row %}
+                <td>{{ cell }}</td>
+            {% endfor %}
+        </tr>
         {% empty %}
         {% if table.empty_text %}
         <tr><td colspan="{{ table.columns|length }}">{{ table.empty_text }}</td></tr>
@@ -35,22 +34,8 @@
 </table>
 {% if table.page %}
 <div class="pagination">
-    <ul>
-        <li class="prev {% if not table.page.has_previous %}disabled{% endif %}">
-            <a href="{% if table.page.has_previous %}{% querystring table.prefixed_page_field=table.page.previous_page_number %}{% endif %}">Previous</a>
-        </li>
+    {% paginator table.page table.prefix %}
 
-        {% for page in table.paginator.page_range %}
-
-            <li{% if page == table.page.number %} class="active"{% endif %}>
-                <a href="{% querystring table.prefixed_page_field=page %}">{{ page }}</a>
-            </li>
-        {% endfor %}
-
-        <li class="next {% if not table.page.has_next %}disabled{% endif %}">
-            <a href="{% if table.page.has_next %}{% querystring table.prefixed_page_field=table.page.next_page_number %}{% endif %}">Next</a>
-        </li>
-    </ul>
 </div>
 </div>
 {% endif %}

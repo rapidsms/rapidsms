@@ -14,56 +14,46 @@ register = template.Library()
 from rapidsms.conf import settings
 
 
-@register.inclusion_tag("rapidsms/templatetags/paginator.html")
-def paginator(objects):
+@register.inclusion_tag("rapidsms/templatetags/paginator.html", takes_context=True)
+def paginator(context, page, prefix=""):
 
-    prefix = getattr(objects, "prefix", "")
     dom_id = prefix + "paginator"
     page_param = prefix + "page"
+    request = context["request"]
 
     def _link(page_number):
-        return _self_link(objects.request, **{page_param: page_number})
+        return _self_link(request, **{page_param: page_number})
 
     def _page(number):
         return {
             "number": number,
             "link": _link(number),
-            "active": (objects.number == number)}
+            "active": (page.number == number)}
 
-    # TODO: gah, extract this junk a private method
-    max_page_links = settings.PAGINATOR_MAX_PAGE_LINKS
-    last_page_number = objects.paginator.num_pages + 1
-    last_low_number = int(math.floor(max_page_links / 2))
-    first_high_number = last_page_number - int(math.ceil(max_page_links / 2))
+    #border_links represent the first N pages and last N pages in the paginator
+    border_links = settings.PAGINATOR_BORDER_LINKS
+    #adjacent_links represents the N pages around the current page
+    adjacent_links = settings.PAGINATOR_ADJACENT_LINKS
+    last_page_number = page.paginator.num_pages + 1
+    page_links = []
 
-    page_links = [
-        _page(number)
-        for number in range(1, last_page_number)
-        if number <= last_low_number
-           or number == objects.number
-           or number >= first_high_number
-        ]
-
-    # if any pages were hidden, inject None, to be rendered as ellipsis
-    if max_page_links < last_page_number:
-        if last_low_number < objects.number < first_high_number:
-            # The active page was in the ellipsis'ed range, things get harder
-            if 2 == first_high_number - last_low_number:
-                # If that was the only page we'd otherwise have ellipsis'ed,
-                # we just don't need any ellipses
-                pass
-            else:
-                # We might need ellipses before and/or after the active page
-                if first_high_number - objects.number > 1:
-                    # We need ellipsis after the active page, which is currently
-                    # at index last_low_number + 1
-                    page_links.insert(last_low_number + 1, None)
-                if objects.number - last_low_number > 1:
-                    # We need ellipsis before the active page, which is still
-                    # at index last_low_number + 1
-                    page_links.insert(last_low_number, None)
-        else:
-            page_links.insert(last_low_number, None)
+    #first set of border links
+    pages = {p for p in range(1, border_links + 1)}
+    #last border links
+    for p in range(last_page_number - border_links, last_page_number):
+        pages.add(p)
+    #make sure that the adjacent links do not go outside of the page range
+    first_adjacent = max(1, page.number - adjacent_links)
+    last_adjacent = min(page.number + adjacent_links+1, last_page_number)
+    for p in range(first_adjacent, last_adjacent):
+        pages.add(p)
+    last_page = None
+    for p in sorted(pages):
+        #if there is a gap in the list, add a None which will generate an elipsis
+        if last_page and last_page != p - 1:
+            page_links.append(None)
+        last_page = p
+        page_links.append(_page(p))
 
     subcontext = {
         "dom_id":     dom_id,
@@ -71,22 +61,22 @@ def paginator(objects):
 
     # if we're viewing the first page, the  << first and < prev links
     # are replaced with spans.
-    if objects.number > 1:
+    if page.number > 1:
         subcontext.update({
             "first_page_link": _link(1),
-            "prev_page_link":  _link(objects.previous_page_number())})
+            "prev_page_link":  _link(page.previous_page_number())})
 
     # likewise for the last page.
-    if objects.number < objects.paginator.num_pages:
+    if page.number < page.paginator.num_pages:
         subcontext.update({
-            "next_page_link":  _link(objects.next_page_number()),
-            "last_page_link":  _link(objects.paginator.num_pages)})
+            "next_page_link":  _link(page.next_page_number()),
+            "last_page_link":  _link(page.paginator.num_pages)})
 
     return subcontext
 
 
-def _self_link(req, **kwargs):
-    new_kwargs = req.GET.copy()
+def _self_link(request, **kwargs):
+    new_kwargs = request.GET.copy()
 
     # build a new querydict using the GET params from the current
     # request, with those passed to this function overridden. we can't
@@ -95,4 +85,4 @@ def _self_link(req, **kwargs):
         new_kwargs[k] = v
 
     kwargs_enc = new_kwargs.urlencode()
-    return "%s?%s" % (req.path, kwargs_enc)
+    return "%s?%s" % (request.path, kwargs_enc)
