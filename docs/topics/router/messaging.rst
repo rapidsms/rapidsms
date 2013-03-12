@@ -59,7 +59,7 @@ Here's an example using ``send``::
     from rapidsms.router import send
     send("hello", connections)
 
-This sends ``echo hello`` to each identity and backend associated with the
+This sends ``hello`` to each identity and backend associated with the
 ``connections`` object.  You can find more examples of ``send`` in the official
 RapidSMS `backends <https://github.com/rapidsms/rapidsms/tree/master/rapidsms/backends>`_.
 
