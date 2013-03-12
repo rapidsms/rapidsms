@@ -87,16 +87,23 @@
         function clearNotifications() {
             $("#notifications").children().alert("close");
         }
+        function clearRecipients() {
+            $.each($("#recipients").children(), function(i, recipient) {
+                // Trigger the update code in selectable that removes the
+                // visible div, removes the input element, and updates the total count.
+                $(recipient).find("a").click();
+            });
+        }
+        function clearMessage() {
+            $("#message-field textarea").val("");
+            $("#counter").text("140");
+        }
 
         $(function() {
             // Activate the "remove all recipients" link.
             $("#reset-recipients").click(function(event) {
                 event.preventDefault();
-                $.each($("#recipients").children(), function(i, recipient) {
-                    // Trigger the update code in selectable that removes the
-                    // visible div, removes the input element, and updates the total count.
-                    $(recipient).find("a").click();
-                });
+                clearRecipients();
             });
 
             // It's too easy for the user to hit "Enter" before they intend to send the message.
@@ -126,6 +133,8 @@
                     data: $("#send-message-form").serialize(),
                     success: function(data, status, xhr) {
                         addNotification("success", data);
+                        clearRecipients();
+                        clearMessage();
                     },
                     error: function(xhr, status, errorThrown) {
                         addNotification("error", "A problem occurred while trying to send your message. " +
