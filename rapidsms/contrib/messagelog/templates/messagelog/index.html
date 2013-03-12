@@ -1,12 +1,11 @@
 {% extends "base.html" %}
-
 {% load django_tables2 %}
 
 {% block title %}Message Log - {{ block.super }}{% endblock %}
 
 {% block stylesheets %}
-{{ block.super }}
-<link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}messagelog/stylesheets/messagelog.css" />
+    {{ block.super }}
+    <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}messagelog/stylesheets/messagelog.css" />
 {% endblock %}
 
 {% block content %}

@@ -1,16 +1,10 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-
-import datetime
+from django.utils import timezone
 from rapidsms.apps.base import AppBase
 from .models import Message
 
-
-try:
-    from django.utils.timezone import now as datetime_now
-except ImportError:
-    datetime_now = datetime.datetime.now
 
 
 class App(AppBase):
@@ -26,7 +20,7 @@ class App(AppBase):
 
     def _log(self, direction, who, text):
         return Message.objects.create(
-            date=datetime_now(),
+            date=timezone.now(),
             direction=direction,
             text=text,
             **who)
