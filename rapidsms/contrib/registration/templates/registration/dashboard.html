@@ -3,10 +3,22 @@
 {% load forms_tags %}
 {% load django_tables2 %}
 
-{% block extra_stylesheets %}
+{% block stylesheets %}
+{{ block.super }}
 <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}registration/stylesheets/dashboard.css" />
 {% endblock %}
 
-{% block page %}
-    {% render_table contacts_table %}
+
+{% block content %}
+    {{ block.super }}
+
+<div class="row-fluid">
+    <div class="span3 well">
+        {% include "registration/_sub_nav_bar.html" %}
+    </div>
+    <div class="span8">
+        {% render_table contacts_table %}
+    </div>
+</div>
+
 {% endblock %}

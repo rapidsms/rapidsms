@@ -2,8 +2,15 @@
 {% load url from future %}
 {% load forms_tags %}
 
-{% block page %}
-    {% if csv_errors %}
+{% block content %}
+    {{ block.super }}
+
+    <div class="row-fluid">
+    <div class="span3 well">
+        {% include "registration/_sub_nav_bar.html" %}
+    </div>
+    <div class="span8">
+        {% if csv_errors %}
         <p style="color: red; font-weight: strong;">CSV Error: {{ csv_errors }}</p>
     {% endif %}
     <form action="" method="post" enctype="multipart/form-data">
