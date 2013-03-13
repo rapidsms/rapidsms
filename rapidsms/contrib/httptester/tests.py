@@ -8,6 +8,7 @@ from rapidsms.contrib.httptester.backend import HttpTesterCacheBackend
 from rapidsms.contrib.httptester.forms import MessageForm
 
 from rapidsms.tests.harness import RapidTest
+from .models import HttpTesterMessage
 from .storage import store_and_queue, store_message, get_messages, \
     clear_messages, clear_all_messages
 
@@ -77,7 +78,7 @@ class ViewTest(RapidTest):
         self.assertEqual(200, rsp.status_code)
         msg = get_messages()[0]
         self.assertEqual(phone2, msg.identity)
-        self.assertEqual('in', msg.direction)
+        self.assertEqual(HttpTesterMessage.INCOMING, msg.direction)
         self.assertEqual(message, msg.text)
 
     def test_bulk(self):
@@ -154,5 +155,5 @@ class BackendTest(RapidTest):
         msg = self.create_outgoing_message()
         back.send(msg)
         self.assertTrue(store_message.called)
-        self.assertEqual(('out', msg.connection.identity, msg.text),
-                         store_message.call_args[0])
+        self.assertEqual((HttpTesterMessage.OUTGOING, msg.connection.identity,
+                         msg.text), store_message.call_args[0])
