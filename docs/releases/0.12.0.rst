@@ -179,6 +179,13 @@ The constant ``rapidsms.contrib.messagelog.models.DIRECTION_CHOICES`` has been
 moved to the ``rapidsms.contrib.messagelog.models.Message`` model. You may
 also refer to ``Message.INCOMING`` and ``Message.OUTGOING`` directly.
 
+
+Test Coverage Report
+====================
+
+With the addition of 26 tests, RapidSMS now has 136 automated unit tests with 82% (up from 72%) coverage.
+
+
 .. _Twitter Bootstrap: http://twitter.github.com/bootstrap/
 .. _override_settings: https://docs.djangoproject.com/en/1.4/topics/testing/#django.test.utils.override_settings
 .. _bulk_create: https://docs.djangoproject.com/en/1.4/ref/models/querysets/#bulk-create
