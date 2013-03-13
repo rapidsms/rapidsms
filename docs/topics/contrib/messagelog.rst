@@ -63,4 +63,7 @@ creates a `Message` object and sets the `logger_msg` property of the
 
 Upon :ref:`processing an OutgoingMessage <phase-outgoing>`, `messagelog`
 creates a `Message` object and sets the `logger_msg` property of the
-`OutgoingMessage` to be the `Message object`.
+`OutgoingMessage` to be the `Message` object.
+
+You can navigate to the `message_log` view to browse the full list of stored
+messages.

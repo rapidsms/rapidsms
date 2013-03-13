@@ -30,7 +30,7 @@ class MessageLogAppTestBase(object):
         self.assertEqual(msg_obj.text, msg.text)
 
     def test_message(self):
-        """Incoming message should be logged & annotated."""
+        """Message should be logged & annotated."""
         msg = self.MessageType(self.connection, 'hello')
         self._send(msg)
         self.assertEqual(Message.objects.count(), 1)

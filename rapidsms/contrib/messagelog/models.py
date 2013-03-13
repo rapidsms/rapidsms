@@ -49,10 +49,6 @@ class Message(models.Model):
 
     def __unicode__(self):
         # crop the text (to avoid exploding the admin)
-        if len(self.text) < 60:
-            str = self.text
-        else:
-            str = "%s..." % (self.text[0:57])
-
-        to_from = "to" if self.direction == self.INCOMING else "from"
-        return "%s (%s %s)" % (str, to_from, self.who)
+        text = self.text if len(self.text) < 60 else "%s..." % self.text[0:57]
+        direction = "to" if self.direction == self.INCOMING else "from"
+        return "%s (%s %s)" % (text, direction, self.who)
