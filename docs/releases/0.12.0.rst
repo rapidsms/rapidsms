@@ -182,6 +182,14 @@ Region tags removed
 
 These were in the base template.
 
+Moved Message direction constants to model
+------------------------------------------
+
+The ``DIRECTION_CHOICES`` constant for the `Message` model (in
+`rapidsms.contrib.messagelog`) has been moved to the model itself. You should
+update any references to ``rapidsms.contrib.messagelog.models.DIRECTION_CHOICES``
+to ``Message.DIRECTION_CHOICES``. You may also refer to ``Message.INCOMING``
+and ``Message.OUTGOING`` directly.
 
 .. _Twitter Bootstrap: http://twitter.github.com/bootstrap/
 .. _override_settings: https://docs.djangoproject.com/en/1.4/topics/testing/#django.test.utils.override_settings
