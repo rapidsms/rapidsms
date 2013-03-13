@@ -65,7 +65,8 @@ Release: v\ |release|. (:doc:`Installation <intro/install/index>`, :doc:`Release
 * messagelog
 * :doc:`messaging <topics/contrib/messaging>` - Provides a web interface
   through which you can send messages to Contacts.
-* registration
+* :doc:`registration <topics/contrib/registration>` - Provides a web interface
+  for creating, updating, and deleting RapidSMS contacts.
 
 **The RapidSMS open-source project**
 
