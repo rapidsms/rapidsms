@@ -45,7 +45,7 @@ Release: v\ |release|. (:doc:`Installation <intro/install/index>`, :doc:`Release
 * :doc:`Settings <ref/settings>`
 * :doc:`Internationalization <topics/i18n>`
 * :doc:`Extending core RapidSMS models <topics/extensible-models>`
-* :doc:`Front end <topics/frontend>`
+* :doc:`Front end <topics/frontend>` - Creating a web interface for your app
 * :doc:`Testing <topics/testing>`
 * :doc:`Scheduling Tasks with Celery <topics/celery>`
 * :doc:`Deployment <topics/deployment>`

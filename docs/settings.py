@@ -27,3 +27,5 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'rapidsms', # This is where you put your app
 )
+
+SECRET_KEY = 'dummy for sphinx builds'

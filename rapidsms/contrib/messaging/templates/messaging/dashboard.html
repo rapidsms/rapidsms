@@ -3,9 +3,7 @@
 
 {% block title %}RapidSMS &middot; Send a Text Message{% endblock title %}
 
-{% block stylesheets %}
-    {{ block.super }}
-
+{% block extra_stylesheets %}
     {# Required by selectable. #}
     <link type="text/css" rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.0/themes/smoothness/jquery-ui.css" />
     <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}selectable/css/dj.selectable.css" />
@@ -13,8 +11,7 @@
     <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}messaging/stylesheets/messaging.css" />
 {% endblock %}
 
-{% block javascripts %}
-    {{ block.super }}
+{% block extra_javascript %}
 
     <!-- Maintain an accurate char count of the message, taking unicode into account. -->
     <script type="text/javascript" src="{{ STATIC_URL }}messaging/javascripts/jquery.simplyCountable.js"></script>
