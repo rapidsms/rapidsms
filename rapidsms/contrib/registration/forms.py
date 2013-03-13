@@ -5,10 +5,11 @@ from django import forms
 from rapidsms.models import Contact, Connection
 
 
-class RequiredFormSet(forms.models.BaseInlineFormSet):
+class ConnectionFormSetBase(forms.models.BaseInlineFormSet):
     def __init__(self, *args, **kwargs):
-        super(RequiredFormSet, self).__init__(*args, **kwargs)
+        super(ConnectionFormSetBase, self).__init__(*args, **kwargs)
         self.forms[0].empty_permitted = False
+        del self.forms[0].fields['DELETE']
 
 
 ContactForm = forms.models.modelform_factory(Contact, exclude=("connections", ))
@@ -18,7 +19,7 @@ ConnectionFormSet = forms.models.inlineformset_factory(
     Connection,
     extra=1,
     max_num=10,
-    formset=RequiredFormSet,
+    formset=ConnectionFormSetBase,
 )
 
 # the built-in FileField doesn't specify the 'size' attribute, so the
