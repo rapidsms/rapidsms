@@ -15,9 +15,12 @@
         </ul>
     </div>
     <div class="span8">
-        <form action="" method="post">
-            {{ contact_form }}
-            {{ connection_formset }}
+        <form class="form-horizontal" action="" method="post">
+            {% render_form contact_form %}
+            {% render_form connection_formset.management_form %}
+            {% for form in connection_formset %}
+                {% render_form form %}
+            {% endfor %}
             {% csrf_token %}
             <div class="submit">
                 <input type="submit" name="submit" value="Save Contact" />
