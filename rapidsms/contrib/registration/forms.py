@@ -16,6 +16,7 @@ ConnectionFormSet = forms.models.inlineformset_factory(
     extra=1,
     max_num=10)
 
+
 # the built-in FileField doesn't specify the 'size' attribute, so the
 # widget is rendered at its default width -- which is too wide for our
 # form. this is a little hack to shrink the field.
