@@ -1,3 +1,4 @@
+from StringIO import StringIO
 from django.http import Http404, HttpResponseRedirect
 from django.test import TestCase
 from mock import Mock, patch
@@ -58,6 +59,12 @@ class TestViews(TestCase, CreateDataMixin):
         table = context["contacts_table"]
         data = table.data.queryset
         self.assertEqual(len(self.contacts), len(list(table.data.queryset)))
+
+    def test_registration_render(self):
+        # render actually works (django_tables2 and all)
+        request = Mock(GET=Mock(get=Mock(return_value=1)))
+        retval = views.registration(request)
+        self.assertEqual(200, retval.status_code)
 
     def test_contact_existing_404(self):
         # Trying to edit a non-existing contact raises a 404
@@ -299,3 +306,55 @@ class TestViews(TestCase, CreateDataMixin):
         self.assertEqual(2, Connection.objects.filter(contact=contact).count())
         connection = Connection.objects.get(identity='identity', contact=contact)
         self.assertEqual(connections[0].backend, connection.backend)
+
+
+class TestBulkAdd(TestCase, CreateDataMixin):
+    def test_bulk_get(self):
+        # Just make sure the page loads
+        with patch('rapidsms.contrib.registration.views.render') as render:
+            request = Mock(method="GET")
+            retval = views.contact_bulk_add(request)
+        render.assert_called()
+
+    def test_bulk_add(self):
+        # We can upload a CSV file to create contacts & connections
+        backend1 = self.create_backend()
+        backend2 = self.create_backend()
+        data = [
+            ('Name 1', backend1.name, '11111'),
+            ('Name 2', backend2.name, '22222'),
+            ('Name 3', backend1.name, '33333'),
+            ('Name 4', backend2.name, '44444'),
+        ]
+        # Create test file
+        testfile = "\n".join([",".join(parts) for parts in data]) + "\n"
+        with patch('rapidsms.contrib.registration.views.render') as render:
+            request = Mock(method="POST", FILES={'bulk': StringIO(testfile)})
+            retval = views.contact_bulk_add(request)
+        if not isinstance(retval, HttpResponseRedirect):
+            context = render.call_args[0][2]
+            self.fail(context['bulk_form'].errors + context['csv_errors'])
+        self.assertTrue(isinstance(retval, HttpResponseRedirect))
+        self.assertEqual(302, retval.status_code)
+        contacts = Contact.objects.all()
+        self.assertEqual(4, contacts.count())
+
+    def test_bulk_add_bad_line(self):
+        testfile = "Field 1, field 2\n"
+        with patch('rapidsms.contrib.registration.views.render') as render:
+            request = Mock(method="POST", FILES={'bulk': StringIO(testfile)})
+            retval = views.contact_bulk_add(request)
+        self.assertFalse(isinstance(retval, HttpResponseRedirect))
+        context = render.call_args[0][2]
+        self.assertIn('csv_errors', context)
+        self.assertEqual('Could not unpack line 1', context['csv_errors'])
+
+    def test_bulk_add_bad_backend(self):
+        testfile = "Field 1, no_such_backend, 123\n"
+        with patch('rapidsms.contrib.registration.views.render') as render:
+            request = Mock(method="POST", FILES={'bulk': StringIO(testfile)})
+            retval = views.contact_bulk_add(request)
+        self.assertFalse(isinstance(retval, HttpResponseRedirect))
+        context = render.call_args[0][2]
+        self.assertIn('csv_errors', context)
+        self.assertEqual("Could not find Backend.  Line: 1", context['csv_errors'])

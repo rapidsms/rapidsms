@@ -70,7 +70,6 @@ def contact_bulk_add(request):
     bulk_form = BulkRegistrationForm(request.POST)
 
     if request.method == "POST" and "bulk" in request.FILES:
-        connections, contacts = [], []
         reader = csv.reader(
             request.FILES["bulk"],
             quoting=csv.QUOTE_NONE,
@@ -84,8 +83,7 @@ def contact_bulk_add(request):
                     "bulk_form": bulk_form,
                     "csv_errors": "Could not unpack line " + str(i),
                 })
-            contact = Contact(name=name)
-            contacts.append(contact)
+            contact = Contact.objects.create(name=name)
             try:
                 backend = Backend.objects.get(name=backend_name)
             except:
@@ -93,8 +91,10 @@ def contact_bulk_add(request):
                     "bulk_form": bulk_form,
                     "csv_errors": "Could not find Backend.  Line: " + str(i),
                 })
-            connections.append(Connection(backend=backend, identity=identity,
-                                          contact=contact))
+            connection = Connection.objects.create(
+                backend=backend,
+                identity=identity,
+                contact=contact)
         return HttpResponseRedirect(reverse(registration))
     return render(request, 'registration/bulk_form.html', {
         "bulk_form": bulk_form,
