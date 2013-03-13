@@ -31,6 +31,18 @@ def contact(request, pk=None):
     contact_form = ContactForm(instance=contact)
     connection_formset = ConnectionFormSet(instance=contact)
     if request.method == 'POST':
+        data = {}
+        for key in request.POST:
+            val = request.POST[key]
+            if isinstance(val, basestring):
+                data[key] = val
+            else:
+                try:
+                    data[key] = val[0]
+                except (IndexError, TypeError):
+                    data[key] = val
+        # print repr(data)
+        del data
         if pk:
             if request.POST["submit"] == "Delete Contact":
                 contact.delete()
@@ -87,27 +99,3 @@ def contact_bulk_add(request):
     return render(request, 'registration/bulk_form.html', {
         "bulk_form": bulk_form,
     })
-
-
-def contact_edit(request, pk):
-    contact = get_object_or_404(Contact, pk=pk)
-    contact_form = ContactForm(instance=contact)
-    connection_formset = ConnectionFormSet(instance=contact)
-    if request.method == "POST":
-        if request.POST["submit"] == "Delete Contact":
-            contact.delete()
-            return HttpResponseRedirect(reverse(registration))
-        else:
-            contact_form = ContactForm(request.POST, instance=contact)
-            if contact_form.is_valid():
-                contact = contact_form.save(commit=False)
-                connection_formset = ConnectionFormSet(request.POST, instance=contact)
-                if connection_formset.is_valid():
-                    contact.save()
-                    connection_formset.save()
-                    return HttpResponseRedirect(reverse(registration))
-    return render(request, "registration/contact_form.html", {
-            "contact": contact,
-            "contact_form": contact_form,
-            'connection_formset': connection_formset,
-        })
