@@ -5,7 +5,7 @@ rapidsms.contrib.messaging
 .. module:: rapidsms.contrib.messaging
 
 The `messaging` contrib application allows you to send messages to one or more
-Contacts through a web interface.
+recipients through a web interface.
 
 .. _messaging-installation:
 
@@ -47,7 +47,7 @@ Usage
 
 The messaging front-end view displays a form through which you can write a
 text message and select its recipients. The recipient selector uses
-autocomplete to search through all RapidSMS contacts. You may select any
+autocomplete to search through all RapidSMS connections. You may select any
 number of recipients to receive the message.
 
 When sending a message, the messaging application calls :func:`rapidsms.router.api.send`

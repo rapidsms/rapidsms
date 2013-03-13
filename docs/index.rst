@@ -62,7 +62,8 @@ Release: v\ |release|. (:doc:`Installation <intro/install/index>`, :doc:`Release
   by sending fake messages to RapidSMS to see how it responds.
 * :doc:`locations <topics/contrib/locations>` - Defines the `Location` model,
   which helps you map custom locations and points in your project.
-* messagelog
+* :doc:`messagelog <topics/contrib/messagelog>` - Maintains a record of all
+  messages sent and received by RapidSMS.
 * :doc:`messaging <topics/contrib/messaging>` - Provides a web interface
   through which you can send messages to Contacts.
 * :doc:`registration <topics/contrib/registration>` - Provides a web interface
