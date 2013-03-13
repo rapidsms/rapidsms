@@ -5,16 +5,21 @@ from django import forms
 from rapidsms.models import Contact, Connection
 
 
-class ContactForm(forms.ModelForm):
-    class Meta:
-        model = Contact
-        exclude = ("connections",)
+class RequiredFormSet(forms.models.BaseInlineFormSet):
+    def __init__(self, *args, **kwargs):
+        super(RequiredFormSet, self).__init__(*args, **kwargs)
+        self.forms[0].empty_permitted = False
+
+
+ContactForm = forms.models.modelform_factory(Contact, exclude=("connections", ))
 
 ConnectionFormSet = forms.models.inlineformset_factory(
     Contact,
     Connection,
     extra=1,
-    max_num=10)
+    max_num=10,
+    formset=RequiredFormSet,
+)
 
 # the built-in FileField doesn't specify the 'size' attribute, so the
 # widget is rendered at its default width -- which is too wide for our

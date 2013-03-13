@@ -7,7 +7,7 @@ import django_tables2 as tables
 
 
 class ContactTable(tables.Table):
-    name = tables.LinkColumn('contact_edit', args=[tables.utils.A('pk')])
+    name = tables.LinkColumn('registration_contact_edit', args=[tables.utils.A('pk')])
     identities = tables.Column(empty_values=())
 
     class Meta:

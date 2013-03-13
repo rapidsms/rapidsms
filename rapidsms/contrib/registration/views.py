@@ -19,21 +19,32 @@ def registration(request):
         })
 
 
-def contact_add(request):
+def contact(request, pk=None):
+    if pk:
+        contact = get_object_or_404(Contact, pk=pk)
+    else:
+        contact = None
+    contact_form = ContactForm(instance=contact)
+    connection_formset = ConnectionFormSet(instance=contact)
     if request.method == 'POST':
-        contact_form = ContactForm(request.POST)
+        if pk:
+            if request.POST["submit"] == "Delete Contact":
+                contact.delete()
+                return HttpResponseRedirect(reverse(registration))
+            contact_form = ContactForm(request.POST, instance=contact)
+        else:
+            contact_form = ContactForm(request.POST)
         if contact_form.is_valid():
             contact = contact_form.save(commit=False)
             connection_formset = ConnectionFormSet(request.POST, instance=contact)
             if connection_formset.is_valid():
                 contact.save()
                 connection_formset.save()
-            return HttpResponseRedirect(reverse(registration))
-    contact_form = ContactForm()
-    connection_formset = ConnectionFormSet(instance=Contact())
+                return HttpResponseRedirect(reverse(registration))
     return render(request, 'registration/contact_form.html', {
-        'contact_form': contact_form,
-        'connection_formset': connection_formset,
+        "contact": contact,
+        "contact_form": contact_form,
+        "connection_formset": connection_formset,
         })
 
 
@@ -68,26 +79,3 @@ def contact_bulk_add(request):
         "bulk_form": bulk_form,
         })
 
-
-def contact_edit(request, pk):
-    contact = get_object_or_404(Contact, pk=pk)
-    contact_form = ContactForm(instance=contact)
-    connection_formset = ConnectionFormSet(instance=contact)
-    if request.method == "POST":
-        if request.POST["submit"] == "Delete Contact":
-            contact.delete()
-            return HttpResponseRedirect(reverse(registration))
-        else:
-            contact_form = ContactForm(request.POST, instance=contact)
-            if contact_form.is_valid():
-                contact = contact_form.save(commit=False)
-                connection_formset = ConnectionFormSet(request.POST, instance=contact)
-                if connection_formset.is_valid():
-                    contact.save()
-                    connection_formset.save()
-                    return HttpResponseRedirect(reverse(registration))
-    return render(request, "registration/contact_form.html", {
-            "contact": contact,
-            "contact_form": contact_form,
-            'connection_formset': connection_formset,
-        })

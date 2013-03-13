@@ -5,14 +5,9 @@
 {% block content %}
     {{ block.super }}
 
-    <div class="row-fluid">
+<div class="row-fluid">
     <div class="span3 well">
-        <ul class="nav nav-list">
-            <li class="nav-header">Actions</li>
-            <li><a href="{% url 'registration' %}">List Contacts</a></li>
-            <li class="active"><a href="{% url 'contact_add' %}">Add Contact</a></li>
-            <li><a href="{% url 'contact_bulk_add' %}">Bulk Add Contacts</a></li>
-        </ul>
+        {% include "registration/_sub_nav_bar.html" %}
     </div>
     <div class="span8">
         <form action="" method="post">
