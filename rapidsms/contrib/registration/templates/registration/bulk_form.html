@@ -10,6 +10,9 @@
         {% include "registration/_sub_nav_bar.html" %}
     </div>
     <div class="span8">
+        <div class="page_header">
+            <h1>Registration: Bulk Add</h1>
+        </div>
         {% if csv_errors %}
         <p style="color: red; font-weight: strong;">CSV Error: {{ csv_errors }}</p>
     {% endif %}

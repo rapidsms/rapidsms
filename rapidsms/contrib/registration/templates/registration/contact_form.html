@@ -10,6 +10,13 @@
         {% include "registration/_sub_nav_bar.html" %}
     </div>
     <div class="span8">
+        <div class="page_header">
+            {% if contact %}
+                <h1>Registration: Edit Contact</h1>
+            {% else %}
+                <h1>Registration: Add Contact</h1>
+            {% endif %}
+        </div>
         <form action="" method="post">
             {{ contact_form }}
             {{ connection_formset }}
