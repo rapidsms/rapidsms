@@ -44,7 +44,7 @@
             // Put all data inside of a Bootstrap label, and update
             // the recipient counter upon addition and removal.
             var self = this,
-                span = $("<span>").addClass("label").html(" " + $(input).attr("title")),
+                span = $("<span>").addClass("label label-info").html(" " + $(input).attr("title")),
                 item = {element: self.element, input: input, wrapper: span, deck: self.deck};
             if (self._trigger("add", null, item) === false) {
                 input.remove();
