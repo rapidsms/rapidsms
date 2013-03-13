@@ -339,6 +339,16 @@ class TestBulkAdd(TestCase, CreateDataMixin):
         contacts = Contact.objects.all()
         self.assertEqual(4, contacts.count())
 
+    def test_bulk_add_no_lines(self):
+        testfile = ""
+        with patch('rapidsms.contrib.registration.views.render') as render:
+            request = Mock(method="POST", FILES={'bulk': StringIO(testfile)})
+            retval = views.contact_bulk_add(request)
+        self.assertFalse(isinstance(retval, HttpResponseRedirect))
+        context = render.call_args[0][2]
+        self.assertIn('csv_errors', context)
+        self.assertEqual('No contacts found in file', context['csv_errors'])
+
     def test_bulk_add_bad_line(self):
         testfile = "Field 1, field 2\n"
         with patch('rapidsms.contrib.registration.views.render') as render:

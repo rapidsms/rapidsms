@@ -75,6 +75,7 @@ def contact_bulk_add(request):
             quoting=csv.QUOTE_NONE,
             skipinitialspace=True
         )
+        count = 0
         for i, row in enumerate(reader, start=1):
             try:
                 name, backend_name, identity = row
@@ -95,6 +96,12 @@ def contact_bulk_add(request):
                 backend=backend,
                 identity=identity,
                 contact=contact)
+            count += 1
+        if not count:
+            return render(request, 'registration/bulk_form.html', {
+                "bulk_form": bulk_form,
+                "csv_errors": "No contacts found in file",
+            })
         return HttpResponseRedirect(reverse(registration))
     return render(request, 'registration/bulk_form.html', {
         "bulk_form": bulk_form,
