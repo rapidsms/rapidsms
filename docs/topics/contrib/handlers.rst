@@ -4,22 +4,30 @@ rapidsms.contrib.handlers
 
 .. module:: rapidsms.contrib.handlers
 
-The `handler` contrib app provides three classes- `BaseHandler`,
+The `handlers` contrib application provides three classes- `BaseHandler`,
 `KeywordHandler`, and `PatternHandler`- which can be extended to help you
 create RapidSMS applications quickly.
 
-.. _handler-installation:
+.. _handlers-installation:
 
 Installation
 ============
 
 To define and use handlers for your RapidSMS project, you will need to
-add `rapidsms.contrib.handlers` to :setting:`INSTALLED_APPS` in your settings
-file. This application will load handlers according to the configuration
-parameters defined in your settings, as described in :ref:`handler discovery
-<handler-discovery>`.
+add ``"rapidsms.contrib.handlers"`` to :setting:`INSTALLED_APPS` in your
+settings file::
 
-.. _handler-usage:
+    INSTALLED_APPS = [
+        ...
+        "rapidsms.contrib.handlers",
+        ...
+    ]
+
+This application will load handlers according to the configuration
+parameters defined in your settings, as described in :ref:`handlers discovery
+<handlers-discovery>`.
+
+.. _handlers-usage:
 
 Usage
 =====
@@ -66,19 +74,6 @@ message, `help` is called instead. For example::
     > light something else
     < Send LIGHT ON or LIGHT OFF.
 
-All non-matching messages are silently ignored to allow other applications and
-handlers to catch them.
-
-
-For example implementations of `KeywordHandler`, see
-
-- `rapidsms.contrib.echo.handlers.echo.EchoHandler
-  <https://github.com/rapidsms/rapidsms/blob/master/rapidsms/contrib/echo/handlers/echo.py>`_
-- `rapidsms.contrib.registration.handlers.register.RegistrationHandler
-  <https://github.com/rapidsms/rapidsms/blob/master/rapidsms/contrib/registration/handlers/register.py>`_
-- `rapidsms.contrib.registration.handlers.language.LanguageHandler
-  <https://github.com/rapidsms/rapidsms/blob/master/rapidsms/contrib/registration/handlers/language.py>`_
-
 .. TIP::
    Technically speaking, the incoming message text is compared to a regular
    expression pattern::
@@ -88,7 +83,19 @@ For example implementations of `KeywordHandler`, see
 
    The most common use case is to look for a single exact-match keyword.
    However, one could also match multiple keywords, for example
-   `keyword = "register|reg|join"`.
+   ``keyword = "register|reg|join"``.
+
+All non-matching messages are silently ignored to allow other applications and
+handlers to catch them.
+
+For example implementations of `KeywordHandler`, see
+
+- `rapidsms.contrib.echo.handlers.echo.EchoHandler
+  <https://github.com/rapidsms/rapidsms/blob/master/rapidsms/contrib/echo/handlers/echo.py>`_
+- `rapidsms.contrib.registration.handlers.register.RegistrationHandler
+  <https://github.com/rapidsms/rapidsms/blob/master/rapidsms/contrib/registration/handlers/register.py>`_
+- `rapidsms.contrib.registration.handlers.language.LanguageHandler
+  <https://github.com/rapidsms/rapidsms/blob/master/rapidsms/contrib/registration/handlers/language.py>`_
 
 .. _pattern-handler:
 
@@ -135,7 +142,7 @@ BaseHandler
 
 All handlers, including the `KeywordHandler` and `PatternHandler`, are derived
 from the `BaseHandler` class. When extending from `BaseHandler`, one must
-always override the class method `dispatch`, which should return `True` when
+always override the class method `dispatch`, which should return ``True`` when
 it handles a message.
 
 All instances of `BaseHandler` have access to `self.msg` and `self.router`, as
@@ -143,19 +150,17 @@ well as the methods `self.respond` and `self.respond_error` (which respond to
 the instance's message).
 
 `BaseHandler` also defines the class method `test`, which creates a simple
-environment for testing a handler's response to a specific message text::
+environment for testing a handler's response to a specific message text. If
+the handler ignores the message then ``False`` is returned. Otherwise a list
+containing the `text` property of each `OutgoingMessage` response, in the
+order which they were sent, is returned. (Note: the list may be empty.) For
+example::
 
-    >>> from rapidsms.contrib.handlers import BaseHandler
-    >>> class AlwaysHandler(BaseHandler):
-    ...
-    ...    @classmethod
-    ...    def dispatch(cls, router, msg):
-    ...        msg.respond("xxx")
-    ...        msg.respond("yyy")
-    ...        return True
-
-    >>> AlwaysHandler.test("anything")
-    ["xxx", "yyy"]
+    >>> from rapidsms.contrib.echo.handlers.echo import EchoHandler
+    >>> EchoHandler.test("not applicable")
+    False
+    >>> EchoHandler.test("echo hello!")
+    ["hello!"]
 
 For an example implementation of a `BaseHandler`, see
 `rapidsms.contrib.echo.handlers.ping.PingHandler
@@ -167,14 +172,14 @@ Calling Handlers
 ================
 
 When a message is received, the `handlers` application calls `dispatch` on
-each of the handlers it loaded during :ref:`handler discovery
-<handler-discovery>`.
+each of the handlers it loaded during :ref:`handlers discovery
+<handlers-discovery>`.
 
 The first handler to accept the message will block all others. The order in
 which the handlers are called is not guaranteed, so each handler should be as
 conservative as possible when choosing to respond to a message.
 
-.. _handler-discovery:
+.. _handlers-discovery:
 
 Handler Discovery
 =================
@@ -204,9 +209,8 @@ be configured using the following project settings:
    it starts with the value. For example, consider the `rapidsms.contrib.echo`
    application which contains the `echo` handler and the `ping` handler:
 
-      - "rapidsms.contrib.echo.handlers.echo" would match only the `echo`
-        handler,
-      - "rapidsms.contrib.echo" would match both the `echo` and the `ping`
-        handlers,
+      - "rapidsms.contrib.echo.handlers.echo" would match only `EchoHandler`,
+      - "rapidsms.contrib.echo" would match both `EchoHandler` and
+        `PingHandler`,
       - "rapidsms.contrib" would match all handlers in any RapidSMS contrib
-        app, including both in `rapidsms.contrib.echo`.
+        application, including both in `rapidsms.contrib.echo`.

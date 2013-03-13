@@ -1,0 +1,196 @@
+=============================
+RapidSMS 0.12.0 release notes
+=============================
+
+
+.. warning::
+
+    RapidSMS v0.12.0 is currently under development and has not been released.
+
+Welcome to RapidSMS 0.12.0! These release notes cover the new features
+in 0.12.0.
+
+Overview
+========
+
+Welcome to RapidSMS 0.12.0! These release notes cover the new features in 0.12.0
+as well as some `backwards incompatible changes in 0.12.0`_ you'll want to be
+aware of when upgrading from RapidSMS 0.11.0.  Most RapidSMS sites and
+applications will require some changes when upgrading to RapidSMS 0.12.0.
+
+What's New
+==========
+
+Twitter Bootstrap
+-----------------
+
+The RapidSMS pages now use `Twitter Bootstrap`_ for a more up-to-date
+appearance.  See :doc:`/topics/frontend` for more.
+
+Contrib app updates
+-------------------
+
+Most of the contrib apps have been updated to use more up-to-date Django
+practices and to add documentation and tests.  A few obsolete apps have
+been removed.
+
+.. _removed apps:
+
+The apps that have been removed are:
+
+- rapidsms.contrib.ajax
+- rapidsms.contrib.export
+- rapidsms.contrib.scheduler
+
+Supporting Django 1.4+
+--------------------------
+
+RapidSMS is no longer compatible with any version of Django prior to 1.4.
+
+- `Django 1.4 release notes`_
+
+Overview: Updating to RapidSMS 0.12.0
+=====================================
+
+- Upgrade to at least `Django 1.4`_
+- If upgrading to `Django 1.5`_:
+
+ - Verify `urls.py`_ files have been updated
+ - Verify `url template tags`_ in templates have been updated
+
+- Set up rapidsms/_nav_bar.html to replace the `RAPIDSMS_TABS`_ setting
+- Add `django_tables2` and `django_selectable` to ``INSTALLED_APPS``
+- Remove references to `removed apps`_.
+
+.. _backwards incompatible changes in 0.12.0:
+
+Backwards-incompatible changes in RapidSMS 0.12.0
+=================================================
+
+In the goal of improving the RapidSMS core, we have made a number of backwards-
+incompatible changes.
+
+Change to Twitter Bootstrap
+---------------------------
+
+With the change to Twitter Bootstrap, the organization of pages has changed.
+Simple apps might continue to work okay, but any app that relied on the
+previous page structure to control styling or layout might need changes.
+
+.. _Django 1.4:
+
+Dropped Django 1.3 support
+--------------------------
+
+We decided to drop Django 1.3 support to take advantage of the functionality
+offered in Django 1.4+, including `bulk_create`_ and `override_settings`_.
+Additionally, with the release of Django 1.5, Django 1.3 is no longer
+supported by the Django developers.
+
+Please read the `Django 1.4 release notes`_ for upgrade instructions,
+especially `Backwards incompatible changes in 1.4`_.
+
+.. _Django 1.5:
+
+Add Django 1.5 Support
+----------------------
+
+RapidSMS 0.12.0 should work correctly with Django 1.5, and we encourage
+upgrading to Django 1.5 when possible.
+
+Please read the `Django 1.5 release notes`_ for upgrade instructions,
+especially `Backwards incompatible changes in 1.5`_.
+
+We believe the most common changes affecting RapidSMS projects will be:
+
+.. _urls.py:
+
+Removal of `django.conf.urls.defaults`_
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Make the following change to all of your ``urls.py``:
+
+.. code-block:: diff
+
+    -from django.conf.urls.defaults import *
+    +from django.conf.urls import patterns, url
+
+.. _url template tags:
+
+Change to the url template tag
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If any of your templates still use the old url template tag syntax, not
+quoting a literal url name, e.g.::
+
+    {% url url-name %}
+
+for Django 1.5 they must be changed to quote the url name (or use
+a variable whose value is a url name)::
+
+    {% url 'url-name' %}
+
+If you wish to maintain compability with Django 1.4, you can add
+``{% load url from future %}`` near the top of your template, e.g.::
+
+    {% load url from future %}
+
+    {% url 'url-name' %}
+
+which will turn on support for quoted url names in Django 1.4, and be harmless
+in later Django releases.
+
+New dependencies
+----------------
+
+Some of the contrib apps now use `django-tables2`_ in place of the
+RapidSMS paginator utility to provide paging in tables.
+`django-tables2` requires less code to set up for common cases,
+and also allows eventually removing paginator from RapidSMS, so
+there's one less component to maintain.
+
+The only app still using `djtables` is the locations app.
+
+The messaging app uses `django-selectable`_ to provide autocompletion
+in an input field. `django-selectable` is a well-maintained,
+full-featured library for adding autocompletion in Django apps.
+
+.. _RAPIDSMS_TABS:
+
+RAPIDSMS_TABS setting removed
+-----------------------------
+
+The `RAPIDSMS_TABS` setting has been removed. This was used to configure
+the list of links displayed at the top of each page when using the RapidSMS
+templates. It was not very amenable to customization.
+
+Starting in 0.12.0, the configurable links at the top of the page are
+generated by including a template, `rapidsms/_nav_bar.html`, which the
+RapidSMS project can override. Typically one would put list items there
+containing links.  For example:
+
+.. code-block:: html
+
+    {% load url from future %}
+    <li><a href="{% url 'message_log' %}">Message Log</a></li>
+    <li><a href="{% url 'registration' %}">Registration</a></li>
+    <li><a href="{% url 'messaging' %}">Messaging</a></li>
+    <li><a href="{% url 'httptester' %}">Message Tester</a></li>
+
+Region tags removed
+-------------------
+
+These were in the base template.
+
+
+.. _Twitter Bootstrap: http://twitter.github.com/bootstrap/
+.. _override_settings: https://docs.djangoproject.com/en/1.4/topics/testing/#django.test.utils.override_settings
+.. _bulk_create: https://docs.djangoproject.com/en/1.4/ref/models/querysets/#bulk-create
+.. _Django 1.4 release notes: https://docs.djangoproject.com/en/1.4/releases/1.4/
+.. _Backwards incompatible changes in 1.4: https://docs.djangoproject.com/en/1.4/releases/1.4/#backwards-incompatible-changes-in-1-4
+.. _Django 1.5 release notes: https://docs.djangoproject.com/en/1.5/releases/1.5/
+.. _Backwards incompatible changes in 1.5: https://docs.djangoproject.com/en/1.5/releases/1.5/#backwards-incompatible-changes-in-1-5
+.. _django.conf.urls.defaults: https://docs.djangoproject.com/en/1.4/releases/1.4/#django-conf-urls-defaults
+.. _django-tables2: http://django-tables2.readthedocs.org/en/latest/
+.. _django-selectable: https://django-selectable.readthedocs.org/en/latest/
+

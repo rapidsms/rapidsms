@@ -45,6 +45,7 @@ Dependencies
 * `django-nose <http://pypi.python.org/pypi/django-nose>`_
 * `djappsettings <http://pypi.python.org/pypi/djappsettings>`_
 * `djtables <http://pypi.python.org/pypi/djtables>`_
+* `django-selectable <http://pypi.python.org/pypi/django-selectable>`_
 
 
 Documentation
@@ -58,7 +59,7 @@ License
 -------
 
 RapidSMS is released under the BSD License. See the
-`LICENSE <https://github.com/rapidsms/rapidsms/blob/master/LICENSE>`_ file for 
+`LICENSE <https://github.com/rapidsms/rapidsms/blob/master/LICENSE>`_ file for
 more details.
 
 
