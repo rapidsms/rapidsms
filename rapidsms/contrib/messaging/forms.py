@@ -1,20 +1,27 @@
-from django import forms
+#!/usr/bin/env python
+# vim: ai ts=4 sts=4 et sw=4
 
-from rapidsms.models import Contact
+from django import forms
 
 from rapidsms.router import send
 
+from selectable.forms import AutoCompleteSelectMultipleField
+
+from .lookups import ConnectionLookup
+
 
 class MessageForm(forms.Form):
-    text = forms.CharField()
-    recipients = forms.ModelMultipleChoiceField(queryset=None)
+    message = forms.CharField(widget=forms.Textarea)
+    connections = AutoCompleteSelectMultipleField(
+            lookup_class=ConnectionLookup)
 
     def __init__(self, *args, **kwargs):
         super(MessageForm, self).__init__(*args, **kwargs)
-        recipients = Contact.objects.filter(connection__isnull=False)
-        self.fields['recipients'].queryset = recipients.distinct()
+        self.fields['connections'].widget.attrs['placeholder'] = 'Add a '\
+                'Recipient'
+        self.fields['message'].widget.attrs['placeholder'] = 'Message'
 
     def send(self):
-        for recipient in self.cleaned_data['recipients']:
-            send(self.cleaned_data['text'], recipient.default_connection)
-        return self.cleaned_data['recipients']
+        message = self.cleaned_data['message']
+        connections = self.cleaned_data['connections']
+        return send(message, connections)

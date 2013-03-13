@@ -1,0 +1,34 @@
+{% extends "registration/base.html" %}
+{% load url from future %}
+{% load forms_tags %}
+
+{% block content %}
+    {{ block.super }}
+
+    <div class="row-fluid">
+    <div class="span3 well">
+        <ul class="nav nav-list">
+            <li class="nav-header">Actions</li>
+            <li><a href="{% url 'registration' %}">List Contacts</a></li>
+            <li class="active"><a href="{% url 'contact_add' %}">Add Contact</a></li>
+            <li><a href="{% url 'contact_bulk_add' %}">Bulk Add Contacts</a></li>
+        </ul>
+    </div>
+    <div class="span8">
+        <form class="form-horizontal" action="" method="post">
+            {% render_form contact_form %}
+            {% render_form connection_formset.management_form %}
+            {% for form in connection_formset %}
+                {% render_form form %}
+            {% endfor %}
+            {% csrf_token %}
+            <div class="submit">
+                <input type="submit" name="submit" value="Save Contact" />
+                {% if contact %}
+                    <input type="submit" name="submit" value="Delete Contact" />
+                {% endif %}
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

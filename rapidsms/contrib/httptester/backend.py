@@ -4,14 +4,16 @@
 
 from rapidsms.backends.base import BackendBase
 
-from rapidsms.contrib.httptester.storage import store_message
+from .models import HttpTesterMessage
+from .storage import store_message
 
 
 class HttpTesterCacheBackend(BackendBase):
     """ Simple backend that stores messages in a cache """
 
     def send(self, msg):
-        store_message('out', msg.connection.identity, msg.text)
+        store_message(HttpTesterMessage.OUTGOING, msg.connection.identity,
+                msg.text)
         return True
 
     def start(self):
