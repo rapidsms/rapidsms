@@ -6,6 +6,9 @@
   {% endif %}
 
    {% for field in form %}
+    {% if field.is_hidden %}
+        {{ field }}
+    {% else %}
       <div class="control-group{% if field.field.required %} required{% endif %}{% if field.errors %} error{% endif %}">
         <label class="control-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
         <div class="controls">
@@ -17,5 +20,6 @@
               </ul>{% endif %}
         </div>
     </div>
+    {% endif %}
 {% endfor %}
 </div>
