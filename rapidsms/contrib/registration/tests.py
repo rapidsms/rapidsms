@@ -20,7 +20,7 @@ class TestRegister(TestScript):
           8005551212 < I will speak to you in English.
           8005551212 > lang klingon
           8005551212 < Sorry, I don't speak "klingon".
-        """ % ("You must JOIN or IDENTIFY yourself before you can set " +
+        """ % ("You must JOIN or REGISTER yourself before you can set " +
                "your language preference."))
 
     def testHelp(self):
