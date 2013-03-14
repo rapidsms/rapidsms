@@ -4,12 +4,11 @@
 
 from datetime import datetime
 from rapidsms.messages.base import MessageBase
-from rapidsms.messages.outgoing import OutgoingMessage
 from rapidsms.messages.error import ErrorMessage
 
 
 class IncomingMessage(MessageBase):
-    """Inbound message that provides an API to generate responses."""
+    """Inbound message that provides an API to handle responses."""
 
     def __init__(self, *args, **kwargs):
         self.received_at = kwargs.pop('received_at', datetime.now())

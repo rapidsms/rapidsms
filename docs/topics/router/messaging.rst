@@ -13,14 +13,7 @@ outlined below.
 Receiving Messages
 ------------------
 
-.. function:: receive(text, connection, fields=None)
-    :module: rapidsms.router.api
-
-    Creates an incoming message and passes it to the router for processing.
-
-    :param text: text message
-    :param connection: RapidSMS connection object
-    :param fields: Optional meta data to attach to the message object
+.. autofunction:: rapidsms.router.receive
 
 To receive a message, you can use the ``receive`` function, which will
 automaticaly create an ``IncomingMessage`` and pass it to your router to be
@@ -42,14 +35,7 @@ official RapidSMS `backends <https://github.com/rapidsms/rapidsms/tree/master/ra
 Sending Messages
 ----------------
 
-.. function:: send(text, connections)
-    :module: rapidsms.router.api
-
-    Creates an outgoing message and passes it to the router to be processed
-    and sent via the respective backend.
-
-    :param text: text message
-    :param connections: a single or list of RapidSMS connection objects
+.. autofunction:: rapidsms.router.send
 
 It's just as easy to send a message using RapidSMS. You can send a message from
 anywhere within your application.
@@ -68,13 +54,7 @@ RapidSMS `backends <https://github.com/rapidsms/rapidsms/tree/master/rapidsms/ba
 Connection Lookup
 -----------------
 
-.. function:: lookup_connections(backend, identities)
-    :module: rapidsms.router.api
-
-    Return connections associated with backend and identities.
-
-    :param backend: backend name (as a string) or RapidSMS backend object
-    :param identities: list of identities associated
+.. autofunction:: rapidsms.router.lookup_connections
 
 Since most of the time you'll need to find connections for a backend and phone
 number, RapidSMS has a helper function, ``lookup_connections``, to do the
