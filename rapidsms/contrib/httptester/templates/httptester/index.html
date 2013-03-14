@@ -1,11 +1,10 @@
-{% extends "layout.html" %}
+{% extends "base.html" %}
 {% load forms_tags %}
 {% load django_tables2 %}
 
 {% block title %}Message Tester - {{ block.super }}{% endblock %}
 
-{% block javascripts %}
-{{ block.super }}
+{% block extra_javascripts %}
 <script type="text/javascript">
 	(function($) {
 		$(function() {
@@ -21,8 +20,7 @@
 </script>
 {% endblock %}
 
-{% block stylesheets %}
-    {{ block.super }}
+{% block extra_stylesheets %}
     <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}httptester/stylesheets/httptester.css" />
 {% endblock %}
 

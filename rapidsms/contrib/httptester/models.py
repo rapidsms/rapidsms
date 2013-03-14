@@ -4,14 +4,16 @@
 from django.db import models
 
 
-DIRECTION_CHOICES = (
-    ("in", "Incoming"),
-    ("out", "Outgoing"))
-
-
 class HttpTesterMessage(models.Model):
+    INCOMING = "I"
+    OUTGOING = "O"
+    DIRECTION_CHOICES = (
+        (INCOMING, "Incoming"),
+        (OUTGOING, "Outgoing"),
+    )
+
     date = models.DateTimeField(auto_now_add=True)
-    direction = models.CharField(max_length=3, choices=DIRECTION_CHOICES)
+    direction = models.CharField(max_length=1, choices=DIRECTION_CHOICES)
     identity = models.CharField(max_length=100)
     text = models.TextField()
 

@@ -33,11 +33,13 @@ class CustomRouterMixin(CreateDataMixin):
         self._post_rapidsms_teardown()
 
     def receive(self, text, connection, **kwargs):
-        """receive() API wrapper."""
+        """
+        A wrapper around the ``receive`` API. See :ref:`receiving-messages`.
+        """
         return receive(text, connection, **kwargs)
 
     def send(self, text, connections, **kwargs):
-        """send() API wrapper."""
+        """A wrapper around the ``send`` API. See :ref:`sending-messages`."""
         return send(text, connections, **kwargs)
 
     def get_router(self):
@@ -78,7 +80,13 @@ class DatabaseBackendMixin(CustomRouterMixin):
 class TestRouterMixin(CustomRouterMixin):
     """Test extension that uses TestRouter"""
 
+    #: If `disable_phases` is True, messages will not be processed through the
+    #: router phases.
+    #: This is useful if you're not interested in testing application logic.
+    #: For example, backends may use this flag to ensure messages are sent
+    #: to the router, but don't want the message to be processed.
     disable_phases = False  # setting to True will disable router phases
+
     backends = {'mockbackend': {'ENGINE': backend.MockBackend}}
 
     def set_router(self):
@@ -94,24 +102,25 @@ class TestRouterMixin(CustomRouterMixin):
 
     @property
     def inbound(self):
-        """Messages passed to Router.receive_incoming"""
+        """The list of message objects received by the router."""
         return self.router.inbound
 
     @property
     def outbound(self):
-        """Messages passed to Router.send_outgoing"""
+        """The list of message objects sent by the router."""
         return self.router.outbound
 
     @property
     def sent_messages(self):
-        """Messages passed to MockBackend.send"""
+        """The list of message objects sent to mockbackend."""
         return self.router.backends['mockbackend'].messages
 
     def clear_sent_messages(self):
-        """Clear messages sent to the mockbackend."""
+        """Manually empty the outbox of mockbackend."""
         self.router.backends['mockbackend'].clear()
 
     def lookup_connections(self, identities, backend='mockbackend'):
-        """loopup_connections wrapper to use mockbackend by default"""
+        """A wrapper around the ``lookup_connections`` API.
+        See :ref:`connection_lookup`."""
         return super(TestRouterMixin, self).lookup_connections(backend,
                                                                identities)

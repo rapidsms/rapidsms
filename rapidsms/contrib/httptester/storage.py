@@ -32,7 +32,7 @@ def store_and_queue(backend_name, identity, text):
     :param text: The message
     """
     from rapidsms.router import receive, lookup_connections
-    store_message('in', identity, text)
+    store_message(HttpTesterMessage.INCOMING, identity, text)
     connection = lookup_connections(backend_name, [identity])[0]
     receive(text, connection)
 

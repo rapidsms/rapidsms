@@ -37,7 +37,7 @@ v0.14.0
 -------
 * **Scheduling and deployment**
 * *Expected release date:* March, 2013
-* `GitHub Milestone <https://github.com/rapidsms/rapidsms/issues?milestone=6&page=1&state=open>`_
+* `v0.14.0 GitHub Milestone <https://github.com/rapidsms/rapidsms/issues?milestone=6&page=1&state=open>`_
 
 **Goals**
 
@@ -51,7 +51,7 @@ v0.13.0 - Next Release
 ----------------------
 * **Bulk messaging**
 * *Expected release date:* March, 2013
-* `GitHub Milestone <https://github.com/rapidsms/rapidsms/issues?milestone=5&page=1&state=open>`_
+* `v0.13.0 GitHub Milestone <https://github.com/rapidsms/rapidsms/issues?milestone=5&page=1&state=open>`_
 
 
 **Goals**
@@ -68,7 +68,7 @@ v0.12.0
 -------
 * **Bootstrap and contrib update**
 * *Expected release date:* March, 2013
-* `GitHub Milestone <https://github.com/rapidsms/rapidsms/issues?milestone=4&page=1&state=open>`_
+* `v0.12.0 GitHub Milestone <https://github.com/rapidsms/rapidsms/issues?milestone=4&page=1&state=open>`_
 
 
 **Goals**
@@ -82,7 +82,7 @@ v0.11.0
 * **PEP8 and testing**
 * *Release date:* December 31, 2012
 * :doc:`0.11.0`
-* `GitHub Milestone <https://github.com/rapidsms/rapidsms/issues?milestone=2&page=1&state=open>`_
+* `v0.11.0 GitHub Milestone <https://github.com/rapidsms/rapidsms/issues?milestone=2&page=1&state=open>`_
 
 **Goals**
 
@@ -95,7 +95,7 @@ v0.10.0
 * **New routing**
 * *Date released:* November 23, 2012
 * :doc:`0.10.0`
-* `GitHub Milestone <https://github.com/rapidsms/rapidsms/issues?milestone=1>`_
+* `v0.10.0 GitHub Milestone <https://github.com/rapidsms/rapidsms/issues?milestone=1>`_
 
 **Goals**
 

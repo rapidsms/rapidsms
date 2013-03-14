@@ -14,7 +14,7 @@ class MessageTable(tables.Table):
         # Render the phone number with a double arrow pointing to it
         # or away from it, depending on whether the message was going
         # out or coming in.
-        if record.direction == 'in':
+        if record.direction == HttpTesterMessage.INCOMING:
             return mark_safe(record.identity + "&raquo;")
         else:
             return mark_safe(record.identity + "&laquo;")

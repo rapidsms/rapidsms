@@ -7,21 +7,21 @@ from rapidsms.router import send
 
 from selectable.forms import AutoCompleteSelectMultipleField
 
-from .lookups import ContactLookup
+from .lookups import ConnectionLookup
 
 
 class MessageForm(forms.Form):
     message = forms.CharField(widget=forms.Textarea)
-    recipients = AutoCompleteSelectMultipleField(lookup_class=ContactLookup)
+    connections = AutoCompleteSelectMultipleField(
+            lookup_class=ConnectionLookup)
 
     def __init__(self, *args, **kwargs):
         super(MessageForm, self).__init__(*args, **kwargs)
-        self.fields['recipients'].widget.attrs['placeholder'] = 'Add a Contact'
+        self.fields['connections'].widget.attrs['placeholder'] = 'Add a '\
+                'Recipient'
         self.fields['message'].widget.attrs['placeholder'] = 'Message'
 
     def send(self):
-        connections = []
-        for recipient in self.cleaned_data['recipients']:
-            connections.append(recipient.default_connection)
-        send(self.cleaned_data['message'], connections)
-        return self.cleaned_data['message'], self.cleaned_data['recipients']
+        message = self.cleaned_data['message']
+        connections = self.cleaned_data['connections']
+        return send(message, connections)

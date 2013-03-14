@@ -7,57 +7,34 @@ RapidSMS 0.12.0 release notes
 
     RapidSMS v0.12.0 is currently under development and has not been released.
 
-Welcome to RapidSMS 0.12.0! These release notes cover the new features
-in 0.12.0.
-
-Overview
-========
-
 Welcome to RapidSMS 0.12.0! These release notes cover the new features in 0.12.0
 as well as some `backwards incompatible changes in 0.12.0`_ you'll want to be
 aware of when upgrading from RapidSMS 0.11.0.  Most RapidSMS sites and
 applications will require some changes when upgrading to RapidSMS 0.12.0.
 
-What's New
-==========
+They key changes in 0.12.0 are:
 
-Twitter Bootstrap
------------------
+* **Twitter Bootstrap**: The RapidSMS pages now use `Twitter Bootstrap`_ for a more up-to-date and easily extensible appearance.  See :doc:`/topics/frontend` for more information.
+* **Contrib app updates:** Most of the contrib apps have been updated to use more up-to-date Django practices and to add documentation and tests.  A few obsolete apps have been :ref:`removed <removed apps>`.
+* **Supporting Django 1.4+:** RapidSMS is no longer compatible with any version of Django prior to 1.4. See the `Django 1.4 release notes`_ for more information.
+* **Removed RAPIDSMS_TABS:** Top level navigation is now managed with an :ref:`inclusion template <RAPIDSMS_TABS>`.
+* **Officially adopted Celery**: Following the inclusion of :router:`CeleryRouter`, we've removed ``rapidsms.contrib.scheduler`` in favor of using Celery directly with RapidSMS. See :doc:`/topics/celery` for more information.
 
-The RapidSMS pages now use `Twitter Bootstrap`_ for a more up-to-date
-appearance.  See :doc:`/topics/frontend` for more.
 
-Contrib app updates
--------------------
+Updating to RapidSMS 0.12.0
+===========================
 
-Most of the contrib apps have been updated to use more up-to-date Django
-practices and to add documentation and tests.  A few obsolete apps have
-been removed.
-
-.. _removed apps:
-
-The apps that have been removed are:
-
-- rapidsms.contrib.ajax
-- rapidsms.contrib.export
-- rapidsms.contrib.scheduler
-
-Supporting Django 1.4+
---------------------------
-
-RapidSMS is no longer compatible with any version of Django prior to 1.4.
-
-- `Django 1.4 release notes`_
-
-Overview: Updating to RapidSMS 0.12.0
-=====================================
+You can follow these basic guidelines when upgrading from RapidSMS 0.11.0:
 
 - Upgrade to at least `Django 1.4`_
 - If upgrading to `Django 1.5`_:
+
  - Verify `urls.py`_ files have been updated
  - Verify `url template tags`_ in templates have been updated
-- Set up rapidsms/_nav_bar.html to replace the `RAPIDSMS_TABS`_ setting
-- Add `django_tables2` and `django_selectable` to ``INSTALLED_APPS``
+
+- Set up ``rapidsms/_nav_bar.html`` to replace the `RAPIDSMS_TABS`_ setting
+- Install ``django_tables2`` and ``django-selectable`` via pip or add to your requirements file. See `new dependencies`_ for more information.
+- Add ``django_tables2`` and ``selectable`` to ``INSTALLED_APPS``.
 - Remove references to `removed apps`_.
 
 .. _backwards incompatible changes in 0.12.0:
@@ -128,7 +105,7 @@ a variable whose value is a url name)::
 
     {% url 'url-name' %}
 
-If you wish to maintain compability with Django 1.4, you can add
+If you wish to maintain compatibility with Django 1.4, you can add
 ``{% load url from future %}`` near the top of your template, e.g.::
 
     {% load url from future %}
@@ -137,6 +114,21 @@ If you wish to maintain compability with Django 1.4, you can add
 
 which will turn on support for quoted url names in Django 1.4, and be harmless
 in later Django releases.
+
+.. _removed apps:
+
+Removed stale contrib apps
+--------------------------
+
+The following contrib applications have been removed:
+
+- ``rapidsms.contrib.ajax``: Old API used for communicating with the legacy router and no longer needed.
+- ``rapidsms.contrib.export``: Horribly insecure database export feature.
+- ``rapidsms.contrib.scheduler``: We officially adopted Celery for scheduling and asynchronous task processing. See :doc:`/topics/celery` for more information.
+
+If your project references these packages, you'll need to update your code appropriately.
+
+.. _new dependencies:
 
 New dependencies
 ----------------
@@ -179,6 +171,19 @@ Region tags removed
 -------------------
 
 These were in the base template.
+
+Moved Message direction constants to model
+------------------------------------------
+
+The constant ``rapidsms.contrib.messagelog.models.DIRECTION_CHOICES`` has been
+moved to the ``rapidsms.contrib.messagelog.models.Message`` model. You may
+also refer to ``Message.INCOMING`` and ``Message.OUTGOING`` directly.
+
+
+Test Coverage Report
+====================
+
+With the addition of 26 tests, RapidSMS now has 136 automated unit tests with 82% (up from 72%) coverage.
 
 
 .. _Twitter Bootstrap: http://twitter.github.com/bootstrap/

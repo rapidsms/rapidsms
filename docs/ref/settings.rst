@@ -28,7 +28,7 @@ EXCLUDED_HANDLERS
 The :doc:`rapidsms.contrib.handlers </topics/contrib/handlers>` application
 will not load any handler in a module that is in this list. The module name of
 each handler is compared to the value in this list using prefix matching. For
-more information, see :ref:`handler-discovery`.
+more information, see :ref:`handlers-discovery`.
 
 .. setting:: INSTALLED_BACKENDS
 
@@ -75,7 +75,7 @@ If this setting is not ``None``, the :doc:`rapidsms.contrib.handlers
 </topics/contrib/handlers>` application will only load handlers in modules
 that are in this list. The module name of each handler is compared to each
 value in this list using prefix matching. For more information see
-:ref:`handler-discovery`.
+:ref:`handlers-discovery`.
 
 .. setting:: PROJECT_NAME
 
@@ -98,7 +98,7 @@ RAPIDSMS_HANDLERS_EXCLUDE_APPS
 
 The :doc:`rapidsms.contrib.handlers </topics/contrib/handlers>` application
 will not load handlers from any Django app included in this list. For more
-information see :ref:`handler-discovery`.
+information see :ref:`handlers-discovery`.
 
 .. setting:: RAPIDSMS_ROUTER
 

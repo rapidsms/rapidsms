@@ -21,7 +21,7 @@ class TestMessagingForm(RapidTest):
         self.message = 'hello'
         self.data = {
             'message': self.message,
-            'recipients_1': [self.contact.pk],
+            'connections_1': [self.connection.pk],
         }
 
     def test_no_message(self):
@@ -34,19 +34,11 @@ class TestMessagingForm(RapidTest):
 
     def test_no_recipients(self):
         """Form should require at least one recipient."""
-        self.data.pop('recipients_1')
+        self.data.pop('connections_1')
         form = MessageForm(self.data)
         self.assertFalse(form.is_valid())
         self.assertEqual(len(form.errors), 1)
-        self.assertTrue('recipients' in form.errors)
-
-    def test_connectionless_recipients(self):
-        """Recipients must have at least one connection."""
-        self.connection.delete()
-        form = MessageForm(self.data)
-        self.assertFalse(form.is_valid())
-        self.assertEqual(len(form.errors), 1)
-        self.assertTrue('recipients' in form.errors)
+        self.assertTrue('connections' in form.errors)
 
     def test_valid_data(self):
         form = MessageForm(self.data)
@@ -55,11 +47,6 @@ class TestMessagingForm(RapidTest):
     def test_send(self):
         form = MessageForm(self.data)
         self.assertTrue(form.is_valid())
-        message, recipients = form.send()
-        self.assertEqual(message, self.message)
-        self.assertEqual(len(recipients), 1)
-        self.assertTrue(self.contact in recipients)
-        self.assertEqual(len(self.outbound), 1)
-        msg = self.outbound[0]
-        self.assertEqual(msg.contact, self.contact)
-        self.assertEqual(msg.text, self.message)
+        message = form.send()
+        self.assertEqual(message.text, self.message)
+        self.assertEqual(message.connection, self.connection)

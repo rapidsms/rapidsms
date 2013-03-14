@@ -42,7 +42,7 @@ class TestSendView(RapidTest):
         self.message = 'hello'
         self.data = {
             'message': self.message,
-            'recipients_1': [self.contact1.pk, self.contact2.pk],
+            'connections_1': [self.connection1.pk, self.connection2.pk],
         }
 
     def test_get(self):
@@ -68,7 +68,7 @@ class TestSendView(RapidTest):
 
     def test_post_no_contacts(self):
         """A form validation error should cause a 400 response."""
-        self.data.pop('recipients_1')
+        self.data.pop('connections_1')
         response = self.client.post(self.url, self.data)
         self.assertEqual(response.status_code, 400)  # Bad Request
 

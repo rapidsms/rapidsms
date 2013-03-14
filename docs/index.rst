@@ -45,20 +45,27 @@ Release: v\ |release|. (:doc:`Installation <intro/install/index>`, :doc:`Release
 * :doc:`Settings <ref/settings>`
 * :doc:`Internationalization <topics/i18n>`
 * :doc:`Extending core RapidSMS models <topics/extensible-models>`
-* :doc:`Front end <topics/frontend>`
+* :doc:`Front end <topics/frontend>` - Creating a web interface for your app
 * :doc:`Testing <topics/testing>`
 * :doc:`Scheduling Tasks with Celery <topics/celery>`
 * :doc:`Deployment <topics/deployment>`
 
-**RapidSMS contrib applications** (:doc:`Overview <topics/contrib/index>`)
+**RapidSMS contrib applications**
 
-* :doc:`default <topics/contrib/default>`
-* :doc:`echo <topics/contrib/echo>`
-* :doc:`handlers <topics/contrib/handlers>`
-* :doc:`Message Tester <topics/contrib/httptester>`
-* locations
-* messagelog
-* :doc:`messaging <topics/contrib/messaging>`
+* :doc:`default <topics/contrib/default>` - Sends a pre-defined default
+  response to messages that are not handled by any other application.
+* :doc:`echo <topics/contrib/echo>` - A collection of two simple handlers that
+  can assist you in remote debugging.
+* :doc:`handlers <topics/contrib/handlers>` - Extensible classes that help you
+  create RapidSMS applications quickly.
+* :doc:`httptester <topics/contrib/httptester>` - Helps you test your project
+  by sending fake messages to RapidSMS to see how it responds.
+* :doc:`locations <topics/contrib/locations>` - Defines the `Location` model,
+  which helps you map custom locations and points in your project.
+* :doc:`messagelog <topics/contrib/messagelog>` - Maintains a record of all
+  messages sent and received by RapidSMS.
+* :doc:`messaging <topics/contrib/messaging>` - Provides a web interface
+  through which you can send messages to Contacts.
 * registration
 
 **The RapidSMS open-source project**

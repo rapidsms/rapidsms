@@ -26,7 +26,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "_ext"))
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['rapidsmsdocs']
+extensions = ['rapidsmsdocs', 'sphinx.ext.autodoc', 'sphinx.ext.intersphinx']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -42,7 +42,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'RapidSMS'
-copyright = u'2012, RapidSMS. Sphinx-powered using a <a href="https://github.com/mitsuhiko/flask-sphinx-themes">custom</a> theme'
+copyright = u'2013, RapidSMS. Sphinx-powered using a <a href="https://github.com/mitsuhiko/flask-sphinx-themes">custom</a> theme'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -88,6 +88,11 @@ pygments_style = 'sphinx'
 
 # A list of ignored prefixes for module index sorting.
 #modindex_common_prefix = []
+
+intersphinx_mapping = {
+    'python': ('http://docs.python.org/2.6', None),
+    'django': ('https://django.readthedocs.org/en/1.4.X/', None),
+}
 
 
 # -- Options for HTML output ---------------------------------------------------
@@ -249,3 +254,11 @@ texinfo_documents = [
 
 # How to display URL addresses: 'footnote', 'no', or 'inline'.
 #texinfo_show_urls = 'footnote'
+
+# -- Additional config for Django ----------------------------------------------
+# Arrange for importing rapidsms modules to work okay given that they'll
+# try to pull in Django
+# See http://techblog.ironfroggy.com/2012/06/how-to-use-sphinx-autodoc-on.html
+sys.path.append(os.path.dirname(__file__))
+import django
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "settings")
