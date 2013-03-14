@@ -3,26 +3,15 @@
 {% load forms_tags %}
 {% load django_tables2 %}
 
-{% block extra_stylesheets %}
+{% block stylesheets %}
+{{ block.super }}
 <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}registration/stylesheets/dashboard.css" />
 {% endblock %}
 
 
-{% block content %}
-    {{ block.super }}
-
-<div class="row-fluid">
-    <div class="span3 well">
-        <ul class="nav nav-list">
-            <li class="nav-header">Actions</li>
-            <li class="active"><a href="#">List Contacts</a></li>
-            <li><a href="{% url 'contact_add' %}">Add Contact</a></li>
-            <li><a href="{% url 'contact_bulk_add' %}">Bulk Add Contacts</a></li>
-        </ul>
+{% block page %}
+    <div class="page_header">
+        <h1>Registration: Contacts</h1>
     </div>
-    <div class="span8">
-        {% render_table contacts_table %}
-    </div>
-</div>
-
+    {% render_table contacts_table %}
 {% endblock %}

@@ -2,29 +2,18 @@
 {% load url from future %}
 {% load forms_tags %}
 
-{% block content %}
-    {{ block.super }}
-
-    <div class="row-fluid">
-    <div class="span3 well">
-        <ul class="nav nav-list">
-            <li class="nav-header">Actions</li>
-            <li><a href="{% url 'registration' %}">List Contacts</a></li>
-            <li><a href="{% url 'contact_add' %}">Add Contact</a></li>
-            <li class="active"><a href="{% url 'contact_bulk_add' %}">Bulk Add Contacts</a></li>
-        </ul>
+{% block page %}
+    <div class="page_header">
+        <h1>Registration: Bulk Add</h1>
     </div>
-    <div class="span8">
-        {% if csv_errors %}
+    {% if csv_errors %}
         <p style="color: red; font-weight: strong;">CSV Error: {{ csv_errors }}</p>
-        {% endif %}
-        <form action="" method="post" enctype="multipart/form-data">
-            {% render_form bulk_form %}
-            {% csrf_token %}
-            <div class="submit">
-                <input type="submit" name="submit" value="Save Contacts" />
-            </div>
-        </form>
-    </div>
-</div>
+    {% endif %}
+    <form action="" method="post" enctype="multipart/form-data">
+        {% render_form bulk_form %}
+        {% csrf_token %}
+        <div class="submit">
+            <input type="submit" name="submit" value="Save Contacts" />
+        </div>
+    </form>
 {% endblock %}

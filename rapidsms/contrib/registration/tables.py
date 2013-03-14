@@ -7,12 +7,11 @@ import django_tables2 as tables
 
 
 class ContactTable(tables.Table):
-    name = tables.LinkColumn('contact_edit', args=[tables.utils.A('pk')])
     identities = tables.Column(empty_values=())
+    id = tables.LinkColumn('registration_contact_edit', args=[tables.utils.A('pk')])
 
     class Meta:
         model = Contact
-        exclude = ('id', )
 
     def render_identities(self, value, record):
         return ', '.join([x.identity for x in record.connection_set.all()])

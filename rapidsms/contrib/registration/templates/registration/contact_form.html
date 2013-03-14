@@ -2,20 +2,16 @@
 {% load url from future %}
 {% load forms_tags %}
 
-{% block content %}
-    {{ block.super }}
-
-    <div class="row-fluid">
-    <div class="span3 well">
-        <ul class="nav nav-list">
-            <li class="nav-header">Actions</li>
-            <li><a href="{% url 'registration' %}">List Contacts</a></li>
-            <li class="active"><a href="{% url 'contact_add' %}">Add Contact</a></li>
-            <li><a href="{% url 'contact_bulk_add' %}">Bulk Add Contacts</a></li>
-        </ul>
+{% block page %}
+    <div class="page_header">
+        {% if contact %}
+            <h1>Registration: Edit Contact</h1>
+        {% else %}
+            <h1>Registration: Add Contact</h1>
+        {% endif %}
     </div>
     <div class="span8">
-        <form class="form-horizontal" action="" method="post">
+        <form action="" method="post">
             {% render_form contact_form %}
             {% render_form connection_formset.management_form %}
             {% for form in connection_formset %}
