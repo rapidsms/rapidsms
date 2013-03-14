@@ -2,18 +2,11 @@
 {% load url from future %}
 {% load forms_tags %}
 
-{% block content %}
-    {{ block.super }}
-
-    <div class="row-fluid">
-    <div class="span3 well">
-        {% include "registration/_sub_nav_bar.html" %}
+{% block page %}
+    <div class="page_header">
+        <h1>Registration: Bulk Add</h1>
     </div>
-    <div class="span8">
-        <div class="page_header">
-            <h1>Registration: Bulk Add</h1>
-        </div>
-        {% if csv_errors %}
+    {% if csv_errors %}
         <p style="color: red; font-weight: strong;">CSV Error: {{ csv_errors }}</p>
     {% endif %}
     <form action="" method="post" enctype="multipart/form-data">

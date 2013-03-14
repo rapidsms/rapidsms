@@ -9,19 +9,9 @@
 {% endblock %}
 
 
-{% block content %}
-    {{ block.super }}
-
-<div class="row-fluid">
-    <div class="span3 well">
-        {% include "registration/_sub_nav_bar.html" %}
+{% block page %}
+    <div class="page_header">
+        <h1>Registration: Contacts</h1>
     </div>
-    <div class="span8">
-        <div class="page_header">
-            <h1>Registration: Contacts</h1>
-        </div>
-        {% render_table contacts_table %}
-    </div>
-</div>
-
+    {% render_table contacts_table %}
 {% endblock %}

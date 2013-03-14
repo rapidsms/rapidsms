@@ -2,32 +2,23 @@
 {% load url from future %}
 {% load forms_tags %}
 
-{% block content %}
-    {{ block.super }}
-
-<div class="row-fluid">
-    <div class="span3 well">
-        {% include "registration/_sub_nav_bar.html" %}
+{% block page %}
+    <div class="page_header">
+        {% if contact %}
+            <h1>Registration: Edit Contact</h1>
+        {% else %}
+            <h1>Registration: Add Contact</h1>
+        {% endif %}
     </div>
-    <div class="span8">
-        <div class="page_header">
+    <form action="" method="post">
+        {{ contact_form }}
+        {{ connection_formset }}
+        {% csrf_token %}
+        <div class="submit">
+            <input type="submit" name="submit" value="Save Contact" />
             {% if contact %}
-                <h1>Registration: Edit Contact</h1>
-            {% else %}
-                <h1>Registration: Add Contact</h1>
+                <input type="submit" name="submit" value="Delete Contact" />
             {% endif %}
         </div>
-        <form action="" method="post">
-            {{ contact_form }}
-            {{ connection_formset }}
-            {% csrf_token %}
-            <div class="submit">
-                <input type="submit" name="submit" value="Save Contact" />
-                {% if contact %}
-                    <input type="submit" name="submit" value="Delete Contact" />
-                {% endif %}
-            </div>
-        </form>
-    </div>
-</div>
+    </form>
 {% endblock %}
