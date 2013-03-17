@@ -5,9 +5,6 @@ RapidSMS Backends
 
 .. module:: rapidsms.backends
 
-Overview
---------
-
 Backends define how RapidSMS communicates with the outside world. The router
 uses backends to send and receive messages and all text messages will
 eventually pass through a backend. They handle a two-way messaging protocol:
