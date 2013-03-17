@@ -23,4 +23,5 @@ class TranslationApp(AppBase):
 def lang_broadcast():
     connections = Connection.objects.all()
     for lang, conns in trans_helpers.group_connections(connections):
-        send(_('hello'), conns)
+        with translation.override(lang):
+            send(_('hello'), conns)

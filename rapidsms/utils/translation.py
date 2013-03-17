@@ -1,6 +1,5 @@
 from collections import defaultdict
 
-from django.utils import translation
 from django.db.models.query import QuerySet
 
 
@@ -20,5 +19,4 @@ def group_connections(connections):
             language = connection.contact.language
             grouped_conns[language].append(connection)
     for lang, conns in grouped_conns.iteritems():
-        with translation.override(lang):
-            yield lang, conns
+        yield lang, conns

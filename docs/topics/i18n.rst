@@ -93,15 +93,15 @@ Sending messages
 
 To ease translating messages to multiple connections, RapidSMS provides a
 utility function, ``group_connections``, to divide connections into groups by
-their contact's language setting. ``translation.override`` is used internally,
-so you don't have to import it here.
+their contact's language setting.
 
 This example illustrates how you could attempt to say *hello* in the correct
 language(s) without needing to inspect each connection manually:
 
 .. code-block:: python
-   :emphasize-lines: 2,7,8
+    :emphasize-lines: 3,8
 
+    from django.utils import translation
     from django.utils.translation import ugettext as _
     from rapidsms.utils import translation as trans_helpers
     from rapidsms.router import send
@@ -109,7 +109,8 @@ language(s) without needing to inspect each connection manually:
     def say_hello_to_everyone():
         connections = Connection.objects.all()
         for lang, conns in trans_helpers.group_connections(connections):
-            send(_('hello'), conns)
+            with translation.override(lang):
+                send(_('hello'), conns)
 
 
 .. _Django's translation: https://docs.djangoproject.com/en/dev/topics/i18n/translation/
