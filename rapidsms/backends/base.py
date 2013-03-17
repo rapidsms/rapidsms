@@ -34,7 +34,7 @@ class BackendBase(object, LoggerMixin):
     def __repr__(self):
         return "<backend: %s>" % self.name
 
-    def configure(**kwargs):
+    def configure(self, **kwargs):
         """
         Configuration parameters from :setting:`INSTALLED_BACKENDS` will
         be passed here after the router is instaniated. You can override
