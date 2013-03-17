@@ -1,3 +1,4 @@
+.. _vumi-backend:
 .. _vumi_configuration:
 
 =============================

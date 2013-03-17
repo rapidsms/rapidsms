@@ -1,3 +1,4 @@
+.. _kannel-backend:
 .. _kannel_configuration:
 
 ===============================

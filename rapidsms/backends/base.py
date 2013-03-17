@@ -10,6 +10,12 @@ class BackendBase(object, LoggerMixin):
 
     @classmethod
     def find(cls, module_name):
+        """
+        Helper function to import backend classes.
+
+        :param module_name: Dotted Python path to backend class name
+        :returns: Imported class object
+        """
         return import_class(module_name, cls)
 
     def __init__(self, router, name, **kwargs):
@@ -17,8 +23,7 @@ class BackendBase(object, LoggerMixin):
         self.name = name
 
         self._config = kwargs
-        if hasattr(self, "configure"):
-            self.configure(**kwargs)
+        self.configure(**kwargs)
 
     def _logger_name(self):  # pragma: no cover
         return "backend/%s" % self.name
@@ -29,16 +34,38 @@ class BackendBase(object, LoggerMixin):
     def __repr__(self):
         return "<backend: %s>" % self.name
 
+    def configure(**kwargs):
+        """
+        Configuration parameters from :setting:`INSTALLED_BACKENDS` will
+        be passed here after the router is instaniated. You can override
+        this method to parse your configuration.
+        """
+        pass
+
     def send(self, id_, text, identities, context={}):
         """
-        Send a message.
+        Backend sending logic. The router will call this method for each
+        outbound message. This method must be overridden by sub-classes.
+        Backends typically initiate HTTP requests from within this method.
+
+        If multiple ``identities`` are provided, the message is intended for
+        all recipients.
+
+        :param id\_: Message ID
+        :param text: Message text
+        :param identities: List of identities
+        :param context: Optional extra context provided by router to backend
         """
         # subclasses should override this
         raise NotImplementedError()
 
     @property
     def model(self):
-        """Return RapidSMS model object for this backend."""
+        """
+        The model attribute is the RapidSMS model instance with this
+        backend name. A new backend will automatically be created if
+        one doesn't exist upon accessing this attribute.
+        """
         from rapidsms.models import Backend
         backend, _ = Backend.objects.get_or_create(name=self.name)
         return backend

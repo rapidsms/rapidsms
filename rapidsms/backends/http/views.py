@@ -8,7 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from rapidsms.router import receive
 
-from .forms import GenericHttpForm
+from rapidsms.backends.http.forms import GenericHttpForm
 
 
 logger = logging.getLogger(__name__)
@@ -68,11 +68,14 @@ class BaseHttpBackendView(FormMixin, ProcessFormView):
 
 
 class GenericHttpBackendView(BaseHttpBackendView):
+    """Simple view that allows customization of accepted paramters."""
 
-    # override these in your base class or URLconf, if needed
-    form_class = GenericHttpForm
+    #: Accepts GET and POST by default.
     http_method_names = ['get', 'post']
-    params = None
+    #: Dictionary that defines mappings to ``identity`` and ``text``.
+    params = {}
+    #: Form to validate that received parameters match defined ``params``.
+    form_class = GenericHttpForm
 
     def get_form_kwargs(self):
         kwargs = super(GenericHttpBackendView, self).get_form_kwargs()
