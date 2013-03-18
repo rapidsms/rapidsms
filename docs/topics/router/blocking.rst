@@ -9,7 +9,7 @@ BlockingRouter
 The :router:`BlockingRouter` is the most basic and easy to use router included
 with RapidSMS. For this reason it is also the default router. As it's name
 suggests, :router:`BlockingRouter` handles messages synchronously (within the
-main HTTP thread), waiting for application and backend proceessing to complete
+main HTTP thread), waiting for application and backend processing to complete
 before continuing. This is acceptable for many scenarios, but will be less
 efficient if your project needs to handle many inbound and outbound messages.
 
@@ -29,7 +29,7 @@ How it works
 
 By default, :router:`BlockingRouter` automatically adds apps and backends
 defined in your settings file via :setting:`INSTALLED_APPS` and
-:setting:`INSTALLED_BACKENDS`. If you instaniate a :router:`BlockingRouter`,
+:setting:`INSTALLED_BACKENDS`. If you instantiate a :router:`BlockingRouter`,
 you can see the available apps and backends::
 
     >>> from rapidsms.router.blocking import BlockingRouter
@@ -42,7 +42,7 @@ you can see the available apps and backends::
 In this scenario, these settings were used::
 
     INSTALLED_APPS = [
-        # trimmed to only show the relavent apps
+        # trimmed to only show the relevant apps
         "rapidsms.contrib.handlers",
         "rapidsms.contrib.default",
         "rapidsms.contrib.locations",

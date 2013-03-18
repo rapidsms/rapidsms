@@ -4,6 +4,8 @@
 CeleryRouter
 ============
 
+.. versionadded:: 0.10.0
+
 :router:`CeleryRouter` uses Celery_ to queue incoming and outgoing messages.
 
 :router:`BlockingRouter` processes messages synchronously in the main HTTP

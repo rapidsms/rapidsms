@@ -4,6 +4,8 @@
 DatabaseRouter
 ==============
 
+.. versionadded:: 0.13.0
+
 :router:`DatabaseRouter` provides the following functionality:
 
 * All inbound and outbound messages are stored in the database.

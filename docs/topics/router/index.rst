@@ -49,8 +49,8 @@ Supplied Routers
 RapidSMS includes several routers for you to use:
 
 * :router:`BlockingRouter` - Default router that processes messages synchronously within the HTTP thread.
-* :router:`CeleryRouter` - Celery-enabled router that processes messages ansynchronously.
-* :router:`DatabaseRouter` - Database, Celery-enabled router that queues messages in the database for ansynchronous processing.
+* :router:`CeleryRouter` - Celery-enabled router that processes messages asynchronously.
+* :router:`DatabaseRouter` - Database, Celery-enabled router that queues messages in the database for asynchronous processing.
 
 If you can't find a router that's suitable for your needs, you can write a custom router.
 
@@ -76,8 +76,8 @@ Applications and Backends
 
 While the router provides the foundation for messaging processing, applications and backends actually perform the message processing:
 
-* **Applications:** The router maintains a collection of related :doc:`applications </topics/applications/index>` through which it routes incoming and outgoing messages. Applications are defined in :setting:`INSTALLED_APPS` and loaded, by default, when the router is instaniated via :meth:`add_app <rapidsms.router.blocking.BlockingRouter.add_app>`.
-* **Backends:** The router also maintains a collection of related :doc:`backends </topics/backends/index>` to send outgoing messages. Backends are defined in :setting:`INSTALLED_BACKENDS` and loaded, by default, when the router is instaniated via :meth:`add_backend <rapidsms.router.blocking.BlockingRouter.add_backend>`.
+* **Applications:** The router maintains a collection of related :doc:`applications </topics/applications/index>` through which it routes incoming and outgoing messages. Applications are defined in :setting:`INSTALLED_APPS` and loaded, by default, when the router is instantiated via :meth:`add_app <rapidsms.router.blocking.BlockingRouter.add_app>`.
+* **Backends:** The router also maintains a collection of related :doc:`backends </topics/backends/index>` to send outgoing messages. Backends are defined in :setting:`INSTALLED_BACKENDS` and loaded, by default, when the router is instantiated via :meth:`add_backend <rapidsms.router.blocking.BlockingRouter.add_backend>`.
 
 
 Message Processing
