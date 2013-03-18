@@ -1,8 +1,7 @@
 from StringIO import StringIO
-from django.http import Http404, HttpResponseRedirect
+from django.http import Http404, HttpRequest, HttpResponseRedirect, QueryDict
 from django.test import TestCase
 from mock import Mock, patch
-from rapidsms.contrib.registration.forms import ContactForm, ConnectionFormSet
 from rapidsms.models import Connection, Contact
 from rapidsms.tests.harness import CreateDataMixin
 
@@ -52,17 +51,18 @@ class TestViews(TestCase, CreateDataMixin):
     def test_registration(self):
         # The registration view calls render with a context that has a
         # contacts_table that has the contacts in its data
+        request = HttpRequest()
+        request.GET = QueryDict('')
         with patch('rapidsms.contrib.registration.views.render') as render:
-            request = Mock(GET=Mock(get=Mock(return_value=1)))
             views.registration(request)
         context = render.call_args[0][2]
         table = context["contacts_table"]
-        data = table.data.queryset
         self.assertEqual(len(self.contacts), len(list(table.data.queryset)))
 
     def test_registration_render(self):
         # render actually works (django_tables2 and all)
-        request = Mock(GET=Mock(get=Mock(return_value=1)))
+        request = HttpRequest()
+        request.GET = QueryDict('')
         retval = views.registration(request)
         self.assertEqual(200, retval.status_code)
 
@@ -98,8 +98,6 @@ class TestViews(TestCase, CreateDataMixin):
             request = Mock(method="GET")
             views.contact(request)
         context = render.call_args[0][2]
-        print context
-        self.assertIsNone(context['contact'])
         # ModelForms create a new unsaved instance
         self.assertIsNotNone(context['contact_form'].instance)
         self.assertTrue(context['contact_form'].instance.is_anonymous)
