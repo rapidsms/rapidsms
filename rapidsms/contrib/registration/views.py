@@ -12,13 +12,14 @@ from rapidsms.contrib.registration.tables import ContactTable
 from rapidsms.contrib.registration.forms import (
     BulkRegistrationForm,
     ContactForm, ConnectionFormSet)
+from rapidsms import settings
 
 
 def registration(request):
     contacts_table = ContactTable(
         Contact.objects.all(),
         template="django_tables2/bootstrap-tables.html")
-    RequestConfig(request, paginate={"per_page": 25}).configure(contacts_table)
+    RequestConfig(request, paginate={"per_page": settings.PAGINATOR_OBJECTS_PER_PAGE}).configure(contacts_table)
     return render(request, "registration/dashboard.html", {
         "contacts_table": contacts_table,
     })
