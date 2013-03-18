@@ -7,11 +7,13 @@ Setting up RapidSMS with Vumi
 
 `Vumi <http://vumi.org/>`_ is a free and opensource super scalable messaging
 platform written in Python. Vumi can connect to third party gateways via
-protocols list HTTP and SMPP. Please read `Vumi's documentation
+protocols like HTTP and SMPP. Please read `Vumi's documentation
 <http://vumi.readthedocs.org/en/latest/>`_ for additional information.
 
 The following guide will help you setup Vumi on Ubuntu to talk to a SMPP
 simulator and RapidSMS installation.
+
+.. _vumi-smppsim:
 
 Using an SMPP simulator
 =======================
@@ -58,36 +60,41 @@ Clone the Vumi `GitHub repository <https://github.com/praekelt/vumi>`_::
 
 Install Vumi's Python dependencies::
 
-    pip install requirements.pip
+    pip install -r requirements.pip
 
 Setup the proper RabbitMQ user/vhost using the provided utility script::
 
     sudo ./utils/rabbitmq.setup.sh
 
-Create ``config/rapidsms.yaml`` using the following configuration::
+Create ``config/rapidsms.yaml`` using the following configuration:
+
+.. code-block:: yaml
 
     smpp_transport:
-      transport_name: "transport" 
-      system_id: smppclient1  # username
-      password: password      # password
-      host: localhost         # the host to connect to
-      port: 2775              # the port to connect to
+        transport_name: "transport" 
+        system_id: smppclient1  # username
+        password: password      # password
+        host: localhost         # the host to connect to
+        port: 2775              # the port to connect to
 
     rapidsms_relay:
-      transport_name: 'transport'
-      rapidsms_url: "http://127.0.0.1:8000/backend/vumi-fake-smsc/"
-      web_path: "/send/"
-      web_port: 9000
-      send_to:
+        transport_name: 'transport'
+        rapidsms_url: "http://127.0.0.1:8000/backend/vumi-fake-smsc/"
+        web_path: "/send/"
+        web_port: 9000
+        send_to:
         default:
-          transport_name: 'transport'
+            transport_name: 'transport'
+            from_addr: '1234' # not set automatically by SMSC
 
     workers:
-      smpp_transport: vumi.transports.smpp.SmppTransport
-      rapidsms_relay: vumi.application.rapidsms_relay.RapidSMSRelay
+        smpp_transport: vumi.transports.smpp.SmppTransport
+        rapidsms_relay: vumi.application.rapidsms_relay.RapidSMSRelay
 
-This configures a Vumi ``SmppTransport`` to communicate to SMPPSim and a
-VUMI ``RapidSMSRelay`` to communicate to RapidSMS.
+This configures a Vumi ``SmppTransport`` to communicate to 
+:ref:`SMPPSim <vumi-smppsim>` and a Vumi ``RapidSMSRelay`` to communicate to 
+RapidSMS. While not required for this setup, you'll need to set ``from_addr`` 
+to your phone number if using a real SMSC.
 
 Now we can start Vumi using our config file::
 
@@ -99,20 +106,25 @@ Adding a backend for the fake SMSC to RapidSMS
 
 Now that Vumi is installed and configured correctly, adding support for the
 Vumi backend to your existing RapidSMS project is not difficult.  To begin,
-simply add the following to your existing ``INSTALLED_BACKENDS`` configuration
-in your ``settings.py`` file::
+simply add the following to your existing :setting:`INSTALLED_BACKENDS`:
+
+.. code-block:: python
+    :emphasize-lines: 4,5,6,7
 
     INSTALLED_BACKENDS = {
         # ...
         # other backends, if any
-        "vumi-fake-smsc" : {
+        "vumi-fake-smsc": {
             "ENGINE":  "rapidsms.backends.vumi.VumiBackend",
             "sendsms_url": "http://127.0.0.1:9000/send/",
         },
     }
 
 Next, you need to add an endpoint to your ``urls.py`` for the newly created
-backend.  You can do this like so::
+backend.  You can do this like so:
+
+.. code-block:: python
+    :emphasize-lines: 2,6,7
 
     from django.conf.urls.defaults import *
     from rapidsms.backends.vumi.views import VumiBackendView
@@ -137,13 +149,32 @@ through Vumi to RapidSMS.
 Authentication
 ==============
 
-If you've enabled basic authentication on the Vumi side, you can configure the Vumi backend with a username and password:
+Vumi can be protected with basic authentication. To enable it on the Vumi side,
+create a ``passwords`` directive in the ``rapidsms_relay`` configuration:
+
+.. code-block:: yaml
+    :emphasize-lines: 10,11
+
+    rapidsms_relay:
+        transport_name: 'transport'
+        rapidsms_url: "http://127.0.0.1:8000/backend/vumi-fake-smsc/"
+        web_path: "/send/"
+        web_port: 9000
+        send_to:
+        default:
+            transport_name: 'transport'
+            from_addr: '1234' # not set automatically by SMSC
+        passwords:
+            username: 'password'
+
+Then you can update :setting:`INSTALLED_BACKENDS` with ``sendsms_user`` and
+``sendsms_pass``:
 
 .. code-block:: python
    :emphasize-lines: 5,6
 
     INSTALLED_BACKENDS = {
-        "vumi-fake-smsc" : {
+        "vumi-fake-smsc": {
             "ENGINE":  "rapidsms.backends.vumi.VumiBackend",
             "sendsms_url": "http://127.0.0.1:9000/send/",
             "sendsms_user": "username",
