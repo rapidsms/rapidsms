@@ -6,6 +6,7 @@ from django.core.urlresolvers import reverse
 from django.db import transaction
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
+from django_tables2 import RequestConfig
 from rapidsms.models import Contact, Connection, Backend
 from rapidsms.contrib.registration.tables import ContactTable
 from rapidsms.contrib.registration.forms import (
@@ -17,7 +18,7 @@ def registration(request):
     contacts_table = ContactTable(
         Contact.objects.all(),
         template="django_tables2/bootstrap-tables.html")
-    contacts_table.paginate(page=request.GET.get('page', 1), per_page=10)
+    RequestConfig(request, paginate={"per_page": 25}).configure(contacts_table)
     return render(request, "registration/dashboard.html", {
         "contacts_table": contacts_table,
     })
