@@ -38,9 +38,7 @@ Sending Messages
 .. autofunction:: rapidsms.router.send
 
 It's just as easy to send a message using RapidSMS. You can send a message from
-anywhere within your application.
-
-Here's an example using ``send``::
+anywhere within your application. Here's an example using ``send``::
 
     from rapidsms.router import send
     send("hello", connections)
