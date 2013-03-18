@@ -36,7 +36,7 @@ def paginator(context, page, prefix=""):
     adjacent_links = min(settings.PAGINATOR_ADJACENT_LINKS, page.paginator.num_pages)
     last_page_number = page.paginator.num_pages + 1
 
-    pages = {page.number}
+    pages = set([page.number])
     #first set of border links
     for p in range(1, border_links + 1):
         pages.add(p)
