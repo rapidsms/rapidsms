@@ -21,16 +21,15 @@ setup(
     license="BSD",
 
     install_requires=[
-        "django-nose",
-        "djtables",
-        "requests",
-        "django-tables2",
-        "djappsettings",
-        "django-selectable",
+        "requests==1.1.0",
+        "django-nose==1.1",
+        "django-tables2==0.13.0",
+        "djappsettings==0.1.0",
+        "django-selectable==0.7.0",
     ],
 
     test_requires=[
-        "nose",
+        "nose==1.2.1",
     ],
 
     scripts=["bin/rapidsms-admin.py"],
