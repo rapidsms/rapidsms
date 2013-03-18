@@ -19,15 +19,16 @@ What's New
     * Updated :func:`rapidsms.router.send` to pass multiple connections (within a message object) to the Router. The :doc:`Messaging API </topics/router/messaging>` already supported multiple connections, so the API did not change.
     * Updated :meth:`rapidsms.backends.base.BackendBase.send` signature to always expect multiple connections and changed the signature to accept ``text`` and ``identities``, rather than a message object. Child classes must now override this function.
     * Updated :router:`BlockingRouter` to inspect outbound message connections, group by backend, and call ``backend.send`` for each one.
-* Added the database-powered :router:`DatabaseRouter`. The :router:`DatabaseRouter` stores all messages in the database and keeps track of recieved/sent state of each message. This is useful for monitoring the sending of large message volumes.
+* Added the database-powered :router:`DatabaseRouter`. The :router:`DatabaseRouter` stores all messages in the database and keeps track of received/sent state of each message. This is useful for monitoring the sending of large message volumes.
 * Added a backend for :doc:`Vumi </topics/backends/vumi>`.
 * Cleaned up admin for ``Connection`` to load faster with database JOINs.
 * Added delivery report functionality for Kannel.
 * Combined the ``BaseRouter`` and ``BlockingRouter`` together. Now all base routing functionality is handled by :router:`BlockingRouter`.
-* In order to better support cusomization of routers, messages now pass through ``receive_incoming`` and ``process_incoming`` methods. This additional layer allows the :router:`CeleryRouter` and :router:`DatabaseRouter` to more easily customize message processing.
+* In order to better support customization of routers, messages now pass through ``receive_incoming`` and ``process_incoming`` methods. This additional layer allows the :router:`CeleryRouter` and :router:`DatabaseRouter` to more easily customize message processing.
 * The :doc:`Messaging API </topics/router/messaging>` now asks the router to instantiate incoming and outgoing messages via the ``new_incoming_message`` and ``new_outgoing_message`` methods. This allows the router to better customize the message classes.
 * Reworked the :router:`CeleryRouter` to pass identifiers, rather than instantiated objects, to background tasks. This avoids tasks possibly using outdated data when unpickling task arguments.
 * Removed ``rapidsms.tests.harness.setting``.
+* Added `requests`_ as a dependency. Vumi and Kannel now use `requests`_ to construct HTTP requests. You'll need to run ``pip install requests`` or add ``requests`` to your requirements file.
 * Deprecated ``rapidsms.log.mixin.LoggerMixin``. Please update all logging to use the standard logging module, like so::
 
     import logging
@@ -54,7 +55,7 @@ In previous versions of RapidSMS, you would define backends like so::
             }
         }
 
-Now, backends must specifiy the class::
+Now, backends must specify the class::
 
         INSTALLED_BACKENDS = {
             "kannel-fake-smsc" : {
@@ -96,7 +97,7 @@ from the Message objects and require the developer to handle it explicitly.
 Add link to updated translation docs...
 
 
-
+.. _requests: http://docs.python-requests.org/en/latest/
 .. _override settings: https://docs.djangoproject.com/en/1.4/topics/testing/#django.test.utils.override_settings
 .. _bulk create: https://docs.djangoproject.com/en/1.4/ref/models/querysets/#bulk-create
 .. _Django 1.4 release notes: https://docs.djangoproject.com/en/1.4/releases/1.4/
