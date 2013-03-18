@@ -8,17 +8,16 @@ RapidSMS 0.13.0 release notes
     RapidSMS v0.13.0 is currently under development and has not been released.
 
 Welcome to RapidSMS 0.13.0! These release notes cover the new features 0.13.0
-as well as some `backwards-incompatible-changes-0.13.0`_ you'll want to be aware of
-when upgrading from RapidSMS 0.12.0.
+as well as some :ref:`backwards-incompatible-changes-0.13.0` you'll want to be
+aware of when upgrading from RapidSMS 0.12.0.
 
 What's New
 ==========
 
 * Added support for sending bulk messages. This involved the following changes:
     * Modified ``MessageBase`` to accept multiple connections.
-    * Updated ``send`` to pass multiple connections (within a message object) to the Router. The :doc:`Messaging API </topics/router/messaging>` already supported multiple connections, so the API did not change.
-    * Added ``send`` to ``rapidsms.backends.BackendBase`` to raise a ``NotImplementedError`` by default. Child classes must now override this function.
-    * Updated ``Backend.send`` to always expect multiple connections and changed the signature to accept ``text`` and ``identities``, rather than a message object.
+    * Updated :func:`rapidsms.router.send` to pass multiple connections (within a message object) to the Router. The :doc:`Messaging API </topics/router/messaging>` already supported multiple connections, so the API did not change.
+    * Updated :meth:`rapidsms.backends.base.BackendBase.send` signature to always expect multiple connections and changed the signature to accept ``text`` and ``identities``, rather than a message object. Child classes must now override this function.
     * Updated :router:`BlockingRouter` to inspect outbound message connections, group by backend, and call ``backend.send`` for each one.
 * Added the database-powered :router:`DatabaseRouter`. The :router:`DatabaseRouter` stores all messages in the database and keeps track of recieved/sent state of each message. This is useful for monitoring the sending of large message volumes.
 * Added a backend for :doc:`Vumi </topics/backends/vumi>`.
@@ -43,6 +42,7 @@ Backwards-incompatible changes in RapidSMS 0.13.0
 In the goal of improving the RapidSMS core, we have made a number of backwards-
 incompatible changes.
 
+
 Backend configuration must point to a class
 -------------------------------------------
 
@@ -62,17 +62,36 @@ Now, backends must specifiy the class::
             }
         }
 
-This change was made to be more explicit. This also simplifies the importing architecture.
+This change was made to be more explicit. This also simplifies the importing
+architecture.
+
+
+Changed ``Backend.send`` signature
+----------------------------------
+
+The router used to pass just a message object to :meth:`BackendBase.send
+<rapidsms.backends.base.BackendBase.send>`. The signature has been updated to
+accept an ``id_``, ``text``, list of ``identities``, and a ``context``
+dictionary. All backends will need to be updated to use this signature. Please
+see :meth:`BackendBase.send <rapidsms.backends.base.BackendBase.send>` for more
+details.
+
 
 Removed start/stop methods
 --------------------------
 
-We removed the left over ``start`` and ``stop`` methods for the router, backends, and apps. These were important for the legacy, threaded router, but are no longer necessary with new-routing. If your apps and backends use these methods, you'll need to move the functionality to ``__init__``.
+We removed the left over ``start`` and ``stop`` methods for the router,
+backends, and apps. These were important for the legacy, threaded router, but
+are no longer necessary with new-routing. If your apps and backends use these
+methods, you'll need to move the functionality to ``__init__``.
 
 Removed Message translation functionality
 -----------------------------------------
 
-Now that Message objects can contain multiple connections, the internal translation bits needed to change. Messages can be sent to connections that specify different default languages. We removed all translation functionality from the Message objects and require the developer to handle it explicitly.
+Now that Message objects can contain multiple connections, the internal
+translation bits needed to change. Messages can be sent to connections that
+specify different default languages. We removed all translation functionality
+from the Message objects and require the developer to handle it explicitly.
 
 Add link to updated translation docs...
 

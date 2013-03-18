@@ -150,8 +150,8 @@ BackendBase
 
 Similar to :ref:`http-backend` for incoming messages, ``BackendBase`` provides
 the foundation for outbound functionality. All backends will typically extend
-this base class. This class will be passed configuration defined in
-:ref:`Backend Settings <backend-settings>`.
+this base class. This class will be passed the configuration dictionary 
+defined in :ref:`Backend Settings <backend-settings>`.
 
 .. autoclass:: rapidsms.backends.base.BackendBase
     :members: send, configure, model, find
