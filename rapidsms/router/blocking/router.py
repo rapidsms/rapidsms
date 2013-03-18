@@ -21,7 +21,9 @@ logger = logging.getLogger(__name__)
 class BlockingRouter(object):
     """Base RapidSMS router implementation."""
 
+    #: Incoming router phases processed in the order in which they're defined.
     incoming_phases = ("filter", "parse", "handle", "default", "cleanup")
+    #: Outgoing router phases processed in the order in which they're defined.
     outgoing_phases = ("outgoing",)
 
     def __init__(self, *args, **kwargs):
@@ -41,9 +43,13 @@ class BlockingRouter(object):
 
     def add_app(self, module_name):
         """
-        Find the app named *module_name*, instantiate it, and add it to
-        the list of apps to be notified of incoming messages. Return the
-        app instance.
+        Add RapidSMS app to router. Installed apps will be notified of
+        incoming and outgoing messages. If ``module_name`` is a Django app,
+        the method looks in ``app_name.app`` for an ``AppBase`` subclass to
+        use.
+
+        :param module_name: ``AppBase`` object or dotted path to RapidSMS app.
+        :returns: ``AppBase`` object if found, otherwise ``None``.
         """
         if isinstance(module_name, basestring):
             cls = AppBase.find(module_name)
@@ -56,7 +62,12 @@ class BlockingRouter(object):
         return app
 
     def get_app(self, module_name):
-        """Get a handle to one of our apps by module name."""
+        """
+        Access installed app by name.
+
+        :param module_name: Dotted path to RapidSMS app.
+        :returns: ``AppBase`` object if found, otherwise ``None``.
+        """
         cls = AppBase.find(module_name)
         if cls is None:
             return None
@@ -67,9 +78,15 @@ class BlockingRouter(object):
 
     def add_backend(self, name, module_name, config=None):
         """
-        Find the backend named *module_name*, instantiate it, and add it
-        to the dict of backends to be polled for incoming messages, once
-        the router is started. Return the backend instance.
+        Add RapidSMS backend to router. Installed backends will be used to
+        send outgoing messages.
+
+        :param name: Name of backend.
+        :param module_name: :class:`BackendBase <rapidsms.backends.base.BackendBase>`
+                            object or dotted path to backend class.
+        :returns: :class:`BackendBase <rapidsms.backends.base.BackendBase>`
+                  object if found, otherwise a ``ValueError`` exception
+                  will be raised.
         """
         if isinstance(module_name, basestring):
             cls = BackendBase.find(module_name)
@@ -96,13 +113,23 @@ class BlockingRouter(object):
 
     def receive_incoming(self, msg):
         """
-        Queue or process the incoming message immediately. Defaults to
-        processing the message immediately.
+        All inbound messages will be routed through ``receive_incoming``
+        by :func:`send <rapidsms.router.send>`. ``receive_incoming`` is
+        typically overridden in child routers to customize incoming message
+        handling.
+
+        :param msg: :class:`IncomingMessage <rapidsms.messages.incoming.IncomingMessage>` object
         """
         self.process_incoming(msg)
 
     def process_incoming(self, msg):
-        """Process message through incoming phases and send any responses."""
+        """
+        Process message through incoming phases and pass any generated
+        responses to :func:`send <rapidsms.router.send>`. Called by
+        ``receive_incoming``.
+
+        :param msg: :class:`IncomingMessage <rapidsms.messages.incoming.IncomingMessage>` object
+        """
         from rapidsms.router import send
         continue_processing = self.process_incoming_phases(msg)
         if continue_processing:
@@ -111,26 +138,11 @@ class BlockingRouter(object):
 
     def process_incoming_phases(self, msg):
         """
-        Incoming phases:
+        Route message through each phase and installed app.
 
-        Filter:
-          The first phase, before any actual work is done. This is the
-          only phase that can entirely abort further processing of the
-          incoming message, which it does by returning True.
-
-        Parse:
-          Don't do INSERTs or UPDATEs in here!
-
-        Handle:
-          Respond to messages here.
-
-        Default:
-          Only called if no responses were sent during the Handle phase.
-
-        Cleanup:
-          An opportunity to clean up anything started during earlier phases.
+        :param msg: :class:`IncomingMessage <rapidsms.messages.incoming.IncomingMessage>` object
+        :returns: ``True`` if inbound processing should continue.
         """
-
         logger.info("Incoming (%s): %s" % (msg.connection, msg.text))
 
         try:
@@ -181,8 +193,12 @@ class BlockingRouter(object):
 
     def send_outgoing(self, msg):
         """
-        Queue or process the outgoing message immediately. Defaults to
-        processing the message immediately.
+        All outbound messages will be routed through ``send_outgoing``
+        by :func:`receive <rapidsms.router.receive>`. ``send_outgoing`` is
+        typically overridden in child routers to customize outgoing message
+        handling.
+
+        :param msg: :class:`OutgoingMessage <rapidsms.messages.outgoing.OutgoingMessage>` object
         """
         self.process_outgoing(msg)
 
@@ -252,14 +268,30 @@ class BlockingRouter(object):
 
     def new_incoming_message(self, text, connections, class_=IncomingMessage,
                              **kwargs):
-        """Create new incoming message. Overridable by child-routers."""
+        """
+        Create and return a new incoming message. Called by
+        :func:`send <rapidsms.router.send>`. Overridable by child-routers.
+
+        :param text: Message text
+        :param connections: List or QuerySet of ``Connection`` objects
+        :param class_: Message class to instaniate
+        :returns: :class:`IncomingMessage <rapidsms.messages.incoming.IncomingMessage>` object.
+        """
         return class_(text=text, connections=connections,
                       received_at=datetime.datetime.now(),
                       **kwargs)
 
     def new_outgoing_message(self, text, connections, class_=OutgoingMessage,
                              **kwargs):
-        """Create new outgoing message. Overridable by child-routers."""
+        """
+        Create and return a new outgoing message. Called by
+        :func:`receive <rapidsms.router.receive>`. Overridable by child-routers.
+
+        :param text: Message text
+        :param connections: List or QuerySet of ``Connection`` objects
+        :param class_: Message class to instaniate
+        :returns: :class:`OutgoingMessage <rapidsms.messages.outgoing.OutgoingMessage>` object.
+        """
         return class_(text=text, connections=connections, **kwargs)
 
     def incoming(self, msg):
