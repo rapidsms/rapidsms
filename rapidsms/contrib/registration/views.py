@@ -28,7 +28,7 @@ def contact(request, pk=None):
     if pk:
         contact = get_object_or_404(Contact, pk=pk)
     else:
-        contact = None
+        contact = Contact()
     contact_form = ContactForm(instance=contact)
     connection_formset = ConnectionFormSet(instance=contact)
     if request.method == 'POST':
