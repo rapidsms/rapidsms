@@ -23,7 +23,7 @@ therefore requires Django 1.4 or later to use.
 To use the project template, first make sure you have the latest version of
 Django installed::
 
-    pip install Django>=1.4
+    pip install "Django>=1.4"
 
 Now you can use the ``startproject`` management command with the ``template`` option. You just need to specify your project name at the end of the command::
 

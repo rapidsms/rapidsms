@@ -126,9 +126,6 @@ Add the following two lines to the beginning of your files to automatically conf
     #!/usr/bin/env python
     # vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
 
-
-If you are using Eclipse for development, please read the :doc:`Eclipse Configuration <../configuration/eclipseconfiguration>`
-
 Use CapitalizedCase for class names, underscored_words for method names.
 
 Name a yourapp’s templatetags ‘yourapp-tags’. Other templatetags (not specific to an app) should not have the -tags suffix (e.g., ‘pagination’ instead of ‘pagination-tags’).

@@ -5,7 +5,7 @@ jQuery(function() {
 
     jQuery("div.map").each(function() {
         var map = new google.maps.Map(
-            jQuery("div.container", this).get(0), {
+            jQuery("div.map-container", this).get(0), {
                 "mapTypeId": google.maps.MapTypeId.TERRAIN,
                 "mapTypeControl": false
             }

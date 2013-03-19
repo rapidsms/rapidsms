@@ -1,9 +1,29 @@
-{% extends "layout-split-2.html" %}
+{% extends "base.html" %}
 {% load url from future %}
 
-{% block stylesheets %}
-{{ block.super }}
+{% block extra_stylesheets %}
 <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}registration/stylesheets/base.css" />
 {% endblock %}
 
 {% block title %}Registration - {{ block.super }}{% endblock %}
+
+{% block content %}
+    <div class="row-fluid">
+        <div class="page-header">
+            <h1>Registration</h1>
+        </div>
+    </div>
+
+    <div class="row-fluid">
+    <div class="span3 well">
+        <ul class="nav nav-list">
+            <li class="nav-header">Actions</li>
+            <li><a href="{% url 'registration' %}">List Contacts</a></li>
+            <li><a href="{% url 'registration_contact_add' %}">Add Contact</a></li>
+            <li><a href="{% url 'registration_bulk_add' %}">Bulk Add Contacts</a></li>
+        </ul>
+    </div>
+    <div class="span8">
+       {% block page %}{% endblock %}
+    </div>
+{% endblock %}
