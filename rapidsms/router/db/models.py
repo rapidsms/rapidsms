@@ -1,6 +1,6 @@
-import datetime
-
 from django.db import models
+from django.utils.timezone import now
+
 from rapidsms.models import Connection
 
 
@@ -41,10 +41,10 @@ class Message(models.Model):
                 self.status = 'P'
             elif self.transmissions.exclude(status__in=['D']).exists():
                 self.status = 'S'
-                self.sent = datetime.datetime.now()
+                self.sent = now()
             else:
                 self.status = 'D'
-                self.delivered = datetime.datetime.now()
+                self.delivered = now()
         else:
             if self.transmissions.filter(status='E').exists():
                 self.status = 'E'
@@ -52,7 +52,7 @@ class Message(models.Model):
                 self.status = 'Q'
             else:
                 self.status = 'R'
-        self.updated = datetime.datetime.now()
+        self.updated = now()
         self.save()
         return self.status
 
