@@ -30,22 +30,22 @@ def paginator(context, page, prefix=""):
             "link": _link(number),
             "active": (page.number == number)}
 
-    #border_links represent the first N pages and last N pages in the paginator
-    border_links = min(settings.PAGINATOR_BORDER_LINKS, page.paginator.num_pages)
-    #adjacent_links represents the N pages around the current page
-    adjacent_links = min(settings.PAGINATOR_ADJACENT_LINKS, page.paginator.num_pages)
+    #num_border_links represent the first N pages and last N pages in the paginator
+    num_border_links = min(settings.PAGINATOR_BORDER_LINKS, page.paginator.num_pages)
+    #num_adjacent_links represents the N pages around the current page
+    num_adjacent_links = min(settings.PAGINATOR_ADJACENT_LINKS, page.paginator.num_pages)
     last_page_number = page.paginator.num_pages + 1
 
     pages = set([page.number])
     #first set of border links
-    for p in range(1, border_links + 1):
+    for p in range(1, num_border_links + 1):
         pages.add(p)
     #last border links
-    for p in range(last_page_number - border_links, last_page_number):
+    for p in range(last_page_number - num_border_links, last_page_number):
         pages.add(p)
     #make sure that the adjacent links do not go outside of the page range
-    first_adjacent = max(1, page.number - adjacent_links)
-    last_adjacent = min(page.number + adjacent_links + 1, last_page_number)
+    first_adjacent = max(1, page.number - num_adjacent_links)
+    last_adjacent = min(page.number + num_adjacent_links + 1, last_page_number)
     for p in range(first_adjacent, last_adjacent):
         pages.add(p)
 
@@ -67,18 +67,13 @@ def paginator(context, page, prefix=""):
         "dom_id":     dom_id,
         "page_links": page_links}
 
-    # if we're viewing the first page, the  << first and < prev links
-    # are replaced with spans.
     if page.number > 1:
         subcontext.update({
-            "first_page_link": _link(1),
             "prev_page_link":  _link(page.previous_page_number())})
 
-    # likewise for the last page.
     if page.number < page.paginator.num_pages:
         subcontext.update({
-            "next_page_link":  _link(page.next_page_number()),
-            "last_page_link":  _link(page.paginator.num_pages)})
+            "next_page_link":  _link(page.next_page_number())})
 
     return subcontext
 
