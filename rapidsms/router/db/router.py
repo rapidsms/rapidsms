@@ -39,7 +39,15 @@ class DatabaseRouter(BlockingRouter):
         receive_async.delay(message_id=msg.id, fields=msg.fields)
 
     def group_transmissions(self, transmissions, batch_size=200):
-        """Divide transmissions by backend and into manageable chunks."""
+        """Divide transmissions by backend and into manageable chunks.
+
+        :param transmissions: A queryset of transmissions to send.
+
+        :returns: A series of ``backend_id, batch`` pairs, where
+           ``backend_id`` is the ID of a backend, and ``batch`` is
+           a queryset of transmissions that all go with that
+           backend, no more than ``batch_size`` each.
+        """
         start = 0
         end = batch_size
         # divide transmissions by backend
