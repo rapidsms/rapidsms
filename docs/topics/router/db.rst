@@ -83,7 +83,7 @@ The ``Message`` model contains the context of a text message. For every associat
 
     .. attribute:: direction
 
-        Required. Either ``I`` or ``O``.
+        Required. Either ``'I'`` or ``'O'``.
 
     .. attribute:: status
 
@@ -157,7 +157,7 @@ A ``Transmission`` represents the instance of a particular ``Message`` and ``Con
 Message status values
 *********************
 
-``Message`` and ``Transmission`` objects can have the follow status values:
+``Message`` and ``Transmission`` objects can have the following status values:
 
 * Inbound values:
     * ``Q`` - *Queued*: Message is queued and awaiting processing
