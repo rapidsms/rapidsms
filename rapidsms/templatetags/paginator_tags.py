@@ -15,6 +15,19 @@ from rapidsms.conf import settings
 
 @register.inclusion_tag("rapidsms/templatetags/paginator.html", takes_context=True)
 def paginator(context, page, prefix=""):
+    """Paginator Template Tag
+
+    Take a page from a paginator, creates links to relevant pages, and returns
+    an HTML version of those links.  It links to the first
+    ``rapidsms.settings.PAGINATOR_BORDER_LINKS``, last
+    ``rapidsms.settings.PAGINATOR_BORDER_LINKS`` pages,
+    and the ``rapidsms.settings.PAGINATOR_ADJACENT_LINKS`` pages around the
+    current page.
+
+    :param context: Template context
+    :param page: Paginator page object representing the current page
+    :param prefix: Prefix for the page GET parameter
+    """
 
     dom_id = prefix + "paginator"
     page_param = prefix + "page"
