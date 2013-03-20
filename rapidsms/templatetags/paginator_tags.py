@@ -3,6 +3,9 @@
 
 
 from django import template
+from django.core.exceptions import ImproperlyConfigured
+
+
 register = template.Library()
 
 # when this module is imported via {% load paginator_tags %}, it is
@@ -11,6 +14,10 @@ register = template.Library()
 # would import django.conf, so it will appear to be working, but per-app
 # settings won't work! PAGINATOR_ defaults are in the ..settings module.
 from rapidsms.conf import settings
+
+
+if "django.core.context_processors.request" not in settings.TEMPLATE_CONTEXT_PROCESSORS:
+    raise ImproperlyConfigured("To use paginator tag, add 'django.core.context_processors.request' to TEMPLATE_CONTEXT_PROCESSORS")
 
 
 @register.inclusion_tag("rapidsms/templatetags/paginator.html", takes_context=True)
