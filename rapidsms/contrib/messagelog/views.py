@@ -9,9 +9,15 @@ from django_tables2 import RequestConfig
 
 
 def message_log(request):
-    messages_table = MessageTable(Message.objects.all(),
-            template="django_tables2/bootstrap-tables.html")
-    RequestConfig(request, paginate={"per_page": settings.PAGINATOR_OBJECTS_PER_PAGE}).configure(messages_table)
+    qset = Message.objects.all()
+    qset = qset.select_related('contact', 'connection__backend')
+    template = "django_tables2/bootstrap-tables.html"
+
+    messages_table = MessageTable(qset, template=template)
+
+    paginate = {"per_page": settings.PAGINATOR_OBJECTS_PER_PAGE}
+    RequestConfig(request, paginate=paginate).configure(messages_table)
+
     return render(request, "messagelog/index.html", {
         "messages_table": messages_table,
     })
