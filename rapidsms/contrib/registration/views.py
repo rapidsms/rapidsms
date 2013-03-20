@@ -17,9 +17,12 @@ from rapidsms import settings
 
 def registration(request):
     contacts_table = ContactTable(
-        Contact.objects.all(),
+        Contact.objects.all().prefetch_related('connection_set'),
         template="django_tables2/bootstrap-tables.html")
-    RequestConfig(request, paginate={"per_page": settings.PAGINATOR_OBJECTS_PER_PAGE}).configure(contacts_table)
+
+    paginate = {"per_page": settings.PAGINATOR_OBJECTS_PER_PAGE}
+    RequestConfig(request, paginate=paginate).configure(contacts_table)
+
     return render(request, "registration/dashboard.html", {
         "contacts_table": contacts_table,
     })
@@ -64,7 +67,7 @@ def contact(request, pk=None):
         "contact": contact,
         "contact_form": contact_form,
         "connection_formset": connection_formset,
-        })
+    })
 
 
 @transaction.commit_on_success
@@ -94,7 +97,7 @@ def contact_bulk_add(request):
                     "bulk_form": bulk_form,
                     "csv_errors": "Could not find Backend.  Line: " + str(i),
                 })
-            connection = Connection.objects.create(
+            Connection.objects.create(
                 backend=backend,
                 identity=identity,
                 contact=contact)
