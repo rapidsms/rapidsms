@@ -5,7 +5,7 @@ from rapidsms.contrib.handlers import KeywordHandler, PatternHandler
 
 
 class EchoKeywordHandler(KeywordHandler):
-    """A simple keyword handler for testing that echos the text it receives."""
+    """A simple keyword handler for testing that echos the text it receives"""
     keyword = 'hello'
     HELP_TEXT = 'helpful text'
 
@@ -17,7 +17,7 @@ class EchoKeywordHandler(KeywordHandler):
 
 
 class AdditionPatternHandler(PatternHandler):
-    """A simple pattern handler for testing that adds the values it receives."""
+    """A simple pattern handler for testing that adds the values it receives"""
     pattern = r'^(\d+) plus (\d+)$'
 
     def handle(self, a, b):

@@ -8,7 +8,7 @@ from ..models import Message
 
 
 __all__ = ['MessageLogAppTestBase', 'IncomingMessageLogAppTest',
-        'OutgoingMessageLogAppTest']
+           'OutgoingMessageLogAppTest']
 
 
 class MessageLogAppTestBase(object):

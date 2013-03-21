@@ -14,7 +14,7 @@ class ConnectionFormSetBase(forms.models.BaseInlineFormSet):
                 form.fields['DELETE'].widget = forms.widgets.HiddenInput()
 
 
-ContactForm = forms.models.modelform_factory(Contact, exclude=("connections", ))
+ContactForm = forms.models.modelform_factory(Contact, exclude=("connections"))
 
 ConnectionFormSet = forms.models.inlineformset_factory(
     Contact,

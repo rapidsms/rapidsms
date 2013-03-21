@@ -13,7 +13,8 @@ register = template.Library()
 from rapidsms.conf import settings
 
 
-@register.inclusion_tag("rapidsms/templatetags/paginator.html", takes_context=True)
+@register.inclusion_tag("rapidsms/templatetags/paginator.html",
+                        takes_context=True)
 def paginator(context, page, prefix=""):
     """Paginator Template Tag
 
@@ -42,10 +43,13 @@ def paginator(context, page, prefix=""):
             "link": _link(number),
             "active": (page.number == number)}
 
-    #num_border_links represent the first N pages and last N pages in the paginator
-    num_border_links = min(settings.PAGINATOR_BORDER_LINKS, page.paginator.num_pages)
+    #num_border_links represent the first N pages and last N pages
+    #   in the paginator
+    num_border_links = min(settings.PAGINATOR_BORDER_LINKS,
+                           page.paginator.num_pages)
     #num_adjacent_links represents the N pages around the current page
-    num_adjacent_links = min(settings.PAGINATOR_ADJACENT_LINKS, page.paginator.num_pages)
+    num_adjacent_links = min(settings.PAGINATOR_ADJACENT_LINKS,
+                             page.paginator.num_pages)
     last_page_number = page.paginator.num_pages + 1
 
     pages = set([page.number])

@@ -24,7 +24,7 @@ def send(request):
                 return HttpResponse('Your message was sent to 1 recipient.')
             else:
                 return HttpResponse('Your message was sent to {0} '
-                        'recipients.'.format(len(messages)))
+                                    'recipients.'.format(len(messages)))
         else:
             return HttpResponseBadRequest(unicode(form.errors))
     except:
