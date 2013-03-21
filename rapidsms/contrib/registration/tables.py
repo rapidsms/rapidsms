@@ -8,7 +8,8 @@ import django_tables2 as tables
 
 class ContactTable(tables.Table):
     identities = tables.Column(empty_values=(), orderable=False)
-    id = tables.LinkColumn('registration_contact_edit', args=[tables.utils.A('pk')])
+    id = tables.LinkColumn('registration_contact_edit',
+                           args=[tables.utils.A('pk')])
 
     class Meta:
         model = Contact
