@@ -1,0 +1,120 @@
+{% load url from future %}
+{% load i18n %}
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">{# keep this right after <head> #}
+        <title>{% block title %}RapidSMS{% endblock %}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        {% block stylesheets %}
+        <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}rapidsms/stylesheets/splits.css" />
+        <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}rapidsms/stylesheets/modules.css" />
+        <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}rapidsms/stylesheets/tables.css" />
+        <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}rapidsms/stylesheets/forms.css" />
+        <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}rapidsms/stylesheets/icons.css" />
+        <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}bootstrap/css/bootstrap.min.css" />
+        <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}rapidsms/stylesheets/base.css" />
+        <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}bootstrap/css/bootstrap-responsive.css" />
+        {% endblock %}
+
+        {% block extra_stylesheets %}
+        {% endblock %}
+
+        {% block javascripts %}
+        <script type="text/javascript" src="{{ STATIC_URL }}rapidsms/javascripts/jquery-1.9.0.min.js"></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}rapidsms/javascripts/collapse.js"></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}bootstrap/js/bootstrap.min.js"></script>
+        {% endblock %}
+        {% block extra_javascript %}
+        {% endblock %}
+    </head>
+
+    <body>
+        <div id="wrap">  {# Wrap everything but the footer so we can push the footer to the bottom #}
+
+            {% block header %}
+                <div class="navbar navbar-blue navbar-fixed-top">
+                    <div class="navbar-inner">
+                        <div class="container">
+
+                            {# .btn-navbar is used as the toggle for collapsed navbar content #}
+                            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                            </a>
+
+                            {# Be sure to leave the brand out there if you want it shown #}
+                            <a href="/" class="brand">
+                                <img alt="RapidSMS Logo" width="100" src="{{ STATIC_URL }}rapidsms/images/rapidsms-logo.png"/>
+                            </a>
+
+                            {#  Everything you want hidden at 940px or less, place within here #}
+                            <div class="nav-collapse collapse">
+                                <ul class="nav">
+                                    {% include "rapidsms/_nav_bar.html" %}
+                                </ul>
+                                <ul class="nav pull-right">
+                                    {% block admin_link %}
+                                        {% if user.is_staff %}
+                                            <li>
+                                                <a href="{% url 'admin:index' %}">{% trans "Admin" %}</a>
+                                            </li>
+                                        {% endif %}
+                                    {% endblock %}
+                                    {% block login_link %}
+                                        <li>
+                                            {% block auth %}
+                                                {% if user.is_authenticated %}
+                                                    <a href="{% url 'rapidsms-logout' %}">{% trans "Log out" %} {{ user.username }}</a>
+                                                {% else %}
+                                                    <a href="{% url 'rapidsms-login' %}">{% trans "Log in" %}</a>
+                                                {% endif %}
+                                            {% endblock auth %}
+                                        </li>
+                                    {% endblock %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% block page_tabs %}{# FIXME - putting anything here won't do anything useful. If anything is using page_tabs, we should probably move this up into the navbar collapsable area. #}
+                {% endblock %}
+            {% endblock %}
+
+            {# begin page content - has its own div container so we can add top padding  #}
+            <div class="container" id="mainpage">
+                {% block breadcrumbs %}{% if breadcrumbs %}
+                    <div class="row-fluid">{% for caption, url in breadcrumbs %}
+                        <a href="{{ url }}">{{ caption }}</a>{% if not forloop.last %}
+                        <span>&raquo;</span>{% endif %}{% endfor %}
+                    </div>{% endif %}
+                {% endblock %}
+
+                <div class="row-fluid content">
+                    {% block content %}{% endblock %}
+                </div>
+            </div>
+            <div id="push"></div>{# important to push footer down #}
+        </div>{# end wrap - everything above the footer #}
+
+
+            <div id="footer">
+                <div class="container">
+                    {% block footer %}
+                        <div class="row-fluid">
+                            {# if the height of this changes, the CSS in base.css will have to be changed to match #}
+                            <p>
+                                Copyright &copy; 2008 &#8211; 2013
+                                <a href="http://unicef.org">UNICEF</a> et al.<br />
+                                <a href="http://github.com/rapidsms/rapidsms">RapidSMS</a> is available under
+                                <a href="http://github.com/rapidsms/rapidsms/raw/master/LICENSE">the BSD license</a>.
+                            </p>
+                        </div>
+                    {% endblock footer %}
+                </div>
+            </div>
+    </body>
+</html>

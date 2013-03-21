@@ -1,0 +1,42 @@
+{% spaceless %}
+{% load django_tables2 %}
+{% load paginator_tags %}
+{% if table.page %}
+<div class="table-container">
+{% endif %}
+<table{% if table.attrs %} {{ table.attrs.as_html }}{% endif %}>
+    <thead>
+        <tr class="{% cycle "odd" "even" %}">
+        {% for column in table.columns %}
+        {% if column.sortable %}
+            {% with column.order_by as ob %}
+            <th class="{% spaceless %}{% if column.sortable %}sortable {% endif %}{% if ob %}{% if ob.is_descending %}desc{% else %}asc{% endif %}{% endif %}{% endspaceless %}"><a href="{% querystring table.prefixed_order_by_field=ob.opposite|default:column.name %}">{{ column.header }}</a></th>
+            {% endwith %}
+        {% else %}
+            <th>{{ column.header }}</th>
+        {% endif %}
+        {% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in table.page.object_list|default:table.rows %} {# support pagination #}
+        <tr class="{% cycle "odd" "even" %}">
+            {% for cell in row %}
+                <td>{{ cell }}</td>
+            {% endfor %}
+        </tr>
+        {% empty %}
+        {% if table.empty_text %}
+        <tr><td colspan="{{ table.columns|length }}">{{ table.empty_text }}</td></tr>
+        {% endif %}
+        {% endfor %}
+    </tbody>
+</table>
+{% if table.page %}
+<div class="pagination">
+    {% paginator table.page table.prefix %}
+
+</div>
+</div>
+{% endif %}
+{% endspaceless %}

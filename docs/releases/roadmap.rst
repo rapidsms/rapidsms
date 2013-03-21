@@ -37,7 +37,7 @@ v0.14.0
 -------
 * **Scheduling and deployment**
 * *Expected release date:* March, 2013
-* `GitHub Milestone <https://github.com/rapidsms/rapidsms/issues?milestone=6&page=1&state=open>`_
+* `v0.14.0 GitHub Milestone <https://github.com/rapidsms/rapidsms/issues?milestone=6&page=1&state=open>`_
 
 **Goals**
 
@@ -47,24 +47,11 @@ v0.14.0
 * Provide instructions and scripts to deploy project in a few simple steps
 
 
-v0.13.0
--------
-* **Bootstrap and contrib update**
-* *Expected release date:* February, 2013
-* `GitHub Milestone <https://github.com/rapidsms/rapidsms/issues?milestone=5&page=1&state=open>`_
-
-
-**Goals**
-
-* Use `Twitter Bootstrap`_ in core, based on the community proposal
-* Update contrib applications to meet base standard as per this `review <https://groups.google.com/forum/#!topic/rapidsms-dev/34AOL5S0Xr8>`_
-
-
-v0.12.0 - Next Release
+v0.13.0 - Next Release
 ----------------------
 * **Bulk messaging**
-* *Expected release date:* Janurary, 2013
-* `GitHub Milestone <https://github.com/rapidsms/rapidsms/issues?milestone=4&page=1&state=open>`_
+* *Expected release date:* March, 2013
+* `v0.13.0 GitHub Milestone <https://github.com/rapidsms/rapidsms/issues?milestone=5&page=1&state=open>`_
 
 
 **Goals**
@@ -77,12 +64,25 @@ v0.12.0 - Next Release
 * Finalize and merge the `Vumi backend pull request`_
 
 
+v0.12.0
+-------
+* **Bootstrap and contrib update**
+* *Expected release date:* March, 2013
+* `v0.12.0 GitHub Milestone <https://github.com/rapidsms/rapidsms/issues?milestone=4&page=1&state=open>`_
+
+
+**Goals**
+
+* Use `Twitter Bootstrap`_ in core, based on the community proposal
+* Update contrib applications to meet base standard as per this `review <https://groups.google.com/forum/#!topic/rapidsms-dev/34AOL5S0Xr8>`_
+
+
 v0.11.0
 -------
 * **PEP8 and testing**
 * *Release date:* December 31, 2012
 * :doc:`0.11.0`
-* `GitHub Milestone <https://github.com/rapidsms/rapidsms/issues?milestone=2&page=1&state=open>`_
+* `v0.11.0 GitHub Milestone <https://github.com/rapidsms/rapidsms/issues?milestone=2&page=1&state=open>`_
 
 **Goals**
 
@@ -95,7 +95,7 @@ v0.10.0
 * **New routing**
 * *Date released:* November 23, 2012
 * :doc:`0.10.0`
-* `GitHub Milestone <https://github.com/rapidsms/rapidsms/issues?milestone=1>`_
+* `v0.10.0 GitHub Milestone <https://github.com/rapidsms/rapidsms/issues?milestone=1>`_
 
 **Goals**
 
