@@ -3,12 +3,12 @@
 
 """ Store and get messages from cache """
 
-from .models import HttpTesterMessage
+from rapidsms.backends.db.models import INCOMING, BackendMessage
 
 
 def get_messages():
     """Return a queryset with the message data"""
-    return HttpTesterMessage.objects.all()
+    return BackendMessage.objects.all()
 
 
 def store_message(direction, identity, text):
@@ -20,8 +20,8 @@ def store_message(direction, identity, text):
        or to (out)
     :param text: The message
     """
-    HttpTesterMessage.objects.create(direction=direction, identity=identity,
-                                     text=text)
+    BackendMessage.objects.create(direction=direction, identity=identity,
+                                  text=text)
 
 
 def store_and_queue(backend_name, identity, text):
@@ -32,7 +32,7 @@ def store_and_queue(backend_name, identity, text):
     :param text: The message
     """
     from rapidsms.router import receive, lookup_connections
-    store_message(HttpTesterMessage.INCOMING, identity, text)
+    store_message(INCOMING, identity, text)
     connection = lookup_connections(backend_name, [identity])[0]
     receive(text, connection)
 
@@ -42,9 +42,9 @@ def clear_messages(identity):
 
     :param identity: The phone number whose messages will be cleared
     """
-    HttpTesterMessage.objects.filter(identity=identity).delete()
+    BackendMessage.objects.filter(identity=identity).delete()
 
 
 def clear_all_messages():
     """Forget all messages"""
-    HttpTesterMessage.objects.all().delete()
+    BackendMessage.objects.all().delete()

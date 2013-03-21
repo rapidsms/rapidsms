@@ -14,16 +14,24 @@ Installation
 
 To define and use Message Tester for your RapidSMS project, you will need to:
 
-1. Add ``"rapidsms.contrib.httptester"`` to :setting:`INSTALLED_APPS` in your
-   settings file::
+1. Add ``"rapidsms.contrib.httptester"`` and
+   ``"rapidsms.backends.db"`` to :setting:`INSTALLED_APPS` in your
+   settings file:
+
+.. code-block:: python
+    :emphasize-lines: 3-4
 
     INSTALLED_APPS = [
         ...
+        "rapidsms.backends.db",
         "rapidsms.contrib.httptester",
         ...
     ]
 
-2. Add `httptester` URLs to your urlconf::
+2. Add `httptester` URLs to your urlconf:
+
+.. code-block:: python
+    :emphasize-lines: 3
 
     urlpatterns = patterns("",
         ...
@@ -31,17 +39,20 @@ To define and use Message Tester for your RapidSMS project, you will need to:
         ...
     )
 
-3. Add the Message Tester backend to :setting:`INSTALLED_BACKENDS`::
+3. Add the DB backend to :setting:`INSTALLED_BACKENDS`:
 
-    INSTALLED_BACKENDS = {
+.. code-block:: python
+    :emphasize-lines: 4
+
+        INSTALLED_BACKENDS = {
         ...
         "message_tester": {
-            "ENGINE": "rapidsms.contrib.httptester.backend",
+            "ENGINE": "rapidsms.backends.db.DatabaseBackend",
         },
         ...
     }
 
-4. Create database tables for the `httptester` models:
+4. Create database tables for the DB backend models:
 
 .. code-block:: bash
 
@@ -51,6 +62,7 @@ To define and use Message Tester for your RapidSMS project, you will need to:
    template:
 
 .. code-block:: html
+    :emphasize-lines: 2
 
     {% load url from future %}
     <li><a href="{% "httptester-index" %}">Message Tester</a></li>
