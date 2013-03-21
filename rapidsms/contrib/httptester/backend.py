@@ -13,7 +13,7 @@ class HttpTesterCacheBackend(BackendBase):
 
     def send(self, msg):
         store_message(HttpTesterMessage.OUTGOING, msg.connection.identity,
-                msg.text)
+                      msg.text)
         return True
 
     def start(self):

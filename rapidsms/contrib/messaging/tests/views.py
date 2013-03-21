@@ -77,7 +77,8 @@ class TestSendView(RapidTest):
         An error during sending should cause a 500 response. No guarantees
         are made about whether the message has been sent to other recipients.
         """
-        with mock.patch('rapidsms.contrib.messaging.forms.MessageForm.send') as send:
+        with mock.patch('rapidsms.contrib.messaging.forms.MessageForm.send') \
+                as send:
             send.side_effect = Exception()
             response = self.client.post(self.url, self.data)
         self.assertEqual(response.status_code, 500)

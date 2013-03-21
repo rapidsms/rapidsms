@@ -2,9 +2,7 @@
 Test app specific functionality of Router
 """
 
-from nose.tools import assert_equals, assert_raises, assert_true
-
-from django.core.exceptions import ImproperlyConfigured
+from nose.tools import assert_equals, assert_raises
 
 from rapidsms.apps.base import AppBase
 from rapidsms.router.base import BaseRouter

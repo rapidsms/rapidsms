@@ -31,7 +31,8 @@ class CustomRouterMixin(CreateDataMixin):
         self._post_rapidsms_teardown()
 
     def receive(self, text, connection, fields=None):
-        """ A wrapper around the ``receive`` API. See :ref:`receiving-messages`."""
+        """ A wrapper around the ``receive`` API.
+        See :ref:`receiving-messages`."""
         return receive(text, connection, fields)
 
     def send(self, text, connections):

@@ -22,7 +22,7 @@ class PaginatorTests(TestCase):
             (16, 20, [1, 2, None, 14, 15, 16, 17, 18, 19, 20]),
             (15, 20, [1, 2, None, 13, 14, 15, 16, 17, 18, 19, 20]),
             (20, 50, [1, 2, None, 18, 19, 20, 21, 22, None, 49, 50]),
-            ]
+        ]
         request = RequestFactory().get(
             reverse('rapidsms.contrib.registration.views.registration')
         )
@@ -33,8 +33,6 @@ class PaginatorTests(TestCase):
 
         for page_num, max_num, test_case_pages in cases:
             pg = Paginator(range(max_num * 10), 10)
-            result_pages = [
-                p['number'] if p else None for p in
-                    paginator(context, pg.page(page_num))['page_links']
-            ]
+            page_links = paginator(context, pg.page(page_num))['page_links']
+            result_pages = [p['number'] if p else None for p in page_links]
             self.assertEqual(result_pages, test_case_pages)
