@@ -1,0 +1,19 @@
+{% extends "registration/base.html" %}
+{% load url from future %}
+{% load forms_tags %}
+
+{% block page %}
+    <div class="page_header">
+        <h2>Bulk Add</h2>
+    </div>
+    {% if csv_errors %}
+        <p style="color: red; font-weight: strong;">CSV Error: {{ csv_errors }}</p>
+    {% endif %}
+    <form action="" method="post" enctype="multipart/form-data">
+        {% render_form bulk_form %}
+        {% csrf_token %}
+        <div class="submit">
+            <input type="submit" name="submit" class="btn btn-primary" value="Save Contacts" />
+        </div>
+    </form>
+{% endblock %}

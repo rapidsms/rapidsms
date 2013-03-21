@@ -1,16 +1,23 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
+from django.shortcuts import render
+from rapidsms.contrib.messagelog.tables import MessageTable
+from rapidsms.contrib.messagelog.models import Message
+from rapidsms import settings
+from django_tables2 import RequestConfig
 
-from django.template import RequestContext
-from django.shortcuts import render_to_response
-from .tables import MessageTable
-from .models import Message
 
+def message_log(request):
+    qset = Message.objects.all()
+    qset = qset.select_related('contact', 'connection__backend')
+    template = "django_tables2/bootstrap-tables.html"
 
-def message_log(req):
-    return render_to_response(
-        "messagelog/index.html", {
-            "messages_table": MessageTable(Message.objects.all(), request=req)
-        }, context_instance=RequestContext(req)
-    )
+    messages_table = MessageTable(qset, template=template)
+
+    paginate = {"per_page": settings.PAGINATOR_OBJECTS_PER_PAGE}
+    RequestConfig(request, paginate=paginate).configure(messages_table)
+
+    return render(request, "messagelog/index.html", {
+        "messages_table": messages_table,
+    })

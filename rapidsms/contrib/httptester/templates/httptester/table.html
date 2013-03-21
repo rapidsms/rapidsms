@@ -1,0 +1,9 @@
+{% extends 'django_tables2/bootstrap-tables.html' %}
+
+{% block table.tbody.row %}
+    <tr class="{% if row.record.direction == record.INCOMING %}in{% endif %}">
+        {% for column, cell in row.items %}
+            <td {{ column.attrs.td.as_html }}>{{ cell }} </td>
+        {% endfor %}
+    </tr>
+{% endblock table.tbody.row %}

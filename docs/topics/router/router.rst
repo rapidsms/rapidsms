@@ -74,21 +74,3 @@ In this scenario, these settings were used::
             "ENGINE": "rapidsms.contrib.httptester.backend",
         },
     }
-
-.. _custom-router:
-
-Using a custom router
----------------------
-
-While RapidSMS includes support for a number of routers out-of-the-box,
-sometimes you might want to use a customized router. To use an external router
-with RapidSMS, use the Python import path to the router class for the
-:setting:`ROUTER` setting, like so::
-
-    RAPIDSMS_ROUTER = 'path.to.router'
-
-If you're building your own router, you can use the standard routers
-as reference implementations.
-
-Please see :doc:`Community Routers <community>` for a list of
-community-maintained routers.

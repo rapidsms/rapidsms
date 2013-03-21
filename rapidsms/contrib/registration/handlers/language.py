@@ -21,7 +21,7 @@ class LanguageHandler(KeywordHandler):
     def handle(self, text):
         if self.msg.connection.contact is None:
             return self.respond_error(
-                "You must JOIN or IDENTIFY yourself before you can " +
+                "You must JOIN or REGISTER yourself before you can " +
                 "set your language preference.")
 
         t = text.lower()

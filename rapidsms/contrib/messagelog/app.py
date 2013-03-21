@@ -1,40 +1,29 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-
-import datetime
+from django.utils import timezone
 from rapidsms.apps.base import AppBase
 from .models import Message
 
 
-try:
-    from django.utils.timezone import now as datetime_now
-except ImportError:
-    datetime_now = datetime.datetime.now
+class MessageLogApp(AppBase):
 
-
-class App(AppBase):
-    def _who(self, msg):
-        to_return = {}
-        if msg.contact:
-            to_return["contact"] = msg.contact
-        if msg.connection:
-            to_return["connection"] = msg.connection
-        if not to_return:
+    def _log(self, direction, msg):
+        if not msg.contact and not msg.connection:
             raise ValueError
-        return to_return
-
-    def _log(self, direction, who, text):
+        text = msg.raw_text if direction == Message.INCOMING else msg.text
         return Message.objects.create(
-            date=datetime_now(),
+            date=timezone.now(),
             direction=direction,
             text=text,
-            **who)
+            contact=msg.contact,
+            connection=msg.connection,
+        )
 
     def parse(self, msg):
         # annotate the message as we log them in case any other apps
         # want a handle to them
-        msg.logger_msg = self._log("I", self._who(msg), msg.raw_text)
+        msg.logger_msg = self._log(Message.INCOMING, msg)
 
     def outgoing(self, msg):
-        msg.logger_msg = self._log("O", self._who(msg), msg.text)
+        msg.logger_msg = self._log(Message.OUTGOING, msg)

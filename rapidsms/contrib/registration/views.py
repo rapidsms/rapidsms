@@ -1,74 +1,113 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-from django.template import RequestContext
+import csv
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect
 from django.db import transaction
-from django.shortcuts import render_to_response, get_object_or_404
-from rapidsms.forms import ContactForm
-from rapidsms.models import Contact
-from rapidsms.models import Connection
-from rapidsms.models import Backend
-from .tables import ContactTable
-from .forms import BulkRegistrationForm
+from django.http import HttpResponseRedirect
+from django.shortcuts import render, get_object_or_404
+from django_tables2 import RequestConfig
+from rapidsms.models import Contact, Connection, Backend
+from rapidsms.contrib.registration.tables import ContactTable
+from rapidsms.contrib.registration.forms import (
+    BulkRegistrationForm,
+    ContactForm, ConnectionFormSet)
+from rapidsms import settings
+
+
+def registration(request):
+    contacts_table = ContactTable(
+        Contact.objects.all().prefetch_related('connection_set'),
+        template="django_tables2/bootstrap-tables.html")
+
+    paginate = {"per_page": settings.PAGINATOR_OBJECTS_PER_PAGE}
+    RequestConfig(request, paginate=paginate).configure(contacts_table)
+
+    return render(request, "registration/dashboard.html", {
+        "contacts_table": contacts_table,
+    })
+
+
+def contact(request, pk=None):
+    if pk:
+        contact = get_object_or_404(Contact, pk=pk)
+    else:
+        contact = Contact()
+    contact_form = ContactForm(instance=contact)
+    connection_formset = ConnectionFormSet(instance=contact)
+    if request.method == 'POST':
+        data = {}
+        for key in request.POST:
+            val = request.POST[key]
+            if isinstance(val, basestring):
+                data[key] = val
+            else:
+                try:
+                    data[key] = val[0]
+                except (IndexError, TypeError):
+                    data[key] = val
+        # print repr(data)
+        del data
+        if pk:
+            if request.POST["submit"] == "Delete Contact":
+                contact.delete()
+                return HttpResponseRedirect(reverse(registration))
+            contact_form = ContactForm(request.POST, instance=contact)
+        else:
+            contact_form = ContactForm(request.POST)
+        if contact_form.is_valid():
+            contact = contact_form.save(commit=False)
+            connection_formset = ConnectionFormSet(request.POST,
+                                                   instance=contact)
+            if connection_formset.is_valid():
+                contact.save()
+                connection_formset.save()
+                return HttpResponseRedirect(reverse(registration))
+    return render(request, 'registration/contact_form.html', {
+        "contact": contact,
+        "contact_form": contact_form,
+        "connection_formset": connection_formset,
+    })
 
 
 @transaction.commit_on_success
-def registration(req, pk=None):
-    contact = None
+def contact_bulk_add(request):
+    bulk_form = BulkRegistrationForm(request.POST)
 
-    if pk is not None:
-        contact = get_object_or_404(
-            Contact, pk=pk)
-
-    if req.method == "POST":
-        if req.POST["submit"] == "Delete Contact":
-            contact.delete()
-            return HttpResponseRedirect(
-                reverse(registration))
-
-        elif "bulk" in req.FILES:
-            # TODO use csv module
-            #reader = csv.reader(open(req.FILES["bulk"].read(), "rb"))
-            #for row in reader:
-            for line in req.FILES["bulk"]:
-                line_list = line.split(',')
-                name = line_list[0].strip()
-                backend_name = line_list[1].strip()
-                identity = line_list[2].strip()
-
-                contact = Contact(name=name)
-                contact.save()
-                # TODO deal with errors!
+    if request.method == "POST" and "bulk" in request.FILES:
+        reader = csv.reader(
+            request.FILES["bulk"],
+            quoting=csv.QUOTE_NONE,
+            skipinitialspace=True
+        )
+        count = 0
+        for i, row in enumerate(reader, start=1):
+            try:
+                name, backend_name, identity = row
+            except:
+                return render(request, 'registration/bulk_form.html', {
+                    "bulk_form": bulk_form,
+                    "csv_errors": "Could not unpack line " + str(i),
+                })
+            contact = Contact.objects.create(name=name)
+            try:
                 backend = Backend.objects.get(name=backend_name)
-
-                connection = Connection(backend=backend, identity=identity,
-                                        contact=contact)
-                connection.save()
-
-            return HttpResponseRedirect(
-                reverse(registration))
-        else:
-            contact_form = ContactForm(
-                instance=contact,
-                data=req.POST)
-
-            if contact_form.is_valid():
-                contact = contact_form.save()
-                return HttpResponseRedirect(
-                    reverse(registration))
-
-    else:
-        contact_form = ContactForm(
-            instance=contact)
-        bulk_form = BulkRegistrationForm()
-
-    return render_to_response(
-        "registration/dashboard.html", {
-            "contacts_table": ContactTable(Contact.objects.all(), request=req),
-            "contact_form": contact_form,
-            "bulk_form": bulk_form,
-            "contact": contact
-        }, context_instance=RequestContext(req)
-    )
+            except:
+                return render(request, 'registration/bulk_form.html', {
+                    "bulk_form": bulk_form,
+                    "csv_errors": "Could not find Backend.  Line: " + str(i),
+                })
+            Connection.objects.create(
+                backend=backend,
+                identity=identity,
+                contact=contact)
+            count += 1
+        if not count:
+            return render(request, 'registration/bulk_form.html', {
+                "bulk_form": bulk_form,
+                "csv_errors": "No contacts found in file",
+            })
+        return HttpResponseRedirect(reverse(registration))
+    return render(request, 'registration/bulk_form.html', {
+        "bulk_form": bulk_form,
+    })

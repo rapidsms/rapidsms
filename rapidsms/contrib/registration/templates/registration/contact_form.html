@@ -1,0 +1,30 @@
+{% extends "registration/base.html" %}
+{% load url from future %}
+{% load forms_tags %}
+
+{% block page %}
+    <div class="page_header">
+        {% if contact %}
+            <h2>Edit Contact</h2>
+        {% else %}
+            <h2>Add Contact</h2>
+        {% endif %}
+    </div>
+    <div class="span8">
+        <form action="" method="post">
+            {% render_form contact_form %}
+            {% render_form connection_formset.management_form %}
+            {% for form in connection_formset %}
+                {% render_form form %}
+            {% endfor %}
+            {% csrf_token %}
+            <div class="submit">
+                <input type="submit" name="submit" class="btn btn-primary" value="Save Contact" />
+                {% if contact %}
+                    <input type="submit" name="submit" class="btn btn-primary" value="Delete Contact" />
+                {% endif %}
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
