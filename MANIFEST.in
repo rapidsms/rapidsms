@@ -16,6 +16,4 @@ recursive-include rapidsms/contrib/messaging/static *
 recursive-include rapidsms/contrib/messaging/templates *
 recursive-include rapidsms/contrib/registration/static *
 recursive-include rapidsms/contrib/registration/templates *
-recursive-include rapidsms/contrib/scheduler/static *
-recursive-include rapidsms/contrib/scheduler/templates *
 recursive-exclude * *.py[co]
