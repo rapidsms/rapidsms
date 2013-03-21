@@ -13,11 +13,11 @@ class MessageBase(object):
         self.id = id_ or self.generate_id()
         self.connections = connections
         self.text = text
-        # save original text for future reference
+        #: save original text for future reference
         self.raw_text = copy.copy(self.text)
-        # fields can be used to pass along arbitrary metadata
+        #: fields can be used to pass along arbitrary metadata
         self.fields = fields or {}
-        # link back to original message if this is a response
+        #: link back to original message if this is a response
         self.in_response_to = in_response_to
         # a message is considered "unprocessed" until rapidsms has
         # dispatched it to all apps.

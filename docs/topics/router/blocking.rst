@@ -68,15 +68,3 @@ functionality. A subset of it's methods are outlined below:
     :members: incoming_phases,outgoing_phases,add_app,get_app,add_backend,
               receive_incoming,send_outgoing,new_incoming_message,
               new_outgoing_message
-
-
-
-
-
-.. autoclass:: rapidsms.messages.incoming.IncomingMessage
-
-.. autoclass:: rapidsms.messages.outgoing.OutgoingMessage
-
-
-
-
