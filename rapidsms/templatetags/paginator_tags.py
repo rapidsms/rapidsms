@@ -90,16 +90,16 @@ def paginator(context, page, prefix=""):
         page_links.append(_page(pages[-1]))
 
     subcontext = {
-        "dom_id":     dom_id,
+        "dom_id": dom_id,
         "page_links": page_links}
 
     if page.number > 1:
         subcontext.update({
-            "prev_page_link":  _link(page.previous_page_number())})
+            "prev_page_link": _link(page.previous_page_number())})
 
     if page.number < page.paginator.num_pages:
         subcontext.update({
-            "next_page_link":  _link(page.next_page_number())})
+            "next_page_link": _link(page.next_page_number())})
 
     return subcontext
 

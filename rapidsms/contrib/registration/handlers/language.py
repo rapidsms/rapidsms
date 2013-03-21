@@ -3,7 +3,6 @@
 
 
 from rapidsms.contrib.handlers.handlers.keyword import KeywordHandler
-from rapidsms.models import Contact
 from rapidsms.conf import settings
 
 

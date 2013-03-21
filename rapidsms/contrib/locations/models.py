@@ -109,8 +109,8 @@ class Location(models.Model):
         return [
             cls
             for cls in models.loading.get_models()
-            if issubclass(cls, Location) and\
-                (cls is not Location)]
+            if issubclass(cls, Location)
+            and (cls is not Location)]
 
     @property
     def path(self):

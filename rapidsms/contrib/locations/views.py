@@ -112,7 +112,7 @@ def locations(req, location_uid=None):
                     "parent_id", None):
                 parent_class = utils.get_model(req.POST["parent_type"])
                 parent = get_object_or_404(parent_class,
-                                            pk=req.POST["parent_id"])
+                                           pk=req.POST["parent_id"])
                 model.parent = parent
                 model.save()
 
@@ -133,11 +133,11 @@ def locations(req, location_uid=None):
             "location_types": types,
 
             # from rapidsms.contrib.locations.settings
-            "default_latitude":  settings.MAP_DEFAULT_LATITUDE,
+            "default_latitude": settings.MAP_DEFAULT_LATITUDE,
             "default_longitude": settings.MAP_DEFAULT_LONGITUDE,
 
             # if there are no locationtypes, then we should display a
             # big error, since this app is useless without them.
             "no_location_types": (len(types) == 0)
         }, context_instance=RequestContext(req)
-     )
+    )

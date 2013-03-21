@@ -90,7 +90,7 @@ class ViewTest(RapidTest):
             'identity': self.phone,
             'bulk': fake_file,
         }
-        rsp = self.client.post(self.url, data)
+        self.client.post(self.url, data)
         self.assertEqual(3, len(get_messages()))
         for i, m in enumerate(messages):
             self.assertEqual(m, get_messages()[i].text)
