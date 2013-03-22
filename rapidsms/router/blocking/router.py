@@ -3,11 +3,12 @@
 
 import logging
 import warnings
-import datetime
 import copy
 from collections import defaultdict
 
 from django.db.models.query import QuerySet
+from django.utils.timezone import now
+
 from rapidsms.messages.incoming import IncomingMessage
 from rapidsms.messages.outgoing import OutgoingMessage
 from rapidsms.backends.base import BackendBase
@@ -278,7 +279,7 @@ class BlockingRouter(object):
         :returns: :class:`IncomingMessage <rapidsms.messages.incoming.IncomingMessage>` object.
         """
         return class_(text=text, connections=connections,
-                      received_at=datetime.datetime.now(),
+                      received_at=now(),
                       **kwargs)
 
     def new_outgoing_message(self, text, connections, class_=OutgoingMessage,

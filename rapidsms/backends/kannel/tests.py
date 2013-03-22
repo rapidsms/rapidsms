@@ -3,6 +3,7 @@ import datetime
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 from django.conf.urls import patterns, url
+from django.utils.timezone import now
 
 from rapidsms.backends.kannel import views
 from rapidsms.backends.kannel import KannelBackend
@@ -153,7 +154,7 @@ class KannelDeliveryReportTest(CreateDataMixin, TestCase):
                  'status_text': 'Success',
                  'smsc': 'usb0-modem',
                  'sms_id': self.random_string(36),
-                 'date_sent': datetime.datetime.now()}
+                 'date_sent': now()}
         url = reverse('kannel-delivery-report')
         response = self.client.get(url, query)
         self.assertEqual(200, response.status_code)
@@ -170,7 +171,7 @@ class KannelDeliveryReportTest(CreateDataMixin, TestCase):
                  'status_text': 'Success',
                  'smsc': 'usb0-modem',
                  'sms_id': self.random_string(36),
-                 'date_sent': datetime.datetime.now()}
+                 'date_sent': now()}
         url = reverse('kannel-delivery-report')
         response = self.client.get(url, query)
         self.assertEqual(400, response.status_code)
