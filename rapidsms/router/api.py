@@ -14,7 +14,7 @@ def get_router():
     if isinstance(router, basestring):
         try:
             router = import_class(router)()
-        except ImportError, e:
+        except ImportError as e:
             raise ImproperlyConfigured(e)
     return router
 
