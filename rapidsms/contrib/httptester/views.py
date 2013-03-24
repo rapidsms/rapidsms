@@ -9,6 +9,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django_tables2 import RequestConfig
 
+from rapidsms import settings
 from . import forms
 from . import storage
 from .tables import MessageTable
@@ -69,7 +70,7 @@ def message_tester(request, identity, backend_name="httptester"):
 
     messages_table = MessageTable(storage.get_messages(),
                                   template="httptester/table.html")
-    RequestConfig(request, paginate={"per_page": 25}).configure(messages_table)
+    RequestConfig(request, paginate={"per_page": settings.PAGINATOR_OBJECTS_PER_PAGE}).configure(messages_table)
 
     context = {
         "router_available": True,

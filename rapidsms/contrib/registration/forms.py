@@ -9,7 +9,9 @@ class ConnectionFormSetBase(forms.models.BaseInlineFormSet):
     def __init__(self, *args, **kwargs):
         super(ConnectionFormSetBase, self).__init__(*args, **kwargs)
         self.forms[0].empty_permitted = False
-        self.forms[0].fields['DELETE'].widget = forms.widgets.HiddenInput()
+        for form in self.forms:
+            if not form.initial:
+                form.fields['DELETE'].widget = forms.widgets.HiddenInput()
 
 
 ContactForm = forms.models.modelform_factory(Contact, exclude=("connections", ))
@@ -18,7 +20,6 @@ ConnectionFormSet = forms.models.inlineformset_factory(
     Contact,
     Connection,
     extra=1,
-    max_num=10,
     formset=ConnectionFormSetBase,
 )
 

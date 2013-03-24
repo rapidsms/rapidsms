@@ -1,8 +1,8 @@
+# coding=utf-8
 from StringIO import StringIO
-from django.http import Http404, HttpResponseRedirect
+from django.http import Http404, HttpRequest, HttpResponseRedirect, QueryDict
 from django.test import TestCase
 from mock import Mock, patch
-from rapidsms.contrib.registration.forms import ContactForm, ConnectionFormSet
 from rapidsms.models import Connection, Contact
 from rapidsms.tests.harness import CreateDataMixin
 
@@ -52,17 +52,18 @@ class TestViews(TestCase, CreateDataMixin):
     def test_registration(self):
         # The registration view calls render with a context that has a
         # contacts_table that has the contacts in its data
+        request = HttpRequest()
+        request.GET = QueryDict('')
         with patch('rapidsms.contrib.registration.views.render') as render:
-            request = Mock(GET=Mock(get=Mock(return_value=1)))
             views.registration(request)
         context = render.call_args[0][2]
         table = context["contacts_table"]
-        data = table.data.queryset
         self.assertEqual(len(self.contacts), len(list(table.data.queryset)))
 
     def test_registration_render(self):
         # render actually works (django_tables2 and all)
-        request = Mock(GET=Mock(get=Mock(return_value=1)))
+        request = HttpRequest()
+        request.GET = QueryDict('')
         retval = views.registration(request)
         self.assertEqual(200, retval.status_code)
 
@@ -98,8 +99,6 @@ class TestViews(TestCase, CreateDataMixin):
             request = Mock(method="GET")
             views.contact(request)
         context = render.call_args[0][2]
-        print context
-        self.assertIsNone(context['contact'])
         # ModelForms create a new unsaved instance
         self.assertIsNotNone(context['contact_form'].instance)
         self.assertTrue(context['contact_form'].instance.is_anonymous)
@@ -320,16 +319,19 @@ class TestBulkAdd(TestCase, CreateDataMixin):
         # We can upload a CSV file to create contacts & connections
         backend1 = self.create_backend()
         backend2 = self.create_backend()
+        # Include a unicode name to make sure that works
+        uname = u'Name 1 ḀḂḈ ᵺ'
         data = [
-            ('Name 1', backend1.name, '11111'),
-            ('Name 2', backend2.name, '22222'),
-            ('Name 3', backend1.name, '33333'),
-            ('Name 4', backend2.name, '44444'),
+            (uname, backend1.name, u'11111'),
+            (u'Name 2', backend2.name, u'22222'),
+            (u'Name 3', backend1.name, u'33333'),
+            (u'Name 4', backend2.name, u'44444'),
         ]
         # Create test file
-        testfile = "\n".join([",".join(parts) for parts in data]) + "\n"
+        testfile = u"\n".join([u",".join(parts) for parts in data]) + u"\n"
+        testfile_data = testfile.encode('utf-8')
         with patch('rapidsms.contrib.registration.views.render') as render:
-            request = Mock(method="POST", FILES={'bulk': StringIO(testfile)})
+            request = Mock(method="POST", FILES={'bulk': StringIO(testfile_data)})
             retval = views.contact_bulk_add(request)
         if not isinstance(retval, HttpResponseRedirect):
             context = render.call_args[0][2]
@@ -338,6 +340,8 @@ class TestBulkAdd(TestCase, CreateDataMixin):
         self.assertEqual(302, retval.status_code)
         contacts = Contact.objects.all()
         self.assertEqual(4, contacts.count())
+        names = [contact.name for contact in contacts]
+        self.assertIn(uname, names)
 
     def test_bulk_add_no_lines(self):
         testfile = ""

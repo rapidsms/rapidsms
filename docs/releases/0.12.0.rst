@@ -3,10 +3,6 @@ RapidSMS 0.12.0 release notes
 =============================
 
 
-.. warning::
-
-    RapidSMS v0.12.0 is currently under development and has not been released.
-
 Welcome to RapidSMS 0.12.0! These release notes cover the new features in 0.12.0
 as well as some `backwards incompatible changes in 0.12.0`_ you'll want to be
 aware of when upgrading from RapidSMS 0.11.0.  Most RapidSMS sites and
