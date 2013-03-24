@@ -17,20 +17,19 @@ def import_class(import_path, base_class=None):
     import_path is the full Python path to the class.
     """
     try:
-        dot = import_path.rindex('.')
+        module, class_name = import_path.rsplit('.', 1)
     except ValueError:
         raise ImportError("%s isn't a Python path." % import_path)
-    module, class_name = import_path[:dot], import_path[dot + 1:]
     try:
         mod = import_module(module)
     except ImportError, e:
         raise ImportError('Error importing module %s: "%s"' %
-                                   (module, e))
+                          (module, e))
     try:
         class_ = getattr(mod, class_name)
     except AttributeError:
         raise ImportError('Module "%s" does not define a "%s" '
-                                   'class.' % (module, class_name))
+                          'class.' % (module, class_name))
     if not inspect.isclass(class_):
         raise ImportError('%s is not a class.' % import_path)
     if base_class and not issubclass(class_, base_class):
