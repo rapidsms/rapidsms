@@ -223,8 +223,8 @@ class BlockingRouter(object):
                 try:
                     func = getattr(app, phase)
                     continue_sending = func(msg)
-                except Exception, e:
-                    logger.exception(e)
+                except Exception:
+                    logger.exception("Error while processing outgoing phase.")
                 # during any outgoing phase, an app can return True to
                 # abort ALL further processing of this message
                 if continue_sending is False:
