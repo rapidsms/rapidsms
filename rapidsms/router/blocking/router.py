@@ -35,8 +35,8 @@ class BlockingRouter(object):
         for name in apps:
             try:
                 self.add_app(name)
-            except Exception as e:
-                logger.exception(e)
+            except Exception:
+                logger.exception("Failed to add app to router.")
         for name, conf in backends.iteritems():
             parsed_conf = copy.copy(conf)
             engine = parsed_conf.pop('ENGINE')
