@@ -7,7 +7,7 @@ BlockingRouter
 .. versionadded:: 0.10.0
 
 The :router:`BlockingRouter` is the most basic and easy to use router included
-with RapidSMS. For this reason it is also the default router. As it's name
+with RapidSMS. For this reason it is also the default router. As its name
 suggests, :router:`BlockingRouter` handles messages synchronously (within the
 main HTTP thread), waiting for application and backend processing to complete
 before continuing. This is acceptable for many scenarios, but will be less
@@ -62,7 +62,7 @@ Implementation
 :router:`BlockingRouter` is the default router, but it is also the base
 router for all RapidSMS routers. :router:`CeleryRouter` and
 :router:`DatabaseRouter` extend :router:`BlockingRouter` and override necessary
-functionality. A subset of it's methods are outlined below:
+functionality. A subset of its methods are outlined below:
 
 .. autoclass:: rapidsms.router.blocking.BlockingRouter
     :members: incoming_phases,outgoing_phases,add_app,get_app,add_backend,

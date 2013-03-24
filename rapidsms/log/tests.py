@@ -29,9 +29,11 @@ def test_logger_mixin():
     obj.exception("This is an exception")
     obj.exception()
 
-    assert_equals(len(handler.buffer), 7)
-    assert_equals(handler.buffer[2].name, "loggablestub")
-    assert_equals(handler.buffer[2].msg, "This is a WARNING")
+    # There should be 8 messages: 7 from above, plus
+    # one more for LoggerMixin's own deprecation warning
+    assert_equals(len(handler.buffer), 7 + 1)
+    assert_equals(handler.buffer[3].name, "loggablestub")
+    assert_equals(handler.buffer[3].msg, "This is a WARNING")
 
     log.removeHandler(handler)
 
