@@ -83,7 +83,7 @@ class App(models.Model):
 
 class ContactBase(models.Model):
     name = models.CharField(max_length=100, blank=True)
-    create_on = models.DateTimeField(auto_add_now=True)
+    create_on = models.DateTimeField(auto_now_add=True)
     modified_on = models.DateTimeField(auto_now=True)
 
     # the spec: http://www.w3.org/International/articles/language-tags/Overview
@@ -129,7 +129,7 @@ class ConnectionBase(models.Model):
     backend = models.ForeignKey(Backend)
     identity = models.CharField(max_length=100)
     contact = models.ForeignKey(Contact, null=True, blank=True)
-    created_on = models.DateTimeField(auto_add_now=True)
+    created_on = models.DateTimeField(auto_now_add=True)
     modified_on = models.DateTimeField(auto_now=True)
 
     class Meta:
