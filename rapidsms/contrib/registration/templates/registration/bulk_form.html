@@ -4,7 +4,7 @@
 
 {% block page %}
     <div class="page_header">
-        <h1>Registration: Bulk Add</h1>
+        <h2>Bulk Add</h2>
     </div>
     {% if csv_errors %}
         <p style="color: red; font-weight: strong;">CSV Error: {{ csv_errors }}</p>
@@ -13,7 +13,7 @@
         {% render_form bulk_form %}
         {% csrf_token %}
         <div class="submit">
-            <input type="submit" name="submit" value="Save Contacts" />
+            <input type="submit" name="submit" class="btn btn-primary" value="Save Contacts" />
         </div>
     </form>
 {% endblock %}

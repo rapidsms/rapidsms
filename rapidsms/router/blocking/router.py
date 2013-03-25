@@ -3,11 +3,12 @@
 
 import logging
 import warnings
-import datetime
 import copy
 from collections import defaultdict
 
 from django.db.models.query import QuerySet
+from django.utils.timezone import now
+
 from rapidsms.messages.incoming import IncomingMessage
 from rapidsms.messages.outgoing import OutgoingMessage
 from rapidsms.backends.base import BackendBase
@@ -34,8 +35,8 @@ class BlockingRouter(object):
         for name in apps:
             try:
                 self.add_app(name)
-            except Exception as e:
-                logger.exception(e)
+            except Exception:
+                logger.exception("Failed to add app to router.")
         for name, conf in backends.iteritems():
             parsed_conf = copy.copy(conf)
             engine = parsed_conf.pop('ENGINE')
@@ -222,8 +223,8 @@ class BlockingRouter(object):
                 try:
                     func = getattr(app, phase)
                     continue_sending = func(msg)
-                except Exception, e:
-                    logger.exception(e)
+                except Exception:
+                    logger.exception("Error while processing outgoing phase.")
                 # during any outgoing phase, an app can return True to
                 # abort ALL further processing of this message
                 if continue_sending is False:
@@ -278,7 +279,7 @@ class BlockingRouter(object):
         :returns: :class:`IncomingMessage <rapidsms.messages.incoming.IncomingMessage>` object.
         """
         return class_(text=text, connections=connections,
-                      received_at=datetime.datetime.now(),
+                      received_at=now(),
                       **kwargs)
 
     def new_outgoing_message(self, text, connections, class_=OutgoingMessage,

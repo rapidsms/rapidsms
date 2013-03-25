@@ -30,6 +30,11 @@ This sends a message to the router saying ``echo hello`` was received from a
 ``connection`` object. You can find more examples of ``receive`` in the
 official RapidSMS `backends <https://github.com/rapidsms/rapidsms/tree/master/rapidsms/backends>`_.
 
+.. autoclass:: rapidsms.messages.incoming.IncomingMessage
+    :members:
+    :inherited-members:
+
+
 .. _sending-messages:
 
 Sending Messages
@@ -46,6 +51,9 @@ anywhere within your application. Here's an example using ``send``::
 This sends ``hello`` to each identity and backend associated with the
 ``connections`` object.  You can find more examples of ``send`` in the official
 RapidSMS `backends <https://github.com/rapidsms/rapidsms/tree/master/rapidsms/backends>`_.
+
+.. autoclass:: rapidsms.messages.outgoing.OutgoingMessage
+
 
 .. _connection_lookup:
 
