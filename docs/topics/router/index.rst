@@ -54,6 +54,21 @@ RapidSMS includes several routers for you to use:
 
 If you can't find a router that's suitable for your needs, you can write a custom router.
 
+Here are some characteristics of the supplied routers.
+`B` is the blocking router, `C` is the Celery router, and
+`D` is the database router.
+
+
+=  =  =  ===================================================================================
+B  C  D  Characteristic
+=  =  =  ===================================================================================
+n  y  y  Requires a database
+n  y  y  Requires Celery
+y  n  n  Delays in one operation can block all other operations
+n  n  y  Can recover and retry failed sends
+n  n  y  Keeps a record of which messages have been sent and whether the send was successful
+=  =  =  ===================================================================================
+
 
 Using a custom router
 ---------------------
