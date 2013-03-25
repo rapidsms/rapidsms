@@ -18,7 +18,7 @@ class StorageTest(RapidTest):
 
     def test_store_and_queue(self):
         """store_and_queue should use receive() API correctly"""
-        store_and_queue("httptester", "1112223333", "hi there!")
+        store_and_queue("1112223333", "hi there!")
         self.assertEqual(self.inbound[0].text, "hi there!")
 
     def test_store_and_get(self):
@@ -59,8 +59,7 @@ class StorageTest(RapidTest):
 class ViewTest(RapidTest):
     disable_phases = True
     phone = "12345"
-    url = reverse('httptester', kwargs={'identity': phone,
-                                        'backend_name': 'httptester'})
+    url = reverse('httptester', kwargs={'identity': phone})
 
     def test_send_through_form(self):
         # Submitting a message to the form adds it to storage
@@ -122,8 +121,7 @@ class ViewTest(RapidTest):
         url = reverse('httptester-index')
         rsp = self.client.get(url)
         new_url = reverse('httptester',
-                          kwargs={'identity': self.phone,
-                                  'backend_name': 'message_tester'})
+                          kwargs={'identity': self.phone})
         self.assertRedirects(rsp, new_url)
 
 

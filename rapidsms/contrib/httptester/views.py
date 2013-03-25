@@ -14,20 +14,19 @@ from . import storage
 from .tables import MessageTable
 
 
-def generate_identity(request, backend_name='message_tester'):
+def generate_identity(request):
     """Simple view to generate a random identity.
 
     Just generates a random phone number and redirects to the
     message_tester view.
 
     :param request: HTTP request
-    :param backend_name: Name of a RapidSMS backend, default is 'httptester'
     :return: An HTTPResponse
     """
-    return redirect("httptester", backend_name, randint(111111, 999999))
+    return redirect("httptester", randint(111111, 999999))
 
 
-def message_tester(request, identity, backend_name="httptester"):
+def message_tester(request, identity):
     """The main Message Tester view.
 
     GET: will display the form, with the default phone number filled
@@ -39,7 +38,6 @@ def message_tester(request, identity, backend_name="httptester"):
 
     :param request: HTTP request
     :param identity: Phone number the message will be sent from
-    :param backend_name:  Name of a RapidSMS backend, default is 'httptester'
     :return: An HTTPResponse
     """
     if request.method == "POST":
@@ -55,13 +53,13 @@ def message_tester(request, identity, backend_name="httptester"):
                 if "bulk" in request.FILES:
                     for line in request.FILES["bulk"]:
                         line = line.rstrip("\n")
-                        storage.store_and_queue(backend_name, identity, line)
+                        storage.store_and_queue(identity, line)
                 # no bulk file was submitted, so use the "single message"
                 # field. this may be empty, which is fine, since contactcs
                 # can (and will) submit empty sms, too.
                 else:
-                    storage.store_and_queue(backend_name, identity, cd["text"])
-            url = reverse(message_tester, args=[backend_name, identity])
+                    storage.store_and_queue(identity, cd["text"])
+            url = reverse(message_tester, args=[identity])
             return HttpResponseRedirect(url)
 
     else:
