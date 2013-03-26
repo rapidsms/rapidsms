@@ -9,6 +9,10 @@ for testing. When the router sends an outgoing message via the
 database backend, instead of sending a text message, the database
 backend stores the message in a database table.
 
+The database backend is currently only used with httptester and with
+the unit test harness. Generally, you will not use the database backend
+in production deployments.
+
 Configuring
 -----------
 
