@@ -22,6 +22,7 @@ RapidSMS includes several backends in core for you to use:
 * :ref:`Kannel backend <kannel_configuration>`
 * :ref:`Vumi backend <vumi_configuration>`
 * :ref:`HTTP backend <http-backend>`
+* :ref:`Database backend <database-backend>`
 
 However, many other backends exist in the RapidSMS community and can be
 installed for use in your own project. If you can't find a backend that's
