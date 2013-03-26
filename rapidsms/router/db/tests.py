@@ -183,10 +183,11 @@ class DatabaseRouterSendTest(harness.DatabaseBackendMixin, TestCase):
         return self.backend, dbm, trans1, trans2
 
     def create_many_transmissions(self, num):
+        # Create a message that will be sent to many connections
+        message = Message.objects.create(text="test", direction="O")
         for i in range(num):
             connection = Connection.objects.create(identity="%07d" % i,
                                                    backend=self.backend)
-            message = Message.objects.create(text="test", direction="O")
             message.transmissions.create(connection=connection, status="Q")
 
     def test_send_successful_status(self):
