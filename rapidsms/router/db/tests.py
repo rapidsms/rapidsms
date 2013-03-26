@@ -182,6 +182,13 @@ class DatabaseRouterSendTest(harness.DatabaseBackendMixin, TestCase):
         trans2 = dbm.transmissions.filter(id__in=ids[2:])
         return self.backend, dbm, trans1, trans2
 
+    def create_many_transmissions(self, num):
+        for i in range(num):
+            connection = Connection.objects.create(identity="%07d" % i,
+                                                   backend=self.backend)
+            message = Message.objects.create(text="test", direction="O")
+            message.transmissions.create(connection=connection, status="Q")
+
     def test_send_successful_status(self):
         """Transmissions should be marked with S if no errors occured."""
         # create 2 batches (queued, queued)
@@ -219,6 +226,24 @@ class DatabaseRouterSendTest(harness.DatabaseBackendMixin, TestCase):
                          list(t1.values_list('id', flat=True)))
         self.assertEqual(list(batch2.values_list('id', flat=True)),
                          list(t2.values_list('id', flat=True)))
+
+    def test_group_transmissions_default_batch_size(self):
+        """Default max batch size is 200"""
+        self.create_many_transmissions(201)
+        router = DatabaseRouter()
+        result = list(router.group_transmissions(Transmission.objects.all()))
+        self.assertEqual(2, len(result))  # 2 batches
+        self.assertEqual(200, len(result[0][1]))  # first batch has 200
+
+    def test_group_transmissions_custom_default_batch_size(self):
+        """Default max batch size can be configured in settings"""
+        self.create_many_transmissions(3)
+        router = DatabaseRouter()
+        with self.settings(DB_ROUTER_DEFAULT_BATCH_SIZE=2):
+            transmissions = Transmission.objects.all()
+            result = list(router.group_transmissions(transmissions))
+        self.assertEqual(2, len(result))  # 2 batches
+        self.assertEqual(2, len(result[0][1]))  # first batch has 2
 
     def test_in_response_to(self):
         """Make sure responses set the in_response_to DB fields."""
