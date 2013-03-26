@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db.models import Q
 
 from rapidsms.router.blocking import BlockingRouter
@@ -7,6 +8,11 @@ from rapidsms.messages.outgoing import OutgoingMessage
 
 
 class DatabaseRouter(BlockingRouter):
+
+    def _default_batch_size(self):
+        if hasattr(settings, 'DB_ROUTER_DEFAULT_BATCH_SIZE'):
+            return settings.DB_ROUTER_DEFAULT_BATCH_SIZE
+        return 200
 
     def queue_message(self, direction, connections, text, fields=None):
         """Create Message and Transmission objects for messages."""
@@ -38,7 +44,7 @@ class DatabaseRouter(BlockingRouter):
         """Queue message in DB for async inbound processing."""
         receive_async.delay(message_id=msg.id, fields=msg.fields)
 
-    def group_transmissions(self, transmissions, batch_size=200):
+    def group_transmissions(self, transmissions, batch_size=None):
         """Divide transmissions by backend and into manageable chunks.
 
         :param transmissions: A queryset of transmissions to send.
@@ -49,6 +55,8 @@ class DatabaseRouter(BlockingRouter):
            backend, no more than ``batch_size`` each.
         """
         start = 0
+        if batch_size is None:
+            batch_size = self._default_batch_size()
         end = batch_size
         # divide transmissions by backend
         backends = transmissions.values_list('connection__backend_id',
