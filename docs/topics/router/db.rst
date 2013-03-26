@@ -56,6 +56,13 @@ Run ``syncdb`` to create the necessary database tables::
 
 That's it!
 
+Configuration
+-------------
+
+The database router has one optional setting,
+:setting:`DB_ROUTER_DEFAULT_BATCH_SIZE`, to change the default
+maximum size of a batch of messages from 200.
+
 Celery workers
 **************
 
