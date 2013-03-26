@@ -22,7 +22,7 @@ To configure the database backend:
     INSTALLED_BACKENDS = {
         ...
         "my-db-backend": {
-            "ENGINE": "rapidsms.backends.db.outgoing.DatabaseBackend",
+            "ENGINE": "rapidsms.backends.db.DatabaseBackend",
         },
         ...
     }

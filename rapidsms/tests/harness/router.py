@@ -5,7 +5,7 @@ from rapidsms.tests.harness import backend
 from rapidsms.router import lookup_connections, send, receive, get_router
 from rapidsms.router import test as test_router
 from rapidsms.backends.db.models import BackendMessage
-from rapidsms.backends.db.outgoing import DatabaseBackend
+from rapidsms.backends.db import DatabaseBackend
 
 
 __all__ = ('CustomRouter', 'MockBackendRouter')
@@ -68,7 +68,7 @@ class DatabaseBackendMixin(CustomRouterMixin):
     def lookup_connections(self, identities, backend='mockbackend'):
         """loopup_connections wrapper to use mockbackend by default"""
         return super(DatabaseBackendMixin, self).lookup_connections(backend,
-                                                               identities)
+                                                                    identities)
 
     @property
     def sent_messages(self):
