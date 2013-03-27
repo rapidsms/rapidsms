@@ -3,12 +3,16 @@
 
 """ Store and get messages from cache """
 
-from .models import HttpTesterMessage
+from rapidsms.backends.database.models import INCOMING, BackendMessage
+from rapidsms.router import receive, lookup_connections
+
+
+BACKEND_NAME = 'message_tester'
 
 
 def get_messages():
     """Return a queryset with the message data"""
-    return HttpTesterMessage.objects.all()
+    return BackendMessage.objects.filter(name=BACKEND_NAME)
 
 
 def store_message(direction, identity, text):
@@ -20,20 +24,18 @@ def store_message(direction, identity, text):
        or to (out)
     :param text: The message
     """
-    HttpTesterMessage.objects.create(direction=direction, identity=identity,
-                                     text=text)
+    BackendMessage.objects.create(direction=direction, identity=identity,
+                                  text=text, name=BACKEND_NAME)
 
 
-def store_and_queue(backend_name, identity, text):
+def store_and_queue(identity, text):
     """Store a message in our log and send it into RapidSMS.
 
-    :param backend_name:
     :param identity: Phone number the message will appear to come from
-    :param text: The message
+    :param text: The message text
     """
-    from rapidsms.router import receive, lookup_connections
-    store_message(HttpTesterMessage.INCOMING, identity, text)
-    connection = lookup_connections(backend_name, [identity])[0]
+    store_message(INCOMING, identity, text)
+    connection = lookup_connections(BACKEND_NAME, [identity])[0]
     receive(text, connection)
 
 
@@ -42,9 +44,10 @@ def clear_messages(identity):
 
     :param identity: The phone number whose messages will be cleared
     """
-    HttpTesterMessage.objects.filter(identity=identity).delete()
+    BackendMessage.objects.filter(identity=identity,
+                                  name=BACKEND_NAME).delete()
 
 
 def clear_all_messages():
     """Forget all messages"""
-    HttpTesterMessage.objects.all().delete()
+    BackendMessage.objects.filter(name=BACKEND_NAME).delete()

@@ -1,9 +1,15 @@
+#!/usr/bin/env python
+# vim: ai ts=4 sts=4 et sw=4
+
 from django.db import models
 
 
+INCOMING = 'I'
+OUTGOING = 'O'
+
 DIRECTION_CHOICES = (
-    ('I', "Incoming"),
-    ('O', "Outgoing"),
+    (INCOMING, "Incoming"),
+    (OUTGOING, "Outgoing"),
 )
 
 

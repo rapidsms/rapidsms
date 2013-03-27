@@ -15,7 +15,7 @@ DATABASES = {
 
 INSTALLED_BACKENDS = {
     "message_tester": {
-        "ENGINE": "rapidsms.contrib.httptester.backend.HttpTesterCacheBackend",
+        "ENGINE": "rapidsms.backends.database.DatabaseBackend",
     },
 }
 
@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "rapidsms.contrib.registration",
     "rapidsms.contrib.echo",
     "rapidsms.router.db",
+    "rapidsms.backends.database",
     "rapidsms.backends.kannel",
     "rapidsms.tests.translation",
 
