@@ -22,6 +22,6 @@ class MessageTable(tables.Table):
     class Meta:
         model = BackendMessage
         sequence = ('date', 'identity', 'text')
-        exclude = ('id', 'direction')
+        exclude = ('id', 'direction', 'name', 'message_id', 'external_id')
         order_by = ('-date', )
         attrs = {'id': 'log'}
