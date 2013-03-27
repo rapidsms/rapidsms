@@ -4,12 +4,6 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    # Example:
-    # (r'^my-project/', include('my_project.foo.urls')),
-
-    # Uncomment the admin/doc line below to enable admin documentation:
-    # (r'^admin/doc/', include('django.contrib.admindocs.urls')),
-
     (r'^admin/', include(admin.site.urls)),
 
     # RapidSMS core URLs
@@ -17,9 +11,6 @@ urlpatterns = patterns('',
     url(r'^$', 'rapidsms.views.dashboard', name='rapidsms-dashboard'),
 
     # RapidSMS contrib app URLs
-    url(r'^httptester/$',
-        'rapidsms.contrib.httptester.views.generate_identity',
-        {'backend_name': 'message_tester'}, name='httptester-index'),
     (r'^httptester/', include('rapidsms.contrib.httptester.urls')),
     (r'^locations/', include('rapidsms.contrib.locations.urls')),
     (r'^messagelog/', include('rapidsms.contrib.messagelog.urls')),

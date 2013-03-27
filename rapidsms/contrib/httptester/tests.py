@@ -4,11 +4,10 @@ from StringIO import StringIO
 from django.core.urlresolvers import reverse
 from django.utils import unittest as ut2
 from mock import patch
-from rapidsms.contrib.httptester.backend import HttpTesterCacheBackend
-from rapidsms.contrib.httptester.forms import MessageForm
 
+from rapidsms.backends.database.models import INCOMING
+from rapidsms.contrib.httptester.forms import MessageForm
 from rapidsms.tests.harness import RapidTest
-from .models import HttpTesterMessage
 from .storage import store_and_queue, store_message, get_messages, \
     clear_messages, clear_all_messages
 
@@ -19,7 +18,7 @@ class StorageTest(RapidTest):
 
     def test_store_and_queue(self):
         """store_and_queue should use receive() API correctly"""
-        store_and_queue("httptester", "1112223333", "hi there!")
+        store_and_queue("1112223333", "hi there!")
         self.assertEqual(self.inbound[0].text, "hi there!")
 
     def test_store_and_get(self):
@@ -60,8 +59,7 @@ class StorageTest(RapidTest):
 class ViewTest(RapidTest):
     disable_phases = True
     phone = "12345"
-    url = reverse('httptester', kwargs={'identity': phone,
-                                        'backend_name': 'httptester'})
+    url = reverse('httptester', kwargs={'identity': phone})
 
     def test_send_through_form(self):
         # Submitting a message to the form adds it to storage
@@ -78,7 +76,7 @@ class ViewTest(RapidTest):
         self.assertEqual(200, rsp.status_code)
         msg = get_messages()[0]
         self.assertEqual(phone2, msg.identity)
-        self.assertEqual(HttpTesterMessage.INCOMING, msg.direction)
+        self.assertEqual(INCOMING, msg.direction)
         self.assertEqual(message, msg.text)
 
     def test_bulk(self):
@@ -90,7 +88,7 @@ class ViewTest(RapidTest):
             'identity': self.phone,
             'bulk': fake_file,
         }
-        rsp = self.client.post(self.url, data)
+        self.client.post(self.url, data)
         self.assertEqual(3, len(get_messages()))
         for i, m in enumerate(messages):
             self.assertEqual(m, get_messages()[i].text)
@@ -123,8 +121,7 @@ class ViewTest(RapidTest):
         url = reverse('httptester-index')
         rsp = self.client.get(url)
         new_url = reverse('httptester',
-                          kwargs={'identity': self.phone,
-                                  'backend_name': 'message_tester'})
+                          kwargs={'identity': self.phone})
         self.assertRedirects(rsp, new_url)
 
 
@@ -137,23 +134,3 @@ class FormTest(ut2.TestCase):
         self.assertEqual('123', form.cleaned_data['identity'])
         form = MessageForm({'identity': ' 1a23 '})
         self.assertFalse(form.is_valid())
-
-
-class BackendTest(RapidTest):
-    disable_phases = True
-    backends = {'mockbackend': {'ENGINE': HttpTesterCacheBackend}}
-
-    def test_start(self):
-        # .start() returns
-        back = HttpTesterCacheBackend(self.router, 'backend')
-        back.start()
-
-    @patch('rapidsms.contrib.httptester.backend.store_message')
-    def test_send(self, store_message):
-        # send calls store_message with the right args
-        back = HttpTesterCacheBackend(self.router, 'backend')
-        msg = self.create_outgoing_message()
-        back.send(msg.id, msg.text, [msg.connection.identity], {})
-        self.assertTrue(store_message.called)
-        self.assertEqual((HttpTesterMessage.OUTGOING, msg.connection.identity,
-                         msg.text), store_message.call_args[0])

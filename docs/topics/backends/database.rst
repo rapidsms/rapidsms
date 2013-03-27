@@ -26,7 +26,7 @@ To configure the database backend:
     INSTALLED_BACKENDS = {
         ...
         "my-db-backend": {
-            "ENGINE": "rapidsms.backends.db.DatabaseBackend",
+            "ENGINE": "rapidsms.backends.database.DatabaseBackend",
         },
         ...
     }
@@ -38,7 +38,7 @@ To configure the database backend:
 
     INSTALLED_APPS = [
         ...
-        'rapidsms.backends.db',
+        'rapidsms.backends.database',
         ...
     ]
 
