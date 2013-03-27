@@ -1,0 +1,152 @@
+=============================
+RapidSMS 0.13.0 release notes
+=============================
+
+
+.. warning::
+
+    RapidSMS v0.13.0 is currently under development and has not been released.
+
+Welcome to RapidSMS 0.13.0! These release notes cover the new features 0.13.0
+as well as some :ref:`backwards-incompatible-changes-0.13.0` you'll want to be
+aware of when upgrading from RapidSMS 0.12.0.
+
+What's New
+==========
+
+* Added support for sending bulk messages. This involved the following changes:
+    * Modified ``MessageBase`` to accept multiple connections.
+    * Updated :func:`rapidsms.router.send` to pass multiple connections (within a message object) to the Router. The :doc:`Messaging API </topics/router/messaging>` already supported multiple connections, so the API did not change.
+    * Updated :meth:`rapidsms.backends.base.BackendBase.send` signature to always expect multiple connections and changed the signature to accept ``text`` and ``identities``, rather than a message object. Child classes must now override this function.
+    * Updated :router:`BlockingRouter` to inspect outbound message connections, group by backend, and call ``backend.send`` for each one.
+* Added the database-powered :router:`DatabaseRouter`. The :router:`DatabaseRouter` stores all messages in the database and keeps track of received/sent state of each message. This is useful for monitoring the sending of large message volumes.
+* Added a backend for :doc:`Vumi </topics/backends/vumi>`.
+* Cleaned up admin for ``Connection`` to load faster with database JOINs.
+* Added delivery report functionality for Kannel.
+* Combined the ``BaseRouter`` and ``BlockingRouter`` together. Now all base routing functionality is handled by :router:`BlockingRouter`.
+* In order to better support customization of routers, messages now pass through ``receive_incoming`` and ``process_incoming`` methods. This additional layer allows the :router:`CeleryRouter` and :router:`DatabaseRouter` to more easily customize message processing.
+* The :doc:`Messaging API </topics/router/messaging>` now asks the router to instantiate incoming and outgoing messages via the ``new_incoming_message`` and ``new_outgoing_message`` methods. This allows the router to better customize the message classes.
+* Reworked the :router:`CeleryRouter` to pass identifiers, rather than instantiated objects, to background tasks. This avoids tasks possibly using outdated data when unpickling task arguments.
+* Removed ``rapidsms.tests.harness.setting``.
+* Added `requests`_ as a dependency. Vumi and Kannel now use `requests`_ to construct HTTP requests. You'll need to run ``pip install requests`` or add ``requests`` to your requirements file.
+* Deprecated ``rapidsms.log.mixin.LoggerMixin``. Please update all logging to use the standard logging module, like so:
+
+.. code-block:: python
+
+    import logging
+    logger = logging.getLogger(__name__)
+    logger.info(...)
+    logger.debug(...)
+
+
+* Added initial migrations for `South`_ support. South handles making incremental changes to database tables as Django models change.  To start using:
+
+  * `Convert your apps to South`_
+  * Upgrade to RapidSMS 0.13.0
+  * Bring database up to the current model definitions:
+
+  .. code-block:: bash
+
+      python manage.py syncdb --all
+
+
+  * Tell South that everything is up to date:
+
+  .. code-block:: bash
+
+      python manage.py migrate --fake
+
+  Once South is set up, future upgrades of RapidSMS should just require ``manage.py migrate`` to update your database tables.
+
+  That includes code that might use LoggerMixin indirectly by extending
+  ``AppBase``, ``BackendBase``, or ``BaseHandler``.  Search for code like
+  ``self.error(...)`` or ``self.debug(...)`` and change to
+  ``logger.error(...)`` or ``logger.debug(...)`` after creating a logger
+  object as above.
+* The :doc:`HTTPTester contrib app </topics/contrib/httptester>` has been changed
+  to use the new Database backend instead of its own backend. The HTTPTester
+  backend has been removed. Please remove ``"rapidsms.contrib.httptester.backend"``
+  from ``INSTALLED_BACKENDS`` and review the :doc:`HTTPTester configuration
+  </topics/contrib/httptester>`.
+
+
+.. _backwards-incompatible-changes-0.13.0:
+
+Backwards-incompatible changes in RapidSMS 0.13.0
+=================================================
+
+In the goal of improving the RapidSMS core, we have made a number of backwards-
+incompatible changes.
+
+
+Backend configuration must point to a class
+-------------------------------------------
+
+In previous versions of RapidSMS, you would define backends like so::
+
+        INSTALLED_BACKENDS = {
+            "kannel-fake-smsc" : {
+                "ENGINE":  "rapidsms.backends.kannel",
+            }
+        }
+
+Now, backends must specify the class::
+
+        INSTALLED_BACKENDS = {
+            "kannel-fake-smsc" : {
+                "ENGINE":  "rapidsms.backends.kannel.KannelBackend",
+            }
+        }
+
+This change was made to be more explicit. This also simplifies the importing
+architecture.
+
+
+Changed ``Backend.send`` signature
+----------------------------------
+
+The router used to pass just a message object to :meth:`BackendBase.send
+<rapidsms.backends.base.BackendBase.send>`. The signature has been updated to
+accept an ``id_``, ``text``, list of ``identities``, and a ``context``
+dictionary. All backends will need to be updated to use this signature. Please
+see :meth:`BackendBase.send <rapidsms.backends.base.BackendBase.send>` for more
+details.
+
+
+Removed start/stop methods
+--------------------------
+
+We removed the left over ``start`` and ``stop`` methods for the router,
+backends, and apps. These were important for the legacy, threaded router, but
+are no longer necessary with new-routing. If your apps and backends use these
+methods, you'll need to move the functionality to ``__init__``.
+
+
+Removed Message translation functionality
+-----------------------------------------
+
+Now that Message objects can contain multiple connections, the internal
+translation bits needed to change. Messages can be sent to connections that
+specify different default languages. We removed all translation functionality
+from the Message objects and require the developer to handle it explicitly.
+
+Add link to updated translation docs...
+
+
+Changed HTTPTester to use Database backend
+------------------------------------------
+
+The :doc:`HTTPTester contrib app </topics/contrib/httptester>` has been changed
+to use the new Database backend instead of its own backend. The HTTPTester
+backend has been removed. Please remove ``"rapidsms.contrib.httptester.backend"``
+from ``INSTALLED_BACKENDS`` and review the :doc:`HTTPTester configuration
+</topics/contrib/httptester>`.
+
+
+.. _requests: http://docs.python-requests.org/en/latest/
+.. _override settings: https://docs.djangoproject.com/en/1.4/topics/testing/#django.test.utils.override_settings
+.. _bulk create: https://docs.djangoproject.com/en/1.4/ref/models/querysets/#bulk-create
+.. _Django 1.4 release notes: https://docs.djangoproject.com/en/1.4/releases/1.4/
+.. _django.conf.urls.defaults: https://docs.djangoproject.com/en/1.4/releases/1.4/#django-conf-urls-defaults
+.. _South: http://south.readthedocs.org/en/latest/
+.. _Convert your apps to South: http://south.readthedocs.org/en/latest/convertinganapp.html#converting-an-app

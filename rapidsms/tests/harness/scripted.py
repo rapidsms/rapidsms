@@ -4,7 +4,6 @@
 import re
 from datetime import datetime
 
-from rapidsms.router import receive
 from rapidsms.tests.harness import TestRouterMixin
 
 
@@ -58,21 +57,11 @@ class TestScriptMixin(TestRouterMixin):
     def sendMessage(self, num, txt, date=None):
         if date is None:
             date = datetime.now()
-        connection = self.lookup_connections([num])[0]
-        receive(txt, connection)
-
-    def receiveMessage(self):
-        try:
-            return self.sent_messages.pop(0)
-        except IndexError:
-            return None
+        self.receive(text=txt, connection=self.lookup_connections([num])[0])
 
     def receiveAllMessages(self):
-        messages = []
-        msg = self.receiveMessage()
-        while msg is not None:
-            messages.append(msg)
-            msg = self.receiveMessage()
+        messages = self.outbound
+        self.router.outbound = []
         return messages
 
     def _checkAgainstMessage(self, num, txt, last_msg, msg):

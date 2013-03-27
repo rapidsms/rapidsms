@@ -50,13 +50,6 @@ class AppBase(object, LoggerMixin):
         return "<app: %s>" %\
             self.name
 
-    # router events
-    def start(self):
-        pass
-
-    def stop(self):
-        pass
-
     # incoming phases
     def filter(self, msg):
         pass

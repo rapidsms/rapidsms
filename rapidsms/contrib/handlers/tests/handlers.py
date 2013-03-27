@@ -39,7 +39,7 @@ class TestKeywordHandler(RapidTest):
         if correct_response is not None:
             self.assertTrue(retVal)
             self.assertEqual(len(msg.responses), 1)
-            self.assertEqual(msg.responses[0].text, correct_response)
+            self.assertEqual(msg.responses[0]['text'], correct_response)
         else:
             self.assertFalse(retVal)
             self.assertEqual(len(msg.responses), 0)
@@ -99,7 +99,7 @@ class TestPatternHandler(RapidTest):
         if correct_response is not None:
             self.assertTrue(retVal)
             self.assertEqual(len(msg.responses), 1)
-            self.assertEqual(msg.responses[0].text, correct_response)
+            self.assertEqual(msg.responses[0]['text'], correct_response)
         else:
             self.assertFalse(retVal)
             self.assertEqual(len(msg.responses), 0)

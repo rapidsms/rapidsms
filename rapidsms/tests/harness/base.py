@@ -2,8 +2,8 @@ import string
 import random
 
 from rapidsms.models import Backend, Contact, Connection
-from rapidsms.log.mixin import LoggerMixin
 from rapidsms.messages.outgoing import OutgoingMessage
+from rapidsms.messages.incoming import IncomingMessage
 
 
 __all__ = ('CreateDataMixin',)
@@ -12,7 +12,7 @@ __all__ = ('CreateDataMixin',)
 UNICODE_CHARS = [unichr(x) for x in xrange(1, 0xD7FF)]
 
 
-class CreateDataMixin(object, LoggerMixin):
+class CreateDataMixin(object):
     """Base test mixin class that provides helper functions to create data"""
 
     def random_string(self, length=255, extra_chars=''):
@@ -57,9 +57,19 @@ class CreateDataMixin(object, LoggerMixin):
     def create_outgoing_message(self, data={}):
         """Create and return RapidSMS OutgoingMessage object."""
         defaults = {
-            'template': self.random_string(10),
+            'text': self.random_string(10),
         }
         defaults.update(data)
-        if 'connection' not in defaults:
-            defaults['connection'] = self.create_connection()
+        if 'connections' not in defaults:
+            defaults['connections'] = [self.create_connection()]
         return OutgoingMessage(**defaults)
+
+    def create_incoming_message(self, data={}):
+        """Create and return RapidSMS IncomingMessage object."""
+        defaults = {
+            'text': self.random_string(10),
+        }
+        defaults.update(data)
+        if 'connections' not in defaults:
+            defaults['connections'] = [self.create_connection()]
+        return IncomingMessage(**defaults)

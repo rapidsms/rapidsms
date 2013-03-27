@@ -2,8 +2,10 @@ from django.conf import settings
 
 from rapidsms.tests.harness import CreateDataMixin
 from rapidsms.tests.harness import backend
-from rapidsms.router import lookup_connections, send, receive
+from rapidsms.router import lookup_connections, send, receive, get_router
 from rapidsms.router import test as test_router
+from rapidsms.backends.database.models import BackendMessage
+from rapidsms.backends.database.outgoing import DatabaseBackend
 
 
 __all__ = ('CustomRouter', 'MockBackendRouter')
@@ -30,13 +32,19 @@ class CustomRouterMixin(CreateDataMixin):
         super(CustomRouterMixin, self).__call__(result)
         self._post_rapidsms_teardown()
 
-    def receive(self, text, connection, fields=None):
-        """ A wrapper around the ``receive`` API. See :ref:`receiving-messages`."""
-        return receive(text, connection, fields)
+    def receive(self, text, connection, **kwargs):
+        """
+        A wrapper around the ``receive`` API. See :ref:`receiving-messages`.
+        """
+        return receive(text, connection, **kwargs)
 
-    def send(self, text, connections):
+    def send(self, text, connections, **kwargs):
         """A wrapper around the ``send`` API. See :ref:`sending-messages`."""
-        return send(text, connections)
+        return send(text, connections, **kwargs)
+
+    def get_router(self):
+        """get_router() API wrapper."""
+        return get_router()
 
     def set_backends(self):
         setattr(settings, 'INSTALLED_BACKENDS', self.backends)
@@ -47,6 +55,26 @@ class CustomRouterMixin(CreateDataMixin):
     def lookup_connections(self, backend, identities):
         """loopup_connections() API wrapper."""
         return lookup_connections(backend, identities)
+
+
+class DatabaseBackendMixin(CustomRouterMixin):
+
+    backends = {'mockbackend': {'ENGINE': DatabaseBackend}}
+
+    def setUp(self):
+        self.backend = self.create_backend(data={'name': 'mockbackend'})
+        super(DatabaseBackendMixin, self).setUp()
+
+    def lookup_connections(self, identities, backend='mockbackend'):
+        """loopup_connections wrapper to use mockbackend by default"""
+        return super(DatabaseBackendMixin, self).lookup_connections(backend,
+                                                                    identities)
+
+    @property
+    def sent_messages(self):
+        """Messages passed to backend."""
+        return BackendMessage.objects.filter(name='mockbackend',
+                                             direction='O')
 
 
 class TestRouterMixin(CustomRouterMixin):
