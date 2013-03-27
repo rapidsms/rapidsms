@@ -22,9 +22,11 @@ And, of course, you can help out by working *on* RapidSMS.
 
 * Report bugs in our `ticket tracker`_.
 
-* Open `pull requests`_ for features and bug fixes.
+* Open `pull requests`_ for features and bug fixes against the
+  `develop` branch.
 
-* Comment on open issues and pull requests.
+* Comment on open issues and pull requests. Try the changes yourself and
+  report on how well they work in the issue or pull request.
 
 * Improve the RapidSMS :ref:`documentation <writing-documentation>` (what
   you're reading now!).
@@ -41,10 +43,12 @@ Submitting code
 #. If you're working on a large patch, we highly recommend creating a `wiki
    page`_ under the RapidSMS GitHub account. Use the wiki page to outline the
    motivation behind the patch and to document decisions made on the
-   `rapidsms-dev`_ mailing list. `Router decoupling and HTTP message processing`_, `Bulk Messaging API`_, and `Scheduling`_ are good examples.
+   `rapidsms-dev`_ mailing list.
+   `Router decoupling and HTTP message processing`_, `Bulk Messaging API`_,
+   and `Scheduling`_ are good examples.
 
 #. Fork the repository on GitHub to start making your changes (relative to the
-   master branch).
+   `develop` branch).
 
 #. Follow the RapidSMS :ref:`coding standards <coding-standards>` and run the
    :ref:`PEP 8 adherence tool <pep-eight-adherence>`.
@@ -59,7 +63,8 @@ Submitting code
 
 #. Make sure to add yourself to `AUTHORS`_.
 
-#. Send a pull request and request feedback on `rapidsms-dev`_.
+#. Open a pull request against the `develop` branch, and request feedback
+   on `rapidsms-dev`_.
 
 #. Sign the :ref:`Contributor License Agreement <contributor-license-agreements>`.
 
