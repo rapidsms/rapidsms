@@ -60,7 +60,7 @@ a class that extends from ``rapidsms.apps.base.AppBase``, kept in the
 
 The router maintains a collection of associated applications through which to
 route incoming and outgoing messages. :ref:`Application discovery
-<application-discovery>` is managed through the ``BaseRouter.add_app`` method.
+<discovery>` is managed through the ``BaseRouter.add_app`` method.
 The default router, ``BlockingRouter``, loads applications upon initialization
 by calling ``BaseRouter.add_app`` on each app listed in the optional ``apps``
 argument or in :setting:`INSTALLED_APPS`.

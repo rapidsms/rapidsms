@@ -1,9 +1,41 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
-
-
 import os
 import sys
+import inspect
+
+from django.utils.importlib import import_module
+
+
+__all__ = ('import_class', 'import_module', 'try_import', 'find_python_files',
+           'get_classes', 'get_class', 'get_package_path')
+
+
+def import_class(import_path, base_class=None):
+    """
+    Imports and returns the class described by import_path, where
+    import_path is the full Python path to the class.
+    """
+    try:
+        module, class_name = import_path.rsplit('.', 1)
+    except ValueError:
+        raise ImportError("%s isn't a Python path." % import_path)
+    try:
+        mod = import_module(module)
+    except ImportError, e:
+        raise ImportError('Error importing module %s: "%s"' %
+                          (module, e))
+    try:
+        class_ = getattr(mod, class_name)
+    except AttributeError:
+        raise ImportError('Module "%s" does not define a "%s" '
+                          'class.' % (module, class_name))
+    if not inspect.isclass(class_):
+        raise ImportError('%s is not a class.' % import_path)
+    if base_class and not issubclass(class_, base_class):
+        msg = "%s is not a subclass of %s" % (class_name, base_class.__name__)
+        raise ImportError(msg)
+    return class_
 
 
 def try_import(module_name):

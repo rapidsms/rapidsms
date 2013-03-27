@@ -50,7 +50,7 @@ text message and select its recipients. The recipient selector uses
 autocomplete to search through all RapidSMS connections. You may select any
 number of recipients to receive the message.
 
-When sending a message, the messaging application calls :func:`rapidsms.router.api.send`
+When sending a message, the messaging application calls :func:`rapidsms.router.send`
 with the message text and `recipient.default_connection` for each recipient.
 If an error occurs, the message will not be sent to further recipients but it
 may have already been sent to earlier recipients. The order in which messages

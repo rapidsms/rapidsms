@@ -21,6 +21,7 @@ setup(
     license="BSD",
 
     install_requires=[
+        "requests==1.1.0",
         "django-nose==1.1",
         "django-tables2==0.13.0",
         "djappsettings==0.1.0",

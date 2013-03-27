@@ -1,15 +1,20 @@
+import pprint
+import logging
+
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.views.generic.edit import FormMixin, ProcessFormView
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 
-from rapidsms.log.mixin import LoggerMixin
 from rapidsms.router import receive
 
-from .forms import GenericHttpForm
+from rapidsms.backends.http.forms import GenericHttpForm
 
 
-class BaseHttpBackendView(FormMixin, LoggerMixin, ProcessFormView):
+logger = logging.getLogger(__name__)
+
+
+class BaseHttpBackendView(FormMixin, ProcessFormView):
 
     backend_name = None
     http_method_names = []  # must set in child class
@@ -53,21 +58,24 @@ class BaseHttpBackendView(FormMixin, LoggerMixin, ProcessFormView):
         If the form failed to validate, logs the errors and returns a bad
         response to the client.
         """
+        logger.error("%s data:" % self.request.method)
+        logger.error(pprint.pformat(form.data))
         errors = dict((k, v[0]) for k, v in form.errors.items())
-        self.debug(unicode(errors))
-        self.debug(form.non_field_errors())
-        for field in form:
-            if field.errors:
-                self.debug(field.errors)
+        logger.error(unicode(errors))
+        if form.non_field_errors():
+            logger.error(form.non_field_errors())
         return HttpResponseBadRequest('form failed to validate')
 
 
 class GenericHttpBackendView(BaseHttpBackendView):
+    """Simple view that allows customization of accepted paramters."""
 
-    # override these in your base class or URLconf, if needed
-    form_class = GenericHttpForm
+    #: Accepts GET and POST by default.
     http_method_names = ['get', 'post']
-    params = None
+    #: Dictionary that defines mappings to ``identity`` and ``text``.
+    params = {}
+    #: Form to validate that received parameters match defined ``params``.
+    form_class = GenericHttpForm
 
     def get_form_kwargs(self):
         kwargs = super(GenericHttpBackendView, self).get_form_kwargs()

@@ -15,7 +15,7 @@ DATABASES = {
 
 INSTALLED_BACKENDS = {
     "message_tester": {
-        "ENGINE": "rapidsms.contrib.httptester.backend",
+        "ENGINE": "rapidsms.backends.database.DatabaseBackend",
     },
 }
 
@@ -40,6 +40,11 @@ INSTALLED_APPS = [
     "rapidsms.contrib.messaging",
     "rapidsms.contrib.registration",
     "rapidsms.contrib.echo",
+    "rapidsms.router.db",
+    "rapidsms.backends.database",
+    "rapidsms.backends.kannel",
+    "rapidsms.tests.translation",
+
     "rapidsms.contrib.default",  # Should be last
 ]
 
@@ -66,3 +71,11 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.contrib.messages.context_processors.messages",
     "django.core.context_processors.request",
 )
+
+PROJECT_NAME = 'rapidsms-test-suite'
+
+import djcelery
+djcelery.setup_loader()
+
+CELERY_ALWAYS_EAGER = True
+CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
