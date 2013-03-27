@@ -39,7 +39,7 @@ To define and use Message Tester for your RapidSMS project, you will need to:
         ...
     )
 
-3. Add the DB backend to :setting:`INSTALLED_BACKENDS` with the name
+3. Add the Database backend to :setting:`INSTALLED_BACKENDS` with the name
    ``"message_tester"``:
 
 .. code-block:: python
