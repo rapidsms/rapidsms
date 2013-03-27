@@ -19,7 +19,8 @@ urlpatterns = patterns('',
 class VumiFormTest(TestCase):
 
     def setUp(self):
-        self.valid_data = {"transport_name": "transport",
+        self.valid_data = {
+            "transport_name": "transport",
             "in_reply_to": None,
             "group": None,
             "from_addr": "127.0.0.1:38634",
@@ -64,7 +65,8 @@ class VumiViewTest(RapidTest):
     disable_phases = True
 
     def setUp(self):
-        self.valid_data = {"transport_name": "transport",
+        self.valid_data = {
+            "transport_name": "transport",
             "in_reply_to": None,
             "group": None,
             "from_addr": "127.0.0.1:38634",
@@ -91,6 +93,13 @@ class VumiViewTest(RapidTest):
         """HTTP 400 should return if data is invalid."""
         data = {'invalid-phone': '1112223333', 'message': 'hi there'}
         response = self.client.post(reverse('vumi-backend'), json.dumps(data),
+                                    content_type='text/json')
+        self.assertEqual(response.status_code, 400)
+
+    def test_invalid_json(self):
+        """HTTP 400 should return if JSON is invalid."""
+        data = "{bad json, , lala}"
+        response = self.client.post(reverse('vumi-backend'), data,
                                     content_type='text/json')
         self.assertEqual(response.status_code, 400)
 

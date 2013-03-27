@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # vim: aui ts=4 sts=4 et sw=4
 
-import datetime
 from django.core.exceptions import ValidationError
+from django.utils.timezone import now
 from rapidsms.tests.harness import RapidTest
 from ..models import Message
 
@@ -20,7 +20,7 @@ class MessageLogModelTest(RapidTest):
             'contact': self.contact,
             'connection': self.connection,
             'direction': Message.INCOMING,
-            'date': datetime.datetime.now(),
+            'date': now(),
             'text': 'hello',
         }
 

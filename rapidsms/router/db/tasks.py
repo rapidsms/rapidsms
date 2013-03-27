@@ -3,6 +3,8 @@ import datetime
 import celery
 from celery.utils.log import get_task_logger
 
+from django.utils.timezone import now
+
 
 __all__ = ('recieve',)
 
@@ -23,11 +25,11 @@ def receive_async(message_id, fields):
         router.process_incoming(message)
     except Exception, exc:
         logger.exception(exc)
-        dbm.transmissions.update(status='E', updated=datetime.datetime.now())
+        dbm.transmissions.update(status='E', updated=now())
         dbm.set_status()
     if dbm.status != 'E':
         # mark message as being received
-        dbm.transmissions.update(status='R', updated=datetime.datetime.now())
+        dbm.transmissions.update(status='R', updated=now())
         dbm.set_status()
 
 
@@ -55,10 +57,10 @@ def send_transmissions(backend_id, message_id, transmission_ids):
         # log error, update database statuses, and re-execute this task
         logger.exception(exc)
         Message.objects.filter(pk=message_id).update(status='E')
-        transmissions.update(status='E', updated=datetime.datetime.now())
+        transmissions.update(status='E', updated=now())
         raise send_transmissions.retry(exc=exc)
     # no error occured, so mark these transmissions as sent
-    transmissions.update(status='S', sent=datetime.datetime.now())
+    transmissions.update(status='S', sent=now())
     # we don't know if there are more transmissions pending, so
     # we always set the status at the end of each batch
     dbm.set_status()

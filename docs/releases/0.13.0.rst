@@ -33,11 +33,18 @@ What's New
 
     import logging
     logger = logging.getLogger(__name__)
+
+  That includes code that might use LoggerMixin indirectly by extending
+  ``AppBase``, ``BackendBase``, or ``BaseHandler``.  Search for code like
+  ``self.error(...)`` or ``self.debug(...)`` and change to
+  ``logger.error(...)`` or ``logger.debug(...)`` after creating a logger
+  object as above.
 * The :doc:`HTTPTester contrib app </topics/contrib/httptester>` has been changed
   to use the new Database backend instead of its own backend. The HTTPTester
   backend has been removed. Please remove ``"rapidsms.contrib.httptester.backend"``
   from ``INSTALLED_BACKENDS`` and review the :doc:`HTTPTester configuration
   </topics/contrib/httptester>`.
+
 
 .. _backwards-incompatible-changes-0.13.0:
 

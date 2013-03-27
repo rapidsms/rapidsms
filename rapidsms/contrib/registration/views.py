@@ -6,18 +6,23 @@ from django.core.urlresolvers import reverse
 from django.db import transaction
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
+from django_tables2 import RequestConfig
 from rapidsms.models import Contact, Connection, Backend
 from rapidsms.contrib.registration.tables import ContactTable
 from rapidsms.contrib.registration.forms import (
     BulkRegistrationForm,
     ContactForm, ConnectionFormSet)
+from rapidsms import settings
 
 
 def registration(request):
     contacts_table = ContactTable(
-        Contact.objects.all(),
+        Contact.objects.all().prefetch_related('connection_set'),
         template="django_tables2/bootstrap-tables.html")
-    contacts_table.paginate(page=request.GET.get('page', 1), per_page=10)
+
+    paginate = {"per_page": settings.PAGINATOR_OBJECTS_PER_PAGE}
+    RequestConfig(request, paginate=paginate).configure(contacts_table)
+
     return render(request, "registration/dashboard.html", {
         "contacts_table": contacts_table,
     })
@@ -27,7 +32,7 @@ def contact(request, pk=None):
     if pk:
         contact = get_object_or_404(Contact, pk=pk)
     else:
-        contact = None
+        contact = Contact()
     contact_form = ContactForm(instance=contact)
     connection_formset = ConnectionFormSet(instance=contact)
     if request.method == 'POST':
@@ -62,7 +67,7 @@ def contact(request, pk=None):
         "contact": contact,
         "contact_form": contact_form,
         "connection_formset": connection_formset,
-        })
+    })
 
 
 @transaction.commit_on_success
@@ -92,7 +97,7 @@ def contact_bulk_add(request):
                     "bulk_form": bulk_form,
                     "csv_errors": "Could not find Backend.  Line: " + str(i),
                 })
-            connection = Connection.objects.create(
+            Connection.objects.create(
                 backend=backend,
                 identity=identity,
                 contact=contact)
