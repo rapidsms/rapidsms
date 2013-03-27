@@ -1,7 +1,10 @@
+#!/usr/bin/env python
+# vim: ai ts=4 sts=4 et sw=4
+
 import logging
 
 from rapidsms.backends.base import BackendBase
-from rapidsms.backends.db.models import BackendMessage
+from rapidsms.backends.database.models import BackendMessage
 
 
 logger = logging.getLogger(__name__)

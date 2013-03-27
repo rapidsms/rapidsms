@@ -58,6 +58,17 @@ What's New
 
   Once South is set up, future upgrades of RapidSMS should just require ``manage.py migrate`` to update your database tables.
 
+  That includes code that might use LoggerMixin indirectly by extending
+  ``AppBase``, ``BackendBase``, or ``BaseHandler``.  Search for code like
+  ``self.error(...)`` or ``self.debug(...)`` and change to
+  ``logger.error(...)`` or ``logger.debug(...)`` after creating a logger
+  object as above.
+* The :doc:`HTTPTester contrib app </topics/contrib/httptester>` has been changed
+  to use the new Database backend instead of its own backend. The HTTPTester
+  backend has been removed. Please remove ``"rapidsms.contrib.httptester.backend"``
+  from ``INSTALLED_BACKENDS`` and review the :doc:`HTTPTester configuration
+  </topics/contrib/httptester>`.
+
 
 .. _backwards-incompatible-changes-0.13.0:
 
@@ -120,6 +131,16 @@ specify different default languages. We removed all translation functionality
 from the Message objects and require the developer to handle it explicitly.
 
 Add link to updated translation docs...
+
+
+Changed HTTPTester to use Database backend
+------------------------------------------
+
+The :doc:`HTTPTester contrib app </topics/contrib/httptester>` has been changed
+to use the new Database backend instead of its own backend. The HTTPTester
+backend has been removed. Please remove ``"rapidsms.contrib.httptester.backend"``
+from ``INSTALLED_BACKENDS`` and review the :doc:`HTTPTester configuration
+</topics/contrib/httptester>`.
 
 
 .. _requests: http://docs.python-requests.org/en/latest/

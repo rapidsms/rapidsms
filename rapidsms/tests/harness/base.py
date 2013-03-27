@@ -2,7 +2,6 @@ import string
 import random
 
 from rapidsms.models import Backend, Contact, Connection
-from rapidsms.log.mixin import LoggerMixin
 from rapidsms.messages.outgoing import OutgoingMessage
 from rapidsms.messages.incoming import IncomingMessage
 
@@ -13,7 +12,7 @@ __all__ = ('CreateDataMixin',)
 UNICODE_CHARS = [unichr(x) for x in xrange(1, 0xD7FF)]
 
 
-class CreateDataMixin(object, LoggerMixin):
+class CreateDataMixin(object):
     """Base test mixin class that provides helper functions to create data"""
 
     def random_string(self, length=255, extra_chars=''):
