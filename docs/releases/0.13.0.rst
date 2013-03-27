@@ -47,14 +47,14 @@ What's New
 
   .. code-block:: bash
 
-      manage.py syncdb --all
+      python manage.py syncdb --all
 
 
   * Tell South that everything is up to date:
 
   .. code-block:: bash
 
-      manage.py migrate --fake
+      python manage.py migrate --fake
 
   Once South is set up, future upgrades of RapidSMS should just require ``manage.py migrate`` to update your database tables.
 
