@@ -4,7 +4,7 @@
 import logging
 
 from rapidsms.backends.base import BackendBase
-from rapidsms.backends.db.models import BackendMessage
+from rapidsms.backends.database.models import BackendMessage
 
 
 logger = logging.getLogger(__name__)

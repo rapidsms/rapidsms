@@ -5,7 +5,7 @@ from django.core.urlresolvers import reverse
 from django.utils import unittest as ut2
 from mock import patch
 
-from rapidsms.backends.db.models import INCOMING
+from rapidsms.backends.database.models import INCOMING
 from rapidsms.contrib.httptester.forms import MessageForm
 from rapidsms.tests.harness import RapidTest
 from .storage import store_and_queue, store_message, get_messages, \

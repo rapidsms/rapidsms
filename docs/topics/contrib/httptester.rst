@@ -15,7 +15,7 @@ Installation
 To define and use Message Tester for your RapidSMS project, you will need to:
 
 1. Add ``"rapidsms.contrib.httptester"`` and
-   ``"rapidsms.backends.db"`` to :setting:`INSTALLED_APPS` in your
+   ``"rapidsms.backends.database"`` to :setting:`INSTALLED_APPS` in your
    settings file:
 
 .. code-block:: python
@@ -23,7 +23,7 @@ To define and use Message Tester for your RapidSMS project, you will need to:
 
     INSTALLED_APPS = [
         ...
-        "rapidsms.backends.db",
+        "rapidsms.backends.database",
         "rapidsms.contrib.httptester",
         ...
     ]
@@ -48,7 +48,7 @@ To define and use Message Tester for your RapidSMS project, you will need to:
         INSTALLED_BACKENDS = {
         ...
         "message_tester": {
-            "ENGINE": "rapidsms.backends.db.DatabaseBackend",
+            "ENGINE": "rapidsms.backends.database.DatabaseBackend",
         },
         ...
     }

@@ -5,7 +5,7 @@ from django.utils.safestring import mark_safe
 
 import django_tables2 as tables
 
-from rapidsms.backends.db.models import INCOMING, BackendMessage
+from rapidsms.backends.database.models import INCOMING, BackendMessage
 
 
 class MessageTable(tables.Table):

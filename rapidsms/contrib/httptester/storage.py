@@ -3,7 +3,7 @@
 
 """ Store and get messages from cache """
 
-from rapidsms.backends.db.models import INCOMING, BackendMessage
+from rapidsms.backends.database.models import INCOMING, BackendMessage
 from rapidsms.router import receive, lookup_connections
 
 
