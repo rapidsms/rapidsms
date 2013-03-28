@@ -23,7 +23,7 @@ And, of course, you can help out by working *on* RapidSMS.
 * Report bugs in our `ticket tracker`_.
 
 * Open `pull requests`_ for features and bug fixes against the
-  `develop` branch.
+  `develop` branch.  We use the `Gitflow`_ model for our development.
 
 * Comment on open issues and pull requests. Try the changes yourself and
   report on how well they work in the issue or pull request.
@@ -32,6 +32,8 @@ And, of course, you can help out by working *on* RapidSMS.
   you're reading now!).
 
 * Participate on the `rapidsms-dev`_ mailing list.
+
+.. _Gitflow: http://nvie.com/posts/a-successful-git-branching-model/
 
 Submitting code
 ---------------
@@ -63,8 +65,8 @@ Submitting code
 
 #. Make sure to add yourself to `AUTHORS`_.
 
-#. Open a pull request against the `develop` branch, and request feedback
-   on `rapidsms-dev`_.
+#. Open a pull request against the `develop` branch (see `Gitflow`_), and
+   request feedback on `rapidsms-dev`_.
 
 #. Sign the :ref:`Contributor License Agreement <contributor-license-agreements>`.
 
