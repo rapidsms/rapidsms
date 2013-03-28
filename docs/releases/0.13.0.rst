@@ -64,6 +64,7 @@ What's New
   ``self.error(...)`` or ``self.debug(...)`` and change to
   ``logger.error(...)`` or ``logger.debug(...)`` after creating a logger
   object as above.
+
 * The :doc:`HTTPTester contrib app </topics/contrib/httptester>` has been changed
   to use the new Database backend instead of its own backend. The HTTPTester
   backend has been removed. Please remove ``"rapidsms.contrib.httptester.backend"``
