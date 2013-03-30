@@ -349,6 +349,68 @@ Now, the next time you call ``./manage.py runserver``, Django should begin
 processing requests for both the Kannel backends that you created (one for the
 fake SMSC and one for the GSM modem).
 
+Delivery Report
+===============
+
+RapidSMS can take advantage of Kannel's `SMS Delivery Report`_ functionality.
+This is useful if you'd like to track the status of a message after it's been
+passed to Kannel for processing. Kannel will use a callback URL to notify us.
+
+1. Add ``rapidsms.backends.kannel`` to ``INSTALLED_APPS``:
+
+.. code-block:: python
+   :emphasize-lines: 3
+
+    INSTALLED_APPS = (
+        # Other apps here
+        "rapidsms.backends.kannel",
+    )
+
+2. Add ``kannel/`` URLs to your urlconf:
+
+.. code-block:: python
+   :emphasize-lines: 3
+
+    urlpatterns = patterns("",
+        # ...
+        url(r'^kannel/', include('rapidsms.backends.kannel.urls')),
+    )
+
+3. Add the necessary database tables (omit ``--migrate`` if you're not using South)::
+
+    python manage.py syncdb --migrate
+
+4. Update your Kannel backend settings with ``delivery_report_url``. This is
+the URL Kannel will use to notify RapidSMS. Kannel requires a full URL,
+including the protocol and authority, even if you're only communicating
+locally. RapidSMS will automatically append the necessary path and query string
+arguments, so you only need to include the protocol and authority information,
+such as ``http://127.0.0.1:8000`` or ``http://example.com``. Our example is
+local:
+
+.. code-block:: python
+   :emphasize-lines: 13
+
+    INSTALLED_BACKENDS = {
+        # ...
+        "kannel-usb0-smsc" : {
+            "ENGINE":  "rapidsms.backends.kannel.KannelBackend",
+            "sendsms_url": "http://127.0.0.1:13013/cgi-bin/sendsms",
+            "sendsms_params": {"smsc": "usb0-modem",
+                               "from": "+SIMphonenumber", # not set automatically by SMSC
+                               "username": "rapidsms",
+                               "password": "CHANGE-ME"}, # or set in localsettings.py
+            "coding": 0,
+            "charset": "ascii",
+            "encode_errors": "ignore", # strip out unknown (unicode) characters
+            "delivery_report_url": "http://127.0.0.1:8000",
+        },
+    }
+
+You can view delivery reports in the Django admin.
+
+.. _SMS Delivery Report: http://kannel.org/download/1.5.0/userguide-1.5.0/userguide.html#DELIVERY-REPORTS
+
 Troubleshooting
 ===============
 
