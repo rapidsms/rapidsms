@@ -136,6 +136,64 @@ Then follow the `virtualenvwrapper install docs`_ to setup your shell properly.
 Now any changes made to your local RapidSMS clone will be reflected immediately
 while editing your project.
 
+Logging
+*******
+
+If you want to log in your app, just::
+
+    import logging
+    logger = logging.getLogger(__name__)
+
+and use::
+
+    logger.debug("msg")
+    logger.critical("msg")
+    logger.exception("msg")
+    # etc.
+
+All RapidSMS core logging can now be captured using the ``'rapidsms'``
+root logger.  (There's not a lot of logging from the core yet, but pull
+requests are welcome.)
+
+For example, if you wanted messages from the RapidSMS
+core to be written to a file `"/path/rapidsms.log"`, you could define
+a new handler in the :setting:`LOGGING` setting in Django::
+
+    LOGGING = {
+        ...
+        'handlers': {
+            ...
+            'rapidsms_file': {
+                'level': 'DEBUG',
+                'class': 'logging.FileHandler',
+                'filename': '/path/rapidsms.log',
+            },
+            ...
+        },
+        ...
+    }
+
+and then configure the ``rapidsms`` logger to send messages to it::
+
+    LOGGING = {
+        ...
+        'loggers': {
+            'rapidsms': {
+                'handlers': ['rapidsms_file'],
+                'propagate': True,
+                'level': 'DEBUG',
+            },
+        },
+        ...
+    }
+
+
+If you created your project with the latest `rapidsms-project-template`_
+and haven't changed the settings, all rapidsms logging will be written
+to `rapidsms.log` in your project directory.
+
+.. _rapidsms-project-template: https://github.com/rapidsms/rapidsms-project-template/
+
 .. _writing-documentation:
 
 Writing documentation
