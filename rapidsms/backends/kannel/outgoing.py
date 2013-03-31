@@ -47,7 +47,8 @@ class KannelBackend(BackendBase):
         return kwargs
 
     def send(self, id_, text, identities, context={}):
-        logger.info('Sending message: %s' % text)
+        logger.debug('Sending message: %s' % text)
         kwargs = self.prepare_request(id_, text, identities, context)
         r = requests.get(**kwargs)
-        logger.debug(r)
+        if r.status_code != requests.codes.ok:
+            r.raise_for_status()
