@@ -5,7 +5,7 @@
 Setting up RapidSMS with Vumi
 =============================
 
-`Vumi <http://vumi.org/>`_ is a free and opensource super scalable messaging
+`Vumi <http://vumi.org/>`_ is a free and open source super scalable messaging
 platform written in Python. Vumi can connect to third party gateways via
 protocols like HTTP and SMPP. Please read `Vumi's documentation
 <http://vumi.readthedocs.org/en/latest/>`_ for additional information.
@@ -52,11 +52,18 @@ to send to Vumi.
 Installing and setting up Vumi for the first time
 =================================================
 
+.. note::
+
+    As of this writing, the RapidSMS/Vumi integration is planned for merge into
+    an official Vumi release, but currently resides in the
+    ``feature/issue-302-rapidsms-relay`` Vumi branch. When complete, we
+    will update this documentation accordingly.
+
 Clone the Vumi `GitHub repository <https://github.com/praekelt/vumi>`_::
 
-    git clone git@github.com:rapidsms/vumi.git  # TODO: set to official Vumi repo when pull request has been merged
+    git clone git@github.com:praekelt/vumi.git
     cd vumi
-    git checkout feature/issue-302-rapidsms-relay  # TODO: remove once merged into master
+    git checkout feature/issue-302-rapidsms-relay
 
 Install Vumi's Python dependencies::
 
@@ -83,9 +90,9 @@ Create ``config/rapidsms.yaml`` using the following configuration:
         web_path: "/send/"
         web_port: 9000
         send_to:
-        default:
-            transport_name: 'transport'
-            from_addr: '1234' # not set automatically by SMSC
+            default:
+                transport_name: 'transport'
+                from_addr: '1234' # not set automatically by SMSC
 
     workers:
         smpp_transport: vumi.transports.smpp.SmppTransport
@@ -161,11 +168,11 @@ create a ``passwords`` directive in the ``rapidsms_relay`` configuration:
         web_path: "/send/"
         web_port: 9000
         send_to:
-        default:
-            transport_name: 'transport'
-            from_addr: '1234' # not set automatically by SMSC
-        passwords:
-            username: 'password'
+            default:
+                transport_name: 'transport'
+                from_addr: '1234' # not set automatically by SMSC
+        vumi_username: 'username'
+        vumi_password: 'password'
 
 Then you can update :setting:`INSTALLED_BACKENDS` with ``sendsms_user`` and
 ``sendsms_pass``:
