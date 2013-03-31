@@ -41,7 +41,7 @@ Add ``rapidsms.router.db`` to ``INSTALLED_APPS``:
 
     INSTALLED_APPS = (
         # Other apps here
-        "rapidsms.router.db"
+        "rapidsms.router.db",
     )
 
 This will register Celery tasks in ``rapidsms.router.db.tasks``.
@@ -69,7 +69,7 @@ Celery workers
 Finally, you'll need to run the celery worker command (in a separate shell from
 ``runserver``) to begin consuming queued tasks::
 
-    python manage.py celeryd -lDEBUG
+    python manage.py celery worker --loglevel=info
 
 Now your messages will be handled asynchronously with :router:`DatabaseRouter`.
 
