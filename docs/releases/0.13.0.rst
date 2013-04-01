@@ -29,15 +29,6 @@ What's New
 * Reworked the :router:`CeleryRouter` to pass identifiers, rather than instantiated objects, to background tasks. This avoids tasks possibly using outdated data when unpickling task arguments.
 * Removed ``rapidsms.tests.harness.setting``.
 * Added `requests`_ as a dependency. Vumi and Kannel now use `requests`_ to construct HTTP requests. You'll need to run ``pip install requests`` or add ``requests`` to your requirements file.
-* Deprecated ``rapidsms.log.mixin.LoggerMixin``. Please update all logging to use the standard logging module, like so:
-
-.. code-block:: python
-
-    import logging
-    logger = logging.getLogger(__name__)
-    logger.info(...)
-    logger.debug(...)
-
 
 * Added initial migrations for `South`_ support. South handles making incremental changes to database tables as Django models change.  To start using:
 
@@ -56,18 +47,32 @@ What's New
 
       python manage.py migrate --fake
 
-  Once South is set up, future upgrades of RapidSMS should just require ``manage.py migrate`` to update your database tables.
+  Once South is set up, future upgrades of RapidSMS should just require
+  ``manage.py migrate`` to update your database tables.
+
+* Deprecated ``rapidsms.log.mixin.LoggerMixin``. Please update all logging to use the standard logging module, like so:
+
+.. code-block:: python
+
+    import logging
+    logger = logging.getLogger(__name__)
+    logger.info(...)
+    logger.debug(...)
 
   That includes code that might use LoggerMixin indirectly by extending
   ``AppBase``, ``BackendBase``, or ``BaseHandler``.  Search for code like
   ``self.error(...)`` or ``self.debug(...)`` and change to
   ``logger.error(...)`` or ``logger.debug(...)`` after creating a logger
   object as above.
+
 * The :doc:`HTTPTester contrib app </topics/contrib/httptester>` has been changed
   to use the new Database backend instead of its own backend. The HTTPTester
   backend has been removed. Please remove ``"rapidsms.contrib.httptester.backend"``
   from ``INSTALLED_BACKENDS`` and review the :doc:`HTTPTester configuration
   </topics/contrib/httptester>`.
+* Added ``created_on`` and ``modified_on`` fields to the ``Contact`` and
+  ``Connection`` models. On initial migration, any existing records will have
+  those fields set to the current time.
 
 
 .. _backwards-incompatible-changes-0.13.0:
