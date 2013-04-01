@@ -47,8 +47,6 @@ class TestMessagingForm(RapidTest):
     def test_send(self):
         form = MessageForm(self.data)
         self.assertTrue(form.is_valid())
-        messages = form.send()
-        self.assertEqual(len(messages), 1)
-        message = messages[0]
+        message = form.send()
         self.assertEqual(message.text, self.message)
         self.assertEqual(message.connection, self.connection)

@@ -1,84 +1,116 @@
-We use German (de) as an example here.
+===========
+Translation
+===========
 
-What comes with RapidSMS
-==========================
+.. module:: rapidsms.utils.translation
 
-The 'registration' app in rapidsms/contrib can be used to associate connections with languages. When you add 'rapidsms.contrib.registration' to your list of installed apps, you get::
-
-    Message: lang de
-    Response: I will speak to you in German.
-
-After a connection registers a language in this way, RapidSMS will attempt to translate all future messages sent to that connection (using `OutgoingMessage.send()`) into German. For example::
-
-    message.send('goodbye!')
-
-You can extend any outgoing message using OutgoingMessage.append(self, string). For example::
+RapidSMS uses Django's internationalization (i18n) architecture to allow you to
+make your project or application translatable. This documentation assumes
+you're already familiar with this architecture. If you're not, we recomend
+reviewing `Django's translation`_ documentation before proceeding.
 
 
-    message.append('come back soon!')
+Introduction
+------------
 
-You can insert variables using `OutgoingMessage.append(self, template, **kwargs)`. For example::
+You can specify a translation string by using the function ``ugettext``. The
+convention is to import this as a shorter alias, _, to save typing. In this
+example, the text ``"Welcome to RapidSMS."`` is marked as a translation string:
 
-    message.append('come back in %(num_days)s days!', {'num_days':3})
+.. code-block:: python
+   :emphasize-lines: 1,4
+
+    from django.utils.translation import ugettext as _
+
+    def do_something():
+        output = _("Welcome to RapidSMS.")
+
+By default, Django will attempt to translate this string based on your
+``LANGUAGE_CODE`` `setting
+<https://docs.djangoproject.com/en/dev/ref/settings/#std:setting-
+LANGUAGE_CODE>`_.
+
+RapidSMS will not automatically attempt to translate routed
+messages. This is an intential decision to require application developers to
+explicity initiate the message translation process. You can use the methods
+below to transate messages.
 
 
-INTERNATIONALIZATION (I18N)
-============================
-aka writing apps that can support multiple different translations
+Language specification
+----------------------
 
-Mark all strings needing translation in web template html, apps.py, and views.py
+To set a specific language, you can use Django's ``translation.override``
+context manager:
 
-For web templates (\*.html), this means that you'll need to:
-* Add `{% load i18n %}` to the top
-* Tag strings like `{% trans "hello world" %}`
-* For web views (typically views.py) and sms apps (app.py), this means that you will add:
-* Import from django.utils.translation import ugettext as _.
-* Tag all of your translatable strings like `_("hello world")`.
+.. code-block:: python
+   :emphasize-lines: 1,5,7
 
-LOCALIZATION (L10N)
-====================
-aka deploying internationalized apps in a given language or set of languages.
+    from django.utils import translation
+    from django.utils.translation import ugettext as _
 
-* From the project or app root, type django-admin.py makemessages -l de.
-* You will need to create the directories you need for each locale: mkdir --parents [app_root]/locale/de
-* This will generate the file [app_root]/locale/de/LC_MESSAGES.django.po
-* Add your translations to the django.po file
-* From the project or app root, type django-admin.py compilemessages.
-* In settings.py, be sure to add::
+    def do_something():
+        with translation.override("es"):  # Spanish
+            message1 = _("Welcome to RapidSMS.")
+        with translation.override("fr"):  # French
+            message2 = _("Welcome to RapidSMS.")
 
-    LANGUAGES = (
-      ('de', _('German')),
-      ('en', _('English')),
-    )
 
-you can't import the gettext function in the settings file, because the internationalization system requires the settings file to be available before it can start up. the official (django) workaround is adding::
+Contact language setting
+------------------------
 
-    _ = lambda s: s
+Every RapidSMS ``Contact`` has an associated ``language`` field. This field is
+used to specify the contact's language preference. You can use this field to
+send messages in the correct language.
 
-to the top of your settings file. see:
-http://docs.djangoproject.com/en/dev/ref/settings/?from=olddocs#languages
 
-TIPS
-======
+Message responses
+*****************
 
-The vast majority of problems with UTF-8 are caused by using an improperly configured document editor or IDE. Be sure to set your encoding for your translation files, IDEs, emacs, textmate, etc. to UTF-8.
+It's quite common to use ``msg.respond()`` within your application to respond
+to messages. To send a response in the contact's preferred language, you can
+use ``translation.override`` with their language:
 
-MISC
-=====
+.. code-block:: python
+   :emphasize-lines: 9
 
-Django doesn't support a lot of useful languages, like Swahili (swh) or Pashto (pbt).
+    from django.utils import translation
+    from django.utils.translation import ugettext as _
+    from rapidsms.apps.base import AppBase
 
-http://docs.djangoproject.com/en/dev/topics/i18n/localization/#locale-restrictions
+    class HelloApp(AppBase):
 
-If you are translating the webui into a language which Django does not currently support (and there are many - Swahili, for instance), you'll need to add that translation file directly to your Django installation. To do this:
+        def handle(self, msg):
+            if msg.text == "hello":
+                with translation.override(msg.connection.contact.language):
+                    msg.respond(_('hello'))
+                return True
 
-Copy the contents of <django-install-dir>/conf/locale/en to <django-install-dir>/conf/locale/<your-language-code>
-Create a django.mo file in the same directory by installing 'gettext' and running msgfmt -o django.mo django.po
-Restart your server and your route process
+This example will attempt respond with ``"hello"`` in the contact's preferred language.
 
-REFERENCES
-============
 
-`DjangoI18n <http://docs.djangoproject.com/en/dev/topics/i18n/>`_ : Django's i18n documentation
+Sending messages
+****************
 
-`Scripts <http://rishida.net/scripts/featurelist/>`_ : Script features by language
+To ease translating messages to multiple connections, RapidSMS provides a
+utility function, ``group_connections``, to divide connections into groups by
+their contact's language setting.
+
+This example illustrates how you could attempt to say *hello* in the correct
+language(s) without needing to inspect each connection manually:
+
+.. code-block:: python
+    :emphasize-lines: 3,8
+
+    from django.utils import translation
+    from django.utils.translation import ugettext as _
+    from rapidsms.utils import translation as trans_helpers
+    from rapidsms.router import send
+
+    def say_hello_to_everyone():
+        connections = Connection.objects.all()
+        for lang, conns in trans_helpers.group_connections(connections):
+            with translation.override(lang):
+                send(_('hello'), conns)
+
+
+.. _Django's translation: https://docs.djangoproject.com/en/dev/topics/i18n/translation/

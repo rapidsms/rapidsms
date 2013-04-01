@@ -1,19 +1,22 @@
+import datetime
+
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 from django.conf.urls import patterns, url
+from django.utils.timezone import now
 
 from rapidsms.backends.kannel import views
 from rapidsms.backends.kannel import KannelBackend
 from rapidsms.backends.kannel.forms import KannelForm
+from rapidsms.backends.kannel.models import DeliveryReport
 from rapidsms.tests.harness import RapidTest, CreateDataMixin
 
 
 urlpatterns = patterns('',
-                       url(r"^backend/kannel/$",
-                           views.KannelBackendView.as_view(
-                               backend_name='kannel-backend'),
-                           name='kannel-backend'),
-                       )
+    url(r"^backend/kannel/$",
+        views.KannelBackendView.as_view(backend_name='kannel-backend'),
+        name='kannel-backend'),
+)
 
 
 class KannelFormTest(TestCase):
@@ -74,6 +77,8 @@ class KannelViewTest(RapidTest):
 
 class KannelSendTest(CreateDataMixin, TestCase):
 
+    urls = 'rapidsms.backends.kannel.urls'
+
     def test_outgoing_keys(self):
         """Outgoing POST data should contain the proper keys."""
         message = self.create_outgoing_message()
@@ -88,7 +93,9 @@ class KannelSendTest(CreateDataMixin, TestCase):
             "encode_errors": "ignore",
         }
         backend = KannelBackend(None, "kannel", **config)
-        data = backend.prepare_message(message)
+        kwargs = backend.prepare_request(1, message.text,
+                                         [message.connections[0].identity], {})
+        data = kwargs['params']
         self.assertEqual(config['sendsms_params']['smsc'], data['smsc'])
         self.assertEqual(config['sendsms_params']['from'], data['from'])
         self.assertEqual(config['sendsms_params']['username'],
@@ -104,15 +111,67 @@ class KannelSendTest(CreateDataMixin, TestCase):
         """Ensure outgoing messages are encoded properly."""
         message = self.create_outgoing_message()
         config = {
-            "sendsms_url": "http://127.0.0.1:13013/cgi-bin/sendsms",
             "sendsms_params": {"smsc": "usb0-modem",
                                "from": "+SIMphonenumber",
                                "username": "rapidsms",
                                "password": "CHANGE-ME"},
-            "coding": 0,
             "charset": "UTF-8",
-            "encode_errors": "ignore",
         }
         backend = KannelBackend(None, "kannel", **config)
-        data = backend.prepare_message(message)
+        kwargs = backend.prepare_request(1, message.text,
+                                         [message.connections[0].identity], {})
+        data = kwargs['params']
         self.assertEqual(data['text'].decode('UTF-8'), message.text)
+
+    def test_delivery_report_url(self):
+        """delivery_report_url config option should send Kannel proper args."""
+        message = self.create_outgoing_message()
+        config = {
+            "sendsms_params": {"smsc": "usb0-modem",
+                               "from": "+SIMphonenumber",
+                               "username": "rapidsms",
+                               "password": "CHANGE-ME"},
+            "delivery_report_url": "http://localhost:8000",
+        }
+        backend = KannelBackend(None, "kannel", **config)
+        kwargs = backend.prepare_request(1, message.text,
+                                         [message.connections[0].identity], {})
+        data = kwargs['params']
+        self.assertEqual(31, data['dlr-mask'])
+        self.assertTrue("http://localhost:8000" in data['dlr-url'])
+
+
+class KannelDeliveryReportTest(CreateDataMixin, TestCase):
+
+    urls = 'rapidsms.backends.kannel.urls'
+
+    def test_valid_post(self):
+        """Valid delivery reports should create reports in the DB."""
+        msg = self.create_outgoing_message()
+        query = {'message_id': msg.id,
+                 'identity': msg.connections[0].identity,
+                 'status': 1,
+                 'status_text': 'Success',
+                 'smsc': 'usb0-modem',
+                 'sms_id': self.random_string(36),
+                 'date_sent': now()}
+        url = reverse('kannel-delivery-report')
+        response = self.client.get(url, query)
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(1, DeliveryReport.objects.count())
+        report = DeliveryReport.objects.all()[0]
+        self.assertEqual(msg.id, report.message_id)
+
+    def test_invalid_post(self):
+        """Invalid post data should generate a 400."""
+        msg = self.create_outgoing_message()
+        query = {'message_id': msg.id,
+                 'identity': msg.connections[0].identity,
+                 'status': 3,
+                 'status_text': 'Success',
+                 'smsc': 'usb0-modem',
+                 'sms_id': self.random_string(36),
+                 'date_sent': now()}
+        url = reverse('kannel-delivery-report')
+        response = self.client.get(url, query)
+        self.assertEqual(400, response.status_code)

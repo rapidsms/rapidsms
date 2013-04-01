@@ -8,7 +8,7 @@ from ..models import Message
 
 
 __all__ = ['MessageLogAppTestBase', 'IncomingMessageLogAppTest',
-        'OutgoingMessageLogAppTest']
+           'OutgoingMessageLogAppTest']
 
 
 class MessageLogAppTestBase(object):
@@ -31,7 +31,7 @@ class MessageLogAppTestBase(object):
 
     def test_message(self):
         """Message should be logged & annotated."""
-        msg = self.MessageType(self.connection, 'hello')
+        msg = self.MessageType([self.connection], 'hello')
         self._send(msg)
         self.assertEqual(Message.objects.count(), 1)
         self._check_message(msg, Message.objects.get())
@@ -39,7 +39,7 @@ class MessageLogAppTestBase(object):
     def test_no_contact(self):
         """Message doesn't require a Contact if a Connection is present."""
         self.connection.contact = None
-        msg = self.MessageType(self.connection, 'hello')
+        msg = self.MessageType([self.connection], 'hello')
         self._send(msg)
         self.assertEqual(Message.objects.count(), 1)
         self._check_message(msg, Message.objects.get())
