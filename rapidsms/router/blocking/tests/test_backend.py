@@ -1,9 +1,10 @@
 from django.test import TestCase
 from rapidsms.router.blocking import BlockingRouter
 from rapidsms.backends.base import BackendBase
+from rapidsms.tests.harness import RaisesBackend, CreateDataMixin
 
 
-class RouterBackendTest(TestCase):
+class RouterBackendTest(CreateDataMixin, TestCase):
     """BlockingRouter backend tests."""
 
     def setUp(self):
@@ -34,3 +35,12 @@ class RouterBackendTest(TestCase):
         self.assertEquals(1, len(self.router.backends.keys()))
         self.assertTrue("backend" in self.router.backends.keys())
         self.assertEquals("backend", self.router.backends['backend'].name)
+
+    def test_send_captures_exception(self):
+        """BlockingRouter should catch exceptions during sending."""
+        self.router.add_backend("backend", RaisesBackend)
+        msg = self.create_outgoing_message()
+        try:
+            self.router.send_outgoing(msg)
+        except Exception:
+            self.fail("send_outgoing should capture all excetpions.")

@@ -53,9 +53,9 @@ def send_transmissions(backend_id, message_id, transmission_ids):
         router.send_to_backend(backend_name=backend.name, id_=dbm.pk,
                                text=dbm.text, identities=list(identities),
                                context=context)
-    except Exception, exc:
+    except Exception as exc:
         # log error, update database statuses, and re-execute this task
-        logger.exception(exc)
+        logger.exception("The backend encountered an error while sending.")
         Message.objects.filter(pk=message_id).update(status='E')
         transmissions.update(status='E', updated=now())
         raise send_transmissions.retry(exc=exc)

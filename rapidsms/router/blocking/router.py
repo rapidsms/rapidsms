@@ -241,8 +241,12 @@ class BlockingRouter(object):
         context = msg.extra_backend_context()
         grouped_identities = self.group_outgoing_identities(msg)
         for backend_name, identities in grouped_identities.iteritems():
-            self.send_to_backend(backend_name, msg.id, msg.text, identities,
-                                 context)
+            try:
+                self.send_to_backend(backend_name, msg.id, msg.text,
+                                     identities, context)
+            except Exception:
+                logger.exception("The backend encountered an error while "
+                                 "sending.")
 
     def group_outgoing_identities(self, msg):
         """Return a dictionary of backend_name -> identities for a message."""
