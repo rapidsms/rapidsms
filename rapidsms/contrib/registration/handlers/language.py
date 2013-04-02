@@ -2,9 +2,8 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 
-from rapidsms.contrib.handlers.handlers.keyword import KeywordHandler
-from rapidsms.models import Contact
 from rapidsms.conf import settings
+from rapidsms.contrib.handlers.handlers.keyword import KeywordHandler
 
 
 class LanguageHandler(KeywordHandler):
@@ -33,9 +32,9 @@ class LanguageHandler(KeywordHandler):
             self.msg.connection.contact.save()
 
             return self.respond(
-                "I will speak to you in %(language)s.",
-                language=name)
+                "I will speak to you in %(language)s." % {
+                'language': name})
 
         return self.respond_error(
-            'Sorry, I don\'t speak "%(language)s".',
-            language=text)
+            'Sorry, I don\'t speak "%(language)s".' % {
+            'language': text})

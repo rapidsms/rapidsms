@@ -3,8 +3,12 @@
 
 
 import re
+import logging
 from rapidsms.apps.base import AppBase
 from .models import *
+
+
+logger = logging.getLogger(__name__)
 
 
 class App(AppBase):
@@ -44,5 +48,5 @@ class App(AppBase):
             msg.text = m.group(1)
 
             # we should probably log this crazy behavior...
-            self.info("Stripped Location code: %s" % text)
-            self.info("Message is now: %s" % msg.text)
+            logger.info("Stripped Location code: %s" % text)
+            logger.info("Message is now: %s" % msg.text)

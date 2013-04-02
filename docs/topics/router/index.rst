@@ -7,10 +7,15 @@ RapidSMS Routers
 .. module:: rapidsms.router.blocking
 
 The router is the message processing component of RapidSMS. It provides the
-infrastructure to receive incoming and send outgoing messages, and triggers a
-series of phases through which :doc:`applications
-</topics/applications/index>` process messages. Each RapidSMS project can use
-exactly one router, which should be chosen based on the needs of the project.
+infrastructure and defines the workflow to receive, process and send text
+messages. Each RapidSMS project can use only one router, which should be chosen
+based on the needs of the project.
+
+The basics:
+
+* You may use any router, but only one router can be used per project.
+* Each router contains a collection of installed apps and backends.
+* All routers will trigger a set of phases for message processing.
 
 Application and router behavior in RapidSMS are intertwined. In this section,
 we focus on the behavior specific to the router, with references to some key
@@ -18,12 +23,13 @@ areas where this behavior is tied to applications. For more information about
 processing messages in applications, see the :doc:`applications documentation
 </topics/applications/index>`.
 
+
 .. _router-choice:
 
 Choosing a Router
 =================
 
-Each RapidSMS project can use exactly one router, which should be chosen based
+Each RapidSMS project can use only one router, which should be chosen based
 on the needs of the project. The path to your chosen router must go in the
 :setting:`RAPIDSMS_ROUTER` setting::
 
@@ -36,41 +42,67 @@ processing performance. For example, some routers are easy to set up but will
 struggle with large message volumes. More complex routers may process messages
 more efficiently, but require more work to set up.
 
+
+Supplied Routers
+-----------------
+
+RapidSMS includes several routers for you to use:
+
+* :router:`BlockingRouter` - Default router that processes messages synchronously within the HTTP thread.
+* :router:`CeleryRouter` - Celery-enabled router that processes messages asynchronously.
+* :router:`DatabaseRouter` - Database, Celery-enabled router that queues messages in the database for asynchronous processing.
+
+Here are some characteristics of the supplied routers.
+`B` is the blocking router, `C` is the Celery router, and
+`D` is the database router.
+
+=  =  =  ===================================================================================
+B  C  D  Characteristic
+=  =  =  ===================================================================================
+n  n  y  Stores messages in database
+n  y  y  Requires Celery
+y  n  n  Delays in one operation can block all other operations
+n  n  y  Can recover and retry failed sends
+n  n  y  Keeps a record of which messages have been sent and whether the send was successful
+=  =  =  ===================================================================================
+
+If you can't find a router that's suitable for your needs, you can write a
+custom router.
+
+
+
+Using a custom router
+---------------------
+
+While RapidSMS includes support for a number of routers out-of-the-box,
+sometimes you may want to use a customized router. To use a custom router
+with RapidSMS, use the dotted Python path to the router class for the
+:setting:`RAPIDSMS_ROUTER` setting, like so::
+
+    RAPIDSMS_ROUTER = 'path.to.RouterClass'
+
+If you're building your own router, you can use the standard routers
+as reference implementations. All routers should extend from :class:`BlockingRouter <rapidsms.router.blocking.BlockingRouter>`.
+
+
 .. _discovery:
 
-Application and Backend Discovery
-=================================
+Applications and Backends
+=========================
 
-The router maintains a collection of related :doc:`applications
-</topics/applications/index>` through which it routes incoming and outgoing
-messages, as well as a collection of :doc:`backends </topics/backends/index>`
-through which it can send outgoing messages. Applications and backends can be
-added manually by the user, or managed by the router implementation. For
-example, ``BlockingRouter`` loads them upon initialization.
+While the router provides the foundation for messaging processing, applications and backends actually perform the message processing:
 
-.. _application-discovery:
+* **Applications:** The router maintains a collection of related :doc:`applications </topics/applications/index>` through which it routes incoming and outgoing messages. Applications are defined in :setting:`INSTALLED_APPS` and loaded, by default, when the router is instantiated via :meth:`add_app <rapidsms.router.blocking.BlockingRouter.add_app>`.
+* **Backends:** The router also maintains a collection of related :doc:`backends </topics/backends/index>` to send outgoing messages. Backends are defined in :setting:`INSTALLED_BACKENDS` and loaded, by default, when the router is instantiated via :meth:`add_backend <rapidsms.router.blocking.BlockingRouter.add_backend>`.
 
-Applications
-------------
-``BaseRouter.add_app`` takes one argument that is either an ``AppBase``
-subclass or the name of a RapidSMS application's containing Django app. If the
-argument is the name of a Django app, the method looks in ``app_name.app`` for
-an ``AppBase`` subclass to use. The method then instantiates the subclass and
-adds it to the router's list of associated applications, ``apps``.
-
-.. _backend-discovery:
-
-Backends
---------
-TODO: ``BaseRouter.add_backend``
 
 Message Processing
 ==================
 
-In general, the ``send`` and ``receive`` methods in the :doc:`messaging api
-</topics/router/messaging>` abstract the logic needed for passing messages to
-the router. In the ``incoming`` and ``outgoing`` router methods, messages are
-passed to the router's associated applications for processing.
+The :doc:`Messaging API </topics/router/messaging>` defines :func:`send
+<rapidsms.router.send>` and :func:`receive <rapidsms.router.receive>` to route
+messages through the router. Messages are processed via a series of phases, depending on direction. These phases are outlined below.
+
 
 .. _router-incoming:
 
@@ -81,10 +113,9 @@ Incoming Messages
    See also the :ref:`application documentation on incoming message processing
    <application-incoming>`.
 
-In ``BaseRouter.receive_incoming``, the incoming message is processed in five
-phases. Each application provides code for executing the phases. The router
-method defines hooks which allow an application to filter out a message, skip
-phases, or stop further processing.
+Incoming messages are processed in five phases. Each application provides code
+for executing the phases. The router method defines hooks which allow an
+application to filter out a message, skip phases, or stop further processing.
 
 1. :ref:`filter <phase-filter>` - **Optionally abort all further processing of
    the incoming message (including cleanup).**
@@ -97,11 +128,8 @@ phases, or stop further processing.
 
 The order in which the router chooses applications to process messages is
 extremely important, because each application will have the opportunity to
-block subsequent applications from processing a message. In
-``BaseRouter.receive_incoming``, the message is processed by applications in
-the order they are listed in the ``apps`` list property. For
-``BlockingRouter``, this means that messages are processed by applications in
-the order they are listed in :setting:`INSTALLED_APPS`.
+block subsequent applications from processing a message. :meth:`receive_incoming <rapidsms.router.blocking.BlockingRouter.receive_incoming>` processes messages in the order they are listed in :setting:`INSTALLED_APPS`.
+
 
 .. _router-outgoing:
 
@@ -112,74 +140,10 @@ Outgoing Messages
    See also the :ref:`application documentation on outgoing message
    processing <application-outgoing>`.
 
-In ``BaseRouter.send_outgoing``, the outgoing message is processed sequentially
-by the applications listed in the ``apps`` list property. However, the
-applications are called in reverse order with respect to the order they are
-called in ``BaseRouter.receive_incoming``, so the first application called to
-process an incoming message is the last application that is called to process
-an outgoing message. If any application returns ``True`` during the *outgoing*
-phase, all further processing of the message will be aborted.
-
-.. _router-types:
-
-Router Types
-============
-
-All routers should extend from ``rapidsms.router.base.BaseRouter``. The
-``BaseRouter`` is a fully-functional router that provides basic
-implementations of all router methods. Subclasses may override the default
-methods to enhance convenience or optimize performance.
-
-.. router:: BlockingRouter
-.. _blocking-router:
-
-BlockingRouter
---------------
-
-.. versionadded:: 0.10.0
-
-RapidSMS provides an easy-to-use default router at
-``rapidsms.router.blocking.BlockingRouter``. As its name suggests,
-``BlockingRouter`` handles messages synchronously, waiting for all application
-and backend processing to complete before continuing. This is acceptable for
-many scenarios, but will be less efficient if your project needs to handle
-many inbound and outbound messages.
-
-``BlockingRouter`` adds apps and backends upon initialization. By default,
-it searches for relevant classes in the Django apps in
-:setting:`INSTALLED_APPS` and :setting:`INSTALLED_BACKENDS`. Alternatively,
-you may provide specific classes or Django apps in which to search in the
-``apps`` and ``backends`` list arguments. To illustrate::
-
-    >>> from django.conf import settings
-    >>> from rapidsms.router.blocking import BlockingRouter
-    >>> print settings.INSTALLED_APPS
-    ['rapidsms.contrib.handlers', 'rapidsms.contrib.default',
-    'rapidsms.contrib.locations', 'rapidsms.contrib.messagelog',
-    ... (other Django apps) ...]
-    >>> print settings.INSTALLED_BACKENDS
-    {'message_tester': {'ENGINE': 'rapidsms.contrib.httptester.backend'}}
-    >>> router = BlockingRouter()
-    >>> router.apps
-    [<app: handlers>, <app: default>, <app: locations>, <app: messagelog>]
-    >>> router.backends
-    {'message_tester': <backend: message_tester>}
-
-``BlockingRouter`` also overrides ``BaseRouter.receive_incoming`` to
-automatically handle (via the ``outgoing`` method) responses to the incoming
-message.
-
-.. _custom-router:
-
-Using a custom router
----------------------
-
-While RapidSMS includes support for a number of routers out-of-the-box,
-sometimes you might want to use a customized router. To use an external router
-with RapidSMS, use the Python import path to the router class for the
-:setting:`RAPIDSMS_ROUTER` setting, like so::
-
-    RAPIDSMS_ROUTER = 'path.to.router'
-
-If you're building your own router, you can use the standard routers
-as reference implementations.
+:meth:`send_outgoing <rapidsms.router.blocking.BlockingRouter.send_outgoing>`
+processes messages sequentially, in the order they are listed in
+:setting:`INSTALLED_APPS`. However, the applications are called in reverse
+order, so the first application called to process an incoming message is the
+last application that is called to process an outgoing message. If any
+application returns ``True`` during the *outgoing* phase, all further
+processing of the message will be aborted.

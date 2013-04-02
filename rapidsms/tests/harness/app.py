@@ -7,24 +7,39 @@ class MockApp(AppBase):
     def __init__(self, *args, **kwargs):
         super(MockApp, self).__init__(*args, **kwargs)
         self.calls = []
+        self.return_values = {}
 
     def start(self):
-        self.calls.append(("start",))
+        self.calls.append("start")
+        return self.return_values.get('start', None)
+
+    def filter(self, message):
+        self.calls.append("filter")
+        return self.return_values.get('filter', None)
 
     def parse(self, message):
-        self.calls.append(("parse", message))
+        self.calls.append("parse")
+        return self.return_values.get('parse', None)
 
     def handle(self, message):
-        self.calls.append(("handle", message))
+        self.calls.append("handle")
+        return self.return_values.get('handle', None)
+
+    def default(self, message):
+        self.calls.append("default")
+        return self.return_values.get('default', None)
 
     def cleanup(self, message):
-        self.calls.append(("cleanup", message))
+        self.calls.append("cleanup")
+        return self.return_values.get('cleanup', None)
 
     def outgoing(self, message):
-        self.calls.append(("outgoing", message))
+        self.calls.append("outgoing")
+        return self.return_values.get('outgoing', None)
 
     def stop(self):
-        self.calls.append(("stop",))
+        self.calls.append("stop")
+        return self.return_values.get('stop', None)
 
 
 class EchoApp(MockApp):
@@ -33,3 +48,10 @@ class EchoApp(MockApp):
     def handle(self, message):
         MockApp.handle(self, message)
         message.respond(message.peer + ": " + message.text)
+
+
+class ExceptionApp(MockApp):
+    """App that raises an exception."""
+
+    def handle(self, message):
+        raise Exception('Error!')

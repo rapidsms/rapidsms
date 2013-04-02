@@ -5,6 +5,17 @@ Settings
 Here is a full list of available settings, and their default values, for
 RapidSMS and its contrib apps.
 
+.. setting:: DB_ROUTER_DEFAULT_BATCH_SIZE
+
+DB_ROUTER_DEFAULT_BATCH_SIZE
+----------------------------
+
+:App: :doc:`rapidsms.router.db </topics/router/db>`
+:Default: 200
+
+The default maximum batch size when the database router is sending messages
+in bulk.
+
 .. setting:: DEFAULT_RESPONSE
 
 DEFAULT_RESPONSE
@@ -44,10 +55,10 @@ vary widely. This setting mimics the structure of the Django
 
     INSTALLED_BACKENDS = {
         'backend1_name': {
-            'ENGINE': 'path.to.backend1',
+            'ENGINE': 'path.to.backend1.BackendClass',
         },
         'backend2_name': {
-            'ENGINE': 'path.to.backend2',
+            'ENGINE': 'path.to.backend2.BackendClass',
         },
     }
 
@@ -59,7 +70,7 @@ Example configuration::
 
     INSTALLED_BACKENDS = {
         "message_tester": {
-            "ENGINE": "rapidsms.contrib.httptester.backend",
+            "ENGINE": "rapidsms.contrib.httptester.backend.HttpTesterCacheBackend",
         },
     }
 

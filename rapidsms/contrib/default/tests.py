@@ -49,7 +49,7 @@ class DefaultAppTest(RapidTest):
     def test_response_with_project_name(self):
         """App should replace project_name in response if it is present."""
         with override_settings(DEFAULT_RESPONSE='hello %(project_name)s',
-                     PROJECT_NAME='world'):
+                               PROJECT_NAME='world'):
             self.receive('asdf', self.connection)
             self.assertEqual(len(self.outbound), 1)
             self.assertEqual(self.outbound[0].text, 'hello world')

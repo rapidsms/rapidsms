@@ -41,7 +41,7 @@ class TestHandlersApp(RapidTest):
         retVal = app.handle(msg)
         self.assertTrue(retVal)
         self.assertEqual(len(msg.responses), 1)
-        self.assertEqual(msg.responses[0].text, 'world')
+        self.assertEqual(msg.responses[0]['text'], 'world')
 
     def test_no_handlers(self):
         """If app has no (relevant) handlers, it should return nothing."""

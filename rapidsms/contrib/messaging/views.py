@@ -19,12 +19,12 @@ def send(request):
     try:
         form = MessageForm(request.POST)
         if form.is_valid():
-            messages = form.send()
-            if len(messages) == 1:
+            message = form.send()
+            if len(message.connections) == 1:
                 return HttpResponse('Your message was sent to 1 recipient.')
             else:
                 return HttpResponse('Your message was sent to {0} '
-                        'recipients.'.format(len(messages)))
+                        'recipients.'.format(len(message.connections)))
         else:
             return HttpResponseBadRequest(unicode(form.errors))
     except:

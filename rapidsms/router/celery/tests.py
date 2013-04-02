@@ -1,73 +1,68 @@
-from mock import patch, Mock
+from mock import patch
 
 from django.test import TestCase
+from django.test.utils import override_settings
 
-from rapidsms.tests.harness import CustomRouterMixin
-from rapidsms.tests.harness.backend import MockBackend
-
-from rapidsms.router.blocking import BlockingRouter
-from rapidsms.router import send, receive, lookup_connections
-from rapidsms.router.celery import CeleryRouter
-from rapidsms.router.celery.tasks import rapidsms_handle_message
+from rapidsms.tests import harness
+from rapidsms.router import get_router
+from rapidsms.router.celery.tasks import receive_async
 
 
-class CeleryRouterTest(CustomRouterMixin, TestCase):
+class CeleryRouterTest(harness.DatabaseBackendMixin, TestCase):
     """Tests for the CeleryRouter proxy class"""
 
     router_class = 'rapidsms.router.celery.CeleryRouter'
 
     def test_incoming(self):
-        """Received messages should call _queue_message with incoming=True"""
-
-        with patch.object(CeleryRouter, '_queue_message') as mock_method:
-            connections = lookup_connections("mockbackend",
-                                             identities=['1112223333'])
-            message = receive("test", connections[0])
-        mock_method.assert_called_once_with(message, incoming=True)
+        """Make sure the proper fields are passed to receive_async."""
+        with patch.object(receive_async, 'delay') as mock_method:
+            connections = self.lookup_connections(['1112223333'])
+            msg = self.receive("test", connections[0], fields={'a': 'b'})
+        mock_method.assert_called_once_with(msg.text, msg.connections[0].id,
+                                            msg.id, msg.fields)
 
     def test_outgoing(self):
-        """Sent messages should call _queue_message with incoming=False"""
+        """send() should preserve all message context."""
+        connection = self.lookup_connections(['1112223333'])[0]
+        msg = self.send("test", connection)
+        backend_msg = self.sent_messages[0]
+        self.assertEqual(msg.id, backend_msg.message_id)
+        self.assertEqual(msg.text, backend_msg.text)
+        self.assertEqual(msg.connections[0].identity, backend_msg.identity)
 
-        with patch.object(CeleryRouter, '_queue_message') as mock_method:
-            connections = lookup_connections("mockbackend",
-                                             identities=['1112223333'])
-            messages = send("test", connections)
-        mock_method.assert_called_once_with(messages[0], incoming=False)
+    def test_in_response_to_external_id(self):
+        """CeleryRouter should maintain external_id through responses."""
+        with override_settings(INSTALLED_APPS=[harness.EchoApp]):
+            connection = self.lookup_connections([1112223333])[0]
+            msg = self.receive("test", connection,
+                               fields={'external_id': 'ABCD1234'})
+            backend_msg = self.sent_messages[0]
+            self.assertEqual(msg.fields['external_id'],
+                             backend_msg.external_id)
 
 
-class EagerBackendTest(CustomRouterMixin, TestCase):
+class CeleryRouterConfigTest(harness.CustomRouterMixin, TestCase):
 
     router_class = 'rapidsms.router.celery.CeleryRouter'
-    backends = {'mockbackend': {'ENGINE': MockBackend,
-                                'router.celery.eager': True}}
+
+    def test_eager_invalid_backend(self):
+        """is_eager should return False if backend doesn't exist."""
+        self.backends = {'mockbackend': {'ENGINE': harness.MockBackend}}
+        self.set_backends()
+        router = get_router()
+        self.assertFalse(router.is_eager('foo'))
+
+    def test_eager_not_set(self):
+        """is_eager should return False if not set for specified backend."""
+        self.backends = {'mockbackend': {'ENGINE': harness.MockBackend}}
+        self.set_backends()
+        router = get_router()
+        self.assertFalse(router.is_eager('mockbackend'))
 
     def test_outgoing(self):
-        """Eager backends should call rapidsms_handle_message directly"""
-
-        with patch(
-            'rapidsms.router.celery.tasks.rapidsms_handle_message'
-        ) as mock_method:
-            connections = lookup_connections("mockbackend",
-                                             identities=['1112223333'])
-            receive("test", connections[0])
-        mock_method.assert_called_once()
-
-
-class HandleMessageTaskTest(CustomRouterMixin, TestCase):
-    """Tests specific to the rapidsms_handle_message Celery task"""
-
-    def test_incoming_method_call(self):
-        """BlockingRouter.incoming should be called if incoming is True"""
-
-        message = Mock()
-        with patch.object(BlockingRouter, 'receive_incoming') as mock_method:
-            rapidsms_handle_message(message, incoming=True)
-        mock_method.assert_called_once_with(message)
-
-    def test_outgoing_method_call(self):
-        """BlockingRouter.outgoing should be called if outgoing is True"""
-
-        message = Mock()
-        with patch.object(BlockingRouter, 'send_outgoing') as mock_method:
-            rapidsms_handle_message(message, incoming=False)
-        mock_method.assert_called_once_with(message)
+        """is_eager should return True if router.celery.eager is set."""
+        self.backends = {'mockbackend': {'ENGINE': harness.MockBackend,
+                                         'router.celery.eager': True}}
+        self.set_backends()
+        router = get_router()
+        self.assertTrue(router.is_eager('mockbackend'))

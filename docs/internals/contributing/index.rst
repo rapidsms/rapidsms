@@ -22,14 +22,18 @@ And, of course, you can help out by working *on* RapidSMS.
 
 * Report bugs in our `ticket tracker`_.
 
-* Open `pull requests`_ for features and bug fixes.
+* Open `pull requests`_ for features and bug fixes against the
+  `develop` branch.  We use the `Gitflow`_ model for our development.
 
-* Comment on open issues and pull requests.
+* Comment on open issues and pull requests. Try the changes yourself and
+  report on how well they work in the issue or pull request.
 
 * Improve the RapidSMS :ref:`documentation <writing-documentation>` (what
   you're reading now!).
 
 * Participate on the `rapidsms-dev`_ mailing list.
+
+.. _Gitflow: http://nvie.com/posts/a-successful-git-branching-model/
 
 Submitting code
 ---------------
@@ -41,10 +45,12 @@ Submitting code
 #. If you're working on a large patch, we highly recommend creating a `wiki
    page`_ under the RapidSMS GitHub account. Use the wiki page to outline the
    motivation behind the patch and to document decisions made on the
-   `rapidsms-dev`_ mailing list. `Router decoupling and HTTP message processing`_, `Bulk Messaging API`_, and `Scheduling`_ are good examples.
+   `rapidsms-dev`_ mailing list.
+   `Router decoupling and HTTP message processing`_, `Bulk Messaging API`_,
+   and `Scheduling`_ are good examples.
 
 #. Fork the repository on GitHub to start making your changes (relative to the
-   master branch).
+   `develop` branch).
 
 #. Follow the RapidSMS :ref:`coding standards <coding-standards>` and run the
    :ref:`PEP 8 adherence tool <pep-eight-adherence>`.
@@ -59,7 +65,8 @@ Submitting code
 
 #. Make sure to add yourself to `AUTHORS`_.
 
-#. Send a pull request and request feedback on `rapidsms-dev`_.
+#. Open a pull request against the `develop` branch (see `Gitflow`_), and
+   request feedback on `rapidsms-dev`_.
 
 #. Sign the :ref:`Contributor License Agreement <contributor-license-agreements>`.
 
@@ -135,6 +142,64 @@ Then follow the `virtualenvwrapper install docs`_ to setup your shell properly.
 
 Now any changes made to your local RapidSMS clone will be reflected immediately
 while editing your project.
+
+Logging
+*******
+
+If you want to log in your app, just::
+
+    import logging
+    logger = logging.getLogger(__name__)
+
+and use::
+
+    logger.debug("msg")
+    logger.critical("msg")
+    logger.exception("msg")
+    # etc.
+
+All RapidSMS core logging can now be captured using the ``'rapidsms'``
+root logger.  (There's not a lot of logging from the core yet, but pull
+requests are welcome.)
+
+For example, if you wanted messages from the RapidSMS
+core to be written to a file `"/path/rapidsms.log"`, you could define
+a new handler in the :setting:`LOGGING` setting in Django::
+
+    LOGGING = {
+        ...
+        'handlers': {
+            ...
+            'rapidsms_file': {
+                'level': 'DEBUG',
+                'class': 'logging.FileHandler',
+                'filename': '/path/rapidsms.log',
+            },
+            ...
+        },
+        ...
+    }
+
+and then configure the ``rapidsms`` logger to send messages to it::
+
+    LOGGING = {
+        ...
+        'loggers': {
+            'rapidsms': {
+                'handlers': ['rapidsms_file'],
+                'propagate': True,
+                'level': 'DEBUG',
+            },
+        },
+        ...
+    }
+
+
+If you created your project with the latest `rapidsms-project-template`_
+and haven't changed the settings, all rapidsms logging will be written
+to `rapidsms.log` in your project directory.
+
+.. _rapidsms-project-template: https://github.com/rapidsms/rapidsms-project-template/
 
 .. _writing-documentation:
 

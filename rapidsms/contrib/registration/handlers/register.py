@@ -34,5 +34,4 @@ class RegisterHandler(KeywordHandler):
         self.msg.connection.save()
 
         self.respond(
-            "Thank you for registering, %(name)s!",
-            name=contact.name)
+            "Thank you for registering, %(name)s!" % {'name': contact.name})

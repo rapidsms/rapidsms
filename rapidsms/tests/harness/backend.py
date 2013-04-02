@@ -11,6 +11,13 @@ class MockBackend(BackendBase):
     def clear(self):
         del self.messages[:]
 
-    def send(self, msg):
-        self.messages.append(msg)
+    def send(self, **kwargs):
+        self.messages.append(kwargs)
         return True
+
+
+class RaisesBackend(BackendBase):
+    """Simple backend that stores sent messages."""
+
+    def send(self, **kwargs):
+        raise Exception('Error!')
