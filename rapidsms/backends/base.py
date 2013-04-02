@@ -46,7 +46,9 @@ class BackendBase(object, LoggerMixin):
         """
         Backend sending logic. The router will call this method for each
         outbound message. This method must be overridden by sub-classes.
-        Backends typically initiate HTTP requests from within this method.
+        Backends typically initiate HTTP requests from within this method. Any
+        exceptions raised here will be captured and logged by the selected
+        router.
 
         If multiple ``identities`` are provided, the message is intended for
         all recipients.
