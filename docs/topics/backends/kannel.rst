@@ -5,14 +5,14 @@
 Setting up RapidSMS with Kannel
 ===============================
 
-`Kannel <http://www.kannel.org/>`_ is a free and opensource SMS gateway that can 
-be configured for use with RapidSMS.  While in-depth Kannel configuration is
-outside the scope of this documentation, it's possible to configure Kannel to
-connect directly to USB or serial GSM modems as well as third party HTTP or SMPP
-gateways.  For more information about the connections Kannel supports (what
-Kannel calls an "SMS Center" or "SMSC"), see the in-depth 
-`Kannel user guide <http://www.kannel.org/userguide.shtml>`_ and refer to 
-"Chapter 6. Setting up a SMS Gateway".
+`Kannel <http://www.kannel.org/>`_ is a free and open source SMS gateway that
+can  be configured for use with RapidSMS.  While in-depth Kannel configuration
+is outside the scope of this documentation, it's possible to configure Kannel
+to connect directly to USB or serial GSM modems as well as third party HTTP or
+SMPP gateways.  For more information about the connections Kannel supports
+(what Kannel calls an "SMS Center" or "SMSC"), see the in-depth `Kannel user
+guide <http://www.kannel.org/userguide.shtml>`_ and refer to  "Chapter 6.
+Setting up a SMS Gateway".
 
 The following guide will help you setup Kannel on Ubuntu to talk to a single GSM
 modem and RapidSMS installation.
@@ -355,6 +355,8 @@ Delivery Report
 RapidSMS can take advantage of Kannel's `SMS Delivery Report`_ functionality.
 This is useful if you'd like to track the status of a message after it's been
 passed to Kannel for processing. Kannel will use a callback URL to notify us.
+Enabling this feature will allow you to view delivery reports, for each
+message, in the Django admin.
 
 1. Add ``rapidsms.backends.kannel`` to ``INSTALLED_APPS``:
 
