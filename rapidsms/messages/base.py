@@ -10,8 +10,12 @@ class MessageBase(object):
 
     def __init__(self, connections, text, id_=None, in_response_to=None,
                  fields=None):
+        #: a unique ID for this message
         self.id = id_ or self.generate_id()
+        #: The connections this message was received from or sent to. A
+        #: list of :py:class:`~rapidsms.models.Connection`
         self.connections = connections
+        #: the message
         self.text = text
         #: save original text for future reference
         self.raw_text = copy.copy(self.text)
@@ -19,11 +23,11 @@ class MessageBase(object):
         self.fields = fields or {}
         #: link back to original message if this is a response
         self.in_response_to = in_response_to
-        # a message is considered "unprocessed" until rapidsms has
-        # dispatched it to all apps.
+        #: a message is considered "unprocessed" until rapidsms has
+        #: dispatched it to all apps.
         self.processed = False
-        # a message can be marked "handled" by any app, which will
-        # short-circuit the default phase in the router.
+        #: a message can be marked "handled" by any app, which will
+        #: short-circuit the default phase in the router.
         self.handled = False
 
     def __unicode__(self):
@@ -39,10 +43,15 @@ class MessageBase(object):
 
     @property
     def connection(self):
+        """The first :py:class:`~rapidsms.models.Connection` - `deprecated`.
+        """
         return self.connections[0]
 
     @property
     def contact(self):
+        """The first connection's :py:class:`~rapidsms.models.Contact`
+        - `deprecated`
+        """
         return self.connections[0].contact
 
     @property
@@ -53,6 +62,7 @@ class MessageBase(object):
         use this method. It only seems to encourage people to ignore the
         distinction between backends and identities, and create fields
         like "mobile_number", which is all kinds of wrong.
+        `deprecated`
         """
 
         return self.connections[0].identity

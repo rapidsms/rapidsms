@@ -7,7 +7,6 @@ import copy
 from collections import defaultdict
 
 from django.db.models.query import QuerySet
-from django.utils.timezone import now
 
 from rapidsms.messages.incoming import IncomingMessage
 from rapidsms.messages.outgoing import OutgoingMessage
@@ -144,6 +143,8 @@ class BlockingRouter(object):
         :param msg: :class:`IncomingMessage <rapidsms.messages.incoming.IncomingMessage>` object
         :returns: ``True`` if inbound processing should continue.
         """
+        # Note: this method can't ever return False, but some subclass might
+        # override it and use that feature.
         logger.info("Incoming (%s): %s" % (msg.connection, msg.text))
 
         try:
@@ -279,7 +280,6 @@ class BlockingRouter(object):
         :returns: :class:`IncomingMessage <rapidsms.messages.incoming.IncomingMessage>` object.
         """
         return class_(text=text, connections=connections,
-                      received_at=now(),
                       **kwargs)
 
     def new_outgoing_message(self, text, connections, class_=OutgoingMessage,
@@ -298,11 +298,11 @@ class BlockingRouter(object):
     def incoming(self, msg):
         """Legacy support for Router.incoming() -- Deprecated"""
         msg = "Router.incoming is deprecated. Please use receive_incoming."
-        warnings.warn(msg)
+        warnings.warn(msg, DeprecationWarning)
         self.receive_incoming(msg)
 
     def outgoing(self, msg):
         """Legacy support for Router.outgoing() -- Deprecated"""
         msg = "Router.outgoing is deprecated. Please use send_outgoing."
-        warnings.warn(msg)
+        warnings.warn(msg, DeprecationWarning)
         self.send_outgoing(msg)

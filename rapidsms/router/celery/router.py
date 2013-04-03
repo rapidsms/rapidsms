@@ -23,7 +23,8 @@ class CeleryRouter(BlockingRouter):
         eager = self.is_eager(msg.connection.backend.name)
         if eager:
             logger.debug('Executing in current process')
-            receive_async(msg.text, msg.connections[0].pk)
+            receive_async(msg.text, msg.connections[0].pk, msg.id,
+                          msg.fields)
         else:
             logger.debug('Executing asynchronously')
             receive_async.delay(msg.text, msg.connections[0].pk, msg.id,
