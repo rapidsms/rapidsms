@@ -3,13 +3,30 @@
 
 import copy
 from uuid import uuid4
+import warnings
 
 
 class MessageBase(object):
     """Basic message representation with text and connection(s)."""
 
-    def __init__(self, connections, text, id_=None, in_response_to=None,
-                 fields=None):
+    def __init__(self, connections=None, text=None, id_=None,
+                 in_response_to=None, fields=None,
+                 connection=None):  # old deprecated parameter
+        # Allow and cope with old 'connection' argument but issue a warning
+        if connections is None and connection is not None:
+            connections = [connection]
+            connection = None
+            warnings.warn("Message(connection=) is deprecated, please start "
+                          "using .connections", DeprecationWarning)
+        if connection is not None:
+            raise TypeError("Do not pass both `connections` and `connection`"
+                            "to MessageBase.__init__(), just `connections`")
+
+        # had to make `text` optional so we could make connections optional,
+        # but it really is required
+        if text is None:
+            raise TypeError("MessageBase.__init__ did not get required "
+                            "argument `text`")
         self.id = id_ or self.generate_id()
         self.connections = connections
         self.text = text
