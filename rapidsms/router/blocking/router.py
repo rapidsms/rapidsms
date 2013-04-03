@@ -167,7 +167,7 @@ class BlockingRouter(object):
                     if phase == "filter":
                         if handled is True:
                             logger.warning("Message filtered")
-                            raise(StopIteration)
+                            raise StopIteration
 
                     # during the _handle_ phase, apps can return True
                     # to "short-circuit" this phase, preventing any

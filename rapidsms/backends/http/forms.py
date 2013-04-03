@@ -4,6 +4,10 @@ from rapidsms.router import lookup_connections
 
 
 class BaseHttpForm(forms.Form):
+    """Helper form for validating incoming messages.
+
+    :param backend_name: (Optional) name of the backend
+    """
 
     def __init__(self, *args, **kwargs):
         """Save backend name to form for use later"""
@@ -15,6 +19,13 @@ class BaseHttpForm(forms.Form):
         return lookup_connections(self.backend_name, identities)
 
     def get_incoming_data(self):
+        """
+        Return a dictionary containing the connection and text
+        for this message, based on the field
+        names passed to __init__().
+
+        Must be implemented by subclasses.
+        """
         raise NotImplementedError()
 
 

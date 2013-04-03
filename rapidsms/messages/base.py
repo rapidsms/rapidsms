@@ -3,6 +3,7 @@
 
 import copy
 from uuid import uuid4
+import warnings
 
 
 class MessageBase(object):
@@ -39,10 +40,12 @@ class MessageBase(object):
 
     @property
     def connection(self):
+        warnings.warn("MessageBase.connection is deprecated; please start using .connections", DeprecationWarning)
         return self.connections[0]
 
     @property
     def contact(self):
+        warnings.warn("MessageBase.contact is deprecated; please start using .connections[i].contact", DeprecationWarning)
         return self.connections[0].contact
 
     @property
@@ -54,5 +57,5 @@ class MessageBase(object):
         distinction between backends and identities, and create fields
         like "mobile_number", which is all kinds of wrong.
         """
-
+        warnings.warn("MessageBase.peer is deprecated; please access the needed data directly.")
         return self.connections[0].identity
