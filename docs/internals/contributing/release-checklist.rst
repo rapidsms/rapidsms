@@ -2,17 +2,41 @@ RapidSMS Release Checklist
 ==========================
 This is a checklist for releasing a new version of RapidSMS.
 
-For a higher-level overview of the whole release cycle, see the :doc:`Release Process </internals/contributing/release-process>`.
+For a higher-level overview of the whole release cycle, see the
+:doc:`Release Process </internals/contributing/release-process>`.
 
 Git branches
 ------------
 
-RapidSMS uses the `Git Flow <http://nvie.com/posts/a-successful-git-branching-model/>`_ process for development. The two branches of concern at release time are:
+RapidSMS uses the
+`Git Flow <http://nvie.com/posts/a-successful-git-branching-model/>`_
+process for development. The two branches of concern at release time are:
 
-* master - always has the most recently released code. Each release is tagged ``vX.X.X``.
-* develop - contains the code under development for the next release
+* **master** - always has the most recently released code. Each release is
+  tagged ``vX.X.X``.
+* **develop** - contains the code under development for the next release
 
-So technically, what makes a new release is merging ``develop`` to ``master`` and tagging it.  Of course, we don't want to do that until we're ready.
+So technically, what makes a new release is merging ``develop`` to ``master``
+and tagging it.  Of course, we don't want to do that until we're ready.
+
+Required permissions
+--------------------
+
+You'll need the following authorizations to make a release:
+
+Github
+    push to the `rapidsms repository <https://github.com/rapidsms/rapidsms>`_
+PyPI
+    push updates to the `rapidsms package <https://pypi.python.org/pypi/RapidSMS>`_
+Read the Docs
+    change the configuration for RapidSMS
+
+If you need any of these authorizations:
+
+* create any of the accounts you don't have
+* send an email to rapidsms-dev@googlegroups.com and ask for someone to give
+  you the needed authorizations. Be sure to include your userid for each
+  account.
 
 Release checks
 --------------
@@ -22,10 +46,16 @@ All the following checks should be verified before continuing:
 * ``master`` merged to ``develop`` to be sure any hotfixes are included
 * Version number in ``rapidsms/__init__.py`` updated
 * `Next` version number in ``rapidsms/docs/conf.py`` updated
-* New release labeled as current in ``rapidsms/docs/releases`` in ``index.rst``, ``this-release.rst``, and ``roadmap.rst``
-* All git issues for this release's milestone have been resolved.  (closed or moved to another milestone)
-* All tests pass against the ``develop`` branch.  Look for a passing build on `Travis <https://travis-ci.org/rapidsms/rapidsms/>`_ of the tip commit on the ``develop`` branch.
-* A distribution tarball can be built with ``python setup.py sdist``, it can be installed with pip, has the right version, and works when installed. (SUGGEST HOW TO TEST AN INSTALLED RAPIDSMS)
+* New release labeled as current in ``rapidsms/docs/releases`` in
+  ``index.rst``, ``this-release.rst``, and ``roadmap.rst``
+* All git issues for this release's milestone have been resolved.  (closed or
+  moved to another milestone)
+* All tests pass against the ``develop`` branch.  Look for a passing build
+  on `Travis <https://travis-ci.org/rapidsms/rapidsms/>`_ of the tip commit
+  on the ``develop`` branch.
+* A distribution tarball can be built with ``python setup.py sdist``, it can
+  be installed with pip, has the right version, and works when installed.
+  (SUGGEST HOW TO TEST AN INSTALLED RAPIDSMS)
 
 Release steps
 -------------
@@ -51,7 +81,9 @@ Take these steps to release the new version:
 
     git merge develop
 
-* Run the tests locally. (This assumes you have tox on your path. Create a new virtualenv and install it if needed.) The tests must pass before proceeding.
+* Run the tests locally. (This assumes you have tox on your path. Create a
+  new virtualenv and install it if needed.) The tests must pass before
+  proceeding.
 
 .. code-block:: bash
 
@@ -69,55 +101,67 @@ Take these steps to release the new version:
 
     git push origin master --tags
 
-* While Travis is testing the pushed branch, compose a release announcement.  (INSERT TEMPLATE HERE. INCLUDE THE NEW VERSION, major features and changes, links to github, instructions for install/download, link to readthedocs, kudos to anyone who contributed significantly to the release, and what else?...)
+* While Travis is testing the pushed branch, compose a release announcement.
 
-Here's a template that can be used for release announcements::
+Here's a template that can be used for release announcements. You can copy
+the summary from the release notes:
 
     Subject: RapidSMS X.X.X Released
 
-    I'm excited to announce the release of `RapidSMS X.X.X <https://rapidsms.readthedocs.org/en/vX.X.X/releases/X.X.X.html>`_!  Here's a quick summary:
+    I'm excited to announce the release of
+    `RapidSMS X.X.X <https://rapidsms.readthedocs.org/en/vX.X.X/releases/X.X.X.html>`_!
+    Here's a quick summary:
 
-    * Major change or feature 1: one-line explanation
-    * Major change or feature 2: one-line explanation
-    ...
+    * **Major change or feature 1:** *one-line explanation*
+    * **Major change or feature 2:** *one-line explanation*
+    * ...
 
-    You can find the full list of changes and upgrade guide in the `RapidSMS X.X.X Release Notes <https://rapidsms.readthedocs.org/en/vX.X.X/releases/X.X.X.html>`_.
+    You can find the full list of changes and upgrade guide in the
+    `RapidSMS X.X.X Release Notes <https://rapidsms.readthedocs.org/en/vX.X.X/releases/X.X.X.html>`_.
 
-    I'd like to give special thanks to Tom, Dick, and Harry for their work on this release. [EXPAND ON THAT].
+    I'd like to give special thanks to Tom, Dick, and Harry for their work
+    on this release. *[EXPAND ON THAT].*
 
-    More help is always welcome. If you're interested, you can read the `contributing guide <http://rapidsms.readthedocs.org/en/vX.X.X/internals/contributing/index.html>`_.
+    More help is always welcome. If you're interested, you can read the
+    `contributing guide <http://rapidsms.readthedocs.org/en/vX.X.X/internals/contributing/index.html>`_.
 
-    The next release will be Y.Y.Y and will focus on FILL IN MAJOR GOALS FOR Y.Y.Y.
+    The next release will be *Y.Y.Y* and will focus on *FILL IN MAJOR GOALS
+    FOR Y.Y.Y.*
 
-    As always, if you have any questions or issues, please feel free to post them to this list or ask in the #rapidsms IRC channel on `Freenode <http://freenode.net/>`_. Bugs can be reported on `Github <https://github.com/rapidsms/rapidsms>`_.
+    As always, if you have any questions or issues, please feel free to
+    post them to this list or ask in the #rapidsms IRC channel on
+    `Freenode <http://freenode.net/>`_. Bugs can be reported on
+    `Github <https://github.com/rapidsms/rapidsms>`_.
 
 * Verify that Travis tests have passed for the pushed master
 
-* Push the new version to `PyPI <http://docs.python.org/3/distutils/packageindex.html>`_.
-
-  * If you don't have permission to update the ``rapidsms`` package on PyPI, send your PyPI userid to (WHO?) and ask to be granted authorization for the package.
-  * Once you have authorization, you can upload the new version:
+* Push the new version to `PyPI <http://docs.python.org/3/distutils/packageindex.html>`_:
 
   .. code-block:: bash
 
         python setup.py sdist upload
 
+* Add the new version to the tags that Read the Docs should build
 
-* Add the new version to Read the Docs.
-
- * if you're not a maintainer for rapidsms on RTD, send your RTD userid to (WHO?) and ask for authorization
- * add new release to the tags that RTD should build
-
-* Email the release announcement to rapidsms@googlegroups.com and rapidsms-dev@googlegroups.com
+* Email the release announcement to rapidsms@googlegroups.com and
+  rapidsms-dev@googlegroups.com
 
 Start Next Release
 ------------------
 
 Back on the ``develop`` branch, we can now start on the next release:
 
-* Merge ``master`` to ``develop`` to make sure we're starting from the same code that's currently released (there might have been merge conflicts or something during the release process)
-* Update the version in ``rapidsms/__init__.py`` and the next version in ``rapidsms/docs/conf.py``
-* Start a new releasenotes document in ``rapidsms/docs/release``. Be sure to label it at the top as under development.
-* Update ``rapidsms/docs/release/index.rst`` to mark the next release as under development.
+* Merge ``master`` to ``develop`` to make sure we're starting from the same
+  code that's currently released (there might have been merge conflicts or
+  something during the release process)
+* Update the version in ``rapidsms/__init__.py`` and the next version in
+  ``rapidsms/docs/conf.py``
+* Start a new releasenotes document in ``rapidsms/docs/release``. Use the
+  previous release's document as a template. Be sure
+  to label it at the top as under development.
+* Update ``rapidsms/docs/release/index.rst`` to mark the next release as
+  under development.
 
-Now we can start merging features intended for the next release. Review `Git Flow <http://nvie.com/posts/a-successful-git-branching-model/>`_ for more about how to use git branches while developing.
+Now we can start merging features intended for the next release. Review
+`Git Flow <http://nvie.com/posts/a-successful-git-branching-model/>`_
+for more about how to use git branches while developing.
