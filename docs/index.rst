@@ -36,7 +36,7 @@ Release: v\ |release|. (:doc:`Installation <intro/install/index>`, :doc:`Release
 **Architecture**
 
 * :doc:`RapidSMS architecture overview <topics/architecture>`
-* **Router:** :doc:`Overview <topics/router/index>` | :doc:`Messaging <topics/router/messaging>` | :doc:`BlockingRouter <topics/router/blocking>` | :doc:`CeleryRouter <topics/router/celery>` | :doc:`DatabaseRouter <topics/router/db>` 
+* **Router:** :doc:`Overview <topics/router/index>` | :doc:`Messaging <topics/router/messaging>` | :doc:`BlockingRouter <topics/router/blocking>` | :doc:`CeleryRouter <topics/router/celery>` | :doc:`DatabaseRouter <topics/router/db>`
 * **Applications:** :doc:`Overview <topics/applications/index>` | :doc:`Community apps <topics/applications/community>`
 * **Backends:** :doc:`Overview <topics/backends/index>` | :doc:`Kannel <topics/backends/kannel>` | :doc:`Vumi <topics/backends/vumi>` | :doc:`Database <topics/backends/database>` | :doc:`Custom <topics/backends/custom>`
 
@@ -74,7 +74,9 @@ Release: v\ |release|. (:doc:`Installation <intro/install/index>`, :doc:`Release
 * :doc:`How to get involved <internals/contributing/index>`
 * :doc:`Running the RapidSMS core test suite <internals/contributing/testing>`
 * :doc:`Release notes and upgrading instructions <releases/index>`
-* :doc:`License <internals/contributing/license>`
+* :doc:`Release process <internals/contributing/release-process>` - The release cycle
+* :doc:`Release checklist <internals/contributing/release-checklist>` - How to release a new version
+* :doc:`License <internals/contributing/license>` - How RapidSMS is licensed
 
 Indices and tables
 ------------------

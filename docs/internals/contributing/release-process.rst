@@ -7,6 +7,8 @@ RapidSMS uses a time-based release schedule, with minor (i.e. 1.1, 1.2, etc.) re
 
 After each previous release (and after an optional cooling-off period of a week or two), the core development team will examine the landscape and announce a timeline for the next release. Most releases will be scheduled in the 4 - 8 week range, but if we have bigger features to development we might schedule a longer period to allow for more ambitious work.
 
+This is an overview of the whole release lifecycle. There's also a :doc:`Release Checklist </internals/contributing/release-checklist>` with the step-by-step process for releasing a new version.
+
 Release cycle
 ==============
 
