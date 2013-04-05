@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-from datetime import datetime
+from django.utils.timezone import now
 from rapidsms.messages.base import MessageBase
 
 
@@ -9,7 +9,7 @@ class OutgoingMessage(MessageBase):
     """Outbound message that can easily be sent to the router."""
 
     def __init__(self, *args, **kwargs):
-        self.received_at = kwargs.pop('sent_at', datetime.now())
+        self.received_at = kwargs.pop('sent_at', now())
         super(OutgoingMessage, self).__init__(*args, **kwargs)
         self.sent = False
 
@@ -30,5 +30,5 @@ class OutgoingMessage(MessageBase):
     def send(self):
         """Simple wrapper for the send() API."""
         from rapidsms.router import send
-        send(self.text, self.connection)
+        send(self.text, self.connections)
         self.sent = True
