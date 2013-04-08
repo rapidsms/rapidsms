@@ -42,6 +42,10 @@ class IncomingMessage(MessageBase):
         :returns: dictionary with the arguments that will be passed to
             :py:meth:`rapidsms.router.send` to send this response.
         """
+        if 'template' in kwargs:
+            raise TypeError("`template` is no longer valid usage for "
+                            "respond().  Pass the message text as `text`.")
+
         context = {'text': text,
                    'connections': self.connections,
                    'in_response_to': self}

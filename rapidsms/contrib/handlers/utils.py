@@ -21,7 +21,8 @@ def get_handlers():
 
     # if we're explicitly selecting handlers, filter out all those which
     # are not matched by one (or more) prefixes in INSTALLED_HANDLERS.
-    if settings.INSTALLED_HANDLERS is not None:
+    if hasattr(settings, 'INSTALLED_HANDLERS') and \
+            settings.INSTALLED_HANDLERS is not None:
         copy = [handler for handler in handlers]
         handlers = []
         while len(copy) > 0:
@@ -32,7 +33,8 @@ def get_handlers():
             copy.pop()
 
     # likewise, in reverse, for EXCLUDED_HANDLERS.
-    if settings.EXCLUDED_HANDLERS is not None:
+    if hasattr(settings, 'EXCLUDED_HANDLERS') and \
+            settings.EXCLUDED_HANDLERS is not None:
         for prefix in settings.EXCLUDED_HANDLERS:
             handlers = [
                 handler for handler in handlers

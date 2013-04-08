@@ -19,11 +19,11 @@ class BaseHandler(object, LoggerMixin):
         self.router = router
         self.msg = msg
 
-    def respond(self, template=None, **kwargs):
-        return self.msg.respond(template, **kwargs)
+    def respond(self, text, **kwargs):
+        return self.msg.respond(text, **kwargs)
 
-    def respond_error(self, template=None, **kwargs):
-        return self.msg.error(template, **kwargs)
+    def respond_error(self, text, **kwargs):
+        return self.msg.error(text, **kwargs)
 
     @classmethod
     def test(cls, text, identity=None):
@@ -82,5 +82,5 @@ class BaseHandler(object, LoggerMixin):
             text=text)
 
         accepted = cls.dispatch(None, msg)
-        return [m.text for m in msg.responses]\
+        return [m['text'] for m in msg.responses]\
             if accepted else False
