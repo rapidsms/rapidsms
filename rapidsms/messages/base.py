@@ -3,6 +3,7 @@
 
 import copy
 from uuid import uuid4
+import warnings
 
 
 class MessageBase(object):
@@ -45,6 +46,7 @@ class MessageBase(object):
     def connection(self):
         """The first :py:class:`~rapidsms.models.Connection` - `deprecated`.
         """
+        warnings.warn("MessageBase.connection is deprecated; please start using .connections", DeprecationWarning)
         return self.connections[0]
 
     @property
@@ -52,6 +54,7 @@ class MessageBase(object):
         """The first connection's :py:class:`~rapidsms.models.Contact`
         - `deprecated`
         """
+        warnings.warn("MessageBase.contact is deprecated; please start using .connections[i].contact", DeprecationWarning)
         return self.connections[0].contact
 
     @property
@@ -64,5 +67,5 @@ class MessageBase(object):
         like "mobile_number", which is all kinds of wrong.
         `deprecated`
         """
-
+        warnings.warn("MessageBase.peer is deprecated; please access the needed data directly.")
         return self.connections[0].identity

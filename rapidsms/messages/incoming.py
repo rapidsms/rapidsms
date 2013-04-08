@@ -2,6 +2,7 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 
+from django.utils.timezone import now
 from rapidsms.messages.base import MessageBase
 from rapidsms.messages.error import ErrorMessage
 
