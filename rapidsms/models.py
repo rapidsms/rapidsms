@@ -45,6 +45,7 @@ class Backend(models.Model):
     with ForeignKeys.
     """
 
+    #: the name of the backend
     name = models.CharField(max_length=20, unique=True)
 
     def __unicode__(self):
@@ -82,12 +83,16 @@ class App(models.Model):
 
 
 class ContactBase(models.Model):
+    #: The individual's name (optional)
     name = models.CharField(max_length=100, blank=True)
+    #: when the contact was created
     created_on = models.DateTimeField(auto_now_add=True)
+    #: when the contact was last modified
     modified_on = models.DateTimeField(auto_now=True)
 
-    # the spec: http://www.w3.org/International/articles/language-tags/Overview
-    # reference:http://www.iana.org/assignments/language-subtag-registry
+    #: The contact's preferred language.  the
+    #: spec: http://www.w3.org/International/articles/language-tags/Overview
+    #: reference: http://www.iana.org/assignments/language-subtag-registry
     language = models.CharField(max_length=6, blank=True,
                                 help_text="The language which this contact "
                                 "prefers to communicate in, as a W3C "
@@ -107,12 +112,14 @@ class ContactBase(models.Model):
 
     @property
     def is_anonymous(self):
+        """Return True if the individual has no name"""
         return not self.name
 
     @property
     def default_connection(self):
         """
-        Return the default connection for this person.
+        Return the default connection for this person.  Currently this
+        arbitrarily returns the first connection.
         """
         # TODO: this is defined totally arbitrarily for a future
         # sane implementation
@@ -122,14 +129,23 @@ class ContactBase(models.Model):
 
 
 class Contact(ContactBase):
+    """This model represents a person with a name
+    """
     __metaclass__ = ExtensibleModelBase
 
 
 class ConnectionBase(models.Model):
+    #: foreign key to this connection's
+    #: :py:class:`~rapidsms.backends.base.BackendBase`
     backend = models.ForeignKey(Backend)
+    #: unique identifier for this connection on this backend (e.g. phone
+    #: number, email address, IRC nick, etc.)
     identity = models.CharField(max_length=100)
+    #: (optional) associated :py:class:`~rapidsms.models.Contact`
     contact = models.ForeignKey(Contact, null=True, blank=True)
+    #: when this connection was created
     created_on = models.DateTimeField(auto_now_add=True)
+    #: when this connection was last modified
     modified_on = models.DateTimeField(auto_now=True)
 
     class Meta:
