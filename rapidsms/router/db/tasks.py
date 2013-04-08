@@ -24,7 +24,7 @@ def receive_async(message_id, fields):
         # call process_incoming directly to skip receive_incoming
         router.process_incoming(message)
     except Exception, exc:
-        logger.exception(exc)
+        logger.exception("Exception in router.process_incoming")
         dbm.transmissions.update(status='E', updated=now())
         dbm.set_status()
     if dbm.status != 'E':
@@ -55,7 +55,7 @@ def send_transmissions(backend_id, message_id, transmission_ids):
                                context=context)
     except Exception, exc:
         # log error, update database statuses, and re-execute this task
-        logger.exception(exc)
+        logger.exception("Exception in router.send_to_backend")
         Message.objects.filter(pk=message_id).update(status='E')
         transmissions.update(status='E', updated=now())
         raise send_transmissions.retry(exc=exc)
