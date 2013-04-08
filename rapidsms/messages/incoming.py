@@ -2,7 +2,7 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 
-from datetime import datetime
+from django.utils.timezone import now
 from rapidsms.messages.base import MessageBase
 from rapidsms.messages.error import ErrorMessage
 
@@ -11,7 +11,7 @@ class IncomingMessage(MessageBase):
     """Inbound message that provides an API to handle responses."""
 
     def __init__(self, *args, **kwargs):
-        self.received_at = kwargs.pop('received_at', datetime.now())
+        self.received_at = kwargs.pop('received_at', now())
         super(IncomingMessage, self).__init__(*args, **kwargs)
         # list of messages created by IncomingMessage.respond()
         self.responses = []

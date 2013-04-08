@@ -22,15 +22,15 @@ class RouterBackendTest(TestCase):
         test_conf = {"a": 1, "B": 2, "Cc": 3}
         backend = self.router.add_backend("backend", test_backend, test_conf)
         self.assertEquals(len(backend._config), 3)
-        self.assertEquals("a" in backend._config, True)
-        self.assertEquals("b" in backend._config, True)
-        self.assertEquals("cc" in backend._config, True)
-        self.assertEquals("B" in backend._config, False)
-        self.assertEquals("Cc" in backend._config, False)
+        self.assertIn("a", backend._config)
+        self.assertIn("b", backend._config)
+        self.assertIn("cc", backend._config)
+        self.assertNotIn("B", backend._config)
+        self.assertNotIn("Cc", backend._config)
 
     def test_add_backend_class(self):
         """Router.add_backend should also accept a class."""
         self.router.add_backend("backend", BackendBase)
         self.assertEquals(1, len(self.router.backends.keys()))
-        self.assertTrue("backend" in self.router.backends.keys())
+        self.assertIn("backend", self.router.backends.keys())
         self.assertEquals("backend", self.router.backends['backend'].name)
