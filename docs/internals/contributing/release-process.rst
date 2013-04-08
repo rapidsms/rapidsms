@@ -1,6 +1,11 @@
 Release process
 ================
 
+
+.. warning::
+
+    This release process documentation is not up-to-date anymore.
+
 (based on Django's release process http://docs.djangoproject.com/en/1.2/internals/release-process)
 
 RapidSMS uses a time-based release schedule, with minor (i.e. 1.1, 1.2, etc.) releases every six weeks, or more, depending on features.
