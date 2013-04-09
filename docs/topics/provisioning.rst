@@ -15,6 +15,9 @@ your site.
 Overview
 --------
 
+Manual provisioning
+...................
+
 You can provision manually, installing things as you discover
 you need them, and tweaking the configuration until things work.
 This is often how people's development systems end up getting
@@ -25,6 +28,9 @@ next time you have to do it, you can follow the notes and
 do it much more quickly and with fewer errors. You
 can also share the notes so your co-workers can benefit.
 
+Scripting
+.........
+
 The next step is putting the provisioning commands into a script
 of some kind. Typically this is when you have to start worrying
 more about what platform you're working on. For example,
@@ -33,10 +39,23 @@ install packages on Debian-based Linuxes are different from those
 on Redhat or Gentoo-based Linuxes, so your script either needs to
 assume some base platform, or it suddenly gets a lot more complicated.
 
+At this level, you can use tools like `Fabric`_ to help
+organize your provisioning commands into tasks and execute
+them remotely. However, Fabric does not help with issues
+of provisioning like how to install a package or create a user.
+
+For an example of this, you might look at the Django project
+template offered by Caktus. Its `fabfile`_, with the help
+of `Argyle`_, does provisioning on Ubuntu systems. You can see
+explicit commands to do things like create symbolic links and
+change ownership of files.
+
+Provisioning tools
+..................
+
 After doing that for a while, you'll probably wish there were some
-tools you could use to help with some of the repetitive and
-error-prone parts, and save you from having to understand
-every tool you use at a detailed level, and how administering
+tools you could use to save you from having to understand
+every detail of setting up your system, and how administering
 your Ubuntu system is different from a Redhat system.
 
 You might start with something like `Blueprint`_. It takes a
@@ -67,6 +86,9 @@ Recommendations
 
 WHAT ELSE TO SAY?
 
+.. _Argyle: https://pypi.python.org/pypi/argyle/
 .. _Blueprint: http://devstructure.com/blueprint/
 .. _Chef: http://www.opscode.com/chef/
+.. _fabfile: https://github.com/caktus/django-project-template/blob/master/fabfile.py
+.. _Fabric: http://docs.fabfile.org/en/latest/index.html
 .. _Puppet: https://puppetlabs.com/
