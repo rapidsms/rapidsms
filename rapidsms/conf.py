@@ -13,10 +13,6 @@ overriden by the project author in the top-level ``settings.py``.
 """
 
 try:
-    from django.conf import settings
-except:
     from djappsettings import settings
-# try:
-#     from djappsettings import settings
-# except:
-#     from django.conf import settings
+except:
+    from django.conf import settings
