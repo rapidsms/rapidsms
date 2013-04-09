@@ -23,10 +23,12 @@ setup(
     install_requires=[
         "django-nose==1.1",
         "django-tables2==0.13.0",
-        "djappsettings==0.1.0",
+        "djappsettings",
         "django-selectable==0.7.0",
     ],
-
+    dependency_links =[
+        'https://github.com/adammck/djappsettings/tarball/master#egg=djappsettings'
+    ],
     test_requires=[
         "nose==1.2.1",
     ],
