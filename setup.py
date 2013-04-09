@@ -26,7 +26,7 @@ setup(
         "djappsettings",
         "django-selectable==0.7.0",
     ],
-    dependency_links =[
+    dependency_links=[
         'https://github.com/adammck/djappsettings/tarball/master#egg=djappsettings'
     ],
     test_requires=[
