@@ -70,11 +70,11 @@ been changed or added and what their contents are, etc.
 Then Blueprint provides multiple ways to recreate that provisioned
 system, including generating a shell script that will do it,
 or exporting a set of configuration files for several other
-provisioning tools such as `Puppet`_ and `Chef`_.
+provisioning tools such as  `Puppet`_ and `Chef`_.
 There's a lot of flexibility and room to finetune how Blueprint
 works; this is just the surface.
 
-Beyond Blueprint there are tools like `Puppet`_ and `Chef`_.
+Beyond Blueprint there are tools like `Chef`_, `Puppet`_, or `SaltStack`_.
 These provide full languages in which to specify how many systems
 should be configured, and tools to apply and maintain the
 configurations. The cost of this power, of course, is complexity.
@@ -101,12 +101,32 @@ Unfortunately, there's no simple solution to implementing
 repeatable provisioning. Provisioning is a very complicated
 task.
 
+Tools can help, but you still need a pretty detailed knowledge
+of system administration to make it work right.
 
-WHAT ELSE TO SAY?
+One consideration is how large your problem is. For people who have
+to manage more than a dozen or so systems, a full-featured tool
+like `Chef`_ or `Puppet`_ is essential, and the time spent learning
+it thoroughly will be repaid many times over.
+
+If you only have a few Django apps, and they're fairly conventional
+in terms of provisioning requirements, you should consider
+a PaaS like `Heroku`_. They handle the provisioning for you. The
+monthly bills will be higher, but your costs in time spent getting
+provisioning working and keeping it working will be much lower.
+
+If your needs fall somewhere in the middle, or funding isn't available
+for a PaaS, then you'll need to consider your needs and your level of
+expertise, try out some of the available approaches, and make the
+best decision you can.  The `RapidSMS mailing list`_ is a good resource;
+you can present your situation there and ask for advice.
 
 .. _Argyle: https://pypi.python.org/pypi/argyle/
 .. _Blueprint: http://devstructure.com/blueprint/
 .. _Chef: http://www.opscode.com/chef/
 .. _fabfile: https://github.com/caktus/django-project-template/blob/master/fabfile.py
 .. _Fabric: http://docs.fabfile.org/en/latest/index.html
+.. _Heroku: https://www.heroku.com/
 .. _Puppet: https://puppetlabs.com/
+.. _RapidSMS mailing list: http://groups.google.com/group/rapidsms
+.. _SaltStack: http://saltstack.com/
