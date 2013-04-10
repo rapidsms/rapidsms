@@ -1,6 +1,6 @@
-=========
-Messaging
-=========
+=============
+Messaging API
+=============
 
 .. module:: rapidsms.router.api
 
@@ -16,7 +16,8 @@ Receiving Messages
 .. autofunction:: rapidsms.router.receive
 
 To receive a message, you can use the ``receive`` function, which will
-automaticaly create an ``IncomingMessage`` and pass it to your router to be
+automatically create an :py:class:`~rapidsms.messages.incoming.IncomingMessage`
+and pass it to your router to be
 processed. Typically, backends will make the most use of ``receive``, but it
 can be used anywhere within your application to route an incoming message (such
 as from a Django view).
@@ -27,12 +28,13 @@ Here's an example using ``receive``::
     receive("echo hello", connection)
 
 This sends a message to the router saying ``echo hello`` was received from a
-``connection`` object. You can find more examples of ``receive`` in the
-official RapidSMS `backends <https://github.com/rapidsms/rapidsms/tree/master/rapidsms/backends>`_.
+:py:class:`~rapidsms.models.Connection` object. You can find more examples of
+``receive`` in the official RapidSMS
+`backends <https://github.com/rapidsms/rapidsms/tree/master/rapidsms/backends>`_.
 
 .. autoclass:: rapidsms.messages.incoming.IncomingMessage
+    :show-inheritance:
     :members:
-    :inherited-members:
 
 
 .. _sending-messages:
@@ -53,7 +55,54 @@ This sends ``hello`` to each identity and backend associated with the
 RapidSMS `backends <https://github.com/rapidsms/rapidsms/tree/master/rapidsms/backends>`_.
 
 .. autoclass:: rapidsms.messages.outgoing.OutgoingMessage
+    :show-inheritance:
+    :members:
 
+MessageBase
+-----------
+
+Both incoming and outgoing message classes inherit from a common class,
+MessageBase.
+
+.. autoclass:: rapidsms.messages.base.MessageBase
+    :members:
+
+ErrorMessage
+------------
+
+There's also an ErrorMessage class that can be used when sending error
+messages.
+
+.. autoclass:: rapidsms.messages.error.ErrorMessage
+    :show-inheritance:
+    :members:
+
+Contacts
+--------
+
+Entities with names are represented by Contact objects:
+
+.. autoclass:: rapidsms.models.Contact
+    :show-inheritance:
+
+Most of a Contact is represented in the ContactBase class:
+
+.. autoclass:: rapidsms.models.ContactBase
+    :members:
+
+Connections
+-----------
+
+Connections are represented by Connection objects:
+
+.. autoclass:: rapidsms.models.Connection
+    :show-inheritance:
+    :members:
+
+Most of a Connection is represented in the ConnectionBase class:
+
+.. autoclass:: rapidsms.models.ConnectionBase
+    :members:
 
 .. _connection_lookup:
 
