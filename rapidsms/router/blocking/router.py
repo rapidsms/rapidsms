@@ -13,6 +13,7 @@ from rapidsms.messages.outgoing import OutgoingMessage
 from rapidsms.backends.base import BackendBase
 from rapidsms.apps.base import AppBase
 from rapidsms.conf import settings
+from rapidsms.errors import MessageSendingError
 
 
 logger = logging.getLogger(__name__)
@@ -245,9 +246,11 @@ class BlockingRouter(object):
             try:
                 self.send_to_backend(backend_name, msg.id, msg.text,
                                      identities, context)
-            except Exception:
-                logger.exception("The backend encountered an error while "
-                                 "sending.")
+            except MessageSendingError:
+                # This exception has already been logged in send_to_backend.
+                # The blocking router doesn't have a mechanism to handle
+                # errors, so we simply pass here and continue routing messages.
+                pass
 
     def group_outgoing_identities(self, msg):
         """Return a dictionary of backend_name -> identities for a message."""
@@ -268,9 +271,19 @@ class BlockingRouter(object):
 
     def send_to_backend(self, backend_name, id_, text, identities, context):
         """Send message context to specified backend."""
-        backend = self.backends[backend_name]
-        backend.send(id_=id_, text=text, identities=identities,
-                     context=context)
+        try:
+            backend = self.backends[backend_name]
+        except KeyError:
+            msg = "Router is not configured with the %s backend" % backend_name
+            logger.exception(msg)
+            raise MessageSendingError(msg)
+        try:
+            backend.send(id_=id_, text=text, identities=identities,
+                         context=context)
+        except Exception:
+            msg = "%s encountered an error while sending." % backend_name
+            logger.exception(msg)
+            raise MessageSendingError(msg)
 
     def new_incoming_message(self, text, connections, class_=IncomingMessage,
                              **kwargs):

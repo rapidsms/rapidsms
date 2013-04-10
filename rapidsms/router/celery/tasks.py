@@ -1,5 +1,6 @@
 import celery
 from celery.utils.log import get_task_logger
+from rapidsms.errors import MessageSendingError
 
 
 logger = get_task_logger(__name__)
@@ -32,5 +33,5 @@ def send_async(backend_name, id_, text, identities, context):
     try:
         router.send_to_backend(backend_name=backend_name, id_=id_, text=text,
                                identities=identities, context=context)
-    except Exception:
+    except MessageSendingError:
         logger.exception("Exception in router.send_to_backend")

@@ -5,7 +5,7 @@ from django.test.utils import override_settings
 
 from rapidsms.tests import harness
 from rapidsms.router import get_router
-from rapidsms.router.celery.tasks import receive_async
+from rapidsms.router.celery.tasks import receive_async, send_async
 
 
 class CeleryRouterTest(harness.DatabaseBackendMixin, TestCase):
@@ -39,6 +39,15 @@ class CeleryRouterTest(harness.DatabaseBackendMixin, TestCase):
             backend_msg = self.sent_messages[0]
             self.assertEqual(msg.fields['external_id'],
                              backend_msg.external_id)
+
+    def test_send_async_catches_error(self):
+        """send_async should capture sending exceptions properly."""
+        backends = {'backend': {'ENGINE': harness.RaisesBackend}}
+        with override_settings(INSTALLED_BACKENDS=backends):
+            try:
+                send_async("backend", "1234", "hello", ["1112223333"], {})
+            except:
+                self.fail("Sending exceptions should be caught within task")
 
 
 class CeleryRouterConfigTest(harness.CustomRouterMixin, TestCase):
