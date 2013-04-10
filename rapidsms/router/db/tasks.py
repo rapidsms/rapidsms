@@ -1,12 +1,11 @@
-import datetime
-
 import celery
 from celery.utils.log import get_task_logger
 
 from django.utils.timezone import now
+from rapidsms.errors import MessageSendingError
 
 
-__all__ = ('recieve',)
+__all__ = ('receive_async', 'send_transmissions')
 
 
 logger = get_task_logger(__name__)
@@ -23,7 +22,7 @@ def receive_async(message_id, fields):
     try:
         # call process_incoming directly to skip receive_incoming
         router.process_incoming(message)
-    except Exception, exc:
+    except Exception:
         logger.exception("Exception in router.process_incoming")
         dbm.transmissions.update(status='E', updated=now())
         dbm.set_status()
@@ -53,9 +52,9 @@ def send_transmissions(backend_id, message_id, transmission_ids):
         router.send_to_backend(backend_name=backend.name, id_=dbm.pk,
                                text=dbm.text, identities=list(identities),
                                context=context)
-    except Exception, exc:
-        # log error, update database statuses, and re-execute this task
-        logger.exception("Exception in router.send_to_backend")
+    except MessageSendingError as exc:
+        # update database statuses, and re-execute this task
+        logger.warning("Re-trying send_transmissions")
         Message.objects.filter(pk=message_id).update(status='E')
         transmissions.update(status='E', updated=now())
         raise send_transmissions.retry(exc=exc)
