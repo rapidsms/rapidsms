@@ -20,7 +20,7 @@ def receive_async(text, connection_id, message_id, fields):
         # call process_incoming directly to skip receive_incoming
         router.process_incoming(message)
     except Exception:
-        logger.exception("An error occurred processing the incoming message.")
+        logger.exception("Exception processing incoming message")
 
 
 @celery.task
@@ -33,4 +33,4 @@ def send_async(backend_name, id_, text, identities, context):
         router.send_to_backend(backend_name=backend_name, id_=id_, text=text,
                                identities=identities, context=context)
     except Exception:
-        logger.exception("The backend encountered an error while sending.")
+        logger.exception("Exception in router.send_to_backend")

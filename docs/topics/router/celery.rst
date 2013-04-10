@@ -13,7 +13,7 @@ thread. This is fine for most scenarios, but in some cases you may wish to
 process messages outside of the HTTP request/response cycle to be more
 efficient. :router:`CeleryRouter` is a custom router that allows you to queue
 messages for background processing. It's designed for projects that require
-high messages volumes and greater concurrency.
+high message volumes and greater concurrency.
 
 Installation
 ------------
@@ -24,7 +24,8 @@ Installation
     the setup instructions in
     :doc:`Scheduling Tasks with Celery <../celery>` before proceeding.
 
-Add ``rapidsms.router.celery`` to ``INSTALLED_APPS``:
+Add ``rapidsms.router.celery`` to ``INSTALLED_APPS``, then import djcelery and
+invoke ``setup_loader()``:
 
 .. code-block:: python
    :emphasize-lines: 3
@@ -33,6 +34,8 @@ Add ``rapidsms.router.celery`` to ``INSTALLED_APPS``:
         # Other apps here
         "rapidsms.router.celery"
     )
+    import djcelery
+    djcelery.setup_loader()
 
 This will register Celery tasks in ``rapidsms.router.celery.tasks``.
 
@@ -48,7 +51,7 @@ Celery workers
 Finally, you'll need to run the celery worker command (in a separate shell from
 ``runserver``) to begin consuming queued tasks::
 
-    python manage.py celeryd -lDEBUG
+    python manage.py celery worker -lDEBUG
 
 Now your messages will be handled asynchronously with :router:`CeleryRouter`.
 

@@ -116,7 +116,7 @@ Vumi backend to your existing RapidSMS project is not difficult.  To begin,
 simply add the following to your existing :setting:`INSTALLED_BACKENDS`:
 
 .. code-block:: python
-    :emphasize-lines: 4,5,6,7
+    :emphasize-lines: 4-7
 
     INSTALLED_BACKENDS = {
         # ...
@@ -131,7 +131,7 @@ Next, you need to add an endpoint to your ``urls.py`` for the newly created
 backend.  You can do this like so:
 
 .. code-block:: python
-    :emphasize-lines: 2,6,7
+    :emphasize-lines: 2,6-7
 
     from django.conf.urls.defaults import *
     from rapidsms.backends.vumi.views import VumiBackendView
@@ -160,7 +160,7 @@ Vumi can be protected with basic authentication. To enable it on the Vumi side,
 create a ``passwords`` directive in the ``rapidsms_relay`` configuration:
 
 .. code-block:: yaml
-    :emphasize-lines: 10,11
+    :emphasize-lines: 10-11
 
     rapidsms_relay:
         transport_name: 'transport'
@@ -178,7 +178,7 @@ Then you can update :setting:`INSTALLED_BACKENDS` with ``sendsms_user`` and
 ``sendsms_pass``:
 
 .. code-block:: python
-   :emphasize-lines: 5,6
+   :emphasize-lines: 5-6
 
     INSTALLED_BACKENDS = {
         "vumi-fake-smsc": {

@@ -88,8 +88,8 @@ class KeywordHandler(BaseHandler):
                     raise
 
                 return inst.respond_error(
-                    "Not a valid number: %(string)s",
-                    string=m.group(2))
+                    "Not a valid number: %(string)s" % dict(
+                    string=m.group(2)))
 
         # if we received _just_ the keyword, with
         # no content, some help should be sent back

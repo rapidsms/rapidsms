@@ -11,7 +11,13 @@ class CeleryRouter(BlockingRouter):
     """Skeleton router only used to execute the Celery task."""
 
     def is_eager(self, backend_name):
-        """Backends can manually specify whether or not celery is eager."""
+        """Return whether this backend is eager, meaning it runs
+        tasks synchronously rather than queueing them to celery.
+
+        A backend configures its eagerness by setting the backend
+        configuration value ``router.celery.eager`` to True or
+        False. The default is False.
+        """
         try:
             backend = self.backends[backend_name]
         except KeyError:
@@ -23,7 +29,8 @@ class CeleryRouter(BlockingRouter):
         eager = self.is_eager(msg.connection.backend.name)
         if eager:
             logger.debug('Executing in current process')
-            receive_async(msg.text, msg.connections[0].pk)
+            receive_async(msg.text, msg.connections[0].pk, msg.id,
+                          msg.fields)
         else:
             logger.debug('Executing asynchronously')
             receive_async.delay(msg.text, msg.connections[0].pk, msg.id,
