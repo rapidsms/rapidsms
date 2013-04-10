@@ -1,3 +1,6 @@
+.. _celery_scheduling:
+.. _why_celery:
+
 =================================
 Using Celery for Scheduling Tasks
 =================================

@@ -38,9 +38,9 @@ Message queue server
     `RabbitMQ`_: because it's stable and popular.
 
 Asynchronous task scheduler
-    `Celery`_: see :ref:`celery`.
+    `Celery`_: see :ref:`why_celery`.
 
-
+.. _Celery: http://www.celeryproject.org/
 .. _PostgreSQL: http://www.postgresql.org/
 .. _RabbitMQ: http://www.rabbitmq.com/
 .. _South:  http://south.readthedocs.org/en/latest/
