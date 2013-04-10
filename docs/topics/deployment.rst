@@ -35,5 +35,6 @@ Miscellaneously good
 More
 ====
 
-:ref:`a-good-basic-setup`
-
+* :ref:`a-good-basic-setup`
+* :ref:`provisioning`
+* :ref:`virtual machines`
