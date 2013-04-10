@@ -51,6 +51,10 @@ All the following checks should be verified before continuing:
 * `Next` version number in ``rapidsms/docs/conf.py`` updated
 * New release labeled as current in ``rapidsms/docs/releases`` in
   ``index.rst``, ``this-release.rst``, and ``roadmap.rst``
+* Create a ``release-X.X.X`` branch (based off ``master``) in the RapidSMS
+  project template repository. Make sure to update ``README.rst`` as well.
+* Update project template command line in ``intro/install/index.rst`` to point
+  to the RapidSMS project template release branch.
 * All git issues for this release's milestone have been resolved.  (closed or
   moved to another milestone)
 * All tests pass against the ``develop`` branch.  Look for a passing build
