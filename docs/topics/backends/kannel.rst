@@ -349,6 +349,8 @@ Now, the next time you call ``./manage.py runserver``, Django should begin
 processing requests for both the Kannel backends that you created (one for the
 fake SMSC and one for the GSM modem).
 
+.. _kannel-delivery-report:
+
 Delivery Report
 ===============
 

@@ -2,11 +2,6 @@
 RapidSMS 0.13.0 release notes
 =============================
 
-
-.. warning::
-
-    RapidSMS v0.13.0 is currently under development and has not been released.
-
 Welcome to RapidSMS 0.13.0! These release notes cover the new features 0.13.0
 as well as some :ref:`backwards-incompatible-changes-0.13.0` you'll want to be
 aware of when upgrading from RapidSMS 0.12.0.
@@ -15,7 +10,8 @@ What's New
 ==========
 
 * Added support for sending bulk messages. This involved the following changes:
-    * Modified ``MessageBase`` to accept multiple connections.
+    * Modified :class:`MessageBase <rapidsms.messages.base.MessageBase>` to
+      accept multiple connections.
     * Updated :func:`rapidsms.router.send` to pass multiple connections
       (within a message object) to the Router. The
       :doc:`Messaging API </topics/router/messaging>` already supported
@@ -31,8 +27,10 @@ What's New
   track of received/sent state of each message. This is useful for
   monitoring the sending of large message volumes.
 * Added a backend for :doc:`Vumi </topics/backends/vumi>`.
-* Cleaned up admin for ``Connection`` to load faster with database JOINs.
-* Added delivery report functionality for Kannel.
+* Cleaned up admin for :class:`Connection <rapidsms.models.Connection>`
+  to load faster with database JOINs.
+* Added :ref:`delivery report <kannel-delivery-report>` functionality for
+  Kannel.
 * Combined the ``BaseRouter`` and ``BlockingRouter`` together. Now all
   base routing functionality is handled by :router:`BlockingRouter`.
 * In order to better support customization of routers, messages now pass
@@ -74,7 +72,11 @@ What's New
   ``manage.py migrate`` to update your database tables.
 
 * Deprecated ``rapidsms.log.mixin.LoggerMixin``. Please update all logging to
-  use the standard logging module, like so:
+  use the standard logging module. That includes code that might use LoggerMixin
+  indirectly by extending ``AppBase``, ``BackendBase``, or ``BaseHandler``. 
+  Search for code like ``self.error(...)`` or ``self.debug(...)`` and change to
+  ``logger.error(...)`` or ``logger.debug(...)`` after creating a logger
+  object as above. You'll want most logging to look like this:
 
 .. code-block:: python
 
@@ -82,12 +84,6 @@ What's New
     logger = logging.getLogger(__name__)
     logger.info(...)
     logger.debug(...)
-
-  That includes code that might use LoggerMixin indirectly by extending
-  ``AppBase``, ``BackendBase``, or ``BaseHandler``.  Search for code like
-  ``self.error(...)`` or ``self.debug(...)`` and change to
-  ``logger.error(...)`` or ``logger.debug(...)`` after creating a logger
-  object as above.
 
 * The :doc:`HTTPTester contrib app </topics/contrib/httptester>` has been changed
   to use the new Database backend instead of its own backend. The HTTPTester
@@ -134,7 +130,8 @@ architecture.
 Changed ``Backend.send`` signature
 ----------------------------------
 
-The router used to pass just a message object to :meth:`BackendBase.send
+All exisitng backends must be updated to use the new signature. The router used
+to pass just a message object to :meth:`BackendBase.send
 <rapidsms.backends.base.BackendBase.send>`. The signature has been updated to
 accept an ``id_``, ``text``, list of ``identities``, and a ``context``
 dictionary. All backends will need to be updated to use this signature. Please
