@@ -34,4 +34,6 @@ def send_async(backend_name, id_, text, identities, context):
         router.send_to_backend(backend_name=backend_name, id_=id_, text=text,
                                identities=identities, context=context)
     except MessageSendingError:
-        logger.exception("Exception in router.send_to_backend")
+        # This exception has already been logged in send_to_backend.
+        # We'll simply pass here and not re-raise or log the exception again.
+        pass
