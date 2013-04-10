@@ -47,7 +47,8 @@ class EchoApp(MockApp):
 
     def handle(self, message):
         MockApp.handle(self, message)
-        message.respond(message.peer + ": " + message.text)
+        peer = message.connections[0].identity
+        message.respond(peer + ": " + message.text)
 
 
 class ExceptionApp(MockApp):
