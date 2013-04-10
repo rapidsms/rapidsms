@@ -228,8 +228,8 @@ Before building the documentation, you must have a version of RapidSMS
 installed.  See the :ref:`installing-development-version` guide for
 instructions on installing RapidSMS.
 
-We use the Sphinx__ documentation system (based on docutils__). To actually
-build the documentation locally, you'll currently need to install Sphinx::
+We use the Sphinx__ documentation system (based on docutils__). To
+build the documentation locally, you'll need to install Sphinx::
 
     pip install Sphinx
 
