@@ -1,11 +1,20 @@
 Release process
 ================
 
+
+.. warning::
+
+    This release process documentation is not up-to-date anymore.
+
 (based on Django's release process http://docs.djangoproject.com/en/1.2/internals/release-process)
 
 RapidSMS uses a time-based release schedule, with minor (i.e. 1.1, 1.2, etc.) releases every six weeks, or more, depending on features.
 
 After each previous release (and after an optional cooling-off period of a week or two), the core development team will examine the landscape and announce a timeline for the next release. Most releases will be scheduled in the 4 - 8 week range, but if we have bigger features to development we might schedule a longer period to allow for more ambitious work.
+
+This is an overview of the whole release lifecycle. There's also a
+:doc:`Release Checklist </internals/contributing/release-checklist>` with
+the step-by-step process for releasing a new version.
 
 Release cycle
 ==============
@@ -87,8 +96,11 @@ When reviewing code – things to consider:
 * does the new code meet the coding standards for style, documentation, tests, etc.?
 * does the new code fit with the existing architecture of the project?
 * does the new code change the existing architecture or API?
+* is the documentation updated to match the new code?
+* are the changes documented in the release notes for the next release?
 * if the patch might be contentious, the reviewer should post concerns to the mailing list.
-* if the patch looks like it might cause problems, the reviewer should leave constructive criticism in the issue tracker, * label the issue fixme, and respond over the mailing list.
+* if the patch looks like it might cause problems, the reviewer should leave constructive criticism in the issue tracker, label the issue fixme, and respond over the mailing list.
+* if everything looks good, the reviewer should add a comment to the pull request
 
 RapidSMS code repositories
 ============================
