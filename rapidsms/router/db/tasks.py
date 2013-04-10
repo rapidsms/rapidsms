@@ -5,7 +5,7 @@ from django.utils.timezone import now
 from rapidsms.errors import MessageSendingError
 
 
-__all__ = ('recieve',)
+__all__ = ('receive_async', 'send_transmissions')
 
 
 logger = get_task_logger(__name__)
