@@ -30,3 +30,10 @@ Miscellaneously good
     /etc/init.d ntp stop
     ntpdate -u pool.ntp.org
     /etc/init.d ntp start
+
+
+More
+====
+
+:ref:`a-good-basic-setup`
+

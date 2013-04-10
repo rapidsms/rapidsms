@@ -84,6 +84,24 @@ to use it will require a large investment of time.
 Recommendations
 ---------------
 
+Repeatable
+..........
+
+The most important goal is to be able to repeat provisioning
+and end up with each system provisioned the same. Otherwise
+you'll waste a lot of time tracking down problems that turn
+out to be the result of a missing package on one server, or
+an incorrect configuration, or incorrect file permission, and
+so forth.
+
+How
+...
+
+Unfortunately, there's no simple solution to implementing
+repeatable provisioning. Provisioning is a very complicated
+task.
+
+
 WHAT ELSE TO SAY?
 
 .. _Argyle: https://pypi.python.org/pypi/argyle/
