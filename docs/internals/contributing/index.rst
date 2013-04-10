@@ -63,6 +63,10 @@ Submitting code
 
 #. Write new or update old documentation to describe the changes you made.
 
+#. Add the change to the release notes document for the next release. The
+   release notes should focus on the effects on existing users, particularly
+   if it will require them to make changes.
+
 #. Make sure to add yourself to `AUTHORS`_.
 
 #. Open a pull request against the `develop` branch (see `Gitflow`_), and

@@ -56,7 +56,7 @@ GenericHttpBackendView
 
 The simplest type of custom backend is an HTTP backend that needs to accept
 parameters other than ``identity`` and ``text``. To create such a custom
-backend, one can subclass the ``GenericHTTPBackendView`` as follows::
+backend, one can subclass the ``GenericHttpBackendView`` as follows::
 
     from rapidsms.backends.http.views import GenericHttpBackendView
 
@@ -95,8 +95,8 @@ Custom Validation
 ~~~~~~~~~~~~~~~~~
 
 Another custom backend might necessitate handling more parameters in the
-request, or validating the incoming data differently. Such a backend would need
-to use its own form and is demonstrated below::
+request, or validating the incoming data differently.  A convenient way
+to do this validation with Django is with forms::
 
     from .forms import ExtraParamsHttpBackendForm
     from rapidsms.backends.http.views import GenericHttpBackendView
@@ -114,9 +114,14 @@ This example application would have the following forms definition::
 
         def get_incoming_data(self):
             fields = self.cleaned_data.copy()
-            return {'identity': self.cleaned_data['indentity_name'],
+            return {'identity': self.cleaned_data['identity_name'],
                     'text': self.cleaned_data['text_name'],
                     'extra': self.cleaned_data['extra']}
+
+This uses RapidSMS's BaseHttpForm:
+
+.. autoclass:: rapidsms.backends.http.forms.BaseHttpForm
+    :members:
 
 Data coming into this backend would require an ``extra`` parameter, which would
 be passed onto the message queue.

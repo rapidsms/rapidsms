@@ -33,8 +33,8 @@ v1.0.0
 * Finish development on outstanding core features and bugs
 
 
-v0.14.0
--------
+v0.14.0 - Next Release
+----------------------
 * **Scheduling and deployment**
 * *Expected release date:* April, 2013
 * `v0.14.0 GitHub Milestone <https://github.com/rapidsms/rapidsms/issues?milestone=6&page=1&state=open>`_
@@ -47,10 +47,10 @@ v0.14.0
 * Provide instructions and scripts to deploy project in a few simple steps
 
 
-v0.13.0 - Next Release
-----------------------
+v0.13.0
+-------
 * **Bulk messaging**
-* *Expected release date:* April, 2013
+* *Release date:* April 10, 2013
 * `v0.13.0 GitHub Milestone <https://github.com/rapidsms/rapidsms/issues?milestone=5&page=1&state=open>`_
 
 

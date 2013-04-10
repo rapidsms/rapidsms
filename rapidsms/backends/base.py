@@ -37,7 +37,7 @@ class BackendBase(object, LoggerMixin):
     def configure(self, **kwargs):
         """
         Configuration parameters from :setting:`INSTALLED_BACKENDS` will
-        be passed here after the router is instaniated. You can override
+        be passed here after the router is instantiated. You can override
         this method to parse your configuration.
         """
         pass
@@ -46,7 +46,9 @@ class BackendBase(object, LoggerMixin):
         """
         Backend sending logic. The router will call this method for each
         outbound message. This method must be overridden by sub-classes.
-        Backends typically initiate HTTP requests from within this method.
+        Backends typically initiate HTTP requests from within this method. Any
+        exceptions raised here will be captured and logged by the selected
+        router.
 
         If multiple ``identities`` are provided, the message is intended for
         all recipients.

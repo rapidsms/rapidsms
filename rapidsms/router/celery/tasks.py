@@ -1,5 +1,6 @@
 import celery
 from celery.utils.log import get_task_logger
+from rapidsms.errors import MessageSendingError
 
 
 logger = get_task_logger(__name__)
@@ -19,8 +20,8 @@ def receive_async(text, connection_id, message_id, fields):
     try:
         # call process_incoming directly to skip receive_incoming
         router.process_incoming(message)
-    except Exception, e:
-        logger.exception(e)
+    except Exception:
+        logger.exception("Exception processing incoming message")
 
 
 @celery.task
@@ -32,5 +33,7 @@ def send_async(backend_name, id_, text, identities, context):
     try:
         router.send_to_backend(backend_name=backend_name, id_=id_, text=text,
                                identities=identities, context=context)
-    except Exception, e:
-        logger.exception(e)
+    except MessageSendingError:
+        # This exception has already been logged in send_to_backend.
+        # We'll simply pass here and not re-raise or log the exception again.
+        pass
