@@ -10,6 +10,11 @@ system is installed, typically you need to create users,
 grant permissions, and install and configure tools such as a database, a
 web server, a cache, a message broker, etc.
 
+Another way to look at it is that provisioning is things you only need to do
+once per system, like installing a database server, while deploying includes
+the things you have to do separately for each app or site you deploy, like
+creating a virtual environment for it.
+
 You might also look at provisioning as all the things you
 have to do for yourself if you're not using a PaaS to host
 your site.
@@ -65,7 +70,7 @@ different approach than most of the other tools we'll mention.
 With Blueprint, instead of writing a specification for what
 provisioning needs to be done, you run a Blueprint tool on
 a system that you've provisioned already
-and it records the state of the system - which packages have
+and it records the state of the system: which packages have
 been added to the defaults, which configuration files have
 been changed or added and what their contents are, etc.
 
