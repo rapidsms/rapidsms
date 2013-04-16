@@ -15,3 +15,10 @@ We can look at the overall deployment process in three parts:
 
 The main thing is: stop using runserver and switch over to Apache or your
 real server of choice.
+
+* :ref:`deploy_planning`
+    * :ref:`virtual machines`
+* :ref:`provisioning`
+    * :ref:`provision_how`
+    * :ref:`provision_what`
+* :ref:`deploying`

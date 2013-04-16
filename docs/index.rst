@@ -49,7 +49,7 @@ Release: v\ |release|. (:doc:`Installation <intro/install/index>`, :doc:`Release
 * :doc:`Front end <topics/frontend>` - Creating a web interface for your app
 * :doc:`Testing <topics/testing>`
 * :doc:`Scheduling Tasks with Celery <topics/celery>`
-* :doc:`Deployment <topics/deployment/index>`
+* **Deployment:** :doc:`Overview <topics/deployment/index>` | :doc:`Planning <topics/deployment/planning>` | :doc:`Provisioning <topics/deployment/provisioning>` | :doc:`Deploying <topics/deployment/deploying>`
 
 **RapidSMS contrib applications**
 
