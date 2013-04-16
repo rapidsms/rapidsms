@@ -15,3 +15,8 @@ What's New
 
 Backwards-incompatible changes in RapidSMS 0.14.0
 =================================================
+
+* Removed `bin/rapidsms-admin.py`. It relied on the RapidSMS `startproject`
+  management command which had already been removed. For the recommended way
+  to start a new RapidSMS project, see
+  :ref:`installing-rapidsms-project-template`.
