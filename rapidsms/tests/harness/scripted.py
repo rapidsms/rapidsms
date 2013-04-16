@@ -65,10 +65,12 @@ class TestScriptMixin(TestRouterMixin):
         return messages
 
     def _checkAgainstMessage(self, num, txt, last_msg, msg):
-        self.assertEquals(msg.peer, num, "Expected to respond to "
+        peer = msg.connections[0].identity
+        self.assertEquals(peer, num,
+                          "Expected to respond to "
                           "%s, but message was sent to %s.\n"
                           "\nMessage: %s\nReceived "
-                          "text: %s\nExpected text: %s\n" % (num, msg.peer,
+                          "text: %s\nExpected text: %s\n" % (num, peer,
                           last_msg, msg.text, txt))
 
         self.assertEquals(msg.text, txt, "\nMessage: %s\nReceived "

@@ -1,16 +1,17 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-
-from django.template import RequestContext
+from django.contrib.auth.decorators import login_required
+from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
+from django.template import RequestContext
+
 from rapidsms.conf import settings
-from .forms import *
-from .models import *
-from .tables import *
 from . import utils
+from .models import Location
+from .tables import LocationTable
 
 
 def _breadcrumbs(location=None, first_caption="Planet Earth"):
@@ -82,6 +83,7 @@ class LocationTypeStub(object):
         return self.locations().count() == 0
 
 
+@login_required
 def locations(req, location_uid=None):
     view_location = None
 
@@ -112,7 +114,7 @@ def locations(req, location_uid=None):
                     "parent_id", None):
                 parent_class = utils.get_model(req.POST["parent_type"])
                 parent = get_object_or_404(parent_class,
-                                            pk=req.POST["parent_id"])
+                                           pk=req.POST["parent_id"])
                 model.parent = parent
                 model.save()
 
@@ -140,4 +142,4 @@ def locations(req, location_uid=None):
             # big error, since this app is useless without them.
             "no_location_types": (len(types) == 0)
         }, context_instance=RequestContext(req)
-     )
+    )
