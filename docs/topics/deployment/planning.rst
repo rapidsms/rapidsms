@@ -6,15 +6,15 @@ Planning for a Deploy
 
 There are three major types of hosting: application physical servers, hosted virtual machines, and platform as a service providers. Though running and maintaining a physical server has become less common recently, there are still RapidSMS installation situations where this is the best options. For example, there are times when a physical cellular modem is the best solution for sending and receiving SMS messages in a region. In this case, it can make sense to have a physical server plugged into a modem where the modem has service.
 
-+-----------------+----------+------------+----------------+--------------+
-|                 | Low Cost | Simplicity | Physical Modem | Customizable |
-+-----------------+----------+------------+----------------+--------------+
-| Physical Server |     ✗    |     ✗      |            ✓   | ✓            |
-+-----------------+----------+------------+----------------+--------------+
-| Hosted VM       |     ✓    |     ✗      |            ✗   | ✓            |
-+-----------------+----------+------------+----------------+--------------+
-| PaaS            |     ✗    |     ✓      |            ✗   | ✗            |
-+-----------------+----------+------------+----------------+--------------+
++-----------------+--------------+----------------+--------------------+------------------+-----------------+
+|                 | **Low Cost** | **Simplicity** | **Physical Modem** | **Customizable** | **Portability** |
++-----------------+--------------+----------------+--------------------+------------------+-----------------+
+| Physical Server |         ✗    |         ✗      |                ✓   |     ✓            |     ✓           | 
++-----------------+--------------+----------------+--------------------+------------------+-----------------+
+| Hosted VM       |         ✓    |         ✗      |                ✗   |     ✓            |     ✗           | 
++-----------------+--------------+----------------+--------------------+------------------+-----------------+
+| PaaS            |         ✗    |         ✓      |                ✗   |     ✗            |     ✗           | 
++-----------------+--------------+----------------+--------------------+------------------+-----------------+
 
 Shared and dedicated :doc:`virtual machines </topics/deployment/virtual-machines>` (VMs) are becoming more and more common. In this hosting environment, the server and network configuration and maintenance is the responsibility of the hosting company. Maintaining a physical computer means worrying about RAM and hard drive failures, but this is not the case with VMs. Beyond this, many VM providers are providing APIs which make it possible to programmatically create a new server with an API request to the VM hosting provider. Once the VM has started, you are still responsible for installing an operating system and configuring all of the various software packages and services.
 
