@@ -95,13 +95,12 @@ configurations. The cost of this power, of course, is complexity.
 Getting one of these provisioning tools installed and learning
 to use it will require a large investment of time.
 
-Example with SaltStack
-----------------------
+Examples
+--------
 
-There's an example of provisioning a server for use with RapidSMS at
-https://github.com/caktus/rapidsms-salt. It uses SaltStack to provision
-a `Vagrant`_ virtual machine with the necessary servers, users, etc.,
-then has a fabfile that can deploy a basic RapidSMS app to it.
+The RapidSMS wiki has a
+`page <https://github.com/rapidsms/rapidsms/wiki/Deployment-Examples>`_
+with links to examples of how people provision and deploy RapidSMS applications.
 
 
 Recommendations on Implementing Provisioning
