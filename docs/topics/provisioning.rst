@@ -88,6 +88,15 @@ configurations. The cost of this power, of course, is complexity.
 Getting one of these provisioning tools installed and learning
 to use it will require a large investment of time.
 
+Example with SaltStack
+----------------------
+
+There's an example of provisioning a server for use with RapidSMS at
+https://github.com/caktus/rapidsms-salt. It uses SaltStack to provision
+a `Vagrant`_ virtual machine with the necessary servers, users, etc.,
+then has a fabfile that can deploy a basic RapidSMS app to it.
+
+
 Recommendations
 ---------------
 
@@ -137,3 +146,4 @@ you can present your situation there and ask for advice.
 .. _Puppet: https://puppetlabs.com/
 .. _RapidSMS mailing list: http://groups.google.com/group/rapidsms
 .. _SaltStack: http://saltstack.com/
+.. _Vagrant: http://vagrantup.com/
