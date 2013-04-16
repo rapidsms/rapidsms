@@ -18,6 +18,7 @@ real server of choice.
 
 * :ref:`deploy_planning`
     * :ref:`virtual machines`
+    * :ref:`PaaS`
 * :ref:`provisioning`
     * :ref:`provision_how`
     * :ref:`provision_what`
