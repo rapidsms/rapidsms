@@ -45,8 +45,37 @@ Message queue server
 Asynchronous task scheduler
     `Celery`_: see :ref:`why_celery`.
 
+
+Other Recommendations
+=====================
+
+Here are a few other recommendations.
+
+`Fail2ban`_
+    install to detect and block some intrusion attempts
+
+Firewall
+    Block any incoming traffic that isn't needed by your application or
+    server. Ubuntu provides the `ufw`_ tool which makes this easy.
+
+Logwatch
+    `Logwatch`_ will check your system logs daily and email you a daily
+    report. This is helpful for spotting unusual activity.
+
+`Automatic security updates`_
+    You can set up Ubuntu to automatically install security-related
+    updates.
+
+ntp
+    use ntp to keep system clock up to date
+
+
+.. _Automatic security updates: https://help.ubuntu.com/community/AutomaticSecurityUpdates
 .. _Celery: http://www.celeryproject.org/
+.. _Fail2ban: http://www.fail2ban.org/wiki/index.php/Main_Page
+.. _Logwatch: https://help.ubuntu.com/community/Logwatch
 .. _PostgreSQL: http://www.postgresql.org/
 .. _RabbitMQ: http://www.rabbitmq.com/
 .. _South:  http://south.readthedocs.org/en/latest/
 .. _Ubuntu LTS Server: http://www.ubuntu.com/business/server
+.. _ufw: https://help.ubuntu.com/community/UFW
