@@ -19,8 +19,15 @@ You might also look at provisioning as all the things you
 have to do for yourself if you're not using a PaaS to host
 your site.
 
-Overview
---------
+We're going to look at two aspects of provisioning:
+
+* :ref:`provision_how`
+* :ref:`provision_what`
+
+.. _provision_how:
+
+Ways to Provision
+-----------------
 
 Manual provisioning
 ...................
@@ -97,8 +104,8 @@ a `Vagrant`_ virtual machine with the necessary servers, users, etc.,
 then has a fabfile that can deploy a basic RapidSMS app to it.
 
 
-Recommendations
----------------
+Recommendations on Implementing Provisioning
+--------------------------------------------
 
 Repeatable
 ..........
@@ -136,6 +143,8 @@ for a PaaS, then you'll need to consider your needs and your level of
 expertise, try out some of the available approaches, and make the
 best decision you can.  The `RapidSMS mailing list`_ is a good resource;
 you can present your situation there and ask for advice.
+
+
 
 .. _Argyle: https://pypi.python.org/pypi/argyle/
 .. _Blueprint: http://devstructure.com/blueprint/

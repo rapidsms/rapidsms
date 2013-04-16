@@ -20,6 +20,7 @@
     topics/backends/*
     topics/contrib/*
     topics/router/*
+    topics/deployment/*
     _themes/*
 
 
@@ -48,7 +49,7 @@ Release: v\ |release|. (:doc:`Installation <intro/install/index>`, :doc:`Release
 * :doc:`Front end <topics/frontend>` - Creating a web interface for your app
 * :doc:`Testing <topics/testing>`
 * :doc:`Scheduling Tasks with Celery <topics/celery>`
-* :doc:`Deployment <topics/deployment>`
+* :doc:`Deployment <topics/deployment/index>`
 
 **RapidSMS contrib applications**
 
