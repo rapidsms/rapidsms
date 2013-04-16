@@ -15,3 +15,6 @@ What's New
 
 Backwards-incompatible changes in RapidSMS 0.14.0
 =================================================
+
+* All views built-in to RapidSMS, including contrib apps, now require
+  login.
