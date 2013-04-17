@@ -116,6 +116,10 @@ out to be the result of a missing package on one server, or
 an incorrect configuration, or incorrect file permission, and
 so forth.
 
+It can also be very useful to be able to easily provision
+new systems. For example, you can set up a new test system, or add
+another staging server, or another production server.
+
 How
 ...
 
@@ -133,7 +137,7 @@ it thoroughly will be repaid many times over.
 
 If you only have a few Django apps, and they're fairly conventional
 in terms of provisioning requirements, you should consider
-a PaaS like `Heroku`_. They handle the provisioning for you. The
+a :ref:`PaaS <paas>`. They handle the provisioning for you. The
 monthly bills will be higher, but your costs in time spent getting
 provisioning working and keeping it working will be much lower.
 

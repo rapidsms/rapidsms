@@ -30,10 +30,20 @@ example, you can choose from a number of tools to put on top of the VM to help
 deploy a new instance while with PaaS, you are locked in to the tools decided
 on by the provider.
 
+Here's a short list of popular PaaS providers that support Django:
+
  * Heroku_
  * gondor.io_
  * dotCloud_
 
-.. _Heroku: http://heroku.com/
-.. _gondor.io: http://gondor.io/
-.. _dotCloud: http://dotcloud.com/
+Examples
+--------
+
+The RapidSMS wiki has a
+`page <https://github.com/rapidsms/rapidsms/wiki/Deployment-Examples>`_
+with links to examples of how people provision and deploy RapidSMS applications.
+
+
+.. _Heroku: https://devcenter.heroku.com/articles/django
+.. _gondor.io: https://gondor.io/support/django/setup/
+.. _dotCloud: http://docs.dotcloud.com/services/python/
