@@ -23,7 +23,7 @@ New RapidSMS website
 v1.0.0
 ------
 
-* *Expected release date:* April, 2013
+* *Expected release date:* May, 2013
 
 **Goals**
 
@@ -33,10 +33,10 @@ v1.0.0
 * Finish development on outstanding core features and bugs
 
 
-v0.14.0
--------
+v0.14.0 - Next Release
+----------------------
 * **Scheduling and deployment**
-* *Expected release date:* March, 2013
+* *Expected release date:* April, 2013
 * `v0.14.0 GitHub Milestone <https://github.com/rapidsms/rapidsms/issues?milestone=6&page=1&state=open>`_
 
 **Goals**
@@ -47,10 +47,10 @@ v0.14.0
 * Provide instructions and scripts to deploy project in a few simple steps
 
 
-v0.13.0 - Next Release
-----------------------
+v0.13.0
+-------
 * **Bulk messaging**
-* *Expected release date:* March, 2013
+* *Release date:* April 10, 2013
 * `v0.13.0 GitHub Milestone <https://github.com/rapidsms/rapidsms/issues?milestone=5&page=1&state=open>`_
 
 
@@ -67,7 +67,7 @@ v0.13.0 - Next Release
 v0.12.0
 -------
 * **Bootstrap and contrib update**
-* *Expected release date:* March, 2013
+* *Release date:* March 21, 2013
 * `v0.12.0 GitHub Milestone <https://github.com/rapidsms/rapidsms/issues?milestone=4&page=1&state=open>`_
 
 

@@ -12,11 +12,11 @@ class MessagesTest(RapidTest):
         """All message objects should have IDs."""
         connections = [self.create_connection()]
         msg = MessageBase(text="test", connections=connections)
-        self.assertTrue(msg.id is not None)
+        self.assertIsNotNone(msg.id)
         msg = IncomingMessage(text="test", connections=connections)
-        self.assertTrue(msg.id is not None)
+        self.assertIsNotNone(msg.id)
         msg = OutgoingMessage(text="test", connections=connections)
-        self.assertTrue(msg.id is not None)
+        self.assertIsNotNone(msg.id)
 
     def test_saved_message_fields(self):
         """Extra data should be attached to IncomingMessage."""
@@ -24,7 +24,7 @@ class MessagesTest(RapidTest):
         fields = {'extra-field': 'extra-value'}
         message = IncomingMessage(connection, 'test incoming message',
                                   fields=fields)
-        self.assertTrue('extra-field' in message.fields)
+        self.assertIn('extra-field', message.fields)
         self.assertEqual(message.fields['extra-field'], fields['extra-field'])
 
     def test_outgoing_message_link(self):
@@ -35,7 +35,7 @@ class MessagesTest(RapidTest):
                                   fields=fields)
         response = message.respond('response')
         self.assertEqual(message, response['in_response_to'])
-        self.assertTrue('extra-field' in response['in_response_to'].fields)
+        self.assertIn('extra-field', response['in_response_to'].fields)
 
     def test_outgoing_message_send(self):
         """OutgoingMessage.send should use send() API correctly"""

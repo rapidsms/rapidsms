@@ -6,7 +6,4 @@ from rapidsms.messages.outgoing import OutgoingMessage
 
 
 class ErrorMessage(OutgoingMessage):
-    """
-    """
-
     pass

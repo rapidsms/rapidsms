@@ -7,13 +7,13 @@ import copy
 from collections import defaultdict
 
 from django.db.models.query import QuerySet
-from django.utils.timezone import now
 
 from rapidsms.messages.incoming import IncomingMessage
 from rapidsms.messages.outgoing import OutgoingMessage
 from rapidsms.backends.base import BackendBase
 from rapidsms.apps.base import AppBase
 from rapidsms.conf import settings
+from rapidsms.errors import MessageSendingError
 
 
 logger = logging.getLogger(__name__)
@@ -144,6 +144,8 @@ class BlockingRouter(object):
         :param msg: :class:`IncomingMessage <rapidsms.messages.incoming.IncomingMessage>` object
         :returns: ``True`` if inbound processing should continue.
         """
+        # Note: this method can't ever return False, but some subclass might
+        # override it and use that feature.
         logger.info("Incoming (%s): %s" % (msg.connection, msg.text))
 
         try:
@@ -167,7 +169,7 @@ class BlockingRouter(object):
                     if phase == "filter":
                         if handled is True:
                             logger.warning("Message filtered")
-                            raise(StopIteration)
+                            raise StopIteration
 
                     # during the _handle_ phase, apps can return True
                     # to "short-circuit" this phase, preventing any
@@ -241,8 +243,14 @@ class BlockingRouter(object):
         context = msg.extra_backend_context()
         grouped_identities = self.group_outgoing_identities(msg)
         for backend_name, identities in grouped_identities.iteritems():
-            self.send_to_backend(backend_name, msg.id, msg.text, identities,
-                                 context)
+            try:
+                self.send_to_backend(backend_name, msg.id, msg.text,
+                                     identities, context)
+            except MessageSendingError:
+                # This exception has already been logged in send_to_backend.
+                # The blocking router doesn't have a mechanism to handle
+                # errors, so we simply pass here and continue routing messages.
+                pass
 
     def group_outgoing_identities(self, msg):
         """Return a dictionary of backend_name -> identities for a message."""
@@ -263,9 +271,19 @@ class BlockingRouter(object):
 
     def send_to_backend(self, backend_name, id_, text, identities, context):
         """Send message context to specified backend."""
-        backend = self.backends[backend_name]
-        backend.send(id_=id_, text=text, identities=identities,
-                     context=context)
+        try:
+            backend = self.backends[backend_name]
+        except KeyError:
+            msg = "Router is not configured with the %s backend" % backend_name
+            logger.exception(msg)
+            raise MessageSendingError(msg)
+        try:
+            backend.send(id_=id_, text=text, identities=identities,
+                         context=context)
+        except Exception:
+            msg = "%s encountered an error while sending." % backend_name
+            logger.exception(msg)
+            raise MessageSendingError(msg)
 
     def new_incoming_message(self, text, connections, class_=IncomingMessage,
                              **kwargs):
@@ -279,7 +297,6 @@ class BlockingRouter(object):
         :returns: :class:`IncomingMessage <rapidsms.messages.incoming.IncomingMessage>` object.
         """
         return class_(text=text, connections=connections,
-                      received_at=now(),
                       **kwargs)
 
     def new_outgoing_message(self, text, connections, class_=OutgoingMessage,
@@ -298,11 +315,11 @@ class BlockingRouter(object):
     def incoming(self, msg):
         """Legacy support for Router.incoming() -- Deprecated"""
         msg = "Router.incoming is deprecated. Please use receive_incoming."
-        warnings.warn(msg)
+        warnings.warn(msg, DeprecationWarning)
         self.receive_incoming(msg)
 
     def outgoing(self, msg):
         """Legacy support for Router.outgoing() -- Deprecated"""
         msg = "Router.outgoing is deprecated. Please use send_outgoing."
-        warnings.warn(msg)
+        warnings.warn(msg, DeprecationWarning)
         self.send_outgoing(msg)

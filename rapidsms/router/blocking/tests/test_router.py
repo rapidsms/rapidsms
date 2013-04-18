@@ -88,7 +88,7 @@ class RouterOutgoingPhases(harness.RapidTest):
         """App.outgoing should be called for sent messages."""
         self.send('test', self.lookup_connections('1112223333'))
         app = self.router.apps[0]
-        self.assertTrue('outgoing' in app.calls)
+        self.assertIn('outgoing', app.calls)
 
     def test_process_outgoing_phases_return_value(self):
         """
@@ -119,7 +119,7 @@ class RouterOutgoingPhases(harness.RapidTest):
         self.assertEqual(0, len(self.sent_messages))
 
     def test_outgoing_exception(self):
-        """App exceptions shouldn't hault message processing."""
+        """App exceptions shouldn't halt message processing."""
         def outgoing_exception(message):
             raise Exception("Error!")
         self.router.apps[0].outgoing = outgoing_exception

@@ -54,14 +54,17 @@ class CreateDataMixin(object):
             defaults['backend'] = self.create_backend()
         return Connection.objects.create(**defaults)
 
-    def create_outgoing_message(self, data={}):
+    def create_outgoing_message(self, data={}, backend=None):
         """Create and return RapidSMS OutgoingMessage object."""
         defaults = {
             'text': self.random_string(10),
         }
         defaults.update(data)
         if 'connections' not in defaults:
-            defaults['connections'] = [self.create_connection()]
+            conn_kwargs = {}
+            if backend:
+                conn_kwargs = {'data': {'backend': backend}}
+            defaults['connections'] = [self.create_connection(**conn_kwargs)]
         return OutgoingMessage(**defaults)
 
     def create_incoming_message(self, data={}):

@@ -6,9 +6,11 @@ Translation
 
 RapidSMS uses Django's internationalization (i18n) architecture to allow you to
 make your project or application translatable. This documentation assumes
-you're already familiar with this architecture. If you're not, we recomend
+you're already familiar with this architecture. If you're not, we recommend
 reviewing `Django's translation`_ documentation before proceeding.
 
+This page will start with a brief review of Django translation, then
+move on to RapidSMS translation.
 
 Introduction
 ------------
@@ -33,7 +35,7 @@ LANGUAGE_CODE>`_.
 RapidSMS will not automatically attempt to translate routed
 messages. This is an intential decision to require application developers to
 explicity initiate the message translation process. You can use the methods
-below to transate messages.
+below to translate messages.
 
 
 Language specification

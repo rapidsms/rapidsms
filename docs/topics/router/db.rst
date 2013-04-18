@@ -34,7 +34,8 @@ Installation
     :router:`DatabaseRouter` depends on `django-celery`_ 3.0+. Please follow
     the django-celery `setup instructions`_ before proceeding.
 
-Add ``rapidsms.router.db`` to ``INSTALLED_APPS``:
+Add ``rapidsms.router.db`` to ``INSTALLED_APPS``, then import djcelery and
+invoke ``setup_loader()``:
 
 .. code-block:: python
    :emphasize-lines: 3
@@ -43,6 +44,8 @@ Add ``rapidsms.router.db`` to ``INSTALLED_APPS``:
         # Other apps here
         "rapidsms.router.db",
     )
+    import djcelery
+    djcelery.setup_loader()
 
 This will register Celery tasks in ``rapidsms.router.db.tasks``.
 
@@ -86,78 +89,16 @@ Message
 
 The ``Message`` model contains the context of a text message. For every associated ``Connection``, a ``Message`` has an associated ``Transmission``.
 
-.. class:: Message
-
-    .. attribute:: direction
-
-        Required. Either ``'I'`` or ``'O'``.
-
-    .. attribute:: status
-
-        Required. See :ref:`message-status-values`.
-
-    .. attribute:: date
-
-        Required. Date/time when message was created.
-
-    .. attribute:: updated
-
-        Required. Last date/time the message was updated.
-
-    .. attribute:: sent
-
-        Date/time when all associated transmissions were sent.
-
-    .. attribute:: delivered
-
-        Date/time when all associated transmissions were delivered (requires backend functionality).
-
-    .. attribute:: text
-
-        Required. Message text.
-
-    .. attribute:: external_id
-
-        Optional. ID of message as defined by the associated backend.
-
-    .. attribute:: in_response_to
-
-        Optional. Foreign key to ``Message`` that generated this reply.
+.. autoclass:: rapidsms.router.db.models.Message
+    :members:
 
 Transmission
 ************
 
 A ``Transmission`` represents the instance of a particular ``Message`` and ``Connection``.
 
-.. class:: Transmission
-
-    .. attribute:: message
-
-        Required. Foreign key to associated ``Message``.
-
-    .. attribute:: connection
-
-        Required. Foreign key to associated ``Connection``.
-
-    .. attribute:: status
-
-        Required. See :ref:`message-status-values`.
-
-    .. attribute:: date
-
-        Required. Date/time when transmission was created.
-
-    .. attribute:: updated
-
-        Required. Last date/time when transmission was updated.
-
-    .. attribute:: sent
-
-        Date/time when transmission was sent.
-
-    .. attribute:: delivered
-
-        Date/time when transmission was delivered (requires backend functionality).
+.. autoclass:: rapidsms.router.db.models.Transmission
+    :members:
 
 .. _message-status-values:
 
