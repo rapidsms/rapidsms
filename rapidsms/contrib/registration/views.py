@@ -2,6 +2,7 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 import csv
+from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.db import transaction
 from django.http import HttpResponseRedirect
@@ -15,6 +16,7 @@ from rapidsms.contrib.registration.forms import (
 from rapidsms import settings
 
 
+@login_required
 def registration(request):
     contacts_table = ContactTable(
         Contact.objects.all().prefetch_related('connection_set'),
@@ -28,6 +30,7 @@ def registration(request):
     })
 
 
+@login_required
 def contact(request, pk=None):
     if pk:
         contact = get_object_or_404(Contact, pk=pk)
@@ -70,6 +73,7 @@ def contact(request, pk=None):
     })
 
 
+@login_required
 @transaction.commit_on_success
 def contact_bulk_add(request):
     bulk_form = BulkRegistrationForm(request.POST)
