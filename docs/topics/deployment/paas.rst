@@ -46,4 +46,4 @@ with links to examples of how people provision and deploy RapidSMS applications.
 
 .. _Heroku: https://devcenter.heroku.com/articles/django
 .. _gondor.io: https://gondor.io/support/django/setup/
-.. _dotCloud: http://docs.dotcloud.com/services/python/
+.. _dotCloud: http://docs.dotcloud.com/tutorials/python/django/
