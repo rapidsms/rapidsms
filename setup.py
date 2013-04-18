@@ -27,6 +27,7 @@ setup(
         "djappsettings==0.1.0",
         "django-selectable==0.7.0",
     ],
+
     test_requires=[
         "nose==1.2.1",
     ],
