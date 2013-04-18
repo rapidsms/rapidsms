@@ -261,6 +261,16 @@ Typically, documentation changes come in two forms:
 If you're interested in helping out, a good starting point is with the
 `documentation label`_ on the GitHub issue tracker.
 
+
+.. toctree::
+
+    license
+    testing
+    /intro/tutorial-videos
+    release-checklist
+    release-process
+
+
 __ http://sphinx.pocoo.org/
 __ http://docutils.sourceforge.net/
 

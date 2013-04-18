@@ -1,4 +1,4 @@
-RapidSMS architecture overview
+RapidSMS Architecture Overview
 ==============================
 
 .. image:: /_static/rapidsms-architecture.png
@@ -14,6 +14,9 @@ RapidSMS is divided into a few core components:
 * :ref:`Applications <application-overview>`
 * :ref:`Backends <backend-overview>`
 * :ref:`Router <router-overview>`
+
+If you are new to RapidSMS most likely you will want to develop Applications.
+
 
 .. _application-overview:
 
@@ -54,7 +57,7 @@ Router
 
 The :doc:`router <router/index>` is the message processing component of
 RapidSMS. It provides the infrastructure to receive incoming, send outgoing
-messages, and gluing together your applications and backends. RapidSMS provides a several built-in routers to use based on the needs of your application.
+messages, and gluing together your applications and backends. RapidSMS provides several built-in routers to use based on the needs of your application.
 
 Please see the :doc:`router documentation <router/index>` for more information.
 

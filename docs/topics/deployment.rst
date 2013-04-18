@@ -22,7 +22,7 @@ When running on a physical machine with a hardware modem:
 * route hangs -> log + restart system (this is what i wrote. checks http responsiveness + sends an email. no other backend support, no outgoing sms yet. depends on this backend.)
 
 Miscellaneously good
-=======================
+--------------------
 
 * install ntp to keep system clock up to date::
 

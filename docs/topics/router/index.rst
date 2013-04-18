@@ -23,6 +23,13 @@ areas where this behavior is tied to applications. For more information about
 processing messages in applications, see the :doc:`applications documentation
 </topics/applications/index>`.
 
+.. toctree::
+
+    messaging
+    blocking
+    celery
+    db
+
 
 .. _router-choice:
 

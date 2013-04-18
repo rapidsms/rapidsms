@@ -12,6 +12,13 @@ eventually pass through a backend. They handle a two-way messaging protocol:
 * **Incoming messages:** Messages received by RapidSMS from an external source. All incoming messages are received over HTTP and processed by a Django view. Once received, backends will pass messages to the router for processing.
 * **Outgoing messages:** Messages sent by RapidSMS to an external source. The router will pass messages to backends once processed. RapidSMS sends messages over HTTP.
 
+.. toctree::
+
+    kannel
+    vumi
+    database
+    custom
+
 .. _supplied-backends:
 
 Supplied Backends
