@@ -10,7 +10,7 @@ applications will require some changes when upgrading to RapidSMS 0.12.0.
 
 They key changes in 0.12.0 are:
 
-* **Twitter Bootstrap**: The RapidSMS pages now use `Twitter Bootstrap`_ for a more up-to-date and easily extensible appearance.  See :doc:`/topics/frontend` for more information.
+* **Twitter Bootstrap**: The RapidSMS pages now use `Twitter Bootstrap`_ v2.2.2 for a more up-to-date and easily extensible appearance.  See :doc:`/topics/frontend` for more information.
 * **Contrib app updates:** Most of the contrib apps have been updated to use more up-to-date Django practices and to add documentation and tests.  A few obsolete apps have been :ref:`removed <removed apps>`.
 * **Supporting Django 1.4+:** RapidSMS is no longer compatible with any version of Django prior to 1.4. See the `Django 1.4 release notes`_ for more information.
 * **Removed RAPIDSMS_TABS:** Top level navigation is now managed with an :ref:`inclusion template <RAPIDSMS_TABS>`.

@@ -7,7 +7,7 @@ Introduction
 RapidSMS provides an optional framework for making the applications on your
 site have a common look and feel.
 
-Starting with release 0.12.0, the framework uses `Twitter Bootstrap`_.
+Starting with release 0.12.0, the framework uses `Twitter Bootstrap`_, v2.2.2.
 
 This document is intended to describe how the contrib apps use Bootstrap,
 and how you might use it in your own apps.
