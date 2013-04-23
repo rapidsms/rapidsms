@@ -3,7 +3,6 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-
 RapidSMS Documentation
 =======================
 
@@ -58,7 +57,13 @@ Release: v\ |release|. (:doc:`Installation <intro/install/index>`, :doc:`Release
 * :doc:`Front end <topics/frontend>` - Creating a web interface for your app
 * :doc:`Testing <topics/testing>`
 * :doc:`Scheduling Tasks with Celery <topics/celery>`
-* :doc:`Deployment <topics/deployment>`
+
+* **Deployment:**
+
+* :doc:`Overview <topics/deployment/index>`
+* :doc:`Planning <topics/deployment/planning>`
+* :doc:`Provisioning <topics/deployment/provisioning>`
+* :doc:`Deploying <topics/deployment/deploying>`
 
 **RapidSMS contrib applications**
 
