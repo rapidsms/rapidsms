@@ -16,11 +16,12 @@ Document sane defaults.
 Example templates.
     There are many options to consider: a bare metal server, cloud VM, platform as a service (PaaS). We don't want to bless any single particular method, but we believe that linking to sample configurations for a small subset of these will provide a solid foundation and starting point for deploying your own application.
 
-We can look at the overall deployment process in three parts:
+We can look at the overall deployment process in four parts:
 
 * Deciding where to run your application - :ref:`deploy_planning`.
 * Preparing the server(s) to run your application - :ref:`provisioning`.
 * Installing and updating your application to the server(s) - :ref:`deploying`.
+* Scaling up when your server can't handle the traffic anymore - :ref:`scaling`.
 
 But even if you don't read anything else, the main things are:
 
@@ -37,3 +38,4 @@ Contents of this section:
     * :ref:`provision_how`
     * :ref:`provision_what`
 * :ref:`deploying`
+* :ref:`scaling`
