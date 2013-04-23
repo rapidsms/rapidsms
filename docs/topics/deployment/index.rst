@@ -14,7 +14,7 @@ Document sane defaults.
     While there are many deployment methods, there's a common denominator of best practices that all production RapidSMS sites should follow (don't use DEBUG = True). We will document a concise list of best practices.
 
 Example templates.
-    There are many options to consider: a bare metal server, cloud VM, platform as a service (PaaS). We don't want to bless any single particular method, but we believe that providing sample configurations for a small subset of these will provide a solid foundation and starting point for deploying your own application.
+    There are many options to consider: a bare metal server, cloud VM, platform as a service (PaaS). We don't want to bless any single particular method, but we believe that linking to sample configurations for a small subset of these will provide a solid foundation and starting point for deploying your own application.
 
 We can look at the overall deployment process in three parts:
 
