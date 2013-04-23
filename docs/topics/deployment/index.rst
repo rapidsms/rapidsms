@@ -28,12 +28,11 @@ But even if you don't read anything else, the main things are:
 * Use a real database (not SQLite)
 * Turn off :setting:`DEBUG`!
 
-Contents of this section:
+.. toctree::
 
-* :ref:`deploy_planning`
-    * :ref:`virtual machines`
-    * :ref:`PaaS`
-* :ref:`provisioning`
-    * :ref:`provision_how`
-    * :ref:`provision_what`
-* :ref:`deploying`
+    planning
+    virtual-machines
+    paas
+    provisioning
+    provision_what
+    deploying

@@ -27,7 +27,7 @@ RapidSMS Documentation
     topics/backends/index
     topics/router/index
     design/apps
-    topics/deployment
+    topics/deployment/index
     topics/contrib/index
     internals/contributing/index
     releases/index
@@ -58,7 +58,7 @@ Release: v\ |release|. (:doc:`Installation <intro/install/index>`, :doc:`Release
 * :doc:`Testing <topics/testing>`
 * :doc:`Scheduling Tasks with Celery <topics/celery>`
 
-* **Deployment:**
+**Deployment**
 
 * :doc:`Overview <topics/deployment/index>`
 * :doc:`Planning <topics/deployment/planning>`
