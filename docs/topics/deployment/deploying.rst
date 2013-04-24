@@ -10,16 +10,16 @@ dependent on your application requirements. Our goal is not to provide the
 best solution or a configuration that will work on any application. We only
 want to provide you with the proper resources to make the best decisions.
 
-Things to consider
-..................
+Typical Deployment Steps
+........................
 
 In order to deploy, you need to accomplish a number of things.
 
 Initially:
 
 * Establish a virtual environment
-* Install pre-reqs
-* Install code
+* Install Python dependencies
+* Install project code
 * Establish settings specific for that server (secret keys, passwords,
   location of database, etc.)
 * Sync database
@@ -28,8 +28,8 @@ Initially:
 
 On each deploy:
 
-* Update pre-reqs
-* Update code
+* Update Python dependencies
+* Update project code
 * Apply migrations to database
 * Collect static files
 * Restart processes
