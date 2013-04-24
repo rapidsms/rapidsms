@@ -36,6 +36,9 @@ EXCLUDED_HANDLERS
 :App: :doc:`rapidsms.contrib.handlers </topics/contrib/handlers>`
 :Default: ``[]``
 
+.. deprecated:: 0.14.0
+    See :setting:`RAPIDSMS_HANDLERS` instead.
+
 The :doc:`rapidsms.contrib.handlers </topics/contrib/handlers>` application
 will not load any handler in a module that is in this list. The module name of
 each handler is compared to the value in this list using prefix matching. For
@@ -82,6 +85,9 @@ INSTALLED_HANDLERS
 :App: :doc:`rapidsms.contrib.handlers </topics/contrib/handlers>`
 :Default: ``None``
 
+.. deprecated:: 0.14.0
+    See :setting:`RAPIDSMS_HANDLERS` instead.
+
 If this setting is not ``None``, the :doc:`rapidsms.contrib.handlers
 </topics/contrib/handlers>` application will only load handlers in modules
 that are in this list. The module name of each handler is compared to each
@@ -99,6 +105,24 @@ The name of your project. This is used by some applications such as
 :doc:`rapidsms.contrib.default </topics/contrib/default>` to customize message
 responses.
 
+.. setting:: RAPIDSMS_HANDLERS
+
+RAPIDSMS_HANDLERS
+-----------------
+
+.. versionadded:: 0.14.0
+
+:App: :doc:`rapidsms.contrib.handlers </topics/contrib/handlers>`
+:Default: ``[]``
+
+A list of names of the handler classes that should be loaded. For more
+information see :ref:`handlers-discovery`.
+
+If this is set, it overrides the older, deprecated behavior of loading
+all handlers, modified by :setting:`INSTALLED_HANDLERS`,
+:setting:`EXCLUDED_HANDLERS`,
+and :setting:`RAPIDSMS_HANDLERS_EXCLUDE_APPS`.
+
 .. setting:: RAPIDSMS_HANDLERS_EXCLUDE_APPS
 
 RAPIDSMS_HANDLERS_EXCLUDE_APPS
@@ -106,6 +130,9 @@ RAPIDSMS_HANDLERS_EXCLUDE_APPS
 
 :App: :doc:`rapidsms.contrib.handlers </topics/contrib/handlers>`
 :Default: ``[]``
+
+.. deprecated:: 0.14.0
+    See :setting:`RAPIDSMS_HANDLERS` instead.
 
 The :doc:`rapidsms.contrib.handlers </topics/contrib/handlers>` application
 will not load handlers from any Django app included in this list. For more
