@@ -168,7 +168,10 @@ requests are welcome.)
 
 For example, if you wanted messages from the RapidSMS
 core to be written to a file `"/path/rapidsms.log"`, you could define
-a new handler in the :setting:`LOGGING` setting in Django::
+a new handler in the :setting:`LOGGING` setting in Django:
+
+.. code-block:: python
+    :emphasize-lines: 5
 
     LOGGING = {
         ...
@@ -184,7 +187,10 @@ a new handler in the :setting:`LOGGING` setting in Django::
         ...
     }
 
-and then configure the ``rapidsms`` logger to send messages to it::
+and then configure the ``rapidsms`` logger to send messages to it:
+
+.. code-block:: python
+    :emphasize-lines: 4-5
 
     LOGGING = {
         ...

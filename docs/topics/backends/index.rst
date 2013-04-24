@@ -26,7 +26,7 @@ RapidSMS includes several backends in core for you to use:
 
 However, many other backends exist in the RapidSMS community and can be
 installed for use in your own project. If you can't find a backend that's
-suitable for your needs, you can write a :ref:`custom backend 
+suitable for your needs, you can write a :ref:`custom backend
 <custom-backends>`.
 
 
@@ -75,7 +75,10 @@ URLs
 
 Backends communicate over HTTP and Django uses views to process HTTP requests,
 so all backends require a Django URL endpoint and view to handle incoming
-messages. For example::
+messages. For example:
+
+.. code-block:: python
+    :emphasize-lines: 6-9
 
     from django.conf.urls import patterns, url
     from path.to.backend1 import ExampleBackendView

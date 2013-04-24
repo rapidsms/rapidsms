@@ -33,6 +33,7 @@ Python, that replies 'pong' after receiving the message 'ping':
 
 .. code-block:: python
     :linenos:
+    :emphasize-lines: 8
 
     from rapidsms.apps.base import AppBase
 

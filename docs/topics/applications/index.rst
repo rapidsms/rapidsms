@@ -21,6 +21,7 @@ receiving the message 'ping':
 
 .. code-block:: python
     :linenos:
+    :emphasize-lines: 11
 
     # In pingpongapp/app.py
 
@@ -103,6 +104,7 @@ incoming messages.
 
 .. code-block:: python
     :linenos:
+    :emphasize-lines: 8,10
 
     from rapidsms.apps.base import AppBase
 
