@@ -20,7 +20,6 @@ RapidSMS Documentation
     :hidden:
 
     intro/overview
-    topics/send-recv-sms
     intro/install/index
     topics/architecture
     topics/applications/index
@@ -38,7 +37,6 @@ Release: v\ |release|. (:doc:`Installation <intro/install/index>`, :doc:`Release
 **Getting Started**
 
 * :doc:`Overview <intro/overview>`
-* :doc:`So you want to build an SMS service <topics/send-recv-sms>`
 * :doc:`Installation <intro/install/index>`
 
 **Architecture**

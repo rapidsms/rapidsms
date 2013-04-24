@@ -22,6 +22,9 @@ We can look at the overall deployment process in three parts:
 * Preparing the server(s) to run your application - :ref:`provisioning`.
 * Installing and updating your application to the server(s) - :ref:`deploying`.
 
+When deploying RapidSMS, you might also need to consider
+:ref:`telecom`.
+
 But even if you don't read anything else, the main things are:
 
 * Stop using runserver and switch over to Apache or your real server of choice.
@@ -36,3 +39,4 @@ But even if you don't read anything else, the main things are:
     provisioning
     provision_what
     deploying
+    telecom

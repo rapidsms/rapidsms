@@ -24,6 +24,7 @@ processing messages in applications, see the :doc:`applications documentation
 </topics/applications/index>`.
 
 .. toctree::
+    :hidden:
 
     messaging
     blocking

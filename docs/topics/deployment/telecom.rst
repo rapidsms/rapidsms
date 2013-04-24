@@ -1,6 +1,8 @@
-======================================
-So you want to build an SMS Service
-======================================
+.. _telecom:
+
+==============================
+Gateways and Telecom Operators
+==============================
 
 Before setting up your SMS service, consider a few questions:
 
