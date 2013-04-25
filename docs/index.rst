@@ -62,6 +62,7 @@ Release: v\ |release|. (:doc:`Installation <intro/install/index>`, :doc:`Release
 * :doc:`Planning <topics/deployment/planning>`
 * :doc:`Provisioning <topics/deployment/provisioning>`
 * :doc:`Deploying <topics/deployment/deploying>`
+* :doc:`Scaling <topics/deployment/scaling>`
 
 **RapidSMS contrib applications**
 
