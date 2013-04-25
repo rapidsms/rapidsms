@@ -263,6 +263,7 @@ If you're interested in helping out, a good starting point is with the
 
 
 .. toctree::
+    :maxdepth: 2
 
     license
     testing
