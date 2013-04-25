@@ -79,6 +79,13 @@ RapidSMS Router
 Asynchronous task scheduler
     `Celery`_: see :ref:`why_celery`.
 
+Application settings
+    Applications settings should be shared between different environments as
+    much as possible. Keeping settings files available to all developers
+    through your version control system keeps all of the developers on the same
+    page and allows new developers to get started on your project quickly. The
+    Django Book convers `managing settings.py`_ files between environments
+    within projects.
 
 Other Recommendations
 =====================
@@ -119,3 +126,4 @@ ntp
 .. _South:  http://south.readthedocs.org/en/latest/
 .. _Ubuntu LTS Server: http://www.ubuntu.com/business/server
 .. _ufw: https://help.ubuntu.com/community/UFW
+.. _managing settings.py: http://www.djangobook.com/en/2.0/chapter12.html#using-different-settings-for-production
