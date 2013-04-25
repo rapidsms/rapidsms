@@ -24,8 +24,7 @@ A super-scalable conversation engine for the delivery of SMS.
 * `Vumi website <http://www.vumi.org/>`_, `Vumi Developers Portal <http://vumi.readthedocs.org/en/latest/index.html>`_
 * Architecture: Python
 * Features: Message sending framework. Can write Vumi-level applications for deeper integration. Can be used as a hosted service?
-* RapidSMS Interoperability
-    * Backend: https://github.com/rapidsms/rapidsms/tree/feature/vumi-backend
+* RapidSMS Interoperability: support has been integrated into RapidSMS 0.13
 
 DHIS
 ----

@@ -4,7 +4,7 @@ from django.http import Http404, HttpRequest, HttpResponseRedirect, QueryDict
 from django.test import TestCase
 from mock import Mock, patch
 from rapidsms.models import Connection, Contact
-from rapidsms.tests.harness import CreateDataMixin
+from rapidsms.tests.harness import CreateDataMixin, LoginMixin
 
 from rapidsms.tests.scripted import TestScript
 import rapidsms.contrib.registration.views as views
@@ -40,7 +40,7 @@ class TestRegister(TestScript):
         """)
 
 
-class TestViews(TestCase, CreateDataMixin):
+class TestViews(TestCase, CreateDataMixin, LoginMixin):
     def setUp(self):
         # Make some contacts
         self.contacts = [self.create_contact() for i in range(2)]
@@ -54,6 +54,8 @@ class TestViews(TestCase, CreateDataMixin):
         # contacts_table that has the contacts in its data
         request = HttpRequest()
         request.GET = QueryDict('')
+        self.login()
+        request.user = self.user
         with patch('rapidsms.contrib.registration.views.render') as render:
             views.registration(request)
         context = render.call_args[0][2]
@@ -64,6 +66,8 @@ class TestViews(TestCase, CreateDataMixin):
         # render actually works (django_tables2 and all)
         request = HttpRequest()
         request.GET = QueryDict('')
+        self.login()
+        request.user = self.user
         retval = views.registration(request)
         self.assertEqual(200, retval.status_code)
 
@@ -78,6 +82,8 @@ class TestViews(TestCase, CreateDataMixin):
         connection = contact.default_connection
         with patch('rapidsms.contrib.registration.views.render') as render:
             request = Mock(method="GET")
+            self.login()
+            request.user = self.user
             views.contact(request, pk=contact.pk)
         context = render.call_args[0][2]
         self.assertEqual(contact.pk, context['contact'].pk)
@@ -97,6 +103,8 @@ class TestViews(TestCase, CreateDataMixin):
         # GET on contact form with no pk allows creating new one
         with patch('rapidsms.contrib.registration.views.render') as render:
             request = Mock(method="GET")
+            self.login()
+            request.user = self.user
             views.contact(request)
         context = render.call_args[0][2]
         # ModelForms create a new unsaved instance
@@ -124,8 +132,10 @@ class TestViews(TestCase, CreateDataMixin):
             u'connection_set-TOTAL_FORMS': u'2',
             u'connection_set-MAX_NUM_FORMS': u'10',
         }
-        with patch('rapidsms.contrib.registration.views.render') as render:
+        with patch('rapidsms.contrib.registration.views.render'):
             request = Mock(method="POST", POST=data)
+            self.login()
+            request.user = self.user
             retval = views.contact(request, pk=contact.pk)
         self.assertTrue(isinstance(retval, HttpResponseRedirect))
         self.assertEqual(302, retval.status_code)
@@ -154,13 +164,15 @@ class TestViews(TestCase, CreateDataMixin):
             u'connection_set-INITIAL_FORMS': u'1',
             u'connection_set-TOTAL_FORMS': u'2',
             u'connection_set-MAX_NUM_FORMS': u'10',
-            }
+        }
 
         identities = [c.identity for c in contact.connection_set.all()]
         self.assertNotIn(data['connection_set-1-identity'], identities)
 
         with patch('rapidsms.contrib.registration.views.render') as render:
             request = Mock(method="POST", POST=data)
+            self.login()
+            request.user = self.user
             retval = views.contact(request, pk=contact.pk)
         self.assertTrue(isinstance(retval, HttpResponseRedirect))
         self.assertEqual(302, retval.status_code)
@@ -190,10 +202,12 @@ class TestViews(TestCase, CreateDataMixin):
             u'connection_set-INITIAL_FORMS': u'1',
             u'connection_set-TOTAL_FORMS': u'2',
             u'connection_set-MAX_NUM_FORMS': u'10',
-            }
+        }
 
-        with patch('rapidsms.contrib.registration.views.render') as render:
+        with patch('rapidsms.contrib.registration.views.render'):
             request = Mock(method="POST", POST=data)
+            self.login()
+            request.user = self.user
             retval = views.contact(request, pk=contact.pk)
         self.assertTrue(isinstance(retval, HttpResponseRedirect))
         self.assertEqual(302, retval.status_code)
@@ -218,14 +232,15 @@ class TestViews(TestCase, CreateDataMixin):
             u'connection_set-INITIAL_FORMS': u'0',
             u'connection_set-TOTAL_FORMS': u'2',
             u'connection_set-MAX_NUM_FORMS': u'10',
-            }
-        with patch('rapidsms.contrib.registration.views.render') as render:
+        }
+        with patch('rapidsms.contrib.registration.views.render'):
             request = Mock(method="POST", POST=data)
+            self.login()
+            request.user = self.user
             retval = views.contact(request)
         self.assertTrue(isinstance(retval, HttpResponseRedirect))
         self.assertEqual(302, retval.status_code)
-        new_contact = Contact.objects.get(name=name)
-
+        Contact.objects.get(name=name)
 
     def test_delete_connection(self):
         # POST can delete one of the connections
@@ -262,8 +277,10 @@ class TestViews(TestCase, CreateDataMixin):
             u'connection_set-INITIAL_FORMS': u'2',
         }
         old_pk = connections[1].pk
-        with patch('rapidsms.contrib.registration.views.render') as render:
+        with patch('rapidsms.contrib.registration.views.render'):
             request = Mock(method="POST", POST=data)
+            self.login()
+            request.user = self.user
             retval = views.contact(request, pk=contact.pk)
         self.assertTrue(isinstance(retval, HttpResponseRedirect))
         self.assertEqual(302, retval.status_code)
@@ -296,23 +313,25 @@ class TestViews(TestCase, CreateDataMixin):
             u'connection_set-TOTAL_FORMS': u'2',
             u'connection_set-MAX_NUM_FORMS': u'10',
             u'connection_set-INITIAL_FORMS': u'1',
-            }
-        with patch('rapidsms.contrib.registration.views.render') as render:
+        }
+        with patch('rapidsms.contrib.registration.views.render'):
             request = Mock(method="POST", POST=data)
+            self.login()
+            request.user = self.user
             retval = views.contact(request, pk=contact.pk)
         self.assertTrue(isinstance(retval, HttpResponseRedirect))
         self.assertEqual(302, retval.status_code)
         self.assertEqual(2, Connection.objects.filter(contact=contact).count())
-        connection = Connection.objects.get(identity='identity', contact=contact)
-        self.assertEqual(connections[0].backend, connection.backend)
+        conn = Connection.objects.get(identity='identity', contact=contact)
+        self.assertEqual(connections[0].backend, conn.backend)
 
 
-class TestBulkAdd(TestCase, CreateDataMixin):
+class TestBulkAdd(TestCase, CreateDataMixin, LoginMixin):
     def test_bulk_get(self):
         # Just make sure the page loads
         with patch('rapidsms.contrib.registration.views.render') as render:
             request = Mock(method="GET")
-            retval = views.contact_bulk_add(request)
+            views.contact_bulk_add(request)
         render.assert_called()
 
     def test_bulk_add(self):
@@ -331,7 +350,10 @@ class TestBulkAdd(TestCase, CreateDataMixin):
         testfile = u"\n".join([u",".join(parts) for parts in data]) + u"\n"
         testfile_data = testfile.encode('utf-8')
         with patch('rapidsms.contrib.registration.views.render') as render:
-            request = Mock(method="POST", FILES={'bulk': StringIO(testfile_data)})
+            request = Mock(method="POST",
+                           FILES={'bulk': StringIO(testfile_data)})
+            self.login()
+            request.user = self.user
             retval = views.contact_bulk_add(request)
         if not isinstance(retval, HttpResponseRedirect):
             context = render.call_args[0][2]
@@ -347,6 +369,8 @@ class TestBulkAdd(TestCase, CreateDataMixin):
         testfile = ""
         with patch('rapidsms.contrib.registration.views.render') as render:
             request = Mock(method="POST", FILES={'bulk': StringIO(testfile)})
+            self.login()
+            request.user = self.user
             retval = views.contact_bulk_add(request)
         self.assertFalse(isinstance(retval, HttpResponseRedirect))
         context = render.call_args[0][2]
@@ -357,6 +381,8 @@ class TestBulkAdd(TestCase, CreateDataMixin):
         testfile = "Field 1, field 2\n"
         with patch('rapidsms.contrib.registration.views.render') as render:
             request = Mock(method="POST", FILES={'bulk': StringIO(testfile)})
+            self.login()
+            request.user = self.user
             retval = views.contact_bulk_add(request)
         self.assertFalse(isinstance(retval, HttpResponseRedirect))
         context = render.call_args[0][2]
@@ -367,8 +393,11 @@ class TestBulkAdd(TestCase, CreateDataMixin):
         testfile = "Field 1, no_such_backend, 123\n"
         with patch('rapidsms.contrib.registration.views.render') as render:
             request = Mock(method="POST", FILES={'bulk': StringIO(testfile)})
+            self.login()
+            request.user = self.user
             retval = views.contact_bulk_add(request)
         self.assertFalse(isinstance(retval, HttpResponseRedirect))
         context = render.call_args[0][2]
         self.assertIn('csv_errors', context)
-        self.assertEqual("Could not find Backend.  Line: 1", context['csv_errors'])
+        self.assertEqual("Could not find Backend.  Line: 1",
+                         context['csv_errors'])
