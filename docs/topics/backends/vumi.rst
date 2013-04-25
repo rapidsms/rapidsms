@@ -56,14 +56,14 @@ Installing and setting up Vumi for the first time
 
     As of this writing, the RapidSMS/Vumi integration is planned for merge into
     an official Vumi release, but currently resides in the
-    ``feature/issue-302-rapidsms-relay`` Vumi branch. When complete, we
+    ``develop`` Vumi branch. When complete, we
     will update this documentation accordingly.
 
 Clone the Vumi `GitHub repository <https://github.com/praekelt/vumi>`_::
 
     git clone git@github.com:praekelt/vumi.git
     cd vumi
-    git checkout feature/issue-302-rapidsms-relay
+    git checkout develop
 
 Install Vumi's Python dependencies::
 

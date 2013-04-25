@@ -32,8 +32,6 @@ setup(
         "nose==1.2.1",
     ],
 
-    scripts=["bin/rapidsms-admin.py"],
-
     packages=find_packages(exclude=['*.pyc']),
     include_package_data=True,
 
