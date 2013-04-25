@@ -19,6 +19,16 @@ You might also look at provisioning as all the things you
 have to do for yourself if you're not using a PaaS to host
 your site.
 
+Above all else, you want your provisioning to be repeatable. Use tools
+to automate it so that you don't waste a lot of time tracking down problems
+that turn out to be the result of a missing package on one server, or
+an incorrect configuration, or incorrect file permission, and
+so forth.
+
+Having automated provisioning can also be very useful to be able to easily
+provision new systems. For example, you can set up a new test system, or add
+another staging server, or another production server.
+
 We're going to look at two aspects of provisioning:
 
 * :ref:`provision_how`
@@ -105,23 +115,6 @@ with links to examples of how people provision and deploy RapidSMS applications.
 
 Recommendations on Implementing Provisioning
 --------------------------------------------
-
-Repeatable
-..........
-
-The most important goal is to be able to repeat provisioning
-and end up with each system provisioned the same. Otherwise
-you'll waste a lot of time tracking down problems that turn
-out to be the result of a missing package on one server, or
-an incorrect configuration, or incorrect file permission, and
-so forth.
-
-It can also be very useful to be able to easily provision
-new systems. For example, you can set up a new test system, or add
-another staging server, or another production server.
-
-How
-...
 
 Unfortunately, there's no simple solution to implementing
 repeatable provisioning. Provisioning is a very complicated
