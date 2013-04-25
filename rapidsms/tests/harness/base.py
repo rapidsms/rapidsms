@@ -1,12 +1,13 @@
 import string
 import random
+from django.contrib.auth.models import User
 
 from rapidsms.models import Backend, Contact, Connection
 from rapidsms.messages.outgoing import OutgoingMessage
 from rapidsms.messages.incoming import IncomingMessage
 
 
-__all__ = ('CreateDataMixin',)
+__all__ = ('CreateDataMixin', 'LoginMixin')
 
 
 UNICODE_CHARS = [unichr(x) for x in xrange(1, 0xD7FF)]
@@ -76,3 +77,19 @@ class CreateDataMixin(object):
         if 'connections' not in defaults:
             defaults['connections'] = [self.create_connection()]
         return IncomingMessage(**defaults)
+
+
+class LoginMixin(object):
+    # Helpers for creating users and logging in
+    def login(self):
+        if not hasattr(self, 'username'):
+            self.username = 'fred'
+        if not hasattr(self, 'password'):
+            self.password = 'bob'
+        if not User.objects.filter(username=self.username).exists():
+            User.objects.create_user(self.username, password=self.password)
+        self.user = User.objects.get(username=self.username)
+        logged_in = self.client.login(username=self.username,
+                                      password=self.password)
+        if not logged_in:
+            self.fail("LOGIN failed")

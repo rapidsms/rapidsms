@@ -4,9 +4,11 @@
 
 from random import randint
 
-from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
+from django.shortcuts import render, redirect
+
 from django_tables2 import RequestConfig
 
 from rapidsms import settings
@@ -15,6 +17,7 @@ from . import storage
 from .tables import MessageTable
 
 
+@login_required
 def generate_identity(request):
     """Simple view to generate a random identity.
 
@@ -27,6 +30,7 @@ def generate_identity(request):
     return redirect("httptester", randint(111111, 999999))
 
 
+@login_required
 def message_tester(request, identity):
     """The main Message Tester view.
 
@@ -68,7 +72,9 @@ def message_tester(request, identity):
 
     messages_table = MessageTable(storage.get_messages(),
                                   template="httptester/table.html")
-    RequestConfig(request, paginate={"per_page": settings.PAGINATOR_OBJECTS_PER_PAGE}).configure(messages_table)
+    RequestConfig(request,
+                  paginate={"per_page": settings.PAGINATOR_OBJECTS_PER_PAGE})\
+        .configure(messages_table)
 
     context = {
         "router_available": True,

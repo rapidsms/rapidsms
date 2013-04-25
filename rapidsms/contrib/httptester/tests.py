@@ -66,6 +66,7 @@ class ViewTest(RapidTest):
         phone2 = "67890"
         message = "RapidSMS FTW"
 
+        self.login()
         rsp = self.client.get(self.url)
         self.assertEqual(200, rsp.status_code)
         data = {
@@ -88,7 +89,10 @@ class ViewTest(RapidTest):
             'identity': self.phone,
             'bulk': fake_file,
         }
-        self.client.post(self.url, data)
+        self.login()
+        rsp = self.client.post(self.url, data)
+        self.assertRedirects(rsp, self.url)
+        self.assertEqual(302, rsp.status_code)
         self.assertEqual(3, len(get_messages()))
         for i, m in enumerate(messages):
             self.assertEqual(m, get_messages()[i].text)
@@ -100,8 +104,10 @@ class ViewTest(RapidTest):
             'identity': self.phone,
             'clear-btn': True,
         }
+        self.login()
         rsp = self.client.post(self.url, data)
         self.assertEqual(302, rsp.status_code)
+        self.assertTrue(clear_messages.called)
         self.assertEqual(self.phone, clear_messages.call_args[0][0])
 
     @patch('rapidsms.contrib.httptester.storage.clear_all_messages')
@@ -111,6 +117,7 @@ class ViewTest(RapidTest):
             'identity': self.phone,
             'clear-all-btn': True,
         }
+        self.login()
         rsp = self.client.post(self.url, data)
         self.assertEqual(302, rsp.status_code, msg=rsp.content)
         self.assertTrue(clear_all_messages.called, msg=rsp.content)
@@ -119,6 +126,7 @@ class ViewTest(RapidTest):
     def test_generate_identity(self, randint):
         randint.return_value = self.phone
         url = reverse('httptester-index')
+        self.login()
         rsp = self.client.get(url)
         new_url = reverse('httptester',
                           kwargs={'identity': self.phone})

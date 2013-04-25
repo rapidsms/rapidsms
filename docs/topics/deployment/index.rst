@@ -23,19 +23,21 @@ We can look at the overall deployment process in four parts:
 * Installing and updating your application to the server(s) - :ref:`deploying`.
 * Scaling up when your server can't handle the traffic anymore - :ref:`scaling`.
 
+When deploying RapidSMS, you might also need to consider
+:ref:`telecom`.
+
 But even if you don't read anything else, the main things are:
 
 * Stop using runserver and switch over to Apache or your real server of choice.
 * Use a real database (not SQLite)
 * Turn off :setting:`DEBUG`!
 
-Contents of this section:
+.. toctree::
 
-* :ref:`deploy_planning`
-    * :ref:`virtual machines`
-    * :ref:`PaaS`
-* :ref:`provisioning`
-    * :ref:`provision_how`
-    * :ref:`provision_what`
-* :ref:`deploying`
-* :ref:`scaling`
+    planning
+    virtual-machines
+    paas
+    provisioning
+    provision_what
+    deploying
+    telecom
