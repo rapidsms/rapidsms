@@ -38,6 +38,7 @@ But even if you don't read anything else, the main things are:
     virtual-machines
     paas
     provisioning
+    provision_how
     provision_what
     deploying
     scaling

@@ -84,13 +84,13 @@ Application settings
     much as possible. Keeping settings files available to all developers
     through your version control system keeps all of the developers on the same
     page and allows new developers to get started on your project quickly. The
-    Django Book convers `managing settings.py`_ files between environments
+    Django Book covers `managing settings.py`_ files between environments
     within projects.
 
-Other Recommendations
-=====================
+Server Setup Recommendations
+============================
 
-Here are a few other recommendations.
+These are recommendations for setting up your server.
 
 `Fail2ban`_
     install to detect and block some intrusion attempts
@@ -118,6 +118,7 @@ ntp
 .. _gunicorn: http://gunicorn.org/
 .. _latest released version: https://www.djangoproject.com/download/
 .. _Logwatch: https://help.ubuntu.com/community/Logwatch
+.. _managing settings.py: http://www.djangobook.com/en/2.0/chapter12.html#using-different-settings-for-production
 .. _mod_wsgi: http://code.google.com/p/modwsgi/
 .. _nginx: http://nginx.org
 .. _PostgreSQL: http://www.postgresql.org/
@@ -126,4 +127,3 @@ ntp
 .. _South:  http://south.readthedocs.org/en/latest/
 .. _Ubuntu LTS Server: http://www.ubuntu.com/business/server
 .. _ufw: https://help.ubuntu.com/community/UFW
-.. _managing settings.py: http://www.djangobook.com/en/2.0/chapter12.html#using-different-settings-for-production
