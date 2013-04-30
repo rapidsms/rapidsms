@@ -90,7 +90,7 @@ Application settings
 Server Setup Recommendations
 ============================
 
-These are recommendations for setting up your server.
+These are some recommendations for setting up your server.
 
 `Fail2ban`_
     install to detect and block some intrusion attempts
