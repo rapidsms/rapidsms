@@ -21,7 +21,6 @@ receiving the message 'ping':
 
 .. code-block:: python
     :linenos:
-    :emphasize-lines: 11
 
     # In pingpongapp/app.py
 
@@ -31,7 +30,6 @@ receiving the message 'ping':
     class PingPong(AppBase):
 
         def handle(self, msg):
-            """Handles incoming messages."""
             if msg.text == 'ping':
                 msg.respond('pong')
                 return True

@@ -33,14 +33,12 @@ Python, that replies 'pong' after receiving the message 'ping':
 
 .. code-block:: python
     :linenos:
-    :emphasize-lines: 8
 
     from rapidsms.apps.base import AppBase
 
     class PingPong(AppBase):
 
         def handle(self, msg):
-            """Respond to 'ping' messages with 'pong'"""
             if msg.text == 'ping':
                 msg.respond('pong')
                 return True
