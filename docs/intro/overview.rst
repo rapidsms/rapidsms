@@ -39,7 +39,6 @@ Python, that replies 'pong' after receiving the message 'ping':
     class PingPong(AppBase):
 
         def handle(self, msg):
-            """Respond to 'ping' messages with 'pong'"""
             if msg.text == 'ping':
                 msg.respond('pong')
                 return True

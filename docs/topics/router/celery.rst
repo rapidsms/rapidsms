@@ -28,7 +28,7 @@ Add ``rapidsms.router.celery`` to ``INSTALLED_APPS``, then import djcelery and
 invoke ``setup_loader()``:
 
 .. code-block:: python
-   :emphasize-lines: 3
+   :emphasize-lines: 3,5-6
 
     INSTALLED_APPS = (
         # Other apps here
