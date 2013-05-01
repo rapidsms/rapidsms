@@ -1,6 +1,6 @@
-=============================
-RapidSMS 0.14.0 release notes
-=============================
+==============================================
+RapidSMS 0.14.0 release notes (in development)
+==============================================
 
 Welcome to RapidSMS 0.14.0! These release notes cover the new features in 0.14.0
 as well as some :ref:`backwards-incompatible-changes-0.14.0` you'll want to be
@@ -9,7 +9,9 @@ aware of when upgrading from RapidSMS 0.13.0.
 What's New
 ==========
 
- * New feature..
+ * New section in the documentation providing advice on :ref:`deployment`.
+ * Added navigation links (next, previous, tables of contents) to the
+   documentation and improved the organization a bit.
 
  .. _backwards-incompatible-changes-0.14.0:
 

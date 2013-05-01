@@ -1,5 +1,19 @@
-RapidSMS Applications
-=======================
+.. _writing-apps:
+
+Writing RapidSMS Applications
+=============================
+
+.. toctree::
+    :hidden:
+
+    /ref/settings
+    /topics/i18n
+    /topics/extensible-models
+    /topics/frontend
+    /topics/testing
+    /topics/celery
+
+
 
 Creating new SMS functionality can be done in a few simple steps:
 
@@ -16,7 +30,10 @@ The most basic app could look like::
             message.respond("hello world")
 
 
-Notice that in the above example, only the 'handle' phase is implemented. RapidSMS apps can (but don't have to) implement 6 phases:
+Notice that in the above example, only the 'handle' phase is implemented. RapidSMS apps can (but don't have to) implement 6 phases.
+
+Phases
+......
 
 filter
 -------
