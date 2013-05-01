@@ -30,7 +30,6 @@ receiving the message 'ping':
     class PingPong(AppBase):
 
         def handle(self, msg):
-            """Handles incoming messages."""
             if msg.text == 'ping':
                 msg.respond('pong')
                 return True
@@ -103,6 +102,7 @@ incoming messages.
 
 .. code-block:: python
     :linenos:
+    :emphasize-lines: 8,10
 
     from rapidsms.apps.base import AppBase
 

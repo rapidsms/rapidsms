@@ -168,7 +168,10 @@ requests are welcome.)
 
 For example, if you wanted messages from the RapidSMS
 core to be written to a file `"/path/rapidsms.log"`, you could define
-a new handler in the :setting:`LOGGING` setting in Django::
+a new handler in the :setting:`LOGGING` setting in Django:
+
+.. code-block:: python
+    :emphasize-lines: 5-9
 
     LOGGING = {
         ...
@@ -184,7 +187,15 @@ a new handler in the :setting:`LOGGING` setting in Django::
         ...
     }
 
-and then configure the ``rapidsms`` logger to send messages to it::
+Setting ``level`` to ``DEBUG`` means all messages of level DEBUG and
+lower will be passed through (that's all of them). Then this handler
+will write those messages to the file ``/path/rapidsms.log``.  They'll
+be formatted by the default formatter.
+
+Then configure the ``rapidsms`` logger to send messages to that handler:
+
+.. code-block:: python
+    :emphasize-lines: 4-8
 
     LOGGING = {
         ...
@@ -198,6 +209,16 @@ and then configure the ``rapidsms`` logger to send messages to it::
         ...
     }
 
+Setting ``level`` to ``DEBUG`` means all messages of level DEBUG and
+lower will be passed through (that's all of them).
+
+The logger name ``rapidsms`` means any logger to a name that matches
+that (``rapidsms``, ``rapidsms.models``, etc) will be passed to this
+handler to handle.
+
+Setting ``propagate`` to ``True`` means the same messages will be
+passed to other handlers if they also match. (This handler does not
+consume the messages.)
 
 If you created your project with the latest `rapidsms-project-template`_
 and haven't changed the settings, all rapidsms logging will be written

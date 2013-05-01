@@ -83,7 +83,10 @@ URLs
 
 Backends communicate over HTTP and Django uses views to process HTTP requests,
 so all backends require a Django URL endpoint and view to handle incoming
-messages. For example::
+messages. For example:
+
+.. code-block:: python
+    :emphasize-lines: 6-9
 
     from django.conf.urls import patterns, url
     from path.to.backend1 import ExampleBackendView
