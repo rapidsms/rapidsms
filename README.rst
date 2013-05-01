@@ -46,6 +46,7 @@ Dependencies
 * `djappsettings <http://pypi.python.org/pypi/djappsettings>`_
 * `djtables <http://pypi.python.org/pypi/djtables>`_
 * `django-selectable <http://pypi.python.org/pypi/django-selectable>`_
+* `requests <https://pypi.python.org/pypi/requests/>`_
 
 
 Documentation
