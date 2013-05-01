@@ -12,6 +12,8 @@ What's New
  * New section in the documentation providing advice on :ref:`deployment`.
  * Added navigation links (next, previous, tables of contents) to the
    documentation and improved the organization a bit.
+ * Documented the bundled version of Twitter Bootstrap.
+ * Updated Vumi docs to point to ``develop`` branch now that the RapidSMS changes have landed.
 
  .. _backwards-incompatible-changes-0.14.0:
 
