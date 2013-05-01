@@ -21,7 +21,7 @@ It should also be noted that there have been a number of PaaS solutions that
 are no longer operating businesses. Since there is less portability, it is
 important to consider the longevity of the provider when finalizing a decision.
 Also, with respect to portability, since you are choosing to invest in a single
-companies tools, the documentation and support that are provided by the company
+company's tools, the documentation and support that are provided by the company
 must be vetted before deciding to go down a particular path.
 
 Finally, another important consideration to take into account is the command
