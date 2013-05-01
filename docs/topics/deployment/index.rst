@@ -27,11 +27,18 @@ We can look at the overall production installation process in four parts:
 When deploying RapidSMS, you might also need to consider
 :ref:`telecom`.
 
-But even if you don't read anything else, the main things are:
+.. note::
 
-* Stop using runserver and switch over to Apache or your real server of choice.
-* Use a real database (not SQLite)
-* Turn off :setting:`DEBUG`!
+    Even if you don't read anything else, the main things are:
+
+    * Stop using runserver and switch over to Apache or your real server of choice.
+    * Use a real database (not SQLite)
+    * Turn off :setting:`DEBUG`!
+
+    And follow the guidelines in :ref:`provision_what`.
+
+Outline
+-------
 
 .. toctree::
 
