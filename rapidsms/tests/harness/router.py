@@ -12,9 +12,17 @@ __all__ = ('CustomRouter', 'MockBackendRouter')
 
 
 class CustomRouterMixin(CreateDataMixin):
-    """Inheritable TestCase-like object that allows Router customization."""
+    """Inheritable TestCase-like object that allows Router customization.
 
+    Inherits from :py:class:`~rapidsms.tests.harness.CreateDataMixin`.
+    """
+
+    #: String to override :setting:`RAPIDSMS_ROUTER` during testing. Defaults
+    #: to ``'rapidsms.router.blocking.BlockingRouter'``.
     router_class = 'rapidsms.router.blocking.BlockingRouter'
+
+    #: Dictionary to override :setting:`INSTALLED_BACKENDS` during testing.
+    #: Defaults to ``{}``.
     backends = {}
 
     def _pre_rapidsms_setup(self):
@@ -58,6 +66,12 @@ class CustomRouterMixin(CreateDataMixin):
 
 
 class DatabaseBackendMixin(CustomRouterMixin):
+    """Arrange for test to use the DatabaseBackend, and add
+    a ``.sent_messages`` attribute that will have the list
+    of all messages sent.
+
+    Inherits from :py:class:`~rapidsms.tests.harness.CustomRouterMixin`.
+    """
 
     backends = {'mockbackend': {'ENGINE': DatabaseBackend}}
 
@@ -66,7 +80,7 @@ class DatabaseBackendMixin(CustomRouterMixin):
         super(DatabaseBackendMixin, self).setUp()
 
     def lookup_connections(self, identities, backend='mockbackend'):
-        """loopup_connections wrapper to use mockbackend by default"""
+        """lookup_connections wrapper to use mockbackend by default"""
         return super(DatabaseBackendMixin, self).lookup_connections(backend,
                                                                     identities)
 
@@ -78,7 +92,10 @@ class DatabaseBackendMixin(CustomRouterMixin):
 
 
 class TestRouterMixin(CustomRouterMixin):
-    """Test extension that uses TestRouter"""
+    """Test extension that uses TestRouter
+
+    Inherits from :py:class:`~rapidsms.tests.harness.CustomRouterMixin`.
+    """
 
     #: If `disable_phases` is True, messages will not be processed through the
     #: router phases.

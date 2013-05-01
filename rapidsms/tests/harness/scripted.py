@@ -11,7 +11,7 @@ class TestScriptMixin(TestRouterMixin):
     """
     The scripted.TestScript class subclasses unittest.TestCase
     and allows you to define unit tests for your RapidSMS apps
-    in the form of a 'conversational' script:
+    in the form of a 'conversational' script::
 
         from myapp.app import App as MyApp
         from rapidsms.tests.scripted import TestScript
@@ -28,9 +28,12 @@ class TestScriptMixin(TestRouterMixin):
                8005550000 < someuser said "what's up??"
             \"""
 
+
     This TestMyApp class would then work exactly as any other
     unittest.TestCase subclass (so you could, for example, call
     unittest.main()).
+
+    Inherits from :py:class:`~rapidsms.tests.harness.router.TestRouterMixin`.
     """
 
     def assertInteraction(self, script):
@@ -106,5 +109,10 @@ class TestScriptMixin(TestRouterMixin):
             last_msg = txt
 
     def runScript(self, script):
+        """Run a test script.
+
+        :param string script: A multi-line test script. See
+            :py:class:`~rapidsms.tests.harness.scripted.TestScriptMixin`.
+        """
         self.clear_sent_messages()  # make sure the outbox is empty
         self.runParsedScript(self.parseScript(script))

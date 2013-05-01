@@ -68,3 +68,7 @@ functionality. A subset of its methods are outlined below:
     :members: incoming_phases,outgoing_phases,add_app,get_app,add_backend,
               receive_incoming,send_outgoing,new_incoming_message,
               new_outgoing_message
+
+.. class:: rapidsms.router.blocking.router.BlockingRouter
+
+    is the full name for :py:class:`rapidsms.router.blocking.BlockingRouter`.

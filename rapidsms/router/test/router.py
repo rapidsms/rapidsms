@@ -4,11 +4,19 @@ from rapidsms.router.blocking import BlockingRouter
 
 
 class TestRouter(BlockingRouter):
-    """Router that saves inbound/outbound messages for future inspection."""
+    """Router that saves inbound/outbound messages for future inspection.
+
+    Inherits from :router:`BlockingRouter`.
+    """
 
     def __init__(self, *args, **kwargs):
+
+        #: List of all the inbound messages
         self.inbound = []
+
+        #: List of all the outbound messages
         self.outbound = []
+
         self.disable_phases = kwargs.pop('disable_phases', False)
         super(TestRouter, self).__init__(*args, **kwargs)
 
