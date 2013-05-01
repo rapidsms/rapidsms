@@ -1,11 +1,11 @@
 .. _paas:
 
-===========================
-Deploying to PaaS Providers
-===========================
+==========================
+Running on a PaaS Provider
+==========================
 
-In choosing to deploy to a PaaS provider, you are choosing simplicitiy over
-ability to easily customize and transfer your deployment. Each of these
+In choosing to run a project on a PaaS provider, you are choosing simplicitiy over
+ability to easily customize and transfer your installation. Each of these
 companies provide a custom command line tool for automatically configuring and
 deploying an application.
 
@@ -27,7 +27,7 @@ must be vetted before deciding to go down a particular path.
 Finally, another important consideration to take into account is the command
 line tool provided by the PaaS provider itself. With a virtual machine, for
 example, you can choose from a number of tools to put on top of the VM to help
-deploy a new instance while with PaaS, you are locked in to the tools decided
+provision a new instance while with PaaS, you are locked in to the tools decided
 on by the provider.
 
 Here's a short list of popular PaaS providers that support Django:

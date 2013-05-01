@@ -1,10 +1,10 @@
 .. _virtual machines:
 
-=============================
-Deploying to Virtual Machines
-=============================
+============================
+Running on a Virtual Machine
+============================
 
-Deploying a Django app to a virtual machine from a provider
+Running RapidSMS projects on a virtual machine from a provider
 on the Internet is a popular choice. You get complete control over
 the system as if you were using your own hardware, but don't have to
 worry about any hardware-related problems like disk failures,

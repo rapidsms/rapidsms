@@ -56,7 +56,7 @@ Release: v\ |release|. (:doc:`Installation <intro/install/index>`, :doc:`Release
 * :doc:`Testing <topics/testing>`
 * :doc:`Scheduling Tasks with Celery <topics/celery>`
 
-**Deployment**
+**Provisioning & Deploying Your Project**
 
 * :doc:`Overview <topics/deployment/index>`
 * :doc:`Planning <topics/deployment/planning>`
