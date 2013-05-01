@@ -51,8 +51,10 @@ All the following checks should be verified before continuing:
 * `Next` version number in ``rapidsms/docs/conf.py`` updated
 * New release labeled as current in ``rapidsms/docs/releases`` in
   ``index.rst``, ``this-release.rst``, and ``roadmap.rst``
+* Previous release not labeled as current in ``rapidsms/docs/releases`` in
+  ``index.rst``, ``prev-release.rst``, and ``roadmap.rst``.
 * Create a ``release-X.X.X`` branch (based off ``master``) in the RapidSMS
-  project template repository. Make sure to update ``README.rst`` as well.
+  `project template repository`_. Make sure to update ``README.rst`` as well.
 * Update project template command line in ``intro/install/index.rst`` to point
   to the RapidSMS project template release branch.
 * All git issues for this release's milestone have been resolved.  (closed or
@@ -160,9 +162,9 @@ Back on the ``develop`` branch, we can now start on the next release:
 
 * Merge ``master`` to ``develop`` to make sure we're starting from the same
   code that's currently released (there might have been merge conflicts or
-  something during the release process)
+  something during the release process).
 * Update the version in ``rapidsms/__init__.py`` and the next version in
-  ``rapidsms/docs/conf.py``
+  ``rapidsms/docs/conf.py``.
 * Start a new releasenotes document in ``rapidsms/docs/release``. Use the
   previous release's document as a template. Be sure
   to label it at the top as under development.
@@ -172,3 +174,5 @@ Back on the ``develop`` branch, we can now start on the next release:
 Now we can start merging features intended for the next release. Review
 `Git Flow <http://nvie.com/posts/a-successful-git-branching-model/>`_
 for more about how to use git branches while developing.
+
+.. _project template repository: https://github.com/rapidsms/rapidsms-project-template/

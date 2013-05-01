@@ -6,10 +6,15 @@ Installing RapidSMS
     recommend reading through the `Django installation instructions`_ before
     installing RapidSMS.
 
-The recommended way to install RapidSMS is with Pip_ (since it's available on
+The recommended way to install RapidSMS is with Pip_ (since RapidSMS is available on
 PyPI_)::
 
     pip install rapidsms
+
+.. _new-project:
+
+Starting a New RapidSMS Project
+...............................
 
 .. _installing-rapidsms-project-template:
 

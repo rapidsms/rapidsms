@@ -1,3 +1,6 @@
+.. _celery_scheduling:
+.. _why_celery:
+
 =================================
 Using Celery for Scheduling Tasks
 =================================
@@ -256,6 +259,7 @@ Earlier we mentioned using Celery to avoid delaying responding to a web
 request. Here's a simplified Django view that uses that technique:
 
 .. code-block:: python
+    :emphasize-lines: 8,14
 
     # views.py
 

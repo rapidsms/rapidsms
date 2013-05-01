@@ -71,7 +71,7 @@ a backup first if you'd like)::
 
     # CONFIGURATION FOR USING SMS KANNEL WITH RAPIDSMS
     #
-    # For any modifications to this file, see Kannel User Guide 
+    # For any modifications to this file, see Kannel User Guide
     # If that does not help, see Kannel web page (http://www.kannel.org) and
     # various online help and mailing list archives
     #
@@ -80,7 +80,7 @@ a backup first if you'd like)::
     #  2) groups cannot have empty rows inside them!
     #  3) read the user guide
 
-    include = "/etc/kannel/modems.conf" 
+    include = "/etc/kannel/modems.conf"
 
     #---------------------------------------------
     # CORE
@@ -190,7 +190,10 @@ Next, restart Kannel to reload the new configuration::
     sudo service kannel restart
 
 When you look at the process list (``ps ax | grep kannel``), you should see a
-4th process for the smsbox now started, like so::
+4th process for the smsbox now started, like so:
+
+.. code-block:: text
+    :emphasize-lines: 4
 
     3231 ?        Ss     0:00 /usr/sbin/run_kannel_box --pidfile /var/run/kannel/kannel_bearerbox.pid --no-extra-args /usr/sbin/bearerbox -v 4 -- /etc/kannel/kannel.conf
     3232 ?        Sl     0:00 /usr/sbin/bearerbox -v 4 -- /etc/kannel/kannel.conf
@@ -244,7 +247,7 @@ backend.  You can do this like so::
 
     from django.conf.urls.defaults import *
     from rapidsms.backends.kannel.views import KannelBackendView
-    
+
     urlpatterns = patterns('',
         # ...
         url(r"^backend/kannel-fake-smsc/$",
@@ -281,9 +284,12 @@ modem.
 Adding the GSM modem to the Kannel configuration
 ------------------------------------------------
 
-Using the base configuration given above, add the following to the section 
+Using the base configuration given above, add the following to the section
 titled "SMSC CONNECTIONS" in ``/etc/kannel/kannel.conf``, changing the
-``device = /dev/ttyUSB0`` line so that it points to the right device::
+``device = /dev/ttyUSB0`` line so that it points to the right device:
+
+.. code-block:: text
+    :emphasize-lines: 3,6
 
     group = smsc
     smsc = at
@@ -293,7 +299,10 @@ titled "SMSC CONNECTIONS" in ``/etc/kannel/kannel.conf``, changing the
     device = /dev/ttyUSB0
 
 Next, add the following ``sms-service`` at the end of the file, which will
-send incoming messages from the modem to RapidSMS via HTTP::
+send incoming messages from the modem to RapidSMS via HTTP:
+
+.. code-block:: text
+    :emphasize-lines: 4
 
     group = sms-service
     keyword = default
@@ -312,7 +321,10 @@ Adding a backend for the GSM modem to RapidSMS
 
 Finally, add a second Kannel backend to your ``settings.py`` which will setup
 the necessary router infrastructure to send and receive messages via the
-USB modem you configured above in Kannel::
+USB modem you configured above in Kannel:
+
+.. code-block:: python
+    :emphasize-lines: 6
 
     INSTALLED_BACKENDS = {
         # ...
@@ -338,7 +350,7 @@ backend.  You can do this like so::
 
     from django.conf.urls.defaults import *
     from rapidsms.backends.kannel.views import KannelBackendView
-    
+
     urlpatterns = patterns('',
         # ...
         url(r"^backend/kannel-usb0-smsc/$",
