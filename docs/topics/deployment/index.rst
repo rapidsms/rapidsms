@@ -34,8 +34,10 @@ When deploying RapidSMS, you might also need to consider
     * Stop using runserver and switch over to Apache or your real server of choice.
     * Use a real database (not SQLite)
     * Turn off :setting:`DEBUG`!
+    * Follow the guidelines in :ref:`provision_what`.
 
-    And follow the guidelines in :ref:`provision_what`.
+    You can find community-contributed examples on the `GitHub wiki
+    <https://github.com/rapidsms/rapidsms/wiki/Deployment-Examples>`_.
 
 Outline
 -------
