@@ -187,12 +187,12 @@ conservative as possible when choosing to respond to a message.
 Handler Discovery
 =================
 
-.. versionchanged:: 0.14.0
+.. versionchanged:: 0.15.0
 
 Handlers may be any new-style Python class which extends from one of the
 core handler classes.
 
-The Python package names of the handlers to be loaded should be listed
+The Python package names of the handler classes to be loaded should be listed
 in :setting:`RAPIDSMS_HANDLERS`.
 
 Example:

@@ -3,7 +3,8 @@
 
 
 from rapidsms.conf import settings
-from rapidsms.utils.modules import find_python_files, get_class, try_import
+from rapidsms.utils.modules import (find_python_files, get_class,
+                                    import_class, try_import)
 
 from .exceptions import HandlerError
 from .handlers.base import BaseHandler
@@ -11,7 +12,7 @@ from .handlers.base import BaseHandler
 
 def get_handlers():
     """
-    Return a list of the handler classes installed in the current project.
+    Return a list of the handler classes to use in the current project.
     This is the classes whose names are listed in the RAPIDSMS_HANDLERS
     setting, but if that's not set, then we fall back to the deprecated
     behavior of returning all installed handlers, possibly modified by
@@ -19,7 +20,7 @@ def get_handlers():
     """
 
     if hasattr(settings, 'RAPIDSMS_HANDLERS'):
-        return [try_import(name) for name in settings.RAPIDSMS_HANDLERS]
+        return [import_class(name) for name in settings.RAPIDSMS_HANDLERS]
 
     import warnings
     warnings.warn("Please set RAPIDSMS_HANDLERS to the handlers that should "

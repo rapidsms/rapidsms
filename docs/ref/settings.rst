@@ -36,7 +36,7 @@ EXCLUDED_HANDLERS
 :App: :doc:`rapidsms.contrib.handlers </topics/contrib/handlers>`
 :Default: ``[]``
 
-.. deprecated:: 0.14.0
+.. deprecated:: 0.15.0
     See :setting:`RAPIDSMS_HANDLERS` instead.
 
 The :doc:`rapidsms.contrib.handlers </topics/contrib/handlers>` application
@@ -85,7 +85,7 @@ INSTALLED_HANDLERS
 :App: :doc:`rapidsms.contrib.handlers </topics/contrib/handlers>`
 :Default: ``None``
 
-.. deprecated:: 0.14.0
+.. deprecated:: 0.15.0
     See :setting:`RAPIDSMS_HANDLERS` instead.
 
 If this setting is not ``None``, the :doc:`rapidsms.contrib.handlers
@@ -110,7 +110,7 @@ responses.
 RAPIDSMS_HANDLERS
 -----------------
 
-.. versionadded:: 0.14.0
+.. versionadded:: 0.15.0
 
 :App: :doc:`rapidsms.contrib.handlers </topics/contrib/handlers>`
 :Default: ``[]``
@@ -131,7 +131,7 @@ RAPIDSMS_HANDLERS_EXCLUDE_APPS
 :App: :doc:`rapidsms.contrib.handlers </topics/contrib/handlers>`
 :Default: ``[]``
 
-.. deprecated:: 0.14.0
+.. deprecated:: 0.15.0
     See :setting:`RAPIDSMS_HANDLERS` instead.
 
 The :doc:`rapidsms.contrib.handlers </topics/contrib/handlers>` application
