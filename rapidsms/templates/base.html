@@ -93,6 +93,17 @@
                     </div>{% endif %}
                 {% endblock %}
 
+                {% block messages %}
+                  <div id="messages">
+                    {% for message in messages %}
+                      <div class="alert{% if message.tags %} alert-{{ message.tags }}"{% endif %}>
+                         <a class="close" data-dismiss="alert" href="#">&times;</a>
+                        {{ message }}
+                      </div>
+                     {% endfor %}
+                  </div>
+                {% endblock messages %}
+
                 <div class="row-fluid content">
                     {% block content %}{% endblock %}
                 </div>
