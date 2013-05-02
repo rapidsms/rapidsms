@@ -3,6 +3,7 @@
 
 
 from random import randint
+from django.contrib import messages
 
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
@@ -52,18 +53,22 @@ def message_tester(request, identity):
             identity = cd["identity"]
             if 'clear-all-btn' in request.POST:
                 storage.clear_all_messages()
+                messages.add_message(request, messages.INFO, "Cleared all messages")
             elif 'clear-btn' in request.POST:
                 storage.clear_messages(identity)
+                messages.add_message(request, messages.INFO, "Cleared %s messages" % identity)
             else:
                 if "bulk" in request.FILES:
                     for line in request.FILES["bulk"]:
                         line = line.rstrip("\n")
                         storage.store_and_queue(identity, line)
+                    messages.add_message(request, messages.INFO, "Sent bulk messages")
                 # no bulk file was submitted, so use the "single message"
                 # field. this may be empty, which is fine, since contactcs
                 # can (and will) submit empty sms, too.
                 else:
                     storage.store_and_queue(identity, cd["text"])
+                    messages.add_message(request, messages.INFO, "Sent message")
             url = reverse(message_tester, args=[identity])
             return HttpResponseRedirect(url)
 
