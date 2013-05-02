@@ -109,7 +109,10 @@ PatternHandler
    :ref:`handle phase <phase-handle>`.
 
 The `PatternHandler` class can be subclassed to create applications which
-respond to a message when a specific pattern is matched::
+respond to a message when a specific pattern is matched:
+
+.. code-block:: python
+    :emphasize-lines: 4,6,9
 
     from rapidsms.contrib.handlers import PatternHandler
 

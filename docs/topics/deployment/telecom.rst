@@ -1,5 +1,8 @@
-So you want to build an SMS Service
-======================================
+.. _telecom:
+
+==============================
+Gateways and Telecom Operators
+==============================
 
 Before setting up your SMS service, consider a few questions:
 
@@ -28,7 +31,7 @@ Local SMS Gateway
 
 If you can find a reliable SMS gateway locally, this may be your best option, as they can provide local numbers, facilitate the acquisition of local short codes, and ideally provide competitive prices. Whether this is easy varies from country to ountry. In many countries, it is difficult and time-consuming to find a local provider who is timely and reliable.
 
-**Con:**
+**Pro:**
 
 * Typically local gateways are in the best position to facilitate acquisition of local shortcodes among multiple mobile operators
 
@@ -44,8 +47,8 @@ There are many reputable international SMS gateways, although their service and 
 **Cons:**
 
 * Texting an international number is more expensive for end users
-* Send text messages internationally can be expensive
-* Shortcode not possible
+* Sending text messages internationally can be expensive
+* Shortcodes not possible
 
 Host a local SIM with an international SMS gateway
 ====================================================
@@ -67,12 +70,12 @@ Partnering with a Telecom Operator
 
 Most SMS services are offered through third-party SMS gateways, whose business involves making it easier for third parties to offer services via SMS. Although it is rare, from time to time an organization can be lucky enough to form a strong partnership directly with a telecom operator.
 
-**Pros**
+**Pros:**
 
 * Can tap in directly to local telecom infrastructure. Less chance of messages being lost.
 * Strong partnership with telco can result in other significant benefits, such as discounts, additional services, and better accounting/reporting.
 
-**Cons**
+**Cons:**
 
 * Telcos tend to be larger, often international organizations, and like any such organization, can move very slowly.
 * Most SMS services are not large enough to warrant the attention of large telcos.

@@ -20,8 +20,8 @@ New RapidSMS website
 * Migrate existing content to new platform
 
 
-v1.0.0
-------
+v0.15.0 - Next Release
+----------------------
 
 * *Expected release date:* May, 2013
 
@@ -33,15 +33,14 @@ v1.0.0
 * Finish development on outstanding core features and bugs
 
 
-v0.14.0 - Next Release
-----------------------
+v0.14.0
+-------
 * **Scheduling and deployment**
-* *Expected release date:* April, 2013
+* *Expected release date:* April 30, 2013
 * `v0.14.0 GitHub Milestone <https://github.com/rapidsms/rapidsms/issues?milestone=6&page=1&state=open>`_
 
 **Goals**
 
-* Update scheduling architecture based on community `proposal <https://github.com/rapidsms/rapidsms/wiki/Scheduling>`_
 * Review and analyze cloud hosting providers
 * Write comprehensive deployment documentation for chosen providers
 * Provide instructions and scripts to deploy project in a few simple steps
@@ -56,6 +55,7 @@ v0.13.0
 
 **Goals**
 
+* Update scheduling architecture based on community `proposal <https://github.com/rapidsms/rapidsms/wiki/Scheduling>`_
 * Load testing of message handling and routing functionality
 * Identify bottlenecks and create plans for improving performance
 * Write documentation for users intending to operate RapidSMS at scale

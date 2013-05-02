@@ -1,5 +1,10 @@
-Intro
-========
+Intro to Extensible Models
+==========================
+
+.. note::
+
+    Extensible models will be removed in a future version of RapidSMS. We do
+    not recommend using them in any new code.
 
 This is a brief summary of some sandbox work to better understand Extensible Models. This is "not" a page on how to make extensible models, the Contact model in the rapid core is a fine example of that. This is intended to be a detailed example of how to set up your folder structure and stay sane while extending an Extensible Model.
 

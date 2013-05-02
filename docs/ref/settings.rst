@@ -22,7 +22,7 @@ DEFAULT_RESPONSE
 ----------------
 
 :App: :doc:`rapidsms.contrib.default </topics/contrib/default>`
-:Default: ``'Sorry, %(project_name)s coud not understand your message.'``
+:Default: ``'Sorry, %(project_name)s could not understand your message.'``
 
 The default response to an `IncomingMessage` that is not handled by any other
 application. To include :setting:`PROJECT_NAME`, use ``'%(project_name)s'`` in

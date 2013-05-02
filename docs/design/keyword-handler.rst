@@ -1,3 +1,6 @@
+KeywordHandler example
+======================
+
 Example use of KeywordHandler::
 
     #!/usr/bin/env python
