@@ -3,6 +3,10 @@
 RapidSMS Tutorial
 =================
 
+*This tutorial is a draft.* Comments are welcome in `this discussion`_ on Google Groups.
+
+.. _this discussion: https://groups.google.com/forum/#!topic/rapidsms-dev/NLd3lUinUFQ
+
 This tutorial will walk you through the creation of a simple RapidSMS
 application.
 
