@@ -25,14 +25,16 @@ Outline
 
 * :doc:`Part 3 <tutorial03>`: It's probably time to actually send and receive messages to telephones. Tropo has free development accounts and there's a Tropo backend at https://github.com/caktus/rapidsms-tropo. Walk through adding that to the project. Set up a Tropo development account. Demo the test app from step 2, this time using real messages.
 
-  Sounds great. I really like the idea of walking through adding a functional backend for testing, but I'm not sure that tropo will work for folks outside of north america and europe -- https://www.tropo.com/docs/scripting/international_dialing_sms.htm
-
-  I don't know much about the reach of Twilio or Clickatell (say there is testing for up to 10 messages, but it looks like a web form where one just sends a message). Perhaps if we reached out to them and suggest a testing sandbox for at least up to 10 messages.
 
 4?) It'd be great to include a really simple web report too -- perhaps just some summary figures and a
     simple line chart of incoming responses.
 
-5) You should also add a virtualbox+vagrant installation option
+5?) You should also add a virtualbox+vagrant installation option
+
+
+MORE NOTES:
+
+* Try to show an example where we're storing data from the text messages, but the data is modeled differently than just a thinly veiled list of the messages.  E.g. have a real patient model and update its data. (but... keep it simple!)
 
 
 Start with :doc:`Part 1 <tutorial01>`.
