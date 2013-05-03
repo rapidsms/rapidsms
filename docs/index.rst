@@ -21,6 +21,7 @@ RapidSMS Documentation
 
     intro/overview
     intro/install/index
+    tutorial/index
     topics/architecture
     topics/applications/index
     topics/backends/index
@@ -38,6 +39,7 @@ Release: v\ |release|. (:doc:`Installation <intro/install/index>`, :doc:`Release
 
 * :doc:`Overview <intro/overview>`
 * :doc:`Installation <intro/install/index>`
+* :doc:`Tutorial <tutorial/index>`
 
 **Architecture**
 
