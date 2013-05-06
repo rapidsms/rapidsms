@@ -9,6 +9,10 @@ aware of when upgrading from RapidSMS 0.14.0.
 What's New
 ==========
 
+ * :setting:`RAPIDSMS_HANDLERS` is a simpler way to control which handlers
+   are loaded. :setting:`INSTALLED_HANDLERS`, :setting:`EXCLUDED_HANDLERS`,
+   and :setting:`RAPIDSMS_HANDLERS_EXCLUDE_APPS` are deprecated. For more
+   information see :ref:`handlers-discovery`.
  * ...
 
  .. _backwards-incompatible-changes-0.15.0:
