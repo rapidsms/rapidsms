@@ -29,21 +29,37 @@ class KeywordHandler(BaseHandler):
     If the keyword is matched and followed by some text, the ``handle`` method
     is called::
 
-        >>> AbcHandler.test("abc")
-        ['Here is some help.']
+        >>> AbcHandler.test("abc waffles")
+        ['You said: waffles.']
 
     If *just* the keyword is matched, the ``help`` method is called::
 
-        >>> AbcHandler.test("abc waffles")
-        ['You said: waffles.']
+        >>> AbcHandler.test("abc")
+        ['Here is some help.']
 
     All other messages are silently ignored (as usual), to allow other apps or
     handlers to catch them.
     """
 
+    #: A string specifying a regular expression matched against the
+    #: beginning of the message. Not case sensitive.
+    keyword = None
+
+    def help(self):
+        """Called when the keyword matches but no text follows"""
+        raise NotImplementedError
+
+    def handle(self, text):
+        """Called when the keyword matches and text follows
+
+        :param text: The text that follows the keyword.  Any whitespace
+             between the keyword and the text is not included.
+        """
+        raise NotImplementedError
+
     @classmethod
     def _keyword(cls):
-        if hasattr(cls, "keyword"):
+        if hasattr(cls, "keyword") and cls.keyword:
             prefix = r"^\s*(?:%s)(?:[\s,;:]+(.+))?$" % (cls.keyword)
             return re.compile(prefix, re.IGNORECASE)
         raise HandlerError('KeywordHandler must define a keyword.')

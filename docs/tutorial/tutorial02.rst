@@ -29,7 +29,7 @@ command in your project, you might change the default response to:
 
 .. code-block:: python
 
-    DEFAULT_RESPONSE = ""Sorry, %(project_name)s could not \
+    DEFAULT_RESPONSE = "Sorry, %(project_name)s could not \
     understand your message.  Send HELP to get a list of \
     valid commands."
 
@@ -57,13 +57,129 @@ other one, and RapidSMS calls the applications in the order of
 RapidSMS Handlers
 -----------------
 
+There are a few very common cases for RapidSMS, such as looking for
+messages starting with a particular word, or messages that match a
+particular pattern. Instead of writing that code over and over yourself,
+you can instead use RapidSMS handlers.
+
+Using handlers has three steps:
+
+1. Write one or more subclasses of handler classes.
+2. Add `"rapidsms.contrib.handlers"` to :setting:`INSTALLED_APPS`.
+3. Add the full classnames of each of your new classes to :setting:`RAPIDSMS_HANDLERS`.
 
 
 Keyword Handlers
 ~~~~~~~~~~~~~~~~
 
+We mentioned earlier that you might want to implement a HELP command for
+your users. We can do that using a :ref:`Keyword Handler <keyword-handler>`.
+
+You'll write a class that subclasses
+:py:class:`~rapidsms.contrib.handlers.KeywordHandler`. Your keyword will
+be "help" (it's not case sensitive).  If someone sends just "HELP", we'll
+respond with a message telling them how to get more help. If someone
+sends "HELP something", we'll give them more specific help if we can,
+and otherwise send the same response we would to a bare "HELP".
+
+.. code-block:: python
+
+    # mypackage/help.py
+
+    from rapidsms.contrib.handlers import KeywordHandler
+
+    from somewhere import help
+
+
+    class HelpHandler(KeywordHandler):
+        keyword = "help"
+
+        def help(self):
+            """Invoked if someone just sends `HELP`"""
+            self.respond("Allowed commands are AAA, BBB, and CCC. Send"
+                         "HELP <command> for more help on a specific command.")
+
+        def handle(self, text):
+            """Invoked if someone sends `HELP <any text>`"""
+            text = text.strip().tolower()
+            if text == 'aaa':
+                self.respond(help['aaa'])
+            elif text == 'bbb':
+                self.respond(help['bbb])
+            elif text == 'ccc':
+                self.respond(help['ccc'])
+            else:
+                self.help()
+
+Now, add `"rapidsms.contrib.handlers"` to :setting:`INSTALLED_APPS`::
+
+
+    INSTALLED_APPS = [
+        ...
+        "rapidsms.contrib.handlers",
+        ...
+    ]
+
+and add your new class to :setting:`RAPIDSMS_HANDLERS`::
+
+    RAPIDSMS_HANDLERS = [
+        ...
+        "mypackage.help.HelpHandler",
+        ...
+    ]
+
+Now, if you start RapidSMS and send a message "HELP", you should get
+this response::
+
+    Allowed commands are AAA, BBB, and CCC. Send HELP <command> for more help on a specific command.
+
+and if you send "HELP AAA", you should get whatever help is available for AAA.
+
+Handlers Must Handle
+~~~~~~~~~~~~~~~~~~~~
+
+We need to issue a warning here - when a handler is called for a message,
+the handler must handle the message itself, because no other handlers or apps
+will be called. Since this handler matched the message, RapidSMS expects
+that this handler will take care of the message. If you need more flexibility,
+you'll need to write a normal RapidSMS application, or at least customize
+the ``dispatch()`` method in your handler class to change when it returns
+``True`` to RapidSMS.
+
+
 Pattern Handlers
 ~~~~~~~~~~~~~~~~
+
+A :ref:`Pattern Handler <pattern-handler>` is like a keyword handler, but
+with two differences:
+
+1. The pattern can match any part of the message, not just the beginning
+2. Groups can be used in the regular expression to help parse the message. Whatever matches the groups is passed to your handler.
+
+You might want to be careful when deciding to use a pattern handler. Your
+regular expression need to be flexible enough to cope with any message
+someone might send that you want your handler to handle.
+
+Here's an example from the :py:class:`~rapidsms.contrib.handlers.PatternHandler`
+documentation.  You can send a message like "5 plus 3" and it will respond
+"5+3 = 8". Note that you cannot send "5 + 3" or "5plus3" or "5 plus 3 ";
+none of those match this simple regular expression, so this handler won't
+be invoked::
+
+    >>> class SumHandler(PatternHandler):
+    ...    pattern = r'^(\d+) plus (\d+)$'
+    ...
+    ...    def handle(self, a, b):
+    ...        a, b = int(a), int(b)
+    ...        total = a + b
+    ...
+    ...        self.respond(
+    ...            "%d+%d = %d" %
+    ...            (a, b, total))
+
+    >>> SumHandler.test("1 plus 2")
+    ['1+2 = 3']
+
 
 
 Continue with :ref:`tutorial03`.

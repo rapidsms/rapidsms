@@ -104,6 +104,12 @@ For example implementations of `KeywordHandler`, see
 - `rapidsms.contrib.registration.handlers.language.LanguageHandler
   <https://github.com/rapidsms/rapidsms/blob/master/rapidsms/contrib/registration/handlers/language.py>`_
 
+Here's documentation from the KeywordHandler class:
+
+.. autoclass:: rapidsms.contrib.handlers.KeywordHandler()
+    :members: keyword, help, handle
+
+
 .. _pattern-handler:
 
 PatternHandler
@@ -144,6 +150,12 @@ create the following conversation::
 
 Like `KeywordHandler`, each `PatternHandler` silently ignores all non-matching
 messages to allow other handlers and applications to catch them.
+
+Here's documentation from the PatternHandler class:
+
+.. autoclass:: rapidsms.contrib.handlers.PatternHandler()
+    :members: pattern, handle
+
 
 .. _base-handler:
 

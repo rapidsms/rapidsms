@@ -45,9 +45,21 @@ class PatternHandler(BaseHandler):
     handlers to catch them.
     """
 
+    #: A string specifying a regular expression that should match the message.
+    #: Not case sensitive.
+    pattern = None
+
+    def handle(self, *args):
+        """Called when the message matches the pattern. Any matching groups
+        are passed to it.
+
+        :param args: The matching groups from the regular expression.
+        """
+        raise NotImplementedError
+
     @classmethod
     def _pattern(cls):
-        if hasattr(cls, "pattern"):
+        if hasattr(cls, "pattern") and cls.pattern:
             return re.compile(cls.pattern, re.IGNORECASE)
         raise HandlerError('PatternHandler must define a pattern.')
 
