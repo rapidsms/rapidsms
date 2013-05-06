@@ -2,15 +2,13 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 from django.test import TestCase
+from django.test.utils import override_settings
 
 from rapidsms.contrib.echo.handlers.echo import EchoHandler
 from rapidsms.contrib.echo.handlers.ping import PingHandler
 from rapidsms.contrib.handlers.utils import get_handlers
 
-try:
-    from django.test.utils import override_settings
-except ImportError:
-    from rapidsms.tests.harness import setting as override_settings
+import mock
 
 
 __all__ = ['TestGetHandlers']
@@ -21,6 +19,8 @@ class TestGetHandlers(TestCase):
     ECHO_APP = 'rapidsms.contrib.echo'  # Defines exactly 2 handlers
     ECHO_HANDLER = 'rapidsms.contrib.echo.handlers.echo'
     PING_HANDLER = 'rapidsms.contrib.echo.handlers.ping'
+    ECHO_HANDLER_CLASS = 'rapidsms.contrib.echo.handlers.echo.EchoHandler'
+    PING_HANDLER_CLASS = 'rapidsms.contrib.echo.handlers.ping.PingHandler'
 
     def setUp(self):
         # Used with override_settings, so that we test in a predictable
@@ -34,10 +34,11 @@ class TestGetHandlers(TestCase):
 
     def _check_get_handlers(self, *args):
         with override_settings(**self.settings):
-            handlers = get_handlers()
-            self.assertEqual(len(handlers), len(args))
-            for handler in args:
-                self.assertTrue(handler in handlers)
+            with mock.patch('rapidsms.contrib.handlers.utils.warn') as warn:
+                handlers = get_handlers()
+        self.assertEqual(set(handlers), set(args))
+        # If RAPIDSMS_HANDLERS is not defined, a deprecation warning is issued
+        self.assertEqual(warn.called, 'RAPIDSMS_HANDLERS' not in self.settings)
 
     def test_no_installed_apps(self):
         """App should not load any handlers if there are no installed apps."""
@@ -99,3 +100,22 @@ class TestGetHandlers(TestCase):
         self.settings['INSTALLED_APPS'] = [self.ECHO_APP]
         self.settings['EXCLUDED_HANDLERS'] = [self.ECHO_APP]
         self._check_get_handlers()
+
+    def test_empty_rapidsms_handlers(self):
+        # If RAPIDSMS_HANDLERS is empty, no handlers are loaded.
+        self.settings['INSTALLED_APPS'] = [self.ECHO_APP]
+        self.settings['INSTALLED_HANDLERS'] = [self.ECHO_APP]
+        self.settings['RAPIDSMS_HANDLERS'] = []
+        self._check_get_handlers()
+
+    def test_rapidsms_handlers(self):
+        # If RAPIDSMS_HANDLERS is set, it completely controls which handlers
+        # are loaded.
+        self.settings['INSTALLED_APPS'] = [self.DEFAULT_APP]
+        self.settings['INSTALLED_HANDLERS'] = []
+        self.settings['EXCLUDED_HANDLERS'] = [self.PING_HANDLER]
+        self.settings['RAPIDSMS_HANDLERS'] = [
+            self.ECHO_HANDLER_CLASS,
+            self.PING_HANDLER_CLASS
+        ]
+        self._check_get_handlers(EchoHandler, PingHandler)

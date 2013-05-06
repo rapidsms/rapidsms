@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
+from warnings import warn
 
 from rapidsms.conf import settings
 from rapidsms.utils.modules import (find_python_files, get_class,
@@ -22,12 +23,11 @@ def get_handlers():
     if hasattr(settings, 'RAPIDSMS_HANDLERS'):
         return [import_class(name) for name in settings.RAPIDSMS_HANDLERS]
 
-    import warnings
-    warnings.warn("Please set RAPIDSMS_HANDLERS to the handlers that should "
-                  "be installed. The old behavior of installing all defined "
-                  "handlers, possibly modified by INSTALLED_HANDLERS and/or "
-                  "EXCLUDED_HANDLERS, is deprecated and will be removed",
-                  DeprecationWarning)
+    warn("Please set RAPIDSMS_HANDLERS to the handlers that should "
+         "be installed. The old behavior of installing all defined "
+         "handlers, possibly modified by INSTALLED_HANDLERS and/or "
+         "EXCLUDED_HANDLERS, is deprecated and will be removed",
+         DeprecationWarning)
 
     handlers = _find_handlers(_apps())
 
