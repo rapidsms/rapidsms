@@ -13,6 +13,11 @@ What's New
    are loaded. :setting:`INSTALLED_HANDLERS`, :setting:`EXCLUDED_HANDLERS`,
    and :setting:`RAPIDSMS_HANDLERS_EXCLUDE_APPS` are deprecated. For more
    information see :ref:`handlers-discovery`.
+ * If there are any errors that would prevent the router, apps, or handlers
+   from being initialized, they will result in an ImproperlyConfigured
+   exception occurring during startup, causing startup to fail. Previously,
+   this kind of error might not be discovered until the first request was
+   processed, and perhaps not even then unless you looked at the logs.
  * ...
 
  .. _backwards-incompatible-changes-0.15.0:

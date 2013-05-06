@@ -3,7 +3,6 @@ import collections
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 
-from rapidsms.models import Backend
 from rapidsms.utils.modules import import_class
 
 
@@ -14,8 +13,8 @@ def get_router():
     if isinstance(router, basestring):
         try:
             router = import_class(router)()
-        except ImportError as e:
-            raise ImproperlyConfigured(e)
+        except Exception as e:
+            raise ImproperlyConfigured("Cannot create router of class %s: %s" % (router, e))
     return router
 
 
@@ -80,6 +79,8 @@ def lookup_connections(backend, identities):
     :returns: List of :py:class:`~rapidsms.models.Connection` objects
     """
     if isinstance(backend, basestring):
+        # Avoid circular import
+        from rapidsms.models import Backend
         backend, _ = Backend.objects.get_or_create(name=backend)
     connections = []
     for identity in identities:

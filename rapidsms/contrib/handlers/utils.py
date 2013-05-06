@@ -2,6 +2,7 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 from warnings import warn
+from django.core.exceptions import ImproperlyConfigured
 
 from rapidsms.conf import settings
 from rapidsms.utils.modules import (find_python_files, get_class,
@@ -21,7 +22,14 @@ def get_handlers():
     """
 
     if hasattr(settings, 'RAPIDSMS_HANDLERS'):
-        return [import_class(name) for name in settings.RAPIDSMS_HANDLERS]
+        retval = []
+        for name in settings.RAPIDSMS_HANDLERS:
+            try:
+                cls = import_class(name)
+            except Exception as e:
+                raise ImproperlyConfigured("Cannot load handler %s: %s" % (name, e))
+            retval.append(cls)
+        return retval
 
     warn("Please set RAPIDSMS_HANDLERS to the handlers that should "
          "be installed. The old behavior of installing all defined "
