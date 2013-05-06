@@ -26,9 +26,10 @@ Install Django
 
 But before we can do that, we need to have Django installed, so we can
 use the Django `startproject`_ command. So we'll start by creating the
-`virtualenv`_ we'll use and installing Django into it:
+`virtualenv`_ we'll use, activating it, and installing Django into it:
 
-.. code-block:: bash
+.. code-block:: console
+    :emphasize-lines: 1,7-8
 
     ~ $ virtualenv rapidsms-tut-venv
     Running virtualenv with interpreter /usr/bin/python2.7
@@ -50,7 +51,8 @@ Start the project
 Now we'll use the Django `startproject`_ command, with the
 RapidSMS project template:
 
-.. code-block:: bash
+.. code-block:: console
+    :emphasize-lines: 1
 
     (rapidsms-tut-venv)~ $ django-admin.py startproject --template=https://github.com/rapidsms/rapidsms-project-template/zipball/master --extension=py,rst rapidsms_tut
     (rapidsms-tut-venv)~ $ cd rapidsms_tut
@@ -77,7 +79,8 @@ Install dependencies
 
 Install the dependencies:
 
-.. code-block:: bash
+.. code-block:: console
+    :emphasize-lines: 1
 
     (rapidsms-tut-venv)~/rapidsms_tut $ pip install -r requirements/base.txt
     [... lots of output omitted ...]
@@ -96,7 +99,9 @@ configured here for simplicity.
 Initialize our database. First we use `syncdb`_. Go ahead and create
 a superuser when prompted:
 
-.. code-block:: bash
+.. code-block:: console
+    :emphasize-lines: 1,16-17
+    :linenos:
 
     (rapidsms-tut-venv)~/rapidsms_tut $ python manage.py syncdb
     Syncing...
@@ -147,7 +152,8 @@ a superuser when prompted:
 
 Then we apply migrations using `South`_'s `migrate`_ command:
 
-.. code-block:: bash
+.. code-block:: console
+    :emphasize-lines: 1
 
     (rapidsms-tut-venv)~/rapidsms_tut $ python manage.py migrate
     Running migrations for rapidsms:
@@ -170,7 +176,8 @@ Start the server
 We should now be ready to start our project. It won't do much yet,
 but we can see if what we've done so far is working:
 
-.. code-block:: bash
+.. code-block:: console
+    :emphasize-lines: 1
 
     (rapidsms-tut-venv)~/rapidsms_tut $ python manage.py runserver
     Validating models...
@@ -245,7 +252,8 @@ Let's see how we would add that to our project.
 A RapidSMS app must first be a Django app, so let's create an empty Django
 app.  We'll call it `tut`:
 
-.. code-block:: bash
+.. code-block:: console
+    :emphasize-lines: 1
 
     (rapidsms-tut-venv)~/rapidsms_tut $ python manage.py startapp tut
     (rapidsms-tut-venv)~/rapidsms_tut $ tree tut
@@ -261,6 +269,7 @@ app.  We'll call it `tut`:
 Now we need to add our app to Django's :setting:`INSTALLED_APPS` setting:
 
 .. code-block:: python
+    :emphasize-lines: 4
 
     INSTALLED_APPS = (
        [...]
@@ -275,7 +284,7 @@ Django application's directory, so create a file ``rapidsms_tut/tut/apps.py``
 and paste the code from above. Here's what it should look like when you're
 done:
 
-.. code-block:: bash
+.. code-block:: console
 
     (rapidsms-tut-venv)~/rapidsms_tut $ cat tut/apps.py
     from rapidsms.apps.base import AppBase
@@ -305,7 +314,7 @@ understand your message", this time your app responds "pong":
 You can find a brief explanation of how this app works in the
 :doc:`Applications Overview </topics/applications/index>`.
 
-Continue with :doc:`Part 2 <tutorial02>`.
+Continue with :ref:`tutorial02`.
 
 .. _https://github.com/rapidsms/rapidsms-project-template: https://github.com/rapidsms/rapidsms-project-template
 .. _default handler: http://rapidsms.readthedocs.org/en/latest/topics/contrib/default.html

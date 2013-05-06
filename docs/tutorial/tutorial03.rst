@@ -12,5 +12,5 @@ This part is sketchier so far... maybe hook up a real web provider so
 we can exchange messages with actual phones?
 
 
-
-.. continue with :doc:`Part 4 <tutorial04>`.
+.. uncomment this after we create part 4
+.. continue with :ref:`tutorial04`.
