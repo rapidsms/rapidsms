@@ -8,10 +8,9 @@ RapidSMS Tutorial Part 2
 .. _this discussion: https://groups.google.com/forum/#!topic/rapidsms-dev/NLd3lUinUFQ
 
 
-We'll continue the tutorial by introducing the RapidSMS default app,
-and converting our minimal application from part 1 into a
-RapidSMS handler. We'll look at how keyword and pattern handlers
-can help build simple RapidSMS applications quickly.
+We'll continue the tutorial by introducing the RapidSMS default app.
+Then we'll show how using RapidSMS handlers can handle parsing
+incoming messages for you.
 
 Default Application
 -------------------
@@ -21,7 +20,8 @@ doing its work, responding to messages that no other application had handled.
 It's a good idea to keep the default application at the end of
 :setting:`INSTALLED_APPS` so that it can give some response when your
 application doesn't recognize a message. Otherwise your users will get
-no response and won't know there was a problem.
+no response and won't know there was a problem. Or worse, the default application
+will respond to the message before your app sees it, confusing the user.
 
 You can change the response used by the default application by changing
 :setting:`DEFAULT_RESPONSE`. For example, if you've implemented a HELP
@@ -33,6 +33,8 @@ command in your project, you might change the default response to:
     understand your message.  Send HELP to get a list of \
     valid commands."
 
+Of course, you could also just send the help in the default response.
+
 "Handling" a Message
 ~~~~~~~~~~~~~~~~~~~~
 
@@ -40,7 +42,8 @@ We said the default application would respond if no other application had
 handled the message, but how does RapidSMS know that an application has
 "handled" the message?
 
-One way is for an application's :ref:`handle <phase-handle>` method to return ``True``.
+One way is for an application's :ref:`handle <phase-handle>` method to
+return ``True``.
 That tells RapidSMS that the application has handled the message and no
 other applications need to try to handle it too. On the other hand,
 if the application returns ``False``, RapidSMS will continue passing
@@ -60,7 +63,7 @@ RapidSMS Handlers
 There are a few very common cases for RapidSMS, such as looking for
 messages starting with a particular word, or messages that match a
 particular pattern. Instead of writing that code over and over yourself,
-you can instead use RapidSMS handlers.
+you can use RapidSMS handlers.
 
 Using handlers has three steps:
 
@@ -95,13 +98,15 @@ and otherwise send the same response we would to a bare "HELP".
         keyword = "help"
 
         def help(self):
-            """Invoked if someone just sends `HELP`"""
-            self.respond("Allowed commands are AAA, BBB, and CCC. Send"
+            """Invoked if someone just sends `HELP`.  We also call this
+            from `handle` if we don't recognize the arguments to HELP.
+            """
+            self.respond("Allowed commands are AAA, BBB, and CCC. Send "
                          "HELP <command> for more help on a specific command.")
 
         def handle(self, text):
             """Invoked if someone sends `HELP <any text>`"""
-            text = text.strip().tolower()
+            text = text.strip().lower()
             if text == 'aaa':
                 self.respond(help['aaa'])
             elif text == 'bbb':
@@ -112,7 +117,6 @@ and otherwise send the same response we would to a bare "HELP".
                 self.help()
 
 Now, add `"rapidsms.contrib.handlers"` to :setting:`INSTALLED_APPS`::
-
 
     INSTALLED_APPS = [
         ...
@@ -142,10 +146,7 @@ We need to issue a warning here - when a handler is called for a message,
 the handler must handle the message itself, because no other handlers or apps
 will be called. Since this handler matched the message, RapidSMS expects
 that this handler will take care of the message. If you need more flexibility,
-you'll need to write a normal RapidSMS application, or at least customize
-the ``dispatch()`` method in your handler class to change when it returns
-``True`` to RapidSMS.
-
+you'll need to write a normal RapidSMS application.
 
 Pattern Handlers
 ~~~~~~~~~~~~~~~~
@@ -156,8 +157,8 @@ with two differences:
 1. The pattern can match any part of the message, not just the beginning
 2. Groups can be used in the regular expression to help parse the message. Whatever matches the groups is passed to your handler.
 
-You might want to be careful when deciding to use a pattern handler. Your
-regular expression need to be flexible enough to cope with any message
+Be careful when deciding to use a pattern handler. Your
+regular expression needs to be flexible enough to cope with any message
 someone might send that you want your handler to handle.
 
 Here's an example from the :py:class:`~rapidsms.contrib.handlers.PatternHandler`
@@ -179,7 +180,5 @@ be invoked::
 
     >>> SumHandler.test("1 plus 2")
     ['1+2 = 3']
-
-
 
 Continue with :ref:`tutorial03`.

@@ -22,7 +22,7 @@ Outline
 
 * :ref:`tutorial01`: Start a new RapidSMS project. Set up message tester. Write a minimal app that responds to a message. Put it through its paces.
 
-* :ref:`tutorial02`: Configure the default app with a custom response. Recreate the minimal app from step 1, this time using a handler. Demonstrate keyword and pattern handlers.
+* :ref:`tutorial02`: Configure the default app with a custom response. Demonstrate keyword and pattern handlers.
 
 * :ref:`tutorial03`: It's probably time to actually send and receive messages to telephones. Tropo has free development accounts and there's a Tropo backend at https://github.com/caktus/rapidsms-tropo. Walk through adding that to the project. Set up a Tropo development account. Demo the test app from step 2, this time using real messages.
 
