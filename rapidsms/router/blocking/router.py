@@ -5,6 +5,7 @@ import logging
 import warnings
 import copy
 from collections import defaultdict
+from django.core.exceptions import ImproperlyConfigured
 
 from django.db.models.query import QuerySet
 
@@ -35,8 +36,8 @@ class BlockingRouter(object):
         for name in apps:
             try:
                 self.add_app(name)
-            except Exception:
-                logger.exception("Failed to add app to router.")
+            except Exception as e:
+                raise ImproperlyConfigured("Cannot add app %s to router: %s" % (name, e))
         for name, conf in backends.iteritems():
             parsed_conf = copy.copy(conf)
             engine = parsed_conf.pop('ENGINE')

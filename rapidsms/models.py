@@ -3,6 +3,7 @@
 
 
 from django.db import models
+from rapidsms.router import get_router
 from .utils.modules import try_import, get_classes
 from .conf import settings
 
@@ -169,3 +170,7 @@ class Connection(ConnectionBase):
     """
 
     __metaclass__ = ExtensibleModelBase
+
+
+# Make sure we can create a router
+get_router()
