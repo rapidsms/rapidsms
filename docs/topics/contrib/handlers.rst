@@ -23,9 +23,16 @@ settings file::
         ...
     ]
 
-This application will load handlers according to the configuration
-parameters defined in your settings, as described in :ref:`handlers discovery
-<handlers-discovery>`.
+Then you'll also need to set :setting:`RAPIDSMS_HANDLERS`. The application
+will load the handler classes listed in :setting:`RAPIDSMS_HANDLERS`,
+as described in :ref:`handlers-discovery`.
+
+.. code-block:: python
+
+    RAPIDSMS_HANDLERS = [
+        "rapidsms.contrib.handlers.KeywordHandler",
+        "rapidsms.contrib.handlers.PatternHandler",
+    ]
 
 .. _handlers-usage:
 
@@ -186,6 +193,31 @@ conservative as possible when choosing to respond to a message.
 
 Handler Discovery
 =================
+
+.. versionchanged:: 0.15.0
+
+Handlers may be any new-style Python class which extends from one of the
+core handler classes, e.g. :ref:`BaseHandler <base-handler>`,
+:ref:`PatternHandler <pattern-handler>`,
+:ref:`KeywordHandler <keyword-handler>`, etc.
+
+The Python package names of the handler classes to be loaded should be listed
+in :setting:`RAPIDSMS_HANDLERS`.
+
+Example:
+
+.. code-block:: python
+
+    RAPIDSMS_HANDLERS = [
+        "rapidsms.contrib.handlers.KeywordHandler",
+        "rapidsms.contrib.handlers.PatternHandler",
+    ]
+
+.. warning::
+
+    The behavior described in the rest of this section is the old,
+    deprecated behavior. If :setting:`RAPIDSMS_HANDLERS` is set,
+    the older settings are ignored.
 
 Handlers may be defined in the `handlers` subdirectory of any Django app
 listed in :setting:`INSTALLED_APPS`. Each file in the `handlers` subdirectory
