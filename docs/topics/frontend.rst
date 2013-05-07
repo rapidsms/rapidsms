@@ -218,6 +218,15 @@ another contrib app,
       </div>
     {% endblock %}
 
+.. _messages_to_users:
+
+Messages to Users
+-----------------
+
+.. versionadded:: 0.15.0
+
+If you use the `Django messages framework`_ to send messages to your users, the base
+template will display them nicely above the page content.
 
 
 .. _Twitter Bootstrap: http://twitter.github.com/bootstrap/
@@ -225,3 +234,4 @@ another contrib app,
 .. _navigation bar: http://twitter.github.com/bootstrap/components.html#navbar
 .. _django_tables2: http://django-tables2.readthedocs.org/en/latest/
 .. _forms: http://twitter.github.com/bootstrap/base-css.html#forms
+.. _Django messages framework: https://docs.djangoproject.com/en/dev/ref/contrib/messages/

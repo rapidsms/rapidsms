@@ -2,6 +2,7 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 import csv
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.db import transaction
@@ -54,6 +55,7 @@ def contact(request, pk=None):
         if pk:
             if request.POST["submit"] == "Delete Contact":
                 contact.delete()
+                messages.add_message(request, messages.INFO, "Deleted contact")
                 return HttpResponseRedirect(reverse(registration))
             contact_form = ContactForm(request.POST, instance=contact)
         else:
@@ -65,6 +67,7 @@ def contact(request, pk=None):
             if connection_formset.is_valid():
                 contact.save()
                 connection_formset.save()
+                messages.add_message(request, messages.INFO, "Added contact")
                 return HttpResponseRedirect(reverse(registration))
     return render(request, 'registration/contact_form.html', {
         "contact": contact,
@@ -111,6 +114,8 @@ def contact_bulk_add(request):
                 "bulk_form": bulk_form,
                 "csv_errors": "No contacts found in file",
             })
+        messages.add_message(request, messages.INFO, "Added %d contacts" %
+                                                     count)
         return HttpResponseRedirect(reverse(registration))
     return render(request, 'registration/bulk_form.html', {
         "bulk_form": bulk_form,
