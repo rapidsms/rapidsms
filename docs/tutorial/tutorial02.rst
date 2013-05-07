@@ -142,11 +142,13 @@ and if you send "HELP AAA", you should get whatever help is available for AAA.
 Handlers Must Handle
 ~~~~~~~~~~~~~~~~~~~~
 
-We need to issue a warning here - when a handler is called for a message,
-the handler must handle the message itself, because no other handlers or apps
-will be called. Since this handler matched the message, RapidSMS expects
-that this handler will take care of the message. If you need more flexibility,
-you'll need to write a normal RapidSMS application.
+.. warning::
+
+    When a handler is called for a message,
+    the handler must handle the message itself, because no other handlers or apps
+    will be called. Since this handler matched the message, RapidSMS expects
+    that this handler will take care of the message. If you need more flexibility,
+    you'll need to write a normal RapidSMS application.
 
 Pattern Handlers
 ~~~~~~~~~~~~~~~~
@@ -157,9 +159,11 @@ with two differences:
 1. The pattern can match any part of the message, not just the beginning
 2. Groups can be used in the regular expression to help parse the message. Whatever matches the groups is passed to your handler.
 
-Be careful when deciding to use a pattern handler. Your
-regular expression needs to be flexible enough to cope with any message
-someone might send that you want your handler to handle.
+.. note::
+
+    Be careful when deciding to use a pattern handler. Your
+    regular expression needs to be flexible enough to cope with any message
+    someone might send that you want your handler to handle.
 
 Here's an example from the :py:class:`~rapidsms.contrib.handlers.PatternHandler`
 documentation.  You can send a message like "5 plus 3" and it will respond

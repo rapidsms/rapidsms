@@ -20,15 +20,14 @@ to choose a place to go to lunch than for anything serious. It makes no
 attempt whatsoever to enforce any of the controls a real election would
 need.)
 
-Start the application
----------------------
+Create the application
+----------------------
 
 Create a new Django application. Let's call it "voting":
 
 .. code-block:: console
 
     $ python manage.py startapp voting
-
 
 
 The models
@@ -47,6 +46,25 @@ of votes for it so far.
     class Choice(models.Model):
         name = models.CharField(max_length=40, unique=True)
         votes = models.IntegerField(default=0)
+
+Application Design
+------------------
+
+Even a simple application like this can demonstrate a important design
+principle for RapidSMS applications.
+
+Instead of adding to a candidate's vote count each time a vote arrived,
+we could instead have created a Vote model and stored a record of each vote.
+That seems like a little simpler way to handle an incoming vote.
+
+However, if we did that, whenever we needed the results we would have to
+query every record in our database to count up the votes for each choice.
+There are SQL queries that can simplify doing that, but the database still
+has to look at every record. And the next time we wanted the results, we'd
+have to do that again.
+
+We're better off doing a little more processing on each
+message, if that can save us a lot of work later on.
 
 Admin
 -----
@@ -71,7 +89,7 @@ The results handler
 
 Let's start with the simpler message to handle, ``RESULTS``. This is
 easily implemented as a RapidSMS keyword handler. Let's create a file
-handlers.py to contain our handlers, and write a handler that responds
+``handlers.py`` to contain our handlers, and write a handler that responds
 with the current votes.
 
 .. code-block:: python
@@ -87,7 +105,7 @@ with the current votes.
         keyword = "results"
 
         def help(self):
-            """`help` gets invoked when we get the ``results`` message
+            """help() gets invoked when we get the ``results`` message
             with no arguments"""
             # Build the response message, one part per choice
             parts = []
@@ -143,6 +161,7 @@ the choices are.
                 self.help()
             else:
                 # Count the vote. Use update to do it in a single query
+                # to avoid race conditions.
                 Choice.objects.filter(name__iexact=text).update(votes=F('votes')+1)
                 self.respond("Your vote for %s has been counted" % text)
 
@@ -154,7 +173,7 @@ handlers to :setting:`RAPIDSMS_HANDLERS`:
 
 .. code-block:: python
     :linenos:
-    :emphasize-lines: 4
+    :emphasize-lines: 4,11-12
 
     INSTALLED_APPS = (
        [...]
@@ -202,8 +221,9 @@ for.
     Development server is running at http://127.0.0.1:8000/
     Quit the server with CONTROL-C.
 
-Go to http://127.0.0.1:8000/admin/voting/choice/, login as the superuser you created in
-part 1 of the tutorial, and you should be able to add some choices.
+Go to http://127.0.0.1:8000/admin/voting/choice/, login as the superuser
+you created in part 1 of the tutorial, and you should be able to add some
+choices.
 
 Vote
 ----
@@ -228,7 +248,6 @@ and if you check the results again::
 
     05/07/2013 8:33 a.m.	349911«	Moe: 1; Larry: 0; Curly: 0
     05/07/2013 8:33 a.m.	349911»	RESULTS
-
 
 
 Continue with :ref:`tutorial04`.
