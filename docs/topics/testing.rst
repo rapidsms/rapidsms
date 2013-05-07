@@ -83,14 +83,14 @@ General Testing
 ***************
 
 RapidSMS provides a suite of test harness tools. Below you'll find a collection
-of ``TestCase`` extensions to make testing your RapidSMS applications easier.
+of :py:class:`django.test.TestCase` extensions to make testing your RapidSMS applications easier.
 
 .. _rapidtest:
 
 RapidTest
 ~~~~~~~~~
 
-The ``RapidTest`` class provides a simple test environment to analyze sent and
+The :py:class:`~rapidsms.tests.harness.RapidTest` class provides a simple test environment to analyze sent and
 received messages. You can inspect messages processed by the router and, if
 needed, see if messages were delivered to a special backend, ``mockbackend``.
 Let's take a look at a simple example::
@@ -114,26 +114,13 @@ text. That's it! With just a few lines we were able to send a message through
 the entire routing stack and verify the functionality of our application.
 
 .. autoclass:: rapidsms.tests.harness.RapidTest
-    :members: inbound, outbound, sent_messages, clear_sent_messages, receive, send, lookup_connections
-
-    .. attribute:: apps
-
-        A list of app classes to load, rather than ``INSTALLED_APPS``, when the
-        router is initialized.
-
-    .. attribute:: disable_phases = False
-
-        If ``disable_phases`` is True, messages will not be processed through
-        the router phases.
-        This is useful if you're not interested in testing application logic.
-        For example, backends may use this flag to ensure messages are sent to
-        the router, but don't want the message to be processed.
+    :members:
 
 
 Database Interaction
 ^^^^^^^^^^^^^^^^^^^^
 
-``RapidTest`` provides flexible means to check application state, including
+:py:class:`~rapidsms.tests.harness.RapidTest` provides flexible means to check application state, including
 the database. Here's an example of a test that examines the database after
 receiving a message::
 
@@ -193,7 +180,7 @@ your test suite. For example::
 
 This example tests the logic of ``QuizMeApp.is_quiz``, which is used to
 determine whether or not the text message is related to the quiz application.
-The app is constructed with ``TestRouter`` and tests ``is_quiz`` with various
+The app is constructed with :py:class:`~rapidsms.router.test.TestRouter` and tests ``is_quiz`` with various
 types of input.
 
 This method is useful for testing specific, low-level components of your
@@ -204,7 +191,9 @@ Scripted Tests
 **************
 
 You can write high-level integration tests for your applications by using the
-``TestScript`` framework. ``TestScript`` allows you to write message *scripts*
+:py:class:`~rapidsms.tests.harness.TestScript` framework.
+:py:class:`~rapidsms.tests.harness.TestScript`
+allows you to write message *scripts*
 (akin to a movie script), similar to our example in the :ref:`what-to-test`
 section above::
 
@@ -233,9 +222,12 @@ Example
 ~~~~~~~
 
 To use this functionality in your test suite, you simply need to extend from
-``TestScript`` to get access to ``runScript``::
+:py:class:`~rapidsms.tests.harness.TestScript` or
+:py:class:`~rapidsms.tests.harness.TestScriptMixin`
+to get access to
+:py:meth:`~rapidsms.tests.harness.TestScriptMixin.runScript`::
 
-    from rapidsms.tests.harness.scripted import TestScript
+    from rapidsms.tests.harness import TestScript
     from quizme.app import QuizMeApp
     from quizme.models import Question
 
@@ -265,6 +257,16 @@ tests across multiple RapidSMS applications. However, you're limited to the
 test script. If you need more fined grained access, like checking the state of
 the database in the middle of a script, you should use :ref:`general-testing`.
 
+.. autoclass:: rapidsms.tests.harness.TestScript
+    :members:
+
+.. autoclass:: rapidsms.tests.harness.TestScriptMixin
+    :members:
+
+.. class:: rapidsms.tests.harness.scripted.TestScriptMixin
+
+    Full name of :py:class:`rapidsms.tests.harness.TestScriptMixin`.
+
 
 Test Helpers
 ************
@@ -292,44 +294,12 @@ make it easier to create common RapidSMS models and objects. For example::
             text = self.random_string()
             # ...
 
-.. class:: CreateDataMixin
+.. autoclass:: rapidsms.tests.harness.CreateDataMixin
+    :members:
 
-    .. method:: random_string(length=255, extra_chars='')
+.. class:: rapidsms.tests.harness.base.CreateDataMixin
 
-        Generate a random string of characters.
-
-        :param length: Length of generated string.
-        :param extra_chars: Additional characters to include in generated string.
-
-    .. method:: random_unicode_string(max_length=255)
-
-        Generate a random string of unicode characters.
-
-        :param length: Length of generated string.
-
-    .. method:: create_backend(data={})
-
-        Create and return RapidSMS backend object. A random ``name`` will be created if not specified in ``data`` attribute.
-
-        :param data: Optional dictionary of field name/value pairs to pass to the object's ``create`` method.
-
-    .. method:: create_contact(data={})
-
-        Create and return RapidSMS contact object. A random ``name`` will be created if not specified in ``data`` attribute.
-
-        :param data: Optional dictionary of field name/value pairs to pass to the object's ``create`` method.
-
-    .. method:: create_connection(data={})
-
-        Create and return RapidSMS connection object. A random ``identity`` and ``backend`` will be created if not specified in ``data`` attribute.
-
-        :param data: Optional dictionary of field name/value pairs to pass to the object's ``create`` method.
-
-    .. method:: create_outgoing_message(data={})
-
-        Create and return RapidSMS OutgoingMessage object. A random ``template`` will be created if not specified in ``data`` attribute.
-
-        :param data: Optional dictionary of field name/value pairs to pass to ``OutgoingMessage.__init__``.
+    Full name for :py:class:`rapidsms.tests.harness.CreateDataMixin`.
 
 CustomRouterMixin
 ~~~~~~~~~~~~~~~~~
@@ -350,12 +320,69 @@ The ``CustomRouterMixin`` class allows you to override the :setting:`RAPIDSMS_RO
             # this test will use specified router and backends
             pass
 
-.. class:: CustomRouterMixin
+.. autoclass:: rapidsms.tests.harness.CustomRouterMixin
+    :members:
 
-    .. attribute:: router_class
 
-        String to override :setting:`RAPIDSMS_ROUTER` during testing. Defaults to ``'rapidsms.router.blocking.BlockingRouter'``.
+.. class:: rapidsms.tests.harness.router.CustomRouterMixin
 
-    .. attribute:: backends
+    Full name for :py:class:`rapidsms.tests.harness.CustomRouterMixin`.
 
-        Dictionary to override :setting:`INSTALLED_BACKENDS` during testing. Defaults to ``{}``.
+
+TestRouterMixin
+~~~~~~~~~~~~~~~
+
+``TestRouterMixin`` extends CustomRouterMixin and arranges for tests
+to use the :py:class:`rapidsms.router.test.TestRouter`.
+
+.. autoclass:: rapidsms.tests.harness.TestRouterMixin
+    :members:
+
+    .. attribute:: apps
+
+        A list of app classes to load, rather than ``INSTALLED_APPS``, when the
+        router is initialized.
+
+
+.. class:: rapidsms.tests.harness.router.TestRouterMixin
+
+    Full name for :py:class:`rapidsms.tests.harness.TestRouterMixin`.
+
+
+TestRouter
+~~~~~~~~~~
+
+The ``TestRouter`` can be used in tests. It saves all messages for later
+inspection by the test.
+
+.. autoclass:: rapidsms.router.test.TestRouter
+    :members:
+
+
+DatabaseBackendMixin
+~~~~~~~~~~~~~~~~~~~~
+
+The ``DatabaseBackendMixin`` helps tests to use the DatabaseBackend.
+
+.. autoclass:: rapidsms.tests.harness.DatabaseBackendMixin
+    :members:
+
+
+LoginMixin
+~~~~~~~~~~
+
+.. autoclass:: rapidsms.tests.harness.LoginMixin
+    :members:
+
+.. class:: rapidsms.tests.harness.base.LoginMixin
+
+    Full name for :py:class:`rapidsms.tests.harness.LoginMixin`.
+
+Django TestCase
+~~~~~~~~~~~~~~~
+
+Some of these classes inherit from:
+
+.. class:: django.test.testcases.TestCase
+
+which is the full name for :py:class:`django.test.TestCase`.

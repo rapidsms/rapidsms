@@ -14,14 +14,28 @@ from rapidsms.tests.harness.app import MockApp, EchoApp, ExceptionApp
 
 
 class RapidTest(TestRouterMixin, LoginMixin, TestCase):
+    """
+    Inherits from :py:class:`~rapidsms.tests.harness.TestRouterMixin`,
+    :py:class:`~rapidsms.tests.harness.LoginMixin`,
+    :py:class:`~django.test.TestCase`.
+    """
     pass
 
 
-class RapidTransactionTest(TestRouterMixin,  LoginMixin, TransactionTestCase):
+class RapidTransactionTest(TestRouterMixin, LoginMixin, TransactionTestCase):
+    """
+    Inherits from :py:class:`~rapidsms.tests.harness.TestRouterMixin`,
+    :py:class:`~rapidsms.tests.harness.LoginMixin`,
+    :py:class:`~django.test.TransactionTestCase`.
+    """
     pass
 
 
 class TestScript(TestScriptMixin, TestCase):
+    """
+    Inherits from :py:class:`~rapidsms.tests.harness.TestScriptMixin`,
+    :py:class:`~django.test.TransactionTestCase`.
+    """
     pass
 
 
