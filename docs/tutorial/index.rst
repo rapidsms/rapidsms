@@ -24,7 +24,10 @@ Outline
 
 * :ref:`tutorial02`: Configure the default app with a custom response. Demonstrate keyword and pattern handlers.
 
-* :ref:`tutorial03`: It's probably time to actually send and receive messages to telephones. Tropo has free development accounts and there's a Tropo backend at https://github.com/caktus/rapidsms-tropo. Walk through adding that to the project. Set up a Tropo development account. Demo the test app from step 2, this time using real messages.
+* :ref:`tutorial03`: Make a RapidSMS app that uses Django to store and update
+  data.
+
+* :ref:`tutorial04`: It's probably time to actually send and receive messages to telephones. Tropo has free development accounts and there's a Tropo backend at https://github.com/caktus/rapidsms-tropo. Walk through adding that to the project. Set up a Tropo development account. Demo the test app from step 2, this time using real messages.
 
 
 4?) It'd be great to include a really simple web report too -- perhaps just some summary figures and a
@@ -46,5 +49,6 @@ Start with :ref:`tutorial01`.
     tutorial01
     tutorial02
     tutorial03
+    tutorial04
 
 .. _Django tutorial: https://docs.djangoproject.com/en/dev/intro/tutorial01/
