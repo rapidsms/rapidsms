@@ -17,7 +17,13 @@ class CustomRouterMixin(CreateDataMixin):
     router_class = 'rapidsms.router.blocking.BlockingRouter'
     backends = {}
 
+    #: List to override RAPIDSMS_HANDLERS with, or if None, leave
+    #: RAPIDSMS_HANDLERS alone
+    handlers = None
+
     def _pre_rapidsms_setup(self):
+        self._RAPIDSMS_HANDLERS = getattr(settings, 'RAPIDSMS_HANDLERS', None)
+        self.set_handlers()
         self._INSTALLED_BACKENDS = getattr(settings, 'INSTALLED_BACKENDS', {})
         self.set_backends()
         self._RAPIDSMS_ROUTER = getattr(settings, 'RAPIDSMS_ROUTER', None)
@@ -26,6 +32,12 @@ class CustomRouterMixin(CreateDataMixin):
     def _post_rapidsms_teardown(self):
         setattr(settings, 'INSTALLED_BACKENDS', self._INSTALLED_BACKENDS)
         setattr(settings, 'RAPIDSMS_ROUTER', self._RAPIDSMS_ROUTER)
+        if self._RAPIDSMS_HANDLERS is None:
+            # RAPIDSMS_HANDLERS was not set
+            if hasattr(settings, 'RAPIDSMS_HANDLERS'):
+                delattr(settings, 'RAPIDSMS_HANDLERS')
+        else:
+            setattr(settings, 'RAPIDSMS_HANDLERS', self._RAPIDSMS_HANDLERS)
 
     def __call__(self, result=None):
         self._pre_rapidsms_setup()
@@ -45,6 +57,10 @@ class CustomRouterMixin(CreateDataMixin):
     def get_router(self):
         """get_router() API wrapper."""
         return get_router()
+
+    def set_handlers(self):
+        if self.handlers is not None:
+            setattr(settings, 'RAPIDSMS_HANDLERS', self.handlers)
 
     def set_backends(self):
         setattr(settings, 'INSTALLED_BACKENDS', self.backends)

@@ -10,7 +10,14 @@ from rapidsms.tests.scripted import TestScript
 import rapidsms.contrib.registration.views as views
 
 
+RAPIDSMS_HANDLERS = [
+    "rapidsms.contrib.registration.handlers.language.LanguageHandler",
+    "rapidsms.contrib.registration.handlers.register.RegisterHandler",
+]
+
+
 class TestRegister(TestScript):
+    handlers = RAPIDSMS_HANDLERS
 
     def testRegister(self):
         self.assertInteraction("""
