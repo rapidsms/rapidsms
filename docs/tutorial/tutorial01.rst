@@ -88,6 +88,14 @@ Install the dependencies:
     Cleaning up...
     (rapidsms-tut-venv)~/rapidsms_tut $
 
+Remove some unneeded applications
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The RapidSMS project template installs a number of applications by default.
+Let's remove one of them to simplify things.
+
+In ``rapidsms_tut/settings.py``, find the :setting:`INSTALLED_APPS` setting
+and comment out the line for ``rapidsms.contrib.echo``.
 
 Set up the database
 ~~~~~~~~~~~~~~~~~~~
@@ -227,6 +235,12 @@ understand your message." That shouldn't be too surprising, since
 we haven't written an application yet.  But then, where did the
 "Sorry" message come from? That comes from RapidSMS's
 `default handler`_, which we'll learn more about later.
+
+(If instead of the "Sorry" message, you get a response of "pong",
+that just means you missed the step above of commenting out the
+``rapidsms.contrib.echo`` application that the RapidSMS project
+template installs by default. If you go back and make that change,
+restart your app, and try again, it should work.)
 
 A minimal application
 ---------------------
