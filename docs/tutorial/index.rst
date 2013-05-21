@@ -16,7 +16,6 @@ We assume that you are familiar with Django, at least the material in the
 there, then come back here when you feel comfortable with the concepts
 there.
 
-
 Outline
 -------
 
@@ -34,18 +33,6 @@ Outline
   a Tropo backend at https://github.com/caktus/rapidsms-tropo. Walk through
   adding that to the project. Set up a Tropo development account. Demo
   the test app from step 2, this time using real messages.
-
-
-4?) It'd be great to include a really simple web report too -- perhaps just some summary figures and a
-    simple line chart of incoming responses.
-
-5?) You should also add a virtualbox+vagrant installation option
-
-
-MORE NOTES:
-
-* Try to show an example where we're storing data from the text messages, but the data is modeled differently than just a thinly veiled list of the messages.  E.g. have a real patient model and update its data. (but... keep it simple!)
-
 
 Start with :ref:`tutorial01`.
 

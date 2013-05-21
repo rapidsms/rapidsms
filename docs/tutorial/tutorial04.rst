@@ -273,7 +273,10 @@ Again, we can ignore most of that, but "200 OK" is a good sign.
 Next steps
 ----------
 
-NOW WHAT?
+Continue reading the documentation. There's a lot of useful information.
+Some of it you might want to skim for now, but it'll give you an idea
+of what RapidSMS can do, and where to look for more details when you're ready
+to try new things.
 
 .. _Tropo: https://www.tropo.com/
 .. _Tropo RapidSMS backend: https://pypi.python.org/pypi/rapidsms-tropo/
