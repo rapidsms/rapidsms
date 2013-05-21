@@ -190,10 +190,10 @@ handlers to :setting:`RAPIDSMS_HANDLERS`:
         [...]
     ]
 
-Update database schema
-----------------------
+Update database
+---------------
 
-We've added a new model, so we need to update our database schema to
+We've added a new model, so we need to update our database to
 include it:
 
 .. code-block:: console

@@ -30,7 +30,7 @@ the service. Tropo also has service in the rest of North America and
 western Europe, though the free developer account is not available.
 If you're outside Tropo's service area, you'll have to use another
 provider, but hopefully this tutorial will still show you the basics
-of how it works.
+of how using an online provider works.
 
 Get an account
 --------------
@@ -86,7 +86,7 @@ Add the Tropo RapidSMS backend to your requirements by editing
     Django>=1.5,<1.6
     RapidSMS==0.14.0
     South==0.7.6
-    rapidsms-tropo==0.2.0
+    rapidsms-tropo>=0.2.0
 
 Then use pip to install it:
 
@@ -96,8 +96,6 @@ Then use pip to install it:
 
 That will pull in a few dependencies of rapidsms-tropo.
 
-.. _Tropo: https://www.tropo.com/
-.. _Tropo RapidSMS backend: https://pypi.python.org/pypi/rapidsms-tropo/
 
 Configure RapidSMS and the backend
 ----------------------------------
@@ -128,10 +126,10 @@ You'll need to add or change a few settings in your application.
 
 URLs:
     Add a URL definition for the messaging URL that you configured in
-    your Tropo app on the Tropo site.  It should invoke the Tropo
-    backend's view for receiving messages, and pass the name of the
-    backend you used in :setting:`INSTALLED_BACKENDS`. The URL pattern
-    should match the URL you configured at Tropo, like this:
+    your Tropo app on the Tropo site.  It should call the Tropo
+    backend's view for receiving messages (``rtropo.views.message_received``),
+    and pass the name of the backend you used in :setting:`INSTALLED_BACKENDS`.
+    The URL pattern should match the URL you configured at Tropo, like this:
 
 .. code-block:: python
 
@@ -205,7 +203,10 @@ shortly by something like this:
 
     #TROPO#: Received non-2XX status code on Tropo-Thread-163cd6755723938b4b19003576b16212 [url=http://home.example.com/tropo/, code=500]
 
-That indicates that the request got a status code of 500.
+That indicates that the request got a response status code of 500
+from your app. If you see this, you'll have to go back to your app
+and add more logging or find another way to determine what's going
+wrong when Tropo calls your app.
 
 What you'd like to see instead would be a log message like this:
 
@@ -268,3 +269,11 @@ successful:
     #MRCP#: (i)RTSP/1.0 200 OK\r\nSession: 1368809694451-15745b70-b9b143c0-00000585\r\nCseq: 3\r\nContent-Type: application/mrcp\r\nContent-Length: 38\r\n\r\nMRCP/1.0 141650001 200 IN-PROGRESS\r\n\r\n #[1368809694451-15745b70-b9b143c0-00000585][10.6.69.204:10074][10.6.69.204:59469][4602a1bcfe5482f8b25066886e8a7496][456902][77104]
 
 Again, we can ignore most of that, but "200 OK" is a good sign.
+
+Next steps
+----------
+
+NOW WHAT?
+
+.. _Tropo: https://www.tropo.com/
+.. _Tropo RapidSMS backend: https://pypi.python.org/pypi/rapidsms-tropo/
