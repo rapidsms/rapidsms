@@ -71,6 +71,9 @@ Using handlers has three steps:
 2. Add `"rapidsms.contrib.handlers"` to :setting:`INSTALLED_APPS`.
 3. Add the full classnames of each of your new classes to :setting:`RAPIDSMS_HANDLERS`.
 
+By the way, RapidSMS handlers are just implemented as another app,
+``rapidsms.contrib.handlers``. Which shows what you can do with
+a RapidSMS app.
 
 Keyword Handlers
 ~~~~~~~~~~~~~~~~
@@ -85,13 +88,19 @@ respond with a message telling them how to get more help. If someone
 sends "HELP something", we'll give them more specific help if we can,
 and otherwise send the same response we would to a bare "HELP".
 
+Create a file ``myhandlers.py`` with the following content:
+
 .. code-block:: python
 
-    # mypackage/help.py
+    # myhandlers.py
 
     from rapidsms.contrib.handlers import KeywordHandler
 
-    from somewhere import help
+    help_text = {
+        'aaa': 'Help for aaa',
+        'bbb': 'Help for bbb',
+        'ccc': 'Help for ccc',
+    }
 
 
     class HelpHandler(KeywordHandler):
@@ -108,11 +117,11 @@ and otherwise send the same response we would to a bare "HELP".
             """Invoked if someone sends `HELP <any text>`"""
             text = text.strip().lower()
             if text == 'aaa':
-                self.respond(help['aaa'])
+                self.respond(help_text['aaa'])
             elif text == 'bbb':
-                self.respond(help['bbb])
+                self.respond(help_text['bbb'])
             elif text == 'ccc':
-                self.respond(help['ccc'])
+                self.respond(help_text['ccc'])
             else:
                 self.help()
 
@@ -128,7 +137,7 @@ and add your new class to :setting:`RAPIDSMS_HANDLERS`::
 
     RAPIDSMS_HANDLERS = [
         ...
-        "mypackage.help.HelpHandler",
+        "myhandlers.HelpHandler",
         ...
     ]
 
@@ -169,20 +178,42 @@ Here's an example from the :py:class:`~rapidsms.contrib.handlers.PatternHandler`
 documentation.  You can send a message like "5 plus 3" and it will respond
 "5+3 = 8". Note that you cannot send "5 + 3" or "5plus3" or "5 plus 3 ";
 none of those match this simple regular expression, so this handler won't
-be invoked::
+be invoked.
 
-    >>> class SumHandler(PatternHandler):
-    ...    pattern = r'^(\d+) plus (\d+)$'
-    ...
-    ...    def handle(self, a, b):
-    ...        a, b = int(a), int(b)
-    ...        total = a + b
-    ...
-    ...        self.respond(
-    ...            "%d+%d = %d" %
-    ...            (a, b, total))
+Add this code to your ``myhandlers.py`` file:
+
+.. code-block:: python
+
+    from rapidsms.contrib.handlers import PatternHandler
+
+    class SumHandler(PatternHandler):
+        pattern = r'^(\d+) plus (\d+)$'
+
+        def handle(self, a, b):
+            a, b = int(a), int(b)
+            total = a + b
+
+            self.respond(
+                "%d+%d = %d" %
+                (a, b, total))
 
     >>> SumHandler.test("1 plus 2")
     ['1+2 = 3']
+
+
+and add the new class to :setting:`RAPIDSMS_HANDLERS`::
+
+    RAPIDSMS_HANDLERS = [
+        ...
+        "myhandlers.HelpHandler",
+        "myhandlers.SumHandler",
+        ...
+    ]
+
+Restart your app, and try sending some messages.  ``1 plus 2``
+should get a response of ``1+2 = 3``.  ``1+2`` should get the default
+response, because it doesn't match any of the patterns or keywords
+of your defined handlers, and no other RapidSMS app is going to
+process the message.
 
 Continue with :ref:`tutorial03`.

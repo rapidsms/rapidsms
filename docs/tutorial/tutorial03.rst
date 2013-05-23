@@ -50,7 +50,7 @@ of votes for it so far.
 Application Design
 ------------------
 
-Even a simple application like this can demonstrate a important design
+Even a simple application like this can demonstrate an important design
 principle for RapidSMS applications.
 
 Instead of adding to a candidate's vote count each time a vote arrived,
