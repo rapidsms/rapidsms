@@ -57,6 +57,7 @@ Release: v\ |release|. (:doc:`Installation <intro/install/index>`, :doc:`Release
 * :doc:`Front end <topics/frontend>` - Creating a web interface for your app
 * :doc:`Testing <topics/testing>`
 * :doc:`Scheduling Tasks with Celery <topics/celery>`
+* :doc:`Packaging a RapidSMS application for re-use <topics/packaging>`
 
 **Provisioning & Deploying Your Project**
 
