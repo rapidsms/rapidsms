@@ -11,6 +11,11 @@ What's New
 
  * :ref:`messages_to_users` are displayed at the top of the page if you're
    using the RapidSMS base template.
+ * :setting:`RAPIDSMS_HANDLERS` is a simpler way to control which handlers
+   are loaded. :setting:`INSTALLED_HANDLERS`, :setting:`EXCLUDED_HANDLERS`,
+   and :setting:`RAPIDSMS_HANDLERS_EXCLUDE_APPS` are deprecated. For more
+   information see :ref:`handlers-discovery`.
+ * :ref:`tutorial_overview` added.
  * ...
 
  .. _backwards-incompatible-changes-0.15.0:

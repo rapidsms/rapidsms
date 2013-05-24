@@ -1,3 +1,5 @@
+.. _default-app:
+
 ========================
 rapidsms.contrib.default
 ========================
