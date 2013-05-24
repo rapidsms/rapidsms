@@ -3,10 +3,6 @@
 RapidSMS Tutorial Part 3
 ========================
 
-*This tutorial is a draft.* Comments are welcome in `this discussion`_ on Google Groups.
-
-.. _this discussion: https://groups.google.com/forum/#!topic/rapidsms-dev/NLd3lUinUFQ
-
 So far, nothing we've done really requires Django. Let's create a RapidSMS
 application that uses Django's abilities to store data.
 

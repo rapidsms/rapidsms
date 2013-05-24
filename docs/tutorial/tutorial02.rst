@@ -3,11 +3,6 @@
 RapidSMS Tutorial Part 2
 ========================
 
-*This tutorial is a draft.* Comments are welcome in `this discussion`_ on Google Groups.
-
-.. _this discussion: https://groups.google.com/forum/#!topic/rapidsms-dev/NLd3lUinUFQ
-
-
 We'll continue the tutorial by introducing the RapidSMS default app.
 Then we'll show how using RapidSMS handlers can handle parsing
 incoming messages for you.

@@ -13,6 +13,7 @@ What's New
    are loaded. :setting:`INSTALLED_HANDLERS`, :setting:`EXCLUDED_HANDLERS`,
    and :setting:`RAPIDSMS_HANDLERS_EXCLUDE_APPS` are deprecated. For more
    information see :ref:`handlers-discovery`.
+ * :ref:`tutorial_overview` added.
  * ...
 
  .. _backwards-incompatible-changes-0.15.0:
