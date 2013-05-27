@@ -18,4 +18,16 @@ What's New
 Backwards-incompatible changes in RapidSMS 0.15.0
 =================================================
 
-* ...
+* Style files removed from base: icons.css, modules.css, splits.css, and
+  tables.css. These are no longer used in the new bootstrap-based pages,
+  so they've been removed from the RapidSMS base style files and are no longer
+  loaded from the base template.
+
+  The old ``locations`` contrib app does still use them, so they've been
+  moved into that app and that app's base template changed to load them from
+  there.
+
+  If you have an app that's still using any of these styles, and aren't ready
+  to convert your app to the new, bootstrap-based look, it's probably
+  simplest for you to copy them from ``locations`` into your app and load
+  them from your app's base template.
