@@ -13,9 +13,9 @@ What's New
    using the RapidSMS base template.
  * :setting:`RAPIDSMS_HANDLERS` is a simpler way to control which handlers
    are loaded. :setting:`INSTALLED_HANDLERS`, :setting:`EXCLUDED_HANDLERS`,
-   and :setting:`RAPIDSMS_HANDLERS_EXCLUDE_APPS` are deprecated. For more
-   information see :ref:`handlers-discovery`.
- * :ref:`tutorial_overview` added.
+   and :setting:`RAPIDSMS_HANDLERS_EXCLUDE_APPS` are deprecated, and
+   :setting:`INSTALLED_APPS` are no longer searched automatically for
+   handlers. For more information see :ref:`handlers-discovery`.
  * ...
 
  .. _backwards-incompatible-changes-0.15.0:

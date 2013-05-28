@@ -13,7 +13,17 @@ Installation
 ============
 
 1. `registration` depends on :doc:`handlers <handlers>`, so first install
-`handlers`.
+`handlers` by adding ``"rapidsms.contrib.handers"`` to
+:setting:`INSTALLED_APPS` in your settings file:
+
+.. code-block:: python
+    :emphasize-lines: 3
+
+    INSTALLED_APPS = [
+        ...
+        "rapidsms.contrib.handlers",
+        ...
+    ]
 
 2. Add ``"rapidsms.contrib.registration"`` to
 :setting:`INSTALLED_APPS` in your settings file:
@@ -23,6 +33,7 @@ Installation
 
     INSTALLED_APPS = [
         ...
+        "rapidsms.contrib.handlers",
         "rapidsms.contrib.registration",
         ...
     ]
@@ -38,7 +49,17 @@ Installation
         ...
     )
 
-4. (Optional) add `registration` link to the nav bar:
+4. Add `registration`'s handlers to :setting:`RAPIDSMS_HANDLERS`:
+
+.. code-block:: python
+
+    RAPIDSMS_HANDLERS = [
+        ...,
+        "rapidsms.contrib.registration.handlers.language.LanguageHandler",
+        "rapidsms.contrib.registration.handlers.register.RegisterHandler",
+    ]
+
+5. (Optional) add `registration` link to the nav bar:
 
 
 .. code-block:: html

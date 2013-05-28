@@ -13,14 +13,23 @@ RapidSMS project.
 Installation
 ============
 
-To use either of `EchoHandler` or `PingHandler`, you must add both
-``"rapidsms.contrib.handlers"`` and ``"rapidsms.contrib.echo"`` to
+To use either of `EchoHandler` or `PingHandler`, you must add
+``"rapidsms.contrib.handlers"`` to
 :setting:`INSTALLED_APPS` in your settings file::
 
     INSTALLED_APPS = [
         ...
         "rapidsms.contrib.handlers",
-        "rapidsms.contrib.echo",
+        ...
+    ]
+
+Then add the handler classes you want to use to
+:setting:`RAPIDSMS_HANDLERS`::
+
+    RAPIDSMS_HANDLERS = [
+        ...
+        "rapidsms.contrib.echo.handlers.echo.EchoHandler",  # if you want EchoHandler
+        "rapidsms.contrib.echo.handlers.ping.PingHandler",  # if you want PingHandler
         ...
     ]
 
