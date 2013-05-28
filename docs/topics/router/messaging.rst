@@ -77,10 +77,16 @@ messages.
     :show-inheritance:
     :members:
 
+.. _contacts:
+
 Contacts
 --------
 
-Entities with names are represented by Contact objects:
+RapidSMS represents entities that it can communicate with
+using a :py:class:`~rapidsms.models.Contact` object. Each
+Contact has a name. A Contact could represent a person,
+an organization, or any other entity that might have a phone,
+email account, etc.
 
 .. autoclass:: rapidsms.models.Contact
     :show-inheritance:
@@ -93,7 +99,17 @@ Most of a Contact is represented in the ContactBase class:
 Connections
 -----------
 
-Connections are represented by Connection objects:
+RapidSMS might be able to communicate with an entity represented by
+a Contact in multiple ways. The entity could have several phone numbers,
+email addresses, etc.
+
+RapidSMS uses a :py:class:`~rapidsms.models.Connection`
+to represent each way of communicating with a
+Contact. Each Connection specifies a backend to use, and how the entity
+is identified on that backend. The identifier is called an ``identity``,
+and depending on the backend, it could be a phone number, email address,
+or something else. Most RapidSMS code should not make any assumptions
+about the format of identities.
 
 .. autoclass:: rapidsms.models.Connection
     :show-inheritance:

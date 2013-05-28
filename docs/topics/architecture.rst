@@ -35,6 +35,10 @@ For example, a registration application may provide a messaging protocol for
 users to register themselves into the system. In general, you'll probably be writing applications more than anything else. Please see the
 :doc:`application documentation <applications/index>` for more information.
 
+RapidSMS represents the entities it communicates with using
+:ref:`contacts`, which you'll also want to understand before writing
+applications.
+
 .. _backend-overview:
 
 Backends
