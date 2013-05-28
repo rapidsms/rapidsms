@@ -12,7 +12,7 @@ Writing RapidSMS Applications
     /topics/frontend
     /topics/testing
     /topics/celery
-
+    /topics/packaging
 
 
 Creating new SMS functionality can be done in a few simple steps:
@@ -24,7 +24,7 @@ Creating new SMS functionality can be done in a few simple steps:
 The most basic app could look like::
 
     from rapidsms.apps.base import AppBase
- 
+
     class App(AppBase):
         def handle(self, message):
             message.respond("hello world")
