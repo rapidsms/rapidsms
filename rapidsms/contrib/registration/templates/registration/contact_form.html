@@ -19,9 +19,18 @@
             {% endfor %}
             {% csrf_token %}
             <div class="submit">
-                <input type="submit" name="submit" class="btn btn-primary" value="Save Contact" />
-                {% if contact %}
-                    <input type="submit" name="submit" class="btn btn-primary" value="Delete Contact" />
+                <input type="submit" name="submit" class="btn btn-success" value="Save Contact" />
+                {% if contact and contact.pk %}
+                    <div class="btn-group">
+                        <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">Delete Contact
+                            <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <input type="submit" name="delete_contact" class="btn btn-danger " value="Really Delete Contact" />
+                            </li>
+                        </ul>
+                    </div>
                 {% endif %}
             </div>
         </form>
