@@ -60,7 +60,14 @@ class KeywordHandler(BaseHandler):
     @classmethod
     def _keyword(cls):
         if hasattr(cls, "keyword") and cls.keyword:
-            prefix = r"^\s*(?:%s)(?:[\s,;:]+(.+))?$" % (cls.keyword)
+            # The 'keyword' is inside non-grouping parentheses so that a
+            # user could set the keyword to a regex - e.g.
+            # keyword = r'one|two|three'
+            prefix = r"^\s*(?# DISCARD LEADING WHITESPACE)" \
+                     r"(?:{keyword})(?# THE KEYWORD OR REGEX)" \
+                     r"(?:[\s,;:]*)(?# CONSUME ANY WHITESPACE , ; or :)" \
+                     r"([^\s,;:].*)?(?# CAPTURE REST OF LINE IF ANY)" \
+                     r"$".format(keyword=cls.keyword)
             return re.compile(prefix, re.IGNORECASE)
         raise HandlerError('KeywordHandler must define a keyword.')
 

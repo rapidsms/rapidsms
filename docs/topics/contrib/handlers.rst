@@ -81,12 +81,27 @@ message, `help` is called instead. For example::
     > light something else
     < Send LIGHT ON or LIGHT OFF.
 
+The handler also treats ``,``, ``:``, and ``;`` after the keyword the same
+as whitespace. For example::
+
+    > light
+    < Send LIGHT ON or LIGHT OFF.
+    > light:on
+    < The light is now turned on.
+    > light, off
+    < Thanks for turning off the light!
+    > light :,; on
+    < The light is now turned on.
+
 .. TIP::
    Technically speaking, the incoming message text is compared to a regular
    expression pattern::
 
-       pattern = re.compile(r"^\s*(?:%s)(?:[\s,;:]+(.+))?$" % keyword,
-                            re.IGNORECASE)
+        regex = r"^\s*(?# DISCARD LEADING WHITESPACE)" \
+                 r"(?:{keyword})(?# THE KEYWORD OR REGEX)" \
+                 r"(?:[\s,;:]*)(?# CONSUME ANY WHITESPACE , ; or :)" \
+                 r"([^\s,;:].*)?(?# CAPTURE REST OF LINE IF ANY)" \
+                 r"$".format(keyword=cls.keyword)
 
    The most common use case is to look for a single exact-match keyword.
    However, one could also match multiple keywords, for example
