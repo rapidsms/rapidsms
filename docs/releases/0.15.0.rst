@@ -16,6 +16,7 @@ What's New
    and :setting:`RAPIDSMS_HANDLERS_EXCLUDE_APPS` are deprecated, and
    :setting:`INSTALLED_APPS` are no longer searched automatically for
    handlers. For more information see :ref:`handlers-discovery`.
+ * Added example of :ref:`contributing-fix`.
  * ...
 
  .. _backwards-incompatible-changes-0.15.0:

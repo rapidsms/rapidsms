@@ -24,6 +24,7 @@ And, of course, you can help out by working *on* RapidSMS.
 
 * Open `pull requests`_ for features and bug fixes against the
   `develop` branch.  We use the `Gitflow`_ model for our development.
+  See :ref:`Contributing a Fix <contributing-fix>` for more on this.
 
 * Comment on open issues and pull requests. Try the changes yourself and
   report on how well they work in the issue or pull request.
@@ -50,7 +51,8 @@ Submitting code
    and `Scheduling`_ are good examples.
 
 #. Fork the repository on GitHub to start making your changes (relative to the
-   `develop` branch).
+   `develop` branch). See :ref:`Contributing a Fix <contributing-fix>`
+   for more on this.
 
 #. Follow the RapidSMS :ref:`coding standards <coding-standards>` and run the
    :ref:`PEP 8 adherence tool <pep-eight-adherence>`.
@@ -71,6 +73,7 @@ Submitting code
 
 #. Open a pull request against the `develop` branch (see `Gitflow`_), and
    request feedback on `rapidsms-dev`_.
+   See :ref:`Contributing a Fix <contributing-fix>` for more on this.
 
 #. Sign the :ref:`Contributor License Agreement <contributor-license-agreements>`.
 
@@ -286,6 +289,7 @@ If you're interested in helping out, a good starting point is with the
 .. toctree::
     :maxdepth: 2
 
+    contributing-fix
     license
     testing
     /intro/tutorial-videos

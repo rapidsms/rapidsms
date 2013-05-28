@@ -88,6 +88,7 @@ Release: v\ |release|. (:doc:`Installation <intro/install/index>`, :doc:`Release
 **The RapidSMS open-source project**
 
 * :doc:`How to get involved <internals/contributing/index>`
+* :doc:`Contributing a fix <internals/contributing/contributing-fix>`
 * :doc:`Running the RapidSMS core test suite <internals/contributing/testing>`
 * :doc:`Release notes and upgrading instructions <releases/index>`
 * :doc:`Release process <internals/contributing/release-process>` - The release cycle
