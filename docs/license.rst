@@ -1,3 +1,5 @@
+.. _rapidsms-license:
+
 RapidSMS License
 ================
 

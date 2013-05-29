@@ -8,3 +8,4 @@ Documentation for people hacking on RapidSMS itself.
 
     roadmap/rapidsms-1.0
     roadmap/interoperability
+    /intro/tutorial-videos

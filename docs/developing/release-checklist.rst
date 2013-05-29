@@ -1,3 +1,5 @@
+.. _release-checklist:
+
 RapidSMS Release Checklist
 ==========================
 This is a checklist for releasing a new version of RapidSMS.
@@ -6,7 +8,7 @@ This is intended for someone who has been designated the release manager,
 the person responsible for making an official release of RapidSMS.
 
 For a higher-level overview of the whole release cycle, see the
-:doc:`Release Process </internals/contributing/release-process>`.
+:ref:`Release Process <release-process>`.
 
 Git branches
 ------------
