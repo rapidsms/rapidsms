@@ -4,7 +4,11 @@ RapidSMS Tutorial Part 4
 ========================
 
 In this part of the tutorial, we'll show one way to move beyond the
-message tester to send and receive text message with real phones.
+message tester to send and receive text messages with real phones.
+
+We won't be creating any new RapidSMS apps in this part. Instead, we'll
+update our settings so that our existing apps can send and receive
+actual text messages.
 
 Online Providers
 ----------------
@@ -15,6 +19,32 @@ provide an HTTP interface that lets you send messages, and a phone
 number that can receive messages. When a message is received, the
 service will deliver it to your application via HTTP request as
 well.
+
+There are other options, such as physical devices that connect
+to your computer.  You can get an idea of some of the options
+by looking at the :ref:`rapidsms-backends` documentation.
+
+Network considerations
+----------------------
+
+For an online provider to deliver messages to your site, the provider has to
+be able to connect to your site. If your site is not going to be
+accessible on the public Internet, you'll have to find an alternative
+way to send and receive messages.
+
+Even if your site will be on the Internet, you might be doing your
+development behind a firewall, where your provider cannot connect
+to your development system. This can make testing your site difficult.
+
+If you can't use a test system that's accessible on the Internet,
+and you want to receive messages on your development system,
+you'll have to get an externally visible port forwarded to
+the port on your development system that your site is running on.
+
+With some providers, you can at least send outgoing messages from
+behind a firewall without having to arrange for incoming connections
+to work. Unfortunately, the one we're going to use as an example
+isn't one of them. It has other advantages though.
 
 Tropo
 -----
@@ -28,6 +58,17 @@ If you're outside Tropo's service area, you'll have to use another
 provider, but hopefully this tutorial will still show you the basics
 of how using an online provider works.
 
+Before we continue, we should mention one peculiarity of Tropo's web API
+(Application Programming Interface). All of these web providers will
+make HTTP requests to your application in order to deliver incoming
+messages to you. Tropo also has to make a request to your application
+when you want to send a message. For that to work, your application has
+to make a call first to Tropo, asking Tropo to call your app, so that
+then you can send a message. The Tropo backend for RapidSMS handles
+all that for you, so you don't need to worry about in when things
+are working, but that'll be good to know if you need to debug it when
+it's not working.
+
 Get an account
 --------------
 
@@ -38,6 +79,9 @@ Create an app at Tropo
 ----------------------
 
 Go to https://www.tropo.com/applications/ and create a new WebAPI application.
+We'll refer to this application from here on as your `Tropo app`, to
+distinguish it from your RapidSMS apps.
+
 Configure it as follows:
 
 Tropo WebAPI Application Name:
@@ -48,14 +92,15 @@ What URL powers voice calls to your app?
     messaging URL you enter into the next field.
 What URL powers SMS/messaging calls to your app?
     This is a URL that Tropo will make requests to when interacting with
-    your app.  You can use something like
-    ``https://yourhost.example.com/tropo``.  We'll talk more about this
+    your RapidSMS app, as we mentioned before.  You can use something like
+    ``https://yourhost.example.com/tropo``.  This needs to correspond to
+    a URL configuration in your RapidSMS app. We'll talk more about this
     when we get to configuration.
 Phone Numbers:
     You'll need a ``Voice & Messaging`` phone number. Your app will
     receive text messages at this number, and will use this number as
     the source number when sending messages.  Click ``Add a new
-    phone number`` if needed.  After adding this number, make a note
+    phone number`` to add a number.  After adding this number, make a note
     of it.
 
     You can ignore the other phone numbers.
@@ -90,7 +135,7 @@ Then use pip to install it:
 
     $ pip install -r requirements/base.txt
 
-That will pull in a few dependencies of rapidsms-tropo.
+That will pull in rapidsms-tropo, along with its dependencies.
 
 
 Configure RapidSMS and the backend
@@ -121,11 +166,15 @@ You'll need to add or change a few settings in your application.
     }
 
 URLs:
-    Add a URL definition for the messaging URL that you configured in
+    Tropo will be making HTTP requests to your RapidSMS site, so you'll need
+    to configure a URL for it to call. Edit your site's top-level urls.py
+    file, and add a URL definition for the messaging URL that you configured in
     your Tropo app on the Tropo site.  It should call the Tropo
     backend's view for receiving messages (``rtropo.views.message_received``),
     and pass the name of the backend you used in :setting:`INSTALLED_BACKENDS`.
-    The URL pattern should match the URL you configured at Tropo, like this:
+    The URL pattern should match the URL you configured at Tropo.  For example,
+    if you configured the URL ``https://yourhost.example.com/tropo/`` in
+    your Tropo app, then configure a Django URL like this:
 
 .. code-block:: python
 
@@ -142,10 +191,9 @@ URLs:
 Try it out
 ----------
 
-Start your app, send a text message to your phone number at Tropo,
-and you should get a response from your app, probably the typical
-"RapidSMS could not understand your message" unless you've changed
-it.
+Start your site.  Get out your cell phone, and send a text message to
+your phone number at Tropo. Send "ping" and you should get back
+"pong", if the application we added in part 1 is still configured.
 
 Troubleshooting
 ---------------
