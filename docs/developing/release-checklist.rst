@@ -172,6 +172,9 @@ Back on the ``develop`` branch, we can now start on the next release:
   to label it at the top as under development.
 * Update ``rapidsms/docs/release/index.rst`` to mark the next release as
   under development.
+* Create a new Github milestone with the next release number, e.g.
+  "v0.15.0", so that developers can start targeting work for the
+  next release.
 
 Now we can start merging features intended for the next release. Review
 `Git Flow <http://nvie.com/posts/a-successful-git-branching-model/>`_
