@@ -18,6 +18,8 @@ Starting a New RapidSMS Project
 
 .. _installing-rapidsms-project-template:
 
+.. _rapidsms-project-template:
+
 Installing the RapidSMS project template
 ----------------------------------------
 

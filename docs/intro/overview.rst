@@ -49,7 +49,7 @@ This is just the surface
 
 This has been only a quick overview of RapidSMS's functionality.  The next
 obvious steps are for you to :doc:`install RapidSMS <install/index>`, read the
-tutorial and :doc:`join the community <../internals/contributing/index>`.
+:doc:`tutorial </tutorial/index>`, and :ref:`join the community <joining>`.
 Thanks for your interest!
 
 .. _Python: http://python.org/
