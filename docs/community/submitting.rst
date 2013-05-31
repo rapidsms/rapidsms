@@ -32,6 +32,13 @@ Write the code for your change.
 
 Follow the RapidSMS :ref:`coding-standards`.
 
+Sign the CLA
+------------
+
+Before your work can be accepted into the project, you'll have to
+sign a
+:ref:`Contributer License Agreement <contributor-license-agreements>`.
+
 Ask for it to be added
 ----------------------
 

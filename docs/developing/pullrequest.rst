@@ -7,7 +7,12 @@ To ask for a change you've made in your own RapidSMS repository to be
 merged into the official repository, you make a pull request.
 
 If you're already familiar with Github and pull requests, here's all
-you need to know: open a pull request against the ``develop`` branch of
+you need to know:
+
+1. Sign a
+:ref:`Contributer License Agreement <contributor-license-agreements>`.
+
+2. Open a pull request against the ``develop`` branch of
 the RapidSMS repository (https://github.com/rapidsms/rapidsms).
 
 Otherwise, here are the details.

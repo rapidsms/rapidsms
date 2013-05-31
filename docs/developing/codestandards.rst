@@ -22,12 +22,6 @@ We follow these practices when developing RapidSMS code:
 #. Use :ref:`Python logging <logging>` whenever an error or exception occurs.
    Optionally include debug-level logging.
 
-#. Add the following two lines to the beginning of your files to automatically
-   configure many text editors (VI, Emacs) to do this automatically::
-
-    #!/usr/bin/env python
-    # vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
-
 #. Write a test which shows that the bug was fixed or that the feature works as
    expected.
 

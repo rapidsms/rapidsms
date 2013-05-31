@@ -22,9 +22,9 @@ So - be polite, give each other the benefit of the doubt, and try to
 communicate clearly but be ready to try another approach if your
 point doesn't seem to be getting across.
 
+* :ref:`joining`
 * :ref:`submitting`
 * :ref:`reviewing`
-* :ref:`joining`
 * :ref:`core-team`
 * :ref:`release-process`
 
@@ -32,8 +32,8 @@ point doesn't seem to be getting across.
 .. toctree::
     :hidden:
 
+    joining
     submitting
     reviewing
-    joining
     coreteam
     release-process
