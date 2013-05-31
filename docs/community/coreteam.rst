@@ -17,7 +17,7 @@ you should be well known anyway.
 You can view the current core team on the
 `RapidSMS GitHub project page`_.
 
-.. _RapidSMS project page: https://github.com/rapidsms?tab=members
+.. _RapidSMS GitHub project page: https://github.com/rapidsms?tab=members
 
 There are some distinguished roles on the team. Note that any
 person can play multiple roles.
