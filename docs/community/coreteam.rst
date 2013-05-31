@@ -14,6 +14,11 @@ someone on the core team might decide to give you access. If not,
 feel free to ask on the ``rapidsms-dev`` list, where by this time
 you should be well known anyway.
 
+You can view the current core team on the
+`RapidSMS GitHub project page`_.
+
+.. _RapidSMS project page: https://github.com/rapidsms?tab=members
+
 There are some distinguished roles on the team. Note that any
 person can play multiple roles.
 
