@@ -22,16 +22,19 @@ RapidSMS Documentation
     intro/overview
     intro/install/index
     tutorial/index
+    topics/help
     topics/architecture
     topics/applications/index
     topics/backends/index
     topics/router/index
     design/apps
     topics/deployment/index
+    developing/index
+    community/index
     topics/contrib/index
-    internals/contributing/index
     releases/index
     internals/index
+    license
 
 Release: v\ |release|. (:doc:`Installation <intro/install/index>`, :doc:`Release Notes <releases/index>`)
 
@@ -39,7 +42,9 @@ Release: v\ |release|. (:doc:`Installation <intro/install/index>`, :doc:`Release
 
 * :doc:`Overview <intro/overview>`
 * :doc:`Installation <intro/install/index>`
+* :doc:`Release notes and upgrading instructions <releases/index>`
 * :doc:`Tutorial <tutorial/index>`
+* :doc:`Getting help <topics/help>`
 
 **Architecture**
 
@@ -67,6 +72,12 @@ Release: v\ |release|. (:doc:`Installation <intro/install/index>`, :doc:`Release
 * :doc:`Deploying <topics/deployment/deploying>`
 * :doc:`Scaling <topics/deployment/scaling>`
 
+**The RapidSMS open-source project**
+
+* :ref:`developing-rapidsms`
+* :ref:`rapidsms-community`
+* :ref:`License <rapidsms-license>` - How RapidSMS is licensed
+
 **RapidSMS contrib applications**
 
 * :doc:`default <topics/contrib/default>` - Sends a pre-defined default
@@ -86,15 +97,6 @@ Release: v\ |release|. (:doc:`Installation <intro/install/index>`, :doc:`Release
 * :doc:`registration <topics/contrib/registration>` - Provides a web interface
   for creating, updating, and deleting RapidSMS contacts.
 
-**The RapidSMS open-source project**
-
-* :doc:`How to get involved <internals/contributing/index>`
-* :doc:`Contributing a fix <internals/contributing/contributing-fix>`
-* :doc:`Running the RapidSMS core test suite <internals/contributing/testing>`
-* :doc:`Release notes and upgrading instructions <releases/index>`
-* :doc:`Release process <internals/contributing/release-process>` - The release cycle
-* :doc:`Release checklist <internals/contributing/release-checklist>` - How to release a new version
-* :doc:`License <internals/contributing/license>` - How RapidSMS is licensed
 
 Indices and tables
 ------------------

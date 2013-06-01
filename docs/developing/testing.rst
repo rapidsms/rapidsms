@@ -1,5 +1,12 @@
-Running the RapidSMS core test suite
-====================================
+.. _test_suite:
+
+RapidSMS core test suite
+========================
+
+We expect all new and changed code to include tests for the new or changed
+behavior. Having as complete a set of tests as possible is important so
+we can have confidence that when we make a change in one place, we haven't
+broken something else.
 
 RapidSMS uses `nose <http://pypi.python.org/pypi/nose/>`_ to run its test suite
 and provides several configuration options and entry points for continuous

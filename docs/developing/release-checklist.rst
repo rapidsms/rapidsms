@@ -1,12 +1,15 @@
+.. _release-checklist:
+
 RapidSMS Release Checklist
 ==========================
 This is a checklist for releasing a new version of RapidSMS.
 
-This is intended for someone who has been designated the release manager,
+This is intended for someone who has been designated the
+:ref:`release-manager`,
 the person responsible for making an official release of RapidSMS.
 
 For a higher-level overview of the whole release cycle, see the
-:doc:`Release Process </internals/contributing/release-process>`.
+:ref:`Release Process <release-process>`.
 
 Git branches
 ------------
@@ -170,6 +173,9 @@ Back on the ``develop`` branch, we can now start on the next release:
   to label it at the top as under development.
 * Update ``rapidsms/docs/release/index.rst`` to mark the next release as
   under development.
+* Create a new Github milestone with the next release number, e.g.
+  "v0.15.0", so that developers can start targeting work for the
+  next release.
 
 Now we can start merging features intended for the next release. Review
 `Git Flow <http://nvie.com/posts/a-successful-git-branching-model/>`_
