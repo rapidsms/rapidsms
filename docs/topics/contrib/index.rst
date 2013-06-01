@@ -8,7 +8,6 @@ RapidSMS comes with a number of contributed applications.
     default
     echo
     handlers
-    /design/keyword-handler
     httptester
     locations
     messagelog

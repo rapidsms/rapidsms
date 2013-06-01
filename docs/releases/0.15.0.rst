@@ -21,4 +21,6 @@ What's New
    handlers. For more information see :ref:`handlers-discovery`.
  * Added example of :ref:`submitting`.
  * Test class documentation now includes inheritance references. See :class:`rapidsms.tests.harness.RapidTest` for an example.
+ * Expanded documentation on :ref:`contacts`.
+ * Added a documentation stub for :ref:`packaging reusable apps <packaging>`.
  * Updated README with latest Python dependencies.
