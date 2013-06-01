@@ -44,8 +44,8 @@ Dependencies
 
 * `django-nose <http://pypi.python.org/pypi/django-nose>`_
 * `djappsettings <http://pypi.python.org/pypi/djappsettings>`_
-* `djtables <http://pypi.python.org/pypi/djtables>`_
-* `django-selectable <http://pypi.python.org/pypi/django-selectable>`_
+* `djtables <https://pypi.python.org/pypi/django-tables2>`_
+* `django-tables2 <http://pypi.python.org/pypi/django-selectable>`_
 * `requests <https://pypi.python.org/pypi/requests/>`_
 
 
