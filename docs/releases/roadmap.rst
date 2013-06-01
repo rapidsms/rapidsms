@@ -9,7 +9,7 @@ RapidSMS. For a list of official releases, please see the :doc:`index`.
 New RapidSMS website
 --------------------
 
-* *Expected release date:* May, 2013
+* *Expected release date:* July, 2013
 
 **Goals**
 
@@ -20,23 +20,23 @@ New RapidSMS website
 * Migrate existing content to new platform
 
 
-v0.15.0 - Next Release
+v0.15.0
 ----------------------
 
-* *Expected release date:* May, 2013
+* **Tutorial and contributing docs**
+* *Release date:* June 1, 2013
+* `v0.15.0 GitHub Milestone <https://github.com/rapidsms/rapidsms/issues?milestone=7&page=1&state=open>`_
 
 **Goals**
 
 * Write a tutorial similar to the Django tutorial for beginners
-* Finish documentation for new core features
-* Write release notes for v1.0
 * Finish development on outstanding core features and bugs
 
 
 v0.14.0
 -------
 * **Scheduling and deployment**
-* *Expected release date:* April 30, 2013
+* *Release date:* April 30, 2013
 * `v0.14.0 GitHub Milestone <https://github.com/rapidsms/rapidsms/issues?milestone=6&page=1&state=open>`_
 
 **Goals**
