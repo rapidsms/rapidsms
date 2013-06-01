@@ -1,7 +1,7 @@
 .. _rapidsmsdev:
 
-RapidSMS development
-====================
+Getting the code for development
+================================
 
 Here's how you can get the RapidSMS source code and make changes to it.
 

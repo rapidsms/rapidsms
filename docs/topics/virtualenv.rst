@@ -5,7 +5,7 @@ Using virtualenv
 ****************
 
 We highly recommend using `virtualenv`_ and `virtualenvwrapper`_ to work on
-RapidSMS core. These tools provide isolated Python environments, which are more
+RapidSMS. These tools provide isolated Python environments, which are more
 practical than installing packages system wide. They also allow installing
 packages without administrator privileges.
 

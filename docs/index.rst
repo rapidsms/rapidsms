@@ -27,7 +27,15 @@ RapidSMS Documentation
     topics/applications/index
     topics/backends/index
     topics/router/index
-    design/apps
+    topics/virtualenv
+    ref/settings
+    topics/i18n
+    topics/extensible-models
+    topics/frontend
+    topics/logging
+    topics/testing
+    topics/celery
+    topics/packaging
     topics/deployment/index
     developing/index
     community/index
@@ -42,9 +50,9 @@ Release: v\ |release|. (:doc:`Installation <intro/install/index>`, :doc:`Release
 
 * :doc:`Overview <intro/overview>`
 * :doc:`Installation <intro/install/index>`
-* :doc:`Release notes and upgrading instructions <releases/index>`
 * :doc:`Tutorial <tutorial/index>`
 * :doc:`Getting help <topics/help>`
+* :doc:`Release notes and upgrading instructions <releases/index>`
 
 **Architecture**
 
@@ -55,11 +63,12 @@ Release: v\ |release|. (:doc:`Installation <intro/install/index>`, :doc:`Release
 
 **The development process**
 
-* :doc:`Writing RapidSMS Applications <design/apps>`
+* :doc:`Virtual environments <topics/virtualenv>`
 * :doc:`Settings <ref/settings>`
 * :doc:`Internationalization <topics/i18n>`
 * :doc:`Extending core RapidSMS models <topics/extensible-models>`
 * :doc:`Front end <topics/frontend>` - Creating a web interface for your app
+* :doc:`Logging <topics/logging>`
 * :doc:`Testing <topics/testing>`
 * :doc:`Scheduling Tasks with Celery <topics/celery>`
 * :doc:`Packaging a RapidSMS application for re-use <topics/packaging>`

@@ -20,9 +20,7 @@ community works.
 * :ref:`pullrequest`
 * :ref:`coding-standards`
 * :ref:`writing-documentation`
-* :ref:`logging`
 * :ref:`test_suite`
-* :ref:`using-virtualenv`
 * :ref:`release-checklist`
 
 .. toctree::
@@ -32,9 +30,7 @@ community works.
     pullrequest
     codestandards
     documentation
-    logging
     testing
-    virtualenv
     release-checklist
 
 .. _open source: http://opensource.org/
