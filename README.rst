@@ -9,7 +9,7 @@ under development by `the RapidSMS Team`_.
 .. image::
     https://secure.travis-ci.org/rapidsms/rapidsms.png?branch=master
     :alt: Build Status
-    :target: https://secure.travis-ci.org/rapidsms/rapidsms
+    :target: http://travis-ci.org/rapidsms/rapidsms
 
 .. _Django: http://djangoproject.com
 .. _UNICEF: http://unicef.org
