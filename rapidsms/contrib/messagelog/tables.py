@@ -11,3 +11,6 @@ class MessageTable(tables.Table):
         model = Message
         exclude = ('id', )
         order_by = ('-date', )
+        attrs = {
+            'class': 'table table-striped table-bordered table-condensed'
+        }
