@@ -67,6 +67,26 @@ class TestKeywordHandler(RapidTest):
         """Handler should call help() if only whitespace is after keyword."""
         self._check_dispatch('hello      ', EchoKeywordHandler.HELP_TEXT)
 
+    def test_keyword_and_one_space(self):
+        """Handler should call help() if only one space is after keyword."""
+        self._check_dispatch('hello ', EchoKeywordHandler.HELP_TEXT)
+
+    def test_punctuation(self):
+        """Handler treats comma colon and semicolon same as whitespace
+         between keyword and rest of line"""
+        self._check_dispatch('hello,', EchoKeywordHandler.HELP_TEXT)
+        self._check_dispatch('hello,,', EchoKeywordHandler.HELP_TEXT)
+        self._check_dispatch('hello,world', 'world')
+        self._check_dispatch('hello:', EchoKeywordHandler.HELP_TEXT)
+        self._check_dispatch('hello::', EchoKeywordHandler.HELP_TEXT)
+        self._check_dispatch('hello:world', 'world')
+        self._check_dispatch('hello;', EchoKeywordHandler.HELP_TEXT)
+        self._check_dispatch('hello;;', EchoKeywordHandler.HELP_TEXT)
+        self._check_dispatch('hello;world', 'world')
+        self._check_dispatch('hello,;:', EchoKeywordHandler.HELP_TEXT)
+        self._check_dispatch('hello,;,;:', EchoKeywordHandler.HELP_TEXT)
+        self._check_dispatch('hello;,:,:world', 'world')
+
     def test_match(self):
         """
         Handler should call handle() if there is non-whitespace text after
@@ -78,6 +98,10 @@ class TestKeywordHandler(RapidTest):
         """Handler should use case-insensitive match."""
         self._check_dispatch('HeLlO World', 'World')
 
+    def test_intermediate_whitespace(self):
+        """All whitespace between keyword and text is ignored"""
+        self._check_dispatch('hello            world', 'world')
+
     def test_trailing_whitespace(self):
         """Trailing whitespace should be passed to handler."""
         self._check_dispatch('hello world     ', 'world     ')
@@ -85,6 +109,12 @@ class TestKeywordHandler(RapidTest):
     def test_leading_whitespace(self):
         """Prepended whitespace should not be passed to the handler."""
         self._check_dispatch('    hello world', 'world')
+
+    def test_rest_of_line(self):
+        """Everything from the first char that's not space comma colon
+        or semicolon is passed to the handler"""
+        self._check_dispatch('hello x , : ; sdf    ,:   ',
+                             'x , : ; sdf    ,:   ')
 
 
 class TestPatternHandler(RapidTest):
