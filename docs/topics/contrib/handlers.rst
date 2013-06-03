@@ -95,17 +95,15 @@ as whitespace. For example::
 
 .. TIP::
    Technically speaking, the incoming message text is compared to a regular
-   expression pattern::
-
-        regex = r"^\s*(?# DISCARD LEADING WHITESPACE)" \
-                 r"(?:{keyword})(?# THE KEYWORD OR REGEX)" \
-                 r"(?:[\s,;:]*)(?# CONSUME ANY WHITESPACE , ; or :)" \
-                 r"([^\s,;:].*)?(?# CAPTURE REST OF LINE IF ANY)" \
-                 r"$".format(keyword=cls.keyword)
+   expression pattern.
 
    The most common use case is to look for a single exact-match keyword.
    However, one could also match multiple keywords, for example
    ``keyword = "register|reg|join"``.
+
+   However, due to how we build the final regular expression,
+   capturing matches using grouping in the keyword regular expression
+   won't work. If you need that, use the `PatternHandler`.
 
 All non-matching messages are silently ignored to allow other applications and
 handlers to catch them.
