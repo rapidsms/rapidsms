@@ -14,8 +14,16 @@ here.
 We recommend using at least the following classifiers on your package::
 
     Framework :: Django
+    Intended Audience :: Developers
+    Programming Language :: Python
     Topic :: Communications
     Topic :: Software Development :: Libraries :: Python Modules
+
+Depending on your project, also consider::
+
+    Operating System :: OS Independent
+    Topic :: Internet :: WWW/HTTP :: Dynamic Content
+    Environment :: Web Environment
 
 You'll also need to give your package a license that allows others to
 use it. RapidSMS uses the `BSD license`_ and we recommend it if you don't
