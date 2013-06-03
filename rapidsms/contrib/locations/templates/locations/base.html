@@ -1,6 +1,14 @@
 {% extends "base.html" %}
 {% load url from future %}
 
+{% block stylesheets %}
+  {{ block.super }}
+  <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}locations/stylesheets/tables.css" />
+  <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}locations/stylesheets/splits.css" />
+  <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}locations/stylesheets/modules.css" />
+  <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}locations/stylesheets/icons.css" />
+{% endblock %}
+
 {% block title %}Locations - {{ block.super }}{% endblock %}
 
 {% block content %}
