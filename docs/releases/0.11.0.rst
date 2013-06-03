@@ -22,7 +22,7 @@ What's New
     * Remove ``MockBackendRouter`` test class
     * Update ``TestScript`` to use ``RapidTest``
  * Moved official RapidSMS version to ``rapidsms.__version__``. Reference it directly from docs and setup.py.
- * Added coverage reports to core test suite. See :doc:`../internals/contributing/testing`.
+ * Added coverage reports to core test suite. See :ref:`test_suite`.
  * Moved ``rapidsms`` module to root level of repository.
  * Added ``docs`` environment to tox setup.
  * Documented django-celery 3.0+ dependency.

@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
+from warnings import warn
 
 from rapidsms.conf import settings
-from rapidsms.utils.modules import find_python_files, get_class, try_import
+from rapidsms.utils.modules import (find_python_files, get_class,
+                                    import_class, try_import)
 
 from .exceptions import HandlerError
 from .handlers.base import BaseHandler
@@ -11,11 +13,21 @@ from .handlers.base import BaseHandler
 
 def get_handlers():
     """
-    Return a list of the handlers installed in the current project. This
-    defaults to **all** of the handlers defined in the current project,
-    but can be explicitly specified by the ``INSTALLED_HANDLERS`` and
-    ``EXCLUDED_HANDLERS`` settings. (Both lists of module prefixes.)
+    Return a list of the handler classes to use in the current project.
+    This is the classes whose names are listed in the RAPIDSMS_HANDLERS
+    setting, but if that's not set, then we fall back to the deprecated
+    behavior of returning all installed handlers, possibly modified by
+    the INSTALLED_HANDLERS and/or EXCLUDED_HANDLERS settings.
     """
+
+    if hasattr(settings, 'RAPIDSMS_HANDLERS'):
+        return [import_class(name) for name in settings.RAPIDSMS_HANDLERS]
+
+    warn("Please set RAPIDSMS_HANDLERS to the handlers that should "
+         "be installed. The old behavior of installing all defined "
+         "handlers, possibly modified by INSTALLED_HANDLERS and/or "
+         "EXCLUDED_HANDLERS, is deprecated and will be removed",
+         DeprecationWarning)
 
     handlers = _find_handlers(_apps())
 

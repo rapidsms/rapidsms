@@ -9,7 +9,7 @@ under development by `the RapidSMS Team`_.
 .. image::
     https://secure.travis-ci.org/rapidsms/rapidsms.png?branch=master
     :alt: Build Status
-    :target: https://secure.travis-ci.org/rapidsms/rapidsms
+    :target: http://travis-ci.org/rapidsms/rapidsms
 
 .. _Django: http://djangoproject.com
 .. _UNICEF: http://unicef.org
@@ -44,8 +44,8 @@ Dependencies
 
 * `django-nose <http://pypi.python.org/pypi/django-nose>`_
 * `djappsettings <http://pypi.python.org/pypi/djappsettings>`_
-* `djtables <http://pypi.python.org/pypi/djtables>`_
-* `django-selectable <http://pypi.python.org/pypi/django-selectable>`_
+* `djtables <https://pypi.python.org/pypi/django-tables2>`_
+* `django-tables2 <http://pypi.python.org/pypi/django-selectable>`_
 * `requests <https://pypi.python.org/pypi/requests/>`_
 
 
