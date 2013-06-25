@@ -207,6 +207,7 @@ Add the following variables:
     PAGINATOR_BORDER_LINKS = True
     PAGINATOR_ADJACENT_LINKS = True
     PROJECT_NAME = "name-of-your-project"
+    DEFAULT_RESPONSE = "some-default-response" # use an appropriate response
 
 Let's take a look at one of the contributed applications that
 is installed by default, Message Tester. There should be a link
