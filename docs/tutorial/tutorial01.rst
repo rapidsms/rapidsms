@@ -204,6 +204,7 @@ make a few adjustments to your settings file (`settings.py`).
 Add the following variables:
 
 .. code-block:: python
+
     PAGINATOR_BORDER_LINKS = True
     PAGINATOR_ADJACENT_LINKS = True
     PROJECT_NAME = "name-of-your-project"
