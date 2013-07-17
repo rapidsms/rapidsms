@@ -3,7 +3,7 @@ import collections
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 
-from rapidsms.models import Backend
+from rapidsms.models import Backend, Connection
 from rapidsms.utils.modules import import_class
 
 
@@ -63,6 +63,12 @@ def send(text, connections, **kwargs):
     if not isinstance(connections, collections.Iterable):
         connections = [connections]
     router = get_router()
+    try:
+        backend_name = getattr(settings, 'OUTGOING_BACKEND_NAME')
+        # TODO -> test implication on large datasets
+        connections = lookup_connections(backend_name, connections)
+    except ValueError:
+        pass
     message = router.new_outgoing_message(text=text, connections=connections,
                                           **kwargs)
     router.send_outgoing(message)
@@ -83,6 +89,14 @@ def lookup_connections(backend, identities):
         backend, _ = Backend.objects.get_or_create(name=backend)
     connections = []
     for identity in identities:
-        connection, _ = backend.connection_set.get_or_create(identity=identity)
-        connections.append(connection)
+        if isinstance(identity, Connection):
+            _conn = identity
+            connection, _ = backend.connection_set.get_or_create(identity=_conn.identity)
+            connections.append(connection)
+        else:
+            # TODO -> investigate why identities is a "Connection" object, this can
+            # confuse folks!! New connections are created with a __unicode__ representation of
+            # a Connection object.
+            connection, _ = backend.connection_set.get_or_create(identity=identity)
+            connections.append(connection)
     return connections
