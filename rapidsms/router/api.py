@@ -87,7 +87,7 @@ def lookup_connections(backend, identities):
             _conn = identity
             connection, _ = backend.connection_set.get_or_create(identity=_conn.identity)
             connections.append(connection)
-        except ValueError:
+        except AttributeError:
             # TODO -> investigate why identities is a "Connection" object, this can
             # confuse folks!! New connections are created with a __unicode__ representation of
             # a Connection object.
