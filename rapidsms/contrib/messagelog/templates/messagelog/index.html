@@ -7,11 +7,30 @@
     <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}messagelog/stylesheets/messagelog.css" />
 {% endblock %}
 
+{% block extra_javascript %}
+    <script>
+	    $(function() {
+		    $("#message_filter_form").toggle("blind",null,10)
+		    $("#show_hide_filter").click(function() {
+			    $("#message_filter_form").toggle("blind");
+			    return false;
+		    })
+	    })
+    </script>
+{% endblock %}
+
 {% block content %}
     <div class="page-header">
         <h1>Message Log</h1>
     </div>
     <div class="messages module">
+        <a href="#" id="show_hide_filter">Show/Hide Filter</a>
+        <form action="" method="GET" id="message_filter_form">
+            {{ message_filter.form.as_p }}
+	    <input type="submit" value="Filter" />
+        </form>
+
         {% render_table messages_table %}
+
     </div>
 {% endblock %}
