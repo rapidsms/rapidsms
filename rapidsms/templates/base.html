@@ -13,6 +13,11 @@
         <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}bootstrap/css/bootstrap.min.css" />
         <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}rapidsms/stylesheets/base.css" />
         <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}bootstrap/css/bootstrap-responsive.css" />
+        <style>
+            body{
+                padding-top: 40px;
+            }
+        </style>
         {% endblock %}
 
         {% block extra_stylesheets %}
@@ -22,6 +27,9 @@
         <script type="text/javascript" src="{{ STATIC_URL }}rapidsms/javascripts/jquery-1.9.0.min.js"></script>
         <script type="text/javascript" src="{{ STATIC_URL }}rapidsms/javascripts/collapse.js"></script>
         <script type="text/javascript" src="{{ STATIC_URL }}bootstrap/js/bootstrap.min.js"></script>
+        <!--[if lt IE 9]>
+            <script type="text/javascript" src="{{ STATIC_URL }}rapidsms/javascripts/html5shiv.js"></script>
+        <![endif]-->
         {% endblock %}
         {% block extra_javascript %}
         {% endblock %}
