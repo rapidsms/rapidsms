@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.db import transaction
 from django.db.models import Q
 
 from rapidsms.router.blocking import BlockingRouter
@@ -14,6 +15,7 @@ class DatabaseRouter(BlockingRouter):
             return settings.DB_ROUTER_DEFAULT_BATCH_SIZE
         return 200
 
+    @transaction.commit_on_success
     def queue_message(self, direction, connections, text, fields=None):
         """Create Message and Transmission objects for messages."""
         from rapidsms.router.db.models import Message, Transmission
