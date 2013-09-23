@@ -87,10 +87,30 @@ Remove some unneeded applications
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The RapidSMS project template installs a number of applications by default.
-Let's remove one of them to simplify things.
+Let's disable some to simplify things. In ``rapidsms_tut/settings.py``, comment
+out the following lines:
 
-In ``rapidsms_tut/settings.py``, find the :setting:`INSTALLED_APPS` setting
-and comment out the line for ``rapidsms.contrib.echo``.
+.. code-block:: diff
+
+    --- a/rapidsms_tut/settings.py
+    +++ b/rapidsms_tut/settings.py
+    @@ -202,7 +202,7 @@ INSTALLED_APPS = (
+         "rapidsms.contrib.messagelog",
+         "rapidsms.contrib.messaging",
+         "rapidsms.contrib.registration",
+    -    "rapidsms.contrib.echo",
+    +    # "rapidsms.contrib.echo",
+         "rapidsms.contrib.default",  # Must be last
+     )
+     
+    @@ -215,6 +215,6 @@ INSTALLED_BACKENDS = {
+     LOGIN_REDIRECT_URL = '/'
+     
+     RAPIDSMS_HANDLERS = (
+    -    'rapidsms.contrib.echo.handlers.echo.EchoHandler',
+    +    # 'rapidsms.contrib.echo.handlers.echo.EchoHandler',
+         'rapidsms.contrib.echo.handlers.ping.PingHandler',
+     )
 
 Set up the database
 ~~~~~~~~~~~~~~~~~~~
@@ -232,8 +252,8 @@ we haven't written an application yet.  But then, where did the
 `default handler`_, which we'll learn more about later.
 
 (If instead of the "Sorry" message, you get a response of "pong",
-that just means you missed the step above of commenting out the
-``rapidsms.contrib.echo`` application that the RapidSMS project
+that just means you missed the step above of commenting out 
+a few lines in ``settings.py`` that the RapidSMS project
 template installs by default. If you go back and make that change,
 restart your app, and try again, it should work.)
 
@@ -288,14 +308,14 @@ Now we need to add our app to Django's :setting:`INSTALLED_APPS` setting:
         "rapidsms.contrib.default",  # Must be last
     )
 
-Our RapidSMS app class must be in a file named ``apps.py`` in our
-Django application's directory, so create a file ``rapidsms_tut/tut/apps.py``
+Our RapidSMS app class must be in a file named ``app.py`` in our
+Django application's directory, so create a file ``rapidsms_tut/tut/app.py``
 and paste the code from above. Here's what it should look like when you're
 done:
 
 .. code-block:: console
 
-    (rapidsms-tut-venv)~/rapidsms_tut $ cat tut/apps.py
+    (rapidsms-tut-venv)~/rapidsms_tut $ cat tut/app.py
     from rapidsms.apps.base import AppBase
 
     class PingPong(AppBase):
