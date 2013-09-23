@@ -10,7 +10,8 @@ What's New
 ==========
 
  * Updated tox version to fix Travis CI builds
- * (Fixed `#412 <https://github.com/rapidsms/rapidsms/issues/412>`_) The :router:`DatabaseRouter` now commits all transactions before adding background tasks to the queue.
+ * (Fixed `#412 <https://github.com/rapidsms/rapidsms/issues/412>`_) The :router:`DatabaseRouter` now commits all transactions before adding background tasks to the queue. [Thanks `@dodumosu <https://github.com/dodumosu>`_!]
+ * (Fixed `#409 <https://github.com/rapidsms/rapidsms/issues/409>`_) The :router:`DatabaseRouter` will now properly group batched transmissions across multiple backends. [Thanks `@takinbo <https://github.com/takinbo>`_!]
 
  .. _backwards-incompatible-changes-0.16.0:
 
