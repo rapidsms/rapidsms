@@ -182,12 +182,14 @@ class DatabaseRouterSendTest(harness.DatabaseBackendMixin, TestCase):
         trans2 = dbm.transmissions.filter(id__in=ids[2:])
         return self.backend, dbm, trans1, trans2
 
-    def create_many_transmissions(self, num):
+    def create_many_transmissions(self, num, backend=None):
+        if not backend:
+            backend = self.backend
         # Create a message that will be sent to many connections
         message = Message.objects.create(text="test", direction="O")
         for i in range(num):
             connection = Connection.objects.create(identity="%07d" % i,
-                                                   backend=self.backend)
+                                                   backend=backend)
             message.transmissions.create(connection=connection, status="Q")
 
     def test_send_successful_status(self):
@@ -227,6 +229,23 @@ class DatabaseRouterSendTest(harness.DatabaseBackendMixin, TestCase):
                          list(t1.values_list('id', flat=True)))
         self.assertEqual(list(batch2.values_list('id', flat=True)),
                          list(t2.values_list('id', flat=True)))
+
+    def test_group_transmissions_different_backends(self):
+        """Test grouping works across transmissions with different backends."""
+        other_backend = self.create_backend(data={'name': 'other_backend'})
+        self.create_many_transmissions(7)
+        self.create_many_transmissions(6, backend=other_backend)
+        router = DatabaseRouter()
+        result = list(router.group_transmissions(Transmission.objects.all(),
+                                                 batch_size=4))
+        # 4 total batches
+        self.assertEqual(4, len(result))
+        # first two batches should be lenth 4 and 3 (=7)
+        self.assertEqual(4, len(result[0][1]))
+        self.assertEqual(3, len(result[1][1]))
+        # second two batches should be lenth 4 and 2 (=6)
+        self.assertEqual(4, len(result[2][1]))
+        self.assertEqual(2, len(result[3][1]))
 
     def test_group_transmissions_default_batch_size(self):
         """Default max batch size is 200"""
