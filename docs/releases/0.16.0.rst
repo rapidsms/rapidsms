@@ -9,7 +9,7 @@ aware of when upgrading from RapidSMS 0.15.0.
 What's New
 ==========
 
- * ...
+ * Updated tox version to fix Travis CI builds
 
  .. _backwards-incompatible-changes-0.16.0:
 
