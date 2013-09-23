@@ -10,7 +10,7 @@ env:
   - TOXENV=py27-trunk
   - TOXENV=docs
 install:
-  - pip install -q --use-mirrors tox==1.4.2 pep8==1.3.3
+  - pip install -q --use-mirrors --upgrade tox pep8
 script:
   - tox
 after_script:
