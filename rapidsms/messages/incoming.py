@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-
+from django.utils.encoding import force_text
+from django.utils.functional import Promise
 from django.utils.timezone import now
+
 from rapidsms.messages.base import MessageBase
 from rapidsms.messages.error import ErrorMessage
 
@@ -45,7 +47,7 @@ class IncomingMessage(MessageBase):
         if 'template' in kwargs:
             raise TypeError("`template` is no longer valid usage for "
                             "respond().  Pass the message text as `text`.")
-
+        text = text if not isinstance(text, Promise) else force_text(text)
         context = {'text': text,
                    'connections': self.connections,
                    'in_response_to': self}

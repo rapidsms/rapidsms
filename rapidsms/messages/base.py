@@ -5,6 +5,9 @@ import copy
 from uuid import uuid4
 import warnings
 
+from django.utils.encoding import force_text
+from django.utils.functional import Promise
+
 
 class MessageBase(object):
     """Basic message representation with text and connection(s)."""
@@ -33,7 +36,7 @@ class MessageBase(object):
         #: list of :py:class:`~rapidsms.models.Connection`
         self.connections = connections
         #: the message
-        self.text = text
+        self.text = text if not isinstance(text, Promise) else force_text(text)
         #: save original text for future reference
         self.raw_text = copy.copy(self.text)
         #: fields can be used to pass along arbitrary metadata
