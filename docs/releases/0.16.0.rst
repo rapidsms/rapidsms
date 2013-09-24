@@ -6,6 +6,7 @@ Welcome to RapidSMS 0.16.0! These release notes cover the new features in 0.16.0
 as well as some :ref:`backwards-incompatible-changes-0.16.0` you'll want to be
 aware of when upgrading from RapidSMS 0.15.0.
 
+
 What's New
 ==========
 
@@ -14,6 +15,8 @@ What's New
  * (Fixed `#409 <https://github.com/rapidsms/rapidsms/issues/409>`_) The :router:`DatabaseRouter` will now properly group batched transmissions across multiple backends. [Thanks `@takinbo <https://github.com/takinbo>`_!]
  * (Fixed `#411 <https://github.com/rapidsms/rapidsms/issues/411>`_) base.html now uses the Django 1.4+ ``static`` template tag. [Thanks `@wilsonkichoi <https://github.com/wilsonkichoi>`_!]
  * Fixed a few typos in Part 1 of the Tutorial.
+ * Updated ``django-celery`` in ``tests/requirements/dev.txt`` to latest version (3.0.23) so ``pytz`` installs correctly during testing and building the documentation.
+
 
  .. _backwards-incompatible-changes-0.16.0:
 
