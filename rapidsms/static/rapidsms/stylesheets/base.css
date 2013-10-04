@@ -57,6 +57,45 @@ html, body {
 
 table {width: 100%;}
 
+/* add upward triangle to ascending column headings */
+.table-container th.asc:after {
+  content: '\0000a0\0025b2';
+}
+
+/* add downward triangle to descending column headings */
+.table-container th.desc:after {
+  content: '\0000a0\0025bc';
+}
+
+tr.out > td.text {
+  background-color: #FFDBDB; /* light red */
+}
+tr.in > td.text {
+  background-color: #BFF2C3; /* light green */
+}
+
+tr.in > td > .arrow-left {
+  font-size: 2em;
+  color: #6AE272; /* lighter green */
+}
+tr.out > td > .arrow-right {
+  font-size: 2em;
+  color: #FF8F8F; /* lighter red */
+}
+
+/* display whitespace, since it'll be displayed on devices. */
+.messages tr.message td.text {
+    font-family: monospace;
+    white-space: pre;
+
+    /* rejig the spacing and padding, to space out multiple lines
+     * without leaving single lines with superflous whitespace. */
+    line-height: 1.5;
+    padding-top: 0.25em;
+    padding-bottom: 0.25em;
+    max-width: 160em;
+}
+
 .page {padding: 0;}
 .well {margin-left: 15px;}
 

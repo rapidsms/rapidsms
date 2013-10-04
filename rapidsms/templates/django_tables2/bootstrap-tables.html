@@ -1,5 +1,6 @@
 {% spaceless %}
 {% load django_tables2 %}
+{% load querystring from django_tables2 %}
 {% load paginator_tags %}
 {% if table.page %}
 <div class="table-container">
@@ -10,7 +11,7 @@
         {% for column in table.columns %}
         {% if column.sortable %}
             {% with column.order_by as ob %}
-            <th class="{% spaceless %}{% if column.sortable %}sortable {% endif %}{% if ob %}{% if ob.is_descending %}desc{% else %}asc{% endif %}{% endif %}{% endspaceless %}"><a href="{% querystring table.prefixed_order_by_field=ob.opposite|default:column.name %}">{{ column.header }}</a></th>
+            <th {{ column.attrs.th.as_html }}><a href="{% querystring table.prefixed_order_by_field=column.order_by_alias.next %}">{{ column.header }}</a></th>
             {% endwith %}
         {% else %}
             <th>{{ column.header }}</th>
@@ -20,11 +21,13 @@
     </thead>
     <tbody>
         {% for row in table.page.object_list|default:table.rows %} {# support pagination #}
+        {% block table.tbody.row %}
         <tr class="{% cycle "odd" "even" %}">
             {% for cell in row %}
                 <td>{{ cell }}</td>
             {% endfor %}
         </tr>
+        {% endblock table.tbody.row %}
         {% empty %}
         {% if table.empty_text %}
         <tr><td colspan="{{ table.columns|length }}">{{ table.empty_text }}</td></tr>
