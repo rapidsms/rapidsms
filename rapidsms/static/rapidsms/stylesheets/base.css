@@ -67,33 +67,57 @@ table {width: 100%;}
   content: '\0000a0\0025bc';
 }
 
+table.messages {
+  width: 100%;
+}
+
 tr.out > td.text {
-  background-color: #FFDBDB; /* light red */
+  background-color: #FFEBED; /* lighter red */
 }
 tr.in > td.text {
-  background-color: #BFF2C3; /* light green */
+  background-color: #C7FFD0; /* lighter green */
 }
 
 tr.in > td > .arrow-left {
   font-size: 2em;
-  color: #6AE272; /* lighter green */
+  color: #6AE272; /* light green */
 }
 tr.out > td > .arrow-right {
   font-size: 2em;
-  color: #FF8F8F; /* lighter red */
+  color: #FF8F8F; /* light red */
+}
+
+.messages tr.message td.connection {
+    padding-right: 0.66em;
+}
+
+.messages tr.message td.direction {
+    text-align: center;
+}
+
+.messages tr.message td.date {
+    font-size: 90%;
+    padding: 0px 0.66em 0px;
+    min-width: 10em;
+    max-width: 10em;
 }
 
 /* display whitespace, since it'll be displayed on devices. */
 .messages tr.message td.text {
-    font-family: monospace;
+    /* fix width to approx 80 characters, so an SMS will take
+       a maximum of two lines (in most browsers...) */
+    font: 10px/1.2 Courier, monospace;
+    min-width: 48em;  /* 80 x 0.6 (the width/height ratio of Courier) */
+    max-width: 48em;  /* 80 x 0.6 (the width/height ratio of Courier) */
     white-space: pre;
+    word-wrap: break-word;
 
     /* rejig the spacing and padding, to space out multiple lines
      * without leaving single lines with superflous whitespace. */
     line-height: 1.5;
-    padding-top: 0.25em;
-    padding-bottom: 0.25em;
-    max-width: 160em;
+    padding-top: 0.33em;
+    padding-bottom: 0.33em;
+    border-bottom: 2px solid #FFFFFF;
 }
 
 .page {padding: 0;}
