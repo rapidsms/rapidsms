@@ -1,9 +1,9 @@
 import celery
-from celery.utils.log import get_task_logger
+import logging
 from rapidsms.errors import MessageSendingError
 
 
-logger = get_task_logger(__name__)
+logger = logging.getLogger(__name__)
 
 
 @celery.task
@@ -22,6 +22,7 @@ def receive_async(text, connection_id, message_id, fields):
         router.process_incoming(message)
     except Exception:
         logger.exception("Exception processing incoming message")
+        raise
 
 
 @celery.task
