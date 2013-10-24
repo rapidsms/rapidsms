@@ -1,9 +1,9 @@
 import celery
-import logging
+from celery.utils.log import get_task_logger
 from rapidsms.errors import MessageSendingError
 
 
-logger = logging.getLogger(__name__)
+logger = get_task_logger(__name__)
 
 
 @celery.task
