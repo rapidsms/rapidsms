@@ -114,6 +114,24 @@ class VumiViewTest(RapidTest):
         self.assertEqual('vumi-backend',
                          message.connection.backend.name)
 
+    def test_blank_message_is_valid(self):
+        """Blank messages should be considered valid."""
+        blank = self.valid_data.copy()
+        blank.update({'content': ''})
+        self.client.post(reverse('vumi-backend'), json.dumps(blank),
+                         content_type='text/json')
+        message = self.inbound[0]
+        self.assertEqual('', message.text)
+
+    def test_empty_message_is_valid(self):
+        """Empty messages should be considered valid."""
+        empty = self.valid_data.copy()
+        del empty['content']
+        self.client.post(reverse('vumi-backend'), json.dumps(empty),
+                         content_type='text/json')
+        message = self.inbound[0]
+        self.assertEqual('', message.text)
+
 
 class VumiSendTest(CreateDataMixin, TestCase):
 
