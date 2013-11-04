@@ -1,7 +1,7 @@
+import json
 import logging
 
 from django.http import HttpResponse
-from django.utils import simplejson as json
 
 from rapidsms.backends.vumi.forms import VumiForm
 from rapidsms.backends.http.views import BaseHttpBackendView

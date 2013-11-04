@@ -1,8 +1,7 @@
 import copy
 import requests
 import logging
-
-from django.utils import simplejson as json
+import json
 
 from rapidsms.backends.base import BackendBase
 
