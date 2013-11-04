@@ -1,7 +1,7 @@
 import copy
-import requests
-import logging
 import json
+import logging
+import requests
 
 from rapidsms.backends.base import BackendBase
 
