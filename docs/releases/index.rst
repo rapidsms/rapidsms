@@ -6,7 +6,9 @@ you what’s new in each version, describe any backwards-incompatible changes
 made, and provide, if needed, any upgrade instructions. Please see the 
 :doc:`roadmap` for details on upcoming releases.
 
-.. * :doc:`0.14.0 release notes <0.14.0>`  (current release)
+.. * :doc:`0.16.0 release notes <0.16.0>`  (current release)
+.. * :doc:`0.15.0 release notes <0.15.0>`
+.. * :doc:`0.14.0 release notes <0.14.0>`
 .. * :doc:`0.13.0 release notes <0.13.0>`
 .. * :doc:`0.12.0 release notes <0.12.0>`
 .. * :doc:`0.11.1 release notes <0.11.1>`

@@ -1,6 +1,6 @@
-=================================================
-RapidSMS 0.16.0 release notes (under development)
-=================================================
+=============================
+RapidSMS 0.16.0 release notes
+=============================
 
 Welcome to RapidSMS 0.16.0! These release notes cover the new features in 0.16.0
 as well as some :ref:`backwards-incompatible-changes-0.16.0` you'll want to be
@@ -11,6 +11,9 @@ What's New
 ==========
 
  * Updated tox version to fix Travis CI builds
+ * Tox runs tests against Django 1.4, 1.5, and 1.6
+ * Allow 160 chars in messages in contrib.messages.
+ * (Fixed `#422 <https://github.com/rapidsms/rapidsms/issues/422>`_) The vumi backend no longer raises errors on empty incoming messages. [Thanks `@vkurup <https://github.com/vkurup>`_!]
  * (Fixed `#412 <https://github.com/rapidsms/rapidsms/issues/412>`_) The :router:`DatabaseRouter` now commits all transactions before adding background tasks to the queue. [Thanks `@dodumosu <https://github.com/dodumosu>`_!]
  * (Fixed `#409 <https://github.com/rapidsms/rapidsms/issues/409>`_) The :router:`DatabaseRouter` will now properly group batched transmissions across multiple backends. [Thanks `@takinbo <https://github.com/takinbo>`_!]
  * (Fixed `#411 <https://github.com/rapidsms/rapidsms/issues/411>`_) base.html now uses the Django 1.4+ ``static`` template tag. [Thanks `@wilsonkichoi <https://github.com/wilsonkichoi>`_!]
