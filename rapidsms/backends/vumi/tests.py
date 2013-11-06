@@ -1,7 +1,8 @@
+import json
+
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 from django.conf.urls import patterns, url
-from django.utils import simplejson as json
 
 from rapidsms.backends.vumi import views
 from rapidsms.backends.vumi.outgoing import VumiBackend
@@ -113,6 +114,20 @@ class VumiViewTest(RapidTest):
                          message.connection.identity)
         self.assertEqual('vumi-backend',
                          message.connection.backend.name)
+
+    def test_blank_message_is_valid(self):
+        """Blank messages should be considered valid."""
+        empty = self.valid_data.copy()
+        empty.update({'content': ''})
+        null = self.valid_data.copy()
+        null.update({'content': None})
+        no_content = self.valid_data.copy()
+        del no_content['content']
+        for blank_msg in [empty, null, no_content]:
+            self.client.post(reverse('vumi-backend'), json.dumps(blank_msg),
+                             content_type='text/json')
+            message = self.inbound[0]
+            self.assertEqual('', message.text)
 
 
 class VumiSendTest(CreateDataMixin, TestCase):

@@ -19,6 +19,11 @@ New RapidSMS website
 * Blog syndication (community page)
 * Migrate existing content to new platform
 
+v0.16.0
+-------
+
+* *Release date:* November 6, 2013
+* Misc. fixes
 
 v0.15.0
 ----------------------

@@ -19,7 +19,7 @@
       counter:            '#counter',
       countType:          'characters',
       wordSeparator:      ' ',
-      maxCount:           140,
+      maxCount:           160,
       strictMax:          false,
       countDirection:     'down',
       safeClass:          'safe',

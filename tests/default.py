@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     "django.contrib.auth",
     "django.contrib.admin",
     "django.contrib.sessions",
+    "django.contrib.staticfiles",
     "django.contrib.contenttypes",
     # rapidsms contrib apps.
     "rapidsms.contrib.handlers",
@@ -53,6 +54,8 @@ SITE_ID = 1
 SECRET_KEY = 'super-secret'
 
 LOGIN_REDIRECT_URL = "/"
+
+STATIC_URL = '/static/'
 
 # Insecure, but fast for running tests
 PASSWORD_HASHERS = (

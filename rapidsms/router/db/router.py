@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.db import transaction
 from django.db.models import Q
 
 from rapidsms.router.blocking import BlockingRouter
@@ -14,6 +15,7 @@ class DatabaseRouter(BlockingRouter):
             return settings.DB_ROUTER_DEFAULT_BATCH_SIZE
         return 200
 
+    @transaction.commit_on_success
     def queue_message(self, direction, connections, text, fields=None):
         """Create Message and Transmission objects for messages."""
         from rapidsms.router.db.models import Message, Transmission
@@ -54,20 +56,22 @@ class DatabaseRouter(BlockingRouter):
            a queryset of transmissions that all go with that
            backend, no more than ``batch_size`` each.
         """
-        start = 0
-        if batch_size is None:
-            batch_size = self._default_batch_size()
-        end = batch_size
         # divide transmissions by backend
         backends = transmissions.values_list('connection__backend_id',
                                              flat=True)
         for backend_id in backends.distinct():
             q = Q(connection__backend_id=backend_id)
             # filter down based on this backend and order by ID
-            transmissions = transmissions.filter(q).order_by('id')
+            transmissions_group = transmissions.filter(q).order_by('id')
+
+            start = 0
+            if batch_size is None:
+                batch_size = self._default_batch_size()
+            end = batch_size
+
             while True:
                 # divide transmissions into chunks of specified size
-                batch = transmissions[start:end]
+                batch = transmissions_group[start:end]
                 if not batch.exists():
                     # query returned no rows, so we've seen all transmissions
                     break

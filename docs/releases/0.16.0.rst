@@ -1,0 +1,40 @@
+=============================
+RapidSMS 0.16.0 release notes
+=============================
+
+Welcome to RapidSMS 0.16.0! These release notes cover the new features in 0.16.0
+as well as some :ref:`backwards-incompatible-changes-0.16.0` you'll want to be
+aware of when upgrading from RapidSMS 0.15.0.
+
+
+What's New
+==========
+
+ * Updated tox version to fix Travis CI builds
+ * Tox runs tests against Django 1.4, 1.5, and 1.6
+ * Allow 160 chars in messages in contrib.messages.
+ * (Fixed `#422 <https://github.com/rapidsms/rapidsms/issues/422>`_) The vumi backend no longer raises errors on empty incoming messages. [Thanks `@vkurup <https://github.com/vkurup>`_!]
+ * (Fixed `#412 <https://github.com/rapidsms/rapidsms/issues/412>`_) The :router:`DatabaseRouter` now commits all transactions before adding background tasks to the queue. [Thanks `@dodumosu <https://github.com/dodumosu>`_!]
+ * (Fixed `#409 <https://github.com/rapidsms/rapidsms/issues/409>`_) The :router:`DatabaseRouter` will now properly group batched transmissions across multiple backends. [Thanks `@takinbo <https://github.com/takinbo>`_!]
+ * (Fixed `#411 <https://github.com/rapidsms/rapidsms/issues/411>`_) base.html now uses the Django 1.4+ ``static`` template tag. [Thanks `@wilsonkichoi <https://github.com/wilsonkichoi>`_!]
+ * Fixed a few typos in Part 1 of the Tutorial.
+ * Updated ``django-celery`` in ``tests/requirements/dev.txt`` to latest version (3.0.23) so ``pytz`` installs correctly during testing and building the documentation.
+
+
+ .. _backwards-incompatible-changes-0.16.0:
+
+Backwards-incompatible changes in RapidSMS 0.16.0
+=================================================
+
+* Style files removed from base: icons.css, modules.css, splits.css, and
+  tables.css. These are no longer used in the new bootstrap-based pages, so
+  they've been removed from the RapidSMS base style files and are no longer
+  loaded from the base template.
+
+  The old ``locations`` contrib app does still use them, so they've been moved
+  into that app and that app's base template changed to load them from there.
+
+  If you have an app that's still using any of these styles, and aren't ready
+  to convert your app to the new, bootstrap-based look, it's probably simplest
+  for you to copy them from ``locations`` into your app and load them from
+  your app's base template.

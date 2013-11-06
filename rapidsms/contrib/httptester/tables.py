@@ -24,4 +24,7 @@ class MessageTable(tables.Table):
         sequence = ('date', 'identity', 'text')
         exclude = ('id', 'direction', 'name', 'message_id', 'external_id')
         order_by = ('-date', )
-        attrs = {'id': 'log'}
+        attrs = {
+            'id': 'log',
+            'class': 'table table-striped table-bordered table-condensed'
+        }
