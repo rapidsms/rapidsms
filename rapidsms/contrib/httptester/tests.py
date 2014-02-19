@@ -136,9 +136,12 @@ class ViewTest(RapidTest):
 class FormTest(ut2.TestCase):
     def test_clean_identity(self):
         # The form strips whitespace from the phone number, and does not
-        # accept non-numeric input
+        # accept non-numeric input (except for international notation)
         form = MessageForm({'identity': ' 123 '})
         self.assertTrue(form.is_valid(), msg=form.errors)
         self.assertEqual('123', form.cleaned_data['identity'])
+        form = MessageForm({'identity': ' +123 '})
+        self.assertTrue(form.is_valid(), msg=form.errors)
+        self.assertEqual('+123', form.cleaned_data['identity'])
         form = MessageForm({'identity': ' 1a23 '})
         self.assertFalse(form.is_valid())

@@ -8,5 +8,5 @@ from . import views
 
 urlpatterns = patterns('',
     url(r"^$", views.generate_identity, name='httptester-index'),
-    url(r"^(?P<identity>\d+)/$", views.message_tester, name='httptester')
+    url(r"^(?P<identity>\+?\d+)/$", views.message_tester, name='httptester')
 )

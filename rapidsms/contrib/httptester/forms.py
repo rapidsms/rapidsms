@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-
+import re
 from django import forms
 
 
@@ -39,6 +39,6 @@ class MessageForm(forms.Form):
     def clean_identity(self):
         if 'identity' in self.cleaned_data:
             identity = self.cleaned_data['identity'].strip()
-            if not identity.isnumeric():
-                raise ValidationError("Phone number must be all numeric")
+            if not re.match("^\+?\d+$", identity):
+                raise ValidationError("Phone number must be all numeric (or in international format)")
             return identity
