@@ -51,3 +51,7 @@ def clear_messages(identity):
 def clear_all_messages():
     """Forget all messages"""
     BackendMessage.objects.filter(name=BACKEND_NAME).delete()
+
+def resend_last_message(identity):
+    message = BackendMessage.objects.filter(name=BACKEND_NAME, direction="I").latest('date')
+    store_and_queue(identity, message.text)

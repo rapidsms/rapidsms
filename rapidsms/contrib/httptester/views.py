@@ -57,6 +57,9 @@ def message_tester(request, identity):
             elif 'clear-btn' in request.POST:
                 storage.clear_messages(identity)
                 messages.add_message(request, messages.INFO, "Cleared %s messages" % identity)
+            elif 'resend-btn' in request.POST:
+                storage.resend_last_message(identity)
+                messages.add_message(request, messages.INFO, "Resend last message")
             else:
                 if "bulk" in request.FILES:
                     for line in request.FILES["bulk"]:
