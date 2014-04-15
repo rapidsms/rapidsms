@@ -25,7 +25,7 @@ class VumiBackend(BackendBase):
                   'headers': {'content-type': 'application/json'}}
         payload = copy.copy(self.sendsms_params)
         payload.update({'content': text, 'to_addr': identities,
-                        'session_event': None})
+                        'session_event': None, 'message_id': id_})
         if len(identities) == 1 and 'external_id' in context:
             payload['in_reply_to'] = context['external_id']
         if self.sendsms_user and self.sendsms_pass:
