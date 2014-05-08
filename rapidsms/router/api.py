@@ -2,6 +2,8 @@ import collections
 
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
+from django.utils.encoding import force_text
+from django.utils.functional import Promise
 
 from rapidsms.models import Backend
 from rapidsms.utils.modules import import_class
@@ -63,6 +65,7 @@ def send(text, connections, **kwargs):
     if not isinstance(connections, collections.Iterable):
         connections = [connections]
     router = get_router()
+    text = text if not isinstance(text, Promise) else force_text(text)
     message = router.new_outgoing_message(text=text, connections=connections,
                                           **kwargs)
     router.send_outgoing(message)
