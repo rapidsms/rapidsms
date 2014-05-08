@@ -175,7 +175,7 @@ is processed sequentially by the router's associated applications. However, the
 applications are called in reverse order with respect to the order they are
 called in ``BaseRouter.receive_incoming``, so the first application called to
 process an incoming message is the last application that is called to process
-an outgoing message. If any application returns ``True`` during the *outgoing*
+an outgoing message. If any application returns ``False`` during the *outgoing*
 phase, all further processing of the message will be aborted.
 
 The logic for the *outgoing* phase is defined in a method of the same name

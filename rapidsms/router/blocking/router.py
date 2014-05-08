@@ -227,7 +227,7 @@ class BlockingRouter(object):
                     continue_sending = func(msg)
                 except Exception:
                     logger.exception("Error while processing outgoing phase.")
-                # during any outgoing phase, an app can return True to
+                # during any outgoing phase, an app can return False to
                 # abort ALL further processing of this message
                 if continue_sending is False:
                     logger.warning("Message cancelled")

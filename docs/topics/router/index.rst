@@ -153,5 +153,5 @@ processes messages sequentially, in the order they are listed in
 :setting:`INSTALLED_APPS`. However, the applications are called in reverse
 order, so the first application called to process an incoming message is the
 last application that is called to process an outgoing message. If any
-application returns ``True`` during the *outgoing* phase, all further
+application returns ``False`` during the *outgoing* phase, all further
 processing of the message will be aborted.
