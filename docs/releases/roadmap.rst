@@ -6,6 +6,13 @@ Below you'll find a rough outline of planned milestones and releases for
 RapidSMS. For a list of official releases, please see the :doc:`index`.
 
 
+v0.16.0
+-------
+
+* *Release date:* November 6, 2013
+* Misc. fixes
+
+
 New RapidSMS website
 --------------------
 
@@ -19,11 +26,6 @@ New RapidSMS website
 * Blog syndication (community page)
 * Migrate existing content to new platform
 
-v0.16.0
--------
-
-* *Release date:* November 6, 2013
-* Misc. fixes
 
 v0.15.0
 ----------------------
