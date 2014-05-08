@@ -140,7 +140,7 @@ class VumiSendTest(CreateDataMixin, TestCase):
         """Vumi requires JSON to include to_addr and content."""
         message = self.create_outgoing_message()
         config = {"sendsms_url": "http://example.com"}
-        backend = VumiBackend(None, "kannel", **config)
+        backend = VumiBackend(None, "vumi", **config)
         kwargs = backend.prepare_request(message.id, message.text,
                                          [message.connections[0].identity], {})
         self.assertEqual(kwargs['url'], config['sendsms_url'])
@@ -152,7 +152,7 @@ class VumiSendTest(CreateDataMixin, TestCase):
         """Make sure external_id context is sent to Vumi."""
         message = self.create_outgoing_message()
         config = {"sendsms_url": "http://example.com"}
-        backend = VumiBackend(None, "kannel", **config)
+        backend = VumiBackend(None, "vumi", **config)
         kwargs = backend.prepare_request(message.id, message.text,
                                          [message.connections[0].identity],
                                          {'external_id': 'ASDF1234'})
@@ -164,12 +164,22 @@ class VumiSendTest(CreateDataMixin, TestCase):
         conn1 = self.create_connection()
         conn2 = self.create_connection()
         config = {"sendsms_url": "http://example.com"}
-        backend = VumiBackend(None, "kannel", **config)
+        backend = VumiBackend(None, "vumi", **config)
         kwargs = backend.prepare_request("1234", "foo",
                                          [conn1.identity, conn2.identity],
                                          {'external_id': 'ASDF1234'})
         data = json.loads(kwargs['data'])
         self.assertTrue('in_reply_to' not in data)
+
+    def test_message_id_in_metadata(self):
+        """Make sure our uuid is sent to Vumi."""
+        message = self.create_outgoing_message()
+        config = {"sendsms_url": "http://example.com"}
+        backend = VumiBackend(None, "vumi", **config)
+        kwargs = backend.prepare_request(message.id, message.text,
+                                         [message.connections[0].identity], {})
+        data = json.loads(kwargs['data'])
+        self.assertIn(message.id, data.get('metadata', {}).values())
 
     def test_auth(self):
         """Vumi backend shold use basic authentication if given user/pass."""
@@ -177,7 +187,7 @@ class VumiSendTest(CreateDataMixin, TestCase):
         config = {"sendsms_url": "http://example.com",
                   "sendsms_user": "username",
                   "sendsms_pass": "password"}
-        backend = VumiBackend(None, "kannel", **config)
+        backend = VumiBackend(None, "vumi", **config)
         kwargs = backend.prepare_request(message.id, message.text,
                                          [message.connections[0].identity], {})
         self.assertTrue('auth' in kwargs)
