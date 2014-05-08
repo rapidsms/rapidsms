@@ -49,8 +49,7 @@ server environment.
 Non-PaaS
 --------
 
-The `Django documentation`_ and the Deploying Django chapter of the
-`Django book`_ provide some advice about how to run
+The `Django documentation`_ provides some advice about how to run
 a Django application like RapidSMS in production.
 
 One approach you'll often see when deploying to your own hardware or
@@ -76,5 +75,4 @@ The RapidSMS wiki has a
 with links to examples of how people provision and deploy RapidSMS applications.
 
 .. _Django documentation: https://docs.djangoproject.com/en/1.5/howto/deployment/
-.. _Django book: http://www.djangobook.com/en/2.0/chapter12.html
 .. _Fabric: http://docs.fabfile.org/en/latest/index.html
