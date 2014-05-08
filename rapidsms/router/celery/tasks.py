@@ -22,6 +22,7 @@ def receive_async(text, connection_id, message_id, fields):
         router.process_incoming(message)
     except Exception:
         logger.exception("Exception processing incoming message")
+        raise
 
 
 @celery.task
