@@ -229,9 +229,9 @@ If you use the `Django messages framework`_ to send messages to your users, the 
 template will display them nicely above the page content.
 
 
-.. _Twitter Bootstrap: http://twitter.github.com/bootstrap/
-.. _fluid row: http://twitter.github.com/bootstrap/scaffolding.html#fluidGridSystem
-.. _navigation bar: http://twitter.github.com/bootstrap/components.html#navbar
+.. _Twitter Bootstrap: http://bootstrapdocs.com/v2.2.2/docs/index.html
+.. _fluid row: http://bootstrapdocs.com/v2.2.2/docs/scaffolding.html#fluidGridSystem
+.. _navigation bar: http://bootstrapdocs.com/v2.2.2/docs/components.html#navbar
 .. _django_tables2: http://django-tables2.readthedocs.org/en/latest/
-.. _forms: http://twitter.github.com/bootstrap/base-css.html#forms
+.. _forms: http://bootstrapdocs.com/v2.2.2/docs/base-css.html#forms
 .. _Django messages framework: https://docs.djangoproject.com/en/dev/ref/contrib/messages/
