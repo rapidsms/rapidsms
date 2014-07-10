@@ -72,7 +72,7 @@ would provide ``phone`` and ``message`` parameters.
 
 An URL pattern for this backend might look like::
 
-    from project_name.app_name.views import CustomHttpBackendView
+    from project_name.app_name.views import MyBackendView
 
     urlpatterns = patterns('',
         url(r'^backends/mybackend/$',
