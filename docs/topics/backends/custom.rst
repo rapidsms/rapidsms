@@ -84,7 +84,7 @@ A request to this backend might look like the following::
     >>> import urllib
     >>> import urllib2
     >>> data = urllib.urlencode({'phone': '1112223333', 'message': 'ping'})
-    >>> request = urllib2.urlopen(http://localhost:8000/backends/mybackend/', data)
+    >>> request = urllib2.urlopen('http://localhost:8000/backends/mybackend/', data)
     >>> request.code
     200
     >>> request.read()
