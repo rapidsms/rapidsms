@@ -53,7 +53,7 @@ def contact(request, pk=None):
         # print repr(data)
         del data
         if pk:
-            if request.POST["submit"] == "Delete Contact":
+            if "delete_contact" in request.POST:
                 contact.delete()
                 messages.add_message(request, messages.INFO, "Deleted contact")
                 return HttpResponseRedirect(reverse(registration))

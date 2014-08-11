@@ -196,7 +196,7 @@ class TestViews(TestCase, CreateDataMixin, LoginMixin):
         data = {
             u'name': u'The Contact',
             u'language': u'wxyz',
-            u'submit': u"Delete Contact",
+            u'delete_contact': u"dontcare",
             u'connection_set-0-id': u'2',
             u'connection_set-0-DELETE': u'',
             u'connection_set-0-backend': u'1',
