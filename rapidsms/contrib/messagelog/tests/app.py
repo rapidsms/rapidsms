@@ -25,8 +25,8 @@ class MessageLogAppTestBase(object):
         else:
             self.assertEqual(msg_obj.direction, Message.OUTGOING)
         self.assertEqual(msg_obj, msg.logger_msg)
-        self.assertEqual(msg_obj.contact, msg.contact)
-        self.assertEqual(msg_obj.connection, msg.connection)
+        self.assertEqual(msg_obj.contact, msg.connections[0].contact)
+        self.assertEqual(msg_obj.connection, msg.connections[0])
         self.assertEqual(msg_obj.text, msg.text)
 
     def test_message(self):

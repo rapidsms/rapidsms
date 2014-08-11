@@ -42,4 +42,4 @@ class OutgoingMessage(MessageBase):
         ``rapidsms.router.send(text, connections)``.
         """
         from rapidsms.router import send
-        send(self.text, self.connection)
+        send(self.text, self.connections)

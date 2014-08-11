@@ -9,15 +9,15 @@ from .models import Message
 class MessageLogApp(AppBase):
 
     def _log(self, direction, msg):
-        if not msg.contact and not msg.connection:
+        if not msg.connections:
             raise ValueError
         text = msg.raw_text if direction == Message.INCOMING else msg.text
         return Message.objects.create(
             date=timezone.now(),
             direction=direction,
             text=text,
-            contact=msg.contact,
-            connection=msg.connection,
+            contact=msg.connections[0].contact,
+            connection=msg.connections[0],
         )
 
     def parse(self, msg):
