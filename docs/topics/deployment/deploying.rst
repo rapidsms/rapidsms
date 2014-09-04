@@ -74,5 +74,5 @@ The RapidSMS wiki has a
 `page <https://github.com/rapidsms/rapidsms/wiki/Deployment-Examples>`_
 with links to examples of how people provision and deploy RapidSMS applications.
 
-.. _Django documentation: https://docs.djangoproject.com/en/1.5/howto/deployment/
+.. _Django documentation: https://docs.djangoproject.com/en/dev/howto/deployment/
 .. _Fabric: http://docs.fabfile.org/en/latest/index.html
