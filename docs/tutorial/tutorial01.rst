@@ -79,7 +79,7 @@ Install the dependencies:
 
     (rapidsms-tut-venv)~/rapidsms_tut $ pip install -r requirements/base.txt
     [... lots of output omitted ...]
-    Successfully installed RapidSMS South requests django-nose django-tables2 djappsettings django-selectable nose
+    Successfully installed RapidSMS South requests django-tables2 djappsettings django-selectable
     Cleaning up...
     (rapidsms-tut-venv)~/rapidsms_tut $
 
