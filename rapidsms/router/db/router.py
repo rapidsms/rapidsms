@@ -15,7 +15,7 @@ class DatabaseRouter(BlockingRouter):
             return settings.DB_ROUTER_DEFAULT_BATCH_SIZE
         return 200
 
-    @transaction.commit_on_success
+    @transaction.atomic
     def queue_message(self, direction, connections, text, fields=None):
         """Create Message and Transmission objects for messages."""
         from rapidsms.router.db.models import Message, Transmission
