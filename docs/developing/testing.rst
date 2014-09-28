@@ -8,8 +8,7 @@ behavior. Having as complete a set of tests as possible is important so
 we can have confidence that when we make a change in one place, we haven't
 broken something else.
 
-RapidSMS uses `nose <http://pypi.python.org/pypi/nose/>`_ to run its test suite
-and provides several configuration options and entry points for continuous
+RapidSMS provides several configuration options and entry points for continuous
 integration. The unit tests can be run in the current python environment or
 automated to run in several environments and can include coverage reports.
 
