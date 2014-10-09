@@ -102,14 +102,14 @@ out the following lines:
     +    # "rapidsms.contrib.echo",
          "rapidsms.contrib.default",  # Must be last
      )
-     
+
     @@ -215,6 +215,6 @@ INSTALLED_BACKENDS = {
      LOGIN_REDIRECT_URL = '/'
-     
+
      RAPIDSMS_HANDLERS = (
     -    'rapidsms.contrib.echo.handlers.echo.EchoHandler',
     +    # 'rapidsms.contrib.echo.handlers.echo.EchoHandler',
-         'rapidsms.contrib.echo.handlers.ping.PingHandler',
+    +    # 'rapidsms.contrib.echo.handlers.ping.PingHandler',
      )
 
 Set up the database
@@ -252,7 +252,7 @@ we haven't written an application yet.  But then, where did the
 `default handler`_, which we'll learn more about later.
 
 (If instead of the "Sorry" message, you get a response of "pong",
-that just means you missed the step above of commenting out 
+that just means you missed the step above of commenting out
 a few lines in ``settings.py`` that the RapidSMS project
 template installs by default. If you go back and make that change,
 restart your app, and try again, it should work.)
