@@ -9,7 +9,7 @@ RapidSMS. These tools provide isolated Python environments, which are more
 practical than installing packages system wide. They also allow installing
 packages without administrator privileges.
 
-.. _virtualenv: http://rapidsms.readthedocs.org/
+.. _virtualenv: http://www.virtualenv.org/en/latest/index.html
 .. _virtualenvwrapper: http://virtualenvwrapper.readthedocs.org/en/latest/
 
 1. **Install virtualenv and virtualenvwrapper.** Use pip to install the latest

@@ -541,5 +541,5 @@ something equivalent that is robust and scalable.
 .. _storing the schedules in a Django database table: http://docs.celeryproject.org/en/latest/userguide/periodic-tasks.html#using-custom-scheduler-classes
 .. _/admin/djcelery/periodictask/: /admin/djcelery/periodictask/
 .. _crontab: http://docs.celeryproject.org/en/latest/userguide/periodic-tasks.html#crontab-schedules
-.. _initial data: https://docs.djangoproject.com/en/1.3/howto/initial-data/#providing-initial-data-with-fixtures
+.. _initial data: https://docs.djangoproject.com/en/dev/howto/initial-data/#providing-initial-data-with-fixtures
 .. _RabbitMQ: http://www.rabbitmq.com
