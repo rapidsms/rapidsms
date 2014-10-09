@@ -6,6 +6,9 @@ env:
   - TOXENV=py27-1.4.X
   - TOXENV=py26-1.5.X
   - TOXENV=py27-1.5.X
+  - TOXENV=py26-1.6.X
+  - TOXENV=py27-1.6.X
+  - TOXENV=py27-1.7.X
   - TOXENV=py26-trunk
   - TOXENV=py27-trunk
   - TOXENV=docs
