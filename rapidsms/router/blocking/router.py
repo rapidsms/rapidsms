@@ -146,7 +146,7 @@ class BlockingRouter(object):
         """
         # Note: this method can't ever return False, but some subclass might
         # override it and use that feature.
-        logger.info("Incoming (%s): %s" % (msg.connection, msg.text))
+        logger.info("Incoming (%s): %s" % (msg.connections, msg.text))
 
         try:
             for phase in self.incoming_phases:
