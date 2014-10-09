@@ -14,8 +14,8 @@ class Message(models.Model):
         (OUTGOING, "Outgoing"),
     )
 
-    contact = models.ForeignKey(Contact, null=True)
-    connection = models.ForeignKey(Connection, null=True)
+    contact = models.ForeignKey(Contact, blank=True, null=True)
+    connection = models.ForeignKey(Connection, blank=True, null=True)
     direction = models.CharField(max_length=1, choices=DIRECTION_CHOICES)
     date = models.DateTimeField()
     text = models.TextField()
