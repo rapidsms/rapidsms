@@ -21,15 +21,15 @@ setup(
     license="BSD",
 
     install_requires=[
-        "requests==1.2.0",
-        "django-nose==1.2",
-        "django-tables2==0.14.0",
-        "djappsettings==0.1.0",
-        "django-selectable==0.7.0",
+        "requests>=1.2.0",
+        "django-tables2>=0.14.0",
+        "djappsettings>=0.1.0",
+        "django-selectable>=0.7.0",
     ],
 
     test_requires=[
-        "nose==1.3",
+        "nose>=1.3",
+        "django-nose>=1.2",
     ],
 
     packages=find_packages(exclude=['*.pyc']),
