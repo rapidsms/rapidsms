@@ -11,7 +11,7 @@ env:
   - TOXENV=flake8
   - TOXENV=coverage
 install:
-  - pip install tox
+  - pip install --upgrade tox
 script:
   - tox
 matrix:
