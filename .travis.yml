@@ -12,8 +12,11 @@ env:
   - TOXENV=coverage
 install:
   - pip install --upgrade tox
+  - pip install coveralls
 script:
   - tox
+after_success:
+  - coveralls
 matrix:
   allow_failures:
     - env: TOXENV=py27-trunk
