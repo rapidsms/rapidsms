@@ -10,7 +10,7 @@ from rapidsms.tests.harness.router import (CustomRouterMixin, TestRouterMixin,  
                                            DatabaseBackendMixin)
 from rapidsms.tests.harness.scripted import TestScriptMixin
 from rapidsms.tests.harness.backend import MockBackend, RaisesBackend  # noqa
-from rapidsms.tests.harness.app import MockApp, EchoApp, ExceptionApp  # noqa
+from rapidsms.tests.harness.app import MockApp, EchoApp  # noqa
 
 
 class RapidTest(TestRouterMixin, LoginMixin, TestCase):

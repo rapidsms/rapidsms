@@ -1,8 +1,8 @@
 from mock import patch
 
 from django.test import TestCase
-from django.test.utils import override_settings
 
+from rapidsms.contrib.echo.handlers.echo import EchoHandler
 from rapidsms.models import Connection
 from rapidsms.tests import harness
 from rapidsms.router.db import DatabaseRouter
@@ -72,39 +72,41 @@ class MessageStatusTest(harness.CustomRouterMixin, TestCase):
         self.assertEqual('D', dbm.set_status())
 
 
-@override_settings(INSTALLED_APPS=['rapidsms.contrib.echo'])
 class DatabaseRouterReceiveTest(harness.CustomRouterMixin, TestCase):
     """Tests for the DatabaseRouter class"""
 
     router_class = 'rapidsms.router.db.DatabaseRouter'
     backends = {'mockbackend': {'ENGINE': harness.MockBackend}}
 
+    def setUp(self):
+        self.conn1 = self.lookup_connections(backend='mockbackend', identities=['5551212'])[0]
+        self.conn2 = self.lookup_connections(backend='mockbackend', identities=['5552323'])[0]
+
     def test_queue_status(self):
         """queue_message() should set the queued status."""
         router = DatabaseRouter()
-        dbm = router.queue_message("I", [self.create_connection()], "foo")
+        dbm = router.queue_message("I", [self.conn1], "foo")
         self.assertEqual("Q", dbm.status)
         transmission = dbm.transmissions.all()[0]
         self.assertEqual("Q", transmission.status)
 
     def test_queue_single_connection(self):
         """A single transmission should be created for 1 connection."""
-        connections = [self.create_connection()]
+        connections = [self.conn1]
         router = DatabaseRouter()
         dbm = router.queue_message("I", connections, "foo")
         self.assertEqual(1, dbm.transmissions.count())
 
     def test_queue_multi_connections(self):
         """Multiple transmissions should be created for > 1 connection."""
-        connections = [self.create_connection(), self.create_connection()]
+        connections = [self.conn1, self.conn2]
         router = DatabaseRouter()
         dbm = router.queue_message("I", connections, "foo")
         self.assertEqual(2, dbm.transmissions.count())
 
     def test_queue_queryset_connections(self):
         """queue_message() can accept a queryset of connections."""
-        self.create_connection()
-        self.create_connection()
+        # 2 connections were created in setUp
         connections = Connection.objects.all()
         router = DatabaseRouter()
         dbm = router.queue_message("I", connections, "foo")
@@ -112,7 +114,7 @@ class DatabaseRouterReceiveTest(harness.CustomRouterMixin, TestCase):
 
     def test_receive(self):
         """receive() creates an inbound Message."""
-        self.receive(text="foo", connection=self.create_connection())
+        self.receive(text="foo", connection=self.conn1)
         dbm = Message.objects.all()[0]
         self.assertEqual("foo", dbm.text)
         self.assertEqual("I", dbm.direction)
@@ -120,32 +122,32 @@ class DatabaseRouterReceiveTest(harness.CustomRouterMixin, TestCase):
 
     def test_receive_status(self):
         """Inbound messages should be marked with R if no errors occured."""
-        self.receive(text="foo", connection=self.create_connection())
+        self.receive(text="foo", connection=self.conn1)
         dbm = Message.objects.all()[0]
         self.assertEqual("R", dbm.status)
         transmission = dbm.transmissions.all()[0]
         self.assertEqual("R", transmission.status)
 
-    def test_receive_status_with_error(self):
+    @patch.object(EchoHandler, 'handle')
+    def test_receive_status_with_error(self, mock_handle):
         """Inbound messages should be marked with E if an error occured."""
-        with override_settings(INSTALLED_APPS=[harness.ExceptionApp]):
-            self.receive(text="foo", connection=self.create_connection())
-            dbm = Message.objects.all()[0]
-            self.assertEqual("E", dbm.status)
-            transmission = dbm.transmissions.all()[0]
-            self.assertEqual("E", transmission.status)
+        mock_handle.side_effect = Exception
+        self.receive(text="echo foo", connection=self.conn1)
+        dbm = Message.objects.all()[0]
+        self.assertEqual("E", dbm.status)
+        transmission = dbm.transmissions.all()[0]
+        self.assertEqual("E", transmission.status)
 
     def test_receive_message_id(self):
         """IncomingMessage.id should be set to the created database message."""
-        msg = self.receive(text="foo", connection=self.create_connection())
+        msg = self.receive(text="foo", connection=self.conn1)
         dbm = Message.objects.all()[0]
         self.assertEqual(msg.id, dbm.pk)
 
     def test_receive_external_id(self):
         """Router should save external_id to database for future reference."""
         fields = {'external_id': 'ASDF1234'}
-        msg = self.receive(text="foo", connection=self.create_connection(),
-                           fields=fields)
+        msg = self.receive(text="foo", connection=self.conn1, fields=fields)
         dbm = Message.objects.all()[0]
         self.assertEqual("ASDF1234", msg.fields['external_id'])
         self.assertEqual("ASDF1234", dbm.external_id)
@@ -154,12 +156,11 @@ class DatabaseRouterReceiveTest(harness.CustomRouterMixin, TestCase):
         """Make sure the proper fields are passed through."""
         router = DatabaseRouter()
         dbm = router.queue_message(direction='I', text="foo",
-                                   connections=[self.create_connection()])
+                                   connections=[self.conn1])
         dbm2 = router.create_message_from_dbm(dbm, {'a': 'b'})
         self.assertEqual({'a': 'b'}, dbm2.fields)
 
 
-@override_settings(INSTALLED_APPS=[harness.EchoApp])
 class DatabaseRouterSendTest(harness.DatabaseBackendMixin, TestCase):
     """DatabaseRouter send tests."""
 

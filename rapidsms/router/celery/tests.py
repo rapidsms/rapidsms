@@ -32,13 +32,12 @@ class CeleryRouterTest(harness.DatabaseBackendMixin, TestCase):
 
     def test_in_response_to_external_id(self):
         """CeleryRouter should maintain external_id through responses."""
-        with override_settings(INSTALLED_APPS=[harness.EchoApp]):
-            connection = self.lookup_connections([1112223333])[0]
-            msg = self.receive("test", connection,
-                               fields={'external_id': 'ABCD1234'})
-            backend_msg = self.sent_messages[0]
-            self.assertEqual(msg.fields['external_id'],
-                             backend_msg.external_id)
+        connection = self.lookup_connections([1112223333])[0]
+        msg = self.receive("test", connection,
+                           fields={'external_id': 'ABCD1234'})
+        backend_msg = self.sent_messages[0]
+        self.assertEqual(msg.fields['external_id'],
+                         backend_msg.external_id)
 
     def test_send_async_catches_error(self):
         """send_async should capture sending exceptions properly."""
