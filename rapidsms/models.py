@@ -72,7 +72,7 @@ class App(models.Model):
     """
 
     module = models.CharField(max_length=100, unique=True)
-    active = models.BooleanField()
+    active = models.BooleanField(default=False)
 
     def __unicode__(self):
         return self.module
