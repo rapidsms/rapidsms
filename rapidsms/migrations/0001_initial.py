@@ -1,91 +1,88 @@
 # -*- coding: utf-8 -*-
-import datetime
-from south.db import db
-from south.v2 import SchemaMigration
-from django.db import models
+from __future__ import unicode_literals
+
+from django.db import models, migrations
 
 
-class Migration(SchemaMigration):
+class Migration(migrations.Migration):
 
-    def forwards(self, orm):
-        # Adding model 'Backend'
-        db.create_table(u'rapidsms_backend', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=20)),
-        ))
-        db.send_create_signal(u'rapidsms', ['Backend'])
+    dependencies = [
+    ]
 
-        # Adding model 'App'
-        db.create_table(u'rapidsms_app', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('module', self.gf('django.db.models.fields.CharField')(unique=True, max_length=100)),
-            ('active', self.gf('django.db.models.fields.BooleanField')(default=False)),
-        ))
-        db.send_create_signal(u'rapidsms', ['App'])
-
-        # Adding model 'Contact'
-        db.create_table(u'rapidsms_contact', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=100, blank=True)),
-            ('language', self.gf('django.db.models.fields.CharField')(max_length=6, blank=True)),
-        ))
-        db.send_create_signal(u'rapidsms', ['Contact'])
-
-        # Adding model 'Connection'
-        db.create_table(u'rapidsms_connection', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('backend', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['rapidsms.Backend'])),
-            ('identity', self.gf('django.db.models.fields.CharField')(max_length=100)),
-            ('contact', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['rapidsms.Contact'], null=True, blank=True)),
-        ))
-        db.send_create_signal(u'rapidsms', ['Connection'])
-
-        # Adding unique constraint on 'Connection', fields ['backend', 'identity']
-        db.create_unique(u'rapidsms_connection', ['backend_id', 'identity'])
-
-
-    def backwards(self, orm):
-        # Removing unique constraint on 'Connection', fields ['backend', 'identity']
-        db.delete_unique(u'rapidsms_connection', ['backend_id', 'identity'])
-
-        # Deleting model 'Backend'
-        db.delete_table(u'rapidsms_backend')
-
-        # Deleting model 'App'
-        db.delete_table(u'rapidsms_app')
-
-        # Deleting model 'Contact'
-        db.delete_table(u'rapidsms_contact')
-
-        # Deleting model 'Connection'
-        db.delete_table(u'rapidsms_connection')
-
-
-    models = {
-        u'rapidsms.app': {
-            'Meta': {'object_name': 'App'},
-            'active': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'module': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '100'})
-        },
-        u'rapidsms.backend': {
-            'Meta': {'object_name': 'Backend'},
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '20'})
-        },
-        u'rapidsms.connection': {
-            'Meta': {'unique_together': "(('backend', 'identity'),)", 'object_name': 'Connection'},
-            'backend': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['rapidsms.Backend']"}),
-            'contact': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['rapidsms.Contact']", 'null': 'True', 'blank': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'identity': ('django.db.models.fields.CharField', [], {'max_length': '100'})
-        },
-        u'rapidsms.contact': {
-            'Meta': {'object_name': 'Contact'},
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'language': ('django.db.models.fields.CharField', [], {'max_length': '6', 'blank': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'})
-        }
-    }
-
-    complete_apps = ['rapidsms']
+    operations = [
+        migrations.CreateModel(
+            name='App',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('module', models.CharField(unique=True, max_length=100)),
+                ('active', models.BooleanField(default=False)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Backend',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(unique=True, max_length=20)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='BackendMessage',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(max_length=255)),
+                ('date', models.DateTimeField(auto_now_add=True)),
+                ('direction', models.CharField(db_index=True, max_length=1, choices=[(b'I', b'Incoming'), (b'O', b'Outgoing')])),
+                ('message_id', models.CharField(max_length=64)),
+                ('external_id', models.CharField(max_length=64, blank=True)),
+                ('identity', models.CharField(max_length=100)),
+                ('text', models.TextField()),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Connection',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('identity', models.CharField(max_length=100)),
+                ('created_on', models.DateTimeField(auto_now_add=True)),
+                ('modified_on', models.DateTimeField(auto_now=True)),
+                ('backend', models.ForeignKey(to='rapidsms.Backend')),
+            ],
+            options={
+                'abstract': False,
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Contact',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(max_length=100, blank=True)),
+                ('created_on', models.DateTimeField(auto_now_add=True)),
+                ('modified_on', models.DateTimeField(auto_now=True)),
+                ('language', models.CharField(help_text=b'The language which this contact prefers to communicate in, as a W3C language tag. If this field is left blank, RapidSMS will default to: en-us', max_length=6, blank=True)),
+            ],
+            options={
+                'abstract': False,
+            },
+            bases=(models.Model,),
+        ),
+        migrations.AddField(
+            model_name='connection',
+            name='contact',
+            field=models.ForeignKey(blank=True, to='rapidsms.Contact', null=True),
+            preserve_default=True,
+        ),
+        migrations.AlterUniqueTogether(
+            name='connection',
+            unique_together=set([('backend', 'identity')]),
+        ),
+    ]

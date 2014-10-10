@@ -49,10 +49,3 @@ class EchoApp(MockApp):
         MockApp.handle(self, message)
         peer = message.connections[0].identity
         message.respond(peer + ": " + message.text)
-
-
-class ExceptionApp(MockApp):
-    """App that raises an exception."""
-
-    def handle(self, message):
-        raise Exception('Error!')
