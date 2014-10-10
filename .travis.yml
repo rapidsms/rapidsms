@@ -2,23 +2,21 @@ language: python
 python:
   - "2.7"
 env:
-  - TOXENV=py26-1.4.X
-  - TOXENV=py27-1.4.X
-  - TOXENV=py26-1.5.X
-  - TOXENV=py27-1.5.X
-  - TOXENV=py26-trunk
+  - TOXENV=py26-1.4.X,py27-1.4.X
+  - TOXENV=py26-1.5.X,py27-1.5.X
+  - TOXENV=py26-1.6.X,py27-1.6.X
+  - TOXENV=py27-1.7.X
   - TOXENV=py27-trunk
   - TOXENV=docs
+  - TOXENV=flake8
+  - TOXENV=coverage
 install:
-  - pip install -q --use-mirrors --upgrade tox pep8
+  - pip install tox
 script:
   - tox
-after_script:
-  - pep8 --exclude=scheduler,locations,ajax --filename=tests.py,urls.py --ignore=E128 ./rapidsms/
-  - pep8 --exclude=scheduler,locations,ajax,urls.py,urls,tests.py ./rapidsms/
 matrix:
   allow_failures:
-    - env: TOXENV=py26-trunk
+    - env: TOXENV=py27-1.7.X
     - env: TOXENV=py27-trunk
 notifications:
   irc:
