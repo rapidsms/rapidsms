@@ -16,7 +16,6 @@ script:
   - tox
 matrix:
   allow_failures:
-    - env: TOXENV=py27-1.7.X
     - env: TOXENV=py27-trunk
 notifications:
   irc:
