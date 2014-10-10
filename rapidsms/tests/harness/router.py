@@ -77,7 +77,7 @@ class CustomRouterMixin(CreateDataMixin):
         setattr(settings, 'RAPIDSMS_ROUTER', self.router_class)
 
     def lookup_connections(self, backend, identities):
-        """loopup_connections() API wrapper."""
+        """lookup_connections() API wrapper."""
         return lookup_connections(backend, identities)
 
 

@@ -44,8 +44,8 @@ Dependencies
 
 * `django-nose <http://pypi.python.org/pypi/django-nose>`_
 * `djappsettings <http://pypi.python.org/pypi/djappsettings>`_
-* `djtables <https://pypi.python.org/pypi/django-tables2>`_
-* `django-tables2 <http://pypi.python.org/pypi/django-selectable>`_
+* `django-tables2 <https://pypi.python.org/pypi/django-tables2>`_
+* `django-selectable <http://pypi.python.org/pypi/django-selectable>`_
 * `requests <https://pypi.python.org/pypi/requests/>`_
 
 
@@ -68,6 +68,6 @@ Contributing
 ------------
 
 If you think you've found a bug or are interested in contributing to this
-project check out `RapidSMS on Github <https://github.com/rapidsms/rapidsms>`_.
-A full contributing guide can be found in the `online documentation <http://rap
-idsms.readthedocs.org/en/latest/internals/contributing/index.html>`_.
+project, check out `RapidSMS on Github <https://github.com/rapidsms/rapidsms>`_.
+A full contributing guide can be found in the `online documentation
+<http://http://rapidsms.readthedocs.org/en/latest/community/joining.html>`_.
