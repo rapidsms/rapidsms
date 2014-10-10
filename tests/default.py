@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     "django.contrib.sites",
     "django.contrib.auth",
     "django.contrib.admin",
+    "django.contrib.messages",
     "django.contrib.sessions",
     "django.contrib.staticfiles",
     "django.contrib.contenttypes",
@@ -47,6 +48,15 @@ INSTALLED_APPS = [
 
     "rapidsms.contrib.default",  # Should be last
 ]
+
+# Django 1.7+ emits a warning if this is not set
+MIDDLEWARE_CLASSES = (
+    'django.middleware.common.CommonMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+)
 
 SITE_ID = 1
 
