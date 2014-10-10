@@ -7,7 +7,3 @@ from djtables import Table, Column
 
 class LocationTable(Table):
     name = Column()
-    #slug = Column()
-
-    #class Meta:
-    #    order_by = 'name'

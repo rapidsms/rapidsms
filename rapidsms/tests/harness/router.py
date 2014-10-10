@@ -8,7 +8,7 @@ from rapidsms.backends.database.models import BackendMessage
 from rapidsms.backends.database.outgoing import DatabaseBackend
 
 
-__all__ = ('CustomRouter', 'MockBackendRouter')
+__all__ = ('CustomRouterMixin', 'DatabaseBackendMixin', 'TestRouterMixin')
 
 
 class CustomRouterMixin(CreateDataMixin):

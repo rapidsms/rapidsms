@@ -33,8 +33,8 @@ class LanguageHandler(KeywordHandler):
 
             return self.respond(
                 "I will speak to you in %(language)s." % {
-                'language': name})
+                    'language': name})
 
         return self.respond_error(
             'Sorry, I don\'t speak "%(language)s".' % {
-            'language': text})
+                'language': text})

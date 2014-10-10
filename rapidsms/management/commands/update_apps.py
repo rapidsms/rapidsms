@@ -21,7 +21,7 @@ class Command(NoArgsCommand):
         # find any running apps which currently
         # don't have objects, and fill in the gaps
         for module_name in settings.INSTALLED_APPS:
-            if not module_name in known_module_names:
+            if module_name not in known_module_names:
                 # Assure the module is a rapidsms app with an App class
                 if AppBase.find(module_name):
                     known_module_names.append(module_name)

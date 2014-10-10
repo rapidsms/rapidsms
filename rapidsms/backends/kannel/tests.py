@@ -1,5 +1,3 @@
-import datetime
-
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 from django.conf.urls import patterns, url

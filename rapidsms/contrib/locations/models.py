@@ -109,8 +109,8 @@ class Location(models.Model):
         return [
             cls
             for cls in models.loading.get_models()
-            if issubclass(cls, Location) and\
-                (cls is not Location)]
+            if issubclass(cls, Location) and (cls is not Location)
+        ]
 
     @property
     def path(self):
@@ -169,7 +169,7 @@ class Location(models.Model):
         return self.Direction.ABOVE
 
 
-#class Country(Location):
+# class Country(Location):
 #    name = models.CharField(max_length=100)
 #    iso_code = models.CharField("ISO Code", max_length=2)
 
@@ -181,7 +181,7 @@ class Location(models.Model):
 #        return self.iso_code.upper()
 
 
-#class State(Location):
+# class State(Location):
 #    name = models.CharField(max_length=100)
 #    usps_code = models.CharField("USPS Code", max_length=2,
 #        help_text="The two-letter state abbreviation")
@@ -191,7 +191,7 @@ class Location(models.Model):
 #        return self.usps_code.upper()
 
 
-#class City(Location):
+# class City(Location):
 #    name = models.CharField(max_length=100)
 
 #    class Meta:

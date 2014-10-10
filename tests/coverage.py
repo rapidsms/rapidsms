@@ -1,4 +1,4 @@
-from default import *
+from default import *  # noqa
 
 NOSE_ARGS = [
     '--with-coverage',

@@ -10,7 +10,7 @@ from rapidsms.templatetags.paginator_tags import paginator
 class PaginatorTests(TestCase):
     def test_paginator(self):
         cases = [
-            #viewing page, max_page, [shown pages] (None = ellipsis)
+            # viewing page, max_page, [shown pages] (None = ellipsis)
             (1, 10, [1, 2, 3, None, 9, 10]),
             (3, 10, [1, 2, 3, 4, 5, None, 9, 10]),
             (4, 10, [1, 2, 3, 4, 5, 6, None, 9, 10]),
@@ -22,7 +22,7 @@ class PaginatorTests(TestCase):
             (16, 20, [1, 2, None, 14, 15, 16, 17, 18, 19, 20]),
             (15, 20, [1, 2, None, 13, 14, 15, 16, 17, 18, 19, 20]),
             (20, 50, [1, 2, None, 18, 19, 20, 21, 22, None, 49, 50]),
-            ]
+        ]
         request = RequestFactory().get(
             reverse('rapidsms.contrib.registration.views.registration')
         )
@@ -35,6 +35,6 @@ class PaginatorTests(TestCase):
             pg = Paginator(range(max_num * 10), 10)
             result_pages = [
                 p['number'] if p else None for p in
-                    paginator(context, pg.page(page_num))['page_links']
+                paginator(context, pg.page(page_num))['page_links']
             ]
             self.assertEqual(result_pages, test_case_pages)
