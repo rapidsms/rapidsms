@@ -135,7 +135,7 @@ def locations(req, location_uid=None):
             "location_types": types,
 
             # from rapidsms.contrib.locations.settings
-            "default_latitude":  settings.MAP_DEFAULT_LATITUDE,
+            "default_latitude": settings.MAP_DEFAULT_LATITUDE,
             "default_longitude": settings.MAP_DEFAULT_LONGITUDE,
 
             # if there are no locationtypes, then we should display a

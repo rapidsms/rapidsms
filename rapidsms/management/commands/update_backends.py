@@ -23,7 +23,7 @@ class Command(NoArgsCommand):
         # find any running backends which currently
         # don't have instances, and fill in the gaps
         for name in settings.INSTALLED_BACKENDS:
-            if not name in known_backend_names:
+            if name not in known_backend_names:
                 known_backend_names.append(name)
                 backend = Backend.objects.create(
                     name=name)

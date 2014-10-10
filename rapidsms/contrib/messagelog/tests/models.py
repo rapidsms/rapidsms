@@ -52,4 +52,3 @@ class MessageLogModelTest(RapidTest):
         self.data['contact'] = self.create_contact()
         with self.assertRaises(ValidationError):
             Message.objects.create(**self.data)
-

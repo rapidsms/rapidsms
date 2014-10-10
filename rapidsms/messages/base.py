@@ -70,7 +70,10 @@ class MessageBase(object):
         """The first connection's :py:class:`~rapidsms.models.Contact`
         - `deprecated`
         """
-        warnings.warn("MessageBase.contact is deprecated; please start using .connections[i].contact", DeprecationWarning)
+        warnings.warn(
+            "MessageBase.contact is deprecated; please start using .connections[i].contact",
+            DeprecationWarning
+        )
         return self.connections[0].contact
 
     @property

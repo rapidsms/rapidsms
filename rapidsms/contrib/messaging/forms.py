@@ -13,12 +13,11 @@ from .lookups import ConnectionLookup
 class MessageForm(forms.Form):
     message = forms.CharField(widget=forms.Textarea)
     connections = AutoCompleteSelectMultipleField(
-            lookup_class=ConnectionLookup)
+        lookup_class=ConnectionLookup)
 
     def __init__(self, *args, **kwargs):
         super(MessageForm, self).__init__(*args, **kwargs)
-        self.fields['connections'].widget.attrs['placeholder'] = 'Add a '\
-                'Recipient'
+        self.fields['connections'].widget.attrs['placeholder'] = 'Add a Recipient'
         self.fields['message'].widget.attrs['placeholder'] = 'Message'
 
     def send(self):

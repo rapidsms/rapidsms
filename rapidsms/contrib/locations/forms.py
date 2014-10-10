@@ -3,10 +3,10 @@
 
 
 from django.utils.translation import ugettext_lazy as _
-from django.forms import widgets
-from django.forms import fields
+from django.forms import fields, widgets
 from django import forms
-from .models import *
+
+from .models import Location, Point
 
 
 class PointWidget(widgets.MultiWidget):
@@ -74,19 +74,19 @@ class LocationForm(forms.ModelForm):
         exclude = ("parent_type", "parent_id", "type")
 
 
-#class CountryForm(LocationForm):
+# class CountryForm(LocationForm):
 #    class Meta:
 #        model = Country
 #        exclude = ("parent_type", "parent_id")
 
 
-#class StateForm(LocationForm):
+# class StateForm(LocationForm):
 #    class Meta:
 #        model = State
 #        exclude = ("parent_type", "parent_id")
 
 
-#class CityForm(LocationForm):
+# class CityForm(LocationForm):
 #    class Meta:
 #        model = City
 #        exclude = ("parent_type", "parent_id")

@@ -5,12 +5,12 @@ from django.test import TestCase, TransactionTestCase
 
 from rapidsms.router.test import TestRouter
 
-from rapidsms.tests.harness.base import CreateDataMixin, LoginMixin
-from rapidsms.tests.harness.router import (CustomRouterMixin, TestRouterMixin,
+from rapidsms.tests.harness.base import CreateDataMixin, LoginMixin  # noqa
+from rapidsms.tests.harness.router import (CustomRouterMixin, TestRouterMixin,  # noqa
                                            DatabaseBackendMixin)
 from rapidsms.tests.harness.scripted import TestScriptMixin
-from rapidsms.tests.harness.backend import MockBackend, RaisesBackend
-from rapidsms.tests.harness.app import MockApp, EchoApp, ExceptionApp
+from rapidsms.tests.harness.backend import MockBackend, RaisesBackend  # noqa
+from rapidsms.tests.harness.app import MockApp, EchoApp, ExceptionApp  # noqa
 
 
 class RapidTest(TestRouterMixin, LoginMixin, TestCase):

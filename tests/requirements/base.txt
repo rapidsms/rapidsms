@@ -1,4 +1,0 @@
-mock==1.0.1
-django-celery==3.0.23
-django-tables2==0.14.0
-django-selectable==0.7.0

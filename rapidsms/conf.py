@@ -15,4 +15,4 @@ overriden by the project author in the top-level ``settings.py``.
 try:
     from djappsettings import settings
 except:
-    from django.conf import settings
+    from django.conf import settings  # noqa

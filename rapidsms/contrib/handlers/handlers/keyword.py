@@ -72,7 +72,7 @@ class KeywordHandler(BaseHandler):
                 $                # match all the way to the end
             """.format(keyword=cls.keyword)
 
-            return re.compile(prefix, re.IGNORECASE|re.VERBOSE)
+            return re.compile(prefix, re.IGNORECASE | re.VERBOSE)
         raise HandlerError('KeywordHandler must define a keyword.')
 
     @classmethod
@@ -116,7 +116,7 @@ class KeywordHandler(BaseHandler):
 
                 return inst.respond_error(
                     "Not a valid number: %(string)s" % dict(
-                    string=m.group(2)))
+                        string=m.group(2)))
 
         # if we received _just_ the keyword, with
         # no content, some help should be sent back
