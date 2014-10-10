@@ -4,16 +4,23 @@
 import os
 import sys
 
+import django
+from django.conf import settings
+from django.test.utils import get_runner
+
 
 def run_tests(options, args, ci=False):
-    from django.conf import settings
+    if django.VERSION > (1, 7):
+        # http://django.readthedocs.org/en/latest/releases/1.7.html#standalone-scripts
+        django.setup()
+
     if ci:
         settings.NOSE_ARGS = [
             '--with-xcoverage',
             '--cover-tests',
             '--cover-package=rapidsms',
         ]
-    from django.test.utils import get_runner
+
     TestRunner = get_runner(settings)
     test_runner = TestRunner(verbosity=int(options.verbosity),
                              interactive=options.interactive,
