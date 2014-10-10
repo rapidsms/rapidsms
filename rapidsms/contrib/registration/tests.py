@@ -141,6 +141,7 @@ class TestViews(TestCase, CreateDataMixin, LoginMixin):
         }
         with patch('rapidsms.contrib.registration.views.render'):
             request = Mock(method="POST", POST=data)
+            request.__class__ = HttpRequest
             self.login()
             request.user = self.user
             retval = views.contact(request, pk=contact.pk)
@@ -178,6 +179,7 @@ class TestViews(TestCase, CreateDataMixin, LoginMixin):
 
         with patch('rapidsms.contrib.registration.views.render') as render:
             request = Mock(method="POST", POST=data)
+            request.__class__ = HttpRequest
             self.login()
             request.user = self.user
             retval = views.contact(request, pk=contact.pk)
@@ -213,6 +215,7 @@ class TestViews(TestCase, CreateDataMixin, LoginMixin):
 
         with patch('rapidsms.contrib.registration.views.render'):
             request = Mock(method="POST", POST=data)
+            request.__class__ = HttpRequest
             self.login()
             request.user = self.user
             retval = views.contact(request, pk=contact.pk)
@@ -242,6 +245,7 @@ class TestViews(TestCase, CreateDataMixin, LoginMixin):
         }
         with patch('rapidsms.contrib.registration.views.render'):
             request = Mock(method="POST", POST=data)
+            request.__class__ = HttpRequest
             self.login()
             request.user = self.user
             retval = views.contact(request)
@@ -286,6 +290,7 @@ class TestViews(TestCase, CreateDataMixin, LoginMixin):
         old_pk = connections[1].pk
         with patch('rapidsms.contrib.registration.views.render'):
             request = Mock(method="POST", POST=data)
+            request.__class__ = HttpRequest
             self.login()
             request.user = self.user
             retval = views.contact(request, pk=contact.pk)
@@ -323,6 +328,7 @@ class TestViews(TestCase, CreateDataMixin, LoginMixin):
         }
         with patch('rapidsms.contrib.registration.views.render'):
             request = Mock(method="POST", POST=data)
+            request.__class__ = HttpRequest
             self.login()
             request.user = self.user
             retval = views.contact(request, pk=contact.pk)
@@ -359,6 +365,7 @@ class TestBulkAdd(TestCase, CreateDataMixin, LoginMixin):
         with patch('rapidsms.contrib.registration.views.render') as render:
             request = Mock(method="POST",
                            FILES={'bulk': StringIO(testfile_data)})
+            request.__class__ = HttpRequest
             self.login()
             request.user = self.user
             retval = views.contact_bulk_add(request)
