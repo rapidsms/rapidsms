@@ -334,3 +334,14 @@ class DatabaseRouterSendTest(harness.DatabaseBackendMixin, TestCase):
         errored = Transmission.objects.filter(status='E')
         # only 1 of the transmissions should have a status of 'E' now
         self.assertEqual(1, errored.count())
+
+    def test_database_message_sent(self):
+        """ Database message should be marked as sent after a successful router.send(). """
+        connection = self.lookup_connections(['1111111111'])[0]
+        msg = self.send("test", connection)
+        database_message = msg.database_message
+
+        database_message.refresh_from_db()
+        self.assertEqual(database_message.status, 'S')
+        self.assertIsNotNone(database_message.sent)
+        self.assertEqual(database_message.direction, 'O')

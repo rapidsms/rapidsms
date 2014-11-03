@@ -89,6 +89,7 @@ class DatabaseRouter(BlockingRouter):
         if msg.in_response_to and hasattr(msg.in_response_to, 'dbm'):
             dbm.in_response_to = msg.in_response_to.dbm
         dbm.save()
+        msg.database_message = dbm
         for backend_id, trans in self.group_transmissions(dbm.transmissions):
             transmission_ids = list(trans.values_list('pk', flat=True))
             send_transmissions.delay(backend_id=backend_id,
