@@ -1,8 +1,8 @@
-=================================================
-RapidSMS 0.18.0 release notes (under development)
-=================================================
+================================================
+RapidSMS 0.18.0 release notes  (current release)
+================================================
 
-Welcome to RapidSMS 0.18.0! These release notes cover the new features in 0.17.0
+Welcome to RapidSMS 0.18.0! These release notes cover the new features in 0.18.0
 as well as some :ref:`backwards-incompatible-changes-0.18.0` you'll want to be
 aware of when upgrading from RapidSMS 0.17.0.
 
@@ -10,11 +10,28 @@ aware of when upgrading from RapidSMS 0.17.0.
 What's New
 ==========
 
- *
+* Multiple small documentation fixes [Thanks `@jthurner <https://github.com/jthurner>`_!]
+* Minor fix to tutorial
+* Remove uses of the deprecated ``msg.connection`` attribute
+* Allow editing of messages in Messagelog admin.
+* Change BooleanField default to False [Thanks `@shanx <https://github.com/shanx>`_!]
+* Full Flake8 compliance
+* Django 1.7 support [Thanks to multiple contributors who provided PRs including `@dpoirier
+  <https://github.com/dpoirier>`_, `@johanneswilm <https://github.com/johanneswilm>`_,
+  `@thedrow <https://github.com/thedrow>`_, and others.]
+* Special thanks to Caktus Group for allowing and encouraging `@vkurup <https://github.com/vkurup/>`_
+  to work on the Django 1.7 support during their quarterly ShipIt days!
+* Added `Coveralls <https://coveralls.io/r/rapidsms>`_ support.
+
 
  .. _backwards-incompatible-changes-0.18.0:
 
 Backwards-incompatible changes in RapidSMS 0.18.0
 =================================================
 
-*
+* Since Django 1.7 has it's own migration framework, South is now deprecated. If
+  you are still using Django < 1.7, you will need to upgrade South to version >
+  1.0, otherwise it will get confused by migration files which are meant for
+  Django 1.7, not for South. (The ``migrations`` directories now contain Django
+  1.7 migrations. South migrations have been moved to a ``south_migrations``
+  directory, but older versions of South will not look in that directory.)

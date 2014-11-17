@@ -1,6 +1,6 @@
-===============================================
-RapidSMS 0.17.0 release notes (current release)
-===============================================
+=============================
+RapidSMS 0.17.0 release notes
+=============================
 
 Welcome to RapidSMS 0.17.0! These release notes cover the new features in
 0.17.0.
