@@ -50,7 +50,6 @@ def contact(request, pk=None):
                     data[key] = val[0]
                 except (IndexError, TypeError):
                     data[key] = val
-        # print repr(data)
         del data
         if pk:
             if "delete_contact" in request.POST:

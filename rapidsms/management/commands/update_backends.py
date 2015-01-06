@@ -31,4 +31,4 @@ class Command(NoArgsCommand):
                 # log at the same level as syncdb's "created table..."
                 # messages, to stay silent when called with -v 0
                 if verbosity >= 1:
-                    print "Added persistant backend %s" % backend
+                    self.stdout.write("Added persistent backend %s" % backend)

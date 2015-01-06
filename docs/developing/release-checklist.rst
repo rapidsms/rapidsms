@@ -168,7 +168,7 @@ Back on the ``develop`` branch, we can now start on the next release:
   something during the release process).
 * Update the version in ``rapidsms/__init__.py`` and the next version in
   ``rapidsms/docs/conf.py``.
-* Start a new releasenotes document in ``rapidsms/docs/release``. Use the
+* Start a new release notes document in ``rapidsms/docs/release``. Use the
   previous release's document as a template. Be sure
   to label it at the top as under development.
 * Update ``rapidsms/docs/release/index.rst`` to mark the next release as

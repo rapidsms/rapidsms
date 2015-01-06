@@ -10,7 +10,7 @@ If you're already familiar with Github and pull requests, here's all
 you need to know:
 
 1. Sign a
-:ref:`Contributer License Agreement <contributor-license-agreements>`.
+:ref:`Contributor License Agreement <contributor-license-agreements>`.
 
 2. Open a pull request against the ``develop`` branch of
 the RapidSMS repository (https://github.com/rapidsms/rapidsms).
