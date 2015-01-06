@@ -1,4 +1,5 @@
 import json
+from mock import patch
 
 from django.test import TestCase
 from django.core.urlresolvers import reverse
@@ -180,6 +181,33 @@ class VumiSendTest(CreateDataMixin, TestCase):
                                          [message.connections[0].identity], {})
         data = json.loads(kwargs['data'])
         self.assertIn(message.id, data.get('metadata', {}).values())
+
+    def test_from_addr_and_endpoint_in_payload(self):
+        """Make sure that we include from_addr or endpoint if provided, but only those keys"""
+        message = self.create_outgoing_message()
+        config = {"sendsms_url": "http://example.com"}
+        backend = VumiBackend(None, "vumi", **config)
+        context = {'from_addr': '5551212',
+                   'endpoint': '12345',
+                   'other': 'not included'}
+        kwargs = backend.prepare_request(message.id, message.text,
+                                         [message.connections[0].identity], context)
+        data = json.loads(kwargs['data'])
+        self.assertEqual(context['from_addr'], data['from_addr'])
+        self.assertEqual(context['endpoint'], data['endpoint'])
+        self.assertNotIn('other', data)
+
+    def test_send(self):
+        """Test successful send."""
+        message = self.create_outgoing_message()
+        config = {"sendsms_url": "http://example.com"}
+        backend = VumiBackend(None, "vumi", **config)
+        kwargs = backend.prepare_request(message.id, message.text,
+                                         [message.connections[0].identity], {})
+        with patch('rapidsms.backends.vumi.outgoing.requests.post') as mock_post:
+            backend.send(message.id, message.text,
+                         [message.connections[0].identity], {})
+        mock_post.assert_called_once_with(**kwargs)
 
     def test_auth(self):
         """Vumi backend shold use basic authentication if given user/pass."""
