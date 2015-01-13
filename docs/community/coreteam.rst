@@ -43,8 +43,8 @@ provide final QA before each release, and actually perform
 the final :ref:`release process steps <release-checklist>`
 to publish the new release.
 
-Community Cooordinator
-......................
+Community Coordinator
+.....................
 
 A community coordinator is a core dev who helps organize the
 core team to identify future milestones and releases. They are
@@ -54,7 +54,7 @@ for each new version.
 .. _release-champion:
 
 Release Champion
-.................
+................
 
 A release champion is a core dev who is excited about the
 upcoming release, has expertise in the topic and wants to

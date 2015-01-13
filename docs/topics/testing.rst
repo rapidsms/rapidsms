@@ -148,7 +148,7 @@ Application Logic
 *****************
 
 If you have application logic that doesn't depend on message processing
-directly, you can always test it indepdently of the router API. RapidSMS
+directly, you can always test it independently of the router API. RapidSMS
 applications are just Python classes, so you can construct your app inside of
 your test suite. For example::
 
