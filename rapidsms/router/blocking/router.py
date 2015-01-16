@@ -146,11 +146,11 @@ class BlockingRouter(object):
         """
         # Note: this method can't ever return False, but some subclass might
         # override it and use that feature.
-        logger.info("Incoming (%s): %s" % (msg.connections, msg.text))
+        logger.info("Incoming (%s): %s", msg.connections, msg.text)
 
         try:
             for phase in self.incoming_phases:
-                logger.debug("In %s phase" % phase)
+                logger.debug("In %s phase", phase)
 
                 if phase == "default":
                     if msg.handled:
@@ -158,7 +158,7 @@ class BlockingRouter(object):
                         break
 
                 for app in self.apps:
-                    logger.debug("In %s app" % app)
+                    logger.debug("In %s app", app)
                     handled = False
 
                     func = getattr(app, phase)
@@ -207,7 +207,7 @@ class BlockingRouter(object):
 
     def process_outgoing(self, msg):
         """Process message through outgoing phases and pass to backend(s)."""
-        logger.info("Outgoing: %s" % msg)
+        logger.info("Outgoing: %s", msg)
         continue_sending = self.process_outgoing_phases(msg)
         if continue_sending:
             self.backend_preparation(msg)
@@ -215,13 +215,13 @@ class BlockingRouter(object):
     def process_outgoing_phases(self, msg):
         """Process message through outgoing phases and apps."""
         for phase in self.outgoing_phases:
-            logger.debug("Out %s phase" % phase)
+            logger.debug("Out %s phase", phase)
             continue_sending = True
             # call outgoing phases in the opposite order of the incoming
             # phases, so the first app called with an incoming message
             # is the last app called with an outgoing message
             for app in reversed(self.apps):
-                logger.debug("Out %s app" % app)
+                logger.debug("Out %s app", app)
                 try:
                     func = getattr(app, phase)
                     continue_sending = func(msg)

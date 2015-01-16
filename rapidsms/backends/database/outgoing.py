@@ -16,7 +16,7 @@ class DatabaseBackend(BackendBase):
     """
 
     def send(self, id_, text, identities, context):
-        logger.info('Storing message: %s' % text)
+        logger.info('Storing message: %s', text)
         kwargs = {'name': self.name, 'direction': 'O', 'text': text,
                   'message_id': id_}
         if 'external_id' in context:
