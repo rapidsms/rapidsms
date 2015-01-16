@@ -15,8 +15,9 @@ class DatabaseBackend(BackendBase):
     Simple backend that uses the database for storage. Mostly used for testing.
     """
 
-    def send(self, id_, text, identities, context):
+    def send(self, id_, text, identities, context=None):
         logger.info('Storing message: %s', text)
+        context = context or {}
         kwargs = {'name': self.name, 'direction': 'O', 'text': text,
                   'message_id': id_}
         if 'external_id' in context:

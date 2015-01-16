@@ -95,8 +95,9 @@ class DatabaseRouter(BlockingRouter):
                                      message_id=dbm.pk,
                                      transmission_ids=transmission_ids)
 
-    def create_message_from_dbm(self, dbm, fields={}, fetch_connections=True):
+    def create_message_from_dbm(self, dbm, fields=None, fetch_connections=True):
         from rapidsms.models import Connection
+        fields = fields or {}
         if fetch_connections:
             ids = dbm.transmissions.values_list('connection_id', flat=True)
             connections = Connection.objects.filter(id__in=list(ids))

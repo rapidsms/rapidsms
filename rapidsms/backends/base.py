@@ -38,7 +38,7 @@ class BackendBase(object):
         """
         pass
 
-    def send(self, id_, text, identities, context={}):
+    def send(self, id_, text, identities, context=None):
         """
         Backend sending logic. The router will call this method for each
         outbound message. This method must be overridden by sub-classes.
@@ -52,7 +52,7 @@ class BackendBase(object):
         :param id\_: Message ID
         :param text: Message text
         :param identities: List of identities
-        :param context: Optional extra context provided by router to backend
+        :param context: Optional dictionary with extra context provided by router to backend
         """
         # subclasses should override this
         raise NotImplementedError()
