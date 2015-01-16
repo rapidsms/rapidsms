@@ -2,10 +2,9 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 from rapidsms.utils.modules import import_class
-from rapidsms.log.mixin import LoggerMixin
 
 
-class BackendBase(object, LoggerMixin):
+class BackendBase(object):
     """Base class for outbound backend functionality."""
 
     @classmethod
@@ -24,9 +23,6 @@ class BackendBase(object, LoggerMixin):
 
         self._config = kwargs
         self.configure(**kwargs)
-
-    def _logger_name(self):  # pragma: no cover
-        return "backend/%s" % self.name
 
     def __unicode__(self):
         return self.name
