@@ -28,9 +28,7 @@ setup(
     ],
 
     test_requires=[
-        "django-nose>=1.2",
         "mock>=1.0.1",
-        "nose>=1.3",
     ],
 
     packages=find_packages(exclude=['*.pyc']),

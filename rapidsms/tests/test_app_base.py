@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
+from django.test import TestCase
 
-from nose.tools import assert_equals
 from ..apps.base import AppBase
 
 
@@ -24,28 +24,25 @@ class AppStub(AppBase):
     pass
 
 
-def test_app_exposes_router():
-    router = MockRouter()
-    app = AppStub(router)
+class AppBaseTest(TestCase):
 
-    assert_equals(app.router, router)
+    def test_app_exposes_router(self):
+        router = MockRouter()
+        app = AppStub(router)
+        self.assertEqual(app.router, router)
 
+    def test_app_has_name(self):
+        router = MockRouter()
+        app = AppStub(router)
+        self.assertEqual(repr(app), "<app: tests>")
+        self.assertEqual(unicode(app), "tests")
+        self.assertEqual(app.name, "tests")
 
-def test_app_has_name():
-    router = MockRouter()
-    app = AppStub(router)
+    def test_app_finds_valid_app_classes(self):
+        app = AppBase.find('rapidsms.contrib.default')
+        from rapidsms.contrib.default.app import App
+        self.assertEqual(app, App)
 
-    assert_equals(repr(app), "<app: tests>")
-    assert_equals(unicode(app), "tests")
-    assert_equals(app.name, "tests")
-
-
-def test_app_finds_valid_app_classes():
-    app = AppBase.find('rapidsms.contrib.default')
-    from rapidsms.contrib.default.app import App
-    assert_equals(app, App)
-
-
-def test_app_ignores_invalid_modules():
-    app = AppBase.find('not.a.valid.module')
-    assert_equals(app, None)
+    def test_app_ignores_invalid_modules(self):
+        app = AppBase.find('not.a.valid.module')
+        self.assertEqual(app, None)

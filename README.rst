@@ -49,7 +49,6 @@ RapidSMS is best installed via `PyPI`_. To install the latest version, run::
 Dependencies
 ------------
 
-* `django-nose <http://pypi.python.org/pypi/django-nose>`_
 * `djappsettings <http://pypi.python.org/pypi/djappsettings>`_
 * `django-tables2 <https://pypi.python.org/pypi/django-tables2>`_
 * `django-selectable <http://pypi.python.org/pypi/django-selectable>`_

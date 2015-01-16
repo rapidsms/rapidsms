@@ -3,8 +3,6 @@ import os
 db_name = 'test_rapidsms'
 db_engine = os.environ.get('DBENGINE', 'sqlite3')
 
-TEST_RUNNER = "django_nose.NoseTestSuiteRunner"
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.{0}'.format(db_engine),
@@ -21,7 +19,6 @@ INSTALLED_BACKENDS = {
 INSTALLED_APPS = [
     "rapidsms",
     # third party apps.
-    "django_nose",
     "djtables",
     "django_tables2",
     "selectable",
