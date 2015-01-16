@@ -2,16 +2,16 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 
-from django.core.management.base import NoArgsCommand
+from django.core.management.base import BaseCommand
 from rapidsms.models import App
 from rapidsms.apps.base import AppBase
 from ...conf import settings
 
 
-class Command(NoArgsCommand):
+class Command(BaseCommand):
     help = "Creates instances of the App model stub for all running apps."
 
-    def handle_noargs(self, **options):
+    def handle(self, **options):
         verbosity = int(options.get("verbosity", 1))
 
         # fetch all of the apps (identified by their module name,
