@@ -46,6 +46,22 @@ INSTALLED_APPS = [
     "rapidsms.contrib.default",  # Should be last
 ]
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'py.warnings': {
+            'handlers': ['console'],
+        },
+    }
+}
+
 # Django 1.7+ emits a warning if this is not set
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
