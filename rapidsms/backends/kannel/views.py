@@ -36,6 +36,7 @@ class KannelBackendView(BaseHttpBackendView):
 class DeliveryReportView(CreateView):
 
     model = DeliveryReport
+    fields = ('date_sent', 'message_id', 'identity', 'sms_id', 'smsc', 'status', 'status_text', )
     http_method_names = ['get']
 
     def get(self, *args, **kwargs):
