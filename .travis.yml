@@ -2,8 +2,6 @@ language: python
 python:
   - "2.7"
 env:
-  - TOXENV=py26-1.4.X,py27-1.4.X
-  - TOXENV=py26-1.5.X,py27-1.5.X
   - TOXENV=py26-1.6.X,py27-1.6.X
   - TOXENV=py27-1.7.X
   - TOXENV=py27-trunk
@@ -17,9 +15,6 @@ script:
   - tox
 after_success:
   - coveralls
-matrix:
-  allow_failures:
-    - env: TOXENV=py27-trunk
 notifications:
   irc:
     - "irc.freenode.org#rapidsms"
