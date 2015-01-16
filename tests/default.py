@@ -99,8 +99,9 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 
 PROJECT_NAME = 'rapidsms-test-suite'
 
-import djcelery
-djcelery.setup_loader()
+from celery import Celery
+app = Celery('rapidsms')
+app.config_from_object('django.conf:settings')
 
 CELERY_ALWAYS_EAGER = True
 CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
