@@ -4,6 +4,7 @@ python:
 env:
   - TOXENV=py26-1.6.X,py27-1.6.X
   - TOXENV=py27-1.7.X
+  - TOXENV=py27-1.8.X
   - TOXENV=py27-trunk
   - TOXENV=docs
   - TOXENV=flake8
@@ -15,6 +16,9 @@ script:
   - tox
 after_success:
   - coveralls
+matrix:
+  allow_failures:
+    - env: TOXENV=py27-trunk
 notifications:
   irc:
     - "irc.freenode.org#rapidsms"
