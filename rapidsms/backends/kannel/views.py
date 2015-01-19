@@ -61,7 +61,7 @@ class DeliveryReportView(CreateView):
         logger.error("%s data:", self.request.method)
         logger.error(pprint.pformat(form.data))
         errors = dict((k, v[0]) for k, v in form.errors.items())
-        logger.error(unicode(errors))
+        logger.error(str(errors))
         if form.non_field_errors():
             logger.error(form.non_field_errors())
         return HttpResponseBadRequest('form failed to validate')

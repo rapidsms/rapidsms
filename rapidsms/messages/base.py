@@ -5,7 +5,10 @@ import copy
 from uuid import uuid4
 import warnings
 
+from django.utils.encoding import python_2_unicode_compatible
 
+
+@python_2_unicode_compatible
 class MessageBase(object):
     """Basic message representation with text and connection(s)."""
 
@@ -47,7 +50,7 @@ class MessageBase(object):
         #: short-circuit the default phase in the router.
         self.handled = False
 
-    def __unicode__(self):
+    def __str__(self):
         return self.text
 
     def __repr__(self):
@@ -56,7 +59,7 @@ class MessageBase(object):
     @staticmethod
     def generate_id():
         """Create a random unique ID for this message object."""
-        return uuid4().get_hex()
+        return uuid4().hex
 
     @property
     def connection(self):

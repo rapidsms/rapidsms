@@ -15,15 +15,15 @@ class RouterBackendTest(CreateDataMixin, TestCase):
         """Valid RapidSMS backend modules should load properly."""
         backend = self.router.add_backend("backend",
                                           "rapidsms.backends.base.BackendBase")
-        self.assertEquals(1, len(self.router.backends.keys()))
-        self.assertEquals(backend, self.router.backends["backend"])
+        self.assertEqual(1, len(self.router.backends.keys()))
+        self.assertEqual(backend, self.router.backends["backend"])
 
     def test_router_downcases_backend_configs(self):
         """Backend configuration should automatically be lowercased."""
         test_backend = "rapidsms.backends.base.BackendBase"
         test_conf = {"a": 1, "B": 2, "Cc": 3}
         backend = self.router.add_backend("backend", test_backend, test_conf)
-        self.assertEquals(len(backend._config), 3)
+        self.assertEqual(len(backend._config), 3)
         self.assertIn("a", backend._config)
         self.assertIn("b", backend._config)
         self.assertIn("cc", backend._config)
@@ -33,9 +33,9 @@ class RouterBackendTest(CreateDataMixin, TestCase):
     def test_add_backend_class(self):
         """Router.add_backend should also accept a class."""
         self.router.add_backend("backend", BackendBase)
-        self.assertEquals(1, len(self.router.backends.keys()))
+        self.assertEqual(1, len(self.router.backends.keys()))
         self.assertIn("backend", self.router.backends.keys())
-        self.assertEquals("backend", self.router.backends['backend'].name)
+        self.assertEqual("backend", self.router.backends['backend'].name)
 
     def test_router_not_configured_with_backend(self):
         """

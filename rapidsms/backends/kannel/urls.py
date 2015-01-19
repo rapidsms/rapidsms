@@ -1,8 +1,13 @@
-from django.conf.urls import patterns, url
-from rapidsms.backends.kannel.views import DeliveryReportView
+from django.conf.urls import include, url
+from rapidsms.backends.kannel import views
 
 
-urlpatterns = patterns('',
-    url(r"^delivery-report/$", DeliveryReportView.as_view(),
+urlpatterns = (
+    url(r'^account/', include('rapidsms.urls.login_logout')),
+    url(r"^delivery-report/$",
+        views.DeliveryReportView.as_view(),
         name="kannel-delivery-report"),
+    url(r"^backend/kannel/$",
+        views.KannelBackendView.as_view(backend_name='kannel-backend'),
+        name='kannel-backend'),
 )

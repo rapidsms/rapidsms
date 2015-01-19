@@ -1,4 +1,5 @@
 import collections
+from six import string_types
 
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
@@ -11,7 +12,7 @@ def get_router():
     """Return router defined by RAPIDSMS_ROUTER setting."""
     router = getattr(settings, 'RAPIDSMS_ROUTER',
                      'rapidsms.router.blocking.BlockingRouter')
-    if isinstance(router, basestring):
+    if isinstance(router, string_types):
         try:
             router = import_class(router)()
         except ImportError as e:
@@ -79,7 +80,7 @@ def lookup_connections(backend, identities):
     :param identities: list of identities to find associated with the backend
     :returns: List of :py:class:`~rapidsms.models.Connection` objects
     """
-    if isinstance(backend, basestring):
+    if isinstance(backend, string_types):
         backend, _ = Backend.objects.get_or_create(name=backend)
     connections = []
     for identity in identities:

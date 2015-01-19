@@ -40,7 +40,7 @@ class CeleryRouter(BlockingRouter):
         """Queue outbound message to be processed in the background."""
         context = msg.extra_backend_context()
         grouped_identities = self.group_outgoing_identities(msg)
-        for backend_name, identities in grouped_identities.iteritems():
+        for backend_name, identities in grouped_identities.items():
             eager = self.is_eager(backend_name)
             if eager:
                 logger.debug('Executing in current process')

@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
-from StringIO import StringIO
 from django.core.urlresolvers import reverse
 from django.utils import unittest as ut2
 from mock import patch
+from six import BytesIO
 
 from rapidsms.backends.database.models import INCOMING
 from rapidsms.contrib.httptester.forms import MessageForm
@@ -83,7 +83,7 @@ class ViewTest(RapidTest):
     def test_bulk(self):
         messages = ["message 1", "message 2", "message 3"]
         file_content = "\n".join(messages) + "\n"
-        fake_file = StringIO(file_content)
+        fake_file = BytesIO(file_content.encode('utf-8'))
         setattr(fake_file, 'name', 'fake_file')
         data = {
             'identity': self.phone,

@@ -134,4 +134,4 @@ def _handlers(module_name):
 
     return [
         get_class(mod, BaseHandler)
-        for mod in filter(None, modules)]
+        for mod in modules if mod]

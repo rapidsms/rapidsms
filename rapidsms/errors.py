@@ -2,7 +2,7 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 
-class MessageSendingError(StandardError):
+class MessageSendingError(Exception):
     """
     This exception is raised when an outgoing message cannot be sent.
     Where possible, a more specific exception should be raised, along

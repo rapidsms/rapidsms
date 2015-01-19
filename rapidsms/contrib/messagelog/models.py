@@ -3,9 +3,12 @@
 
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.utils.encoding import python_2_unicode_compatible
+
 from rapidsms.models import Contact, Connection
 
 
+@python_2_unicode_compatible
 class Message(models.Model):
     INCOMING = "I"
     OUTGOING = "O"
@@ -47,7 +50,7 @@ class Message(models.Model):
         """Returns the Contact or Connection linked to this object."""
         return self.contact or self.connection
 
-    def __unicode__(self):
+    def __str__(self):
         # crop the text (to avoid exploding the admin)
         text = self.text if len(self.text) < 60 else "%s..." % self.text[0:57]
         direction = "to" if self.direction == self.INCOMING else "from"

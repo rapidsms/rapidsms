@@ -35,7 +35,7 @@ class AppBaseTest(TestCase):
         router = MockRouter()
         app = AppStub(router)
         self.assertEqual(repr(app), "<app: tests>")
-        self.assertEqual(unicode(app), "tests")
+        self.assertEqual(str(app), "tests")
         self.assertEqual(app.name, "tests")
 
     def test_app_finds_valid_app_classes(self):

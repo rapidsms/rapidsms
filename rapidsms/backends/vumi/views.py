@@ -22,7 +22,7 @@ class VumiBackendView(BaseHttpBackendView):
         """Load JSON POST data."""
         kwargs = super(VumiBackendView, self).get_form_kwargs()
         try:
-            kwargs['data'] = json.loads(self.request.body)
+            kwargs['data'] = json.loads(self.request.body.decode())
         except ValueError:
             logger.exception("Failed to parse JSON from Vumi.")
         return kwargs

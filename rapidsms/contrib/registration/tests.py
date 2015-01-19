@@ -1,13 +1,14 @@
 # coding=utf-8
-from StringIO import StringIO
+from django.core.urlresolvers import reverse
 from django.http import Http404, HttpRequest, HttpResponseRedirect, QueryDict
 from django.test import TestCase
 from mock import Mock, patch
+from six import BytesIO
+
 from rapidsms.models import Connection, Contact
 from rapidsms.tests.harness import CreateDataMixin, LoginMixin
-
 from rapidsms.tests.scripted import TestScript
-import rapidsms.contrib.registration.views as views
+from rapidsms.contrib.registration import views
 
 
 RAPIDSMS_HANDLERS = [
@@ -340,12 +341,21 @@ class TestViews(TestCase, CreateDataMixin, LoginMixin):
 
 
 class TestBulkAdd(TestCase, CreateDataMixin, LoginMixin):
+
+    def setUp(self):
+        self.login()
+        self.url = reverse('registration_bulk_add')
+
+    def create_testfile(self, s):
+        """Takes a str object and returns a file-like object that can be put in a POST request"""
+        testfile = BytesIO(s.encode('utf-8'))
+        testfile.name = 'testfile'
+        return testfile
+
     def test_bulk_get(self):
         # Just make sure the page loads
-        with patch('rapidsms.contrib.registration.views.render') as render:
-            request = Mock(method="GET")
-            views.contact_bulk_add(request)
-        render.assert_called()
+        rsp = self.client.get(self.url)
+        self.assertEqual(200, rsp.status_code)
 
     def test_bulk_add(self):
         # We can upload a CSV file to create contacts & connections
@@ -360,58 +370,32 @@ class TestBulkAdd(TestCase, CreateDataMixin, LoginMixin):
             (u'Name 4', backend2.name, u'44444'),
         ]
         # Create test file
-        testfile = u"\n".join([u",".join(parts) for parts in data]) + u"\n"
-        testfile_data = testfile.encode('utf-8')
-        with patch('rapidsms.contrib.registration.views.render') as render:
-            request = Mock(method="POST",
-                           FILES={'bulk': StringIO(testfile_data)})
-            request.__class__ = HttpRequest
-            self.login()
-            request.user = self.user
-            retval = views.contact_bulk_add(request)
-        if not isinstance(retval, HttpResponseRedirect):
-            context = render.call_args[0][2]
-            self.fail(context['bulk_form'].errors + context['csv_errors'])
-        self.assertTrue(isinstance(retval, HttpResponseRedirect))
-        self.assertEqual(302, retval.status_code)
+        testfile_data = u"\n".join([u",".join(parts) for parts in data]) + u"\n"
+        testfile = self.create_testfile(testfile_data)
+        rsp = self.client.post(self.url, data={'bulk': testfile})
+        self.assertEqual(302, rsp.status_code)
         contacts = Contact.objects.all()
         self.assertEqual(4, contacts.count())
         names = [contact.name for contact in contacts]
         self.assertIn(uname, names)
 
     def test_bulk_add_no_lines(self):
-        testfile = ""
-        with patch('rapidsms.contrib.registration.views.render') as render:
-            request = Mock(method="POST", FILES={'bulk': StringIO(testfile)})
-            self.login()
-            request.user = self.user
-            retval = views.contact_bulk_add(request)
-        self.assertFalse(isinstance(retval, HttpResponseRedirect))
-        context = render.call_args[0][2]
-        self.assertIn('csv_errors', context)
-        self.assertEqual('No contacts found in file', context['csv_errors'])
+        testfile = self.create_testfile("")
+        rsp = self.client.post(self.url, data={'bulk': testfile})
+        self.assertEqual(200, rsp.status_code)
+        self.assertIn('csv_errors', rsp.context)
+        self.assertEqual('No contacts found in file', rsp.context['csv_errors'])
 
     def test_bulk_add_bad_line(self):
-        testfile = "Field 1, field 2\n"
-        with patch('rapidsms.contrib.registration.views.render') as render:
-            request = Mock(method="POST", FILES={'bulk': StringIO(testfile)})
-            self.login()
-            request.user = self.user
-            retval = views.contact_bulk_add(request)
-        self.assertFalse(isinstance(retval, HttpResponseRedirect))
-        context = render.call_args[0][2]
-        self.assertIn('csv_errors', context)
-        self.assertEqual('Could not unpack line 1', context['csv_errors'])
+        testfile = self.create_testfile("Field 1, field 2\n")
+        rsp = self.client.post(self.url, data={'bulk': testfile})
+        self.assertEqual(200, rsp.status_code)
+        self.assertIn('csv_errors', rsp.context)
+        self.assertEqual('Could not unpack line 1', rsp.context['csv_errors'])
 
     def test_bulk_add_bad_backend(self):
-        testfile = "Field 1, no_such_backend, 123\n"
-        with patch('rapidsms.contrib.registration.views.render') as render:
-            request = Mock(method="POST", FILES={'bulk': StringIO(testfile)})
-            self.login()
-            request.user = self.user
-            retval = views.contact_bulk_add(request)
-        self.assertFalse(isinstance(retval, HttpResponseRedirect))
-        context = render.call_args[0][2]
-        self.assertIn('csv_errors', context)
-        self.assertEqual("Could not find Backend.  Line: 1",
-                         context['csv_errors'])
+        testfile = self.create_testfile("Field 1, no_such_backend, 123\n")
+        rsp = self.client.post(self.url, data={'bulk': testfile})
+        self.assertEqual(200, rsp.status_code)
+        self.assertIn('csv_errors', rsp.context)
+        self.assertEqual("Could not find Backend.  Line: 1", rsp.context['csv_errors'])

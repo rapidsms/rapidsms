@@ -5,6 +5,7 @@ import logging
 import warnings
 import copy
 from collections import defaultdict
+from six import string_types
 
 from django.db.models.query import QuerySet
 
@@ -37,7 +38,7 @@ class BlockingRouter(object):
                 self.add_app(name)
             except Exception:
                 logger.exception("Failed to add app to router.")
-        for name, conf in backends.iteritems():
+        for name, conf in backends.items():
             parsed_conf = copy.copy(conf)
             engine = parsed_conf.pop('ENGINE')
             self.add_backend(name, engine, parsed_conf)
@@ -52,7 +53,7 @@ class BlockingRouter(object):
         :param module_name: ``AppBase`` object or dotted path to RapidSMS app.
         :returns: ``AppBase`` object if found, otherwise ``None``.
         """
-        if isinstance(module_name, basestring):
+        if isinstance(module_name, string_types):
             cls = AppBase.find(module_name)
         elif issubclass(module_name, AppBase):
             cls = module_name
@@ -89,7 +90,7 @@ class BlockingRouter(object):
                   object if found, otherwise a ``ValueError`` exception
                   will be raised.
         """
-        if isinstance(module_name, basestring):
+        if isinstance(module_name, string_types):
             cls = BackendBase.find(module_name)
         elif issubclass(module_name, BackendBase):
             cls = module_name
@@ -109,7 +110,7 @@ class BlockingRouter(object):
 
         return dict([
             (key.lower(), val)
-            for key, val in config.iteritems()
+            for key, val in config.items()
         ])
 
     def receive_incoming(self, msg):
@@ -242,7 +243,7 @@ class BlockingRouter(object):
         """
         context = msg.extra_backend_context()
         grouped_identities = self.group_outgoing_identities(msg)
-        for backend_name, identities in grouped_identities.iteritems():
+        for backend_name, identities in grouped_identities.items():
             try:
                 self.send_to_backend(backend_name, msg.id, msg.text,
                                      identities, context)

@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.core.urlresolvers import reverse
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 
 from rapidsms.tests.harness import RapidTest
 from rapidsms.backends.http import views
@@ -14,17 +14,14 @@ class CustomHttpBackend(views.GenericHttpBackendView):
     params = {'identity_name': 'phone', 'text_name': 'message'}
 
 
-urlpatterns = patterns('',
-                       url(r"^backend/http/$",
-                           views.GenericHttpBackendView.as_view(
-                               backend_name='http-backend'),
-                           name='http-backend'
-                           ),
-                       url(r"^backend/http-custom/$",
-                           CustomHttpBackend.as_view(),
-                           name='custom-http-backend'
-                           ),
-                       )
+urlpatterns = (
+    url(r"^backend/http/$",
+        views.GenericHttpBackendView.as_view(backend_name='http-backend'),
+        name='http-backend'),
+    url(r"^backend/http-custom/$",
+        CustomHttpBackend.as_view(),
+        name='custom-http-backend'),
+)
 
 
 class HttpFormTest(TestCase):
