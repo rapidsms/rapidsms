@@ -10,11 +10,13 @@ aware of when upgrading from RapidSMS 0.18.0.
 What's New
 ==========
 
- *
+ * Minor typos and fixes.
+ * Allow from address configuration with Vumi
+ * Relax requirements. [Thanks `@thedrow <https://github.com/thedrow>`_!]
 
  .. _backwards-incompatible-changes-0.19.0:
 
 Backwards-incompatible changes in RapidSMS 0.19.0
 =================================================
 
-*
+* None
