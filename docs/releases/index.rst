@@ -6,8 +6,9 @@ you what’s new in each version, describe any backwards-incompatible changes
 made, and provide, if needed, any upgrade instructions. Please see the
 :doc:`roadmap` for details on upcoming releases.
 
-.. * :doc:`0.19.0 release notes <0.19.0>`  (under development)
-.. * :doc:`0.18.0 release notes <0.18.0>`  (current release)
+.. * :doc:`0.20.0 release notes <0.20.0>`  (under development)
+.. * :doc:`0.19.0 release notes <0.19.0>`  (current release)
+.. * :doc:`0.18.0 release notes <0.18.0>`
 .. * :doc:`0.17.0 release notes <0.17.0>`
 .. * :doc:`0.16.0 release notes <0.16.0>`
 .. * :doc:`0.15.0 release notes <0.15.0>`
@@ -22,6 +23,7 @@ made, and provide, if needed, any upgrade instructions. Please see the
 .. toctree::
     :maxdepth: 1
 
+    0.20.0
     0.19.0
     0.18.0
     0.17.0
