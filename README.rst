@@ -77,4 +77,4 @@ Contributing
 If you think you've found a bug or are interested in contributing to this
 project, check out `RapidSMS on Github <https://github.com/rapidsms/rapidsms>`_.
 A full contributing guide can be found in the `online documentation
-<http://http://rapidsms.readthedocs.org/en/latest/community/joining.html>`_.
+<http://rapidsms.readthedocs.org/en/latest/community/joining.html>`_.
