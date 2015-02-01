@@ -58,7 +58,7 @@ class BaseHttpBackendView(FormMixin, ProcessFormView):
         If the form failed to validate, logs the errors and returns a bad
         response to the client.
         """
-        logger.error("%s data:" % self.request.method)
+        logger.error("%s data:", self.request.method)
         logger.error(pprint.pformat(form.data))
         errors = dict((k, v[0]) for k, v in form.errors.items())
         logger.error(unicode(errors))

@@ -1,5 +1,4 @@
 {% extends "locations/base.html" %}
-{% load url from future %}
 {% load pagination %}
 {% load self_link %}
 
@@ -57,7 +56,7 @@
 			}
 		});
 	</script>
-	
+
 	<div id="markers">{% for location in all_locations %}
 		<div code="{{ location.code }}" marker="{{ location.type.marker }}" lat="{{ location.latitude }}" lng="{{ location.longitude }}">
 			<strong>{{ location.name }}</strong>

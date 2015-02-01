@@ -46,8 +46,9 @@ class KannelBackend(BackendBase):
         kwargs['params'] = query
         return kwargs
 
-    def send(self, id_, text, identities, context={}):
-        logger.debug('Sending message: %s' % text)
+    def send(self, id_, text, identities, context=None):
+        logger.debug('Sending message: %s', text)
+        context = context or {}
         kwargs = self.prepare_request(id_, text, identities, context)
         r = requests.get(**kwargs)
         if r.status_code != requests.codes.ok:

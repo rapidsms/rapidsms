@@ -76,7 +76,7 @@ def contact(request, pk=None):
 
 
 @login_required
-@transaction.commit_on_success
+@transaction.atomic
 def contact_bulk_add(request):
     bulk_form = BulkRegistrationForm(request.POST)
 

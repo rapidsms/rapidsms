@@ -9,17 +9,10 @@ from django.conf import settings
 from django.test.utils import get_runner
 
 
-def run_tests(options, args, ci=False):
+def run_tests(options, args):
     if django.VERSION > (1, 7):
         # http://django.readthedocs.org/en/latest/releases/1.7.html#standalone-scripts
         django.setup()
-
-    if ci:
-        settings.NOSE_ARGS = [
-            '--with-xcoverage',
-            '--cover-tests',
-            '--cover-package=rapidsms',
-        ]
 
     TestRunner = get_runner(settings)
     test_runner = TestRunner(verbosity=int(options.verbosity),
@@ -48,9 +41,6 @@ def main():
                            '"myproject.settings". If this isn\'t provided, '
                            'the DJANGO_SETTINGS_MODULE environment variable '
                            'will be used.')
-    parser.add_option('--ci', action='store_true', dest='ci',
-                      default=False,
-                      help='Run tests with CI environment')
     options, args = parser.parse_args()
     if options.settings:
         os.environ['DJANGO_SETTINGS_MODULE'] = options.settings
@@ -59,11 +49,7 @@ def main():
                      "Set it or use --settings.")
     else:
         options.settings = os.environ['DJANGO_SETTINGS_MODULE']
-    # I couldn't figure out how to get "CI" in as a command line argument,
-    # because nosetests would also interpret the argument.
-    ci = os.environ.get('CI', False)
-    ci = False
-    run_tests(options, ci=ci, args=args)
+    run_tests(options, args=args)
 
 
 if __name__ == '__main__':

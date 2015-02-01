@@ -3,10 +3,9 @@
 
 
 from ..utils.modules import try_import, get_class
-from ..log.mixin import LoggerMixin
 
 
-class AppBase(object, LoggerMixin):
+class AppBase(object):
     """
     """
 
@@ -30,9 +29,6 @@ class AppBase(object, LoggerMixin):
 
     def __init__(self, router):
         self.router = router
-
-    def _logger_name(self):  # pragma: no cover
-        return "app/%s" % self.name
 
     @property
     def name(self):
