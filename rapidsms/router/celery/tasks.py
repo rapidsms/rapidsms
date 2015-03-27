@@ -1,4 +1,4 @@
-import celery
+from celery import shared_task
 from celery.utils.log import get_task_logger
 from rapidsms.errors import MessageSendingError
 
@@ -6,7 +6,7 @@ from rapidsms.errors import MessageSendingError
 logger = get_task_logger(__name__)
 
 
-@celery.task
+@shared_task
 def receive_async(text, connection_id, message_id, fields):
     """Task used to send inbound message through router phases."""
     from rapidsms.models import Connection
@@ -25,7 +25,7 @@ def receive_async(text, connection_id, message_id, fields):
         raise
 
 
-@celery.task
+@shared_task
 def send_async(backend_name, id_, text, identities, context):
     """Task used to send outgoing messages to backends."""
     logger.debug('send_async: %s', text)
