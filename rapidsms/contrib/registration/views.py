@@ -18,7 +18,7 @@ from rapidsms.contrib.registration.tables import ContactTable
 from rapidsms.contrib.registration.forms import (
     BulkRegistrationForm,
     ContactForm, ConnectionFormSet)
-from rapidsms import settings
+from rapidsms.conf import settings
 
 
 @login_required
@@ -87,7 +87,8 @@ def contact_bulk_add(request):
     if request.method == "POST" and "bulk" in request.FILES:
         # Python3's CSV module takes strings while Python2's takes bytes
         if six.PY3:
-            f = TextIOWrapper(request.FILES['bulk'].file, encoding=request.encoding)
+            encoding = request.encoding or settings.DEFAULT_CHARSET
+            f = TextIOWrapper(request.FILES['bulk'].file, encoding=encoding)
         else:
             f = request.FILES['bulk']
         reader = csv.reader(
