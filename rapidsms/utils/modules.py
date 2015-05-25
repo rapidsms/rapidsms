@@ -4,7 +4,7 @@ import os
 import sys
 import inspect
 
-from django.utils.importlib import import_module
+from importlib import import_module
 
 
 __all__ = ('import_class', 'import_module', 'try_import', 'find_python_files',

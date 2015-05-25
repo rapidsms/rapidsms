@@ -2,7 +2,7 @@ language: python
 python:
   - "2.7"
 env:
-  - TOXENV=py26-1.6.X,py27-1.6.X
+  - TOXENV=py27-1.6.X
   - TOXENV=py27-1.7.X,py33-1.7.X,py34-1.7.X
   - TOXENV=py27-1.8.X,py33-1.8.X,py34-1.8.X
   - TOXENV=py27-trunk,py33-trunk,py34-trunk

@@ -66,14 +66,18 @@ together or specific ones::
 
 The available environments are:
 
- * ``py26-1.4.X`` - Test using Python 2.6 and Django 1.4.X
- * ``py26-1.5.X`` - Test using Python 2.6 and Django 1.5.X
- * ``py26-1.6.X`` - Test using Python 2.6 and Django 1.6.X
- * ``py27-1.4.X`` - Test using Python 2.7 and Django 1.4.x
- * ``py27-1.5.X`` - Test using Python 2.7 and Django 1.5.x
  * ``py27-1.6.X`` - Test using Python 2.7 and Django 1.6.x
  * ``py27-1.7.X`` - Test using Python 2.7 and Django 1.7.x
+ * ``py27-1.8.X`` - Test using Python 2.7 and Django 1.8.x
  * ``py27-trunk`` - Test using Python 2.7 and Django master
+ * ``py33-1.6.X`` - Test using Python 3.3 and Django 1.6.x
+ * ``py33-1.7.X`` - Test using Python 3.3 and Django 1.7.x
+ * ``py33-1.8.X`` - Test using Python 3.3 and Django 1.8.x
+ * ``py33-trunk`` - Test using Python 3.3 and Django master
+ * ``py34-1.6.X`` - Test using Python 3.4 and Django 1.6.x
+ * ``py34-1.7.X`` - Test using Python 3.4 and Django 1.7.x
+ * ``py34-1.8.X`` - Test using Python 3.4 and Django 1.8.x
+ * ``py34-trunk`` - Test using Python 3.4 and Django master
  * ``docs`` - Test building docs
  * ``flake8`` - Run flake8 style checker
  * ``coverage`` - Report coverage

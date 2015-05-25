@@ -90,7 +90,7 @@ pygments_style = 'sphinx'
 #modindex_common_prefix = []
 
 intersphinx_mapping = {
-    'python': ('http://docs.python.org/2.6', None),
+    'python': ('http://docs.python.org/', None),
     'django': ('https://django.readthedocs.org/en/1.4.X/', None),
 }
 
