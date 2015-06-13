@@ -1,0 +1,20 @@
+=================================================
+RapidSMS 0.21.0 release notes (under development)
+=================================================
+
+Welcome to RapidSMS 0.21.0! These release notes cover the new features in 0.21.0
+as well as some :ref:`backwards-incompatible-changes-0.21.0` you'll want to be
+aware of when upgrading from RapidSMS 0.20.0.
+
+
+What's New
+==========
+
+ *
+
+ .. _backwards-incompatible-changes-0.21.0:
+
+Backwards-incompatible changes in RapidSMS 0.21.0
+=================================================
+
+*

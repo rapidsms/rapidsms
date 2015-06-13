@@ -1,6 +1,6 @@
-===============================================
-RapidSMS 0.19.0 release notes (current release)
-===============================================
+=============================
+RapidSMS 0.19.0 release notes
+=============================
 
 Welcome to RapidSMS 0.19.0! These release notes cover the new features in 0.19.0
 as well as some :ref:`backwards-incompatible-changes-0.19.0` you'll want to be

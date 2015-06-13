@@ -6,11 +6,8 @@ rapidsms.contrib.locations
 
 .. warning::
 
-    The fate of ``rapidsms.contrib.locations`` is currently up for debate in
-    the RapidSMS community. It has been updated to run in RapidSMS v0.12.0+,
-    but not all functionality is supported. If you're interested in
-    contributing to Locations, please see this `message thread
-    <https://groups.google.com/d/msg/rapidsms/oBQiDFNmKAc/hDKVD4C4AucJ>`_.
+    ``rapidsms.contrib.locations`` will be removed from ``contrib`` in the next
+    version of RapidSMS.
 
 Locations allows you to easily map custom locations and points in your i
 RapidSMS project.
