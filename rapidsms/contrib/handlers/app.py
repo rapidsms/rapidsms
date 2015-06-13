@@ -19,7 +19,7 @@ class App(AppBase):
         self.handlers = get_handlers()
         if len(self.handlers):
             class_names = [cls.__name__ for cls in self.handlers]
-            logger.info("Registered: %s" % (", ".join(class_names)))
+            logger.info("Registered: %s", ", ".join(class_names))
 
     def handle(self, msg):
         """
@@ -31,5 +31,5 @@ class App(AppBase):
         """
         for handler in self.handlers:
             if handler.dispatch(self.router, msg):
-                logger.info("Incoming message handled by %s" % handler.__name__)
+                logger.info("Incoming message handled by %s", handler.__name__)
                 return True

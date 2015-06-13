@@ -13,7 +13,7 @@ class RouterAppTest(TestCase):
         """Valid RapidSMS app modules should load properly."""
         app = self.router.add_app("rapidsms.contrib.default")
         self.assertTrue(app is not None)
-        self.assertEquals(1, len(self.router.apps))
+        self.assertEqual(1, len(self.router.apps))
 
     def test_invalid_app_path(self):
         """Invalid RapidSMS app modules shouldn't raise any errors."""
@@ -34,4 +34,4 @@ class RouterAppTest(TestCase):
     def test_add_app_with_class(self):
         """add_app() should also accept a class."""
         self.router.add_app(AppBase)
-        self.assertEquals(1, len(self.router.apps))
+        self.assertEqual(1, len(self.router.apps))

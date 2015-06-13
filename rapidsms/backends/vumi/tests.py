@@ -3,19 +3,10 @@ from mock import patch
 
 from django.test import TestCase
 from django.core.urlresolvers import reverse
-from django.conf.urls import patterns, url
 
-from rapidsms.backends.vumi import views
 from rapidsms.backends.vumi.outgoing import VumiBackend
 from rapidsms.backends.vumi.forms import VumiForm
 from rapidsms.tests.harness import RapidTest, CreateDataMixin
-
-
-urlpatterns = patterns('',
-    url(r"^backend/vumi/$",
-        views.VumiBackendView.as_view(backend_name='vumi-backend'),
-        name='vumi-backend'),
-)
 
 
 class VumiFormTest(TestCase):
@@ -63,7 +54,7 @@ class VumiFormTest(TestCase):
 
 class VumiViewTest(RapidTest):
 
-    urls = 'rapidsms.backends.vumi.tests'
+    urls = 'rapidsms.backends.vumi.urls'
     disable_phases = True
 
     def setUp(self):

@@ -21,6 +21,7 @@ ConnectionFormSet = forms.models.inlineformset_factory(
     Connection,
     extra=1,
     formset=ConnectionFormSetBase,
+    fields=('backend', 'identity', ),
 )
 
 

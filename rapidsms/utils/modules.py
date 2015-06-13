@@ -22,7 +22,7 @@ def import_class(import_path, base_class=None):
         raise ImportError("%s isn't a Python path." % import_path)
     try:
         mod = import_module(module)
-    except ImportError, e:
+    except ImportError as e:
         raise ImportError('Error importing module %s: "%s"' %
                           (module, e))
     try:

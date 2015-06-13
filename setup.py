@@ -22,15 +22,13 @@ setup(
 
     install_requires=[
         "requests>=1.2.0",
-        "django-tables2>=0.14.0",
-        "djappsettings>=0.1.0",
+        "django-tables2>=0.14.0,<1.0.0",
+        "djappsettings>=0.3.0",
         "django-selectable>=0.7.0",
     ],
 
     test_requires=[
-        "django-nose>=1.2",
         "mock>=1.0.1",
-        "nose>=1.3",
     ],
 
     packages=find_packages(exclude=['*.pyc']),
@@ -53,6 +51,9 @@ setup(
         'Programming Language :: Python',
         'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.3',
+        'Programming Language :: Python :: 3.4',
         'Framework :: Django',
         'Development Status :: 4 - Beta',
         'Operating System :: OS Independent',

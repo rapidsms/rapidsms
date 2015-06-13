@@ -1,3 +1,6 @@
+from __future__ import unicode_literals
+from six import unichr
+from six.moves import xrange
 import string
 import random
 from django.contrib.auth.models import User
@@ -26,7 +29,7 @@ class CreateDataMixin(object):
         :param extra_chars: Additional characters to include in generated
             string.
         """
-        chars = string.letters + extra_chars
+        chars = string.ascii_letters + extra_chars
         return ''.join([random.choice(chars) for i in range(length)])
 
     def random_unicode_string(self, max_length=255):
@@ -34,10 +37,10 @@ class CreateDataMixin(object):
 
         :param length: Length of generated string.
         """
-        output = u''
+        output = ''
         for x in xrange(random.randint(1, max_length / 2)):
             c = UNICODE_CHARS[random.randint(0, len(UNICODE_CHARS) - 1)]
-            output += c + u' '
+            output += c + ' '
         return output
 
     def create_backend(self, data={}):

@@ -1,20 +1,11 @@
 from django.test import TestCase
 from django.core.urlresolvers import reverse
-from django.conf.urls import patterns, url
 from django.utils.timezone import now
 
-from rapidsms.backends.kannel import views
 from rapidsms.backends.kannel import KannelBackend
 from rapidsms.backends.kannel.forms import KannelForm
 from rapidsms.backends.kannel.models import DeliveryReport
 from rapidsms.tests.harness import RapidTest, CreateDataMixin
-
-
-urlpatterns = patterns('',
-    url(r"^backend/kannel/$",
-        views.KannelBackendView.as_view(backend_name='kannel-backend'),
-        name='kannel-backend'),
-)
 
 
 class KannelFormTest(TestCase):
@@ -46,7 +37,7 @@ class KannelFormTest(TestCase):
 
 class KannelViewTest(RapidTest):
 
-    urls = 'rapidsms.backends.kannel.tests'
+    urls = 'rapidsms.backends.kannel.urls'
     disable_phases = True
 
     def test_valid_response_get(self):
@@ -101,9 +92,9 @@ class KannelSendTest(CreateDataMixin, TestCase):
         self.assertEqual(config['sendsms_params']['password'],
                          data['password'])
         self.assertEqual(message.connection.identity, data['to'])
-        self.assertEqual(message.text, data['text'])
         self.assertEqual(config['coding'], data['coding'])
         self.assertEqual(config['charset'], data['charset'])
+        self.assertEqual(message.text, data['text'].decode(data['charset']))
 
     def test_outgoing_unicode_characters(self):
         """Ensure outgoing messages are encoded properly."""

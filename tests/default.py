@@ -3,8 +3,6 @@ import os
 db_name = 'test_rapidsms'
 db_engine = os.environ.get('DBENGINE', 'sqlite3')
 
-TEST_RUNNER = "django_nose.NoseTestSuiteRunner"
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.{0}'.format(db_engine),
@@ -21,7 +19,6 @@ INSTALLED_BACKENDS = {
 INSTALLED_APPS = [
     "rapidsms",
     # third party apps.
-    "django_nose",
     "djtables",
     "django_tables2",
     "selectable",
@@ -48,6 +45,22 @@ INSTALLED_APPS = [
 
     "rapidsms.contrib.default",  # Should be last
 ]
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'py.warnings': {
+            'handlers': ['console'],
+        },
+    }
+}
 
 # Django 1.7+ emits a warning if this is not set
 MIDDLEWARE_CLASSES = (
@@ -86,8 +99,9 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 
 PROJECT_NAME = 'rapidsms-test-suite'
 
-import djcelery
-djcelery.setup_loader()
+from celery import Celery
+app = Celery('rapidsms')
+app.config_from_object('django.conf:settings')
 
 CELERY_ALWAYS_EAGER = True
 CELERY_EAGER_PROPAGATES_EXCEPTIONS = True

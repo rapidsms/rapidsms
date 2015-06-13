@@ -2,6 +2,9 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 import csv
+from io import TextIOWrapper
+import six
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
@@ -9,12 +12,13 @@ from django.db import transaction
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django_tables2 import RequestConfig
+
 from rapidsms.models import Contact, Connection, Backend
 from rapidsms.contrib.registration.tables import ContactTable
 from rapidsms.contrib.registration.forms import (
     BulkRegistrationForm,
     ContactForm, ConnectionFormSet)
-from rapidsms import settings
+from rapidsms.conf import settings
 
 
 @login_required
@@ -43,7 +47,7 @@ def contact(request, pk=None):
         data = {}
         for key in request.POST:
             val = request.POST[key]
-            if isinstance(val, basestring):
+            if isinstance(val, six.string_types):
                 data[key] = val
             else:
                 try:
@@ -76,13 +80,19 @@ def contact(request, pk=None):
 
 
 @login_required
-@transaction.commit_on_success
+@transaction.atomic
 def contact_bulk_add(request):
     bulk_form = BulkRegistrationForm(request.POST)
 
     if request.method == "POST" and "bulk" in request.FILES:
+        # Python3's CSV module takes strings while Python2's takes bytes
+        if six.PY3:
+            encoding = request.encoding or settings.DEFAULT_CHARSET
+            f = TextIOWrapper(request.FILES['bulk'].file, encoding=encoding)
+        else:
+            f = request.FILES['bulk']
         reader = csv.reader(
-            request.FILES["bulk"],
+            f,
             quoting=csv.QUOTE_NONE,
             skipinitialspace=True
         )

@@ -30,6 +30,6 @@ def send(request):
                     'recipients.'.format(len(message.connections))
                 return HttpResponse(msg)
         else:
-            return HttpResponseBadRequest(unicode(form.errors))
+            return HttpResponseBadRequest(str(form.errors))
     except:
         return HttpResponse("Unable to send message.", status=500)

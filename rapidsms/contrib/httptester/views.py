@@ -60,7 +60,7 @@ def message_tester(request, identity):
             else:
                 if "bulk" in request.FILES:
                     for line in request.FILES["bulk"]:
-                        line = line.rstrip("\n")
+                        line = line.decode('utf-8').rstrip("\n")
                         storage.store_and_queue(identity, line)
                     messages.add_message(request, messages.INFO, "Sent bulk messages")
                 # no bulk file was submitted, so use the "single message"

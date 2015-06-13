@@ -42,11 +42,11 @@ class TestScriptMixin(TestRouterMixin):
     @classmethod
     def parseScript(cls, script):
         cmds = []
-        for line in map(lambda(x): x.strip(), script.split("\n")):
+        for line in [x.strip() for x in script.split("\n")]:
             if not line or line.startswith("#"):
                 continue
             tokens = re.split(r'([<>])', line, 1)
-            num, dir, txt = map(lambda (x): x.strip(), tokens)
+            num, dir, txt = [x.strip() for x in tokens]
             # allow users to optionally put dates in the number
             # 19232922@200804150730
             if "@" in num:
@@ -69,16 +69,16 @@ class TestScriptMixin(TestRouterMixin):
 
     def _checkAgainstMessage(self, num, txt, last_msg, msg):
         peer = msg.connections[0].identity
-        self.assertEquals(peer, num,
-                          "Expected to respond to "
-                          "%s, but message was sent to %s.\n"
-                          "\nMessage: %s\nReceived "
-                          "text: %s\nExpected text: %s\n" % (num, peer,
-                          last_msg, msg.text, txt))
+        self.assertEqual(peer, num,
+                         "Expected to respond to "
+                         "%s, but message was sent to %s.\n"
+                         "\nMessage: %s\nReceived "
+                         "text: %s\nExpected text: %s\n" % (num, peer,
+                                                            last_msg, msg.text, txt))
 
-        self.assertEquals(msg.text, txt, "\nMessage: %s\nReceived "
-                          "text: %s\nExpected text: %s\n" %
-                          (last_msg, msg.text, txt))
+        self.assertEqual(msg.text, txt, "\nMessage: %s\nReceived "
+                         "text: %s\nExpected text: %s\n" %
+                         (last_msg, msg.text, txt))
 
     def _checkAgainstMessages(self, num, txt, last_msg, msgs):
         self.assertTrue(len(msgs) != 0, "Message was ignored.\n"

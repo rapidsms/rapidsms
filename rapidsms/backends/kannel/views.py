@@ -36,6 +36,7 @@ class KannelBackendView(BaseHttpBackendView):
 class DeliveryReportView(CreateView):
 
     model = DeliveryReport
+    fields = ('date_sent', 'message_id', 'identity', 'sms_id', 'smsc', 'status', 'status_text', )
     http_method_names = ['get']
 
     def get(self, *args, **kwargs):
@@ -57,10 +58,10 @@ class DeliveryReportView(CreateView):
         If the form failed to validate, logs the errors and returns a bad
         response to the client.
         """
-        logger.error("%s data:" % self.request.method)
+        logger.error("%s data:", self.request.method)
         logger.error(pprint.pformat(form.data))
         errors = dict((k, v[0]) for k, v in form.errors.items())
-        logger.error(unicode(errors))
+        logger.error(str(errors))
         if form.non_field_errors():
             logger.error(form.non_field_errors())
         return HttpResponseBadRequest('form failed to validate')

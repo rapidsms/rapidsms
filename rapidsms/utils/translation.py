@@ -18,5 +18,5 @@ def group_connections(connections):
         for connection in connections:
             language = connection.contact.language
             grouped_conns[language].append(connection)
-    for lang, conns in grouped_conns.iteritems():
+    for lang, conns in grouped_conns.items():
         yield lang, conns
