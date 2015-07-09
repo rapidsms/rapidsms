@@ -105,8 +105,8 @@ class ContactBase(models.Model):
                                 help_text="The language which this contact "
                                 "prefers to communicate in, as a W3C "
                                 "language tag. If this field is left blank, "
-                                "RapidSMS will default to: " +
-                                settings.LANGUAGE_CODE)
+                                "RapidSMS will default to the value in "
+                                "LANGUAGE_CODE.")
 
     class Meta:
         abstract = True
