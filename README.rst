@@ -7,16 +7,19 @@ reporting interface. It was created by the Innovation Team at `UNICEF`_, and is
 under development by `the RapidSMS Team`_.
 
 .. image::
-    https://secure.travis-ci.org/rapidsms/rapidsms.png?branch=develop
-    :alt: Build Status
-    :target: http://travis-ci.org/rapidsms/rapidsms
-
+   https://secure.travis-ci.org/rapidsms/rapidsms.png?branch=develop
+   :alt: Build Status
+   :target: http://travis-ci.org/rapidsms/rapidsms
 
 .. image::
    https://coveralls.io/repos/rapidsms/rapidsms/badge.png?branch=develop
    :alt: Coverage Status
    :target: https://coveralls.io/r/rapidsms/rapidsms?branch=develop
 
+.. image::
+   https://readthedocs.org/projects/rapidsms/badge
+   :alt: Documentation
+   :target: http://rapidsms.readthedocs.org/
 
 .. _Django: http://djangoproject.com
 .. _UNICEF: http://unicef.org

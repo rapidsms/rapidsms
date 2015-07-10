@@ -27,10 +27,6 @@ setup(
         "django-selectable>=0.7.0",
     ],
 
-    test_requires=[
-        "mock>=1.0.1",
-    ],
-
     packages=find_packages(exclude=['*.pyc']),
     include_package_data=True,
 
