@@ -28,7 +28,7 @@ setup(
     ],
 
     test_requires=[
-        "mock>=1.0.1",
+        "mock==1.0.1",
     ],
 
     packages=find_packages(exclude=['*.pyc']),
