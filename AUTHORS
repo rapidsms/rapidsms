@@ -15,7 +15,7 @@ View contributors who have signed CLAs:
     http://spreadsheets.google.com/pub?key=tbOxXy55z6RcrX5pTJPUlBg&output=html
 
 
-Below is a list of code contributors (as of 1 March 2013), outputted by
+Below is a list of code contributors (as of 10 July 2015), outputted by
 	$ git log --format=format:"%an <%aE>" | sort | uniq
 
 
@@ -23,6 +23,7 @@ adammck <adam.mckaig@gmail.com>
 Adam Mckaig <adam.mckaig@gmail.com>
 Adam Mckaig <adammck@fry.localdomain>
 Alexander Lemann <lemanal@caktusgroup.com>
+Alexander Lemann <lemanal+github@caktusgroup.com>
 Caleb Smith <csmith@caktusgroup.com>
 Colin Copeland <copelco@caktusgroup.com>
 Cory Zue <czue@dimagi.com>
@@ -39,6 +40,10 @@ Evan Wheeler <ewheeler@astrolabe.local>
 ewheeler <evanmwheeler@gmail.com>
 Jeffrey Wishnie <jwishnie@wish-mac.local>
 Jeff Wishnie <jeff@wishnie.org>
+Joschka Thurner <mail@joschkathurner.de>
+jthurner <Joschka.Thurner@smail.fh-koeln.de>
+Kenneth Matovu <matovken@gmail.com>
+Kevin Ndung'u <kevgathuku@users.noreply.github.com>
 Mark E Johnston <mejymejy@gmail.com>
 Meredith Finkelstein <mnfinkel@gmail.com>
 Meredith <meredith@system76-netbook.(none)>
@@ -46,10 +51,12 @@ Mike Edwards <mike@onearmedman.com>
 Mugisha Moses <moses@appfrica.org>
 Nchimunya Hamakando <nchimunya@mist.cva>
 Nic Pottier <nicpottier@gmail.com>
+Oladipo Odumosu <dodumosu@timbaobjects.com>
 RapidSMS <rapidsms@rapidsms-desktop.(none)>
 RapidSMS <rapidsms@ubuntu.ubuntu-domain>
 Rebecca Lovewell <rebecca@caktusgroup.com>
 Rebecca <rebecca@caktusgroup.com>
+Remco Wendt <remco.wendt@gmail.com>
 rgaudin <rgaudin@gmail.com>
 root <root@rapidsms-desktop.(none)>
 root <root@rowena-vm.(none)>
@@ -66,6 +73,7 @@ soloz <solomoniyi@gmail.com>
 takinbo <takinbo@gmail.com>
 thebenedict <thebenedict@gmail.com>
 Tim Akinbo <takinbo@gmail.com>
+Tim Akinbo <takinbo@timbaobjects.com>
 Tobias McNulty <tobias@caktusgroup.com>
 tsinkala <sinkalation@gmail.com>
 unknown <Cory Zue@.(none)>
@@ -75,3 +83,5 @@ U-rotop\rowena <rowena@rotop.(none)>
 U-rotop\Rowena <Rowena@rotop.(none)>
 Victor Miclovich Amooti <vicmiclovich@gmail.com>
 Victor Miclovich <vicmiclovich@gmail.com>
+Vinod Kurup <vinod@kurup.com>
+wilson choi <wilsonkichoi@gmail.com>
