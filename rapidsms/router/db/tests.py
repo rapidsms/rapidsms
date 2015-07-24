@@ -72,11 +72,10 @@ class MessageStatusTest(harness.CustomRouterMixin, TestCase):
         self.assertEqual('D', dbm.set_status())
 
 
-class DatabaseRouterReceiveTest(harness.CustomRouterMixin, TestCase):
+class DatabaseRouterReceiveTest(harness.DatabaseBackendMixin, TestCase):
     """Tests for the DatabaseRouter class"""
 
     router_class = 'rapidsms.router.db.DatabaseRouter'
-    backends = {'mockbackend': {'ENGINE': harness.MockBackend}}
 
     def setUp(self):
         self.conn1 = self.lookup_connections(backend='mockbackend', identities=['5551212'])[0]
@@ -159,6 +158,30 @@ class DatabaseRouterReceiveTest(harness.CustomRouterMixin, TestCase):
                                    connections=[self.conn1])
         dbm2 = router.create_message_from_dbm(dbm, {'a': 'b'})
         self.assertEqual({'a': 'b'}, dbm2.fields)
+
+    def test_in_response_to(self):
+        """Make sure responses set the in_response_to DB fields."""
+        connection = self.lookup_connections(['1112223333'])[0]
+        self.receive(text="ping", connection=connection)
+        message = Message.objects.get(direction='I')
+        response = Message.objects.get(direction='O')
+        self.assertEqual(message.pk, response.in_response_to.pk)
+
+    def test_in_response_to_external_id(self):
+        """DatabaseRouter should maintain external_id through responses."""
+        connection = self.lookup_connections(['1112223333'])[0]
+        msg = self.receive("test", connection,
+                           fields={'external_id': 'ABCD1234'})
+        backend_msg = self.sent_messages[0]
+        self.assertEqual(msg.fields['external_id'], backend_msg.external_id)
+
+    def test_receive_async_fields(self):
+        """Make sure the proper fields are passed to receive_async."""
+        with patch.object(receive_async, 'delay') as mock_method:
+            connections = self.lookup_connections(['1112223333'])
+            msg = self.receive("test", connections[0], fields={'a': 'b'})
+        mock_method.assert_called_once_with(message_id=msg.id,
+                                            fields=msg.fields)
 
 
 class DatabaseRouterSendTest(harness.DatabaseBackendMixin, TestCase):
@@ -265,30 +288,6 @@ class DatabaseRouterSendTest(harness.DatabaseBackendMixin, TestCase):
             result = list(router.group_transmissions(transmissions))
         self.assertEqual(2, len(result))  # 2 batches
         self.assertEqual(2, len(result[0][1]))  # first batch has 2
-
-    def test_in_response_to(self):
-        """Make sure responses set the in_response_to DB fields."""
-        connection = self.lookup_connections(['1112223333'])[0]
-        self.receive(text="ping", connection=connection)
-        message = Message.objects.get(direction='I')
-        response = Message.objects.get(direction='O')
-        self.assertEqual(message.pk, response.in_response_to.pk)
-
-    def test_in_response_to_external_id(self):
-        """DatabaseRouter should maintain external_id through responses."""
-        connection = self.lookup_connections(['1112223333'])[0]
-        msg = self.receive("test", connection,
-                           fields={'external_id': 'ABCD1234'})
-        backend_msg = self.sent_messages[0]
-        self.assertEqual(msg.fields['external_id'], backend_msg.external_id)
-
-    def test_receive_async_fields(self):
-        """Make sure the proper fields are passed to receive_async."""
-        with patch.object(receive_async, 'delay') as mock_method:
-            connections = self.lookup_connections(['1112223333'])
-            msg = self.receive("test", connections[0], fields={'a': 'b'})
-        mock_method.assert_called_once_with(message_id=msg.id,
-                                            fields=msg.fields)
 
     # not sure how to test this...
     # def test_send_error(self):
