@@ -27,3 +27,6 @@ class BackendMessage(models.Model):
 
     def __str__(self):
         return self.text[:60]
+
+    class Meta:
+        app_label = 'database'
