@@ -281,9 +281,12 @@ class BlockingRouter(object):
         try:
             backend.send(id_=id_, text=text, identities=identities,
                          context=context)
-        except Exception:
+        except Exception as exc:
             msg = "%s encountered an error while sending." % backend_name
             logger.exception(msg)
+            if hasattr(exc, 'failed_identities') and exc.failed_identities:
+                # propagate failed_identities to caller
+                raise
             raise MessageSendingError(msg)
 
     def new_incoming_message(self, text, connections, class_=IncomingMessage,
