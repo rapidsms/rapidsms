@@ -116,6 +116,14 @@ class TestKeywordHandler(RapidTest):
         self._check_dispatch('hello x , : ; sdf    ,:   ',
                              'x , : ; sdf    ,:   ')
 
+    def test_intermediate_newline(self):
+        """A newline in the middle of the text"""
+        self._check_dispatch('hello x \n y \n z', 'x \n y \n z')
+
+    def test_newline_just_after_keyword(self):
+        """A newline just after the keyword and before the text is ignored"""
+        self._check_dispatch('hello \n x y z', 'x y z')
+
 
 class TestPatternHandler(RapidTest):
     """Tests for rapidsms.contrib.handlers.handlers.pattern"""
