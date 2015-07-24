@@ -72,7 +72,7 @@ class KeywordHandler(BaseHandler):
                 $                # match all the way to the end
             """.format(keyword=cls.keyword)
 
-            return re.compile(prefix, re.IGNORECASE | re.VERBOSE)
+            return re.compile(prefix, re.IGNORECASE | re.VERBOSE | re.DOTALL)
         raise HandlerError('KeywordHandler must define a keyword.')
 
     @classmethod
