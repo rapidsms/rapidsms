@@ -1,7 +1,11 @@
+import mock
+
 from django.test import TestCase
+
 from rapidsms.router.blocking import BlockingRouter
 from rapidsms.backends.base import BackendBase
-from rapidsms.tests.harness import RaisesBackend, CreateDataMixin
+from rapidsms.tests.harness.backend import RaisesBackend
+from rapidsms.tests.harness.base import CreateDataMixin
 from rapidsms.errors import MessageSendingError
 
 
@@ -56,11 +60,12 @@ class RouterBackendTest(CreateDataMixin, TestCase):
         self.assertRaises(MessageSendingError, self.router.send_to_backend,
                           *args)
 
-    def test_send_captures_exception(self):
+    @mock.patch('rapidsms.router.blocking.router.logger')
+    def test_send_captures_exception(self, mock_logger):
         """BlockingRouter should catch exceptions during sending."""
         backend = self.router.add_backend("backend", RaisesBackend)
         msg = self.create_outgoing_message(backend=backend.model)
-        try:
-            self.router.send_outgoing(msg)
-        except Exception:
-            self.fail("send_outgoing should capture all excetpions.")
+        # shouldn't raise an error
+        self.router.send_outgoing(msg)
+        # but should log an exception
+        mock_logger.exception.assert_called_once_with('backend encountered an error while sending.')
