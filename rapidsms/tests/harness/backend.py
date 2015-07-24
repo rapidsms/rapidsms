@@ -1,4 +1,5 @@
 from rapidsms.backends.base import BackendBase
+from rapidsms.errors import MessageSendingError
 
 
 class MockBackend(BackendBase):
@@ -21,3 +22,12 @@ class RaisesBackend(BackendBase):
 
     def send(self, **kwargs):
         raise Exception('Error!')
+
+
+class FailedIdentitiesBackend(BackendBase):
+    """Backend that fails if there's a 1 in the identity."""
+
+    def send(self, id_, text, identities, context=None):
+        failures = [identity for identity in identities if '1' in identity]
+        if failures:
+            raise MessageSendingError(failed_identities=failures)

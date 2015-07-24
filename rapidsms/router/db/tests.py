@@ -1,10 +1,13 @@
 from mock import patch
 
 from django.test import TestCase
+from django.test.utils import override_settings
 
 from rapidsms.contrib.echo.handlers.echo import EchoHandler
+from rapidsms.errors import MessageSendingError
 from rapidsms.models import Connection
 from rapidsms.tests import harness
+from rapidsms.tests.harness.backend import RaisesBackend, FailedIdentitiesBackend
 from rapidsms.router.db import DatabaseRouter
 from rapidsms.router.db.models import Message, Transmission
 from rapidsms.router.db.tasks import send_transmissions, receive_async
@@ -289,14 +292,44 @@ class DatabaseRouterSendTest(harness.DatabaseBackendMixin, TestCase):
         self.assertEqual(2, len(result))  # 2 batches
         self.assertEqual(2, len(result[0][1]))  # first batch has 2
 
-    # not sure how to test this...
-    # def test_send_error(self):
-    #     """Message should be marked E even if current batch sends."""
-    #     backends = {'mockbackend': {'ENGINE': RaisesBackend}}
-    #     with patch.object(send_transmissions, 'retry') as mock_method:
-    #         with override_settings(INSTALLED_BACKENDS=backends):
-    #             backend, dbm, t1, t2 = self.create_trans(s1='S', s2='Q')
-    #             send_transmissions(backend.pk, dbm.pk,
-    #                                t2.values_list('id', flat=True))
-    #             status = t2.values_list('status', flat=True).distinct()[0]
-    #             self.assertEqual('E', status)
+    def test_send_doesnt_send_already_sent_transmissions(self):
+        """If a transmission has already been sent, don't resend it.
+        (This may occur during a retry, when some of the messages were sent and some failed)."""
+        # create 2 batches (sent, queued)
+        backend, dbm, t1, t2 = self.create_trans(s1='S', s2='Q')
+        both_transmisssion_sets = list(t1.values_list('id', flat=True)) + list(t2.values_list('id', flat=True))
+        send_transmissions(backend.pk, dbm.pk, both_transmisssion_sets)
+        dbm = Message.objects.get()
+        self.assertEqual('S', dbm.status)
+        # only 2 messages should be sent, both from t2
+        self.assertEqual(2, len(self.sent_messages))
+        self.assertEqual(
+            set([m.identity for m in self.sent_messages]),
+            set([t.connection.identity for t in t2])
+        )
+
+    def test_all_transmissions_set_to_E_if_backend_sending_error(self):
+        backend, dbm, t1, t2 = self.create_trans(s1='Q', s2='Q')
+        error_backend = RaisesBackend(self.get_router(), 'error_backend')
+        self.backends['error_backend'] = {'ENGINE': RaisesBackend}
+        both_transmisssion_sets = list(t1.values_list('id', flat=True)) + list(t2.values_list('id', flat=True))
+        with override_settings(INSTALLED_BACKENDS=self.backends):
+            with self.assertRaises(MessageSendingError):
+                send_transmissions(error_backend.model.pk, dbm.pk, both_transmisssion_sets)
+        errored = Transmission.objects.filter(status='E')
+        # all of the transmissions should have a status of 'E' now
+        self.assertEqual(4, errored.count())
+
+    def test_only_failed_transmissions_set_to_E(self):
+        # FailedIdentitiesBackend will fail any messages to an identity with a '1' in it
+        # create_trans creates 4 identities, only one of which has a '1' in it
+        backend, dbm, t1, t2 = self.create_trans(s1='Q', s2='Q')
+        error_backend = FailedIdentitiesBackend(self.get_router(), 'error_backend')
+        self.backends['error_backend'] = {'ENGINE': FailedIdentitiesBackend}
+        both_transmisssion_sets = list(t1.values_list('id', flat=True)) + list(t2.values_list('id', flat=True))
+        with override_settings(INSTALLED_BACKENDS=self.backends):
+            with self.assertRaises(MessageSendingError):
+                send_transmissions(error_backend.model.pk, dbm.pk, both_transmisssion_sets)
+        errored = Transmission.objects.filter(status='E')
+        # only 1 of the transmissions should have a status of 'E' now
+        self.assertEqual(1, errored.count())
