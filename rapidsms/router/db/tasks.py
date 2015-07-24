@@ -40,7 +40,8 @@ def send_transmissions(backend_id, message_id, transmission_ids):
     from rapidsms.router import get_router
     backend = Backend.objects.get(pk=backend_id)
     dbm = Message.objects.select_related('in_response_to').get(pk=message_id)
-    transmissions = Transmission.objects.filter(id__in=transmission_ids)
+    # this might be a retry, so exclude transmissions which were successful
+    transmissions = Transmission.objects.filter(id__in=transmission_ids).exclude(status='S')
     # set (possibly reset) status to processing
     transmissions.update(status='P')
     identities = transmissions.values_list('connection__identity', flat=True)
@@ -53,10 +54,19 @@ def send_transmissions(backend_id, message_id, transmission_ids):
                                text=dbm.text, identities=list(identities),
                                context=context)
     except MessageSendingError as exc:
-        # update database statuses, and re-execute this task
-        logger.warning("Re-trying send_transmissions")
+        # some or all transmissions failed: mark the Message group as failed
         Message.objects.filter(pk=message_id).update(status='E')
+        if hasattr(exc, 'failed_identities') and exc.failed_identities:
+            # Backend explicitly said these ids failed, so mark all others sent
+            transmissions.exclude(
+                connection__identity__in=exc.failed_identities
+            ).update(status='S', sent=now())
+            # regenerate the transmissions QS, with only the failed transmissions
+            transmissions = transmissions.exclude(status='S')
+        # else:
+        #     Backend didn't provide failed_identities, so we assume all failed
         transmissions.update(status='E', updated=now())
+        # Retry the task
         raise send_transmissions.retry(exc=exc)
     # no error occured, so mark these transmissions as sent
     transmissions.update(status='S', sent=now())
