@@ -45,12 +45,32 @@ class BackendBase(object):
         """
         Backend sending logic. The router will call this method for each
         outbound message. This method must be overridden by sub-classes.
-        Backends typically initiate HTTP requests from within this method. Any
-        exceptions raised here will be captured and logged by the selected
-        router.
+        Backends typically initiate HTTP requests from within this method.
 
         If multiple ``identities`` are provided, the message is intended for
         all recipients.
+
+        Any exceptions raised here will be captured and logged by the router. If
+        messages to some identities failed while others succeeded, you can
+        provide that information back to the router by adding a list of the
+        identities which failed in a ``failed_identities`` parameter on the
+        exception. If you do provide that parameter, then the router should assume
+        that all identities *not* listed in ``failed_identities`` were successfully
+        sent.
+
+        :Example:
+
+        .. code-block:: python
+
+         def send(self, id_, text, identities, context):
+             failures = []
+             for identity in identities:
+                 result = send_my_message(identity, text, context)
+                 if result == 'failed':
+                     failures.append(identity)
+             if failures:
+                 msg = '%d messages failed.' % len(failures)
+                 raise MessageSendingError(msg, failed_identities=failures)
 
         :param id\_: Message ID
         :param text: Message text
