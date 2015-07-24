@@ -7,7 +7,7 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('rapidsms', '0001_initial'),
+        ('rapidsms', '0002_alter_contact_language'),
     ]
 
     operations = [
