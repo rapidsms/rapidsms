@@ -1,4 +1,5 @@
 from django.test import TestCase
+
 from rapidsms.tests import harness
 from rapidsms.router.blocking import BlockingRouter
 from rapidsms.messages.incoming import IncomingMessage
@@ -99,7 +100,7 @@ class RouterOutgoingPhases(harness.RapidTest):
         continue_sending = self.router.process_outgoing_phases(msg)
         self.assertFalse(continue_sending)
 
-    def test_proccessed_flag_set(self):
+    def test_processed_flag_set(self):
         """
         BaseMessage.processed should be set to True after
         outgoing phase processing.

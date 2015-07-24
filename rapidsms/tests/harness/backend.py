@@ -17,7 +17,7 @@ class MockBackend(BackendBase):
 
 
 class RaisesBackend(BackendBase):
-    """Simple backend that stores sent messages."""
+    """Backend that always raises an error."""
 
     def send(self, **kwargs):
         raise Exception('Error!')
