@@ -8,6 +8,10 @@ class MessageSendingError(Exception):
     Where possible, a more specific exception should be raised, along
     with a descriptive message.
     """
+    def __init__(self, message='An error occurred during sending.', failed_identities=None):
+        # list of failed identities can optionally be attached
+        self.failed_identities = failed_identities or []
+        super(MessageSendingError, self).__init__(message)
 
 
 class NoRouterError(MessageSendingError):
