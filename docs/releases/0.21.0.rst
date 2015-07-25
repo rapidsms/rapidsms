@@ -1,6 +1,6 @@
-=================================================
-RapidSMS 0.21.0 release notes (under development)
-=================================================
+===============================================
+RapidSMS 0.21.0 release notes (current release)
+===============================================
 
 Welcome to RapidSMS 0.21.0! These release notes cover the new features in 0.21.0
 as well as some :ref:`backwards-incompatible-changes-0.21.0` you'll want to be
@@ -10,11 +10,46 @@ aware of when upgrading from RapidSMS 0.20.0.
 What's New
 ==========
 
- *
+ * Fix 'missing migration' issues `#459 <https://github.com/rapidsms/rapidsms/issues/459>`_
+   and `#460 <https://github.com/rapidsms/rapidsms/issues/460>`_
+ * (Fixed `#465 <https://github.com/rapidsms/rapidsms/issues/465>`_) Allow backends to specify
+   failed identities back to router.
+ * (Fixed `#439 <https://github.com/rapidsms/rapidsms/issues/439>`_) Allow newlines in
+   KeywordHandler. [Thanks `@knightsamar <https://github.com/knightsamar>`_!]
 
  .. _backwards-incompatible-changes-0.21.0:
 
 Backwards-incompatible changes in RapidSMS 0.21.0
 =================================================
 
-*
+ * The fix for #460 involves dropping a table which was inadvertently created by a complicated bug.
+   The table is the ``BackendMessage`` which *should not* have valuable data in it, and there is a
+   migration included which should copy any data to the proper table, but we recommend that you back
+   up your database before making this upgrade, especially if you have valuable data in the
+   BackendMessage table.
+
+ * The fix for #465 slightly alters the API between Backends and Routers. Previously, there was only
+   one way for the Backend to communicate information about the status of outgoing messages back to
+   the Router. It could raise an exception. The problem is that it's possible that the Backend was
+   responsible for sending a message to multiple identities and that some of those messages could be
+   successful and some could fail. Routers that automatically retry failures (only the
+   ``DatabaseRouter``, currently) had no way of knowing which identities failed, so if they just retried
+   all failures, then some identities would receive multiple messages. The fix for #465 allows
+   Backends to add a ``failed_identities`` parameter to the exception, which allows the Router to
+   retry failures more intelligently.
+
+   What should you change? Changes are optional. Things should work as they did before without
+   changes, but the following changes may improve reliability:
+
+   * Router authors: Look at the ``DatabaseRouter`` for a working example of how to deal with
+     ``failed_identities``. Basically, it calls ``Router.send_to_backend``, catching any Exception
+     and looking for a ``failed_identities`` parameter. It then can retry only those identities.
+
+   * Backend authors: ``Backend.send`` should try sending messages to all identities, keeping a list
+     of failures and returning that list in the exception. If there are no failures, then it should
+     return None. Making this change will allow specific Routers to behave more intelligently. See
+     the new documentation for ``Backend.send``, which is copied below:
+
+     .. autoclass:: rapidsms.backends.base.BackendBase
+        :noindex:
+        :members: send

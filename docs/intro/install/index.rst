@@ -34,7 +34,7 @@ Django installed::
 
 Now you can use the ``startproject`` management command with the ``template`` option. You just need to specify your project name at the end of the command::
 
-    django-admin.py startproject --template=https://github.com/rapidsms/rapidsms-project-template/zipball/release-0.20.0 --extension=py,rst my_project_name
+    django-admin.py startproject --template=https://github.com/rapidsms/rapidsms-project-template/zipball/release-0.21.0 --extension=py,rst my_project_name
 
 This will create a new project using the name you specified. Inside your project, you'll find a *README.rst* file with instructions to setup your project.
 
