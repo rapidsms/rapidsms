@@ -1,0 +1,11 @@
+===============================================
+RapidSMS 0.21.1 release notes (current release)
+===============================================
+
+Welcome to RapidSMS 0.21.1! These release notes cover the new features in 0.21.1.
+
+
+What's New
+==========
+
+ * Fix 'missing migration' in Python 3 issues `#468 <https://github.com/rapidsms/rapidsms/issues/468>`_
