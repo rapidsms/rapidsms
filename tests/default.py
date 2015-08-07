@@ -54,6 +54,13 @@ LOGGING = {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
         },
+        'null': {
+            'level': 'DEBUG',
+            'class': 'logging.NullHandler',
+        }
+    },
+    'root': {
+        'handlers': ['null'],
     },
     'loggers': {
         'py.warnings': {
