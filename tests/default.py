@@ -14,7 +14,6 @@ INSTALLED_BACKENDS = {
 INSTALLED_APPS = [
     "rapidsms",
     # third party apps.
-    "djtables",
     "django_tables2",
     "selectable",
     # django contrib apps
@@ -28,7 +27,6 @@ INSTALLED_APPS = [
     # rapidsms contrib apps.
     "rapidsms.contrib.handlers",
     "rapidsms.contrib.httptester",
-    "rapidsms.contrib.locations",
     "rapidsms.contrib.messagelog",
     "rapidsms.contrib.messaging",
     "rapidsms.contrib.registration",

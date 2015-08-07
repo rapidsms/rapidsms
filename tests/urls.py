@@ -12,7 +12,6 @@ urlpatterns = (
 
     # RapidSMS contrib app URLs
     url(r'^httptester/', include('rapidsms.contrib.httptester.urls')),
-    url(r'^locations/', include('rapidsms.contrib.locations.urls')),
     url(r'^messagelog/', include('rapidsms.contrib.messagelog.urls')),
     url(r'^messaging/', include('rapidsms.contrib.messaging.urls')),
     url(r'^registration/', include('rapidsms.contrib.registration.urls')),
