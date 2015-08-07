@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 from django.core.urlresolvers import reverse
-from django.utils import unittest as ut2
+from django.test import TestCase
 from mock import patch
 from six import BytesIO
 
@@ -133,7 +133,7 @@ class ViewTest(RapidTest):
         self.assertRedirects(rsp, new_url)
 
 
-class FormTest(ut2.TestCase):
+class FormTest(TestCase):
     def test_clean_identity(self):
         # The form strips whitespace from the phone number, and does not
         # accept non-numeric input
