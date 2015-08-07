@@ -2,15 +2,6 @@ language: python
 sudo: false
 python:
   - "2.7"
-env:
-  - TOXENV=py26-1.6.X,py27-1.6.X
-  - TOXENV=py27-1.7.X,py33-1.7.X,py34-1.7.X
-  - TOXENV=py27-1.8.X,py33-1.8.X,py34-1.8.X
-  - TOXENV=py27-trunk,py33-trunk,py34-trunk
-  - TOXENV=py27-migrations,py34-migrations
-  - TOXENV=docs
-  - TOXENV=flake8
-  - TOXENV=coverage
 install:
   - pip install --upgrade tox
   - pip install coveralls
@@ -18,9 +9,6 @@ script:
   - tox
 after_success:
   - coveralls
-matrix:
-  allow_failures:
-    - env: TOXENV=py27-trunk,py33-trunk,py34-trunk
 notifications:
   irc:
     - "irc.freenode.org#rapidsms"

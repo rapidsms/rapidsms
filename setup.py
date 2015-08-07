@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# vim: ai ts=4 sts=4 et sw=4
-
 import os
 from setuptools import setup, find_packages
 
@@ -9,10 +6,8 @@ def read_file(filename):
     """Read a file into a string"""
     path = os.path.abspath(os.path.dirname(__file__))
     filepath = os.path.join(path, filename)
-    try:
-        return open(filepath).read()
-    except IOError:
-        return ''
+    with open(filepath) as f:
+        f.read()
 
 
 setup(
@@ -27,8 +22,11 @@ setup(
         "django-selectable>=0.7.0",
     ],
 
-    packages=find_packages(exclude=['*.pyc']),
+    packages=find_packages(),
     include_package_data=True,
+    exclude_package_data={
+        '': ['*.pyc']
+    },
 
     author="RapidSMS development community",
     author_email="rapidsms@googlegroups.com",
@@ -45,7 +43,6 @@ setup(
         'Intended Audience :: Developers',
         'License :: OSI Approved :: BSD License',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.3',

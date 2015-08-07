@@ -10,9 +10,7 @@ from django.test.utils import get_runner
 
 
 def run_tests(options, args):
-    if django.VERSION > (1, 7):
-        # http://django.readthedocs.org/en/latest/releases/1.7.html#standalone-scripts
-        django.setup()
+    django.setup()
 
     TestRunner = get_runner(settings)
     test_runner = TestRunner(verbosity=int(options.verbosity),

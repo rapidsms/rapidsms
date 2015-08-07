@@ -1,12 +1,7 @@
-import os
-
-db_name = 'test_rapidsms'
-db_engine = os.environ.get('DBENGINE', 'sqlite3')
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.{0}'.format(db_engine),
-        'NAME': '{0}.sqlite3'.format(db_name),
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': ':memory:',
     }
 }
 
@@ -69,7 +64,6 @@ LOGGING = {
     }
 }
 
-# Django 1.7+ emits a warning if this is not set
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
