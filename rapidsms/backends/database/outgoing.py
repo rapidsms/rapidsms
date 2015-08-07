@@ -4,7 +4,6 @@
 import logging
 
 from rapidsms.backends.base import BackendBase
-from rapidsms.backends.database.models import BackendMessage
 
 
 logger = logging.getLogger(__name__)
@@ -16,6 +15,8 @@ class DatabaseBackend(BackendBase):
     """
 
     def send(self, id_, text, identities, context=None):
+        # imported here so that Models don't get loaded during app config
+        from rapidsms.backends.database.models import BackendMessage
         logger.info('Storing message: %s', text)
         context = context or {}
         kwargs = {'name': self.name, 'direction': 'O', 'text': text,

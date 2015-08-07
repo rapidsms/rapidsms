@@ -4,7 +4,6 @@ from six import string_types
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 
-from rapidsms.models import Backend
 from rapidsms.utils.modules import import_class
 
 
@@ -80,6 +79,8 @@ def lookup_connections(backend, identities):
     :param identities: list of identities to find associated with the backend
     :returns: List of :py:class:`~rapidsms.models.Connection` objects
     """
+    # imported here so that Models don't get loaded during app config
+    from rapidsms.models import Backend
     if isinstance(backend, string_types):
         backend, _ = Backend.objects.get_or_create(name=backend)
     connections = []
