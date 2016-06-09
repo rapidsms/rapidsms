@@ -3,7 +3,7 @@ from django.core.urlresolvers import reverse
 from django.http import Http404, HttpRequest, HttpResponseRedirect, QueryDict
 from django.test import TestCase
 from mock import Mock, patch
-from six import BytesIO
+from django.utils.six import BytesIO
 
 from rapidsms.models import Connection, Contact
 from rapidsms.tests.harness import CreateDataMixin, LoginMixin

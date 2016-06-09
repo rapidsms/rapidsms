@@ -3,7 +3,7 @@
 
 import csv
 from io import TextIOWrapper
-import six
+from django.utils import six
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required

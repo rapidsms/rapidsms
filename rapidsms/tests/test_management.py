@@ -1,5 +1,5 @@
 from __future__ import unicode_literals
-from six.moves import StringIO
+from django.utils.six.moves import StringIO
 
 from django.core.management import call_command
 from django.test import TestCase

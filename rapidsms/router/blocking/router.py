@@ -5,7 +5,7 @@ import logging
 import warnings
 import copy
 from collections import defaultdict
-from six import string_types
+from django.utils.six import string_types
 
 from django.db.models.query import QuerySet
 

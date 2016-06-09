@@ -3,7 +3,7 @@
 
 import pytz
 from datetime import datetime
-from six import string_types
+from django.utils.six import string_types
 
 
 def empty_str(in_str):

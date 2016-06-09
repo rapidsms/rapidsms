@@ -1,6 +1,6 @@
 from __future__ import unicode_literals
-from six import unichr
-from six.moves import xrange
+from django.utils.six import unichr
+from django.utils.six.moves import xrange
 import string
 import random
 from django.contrib.auth.models import User
