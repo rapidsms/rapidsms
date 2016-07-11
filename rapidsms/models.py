@@ -54,6 +54,9 @@ class Backend(models.Model):
     #: the name of the backend
     name = models.CharField(max_length=20, unique=True)
 
+    class Meta:
+        app_label = 'rapidsms'
+
     def __str__(self):
         return self.name
 
@@ -80,6 +83,9 @@ class App(models.Model):
 
     module = models.CharField(max_length=100, unique=True)
     active = models.BooleanField(default=False)
+
+    class Meta:
+        app_label = 'rapidsms'
 
     def __str__(self):
         return self.module
@@ -110,6 +116,7 @@ class ContactBase(models.Model):
 
     class Meta:
         abstract = True
+        app_label = 'rapidsms'
 
     def __str__(self):
         return self.name or "Anonymous"
@@ -160,6 +167,7 @@ class ConnectionBase(models.Model):
     class Meta:
         abstract = True
         unique_together = (('backend', 'identity'),)
+        app_label = 'rapidsms'
 
     def __str__(self):
         return "%s via %s" %\
