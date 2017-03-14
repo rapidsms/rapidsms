@@ -16,13 +16,6 @@ register = template.Library()
 from rapidsms.conf import settings
 
 
-if "django.core.context_processors.request" not in settings.TEMPLATE_CONTEXT_PROCESSORS:
-    raise ImproperlyConfigured(
-        "To use paginator tag, add 'django.core.context_processors.request' "
-        "to TEMPLATE_CONTEXT_PROCESSORS"
-    )
-
-
 @register.inclusion_tag("rapidsms/templatetags/paginator.html", takes_context=True)
 def paginator(context, page, prefix=""):
     """Paginator Template Tag
