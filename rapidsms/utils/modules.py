@@ -114,8 +114,7 @@ def find_python_files(path):
 
             # ignore __magic__ files and those
             # not ending with the .py suffix
-            if not file.startswith(('_', '.'))
-            and file.endswith('.py')])
+            if not file.startswith(('_', '.')) and file.endswith('.py')])
 
     except OSError:
         return []
@@ -142,8 +141,8 @@ def get_classes(module, superclass=None):
     # is imported from somewhere else)
     classes = [
         obj for obj in objects
-        if isinstance(obj, type)
-        and (obj.__module__ == module.__name__)]
+        if isinstance(obj, type) and (obj.__module__ == module.__name__)
+    ]
 
     # if a superclass was given, filter the classes
     # again to remove those that aren't its subclass

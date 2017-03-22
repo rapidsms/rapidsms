@@ -26,4 +26,5 @@ class ConnectionLookup(ModelLookup):
             return conn_name
         return '{0} ({1})'.format(item.contact.name, conn_name)
 
+
 registry.register(ConnectionLookup)
