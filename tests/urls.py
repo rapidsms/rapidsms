@@ -1,6 +1,8 @@
 from django.conf.urls import include, url
 from django.contrib import admin
 
+from rapidsms import views as rapidsms_views
+
 admin.autodiscover()
 
 urlpatterns = (
@@ -8,7 +10,7 @@ urlpatterns = (
 
     # RapidSMS core URLs
     url(r'^account/', include('rapidsms.urls.login_logout')),
-    url(r'^$', 'rapidsms.views.dashboard', name='rapidsms-dashboard'),
+    url(r'^$', rapidsms_views.dashboard, name='rapidsms-dashboard'),
 
     # RapidSMS contrib app URLs
     url(r'^httptester/', include('rapidsms.contrib.httptester.urls')),

@@ -1,6 +1,7 @@
 from django.test import TestCase
-from django.core.urlresolvers import reverse
+from django.test.utils import override_settings
 from django.conf.urls import url
+from django.core.urlresolvers import reverse
 
 from rapidsms.tests.harness import RapidTest
 from rapidsms.backends.http import views
@@ -63,9 +64,9 @@ class HttpFormTest(TestCase):
                          incoming_data['connection'].backend.name)
 
 
+@override_settings(ROOT_URLCONF='rapidsms.backends.http.tests')
 class HttpViewTest(RapidTest):
 
-    urls = 'rapidsms.backends.http.tests'
     disable_phases = True
 
     def setUp(self):
