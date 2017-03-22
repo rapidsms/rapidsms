@@ -1,3 +1,6 @@
+from celery import Celery
+
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -111,7 +114,6 @@ TEMPLATES = [
 
 PROJECT_NAME = 'rapidsms-test-suite'
 
-from celery import Celery
 app = Celery('rapidsms')
 app.config_from_object('django.conf:settings')
 
