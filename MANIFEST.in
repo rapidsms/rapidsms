@@ -8,8 +8,6 @@ recursive-include rapidsms/static *
 recursive-include rapidsms/templates *
 recursive-include rapidsms/contrib/httptester/static *
 recursive-include rapidsms/contrib/httptester/templates *
-recursive-include rapidsms/contrib/locations/static *
-recursive-include rapidsms/contrib/locations/templates *
 recursive-include rapidsms/contrib/messagelog/static *
 recursive-include rapidsms/contrib/messagelog/templates *
 recursive-include rapidsms/contrib/messaging/static *

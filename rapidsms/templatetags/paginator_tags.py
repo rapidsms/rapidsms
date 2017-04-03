@@ -13,13 +13,13 @@ register = template.Library()
 # relative import (..conf) to rapidsms from working here. in fact, that
 # would import django.conf, so it will appear to be working, but per-app
 # settings won't work! PAGINATOR_ defaults are in the ..settings module.
-from rapidsms.conf import settings
+from rapidsms.conf import settings  # noqa
 
 
-if "django.core.context_processors.request" not in settings.TEMPLATE_CONTEXT_PROCESSORS:
+if "django.template.context_processors.request" not in settings.TEMPLATES[0]['OPTIONS']['context_processors']:
     raise ImproperlyConfigured(
-        "To use paginator tag, add 'django.core.context_processors.request' "
-        "to TEMPLATE_CONTEXT_PROCESSORS"
+        "To use paginator tag, add 'django.template.context_processors.request' "
+        "to your TEMPLATES 'context_processors'"
     )
 
 

@@ -1,49 +1,45 @@
-import os
+from celery import Celery
 
-db_name = 'test_rapidsms'
-db_engine = os.environ.get('DBENGINE', 'sqlite3')
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.{0}'.format(db_engine),
-        'NAME': '{0}.sqlite3'.format(db_name),
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': ':memory:',
     }
 }
 
 INSTALLED_BACKENDS = {
-    "message_tester": {
-        "ENGINE": "rapidsms.backends.database.DatabaseBackend",
+    'message_tester': {
+        'ENGINE': 'rapidsms.backends.database.DatabaseBackend',
     },
 }
 
 INSTALLED_APPS = [
-    "rapidsms",
+    'rapidsms',
     # third party apps.
-    "djtables",
-    "django_tables2",
-    "selectable",
+    'django_tables2',
+    'selectable',
     # django contrib apps
-    "django.contrib.sites",
-    "django.contrib.auth",
-    "django.contrib.admin",
-    "django.contrib.messages",
-    "django.contrib.sessions",
-    "django.contrib.staticfiles",
-    "django.contrib.contenttypes",
+    'django.contrib.sites',
+    'django.contrib.auth',
+    'django.contrib.admin',
+    'django.contrib.messages',
+    'django.contrib.sessions',
+    'django.contrib.staticfiles',
+    'django.contrib.contenttypes',
     # rapidsms contrib apps.
-    "rapidsms.contrib.handlers",
-    "rapidsms.contrib.httptester",
-    "rapidsms.contrib.locations",
-    "rapidsms.contrib.messagelog",
-    "rapidsms.contrib.messaging",
-    "rapidsms.contrib.registration",
-    "rapidsms.contrib.echo",
-    "rapidsms.router.db",
-    "rapidsms.backends.database",
-    "rapidsms.backends.kannel",
-    "rapidsms.tests.translation",
+    'rapidsms.contrib.handlers',
+    'rapidsms.contrib.httptester',
+    'rapidsms.contrib.messagelog',
+    'rapidsms.contrib.messaging',
+    'rapidsms.contrib.registration',
+    'rapidsms.contrib.echo',
+    'rapidsms.router.db',
+    'rapidsms.backends.database',
+    'rapidsms.backends.kannel',
+    'rapidsms.tests.translation',
 
-    "rapidsms.contrib.default",  # Should be last
+    'rapidsms.contrib.default',  # Should be last
 ]
 
 LOGGING = {
@@ -54,6 +50,13 @@ LOGGING = {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
         },
+        'null': {
+            'level': 'DEBUG',
+            'class': 'logging.NullHandler',
+        }
+    },
+    'root': {
+        'handlers': ['null'],
     },
     'loggers': {
         'py.warnings': {
@@ -62,7 +65,6 @@ LOGGING = {
     }
 }
 
-# Django 1.7+ emits a warning if this is not set
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -75,7 +77,7 @@ SITE_ID = 1
 
 SECRET_KEY = 'super-secret'
 
-LOGIN_REDIRECT_URL = "/"
+LOGIN_REDIRECT_URL = '/'
 
 STATIC_URL = '/static/'
 
@@ -84,22 +86,34 @@ PASSWORD_HASHERS = (
     'django.contrib.auth.hashers.MD5PasswordHasher',
 )
 
-ROOT_URLCONF = "tests.urls"
+ROOT_URLCONF = 'tests.urls'
 
-TEMPLATE_CONTEXT_PROCESSORS = (
-    "django.contrib.auth.context_processors.auth",
-    "django.core.context_processors.debug",
-    "django.core.context_processors.i18n",
-    "django.core.context_processors.media",
-    "django.core.context_processors.static",
-    "django.core.context_processors.tz",
-    "django.contrib.messages.context_processors.messages",
-    "django.core.context_processors.request",
-)
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [],
+        'OPTIONS': {
+            'context_processors': [
+                'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.debug',
+                'django.template.context_processors.i18n',
+                'django.template.context_processors.media',
+                'django.template.context_processors.static',
+                'django.template.context_processors.tz',
+                'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.request',
+            ],
+            'loaders': [
+                'django.template.loaders.filesystem.Loader',
+                'django.template.loaders.app_directories.Loader',
+                'django.template.loaders.eggs.Loader',
+            ]
+        },
+    },
+]
 
 PROJECT_NAME = 'rapidsms-test-suite'
 
-from celery import Celery
 app = Celery('rapidsms')
 app.config_from_object('django.conf:settings')
 

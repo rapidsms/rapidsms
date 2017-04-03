@@ -46,6 +46,9 @@ class Message(models.Model):
     in_response_to = models.ForeignKey('self', related_name='responses',
                                        null=True, blank=True)
 
+    class Meta:
+        app_label = 'db'
+
     def set_status(self):
         if self.direction == 'O':
             if self.transmissions.filter(status='E').exists():
@@ -90,6 +93,9 @@ class Transmission(models.Model):
     sent = models.DateTimeField(null=True, blank=True)
     #: Date/time when transmission was delivered (requires backend functionality).
     delivered = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        app_label = 'db'
 
     def __str__(self):
         return "%d: %s" % (self.pk, self.get_status_display())

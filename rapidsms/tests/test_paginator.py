@@ -24,7 +24,7 @@ class PaginatorTests(TestCase):
             (20, 50, [1, 2, None, 18, 19, 20, 21, 22, None, 49, 50]),
         ]
         request = RequestFactory().get(
-            reverse('rapidsms.contrib.registration.views.registration')
+            reverse('registration')
         )
         context = {'request': request}
 

@@ -3,6 +3,7 @@ from mock import patch
 
 from django.test import TestCase
 from django.core.urlresolvers import reverse
+from django.test.utils import override_settings
 
 from rapidsms.backends.vumi.outgoing import VumiBackend
 from rapidsms.backends.vumi.forms import VumiForm
@@ -52,9 +53,9 @@ class VumiFormTest(TestCase):
                          incoming_data['connection'].backend.name)
 
 
+@override_settings(ROOT_URLCONF='rapidsms.backends.vumi.urls')
 class VumiViewTest(RapidTest):
 
-    urls = 'rapidsms.backends.vumi.urls'
     disable_phases = True
 
     def setUp(self):

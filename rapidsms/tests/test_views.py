@@ -8,7 +8,7 @@ from django.test import TestCase
 
 class ViewTest(TestCase):
     def test_login(self):
-        login_url = reverse("rapidsms.views.login")
+        login_url = reverse("rapidsms-login")
 
         # check that the login form is displayed.
         response = self.client.get(login_url)

@@ -17,3 +17,5 @@ _build
 *.egg
 coverage.xml
 htmlcov
+# pyenv
+.python-version

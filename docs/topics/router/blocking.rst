@@ -35,7 +35,7 @@ you can see the available apps and backends::
     >>> from rapidsms.router.blocking import BlockingRouter
     >>> router = BlockingRouter()
     >>> router.apps
-    [<app: handlers>, <app: default>, <app: locations>, <app: messagelog>]
+    [<app: handlers>, <app: default>, <app: messagelog>]
     >>> router.backends
     {'message_tester': <backend: message_tester>}
 
@@ -45,7 +45,6 @@ In this scenario, these settings were used::
         # trimmed to only show the relevant apps
         "rapidsms.contrib.handlers",
         "rapidsms.contrib.default",
-        "rapidsms.contrib.locations",
         "rapidsms.contrib.messagelog",
     ]
 

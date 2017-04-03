@@ -9,7 +9,6 @@ RapidSMS comes with a number of contributed applications.
     echo
     handlers
     httptester
-    locations
     messagelog
     messaging
     registration

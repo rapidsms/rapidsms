@@ -15,31 +15,15 @@ automated to run in several environments and can include coverage reports.
 Quickstart
 ----------
 
-.. note::
-
-    The RapidSMS core test suite includes some tests that depend on
-    `django-celery`_ 3.0+. If you install the requirements file listed below,
-    all tests should pass properly.
-
 The easiest way to run the unit tests in a new install is to run the following
 from the project root::
 
-    python setup.py develop
-    pip install -r tests/requirements/dev.txt
-    python run_tests.py --settings=tests.default
+    pip install tox
+    tox
 
 The settings found in the /tests/default.py module are intended as the default
-settings file for running tests. You can tell the test runner what settings
-file to use with the --settings flag or by setting your
-``DJANGO_SETTINGS_MODULE`` environment variable.
-
-Coverage
---------
-
-To see code coverage while running the tests, you can use the supplied
-``coverage`` settings file::
-
-    python run_tests.py --settings=tests.coverage
+settings file for running tests. This will also build the docs, run flake8, look
+for missing migrations, and run coverage.
 
 .. _pep-eight-adherence:
 
@@ -54,6 +38,8 @@ RapidSMS directory before submitting patches for review::
 
     flake8
 
+Note that the ``tox`` command above also will do this.
+
 Testing multiple environments
 -----------------------------
 
@@ -62,35 +48,11 @@ the test suite in a variety of environments. You can test all environments
 together or specific ones::
 
     tox                 # all environments
-    tox -e py27-1.7.X   # only test using Python 2.7 and Django 1.7
+    tox -e py34-dj19   # only test using Python 3.4 and Django 1.9
 
-The available environments are:
-
- * ``py26-1.4.X`` - Test using Python 2.6 and Django 1.4.X
- * ``py26-1.5.X`` - Test using Python 2.6 and Django 1.5.X
- * ``py26-1.6.X`` - Test using Python 2.6 and Django 1.6.X
- * ``py27-1.4.X`` - Test using Python 2.7 and Django 1.4.x
- * ``py27-1.5.X`` - Test using Python 2.7 and Django 1.5.x
- * ``py27-1.6.X`` - Test using Python 2.7 and Django 1.6.x
- * ``py27-1.7.X`` - Test using Python 2.7 and Django 1.7.x
- * ``py27-trunk`` - Test using Python 2.7 and Django master
- * ``docs`` - Test building docs
- * ``flake8`` - Run flake8 style checker
- * ``coverage`` - Report coverage
+See the ``tox.ini`` file for a list of the available environments.
 
 You can also add additional environments or change other parts of the
-configuration in your local copy of the tox.ini by following the `tox
+configuration in your local copy of the ``tox.ini`` by following the `tox
 configuration specification
 <http://tox.readthedocs.org/en/latest/config.html>`_ docs.
-
-Using setup.py
---------------
-
-Your ``DJANGO_SETTINGS_MODULE`` must be set in order for the test suite using
-setup.py. Running the following will install test dependencies and run the unit
-tests in one step, but without the option of a coverage report::
-
-    export DJANGO_SETTINGS_MODULE=tests.default
-    python setup.py test
-
-.. _django-celery: http://pypi.python.org/pypi/django-celery

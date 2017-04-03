@@ -17,6 +17,10 @@ class DeliveryReport(models.Model):
     Model to track Kannel delivery reports.
     http://kannel.org/download/1.5.0/userguide-1.5.0/userguide.html#DELIVERY-REPORTS
     """
+
+    class Meta:
+        app_label = 'kannel'
+
     date = models.DateTimeField(auto_now_add=True)
     date_sent = models.DateTimeField()
     message_id = models.CharField("Message ID", max_length=255)

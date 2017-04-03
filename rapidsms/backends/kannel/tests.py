@@ -1,6 +1,7 @@
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 from django.utils.timezone import now
+from django.test.utils import override_settings
 
 from rapidsms.backends.kannel import KannelBackend
 from rapidsms.backends.kannel.forms import KannelForm
@@ -35,9 +36,9 @@ class KannelFormTest(TestCase):
                          incoming_data['connection'].backend.name)
 
 
+@override_settings(ROOT_URLCONF='rapidsms.backends.kannel.urls')
 class KannelViewTest(RapidTest):
 
-    urls = 'rapidsms.backends.kannel.urls'
     disable_phases = True
 
     def test_valid_response_get(self):
@@ -64,9 +65,8 @@ class KannelViewTest(RapidTest):
                          message.connection.backend.name)
 
 
+@override_settings(ROOT_URLCONF='rapidsms.backends.kannel.urls')
 class KannelSendTest(CreateDataMixin, TestCase):
-
-    urls = 'rapidsms.backends.kannel.urls'
 
     def test_outgoing_keys(self):
         """Outgoing POST data should contain the proper keys."""
@@ -130,9 +130,8 @@ class KannelSendTest(CreateDataMixin, TestCase):
         self.assertTrue("http://localhost:8000" in data['dlr-url'])
 
 
+@override_settings(ROOT_URLCONF='rapidsms.backends.kannel.urls')
 class KannelDeliveryReportTest(CreateDataMixin, TestCase):
-
-    urls = 'rapidsms.backends.kannel.urls'
 
     def test_valid_post(self):
         """Valid delivery reports should create reports in the DB."""

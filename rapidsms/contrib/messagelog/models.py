@@ -24,6 +24,9 @@ class Message(models.Model):
     date = models.DateTimeField()
     text = models.TextField()
 
+    class Meta:
+        app_label = 'messagelog'
+
     def save(self, *args, **kwargs):
         """
         Verifies that one (not both) of the contact or connection fields
