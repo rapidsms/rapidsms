@@ -7,6 +7,7 @@ import copy
 from collections import defaultdict
 from six import string_types
 
+from django.conf import settings
 from django.db.models.query import QuerySet
 
 from rapidsms.messages.incoming import IncomingMessage
@@ -262,10 +263,16 @@ class BlockingRouter(object):
             for backend_name in backend_names.distinct():
                 identities = msg.connections.filter(backend__name=backend_name)
                 identities = identities.values_list('identity', flat=True)
+                if getattr(settings, 'OUTGOING_BACKEND_NAME'):
+                    backend_name = getattr(settings, 'OUTGOING_BACKEND_NAME')
                 grouped_identities[backend_name].extend(list(identities))
         else:
             for connection in msg.connections:
-                backend_name = connection.backend.name
+                # Find out if OutgoingBackendName exists (this is an override)
+                try:
+                    backend_name = getattr(settings, 'OUTGOING_BACKEND_NAME')
+                except ValueError:
+                    backend_name = connection.backend.name
                 identity = connection.identity
                 grouped_identities[backend_name].append(identity)
         return grouped_identities
