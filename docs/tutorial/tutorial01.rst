@@ -219,6 +219,17 @@ RapidSMS's "Installation Successful!" page.
 Message Tester
 --------------
 
+Before testing messages functionality (sending/receiving), first
+make a few adjustments to your settings file (`settings.py`).
+Add the following variables:
+
+.. code-block:: python
+
+    PAGINATOR_BORDER_LINKS = True
+    PAGINATOR_ADJACENT_LINKS = True
+    PROJECT_NAME = "name-of-your-project"
+    DEFAULT_RESPONSE = "some-default-response" # use an appropriate response
+
 Let's take a look at one of the contributed applications that
 is installed by default, Message Tester. There should be a link
 to it at the top of the page, or you can just go to
