@@ -261,3 +261,4 @@ texinfo_documents = [
 sys.path.append(os.path.dirname(__file__))
 import django
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "settings")
+django.setup()
