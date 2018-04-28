@@ -18,8 +18,8 @@ class Migration(migrations.Migration):
                 ('direction', models.CharField(max_length=1, choices=[(b'I', b'Incoming'), (b'O', b'Outgoing')])),
                 ('date', models.DateTimeField()),
                 ('text', models.TextField()),
-                ('connection', models.ForeignKey(blank=True, to='rapidsms.Connection', null=True)),
-                ('contact', models.ForeignKey(blank=True, to='rapidsms.Contact', null=True)),
+                ('connection', models.ForeignKey(blank=True, to='rapidsms.Connection', null=True, on_delete=models.CASCADE)),
+                ('contact', models.ForeignKey(blank=True, to='rapidsms.Contact', null=True, on_delete=models.CASCADE)),
             ],
             options={
             },

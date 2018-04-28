@@ -23,7 +23,7 @@ class Migration(migrations.Migration):
                 ('direction', models.CharField(db_index=True, max_length=1, choices=[(b'I', b'Incoming'), (b'O', b'Outgoing')])),
                 ('text', models.TextField()),
                 ('external_id', models.CharField(max_length=1024, blank=True)),
-                ('in_response_to', models.ForeignKey(related_name=b'responses', blank=True, to='db.Message', null=True)),
+                ('in_response_to', models.ForeignKey(related_name=b'responses', blank=True, to='db.Message', null=True, on_delete=models.CASCADE)),
             ],
             options={
             },
@@ -38,8 +38,8 @@ class Migration(migrations.Migration):
                 ('updated', models.DateTimeField(db_index=True, auto_now=True, null=True)),
                 ('sent', models.DateTimeField(null=True, blank=True)),
                 ('delivered', models.DateTimeField(null=True, blank=True)),
-                ('connection', models.ForeignKey(related_name=b'transmissions', to='rapidsms.Connection')),
-                ('message', models.ForeignKey(related_name=b'transmissions', to='db.Message')),
+                ('connection', models.ForeignKey(related_name=b'transmissions', to='rapidsms.Connection', on_delete=models.CASCADE)),
+                ('message', models.ForeignKey(related_name=b'transmissions', to='db.Message', on_delete=models.CASCADE)),
             ],
             options={
             },

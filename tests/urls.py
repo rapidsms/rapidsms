@@ -6,7 +6,7 @@ from rapidsms import views as rapidsms_views
 admin.autodiscover()
 
 urlpatterns = (
-    url(r'^admin/', include(admin.site.urls)),
+    url(r'^admin/', admin.site.urls),
 
     # RapidSMS core URLs
     url(r'^account/', include('rapidsms.urls.login_logout')),

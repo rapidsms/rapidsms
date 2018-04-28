@@ -153,12 +153,12 @@ class Contact(ContactBase):
 class ConnectionBase(models.Model):
     #: foreign key to this connection's
     #: :py:class:`~rapidsms.backends.base.BackendBase`
-    backend = models.ForeignKey(Backend)
+    backend = models.ForeignKey(Backend, on_delete=models.CASCADE)
     #: unique identifier for this connection on this backend (e.g. phone
     #: number, email address, IRC nick, etc.)
     identity = models.CharField(max_length=100)
     #: (optional) associated :py:class:`~rapidsms.models.Contact`
-    contact = models.ForeignKey(Contact, null=True, blank=True)
+    contact = models.ForeignKey(Contact, null=True, blank=True, on_delete=models.CASCADE)
     #: when this connection was created
     created_on = models.DateTimeField(auto_now_add=True)
     #: when this connection was last modified

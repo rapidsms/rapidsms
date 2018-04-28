@@ -44,7 +44,7 @@ class Message(models.Model):
     external_id = models.CharField(max_length=1024, blank=True)
     #: Optional. Foreign key to ``Message`` that generated this reply.
     in_response_to = models.ForeignKey('self', related_name='responses',
-                                       null=True, blank=True)
+                                       null=True, blank=True, on_delete=models.CASCADE)
 
     class Meta:
         app_label = 'db'
@@ -79,9 +79,9 @@ class Message(models.Model):
 @python_2_unicode_compatible
 class Transmission(models.Model):
     #: Required. Foreign key to associated ``Message``.
-    message = models.ForeignKey(Message, related_name='transmissions')
+    message = models.ForeignKey(Message, related_name='transmissions', on_delete=models.CASCADE)
     #: Required. Foreign key to associated ``Connection``.
-    connection = models.ForeignKey(Connection, related_name='transmissions')
+    connection = models.ForeignKey(Connection, related_name='transmissions', on_delete=models.CASCADE)
     #: Required. See :ref:`message-status-values`.
     status = models.CharField(max_length=1, choices=STATUS_CHOICES,
                               db_index=True)

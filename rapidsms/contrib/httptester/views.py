@@ -6,7 +6,7 @@ from random import randint
 from django.contrib import messages
 
 from django.contrib.auth.decorators import login_required
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 
@@ -76,7 +76,7 @@ def message_tester(request, identity):
         form = forms.MessageForm({"identity": identity})
 
     messages_table = MessageTable(storage.get_messages(),
-                                  template="httptester/table.html")
+                                  template_name="httptester/table.html")
     RequestConfig(request,
                   paginate={"per_page": settings.PAGINATOR_OBJECTS_PER_PAGE})\
         .configure(messages_table)

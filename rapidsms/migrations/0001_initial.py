@@ -54,7 +54,7 @@ class Migration(migrations.Migration):
                 ('identity', models.CharField(max_length=100)),
                 ('created_on', models.DateTimeField(auto_now_add=True)),
                 ('modified_on', models.DateTimeField(auto_now=True)),
-                ('backend', models.ForeignKey(to='rapidsms.Backend')),
+                ('backend', models.ForeignKey(to='rapidsms.Backend', on_delete=models.CASCADE)),
             ],
             options={
                 'abstract': False,
@@ -78,7 +78,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='connection',
             name='contact',
-            field=models.ForeignKey(blank=True, to='rapidsms.Contact', null=True),
+            field=models.ForeignKey(blank=True, to='rapidsms.Contact', null=True, on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AlterUniqueTogether(
