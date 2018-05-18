@@ -7,7 +7,7 @@ import six
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.db import transaction
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
@@ -25,7 +25,7 @@ from rapidsms.conf import settings
 def registration(request):
     contacts_table = ContactTable(
         Contact.objects.all().prefetch_related('connection_set'),
-        template="django_tables2/bootstrap-tables.html")
+        template_name="django_tables2/bootstrap-tables.html")
 
     paginate = {"per_page": settings.PAGINATOR_OBJECTS_PER_PAGE}
     RequestConfig(request, paginate=paginate).configure(contacts_table)
@@ -100,7 +100,7 @@ def contact_bulk_add(request):
         for i, row in enumerate(reader, start=1):
             try:
                 name, backend_name, identity = row
-            except:
+            except ValueError:
                 return render(request, 'registration/bulk_form.html', {
                     "bulk_form": bulk_form,
                     "csv_errors": "Could not unpack line " + str(i),
@@ -108,7 +108,7 @@ def contact_bulk_add(request):
             contact = Contact.objects.create(name=name)
             try:
                 backend = Backend.objects.get(name=backend_name)
-            except:
+            except Backend.DoesNotExist:
                 return render(request, 'registration/bulk_form.html', {
                     "bulk_form": bulk_form,
                     "csv_errors": "Could not find Backend.  Line: " + str(i),

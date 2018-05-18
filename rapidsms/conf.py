@@ -14,5 +14,5 @@ overriden by the project author in the top-level ``settings.py``.
 
 try:
     from djappsettings import settings
-except:
+except ImportError:
     from django.conf import settings  # noqa

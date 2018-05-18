@@ -1,5 +1,5 @@
 # coding=utf-8
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.http import Http404, HttpRequest, HttpResponseRedirect, QueryDict
 from django.test import TestCase
 from mock import Mock, patch
@@ -68,7 +68,7 @@ class TestViews(TestCase, CreateDataMixin, LoginMixin):
             views.registration(request)
         context = render.call_args[0][2]
         table = context["contacts_table"]
-        self.assertEqual(len(self.contacts), len(list(table.data.queryset)))
+        self.assertEqual(len(self.contacts), len(list(table.data)))
 
     def test_registration_render(self):
         # render actually works (django_tables2 and all)

@@ -45,7 +45,7 @@ class CeleryRouterTest(harness.DatabaseBackendMixin, TestCase):
         with override_settings(INSTALLED_BACKENDS=backends):
             try:
                 send_async("backend", "1234", "hello", ["1112223333"], {})
-            except:
+            except Exception:
                 self.fail("Sending exceptions should be caught within task")
 
 

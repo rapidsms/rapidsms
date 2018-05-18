@@ -17,9 +17,10 @@ setup(
 
     install_requires=[
         "requests>=1.2.0",
-        "django-tables2==1.0.*",
+        "django-tables2==1.21.*",
         "djappsettings>=0.4.0",
         "django-selectable>=0.7.0",
+        "six",
     ],
 
     packages=find_packages(),
