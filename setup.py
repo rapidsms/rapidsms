@@ -7,7 +7,7 @@ def read_file(filename):
     path = os.path.abspath(os.path.dirname(__file__))
     filepath = os.path.join(path, filename)
     with open(filepath) as f:
-        f.read()
+        return f.read()
 
 
 setup(
