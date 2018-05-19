@@ -14,7 +14,7 @@ except ImportError:
             json = None
 
 from sphinx import addnodes, roles
-from sphinx.util.compat import Directive
+from docutils.parsers.rst import Directive
 
 
 def setup(app):
