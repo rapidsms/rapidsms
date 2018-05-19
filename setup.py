@@ -51,7 +51,8 @@ setup(
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Framework :: Django',
-        'Development Status :: 4 - Beta',
+        'Framework :: Django :: 1.11',
+        'Development Status :: 5 - Production/Stable',
         'Operating System :: OS Independent',
     ],
 )
