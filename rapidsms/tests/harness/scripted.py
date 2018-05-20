@@ -111,7 +111,7 @@ class TestScriptMixin(TestRouterMixin):
     def runScript(self, script):
         """Run a test script.
 
-        :param string script: A multi-line test script. See
+        :param str script: A multi-line test script. See
             :py:class:`~rapidsms.tests.harness.scripted.TestScriptMixin`.
         """
         self.clear_sent_messages()  # make sure the outbox is empty
