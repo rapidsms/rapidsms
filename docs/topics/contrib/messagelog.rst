@@ -38,7 +38,7 @@ Installation
 4. Optionally, add a link to the message log view from your
    ``rapidsms/_nav_bar.html`` template:
 
-.. code-block:: html
+.. code-block:: django
 
     {% load url from future %}
     <li><a href="{% url "message_log" %}">Message Log</a></li>

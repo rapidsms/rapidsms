@@ -32,7 +32,7 @@ class IncomingMessage(MessageBase):
         Arbitrary arguments are passed along to the
         :py:meth:`~rapidsms.router.send` method.
 
-        :param string text: The text of the message
+        :param str text: The text of the message
         :param connections: (optional) send to a different set of connections
             than were in the incoming message.
         :type connections: list of :py:class:`~rapidsms.models.Connection`

@@ -62,7 +62,7 @@ To define and use Message Tester for your RapidSMS project, you will need to:
 5. Add a link to the Message Tester view from your ``rapidsms/_nav_bar.html``
    template:
 
-.. code-block:: html
+.. code-block:: django
     :emphasize-lines: 2
 
     {% load url from future %}
