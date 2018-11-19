@@ -6,7 +6,7 @@ RapidSMS Tutorial
 This tutorial will walk you through the creation of a simple RapidSMS
 application.
 
-RapidSMS builds on the Django web development frameowork.
+RapidSMS builds on the Django web development framework.
 We assume that you are familiar with Django, at least the material in the
 `Django tutorial`_. If you haven't worked through that before, please start
 there, then come back here when you feel comfortable with the concepts
