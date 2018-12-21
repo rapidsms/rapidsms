@@ -85,6 +85,18 @@ def lookup_connections(backend, identities):
         backend, _ = Backend.objects.get_or_create(name=backend)
     connections = []
     for identity in identities:
-        connection, _ = backend.connection_set.get_or_create(identity=identity)
+        # connection, _ = backend.connection_set.get_or_create(identity=identity)
+        # connections.append(connection)
+
+        import hashlib
+        hashed_identity = hashlib.sha256(identity.encode()).hexdigest()
+
+        from django.db.models import Q
+        # hashed_identity assumes that the user has texted before. 
+        connection = backend.connection_set.filter(Q(identity=identity) | Q(identity=hashed_identity)).first()
+
+        if not connection:
+            connection = backend.connection_set.create(identity=identity)
+
         connections.append(connection)
     return connections
