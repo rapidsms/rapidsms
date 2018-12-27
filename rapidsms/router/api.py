@@ -1,8 +1,10 @@
+import hashlib
 import collections
 from six import string_types
 
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
+from django.db.models import Q
 
 from rapidsms.utils.modules import import_class
 
@@ -78,25 +80,34 @@ def lookup_connections(backend, identities):
         :py:class:`~rapidsms.backends.base.BackendBase` object
     :param identities: list of identities to find associated with the backend
     :returns: List of :py:class:`~rapidsms.models.Connection` objects
+
+    ### A note on hashed identities 
+    The coordinated-entry-screening tool runs a script (`hash_identities.py `) that hashes 
+    the identities, i.e., phone numbers, of closed or abandoned sessions.
+    
+    A user may be *returning*. If so, their identity is hashed.
+    This function, thus: (1) finds the connection given a hashed identity, and 
+    (2) un-hashes the identity, so that the app can communicate with Twilio.   
+
     """
     # imported here so that Models don't get loaded during app config
     from rapidsms.models import Backend
     if isinstance(backend, string_types):
         backend, _ = Backend.objects.get_or_create(name=backend)
     connections = []
+    
     for identity in identities:
-        # connection, _ = backend.connection_set.get_or_create(identity=identity)
-        # connections.append(connection)
-
-        import hashlib
         hashed_identity = hashlib.sha256(identity.encode()).hexdigest()
 
-        from django.db.models import Q
-        # hashed_identity assumes that the user has texted before. 
-        connection = backend.connection_set.filter(Q(identity=identity) | Q(identity=hashed_identity)).first()
+        connection = backend.connection_set.filter(Q(identity=identity) | \
+                                                   Q(identity=hashed_identity)) \
+                                           .first()
 
         if not connection:
             connection = backend.connection_set.create(identity=identity)
+        else:
+            connection.identity = identity
+            connection.save()
 
         connections.append(connection)
     return connections
