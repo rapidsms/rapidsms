@@ -14,6 +14,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='contact',
             name='language',
-            field=models.CharField(help_text=b'The language which this contact prefers to communicate in, as a W3C language tag. If this field is left blank, RapidSMS will default to the value in LANGUAGE_CODE.', max_length=6, blank=True),
+            field=models.CharField(help_text='The language which this contact prefers to communicate in, as a W3C language tag. If this field is left blank, RapidSMS will default to the value in LANGUAGE_CODE.', max_length=6, blank=True),
         ),
     ]

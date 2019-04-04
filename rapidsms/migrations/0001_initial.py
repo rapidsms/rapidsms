@@ -37,7 +37,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('name', models.CharField(max_length=255)),
                 ('date', models.DateTimeField(auto_now_add=True)),
-                ('direction', models.CharField(db_index=True, max_length=1, choices=[(b'I', b'Incoming'), (b'O', b'Outgoing')])),
+                ('direction', models.CharField(db_index=True, max_length=1, choices=[('I', 'Incoming'), ('O', 'Outgoing')])),
                 ('message_id', models.CharField(max_length=64)),
                 ('external_id', models.CharField(max_length=64, blank=True)),
                 ('identity', models.CharField(max_length=100)),
@@ -68,7 +68,7 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(max_length=100, blank=True)),
                 ('created_on', models.DateTimeField(auto_now_add=True)),
                 ('modified_on', models.DateTimeField(auto_now=True)),
-                ('language', models.CharField(help_text=b'The language which this contact prefers to communicate in, as a W3C language tag. If this field is left blank, RapidSMS will default to: en-us', max_length=6, blank=True)),
+                ('language', models.CharField(help_text='The language which this contact prefers to communicate in, as a W3C language tag. If this field is left blank, RapidSMS will default to: en-us', max_length=6, blank=True)),
             ],
             options={
                 'abstract': False,

@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('name', models.CharField(max_length=255)),
                 ('date', models.DateTimeField(auto_now_add=True)),
-                ('direction', models.CharField(db_index=True, max_length=1, choices=[(b'I', b'Incoming'), (b'O', b'Outgoing')])),
+                ('direction', models.CharField(db_index=True, max_length=1, choices=[('I', 'Incoming'), ('O', 'Outgoing')])),
                 ('message_id', models.CharField(max_length=64)),
                 ('external_id', models.CharField(max_length=64, blank=True)),
                 ('identity', models.CharField(max_length=100)),
