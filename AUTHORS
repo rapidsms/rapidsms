@@ -15,7 +15,7 @@ View contributors who have signed CLAs:
     http://spreadsheets.google.com/pub?key=tbOxXy55z6RcrX5pTJPUlBg&output=html
 
 
-Below is a list of code contributors (as of 10 July 2015), outputted by
+Below is a list of code contributors (as of 4 April 2019), outputted by
 	$ git log --format=format:"%an <%aE>" | sort | uniq
 
 
@@ -27,6 +27,7 @@ Alexander Lemann <lemanal+github@caktusgroup.com>
 Caleb Smith <csmith@caktusgroup.com>
 Colin Copeland <copelco@caktusgroup.com>
 Cory Zue <czue@dimagi.com>
+Daniel Bond <daniel@dbond.cc>
 Dan Poirier <dpoirier@caktusgroup.com>
 Dan Poirier <poirier@pobox.com>
 David McCann <david.a.mccann@gmail.com>
@@ -58,6 +59,7 @@ RapidSMS <rapidsms@rapidsms-desktop.(none)>
 RapidSMS <rapidsms@ubuntu.ubuntu-domain>
 Rebecca Lovewell <rebecca@caktusgroup.com>
 Rebecca <rebecca@caktusgroup.com>
+reginafcompton <reginafcompton@gmail.com>
 Remco Wendt <remco.wendt@gmail.com>
 rgaudin <rgaudin@gmail.com>
 root <root@rapidsms-desktop.(none)>

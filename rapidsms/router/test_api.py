@@ -23,11 +23,11 @@ class RouterAPITest(harness.RapidTest):
         bad_class_router = 'rapidsms.tests.router.test_base.BadClassName'
         good_mock_router = 'rapidsms.router.test_api.MockRouter'
         with override_settings(RAPIDSMS_ROUTER=bad_module_router):
-                self.assertRaises(ImproperlyConfigured, get_router)
+            self.assertRaises(ImproperlyConfigured, get_router)
         with override_settings(RAPIDSMS_ROUTER=bad_class_router):
-                self.assertRaises(ImproperlyConfigured, get_router)
+            self.assertRaises(ImproperlyConfigured, get_router)
         with override_settings(RAPIDSMS_ROUTER=good_mock_router):
-                self.assertTrue(isinstance(get_router(), MockRouter))
+            self.assertTrue(isinstance(get_router(), MockRouter))
 
     def test_send_with_connection(self):
         """Send accepts a single connection."""
