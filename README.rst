@@ -1,5 +1,6 @@
-RapidSMS
+RapidSMS  = An amazing Project
 ========
+
 
 RapidSMS is a free and open source framework for building interactive SMS
 applications, which integrates tightly with `Django`_ to provide a rich
