@@ -1,4 +1,4 @@
-RapidSMS
+QuickSMS
 ========
 
 RapidSMS is a free and open source framework for building interactive SMS
