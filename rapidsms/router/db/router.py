@@ -36,7 +36,7 @@ class DatabaseRouter(BlockingRouter):
         msg = super(DatabaseRouter, self).new_incoming_message(connections,
                                                                text,
                                                                **kwargs)
-        # save and attach database meessage to message object
+        # save and attach database message to message object
         msg.dbm = self.queue_message("I", connections, text, **kwargs)
         # set id of message to the database message primary key
         msg.id = msg.dbm.pk

@@ -39,7 +39,7 @@ These are all fairly dumb apps for the sake of this example, so only contact.py 
             abstract = True
 
 
-The folder structure here is very important: we're extending the Contact model, within the rapidsms app. So the modeule where our extension class exists "must" be myapp/extensions/rapidsms/contact.py. The name of the class itself, TestContact, is unimportant, however it "must" be abstract. Any abstract models within this module will have their attributes added to the base Contact class.
+The folder structure here is very important: we're extending the Contact model, within the rapidsms app. So the module where our extension class exists "must" be myapp/extensions/rapidsms/contact.py. The name of the class itself, TestContact, is unimportant, however it "must" be abstract. Any abstract models within this module will have their attributes added to the base Contact class.
 
 In testextensions_clash, I used the same exact TestContact model (it also has a boolean is_used attribute).
 
@@ -157,6 +157,6 @@ In this case the clash is identified and in fact impossible to create.
 Conclusions
 --------------
     
-South provides an easy way to add new attributes to ExtensibleModels, within an already-deploayed instance of RapidSMS.
+South provides an easy way to add new attributes to ExtensibleModels, within an already-deployed instance of RapidSMS.
 
 Depending on your needs, south-managed migrations and regular syncdb offer different behaviors for attribute clashes with extensible models used by two separate apps. In either case, if two groups within the community are working on apps that extend the same model (and that both use one another's apps), they should probably be coordinating regularly when adding attributes, to be sure there are no clashes, and to determine which attributes should be brought into the base class.

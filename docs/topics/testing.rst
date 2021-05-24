@@ -214,7 +214,7 @@ The script is interpreted like so:
 * **number > message-text**
     * Represents an incoming message from **number** whose contents is **message-text**
 * **number < message-text**
-    * Represents an outoing message sent to **number** whose contents is **message-text**
+    * Represents an outgoing message sent to **number** whose contents is **message-text**
 
 The entire script is parsed and executed against the RapidSMS router.
 

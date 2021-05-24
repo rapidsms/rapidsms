@@ -106,7 +106,7 @@
     countCheck();
     countable.keyup(countCheck);
     countable.bind('paste', function(){
-      // Wait a few miliseconds for the pasting
+      // Wait a few milliseconds for the pasting
       setTimeout(countCheck, 5);
     });
     

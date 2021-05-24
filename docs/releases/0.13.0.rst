@@ -130,7 +130,7 @@ architecture.
 Changed ``Backend.send`` signature
 ----------------------------------
 
-All exisitng backends must be updated to use the new signature. The router used
+All existing backends must be updated to use the new signature. The router used
 to pass just a message object to :meth:`BackendBase.send
 <rapidsms.backends.base.BackendBase.send>`. The signature has been updated to
 accept an ``id_``, ``text``, list of ``identities``, and a ``context``

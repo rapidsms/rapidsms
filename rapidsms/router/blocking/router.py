@@ -297,7 +297,7 @@ class BlockingRouter(object):
 
         :param text: Message text
         :param connections: List or QuerySet of ``Connection`` objects
-        :param class_: Message class to instaniate
+        :param class_: Message class to instantiate
         :returns: :class:`IncomingMessage <rapidsms.messages.incoming.IncomingMessage>` object.
         """
         return class_(text=text, connections=connections,
@@ -311,7 +311,7 @@ class BlockingRouter(object):
 
         :param text: Message text
         :param connections: List or QuerySet of ``Connection`` objects
-        :param class_: Message class to instaniate
+        :param class_: Message class to instantiate
         :returns: :class:`OutgoingMessage <rapidsms.messages.outgoing.OutgoingMessage>` object.
         """
         return class_(text=text, connections=connections, **kwargs)
