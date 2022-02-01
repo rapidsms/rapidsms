@@ -4,12 +4,10 @@ from __future__ import unicode_literals
 
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.utils.encoding import python_2_unicode_compatible
 
 from rapidsms.models import Contact, Connection
 
 
-@python_2_unicode_compatible
 class Message(models.Model):
     INCOMING = "I"
     OUTGOING = "O"

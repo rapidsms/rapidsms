@@ -1,7 +1,6 @@
 from django.test import TestCase
 from django.test.utils import override_settings
-from django.conf.urls import url
-from django.urls import reverse
+from django.urls import path, reverse
 
 from rapidsms.tests.harness import RapidTest
 from rapidsms.backends.http import views
@@ -16,10 +15,10 @@ class CustomHttpBackend(views.GenericHttpBackendView):
 
 
 urlpatterns = (
-    url(r"^backend/http/$",
+    path("backend/http/",
         views.GenericHttpBackendView.as_view(backend_name='http-backend'),
         name='http-backend'),
-    url(r"^backend/http-custom/$",
+    path("backend/http-custom/",
         CustomHttpBackend.as_view(),
         name='custom-http-backend'),
 )
@@ -116,9 +115,9 @@ class HttpViewTest(RapidTest):
         message = self.inbound[0]
         self.assertEqual(data['text'], message.text)
         self.assertEqual(data['identity'],
-                         message.connection.identity)
+                         message.connections[0].identity)
         self.assertEqual('http-backend',
-                         message.connection.backend.name)
+                         message.connections[0].backend.name)
 
     def test_valid_post_message_backend_name(self):
         """Created message/connection should be from custom http backend"""
@@ -126,4 +125,4 @@ class HttpViewTest(RapidTest):
         self.client.post(self.custom_http_backend_url, data)
         message = self.inbound[0]
         self.assertEqual('custom-http-backend',
-                         message.connection.backend.name)
+                         message.connections[0].backend.name)

@@ -1,4 +1,4 @@
-from django.conf.urls import include, url
+from django.urls import include, path
 from django.contrib import admin
 
 from rapidsms import views as rapidsms_views
@@ -6,18 +6,18 @@ from rapidsms import views as rapidsms_views
 admin.autodiscover()
 
 urlpatterns = (
-    url(r'^admin/', admin.site.urls),
+    path('admin/', admin.site.urls),
 
     # RapidSMS core URLs
-    url(r'^account/', include('rapidsms.urls.login_logout')),
-    url(r'^$', rapidsms_views.dashboard, name='rapidsms-dashboard'),
+    path('account/', include('rapidsms.urls.login_logout')),
+    path('', rapidsms_views.dashboard, name='rapidsms-dashboard'),
 
     # RapidSMS contrib app URLs
-    url(r'^httptester/', include('rapidsms.contrib.httptester.urls')),
-    url(r'^messagelog/', include('rapidsms.contrib.messagelog.urls')),
-    url(r'^messaging/', include('rapidsms.contrib.messaging.urls')),
-    url(r'^registration/', include('rapidsms.contrib.registration.urls')),
+    path('httptester/', include('rapidsms.contrib.httptester.urls')),
+    path('messagelog/', include('rapidsms.contrib.messagelog.urls')),
+    path('messaging/', include('rapidsms.contrib.messaging.urls')),
+    path('registration/', include('rapidsms.contrib.registration.urls')),
 
     # Third party URLs
-    url(r'^selectable/', include('selectable.urls')),
+    path('selectable/', include('selectable.urls')),
 )

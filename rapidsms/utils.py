@@ -3,7 +3,6 @@
 
 import pytz
 from datetime import datetime
-from six import string_types
 
 
 def empty_str(in_str):
@@ -12,7 +11,7 @@ def empty_str(in_str):
     string reference is None or '' or all whitespace
 
     """
-    if in_str is not None and not isinstance(in_str, string_types):
+    if in_str is not None and not isinstance(in_str, str):
         raise TypeError('Arg must be None or a string type')
 
     return in_str is None or \

@@ -1,6 +1,4 @@
 from __future__ import unicode_literals
-from six import unichr
-from six.moves import xrange
 import string
 import random
 from django.contrib.auth.models import User
@@ -13,7 +11,7 @@ from rapidsms.messages.incoming import IncomingMessage
 __all__ = ('CreateDataMixin', 'LoginMixin')
 
 
-UNICODE_CHARS = [unichr(x) for x in xrange(1, 0xD7FF)]
+UNICODE_CHARS = [chr(x) for x in range(1, 0xD7FF)]
 
 
 class CreateDataMixin(object):
@@ -38,7 +36,7 @@ class CreateDataMixin(object):
         :param length: Length of generated string.
         """
         output = ''
-        for x in xrange(random.randint(1, max_length / 2)):
+        for x in range(random.randint(1, max_length / 2)):
             c = UNICODE_CHARS[random.randint(0, len(UNICODE_CHARS) - 1)]
             output += c + ' '
         return output

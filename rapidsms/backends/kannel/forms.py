@@ -1,4 +1,3 @@
-from six import string_types
 from django import forms
 
 from rapidsms.backends.http.forms import BaseHttpForm
@@ -16,7 +15,7 @@ class KannelForm(BaseHttpForm):
         # have a unicode string
         charset = self.cleaned_data.get('charset', None)
         text = self.cleaned_data['text']
-        if charset and not isinstance(text, string_types):
+        if charset and not isinstance(text, str):
             text = text.decode(charset)
         return text
 

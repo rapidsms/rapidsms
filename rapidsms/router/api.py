@@ -1,5 +1,4 @@
-import collections
-from six import string_types
+import collections.abc
 
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
@@ -11,7 +10,7 @@ def get_router():
     """Return router defined by RAPIDSMS_ROUTER setting."""
     router = getattr(settings, 'RAPIDSMS_ROUTER',
                      'rapidsms.router.blocking.BlockingRouter')
-    if isinstance(router, string_types):
+    if isinstance(router, str):
         try:
             router = import_class(router)()
         except ImportError as e:
@@ -60,7 +59,7 @@ def send(text, connections, **kwargs):
               in :setting:`RAPIDSMS_ROUTER`.
     :rtype: :py:class:`~rapidsms.messages.outgoing.OutgoingMessage`
     """
-    if not isinstance(connections, collections.Iterable):
+    if not isinstance(connections, collections.abc.Iterable):
         connections = [connections]
     router = get_router()
     message = router.new_outgoing_message(text=text, connections=connections,
@@ -81,7 +80,7 @@ def lookup_connections(backend, identities):
     """
     # imported here so that Models don't get loaded during app config
     from rapidsms.models import Backend
-    if isinstance(backend, string_types):
+    if isinstance(backend, str):
         backend, _ = Backend.objects.get_or_create(name=backend)
     connections = []
     for identity in identities:

@@ -5,7 +5,6 @@ import logging
 import warnings
 import copy
 from collections import defaultdict
-from six import string_types
 
 from django.db.models.query import QuerySet
 
@@ -53,7 +52,7 @@ class BlockingRouter(object):
         :param module_name: ``AppBase`` object or dotted path to RapidSMS app.
         :returns: ``AppBase`` object if found, otherwise ``None``.
         """
-        if isinstance(module_name, string_types):
+        if isinstance(module_name, str):
             cls = AppBase.find(module_name)
         elif issubclass(module_name, AppBase):
             cls = module_name
@@ -90,7 +89,7 @@ class BlockingRouter(object):
                   object if found, otherwise a ``ValueError`` exception
                   will be raised.
         """
-        if isinstance(module_name, string_types):
+        if isinstance(module_name, str):
             cls = BackendBase.find(module_name)
         elif issubclass(module_name, BackendBase):
             cls = module_name

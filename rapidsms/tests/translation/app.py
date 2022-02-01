@@ -5,14 +5,14 @@ from rapidsms.router import send
 from rapidsms.utils import translation as trans_helpers
 
 from django.utils import translation
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 
 
 class TranslationApp(AppBase):
 
     def handle(self, msg):
         if msg.text == "lang-hello":
-            with translation.override(msg.connection.contact.language):
+            with translation.override(msg.connections[0].contact.language):
                 msg.respond(_('hello'))
             return True
         elif msg.text == 'settings-hello':

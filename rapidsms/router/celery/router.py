@@ -26,7 +26,7 @@ class CeleryRouter(BlockingRouter):
 
     def receive_incoming(self, msg):
         """Queue incoming message to be processed in the background."""
-        eager = self.is_eager(msg.connection.backend.name)
+        eager = self.is_eager(msg.connections[0].backend.name)
         if eager:
             logger.debug('Executing in current process')
             receive_async(msg.text, msg.connections[0].pk, msg.id,

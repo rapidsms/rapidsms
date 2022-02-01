@@ -118,3 +118,5 @@ app.config_from_object('django.conf:settings')
 
 CELERY_ALWAYS_EAGER = True
 CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
