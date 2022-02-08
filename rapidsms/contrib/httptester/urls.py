@@ -8,5 +8,5 @@ from . import views
 
 urlpatterns = (
     path("", views.generate_identity, name='httptester-index'),
-    path("(<int:identity>/", views.message_tester, name='httptester')
+    path("<int:identity>/", views.message_tester, name='httptester')
 )
