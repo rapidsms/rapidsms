@@ -5,10 +5,7 @@ import copy
 from uuid import uuid4
 import warnings
 
-from django.utils.encoding import python_2_unicode_compatible
 
-
-@python_2_unicode_compatible
 class MessageBase(object):
     """Basic message representation with text and connection(s)."""
 

@@ -3,7 +3,6 @@
 
 import csv
 from io import TextIOWrapper
-import six
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -47,7 +46,7 @@ def contact(request, pk=None):
         data = {}
         for key in request.POST:
             val = request.POST[key]
-            if isinstance(val, six.string_types):
+            if isinstance(val, str):
                 data[key] = val
             else:
                 try:
@@ -85,12 +84,8 @@ def contact_bulk_add(request):
     bulk_form = BulkRegistrationForm(request.POST)
 
     if request.method == "POST" and "bulk" in request.FILES:
-        # Python3's CSV module takes strings while Python2's takes bytes
-        if six.PY3:
-            encoding = request.encoding or settings.DEFAULT_CHARSET
-            f = TextIOWrapper(request.FILES['bulk'].file, encoding=encoding)
-        else:
-            f = request.FILES['bulk']
+        encoding = request.encoding or settings.DEFAULT_CHARSET
+        f = TextIOWrapper(request.FILES['bulk'].file, encoding=encoding)
         reader = csv.reader(
             f,
             quoting=csv.QUOTE_NONE,

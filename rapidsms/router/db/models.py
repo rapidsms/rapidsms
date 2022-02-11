@@ -1,7 +1,6 @@
 from __future__ import unicode_literals
 
 from django.db import models
-from django.utils.encoding import python_2_unicode_compatible
 from django.utils.timezone import now
 
 from rapidsms.models import Connection
@@ -22,7 +21,6 @@ STATUS_CHOICES = (
 )
 
 
-@python_2_unicode_compatible
 class Message(models.Model):
     #: Required. See :ref:`message-status-values`.
     status = models.CharField(max_length=1, choices=STATUS_CHOICES,
@@ -76,7 +74,6 @@ class Message(models.Model):
         return self.text[:60]
 
 
-@python_2_unicode_compatible
 class Transmission(models.Model):
     #: Required. Foreign key to associated ``Message``.
     message = models.ForeignKey(Message, related_name='transmissions', on_delete=models.CASCADE)

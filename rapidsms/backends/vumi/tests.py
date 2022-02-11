@@ -104,9 +104,9 @@ class VumiViewTest(RapidTest):
         message = self.inbound[0]
         self.assertEqual(self.valid_data['content'], message.text)
         self.assertEqual(self.valid_data['from_addr'],
-                         message.connection.identity)
+                         message.connections[0].identity)
         self.assertEqual('vumi-backend',
-                         message.connection.backend.name)
+                         message.connections[0].backend.name)
 
     def test_blank_message_is_valid(self):
         """Blank messages should be considered valid."""

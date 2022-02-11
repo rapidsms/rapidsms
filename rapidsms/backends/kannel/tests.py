@@ -60,9 +60,9 @@ class KannelViewTest(RapidTest):
         message = self.inbound[0]
         self.assertEqual(data['text'], message.text)
         self.assertEqual(data['id'],
-                         message.connection.identity)
+                         message.connections[0].identity)
         self.assertEqual('kannel-backend',
-                         message.connection.backend.name)
+                         message.connections[0].backend.name)
 
 
 @override_settings(ROOT_URLCONF='rapidsms.backends.kannel.urls')
@@ -91,7 +91,7 @@ class KannelSendTest(CreateDataMixin, TestCase):
                          data['username'])
         self.assertEqual(config['sendsms_params']['password'],
                          data['password'])
-        self.assertEqual(message.connection.identity, data['to'])
+        self.assertEqual(message.connections[0].identity, data['to'])
         self.assertEqual(config['coding'], data['coding'])
         self.assertEqual(config['charset'], data['charset'])
         self.assertEqual(message.text, data['text'].decode(data['charset']))

@@ -17,10 +17,9 @@ setup(
 
     install_requires=[
         "requests>=1.2.0",
-        "django-tables2==1.21.*",
+        "django-tables2>=2.1.1",
         "djappsettings>=0.4.0",
         "django-selectable>=0.7.0",
-        "six",
     ],
 
     packages=find_packages(),
@@ -44,14 +43,12 @@ setup(
         'Intended Audience :: Developers',
         'License :: OSI Approved :: BSD License',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
         'Framework :: Django',
-        'Framework :: Django :: 1.11',
         'Framework :: Django :: 2.2',
+        'Framework :: Django :: 3.2',
         'Development Status :: 5 - Production/Stable',
         'Operating System :: OS Independent',
     ],

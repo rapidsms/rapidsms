@@ -3,7 +3,6 @@
 from __future__ import unicode_literals
 
 from django.db import models
-from django.utils.encoding import python_2_unicode_compatible
 
 from .utils.modules import try_import, get_classes
 from .conf import settings
@@ -42,7 +41,6 @@ def _find_extensions(app_label, model_name):
     return ext
 
 
-@python_2_unicode_compatible
 class Backend(models.Model):
     """
     This model isn't really a backend. Those are regular Python classes,
@@ -65,7 +63,6 @@ class Backend(models.Model):
             (type(self).__name__, self)
 
 
-@python_2_unicode_compatible
 class App(models.Model):
     """
     This model isn't really a RapidSMS App. Like Backend, it's just a
@@ -95,7 +92,6 @@ class App(models.Model):
             (type(self).__name__, self)
 
 
-@python_2_unicode_compatible
 class ContactBase(models.Model):
     #: The individual's name (optional)
     name = models.CharField(max_length=100, blank=True)
@@ -149,7 +145,6 @@ class Contact(ContactBase):
     __metaclass__ = ExtensibleModelBase
 
 
-@python_2_unicode_compatible
 class ConnectionBase(models.Model):
     #: foreign key to this connection's
     #: :py:class:`~rapidsms.backends.base.BackendBase`

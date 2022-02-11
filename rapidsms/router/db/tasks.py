@@ -1,4 +1,4 @@
-import celery
+from celery import shared_task
 from celery.utils.log import get_task_logger
 
 from django.utils.timezone import now
@@ -11,7 +11,7 @@ __all__ = ('receive_async', 'send_transmissions')
 logger = get_task_logger(__name__)
 
 
-@celery.task
+@shared_task
 def receive_async(message_id, fields):
     """Retrieve message from DB and pass to BlockingRouter for processing."""
     from rapidsms.router.db.models import Message
@@ -32,7 +32,7 @@ def receive_async(message_id, fields):
         dbm.set_status()
 
 
-@celery.task
+@shared_task
 def send_transmissions(backend_id, message_id, transmission_ids):
     """Send message to backend with provided transmissions. Retry if failed."""
     from rapidsms.models import Backend

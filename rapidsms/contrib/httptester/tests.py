@@ -3,7 +3,7 @@
 from django.urls import reverse
 from django.test import TestCase
 from mock import patch
-from six import BytesIO
+from io import BytesIO
 
 from rapidsms.backends.database.models import INCOMING
 from rapidsms.contrib.httptester.forms import MessageForm

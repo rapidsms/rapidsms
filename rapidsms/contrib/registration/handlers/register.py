@@ -30,8 +30,8 @@ class RegisterHandler(KeywordHandler):
 
     def handle(self, text):
         contact = Contact.objects.create(name=text)
-        self.msg.connection.contact = contact
-        self.msg.connection.save()
+        self.msg.connections[0].contact = contact
+        self.msg.connections[0].save()
 
         self.respond(
             "Thank you for registering, %(name)s!" % {'name': contact.name})

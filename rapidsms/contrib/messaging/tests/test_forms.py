@@ -49,4 +49,4 @@ class TestMessagingForm(RapidTest):
         self.assertTrue(form.is_valid())
         message = form.send()
         self.assertEqual(message.text, self.message)
-        self.assertEqual(message.connection, self.connection)
+        self.assertEqual(message.connections[0], self.connection)
