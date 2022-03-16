@@ -63,7 +63,7 @@ All the following checks should be verified before continuing:
 * All git issues for this release's milestone have been resolved.  (closed or
   moved to another milestone)
 * All tests pass against the ``develop`` branch.  Look for a passing build
-  on `Travis <https://travis-ci.org/rapidsms/rapidsms/>`_ of the tip commit
+  on `GitHub Actions <https://github.com/rapidsms/rapidsms/actions>`_ of the tip commit
   on the ``develop`` branch.
 * A distribution tarball can be built with ``python setup.py sdist``, it can
   be installed with pip, has the right version, and works when installed.
@@ -113,7 +113,7 @@ Take these steps to release the new version:
 
     git push origin master --tags
 
-* While Travis is testing the pushed branch, compose a release announcement.
+* While GitHub Actions is testing the pushed branch, compose a release announcement.
 
 Here's a template that can be used for release announcements. You can copy
 the summary from the release notes:
@@ -145,7 +145,7 @@ the summary from the release notes:
     `Freenode <http://freenode.net/>`_. Bugs can be reported on
     `Github <https://github.com/rapidsms/rapidsms>`_.
 
-* Verify that Travis tests have passed for the pushed master
+* Verify that GitHub Actions tests have passed for the pushed master
 
 * Push the new version to `PyPI <http://docs.python.org/3/distutils/packageindex.html>`_:
 
