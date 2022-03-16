@@ -19,3 +19,5 @@ coverage.xml
 htmlcov
 # pyenv
 .python-version
+.direnv
+.envrc
