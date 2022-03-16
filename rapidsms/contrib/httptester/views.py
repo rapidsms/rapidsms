@@ -64,7 +64,7 @@ def message_tester(request, identity):
                         storage.store_and_queue(identity, line)
                     messages.add_message(request, messages.INFO, "Sent bulk messages")
                 # no bulk file was submitted, so use the "single message"
-                # field. this may be empty, which is fine, since contactcs
+                # field. this may be empty, which is fine, since contacts
                 # can (and will) submit empty sms, too.
                 else:
                     storage.store_and_queue(identity, cd["text"])

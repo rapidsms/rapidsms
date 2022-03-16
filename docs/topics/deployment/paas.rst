@@ -4,7 +4,7 @@
 Running on a PaaS Provider
 ==========================
 
-In choosing to run a project on a PaaS provider, you are choosing simplicitiy over
+In choosing to run a project on a PaaS provider, you are choosing simplicity over
 ability to easily customize and transfer your installation. Each of these
 companies provide a custom command line tool for automatically configuring and
 deploying an application.

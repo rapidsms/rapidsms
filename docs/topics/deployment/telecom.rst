@@ -42,7 +42,7 @@ There are many reputable international SMS gateways, although their service and 
 
 **Pros:**
 
-* Can provide strong technical infrastructre and volume discounts
+* Can provide strong technical infrastructure and volume discounts
 
 **Cons:**
 
@@ -58,7 +58,7 @@ One common solution we use is to take a local SIM card from a given country, ena
 **Pros:**
 
 * Users can text a local number cheaply
-* Can provide strong technical infrastructre and volume discounts
+* Can provide strong technical infrastructure and volume discounts
 
 **Cons:**
 
@@ -84,4 +84,4 @@ Most SMS services are offered through third-party SMS gateways, whose business i
 Terminology
 ===============
 
-**Gateway:** A gateway is a web service which provides access to particular services. A website can interface with an SMS gateway over the internet in order to send and recieve SMS.
+**Gateway:** A gateway is a web service which provides access to particular services. A website can interface with an SMS gateway over the internet in order to send and receive SMS.

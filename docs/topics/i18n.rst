@@ -34,7 +34,7 @@ LANGUAGE_CODE>`_.
 
 RapidSMS will not automatically attempt to translate routed
 messages. This is an intential decision to require application developers to
-explicity initiate the message translation process. You can use the methods
+explicitly initiate the message translation process. You can use the methods
 below to translate messages.
 
 

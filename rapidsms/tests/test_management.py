@@ -9,7 +9,7 @@ class UpdateAppsAndBackendsTest(TestCase):
 
     def setUp(self):
         self.output = StringIO()
-        # BASE_APPS are needed for the managment commands to load successfully
+        # BASE_APPS are needed for the management commands to load successfully
         self.BASE_APPS = [
             'rapidsms',
             'django.contrib.auth',

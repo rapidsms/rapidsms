@@ -68,7 +68,7 @@ def send_transmissions(backend_id, message_id, transmission_ids):
         transmissions.update(status='E', updated=now())
         # Retry the task
         raise send_transmissions.retry(exc=exc)
-    # no error occured, so mark these transmissions as sent
+    # no error occurred, so mark these transmissions as sent
     transmissions.update(status='S', sent=now())
     # we don't know if there are more transmissions pending, so
     # we always set the status at the end of each batch

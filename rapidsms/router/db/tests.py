@@ -123,7 +123,7 @@ class DatabaseRouterReceiveTest(harness.DatabaseBackendMixin, TestCase):
         self.assertEqual(1, dbm.transmissions.count())
 
     def test_receive_status(self):
-        """Inbound messages should be marked with R if no errors occured."""
+        """Inbound messages should be marked with R if no errors occurred."""
         self.receive(text="foo", connection=self.conn1)
         dbm = Message.objects.all()[0]
         self.assertEqual("R", dbm.status)
@@ -132,7 +132,7 @@ class DatabaseRouterReceiveTest(harness.DatabaseBackendMixin, TestCase):
 
     @patch.object(EchoHandler, 'handle')
     def test_receive_status_with_error(self, mock_handle):
-        """Inbound messages should be marked with E if an error occured."""
+        """Inbound messages should be marked with E if an error occurred."""
         mock_handle.side_effect = Exception
         self.receive(text="echo foo", connection=self.conn1)
         dbm = Message.objects.all()[0]
@@ -220,7 +220,7 @@ class DatabaseRouterSendTest(harness.DatabaseBackendMixin, TestCase):
             message.transmissions.create(connection=connection, status="Q")
 
     def test_send_successful_status(self):
-        """Transmissions should be marked with S if no errors occured."""
+        """Transmissions should be marked with S if no errors occurred."""
         # create 2 batches (queued, queued)
         dbm, t1, t2 = self.create_trans(s1='Q', s2='Q')
         send_transmissions(self.backend.pk, dbm.pk, t1.values_list('id', flat=True))
