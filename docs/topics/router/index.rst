@@ -4,7 +4,7 @@ RapidSMS Routers
 
 .. module:: rapidsms.router
 .. module:: rapidsms.router.base
-.. module:: rapidsms.router.blocking
+.. module:::noindex: rapidsms.router.blocking
 
 The router is the message processing component of RapidSMS. It provides the
 infrastructure and defines the workflow to receive, process and send text
