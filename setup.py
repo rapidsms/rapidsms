@@ -16,10 +16,10 @@ setup(
     license="BSD",
 
     install_requires=[
-        "requests>=2.31.0",
-        "django-tables2>=2.6.0",
+        "requests>=1.2.0",
+        "django-tables2>=2.1.1",
         "djappsettings>=0.4.0",
-        "django-selectable>=1.2.0",
+        "django-selectable>=0.7.0",
     ],
 
     packages=find_packages(),
