@@ -1,9 +1,9 @@
 ================================================
-RapidSMS 2.1.0 release notes (current release)
+RapidSMS 2.2.0 release notes (under development)
 ================================================
 
-Welcome to RapidSMS 2.1.0! These release notes cover the new features in 2.1.0
-as well as some :ref:`backwards-incompatible-changes-2.1.0` you'll want to be
+Welcome to RapidSMS 2.2.0! These release notes cover the new features in 2.2.0
+as well as some :ref:`backwards-incompatible-changes-2.2.0` you'll want to be
 aware of when upgrading from RapidSMS 1.1.0.
 
 
@@ -12,9 +12,9 @@ What's New
 
  * Added support for Django 4.2
 
- .. _backwards-incompatible-changes-2.1.0:
+ .. _backwards-incompatible-changes-2.2.0:
 
-Backwards-incompatible changes in RapidSMS 2.1.0
+Backwards-incompatible changes in RapidSMS 2.2.0
 ================================================
 
 * Dropped support for Python 3.7
