@@ -30,8 +30,8 @@ class BlockingRouter(object):
     def __init__(self, *args, **kwargs):
         self.apps = []
         self.backends = {}
-        apps = kwargs.pop('apps', settings.INSTALLED_APPS)
-        backends = kwargs.pop('backends', settings.INSTALLED_BACKENDS)
+        apps = kwargs.pop("apps", settings.INSTALLED_APPS)
+        backends = kwargs.pop("backends", settings.INSTALLED_BACKENDS)
         for name in apps:
             try:
                 self.add_app(name)
@@ -39,7 +39,7 @@ class BlockingRouter(object):
                 logger.exception("Failed to add app to router.")
         for name, conf in backends.items():
             parsed_conf = copy.copy(conf)
-            engine = parsed_conf.pop('ENGINE')
+            engine = parsed_conf.pop("ENGINE")
             self.add_backend(name, engine, parsed_conf)
 
     def add_app(self, module_name):
@@ -73,7 +73,7 @@ class BlockingRouter(object):
         if cls is None:
             return None
         for app in self.apps:
-            if type(app) == cls:
+            if type(app) is cls:
                 return app
         raise KeyError("The %s app was not found in the router!" % module_name)
 
@@ -107,10 +107,7 @@ class BlockingRouter(object):
         intended to make the backend configuration case insensitive.)
         """
 
-        return dict([
-            (key.lower(), val)
-            for key, val in config.items()
-        ])
+        return dict([(key.lower(), val) for key, val in config.items()])
 
     def receive_incoming(self, msg):
         """
@@ -132,6 +129,7 @@ class BlockingRouter(object):
         :param msg: :class:`IncomingMessage <rapidsms.messages.incoming.IncomingMessage>` object
         """
         from rapidsms.router import send
+
         continue_processing = self.process_incoming_phases(msg)
         if continue_processing:
             for msg_context in msg.responses:
@@ -244,8 +242,9 @@ class BlockingRouter(object):
         grouped_identities = self.group_outgoing_identities(msg)
         for backend_name, identities in grouped_identities.items():
             try:
-                self.send_to_backend(backend_name, msg.id, msg.text,
-                                     identities, context)
+                self.send_to_backend(
+                    backend_name, msg.id, msg.text, identities, context
+                )
             except MessageSendingError:
                 # This exception has already been logged in send_to_backend.
                 # The blocking router doesn't have a mechanism to handle
@@ -256,11 +255,10 @@ class BlockingRouter(object):
         """Return a dictionary of backend_name -> identities for a message."""
         grouped_identities = defaultdict(list)
         if isinstance(msg.connections, QuerySet):
-            backend_names = msg.connections.values_list('backend__name',
-                                                        flat=True)
+            backend_names = msg.connections.values_list("backend__name", flat=True)
             for backend_name in backend_names.distinct():
                 identities = msg.connections.filter(backend__name=backend_name)
-                identities = identities.values_list('identity', flat=True)
+                identities = identities.values_list("identity", flat=True)
                 grouped_identities[backend_name].extend(list(identities))
         else:
             for connection in msg.connections:
@@ -278,18 +276,16 @@ class BlockingRouter(object):
             logger.exception(msg)
             raise MessageSendingError(msg)
         try:
-            backend.send(id_=id_, text=text, identities=identities,
-                         context=context)
+            backend.send(id_=id_, text=text, identities=identities, context=context)
         except Exception as exc:
             msg = "%s encountered an error while sending." % backend_name
             logger.exception(msg)
-            if hasattr(exc, 'failed_identities') and exc.failed_identities:
+            if hasattr(exc, "failed_identities") and exc.failed_identities:
                 # propagate failed_identities to caller
                 raise
             raise MessageSendingError(msg)
 
-    def new_incoming_message(self, text, connections, class_=IncomingMessage,
-                             **kwargs):
+    def new_incoming_message(self, text, connections, class_=IncomingMessage, **kwargs):
         """
         Create and return a new incoming message. Called by
         :func:`send <rapidsms.router.send>`. Overridable by child-routers.
@@ -299,11 +295,9 @@ class BlockingRouter(object):
         :param class_: Message class to instantiate
         :returns: :class:`IncomingMessage <rapidsms.messages.incoming.IncomingMessage>` object.
         """
-        return class_(text=text, connections=connections,
-                      **kwargs)
+        return class_(text=text, connections=connections, **kwargs)
 
-    def new_outgoing_message(self, text, connections, class_=OutgoingMessage,
-                             **kwargs):
+    def new_outgoing_message(self, text, connections, class_=OutgoingMessage, **kwargs):
         """
         Create and return a new outgoing message. Called by
         :func:`receive <rapidsms.router.receive>`. Overridable by child-routers.
