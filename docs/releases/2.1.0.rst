@@ -4,7 +4,7 @@ RapidSMS 2.1.0 release notes (current release)
 
 Welcome to RapidSMS 2.1.0! These release notes cover the new features in 2.1.0
 as well as some :ref:`backwards-incompatible-changes-2.1.0` you'll want to be
-aware of when upgrading from RapidSMS 1.1.0.
+aware of when upgrading from RapidSMS 2.0.0.
 
 
 What's New
