@@ -15,12 +15,12 @@ register = template.Library()
 # settings won't work! PAGINATOR_ defaults are in the ..settings module.
 from rapidsms.conf import settings  # noqa
 
-
-if "django.template.context_processors.request" not in settings.TEMPLATES[0]['OPTIONS']['context_processors']:
-    raise ImproperlyConfigured(
-        "To use paginator tag, add 'django.template.context_processors.request' "
-        "to your TEMPLATES 'context_processors'"
-    )
+if len(settings.TEMPLATES) > 0:
+    if "django.template.context_processors.request" not in settings.TEMPLATES[0]['OPTIONS']['context_processors']:
+        raise ImproperlyConfigured(
+            "To use paginator tag, add 'django.template.context_processors.request' "
+            "to your TEMPLATES 'context_processors'"
+        )
 
 
 @register.inclusion_tag("rapidsms/templatetags/paginator.html", takes_context=True)
