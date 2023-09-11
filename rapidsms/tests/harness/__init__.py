@@ -4,8 +4,14 @@
 from django.test import TestCase, TransactionTestCase
 
 from rapidsms.router.test import TestRouter
-from rapidsms.tests.harness.base import LoginMixin
-from rapidsms.tests.harness.router import TestRouterMixin
+from rapidsms.tests.harness.app import EchoApp, MockApp  # noqa: F401
+from rapidsms.tests.harness.backend import MockBackend, RaisesBackend  # noqa: F401
+from rapidsms.tests.harness.base import CreateDataMixin, LoginMixin  # noqa: F401
+from rapidsms.tests.harness.router import TestRouterMixin  # noqa: F401
+from rapidsms.tests.harness.router import (  # noqa: F401
+    CustomRouterMixin,
+    DatabaseBackendMixin,
+)
 from rapidsms.tests.harness.scripted import TestScriptMixin
 
 
