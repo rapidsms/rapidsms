@@ -70,10 +70,12 @@ class KeywordHandler(BaseHandler):
                 ([^\s,;:].*)?    # capture rest of line if any, starting
                                  # with the first non-whitespace
                 $                # match all the way to the end
-            """.format(keyword=cls.keyword)
+            """.format(
+                keyword=cls.keyword
+            )
 
             return re.compile(prefix, re.IGNORECASE | re.VERBOSE | re.DOTALL)
-        raise HandlerError('KeywordHandler must define a keyword.')
+        raise HandlerError("KeywordHandler must define a keyword.")
 
     @classmethod
     def dispatch(cls, router, msg):
@@ -100,8 +102,7 @@ class KeywordHandler(BaseHandler):
             # not exist." message. this can, of course, be overridden by
             # catching the exception within the ``handle`` method.
             except ObjectDoesNotExist as err:
-                return inst.respond_error(
-                    str(err))
+                return inst.respond_error(str(err))
 
             # another special case: if something was miscast to an int
             # (it was probably a string from the ``text``), return a
@@ -115,8 +116,8 @@ class KeywordHandler(BaseHandler):
                     raise
 
                 return inst.respond_error(
-                    "Not a valid number: %(string)s" % dict(
-                        string=m.group(2)))
+                    "Not a valid number: %(string)s" % dict(string=m.group(2))
+                )
 
         # if we received _just_ the keyword, with
         # no content, some help should be sent back

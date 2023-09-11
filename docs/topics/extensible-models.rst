@@ -104,7 +104,7 @@ We'll now have a rapidsms_contact table with the following structure::
         "name" varchar(100) NOT NULL,
         "language" varchar(6) NOT NULL
     );
-    
+
 Now we can demonstrate a few things, the first of which is how to pull in a new app with extensions and automatically update the contact db. At this point, I added my app, testextensions_main to the INSTALLED_APPS in settings.py::
 
     $ python manage.py schemamigration rapidsms --auto
@@ -151,12 +151,12 @@ Blow away the database, remove south support, and just trying syncing the db the
       return Database.Cursor.execute(self, query, params)
       django.db.utils.DatabaseError: duplicate column name: is_used
     ```
-    
+
 In this case the clash is identified and in fact impossible to create.
-    
+
 Conclusions
 --------------
-    
+
 South provides an easy way to add new attributes to ExtensibleModels, within an already-deployed instance of RapidSMS.
 
 Depending on your needs, south-managed migrations and regular syncdb offer different behaviors for attribute clashes with extensible models used by two separate apps. In either case, if two groups within the community are working on apps that extend the same model (and that both use one another's apps), they should probably be coordinating regularly when adding attributes, to be sure there are no clashes, and to determine which attributes should be brought into the base class.

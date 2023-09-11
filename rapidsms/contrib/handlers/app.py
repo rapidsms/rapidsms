@@ -3,14 +3,13 @@
 import logging
 
 from rapidsms.apps.base import AppBase
-from .utils import get_handlers
 
+from .utils import get_handlers
 
 logger = logging.getLogger(__name__)
 
 
 class App(AppBase):
-
     def __init__(self, *args, **kwargs):
         """
         Spiders all apps, and registers all available handlers.

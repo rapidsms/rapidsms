@@ -46,5 +46,3 @@ send a message.
 By default, :setting:`DEFAULT_RESPONSE` is defined as::
 
     DEFAULT_RESPONSE = "Sorry, %(project_name)s could not understand your message."
-
-

@@ -2,12 +2,13 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 from django.utils import timezone
+
 from rapidsms.apps.base import AppBase
+
 from .models import Message
 
 
 class MessageLogApp(AppBase):
-
     def _log(self, direction, msg):
         if not msg.connections:
             raise ValueError

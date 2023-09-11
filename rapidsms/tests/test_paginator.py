@@ -1,7 +1,7 @@
 from django.core.paginator import Paginator
-from django.urls import reverse
 from django.test import TestCase
 from django.test.client import RequestFactory
+from django.urls import reverse
 
 from rapidsms.conf import settings
 from rapidsms.templatetags.paginator_tags import paginator
@@ -23,10 +23,8 @@ class PaginatorTests(TestCase):
             (15, 20, [1, 2, None, 13, 14, 15, 16, 17, 18, 19, 20]),
             (20, 50, [1, 2, None, 18, 19, 20, 21, 22, None, 49, 50]),
         ]
-        request = RequestFactory().get(
-            reverse('registration')
-        )
-        context = {'request': request}
+        request = RequestFactory().get(reverse("registration"))
+        context = {"request": request}
 
         settings.PAGINATOR_BORDER_LINKS = 2
         settings.PAGINATOR_ADJACENT_LINKS = 2
@@ -34,7 +32,7 @@ class PaginatorTests(TestCase):
         for page_num, max_num, test_case_pages in cases:
             pg = Paginator(range(max_num * 10), 10)
             result_pages = [
-                p['number'] if p else None for p in
-                paginator(context, pg.page(page_num))['page_links']
+                p["number"] if p else None
+                for p in paginator(context, pg.page(page_num))["page_links"]
             ]
             self.assertEqual(result_pages, test_case_pages)

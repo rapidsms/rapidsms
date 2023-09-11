@@ -192,4 +192,3 @@ With the addition of 26 tests, RapidSMS now has 136 automated unit tests with 82
 .. _django.conf.urls.defaults: https://docs.djangoproject.com/en/1.4/releases/1.4/#django-conf-urls-defaults
 .. _django-tables2: http://django-tables2.readthedocs.org/en/latest/
 .. _django-selectable: https://django-selectable.readthedocs.org/en/latest/
-

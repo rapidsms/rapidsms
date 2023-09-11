@@ -2,13 +2,12 @@ from __future__ import unicode_literals
 
 from django.db import models
 
-
 STATUS_CHOICES = (
-    (1, 'Delivery Success'),
-    (2, 'Delivery Failure'),
-    (4, 'Message Buffered'),
-    (8, 'SMSC Submit'),
-    (16, 'SMSC Reject'),
+    (1, "Delivery Success"),
+    (2, "Delivery Failure"),
+    (4, "Message Buffered"),
+    (8, "SMSC Submit"),
+    (16, "SMSC Reject"),
 )
 
 
@@ -19,7 +18,7 @@ class DeliveryReport(models.Model):
     """
 
     class Meta:
-        app_label = 'kannel'
+        app_label = "kannel"
 
     date = models.DateTimeField(auto_now_add=True)
     date_sent = models.DateTimeField()

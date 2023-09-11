@@ -2,8 +2,8 @@
 # vim: ai ts=4 sts=4 et sw=4
 from django.test import TestCase
 
-from rapidsms.models import Backend
 from rapidsms.backends.base import BackendBase
+from rapidsms.models import Backend
 
 
 class TestBackend(BackendBase):
@@ -11,7 +11,6 @@ class TestBackend(BackendBase):
 
 
 class BackendBaseTest(TestCase):
-
     def test_backend_has_name(self):
         backend = BackendBase(None, "mock")
         self.assertEqual(repr(backend), "<backend: mock>")
@@ -30,10 +29,11 @@ class BackendBaseTest(TestCase):
         class ConfigurableBackend(BackendBase):
             def configure(self, **kwargs):
                 self.conf = kwargs
+
         conf_backend = ConfigurableBackend(None, "mock", a=1, b=2)
         self.assertEqual(conf_backend.conf, {"a": 1, "b": 2})
 
     def test_backend_finds_valid_backend_class(self):
         """Class should be returned if valid."""
-        backend = BackendBase.find('rapidsms.backends.test_base.TestBackend')
+        backend = BackendBase.find("rapidsms.backends.test_base.TestBackend")
         self.assertEqual(TestBackend, backend)

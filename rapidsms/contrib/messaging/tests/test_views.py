@@ -2,17 +2,15 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 import mock
-
 from django.urls import reverse
 
 from rapidsms.tests.harness import RapidTest
 
-
-__all__ = ['TestMessagingView', 'TestSendView']
+__all__ = ["TestMessagingView", "TestSendView"]
 
 
 class TestMessagingView(RapidTest):
-    url_name = 'messaging'
+    url_name = "messaging"
 
     def setUp(self):
         self.url = reverse(self.url_name)
@@ -25,25 +23,29 @@ class TestMessagingView(RapidTest):
 
 
 class TestSendView(RapidTest):
-    url_name = 'send_message'
+    url_name = "send_message"
 
     def setUp(self):
         self.url = reverse(self.url_name)
-        self.backend = self.create_backend({'name': 'mockbackend'})
-        self.contact1 = self.create_contact({'name': 'one'})
-        self.contact2 = self.create_contact({'name': 'two'})
-        self.connection1 = self.create_connection({
-            'backend': self.backend,
-            'contact': self.contact1,
-        })
-        self.connection2 = self.create_connection({
-            'backend': self.backend,
-            'contact': self.contact2,
-        })
-        self.message = 'hello'
+        self.backend = self.create_backend({"name": "mockbackend"})
+        self.contact1 = self.create_contact({"name": "one"})
+        self.contact2 = self.create_contact({"name": "two"})
+        self.connection1 = self.create_connection(
+            {
+                "backend": self.backend,
+                "contact": self.contact1,
+            }
+        )
+        self.connection2 = self.create_connection(
+            {
+                "backend": self.backend,
+                "contact": self.contact2,
+            }
+        )
+        self.message = "hello"
         self.data = {
-            'message': self.message,
-            'connections_1': [self.connection1.pk, self.connection2.pk],
+            "message": self.message,
+            "connections_1": [self.connection1.pk, self.connection2.pk],
         }
 
     def test_get(self):
@@ -65,14 +67,14 @@ class TestSendView(RapidTest):
 
     def test_post_no_message(self):
         """A form validation error should cause a 400 response."""
-        self.data.pop('message')
+        self.data.pop("message")
         self.login()
         response = self.client.post(self.url, self.data)
         self.assertEqual(response.status_code, 400)  # Bad Request
 
     def test_post_no_contacts(self):
         """A form validation error should cause a 400 response."""
-        self.data.pop('connections_1')
+        self.data.pop("connections_1")
         self.login()
         response = self.client.post(self.url, self.data)
         self.assertEqual(response.status_code, 400)  # Bad Request
@@ -82,8 +84,7 @@ class TestSendView(RapidTest):
         An error during sending should cause a 500 response. No guarantees
         are made about whether the message has been sent to other recipients.
         """
-        with mock.patch('rapidsms.contrib.messaging.forms.MessageForm.send')\
-                as send:
+        with mock.patch("rapidsms.contrib.messaging.forms.MessageForm.send") as send:
             send.side_effect = Exception()
             self.login()
             response = self.client.post(self.url, self.data)

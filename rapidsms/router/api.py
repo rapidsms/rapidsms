@@ -8,8 +8,9 @@ from rapidsms.utils.modules import import_class
 
 def get_router():
     """Return router defined by RAPIDSMS_ROUTER setting."""
-    router = getattr(settings, 'RAPIDSMS_ROUTER',
-                     'rapidsms.router.blocking.BlockingRouter')
+    router = getattr(
+        settings, "RAPIDSMS_ROUTER", "rapidsms.router.blocking.BlockingRouter"
+    )
     if isinstance(router, str):
         try:
             router = import_class(router)()
@@ -34,8 +35,7 @@ def receive(text, connection, **kwargs):
     :rtype: :py:class:`~rapidsms.messages.incoming.IncomingMessage`
     """
     router = get_router()
-    message = router.new_incoming_message(connections=[connection], text=text,
-                                          **kwargs)
+    message = router.new_incoming_message(connections=[connection], text=text, **kwargs)
     router.receive_incoming(message)
     return message
 
@@ -62,8 +62,7 @@ def send(text, connections, **kwargs):
     if not isinstance(connections, collections.abc.Iterable):
         connections = [connections]
     router = get_router()
-    message = router.new_outgoing_message(text=text, connections=connections,
-                                          **kwargs)
+    message = router.new_outgoing_message(text=text, connections=connections, **kwargs)
     router.send_outgoing(message)
     return message
 
@@ -80,6 +79,7 @@ def lookup_connections(backend, identities):
     """
     # imported here so that Models don't get loaded during app config
     from rapidsms.models import Backend
+
     if isinstance(backend, str):
         backend, _ = Backend.objects.get_or_create(name=backend)
     connections = []

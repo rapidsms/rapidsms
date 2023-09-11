@@ -11,9 +11,13 @@ from .forms import MessageForm
 
 @login_required
 def messaging(request):
-    return render(request, 'messaging/dashboard.html', {
-        'form': MessageForm(),
-    })
+    return render(
+        request,
+        "messaging/dashboard.html",
+        {
+            "form": MessageForm(),
+        },
+    )
 
 
 @login_required
@@ -24,10 +28,11 @@ def send(request):
         if form.is_valid():
             message = form.send()
             if len(message.connections) == 1:
-                return HttpResponse('Your message was sent to 1 recipient.')
+                return HttpResponse("Your message was sent to 1 recipient.")
             else:
-                msg = 'Your message was sent to {0} ' \
-                    'recipients.'.format(len(message.connections))
+                msg = "Your message was sent to {0} " "recipients.".format(
+                    len(message.connections)
+                )
                 return HttpResponse(msg)
         else:
             return HttpResponseBadRequest(str(form.errors))

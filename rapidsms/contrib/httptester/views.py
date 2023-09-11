@@ -3,18 +3,17 @@
 
 
 from random import randint
+
 from django.contrib import messages
-
 from django.contrib.auth.decorators import login_required
-from django.urls import reverse
 from django.http import HttpResponseRedirect
-from django.shortcuts import render, redirect
-
+from django.shortcuts import redirect, render
+from django.urls import reverse
 from django_tables2 import RequestConfig
 
 from rapidsms import settings
-from . import forms
-from . import storage
+
+from . import forms, storage
 from .tables import MessageTable
 
 
@@ -51,16 +50,18 @@ def message_tester(request, identity):
         if form.is_valid():
             cd = form.cleaned_data
             identity = cd["identity"]
-            if 'clear-all-btn' in request.POST:
+            if "clear-all-btn" in request.POST:
                 storage.clear_all_messages()
                 messages.add_message(request, messages.INFO, "Cleared all messages")
-            elif 'clear-btn' in request.POST:
+            elif "clear-btn" in request.POST:
                 storage.clear_messages(identity)
-                messages.add_message(request, messages.INFO, "Cleared %s messages" % identity)
+                messages.add_message(
+                    request, messages.INFO, "Cleared %s messages" % identity
+                )
             else:
                 if "bulk" in request.FILES:
                     for line in request.FILES["bulk"]:
-                        line = line.decode('utf-8').rstrip("\n")
+                        line = line.decode("utf-8").rstrip("\n")
                         storage.store_and_queue(identity, line)
                     messages.add_message(request, messages.INFO, "Sent bulk messages")
                 # no bulk file was submitted, so use the "single message"
@@ -75,15 +76,16 @@ def message_tester(request, identity):
     else:
         form = forms.MessageForm({"identity": identity})
 
-    messages_table = MessageTable(storage.get_messages(),
-                                  template_name="httptester/table.html")
-    RequestConfig(request,
-                  paginate={"per_page": settings.PAGINATOR_OBJECTS_PER_PAGE})\
-        .configure(messages_table)
+    messages_table = MessageTable(
+        storage.get_messages(), template_name="httptester/table.html"
+    )
+    RequestConfig(
+        request, paginate={"per_page": settings.PAGINATOR_OBJECTS_PER_PAGE}
+    ).configure(messages_table)
 
     context = {
         "router_available": True,
         "message_form": form,
-        'messages_table': messages_table,
+        "messages_table": messages_table,
     }
     return render(request, "httptester/index.html", context)

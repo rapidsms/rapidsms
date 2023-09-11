@@ -2,7 +2,7 @@
 
 jQuery(function() {
 	jQuery(document.body).click(function(e) {
-		
+
 		/* ignore this click if it wasn't a link */
 		var link = $(e.target);
 		if(link.get(0).tagName.toLowerCase() != "a")

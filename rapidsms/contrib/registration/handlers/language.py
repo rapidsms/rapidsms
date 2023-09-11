@@ -20,8 +20,9 @@ class LanguageHandler(KeywordHandler):
     def handle(self, text):
         if self.msg.connections[0].contact is None:
             return self.respond_error(
-                "You must JOIN or REGISTER yourself before you can " +
-                "set your language preference.")
+                "You must JOIN or REGISTER yourself before you can "
+                + "set your language preference."
+            )
 
         t = text.lower()
         for code, name in settings.LANGUAGES:
@@ -32,9 +33,9 @@ class LanguageHandler(KeywordHandler):
             self.msg.connections[0].contact.save()
 
             return self.respond(
-                "I will speak to you in %(language)s." % {
-                    'language': name})
+                "I will speak to you in %(language)s." % {"language": name}
+            )
 
         return self.respond_error(
-            'Sorry, I don\'t speak "%(language)s".' % {
-                'language': text})
+            'Sorry, I don\'t speak "%(language)s".' % {"language": text}
+        )

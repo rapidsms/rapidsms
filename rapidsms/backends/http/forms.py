@@ -11,7 +11,7 @@ class BaseHttpForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         """Save backend name to form for use later"""
-        self.backend_name = kwargs.pop('backend_name')
+        self.backend_name = kwargs.pop("backend_name")
         super(BaseHttpForm, self).__init__(*args, **kwargs)
 
     def lookup_connections(self, identities):
@@ -30,15 +30,14 @@ class BaseHttpForm(forms.Form):
 
 
 class GenericHttpForm(BaseHttpForm):
-
     def __init__(self, *args, **kwargs):
         """
         Saves the identify (phone number) and text field names on self, calls
         super(), and then adds the required fields.
         """
         # defaults to "text" and "identity"
-        self.text_name = kwargs.pop('text_name', 'text')
-        self.identity_name = kwargs.pop('identity_name', 'identity')
+        self.text_name = kwargs.pop("text_name", "text")
+        self.identity_name = kwargs.pop("identity_name", "identity")
         super(GenericHttpForm, self).__init__(*args, **kwargs)
         self.fields[self.text_name] = forms.CharField()
         self.fields[self.identity_name] = forms.CharField()
@@ -50,5 +49,4 @@ class GenericHttpForm(BaseHttpForm):
         """
         identity = self.cleaned_data[self.identity_name]
         connections = self.lookup_connections([identity])
-        return {'connection': connections[0],
-                'text': self.cleaned_data[self.text_name]}
+        return {"connection": connections[0], "text": self.cleaned_data[self.text_name]}

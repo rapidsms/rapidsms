@@ -1,0 +1,6 @@
+[tool.black]
+target_version = [ 'py310' ]
+
+[tool.isort]
+py_version = 310
+profile = "black"

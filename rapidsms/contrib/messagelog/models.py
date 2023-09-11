@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 from django.core.exceptions import ValidationError
 from django.db import models
 
-from rapidsms.models import Contact, Connection
+from rapidsms.models import Connection, Contact
 
 
 class Message(models.Model):
@@ -16,14 +16,18 @@ class Message(models.Model):
         (OUTGOING, "Outgoing"),
     )
 
-    contact = models.ForeignKey(Contact, blank=True, null=True, on_delete=models.CASCADE)
-    connection = models.ForeignKey(Connection, blank=True, null=True, on_delete=models.CASCADE)
+    contact = models.ForeignKey(
+        Contact, blank=True, null=True, on_delete=models.CASCADE
+    )
+    connection = models.ForeignKey(
+        Connection, blank=True, null=True, on_delete=models.CASCADE
+    )
     direction = models.CharField(max_length=1, choices=DIRECTION_CHOICES)
     date = models.DateTimeField()
     text = models.TextField()
 
     class Meta:
-        app_label = 'messagelog'
+        app_label = "messagelog"
 
     def save(self, *args, **kwargs):
         """
@@ -32,12 +36,19 @@ class Message(models.Model):
         the object as usual.
         """
         if self.contact is None and self.connection is None:
-            raise ValidationError("A valid (not null) contact or connection "
-                    "(but not both) must be provided to save the object.")
-        elif self.connection and self.contact and \
-                (self.contact != self.connection.contact):
-            raise ValidationError("The connection and contact you tried to "
-                    "save did not match! You need to pick one or the other.")
+            raise ValidationError(
+                "A valid (not null) contact or connection "
+                "(but not both) must be provided to save the object."
+            )
+        elif (
+            self.connection
+            and self.contact
+            and (self.contact != self.connection.contact)
+        ):
+            raise ValidationError(
+                "The connection and contact you tried to "
+                "save did not match! You need to pick one or the other."
+            )
 
         if self.connection and self.connection.contact is not None:
             # set the contact here as well, even if they didn't

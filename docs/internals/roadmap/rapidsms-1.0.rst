@@ -27,7 +27,7 @@ November     Clean up core and prepare for v1.0 release
 December     Provide community blessed way to package and distribute pluggable RapidSMS apps
 January      Optimize core for scaling
 February     Revamp RapidSMS website
-March        Build extensible implementations of key RapidSMS core / contrib apps 
+March        Build extensible implementations of key RapidSMS core / contrib apps
 April        Release 1.0
 May          Create and document RapidSMS deployment methods
 ===========  ===========

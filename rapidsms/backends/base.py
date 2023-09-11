@@ -69,7 +69,7 @@ class BackendBase(object):
                  msg = '%d messages failed.' % len(failures)
                  raise MessageSendingError(msg, failed_identities=failures)
 
-        :param id\_: Message ID
+        :param id_: Message ID
         :param text: Message text
         :param identities: List of identities
         :param context: Optional dictionary with extra context provided by router to backend
@@ -85,5 +85,6 @@ class BackendBase(object):
         one doesn't exist upon accessing this attribute.
         """
         from rapidsms.models import Backend
+
         backend, _ = Backend.objects.get_or_create(name=self.name)
         return backend

@@ -21,13 +21,13 @@ class RaisesBackend(BackendBase):
     """Backend that always raises an error."""
 
     def send(self, **kwargs):
-        raise Exception('Error!')
+        raise Exception("Error!")
 
 
 class FailedIdentitiesBackend(BackendBase):
     """Backend that fails if there's a 1 in the identity."""
 
     def send(self, id_, text, identities, context=None):
-        failures = [identity for identity in identities if '1' in identity]
+        failures = [identity for identity in identities if "1" in identity]
         if failures:
             raise MessageSendingError(failed_identities=failures)

@@ -3,18 +3,17 @@
 
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
-
-from rapidsms.contrib.messagelog.tables import MessageTable
-from rapidsms.contrib.messagelog.models import Message
-from rapidsms import settings
-
 from django_tables2 import RequestConfig
+
+from rapidsms import settings
+from rapidsms.contrib.messagelog.models import Message
+from rapidsms.contrib.messagelog.tables import MessageTable
 
 
 @login_required
 def message_log(request):
     qset = Message.objects.all()
-    qset = qset.select_related('contact', 'connection__backend')
+    qset = qset.select_related("contact", "connection__backend")
     template_name = "django_tables2/bootstrap-tables.html"
 
     messages_table = MessageTable(qset, template_name=template_name)
@@ -22,6 +21,10 @@ def message_log(request):
     paginate = {"per_page": settings.PAGINATOR_OBJECTS_PER_PAGE}
     RequestConfig(request, paginate=paginate).configure(messages_table)
 
-    return render(request, "messagelog/index.html", {
-        "messages_table": messages_table,
-    })
+    return render(
+        request,
+        "messagelog/index.html",
+        {
+            "messages_table": messages_table,
+        },
+    )

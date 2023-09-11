@@ -3,19 +3,21 @@
 
 from rapidsms.messages import IncomingMessage, OutgoingMessage
 from rapidsms.tests.harness import RapidTest
+
 from ..app import MessageLogApp
 from ..models import Message
 
-
-__all__ = ['MessageLogAppTestBase', 'IncomingMessageLogAppTest',
-           'OutgoingMessageLogAppTest']
+__all__ = [
+    "MessageLogAppTestBase",
+    "IncomingMessageLogAppTest",
+    "OutgoingMessageLogAppTest",
+]
 
 
 class MessageLogAppTestBase(object):
-
     def setUp(self):
         self.contact = self.create_contact()
-        self.connection = self.lookup_connections(['1112223333'])[0]
+        self.connection = self.lookup_connections(["1112223333"])[0]
         self.connection.contact = self.contact
         self.app = MessageLogApp(self.router)
 
@@ -31,7 +33,7 @@ class MessageLogAppTestBase(object):
 
     def test_message(self):
         """Message should be logged & annotated."""
-        msg = self.MessageType([self.connection], 'hello')
+        msg = self.MessageType([self.connection], "hello")
         self._send(msg)
         self.assertEqual(Message.objects.count(), 1)
         self._check_message(msg, Message.objects.get())
@@ -39,7 +41,7 @@ class MessageLogAppTestBase(object):
     def test_no_contact(self):
         """Message doesn't require a Contact if a Connection is present."""
         self.connection.contact = None
-        msg = self.MessageType([self.connection], 'hello')
+        msg = self.MessageType([self.connection], "hello")
         self._send(msg)
         self.assertEqual(Message.objects.count(), 1)
         self._check_message(msg, Message.objects.get())
