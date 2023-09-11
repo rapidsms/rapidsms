@@ -10,6 +10,7 @@ aware of when upgrading from RapidSMS 2.0.0.
 What's New
 ==========
 
+ * Added support for Python 3.11
  * Added support for Django 4.2
 
  .. _backwards-incompatible-changes-2.1.0:
