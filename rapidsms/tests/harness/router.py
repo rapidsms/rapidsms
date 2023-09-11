@@ -1,14 +1,12 @@
 from django.conf import settings
 
-from rapidsms.tests.harness import CreateDataMixin
-from rapidsms.tests.harness import backend
-from rapidsms.router import lookup_connections, send, receive, get_router
-from rapidsms.router import test as test_router
 from rapidsms.backends.database.models import BackendMessage
 from rapidsms.backends.database.outgoing import DatabaseBackend
+from rapidsms.router import get_router, lookup_connections, receive, send
+from rapidsms.router import test as test_router
+from rapidsms.tests.harness import CreateDataMixin, backend
 
-
-__all__ = ('CustomRouterMixin', 'DatabaseBackendMixin', 'TestRouterMixin')
+__all__ = ("CustomRouterMixin", "DatabaseBackendMixin", "TestRouterMixin")
 
 
 class CustomRouterMixin(CreateDataMixin):
@@ -19,7 +17,7 @@ class CustomRouterMixin(CreateDataMixin):
 
     #: String to override :setting:`RAPIDSMS_ROUTER` during testing. Defaults
     #: to ``'rapidsms.router.blocking.BlockingRouter'``.
-    router_class = 'rapidsms.router.blocking.BlockingRouter'
+    router_class = "rapidsms.router.blocking.BlockingRouter"
 
     #: Dictionary to override :setting:`INSTALLED_BACKENDS` during testing.
     #: Defaults to ``{}``.
@@ -30,22 +28,22 @@ class CustomRouterMixin(CreateDataMixin):
     handlers = None
 
     def _pre_rapidsms_setup(self):
-        self._RAPIDSMS_HANDLERS = getattr(settings, 'RAPIDSMS_HANDLERS', None)
+        self._RAPIDSMS_HANDLERS = getattr(settings, "RAPIDSMS_HANDLERS", None)
         self.set_handlers()
-        self._INSTALLED_BACKENDS = getattr(settings, 'INSTALLED_BACKENDS', {})
+        self._INSTALLED_BACKENDS = getattr(settings, "INSTALLED_BACKENDS", {})
         self.set_backends()
-        self._RAPIDSMS_ROUTER = getattr(settings, 'RAPIDSMS_ROUTER', None)
+        self._RAPIDSMS_ROUTER = getattr(settings, "RAPIDSMS_ROUTER", None)
         self.set_router()
 
     def _post_rapidsms_teardown(self):
-        setattr(settings, 'INSTALLED_BACKENDS', self._INSTALLED_BACKENDS)
-        setattr(settings, 'RAPIDSMS_ROUTER', self._RAPIDSMS_ROUTER)
+        setattr(settings, "INSTALLED_BACKENDS", self._INSTALLED_BACKENDS)
+        setattr(settings, "RAPIDSMS_ROUTER", self._RAPIDSMS_ROUTER)
         if self._RAPIDSMS_HANDLERS is None:
             # RAPIDSMS_HANDLERS was not set
-            if hasattr(settings, 'RAPIDSMS_HANDLERS'):
-                delattr(settings, 'RAPIDSMS_HANDLERS')
+            if hasattr(settings, "RAPIDSMS_HANDLERS"):
+                delattr(settings, "RAPIDSMS_HANDLERS")
         else:
-            setattr(settings, 'RAPIDSMS_HANDLERS', self._RAPIDSMS_HANDLERS)
+            setattr(settings, "RAPIDSMS_HANDLERS", self._RAPIDSMS_HANDLERS)
 
     def __call__(self, result=None):
         self._pre_rapidsms_setup()
@@ -68,13 +66,13 @@ class CustomRouterMixin(CreateDataMixin):
 
     def set_handlers(self):
         if self.handlers is not None:
-            setattr(settings, 'RAPIDSMS_HANDLERS', self.handlers)
+            setattr(settings, "RAPIDSMS_HANDLERS", self.handlers)
 
     def set_backends(self):
-        setattr(settings, 'INSTALLED_BACKENDS', self.backends)
+        setattr(settings, "INSTALLED_BACKENDS", self.backends)
 
     def set_router(self):
-        setattr(settings, 'RAPIDSMS_ROUTER', self.router_class)
+        setattr(settings, "RAPIDSMS_ROUTER", self.router_class)
 
     def lookup_connections(self, backend, identities):
         """lookup_connections() API wrapper."""
@@ -89,22 +87,20 @@ class DatabaseBackendMixin(CustomRouterMixin):
     Inherits from :py:class:`~rapidsms.tests.harness.CustomRouterMixin`.
     """
 
-    backends = {'mockbackend': {'ENGINE': DatabaseBackend}}
+    backends = {"mockbackend": {"ENGINE": DatabaseBackend}}
 
     def setUp(self):
-        self.backend = self.create_backend(data={'name': 'mockbackend'})
+        self.backend = self.create_backend(data={"name": "mockbackend"})
         super(DatabaseBackendMixin, self).setUp()
 
-    def lookup_connections(self, identities, backend='mockbackend'):
+    def lookup_connections(self, identities, backend="mockbackend"):
         """lookup_connections wrapper to use mockbackend by default"""
-        return super(DatabaseBackendMixin, self).lookup_connections(backend,
-                                                                    identities)
+        return super(DatabaseBackendMixin, self).lookup_connections(backend, identities)
 
     @property
     def sent_messages(self):
         """Messages passed to backend."""
-        return BackendMessage.objects.filter(name='mockbackend',
-                                             direction='O')
+        return BackendMessage.objects.filter(name="mockbackend", direction="O")
 
 
 class TestRouterMixin(CustomRouterMixin):
@@ -120,14 +116,14 @@ class TestRouterMixin(CustomRouterMixin):
     #: to the router, but don't want the message to be processed.
     disable_phases = False  # setting to True will disable router phases
 
-    backends = {'mockbackend': {'ENGINE': backend.MockBackend}}
+    backends = {"mockbackend": {"ENGINE": backend.MockBackend}}
 
     def set_router(self):
-        kwargs = {'disable_phases': self.disable_phases}
-        if hasattr(self, 'apps'):
-            kwargs['apps'] = self.apps
-        if hasattr(self, 'backends'):
-            kwargs['backends'] = self.backends
+        kwargs = {"disable_phases": self.disable_phases}
+        if hasattr(self, "apps"):
+            kwargs["apps"] = self.apps
+        if hasattr(self, "backends"):
+            kwargs["backends"] = self.backends
         self.router = test_router.TestRouter(**kwargs)
         # set RAPIDSMS_ROUTER to our newly created instance
         self.router_class = self.router
@@ -146,14 +142,13 @@ class TestRouterMixin(CustomRouterMixin):
     @property
     def sent_messages(self):
         """The list of message objects sent to mockbackend."""
-        return self.router.backends['mockbackend'].messages
+        return self.router.backends["mockbackend"].messages
 
     def clear_sent_messages(self):
         """Manually empty the outbox of mockbackend."""
-        self.router.backends['mockbackend'].clear()
+        self.router.backends["mockbackend"].clear()
 
-    def lookup_connections(self, identities, backend='mockbackend'):
+    def lookup_connections(self, identities, backend="mockbackend"):
         """A wrapper around the ``lookup_connections`` API.
         See :ref:`connection_lookup`."""
-        return super(TestRouterMixin, self).lookup_connections(backend,
-                                                               identities)
+        return super(TestRouterMixin, self).lookup_connections(backend, identities)

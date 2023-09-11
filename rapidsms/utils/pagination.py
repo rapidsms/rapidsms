@@ -2,13 +2,13 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 
-from django.core.paginator import Paginator, EmptyPage, InvalidPage
+from django.core.paginator import EmptyPage, InvalidPage, Paginator
 
 
-def paginated(req, query_set, per_page=None, default_page=1, prefix="",
-              wrapper=None):
+def paginated(req, query_set, per_page=None, default_page=1, prefix="", wrapper=None):
     if per_page is None:
         from ..conf import settings
+
         per_page = settings.PAGINATOR_OBJECTS_PER_PAGE
 
     # since the behavior of this function depends on GET parameters, if
@@ -24,8 +24,9 @@ def paginated(req, query_set, per_page=None, default_page=1, prefix="",
 
         # if it was provided, it must be valid
         except ValueError:
-            raise ValueError("Invalid per-page parameter: %r" %
-                            (req.GET[prefix + "per-page"]))
+            raise ValueError(
+                "Invalid per-page parameter: %r" % (req.GET[prefix + "per-page"])
+            )
 
     # create the paginator early, so we can check that the page number
     # is valid, and (maybe) apply *wrapper* to this page's objects.

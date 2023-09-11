@@ -1,12 +1,11 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
-from ..utils.modules import try_import, get_class
+from ..utils.modules import get_class, try_import
 
 
 class AppBase(object):
-    """
-    """
+    """ """
 
     @classmethod
     def find(cls, app_name):
@@ -42,8 +41,7 @@ class AppBase(object):
         return self.name
 
     def __repr__(self):
-        return "<app: %s>" %\
-            self.name
+        return "<app: %s>" % self.name
 
     # incoming phases
     def filter(self, msg):

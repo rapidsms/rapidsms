@@ -3,7 +3,6 @@
 
 
 class BaseHandler(object):
-
     @classmethod
     def dispatch(cls, router, msg):
         return False
@@ -57,23 +56,19 @@ class BaseHandler(object):
             identity = "mock"
 
         # models can't be loaded until the django ORM is ready.
-        from rapidsms.models import Backend, Connection
         from rapidsms.messages import IncomingMessage
+        from rapidsms.models import Backend, Connection
 
         # spawn a mock backend for each handler, to allow multiple tests
         # to interact with one another without overlapping.
         if not hasattr(cls, "_mock_backend"):
-            cls._mock_backend = Backend.objects.create(
-                name="mock_%d" % id(cls))
+            cls._mock_backend = Backend.objects.create(name="mock_%d" % id(cls))
 
         conn, created = Connection.objects.get_or_create(
-            backend=cls._mock_backend,
-            identity=identity)
+            backend=cls._mock_backend, identity=identity
+        )
 
-        msg = IncomingMessage(
-            connection=conn,
-            text=text)
+        msg = IncomingMessage(connection=conn, text=text)
 
         accepted = cls.dispatch(None, msg)
-        return [m['text'] for m in msg.responses]\
-            if accepted else False
+        return [m["text"] for m in msg.responses] if accepted else False

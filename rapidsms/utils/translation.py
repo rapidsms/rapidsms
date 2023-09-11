@@ -10,7 +10,7 @@ def group_connections(connections):
     """
     grouped_conns = defaultdict(list)
     if isinstance(connections, QuerySet):
-        languages = connections.values_list('contact__language', flat=True)
+        languages = connections.values_list("contact__language", flat=True)
         for language in languages.distinct():
             lang_conns = connections.filter(contact__language=language)
             grouped_conns[language].extend(lang_conns)

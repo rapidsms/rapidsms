@@ -15,7 +15,7 @@ RapidSMS 0.10.0's focus has mostly been on decoupling the RapidSMS route process
 * Improved documentation (what you're reading now!)
 * Improved test coverage and made it easier to test your RapidSMS apps.
 * Added support for ``django.contrib.staticfiles``.
-* Removal of the bucket, email, irc, gsm, and smtp backends. 
+* Removal of the bucket, email, irc, gsm, and smtp backends.
 * Dividing the Router logic into ``BaseRouter`` and ``BlockingRouter`` classes, and the addition of a Celery-powered router, ``CeleryRouter``.
 * Removal of the legacy persistent threaded router.
 
@@ -182,7 +182,7 @@ Prior to 0.10.0, ``rapidsms.contrib.messaging`` contained a utility function to 
 
 .. code-block:: python
 
-    >>> from rapidsms.contrib.messaging.utils import send_message 
+    >>> from rapidsms.contrib.messaging.utils import send_message
     >>> send_message(conn, "hello?")
     Traceback (most recent call last):
       File "<stdin>", line 1, in <module>

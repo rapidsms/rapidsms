@@ -1,14 +1,19 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
+import inspect
 import os
 import sys
-import inspect
-
 from importlib import import_module
 
-
-__all__ = ('import_class', 'import_module', 'try_import', 'find_python_files',
-           'get_classes', 'get_class', 'get_package_path')
+__all__ = (
+    "import_class",
+    "import_module",
+    "try_import",
+    "find_python_files",
+    "get_classes",
+    "get_class",
+    "get_package_path",
+)
 
 
 def import_class(import_path, base_class=None):
@@ -17,21 +22,21 @@ def import_class(import_path, base_class=None):
     import_path is the full Python path to the class.
     """
     try:
-        module, class_name = import_path.rsplit('.', 1)
+        module, class_name = import_path.rsplit(".", 1)
     except ValueError:
         raise ImportError("%s isn't a Python path." % import_path)
     try:
         mod = import_module(module)
     except ImportError as e:
-        raise ImportError('Error importing module %s: "%s"' %
-                          (module, e))
+        raise ImportError('Error importing module %s: "%s"' % (module, e))
     try:
         class_ = getattr(mod, class_name)
     except AttributeError:
-        raise ImportError('Module "%s" does not define a "%s" '
-                          'class.' % (module, class_name))
+        raise ImportError(
+            'Module "%s" does not define a "%s" ' "class." % (module, class_name)
+        )
     if not inspect.isclass(class_):
-        raise ImportError('%s is not a class.' % import_path)
+        raise ImportError("%s is not a class." % import_path)
     if base_class and not issubclass(class_, base_class):
         msg = "%s is not a subclass of %s" % (class_name, base_class.__name__)
         raise ImportError(msg)
@@ -103,18 +108,18 @@ def find_python_files(path):
     """
 
     try:
-        return sorted([
-
-            # trim the extension
-            file[:-3]
-
-            # iterate all files in the path
-            # (doesn't include . and .. links)
-            for file in os.listdir(path)
-
-            # ignore __magic__ files and those
-            # not ending with the .py suffix
-            if not file.startswith(('_', '.')) and file.endswith('.py')])
+        return sorted(
+            [
+                # trim the extension
+                file[:-3]
+                # iterate all files in the path
+                # (doesn't include . and .. links)
+                for file in os.listdir(path)
+                # ignore __magic__ files and those
+                # not ending with the .py suffix
+                if not file.startswith(("_", ".")) and file.endswith(".py")
+            ]
+        )
 
     except OSError:
         return []
@@ -132,24 +137,22 @@ def get_classes(module, superclass=None):
     """
 
     objects = [
-        getattr(module, name)
-        for name in dir(module)
-        if not name.startswith("_")]
+        getattr(module, name) for name in dir(module) if not name.startswith("_")
+    ]
 
     # filter out everything that isn't a new-style
     # class, or wasn't defined in *module* (ie, it
     # is imported from somewhere else)
     classes = [
-        obj for obj in objects
+        obj
+        for obj in objects
         if isinstance(obj, type) and (obj.__module__ == module.__name__)
     ]
 
     # if a superclass was given, filter the classes
     # again to remove those that aren't its subclass
     if superclass is not None:
-        classes = [
-            cls for cls in classes
-            if issubclass(cls, superclass)]
+        classes = [cls for cls in classes if issubclass(cls, superclass)]
 
     return classes
 
@@ -163,25 +166,29 @@ def get_class(module, superclass=None):
     module (eg. App, Backend, Command, Handler).
     """
 
-    classes = get_classes(
-        module, superclass)
+    classes = get_classes(module, superclass)
 
     if len(classes) == 1:
         return classes[0]
 
     # the error message includes *superclass*
     # if one was given, otherwise it's generic
-    desc = "subclasses of %s" % (superclass.__name__)\
-        if superclass else "new-style classes"
+    desc = (
+        "subclasses of %s" % (superclass.__name__)
+        if superclass
+        else "new-style classes"
+    )
 
     if len(classes) > 1:
         names = ", ".join([cls.__name__ for cls in classes])
-        raise (AttributeError("Module %s contains multiple %s (%s)." %
-                            (module.__name__, desc, names)))
+        raise (
+            AttributeError(
+                "Module %s contains multiple %s (%s)." % (module.__name__, desc, names)
+            )
+        )
 
     else:  # len < 1
-        raise (AttributeError("Module %s contains no %s." %
-                            (module.__name__, desc)))
+        raise (AttributeError("Module %s contains no %s." % (module.__name__, desc)))
 
 
 def get_package_path(package_name):
@@ -205,4 +212,4 @@ def get_package_path(package_name):
 
     # wrap with a better message
     except AttributeError:
-        raise (AttributeError('%r is not a package' % package_name))
+        raise (AttributeError("%r is not a package" % package_name))

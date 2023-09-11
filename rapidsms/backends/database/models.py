@@ -4,9 +4,8 @@ from __future__ import unicode_literals
 
 from django.db import models
 
-
-INCOMING = 'I'
-OUTGOING = 'O'
+INCOMING = "I"
+OUTGOING = "O"
 
 DIRECTION_CHOICES = (
     (INCOMING, "Incoming"),
@@ -17,8 +16,7 @@ DIRECTION_CHOICES = (
 class BackendMessage(models.Model):
     name = models.CharField(max_length=255)
     date = models.DateTimeField(auto_now_add=True)
-    direction = models.CharField(max_length=1, choices=DIRECTION_CHOICES,
-                                 db_index=True)
+    direction = models.CharField(max_length=1, choices=DIRECTION_CHOICES, db_index=True)
     message_id = models.CharField(max_length=64)
     external_id = models.CharField(max_length=64, blank=True)
     identity = models.CharField(max_length=100)
@@ -28,4 +26,4 @@ class BackendMessage(models.Model):
         return self.text[:60]
 
     class Meta:
-        app_label = 'database'
+        app_label = "database"

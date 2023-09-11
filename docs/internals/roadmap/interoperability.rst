@@ -13,7 +13,7 @@ Open Medical Record System (OpenMRS) is a software platform and a reference appl
 * Architecture: Java/MySQL
 * Features: Patient database with detailed visit history and metrics.
 * RapidSMS Interoperability:
-    * API: Internal Java API? 
+    * API: Internal Java API?
     * Patient backend? via MySQL?
 
 Vumi/praekelt
@@ -47,7 +47,7 @@ The MOTECH Suite is a set of Open Source technology components from a consortium
 
 * `MOTECH website <http://www.motechproject.org/>`_
 * Date created: 2008
-* Architecture: MOTECH is a modular, event driven system written in Java. 
+* Architecture: MOTECH is a modular, event driven system written in Java.
 * Features: A framework with built in support for SMS registration, IVR, scheduled messages, reports.
 * RapidSMS Interoperability
     * REST API?

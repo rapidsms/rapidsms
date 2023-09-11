@@ -2,31 +2,43 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 import copy
-from uuid import uuid4
 import warnings
+from uuid import uuid4
 
 
 class MessageBase(object):
     """Basic message representation with text and connection(s)."""
 
-    def __init__(self, connections=None, text=None, id_=None,
-                 in_response_to=None, fields=None,
-                 connection=None):  # old deprecated parameter
+    def __init__(
+        self,
+        connections=None,
+        text=None,
+        id_=None,
+        in_response_to=None,
+        fields=None,
+        connection=None,
+    ):  # old deprecated parameter
         # Allow and cope with old 'connection' argument but issue a warning
         if connections is None and connection is not None:
             connections = [connection]
             connection = None
-            warnings.warn("Message(connection=) is deprecated, please start "
-                          "using .connections", DeprecationWarning)
+            warnings.warn(
+                "Message(connection=) is deprecated, please start "
+                "using .connections",
+                DeprecationWarning,
+            )
         if connection is not None:
-            raise TypeError("Do not pass both `connections` and `connection`"
-                            "to MessageBase.__init__(), just `connections`")
+            raise TypeError(
+                "Do not pass both `connections` and `connection`"
+                "to MessageBase.__init__(), just `connections`"
+            )
 
         # had to make `text` optional so we could make connections optional,
         # but it really is required
         if text is None:
-            raise TypeError("MessageBase.__init__ did not get required "
-                            "argument `text`")
+            raise TypeError(
+                "MessageBase.__init__ did not get required " "argument `text`"
+            )
         #: a unique ID for this message
         self.id = id_ or self.generate_id()
         #: The connections this message was received from or sent to. A
@@ -60,9 +72,11 @@ class MessageBase(object):
 
     @property
     def connection(self):
-        """The first :py:class:`~rapidsms.models.Connection` - `deprecated`.
-        """
-        warnings.warn("MessageBase.connection is deprecated; please start using .connections", DeprecationWarning)
+        """The first :py:class:`~rapidsms.models.Connection` - `deprecated`."""
+        warnings.warn(
+            "MessageBase.connection is deprecated; please start using .connections",
+            DeprecationWarning,
+        )
         return self.connections[0]
 
     @property
@@ -72,7 +86,7 @@ class MessageBase(object):
         """
         warnings.warn(
             "MessageBase.contact is deprecated; please start using .connections[i].contact",
-            DeprecationWarning
+            DeprecationWarning,
         )
         return self.connections[0].contact
 
@@ -86,5 +100,7 @@ class MessageBase(object):
         like "mobile_number", which is all kinds of wrong.
         `deprecated`
         """
-        warnings.warn("MessageBase.peer is deprecated; please access the needed data directly.")
+        warnings.warn(
+            "MessageBase.peer is deprecated; please access the needed data directly."
+        )
         return self.connections[0].identity

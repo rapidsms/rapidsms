@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
 
-import pytz
 from datetime import datetime
+
+import pytz
 
 
 def empty_str(in_str):
@@ -12,10 +13,9 @@ def empty_str(in_str):
 
     """
     if in_str is not None and not isinstance(in_str, str):
-        raise TypeError('Arg must be None or a string type')
+        raise TypeError("Arg must be None or a string type")
 
-    return in_str is None or \
-        len(in_str.strip()) == 0
+    return in_str is None or len(in_str.strip()) == 0
 
 
 def to_naive_utc_dt(dt):
@@ -30,7 +30,7 @@ def to_naive_utc_dt(dt):
 
     """
     if not isinstance(dt, datetime):
-        raise TypeError('Arg must be type datetime')
+        raise TypeError("Arg must be type datetime")
 
     if dt.tzinfo is None:
         return dt
@@ -54,7 +54,7 @@ def to_aware_utc_dt(dt):
 
     """
     if not isinstance(dt, datetime):
-        raise TypeError('Arg must be type datetime')
+        raise TypeError("Arg must be type datetime")
 
     if dt.tzinfo is None:
         return pytz.utc.localize(dt)
@@ -72,9 +72,9 @@ def timedelta_as_minutes(td):
 
 
 def timedelta_as_seconds(td):
-    '''
+    """
     Returns the value of the entire timedelta as
     integer seconds, rounded down
 
-    '''
+    """
     return td.days * 86400 + td.seconds

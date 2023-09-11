@@ -4,8 +4,12 @@
 from warnings import warn
 
 from rapidsms.conf import settings
-from rapidsms.utils.modules import (find_python_files, get_class,
-                                    import_class, try_import)
+from rapidsms.utils.modules import (
+    find_python_files,
+    get_class,
+    import_class,
+    try_import,
+)
 
 from .exceptions import HandlerError
 from .handlers.base import BaseHandler
@@ -20,21 +24,25 @@ def get_handlers():
     the INSTALLED_HANDLERS and/or EXCLUDED_HANDLERS settings.
     """
 
-    if hasattr(settings, 'RAPIDSMS_HANDLERS'):
+    if hasattr(settings, "RAPIDSMS_HANDLERS"):
         return [import_class(name) for name in settings.RAPIDSMS_HANDLERS]
 
-    warn("Please set RAPIDSMS_HANDLERS to the handlers that should "
-         "be installed. The old behavior of installing all defined "
-         "handlers, possibly modified by INSTALLED_HANDLERS and/or "
-         "EXCLUDED_HANDLERS, is deprecated and will be removed",
-         DeprecationWarning)
+    warn(
+        "Please set RAPIDSMS_HANDLERS to the handlers that should "
+        "be installed. The old behavior of installing all defined "
+        "handlers, possibly modified by INSTALLED_HANDLERS and/or "
+        "EXCLUDED_HANDLERS, is deprecated and will be removed",
+        DeprecationWarning,
+    )
 
     handlers = _find_handlers(_apps())
 
     # if we're explicitly selecting handlers, filter out all those which
     # are not matched by one (or more) prefixes in INSTALLED_HANDLERS.
-    if hasattr(settings, 'INSTALLED_HANDLERS') and \
-            settings.INSTALLED_HANDLERS is not None:
+    if (
+        hasattr(settings, "INSTALLED_HANDLERS")
+        and settings.INSTALLED_HANDLERS is not None
+    ):
         copy = [handler for handler in handlers]
         handlers = []
         while len(copy) > 0:
@@ -45,12 +53,16 @@ def get_handlers():
             copy.pop()
 
     # likewise, in reverse, for EXCLUDED_HANDLERS.
-    if hasattr(settings, 'EXCLUDED_HANDLERS') and \
-            settings.EXCLUDED_HANDLERS is not None:
+    if (
+        hasattr(settings, "EXCLUDED_HANDLERS")
+        and settings.EXCLUDED_HANDLERS is not None
+    ):
         for prefix in settings.EXCLUDED_HANDLERS:
             handlers = [
-                handler for handler in handlers
-                if not handler.__module__.startswith(prefix)]
+                handler
+                for handler in handlers
+                if not handler.__module__.startswith(prefix)
+            ]
 
     return handlers
 
@@ -87,16 +99,18 @@ def _apps():
     """
 
     def _in_exclusions(module_name):
-        settings_exclusions = getattr(settings,
-                                      "RAPIDSMS_HANDLERS_EXCLUDE_APPS", [])
-        return module_name == "rapidsms.contrib.handlers" \
-            or module_name.startswith("django.contrib.") \
+        settings_exclusions = getattr(settings, "RAPIDSMS_HANDLERS_EXCLUDE_APPS", [])
+        return (
+            module_name == "rapidsms.contrib.handlers"
+            or module_name.startswith("django.contrib.")
             or module_name in settings_exclusions
+        )
 
     return [
         module_name
         for module_name in settings.INSTALLED_APPS
-        if not _in_exclusions(module_name)]
+        if not _in_exclusions(module_name)
+    ]
 
 
 def _handlers(module_name):
@@ -111,27 +125,20 @@ def _handlers(module_name):
     allowed to propagate, to avoid masking errors.
     """
 
-    handlers_module = try_import(
-        "%s.handlers" % module_name)
+    handlers_module = try_import("%s.handlers" % module_name)
 
     if handlers_module is None:
         return []
 
     if not hasattr(handlers_module, "__path__"):
         raise HandlerError(
-            "Module %s must be a directory." % (handlers_module.__name__))
+            "Module %s must be a directory." % (handlers_module.__name__)
+        )
 
-    files = find_python_files(
-        handlers_module.__path__[0])
+    files = find_python_files(handlers_module.__path__[0])
 
-    module_names = [
-        "%s.%s" % (handlers_module.__name__, file)
-        for file in files]
+    module_names = ["%s.%s" % (handlers_module.__name__, file) for file in files]
 
-    modules = [
-        try_import(mod_name)
-        for mod_name in module_names]
+    modules = [try_import(mod_name) for mod_name in module_names]
 
-    return [
-        get_class(mod, BaseHandler)
-        for mod in modules if mod]
+    return [get_class(mod, BaseHandler) for mod in modules if mod]

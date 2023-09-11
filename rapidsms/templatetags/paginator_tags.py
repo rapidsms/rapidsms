@@ -5,7 +5,6 @@
 from django import template
 from django.core.exceptions import ImproperlyConfigured
 
-
 register = template.Library()
 
 # when this module is imported via {% load paginator_tags %}, it is
@@ -16,7 +15,10 @@ register = template.Library()
 from rapidsms.conf import settings  # noqa
 
 if len(settings.TEMPLATES) > 0:
-    if "django.template.context_processors.request" not in settings.TEMPLATES[0]['OPTIONS']['context_processors']:
+    if (
+        "django.template.context_processors.request"
+        not in settings.TEMPLATES[0]["OPTIONS"]["context_processors"]
+    ):
         raise ImproperlyConfigured(
             "To use paginator tag, add 'django.template.context_processors.request' "
             "to your TEMPLATES 'context_processors'"
@@ -50,12 +52,15 @@ def paginator(context, page, prefix=""):
         return {
             "number": number,
             "link": _link(number),
-            "active": (page.number == number)}
+            "active": (page.number == number),
+        }
 
     # num_border_links represent the first N pages and last N pages in the paginator
     num_border_links = min(settings.PAGINATOR_BORDER_LINKS, page.paginator.num_pages)
     # num_adjacent_links represents the N pages around the current page
-    num_adjacent_links = min(settings.PAGINATOR_ADJACENT_LINKS, page.paginator.num_pages)
+    num_adjacent_links = min(
+        settings.PAGINATOR_ADJACENT_LINKS, page.paginator.num_pages
+    )
     last_page_number = page.paginator.num_pages + 1
 
     pages = set([page.number])
@@ -85,17 +90,13 @@ def paginator(context, page, prefix=""):
     if pages:
         page_links.append(_page(pages[-1]))
 
-    subcontext = {
-        "dom_id": dom_id,
-        "page_links": page_links}
+    subcontext = {"dom_id": dom_id, "page_links": page_links}
 
     if page.number > 1:
-        subcontext.update({
-            "prev_page_link": _link(page.previous_page_number())})
+        subcontext.update({"prev_page_link": _link(page.previous_page_number())})
 
     if page.number < page.paginator.num_pages:
-        subcontext.update({
-            "next_page_link": _link(page.next_page_number())})
+        subcontext.update({"next_page_link": _link(page.next_page_number())})
 
     return subcontext
 

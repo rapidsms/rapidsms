@@ -1,15 +1,13 @@
-import pprint
 import logging
+import pprint
 
 from django.http import HttpResponse, HttpResponseBadRequest
-from django.views.generic.edit import FormMixin, ProcessFormView
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
-
-from rapidsms.router import receive
+from django.views.generic.edit import FormMixin, ProcessFormView
 
 from rapidsms.backends.http.forms import GenericHttpForm
-
+from rapidsms.router import receive
 
 logger = logging.getLogger(__name__)
 
@@ -26,14 +24,14 @@ class BaseHttpBackendView(FormMixin, ProcessFormView):
         decorator, which most (if not all) clients using this view will not
         know about.
         """
-        if 'backend_name' in kwargs:
-            self.backend_name = kwargs['backend_name']
+        if "backend_name" in kwargs:
+            self.backend_name = kwargs["backend_name"]
         return super(BaseHttpBackendView, self).dispatch(*args, **kwargs)
 
     def get_form_kwargs(self):
         """Always pass backend_name into __init__"""
         kwargs = super(BaseHttpBackendView, self).get_form_kwargs()
-        kwargs['backend_name'] = self.backend_name
+        kwargs["backend_name"] = self.backend_name
         return kwargs
 
     def get(self, request, *args, **kwargs):
@@ -51,7 +49,7 @@ class BaseHttpBackendView(FormMixin, ProcessFormView):
         """
         data = form.get_incoming_data()
         receive(**data)
-        return HttpResponse('OK')
+        return HttpResponse("OK")
 
     def form_invalid(self, form):
         """
@@ -64,14 +62,14 @@ class BaseHttpBackendView(FormMixin, ProcessFormView):
         logger.error(str(errors))
         if form.non_field_errors():
             logger.error(form.non_field_errors())
-        return HttpResponseBadRequest('form failed to validate')
+        return HttpResponseBadRequest("form failed to validate")
 
 
 class GenericHttpBackendView(BaseHttpBackendView):
     """Simple view that allows customization of accepted paramters."""
 
     #: Accepts GET and POST by default.
-    http_method_names = ['get', 'post']
+    http_method_names = ["get", "post"]
     #: Dictionary that defines mappings to ``identity`` and ``text``.
     params = {}
     #: Form to validate that received parameters match defined ``params``.
@@ -84,6 +82,6 @@ class GenericHttpBackendView(BaseHttpBackendView):
             kwargs.update(self.params)
         # if we accept GETs instead of POSTs and this request is a GET,
         # pass the GET parameters into the form
-        if 'get' in self.http_method_names and self.request.method == 'GET':
-            kwargs['data'] = self.request.GET
+        if "get" in self.http_method_names and self.request.method == "GET":
+            kwargs["data"] = self.request.GET
         return kwargs

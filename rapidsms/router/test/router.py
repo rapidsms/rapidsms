@@ -17,7 +17,7 @@ class TestRouter(BlockingRouter):
         #: List of all the outbound messages
         self.outbound = []
 
-        self.disable_phases = kwargs.pop('disable_phases', False)
+        self.disable_phases = kwargs.pop("disable_phases", False)
         super(TestRouter, self).__init__(*args, **kwargs)
 
     def receive_incoming(self, msg):

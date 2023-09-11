@@ -45,7 +45,7 @@ class TestScriptMixin(TestRouterMixin):
         for line in [x.strip() for x in script.split("\n")]:
             if not line or line.startswith("#"):
                 continue
-            tokens = re.split(r'([<>])', line, 1)
+            tokens = re.split(r"([<>])", line, 1)
             num, dir, txt = [x.strip() for x in tokens]
             # allow users to optionally put dates in the number
             # 19232922@200804150730
@@ -69,21 +69,27 @@ class TestScriptMixin(TestRouterMixin):
 
     def _checkAgainstMessage(self, num, txt, last_msg, msg):
         peer = msg.connections[0].identity
-        self.assertEqual(peer, num,
-                         "Expected to respond to "
-                         "%s, but message was sent to %s.\n"
-                         "\nMessage: %s\nReceived "
-                         "text: %s\nExpected text: %s\n" % (num, peer,
-                                                            last_msg, msg.text, txt))
+        self.assertEqual(
+            peer,
+            num,
+            "Expected to respond to "
+            "%s, but message was sent to %s.\n"
+            "\nMessage: %s\nReceived "
+            "text: %s\nExpected text: %s\n" % (num, peer, last_msg, msg.text, txt),
+        )
 
-        self.assertEqual(msg.text, txt, "\nMessage: %s\nReceived "
-                         "text: %s\nExpected text: %s\n" %
-                         (last_msg, msg.text, txt))
+        self.assertEqual(
+            msg.text,
+            txt,
+            "\nMessage: %s\nReceived "
+            "text: %s\nExpected text: %s\n" % (last_msg, msg.text, txt),
+        )
 
     def _checkAgainstMessages(self, num, txt, last_msg, msgs):
-        self.assertTrue(len(msgs) != 0, "Message was ignored.\n"
-                        "Message: '%s'\nExpecting: '%s'" %
-                        (last_msg, txt))
+        self.assertTrue(
+            len(msgs) != 0,
+            "Message was ignored.\n" "Message: '%s'\nExpecting: '%s'" % (last_msg, txt),
+        )
         for i, msg in enumerate(msgs):
             try:
                 self._checkAgainstMessage(num, txt, last_msg, msg)
@@ -94,7 +100,7 @@ class TestScriptMixin(TestRouterMixin):
                     raise
 
     def runParsedScript(self, cmds):
-        last_msg = ''
+        last_msg = ""
         msgs = []
         for num, date, dir, txt in cmds:
             if dir == ">":

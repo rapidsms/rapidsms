@@ -1,15 +1,13 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 
+from rapidsms.contrib.echo.handlers.echo import EchoHandler
+from rapidsms.contrib.echo.handlers.ping import PingHandler
 from rapidsms.messages import IncomingMessage
 from rapidsms.tests.harness import RapidTest
 
-from rapidsms.contrib.echo.handlers.echo import EchoHandler
-from rapidsms.contrib.echo.handlers.ping import PingHandler
-
 
 class TestEchoHandler(RapidTest):
-
     def setUp(self):
         self.connection = self.create_connection()
 
@@ -19,38 +17,37 @@ class TestEchoHandler(RapidTest):
         if correct_response is not None:
             self.assertTrue(retVal)
             self.assertEqual(len(msg.responses), 1)
-            self.assertEqual(msg.responses[0]['text'], correct_response)
+            self.assertEqual(msg.responses[0]["text"], correct_response)
         else:
             self.assertFalse(retVal)
             self.assertEqual(len(msg.responses), 0)
 
     def test_no_match(self):
-        self._test_handle('no match', None)
+        self._test_handle("no match", None)
 
     def test_only_keyword(self):
-        self._test_handle('echo', 'To echo some text, send: ECHO <ANYTHING>')
+        self._test_handle("echo", "To echo some text, send: ECHO <ANYTHING>")
 
     def test_keyword_and_whitespace(self):
-        self._test_handle('echo  ', 'To echo some text, send: ECHO <ANYTHING>')
+        self._test_handle("echo  ", "To echo some text, send: ECHO <ANYTHING>")
 
     def test_match(self):
-        self._test_handle('echo hello', 'hello')
+        self._test_handle("echo hello", "hello")
 
     def test_case_insensitive_match(self):
-        self._test_handle('EcHo hello', 'hello')
+        self._test_handle("EcHo hello", "hello")
 
     def test_leading_whitespace(self):
-        self._test_handle('  echo hello', 'hello')
+        self._test_handle("  echo hello", "hello")
 
     def test_trailing_whitespace(self):
-        self._test_handle('echo hello  ', 'hello  ')
+        self._test_handle("echo hello  ", "hello  ")
 
     def test_whitespace_after_keyword(self):
-        self._test_handle('echo     hello', 'hello')
+        self._test_handle("echo     hello", "hello")
 
 
 class TestPingHandler(RapidTest):
-
     def setUp(self):
         self.connection = self.create_connection()
 
@@ -60,22 +57,22 @@ class TestPingHandler(RapidTest):
         if correct_response is not None:
             self.assertTrue(retVal)
             self.assertEqual(len(msg.responses), 1)
-            self.assertEqual(msg.responses[0]['text'], correct_response)
+            self.assertEqual(msg.responses[0]["text"], correct_response)
         else:
             self.assertFalse(retVal)
             self.assertEqual(len(msg.responses), 0)
 
     def test_no_match(self):
-        self._test_handle('no match', None)
+        self._test_handle("no match", None)
 
     def test_match(self):
-        self._test_handle('ping', 'pong')
+        self._test_handle("ping", "pong")
 
     def test_leading_whitespace(self):
-        self._test_handle('   ping', None)
+        self._test_handle("   ping", None)
 
     def test_trailing_whitespace(self):
-        self._test_handle('ping   ', None)
+        self._test_handle("ping   ", None)
 
     def test_case_sensitivity(self):
-        self._test_handle('PiNg', None)
+        self._test_handle("PiNg", None)

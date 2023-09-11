@@ -12,6 +12,7 @@ What's New
 
  * Added support for Python 3.11
  * Added support for Django 4.2
+ * Formatted the code with Black
 
  .. _backwards-incompatible-changes-2.1.0:
 

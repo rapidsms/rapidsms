@@ -73,7 +73,7 @@ What's New
 
 * Deprecated ``rapidsms.log.mixin.LoggerMixin``. Please update all logging to
   use the standard logging module. That includes code that might use LoggerMixin
-  indirectly by extending ``AppBase``, ``BackendBase``, or ``BaseHandler``. 
+  indirectly by extending ``AppBase``, ``BackendBase``, or ``BaseHandler``.
   Search for code like ``self.error(...)`` or ``self.debug(...)`` and change to
   ``logger.error(...)`` or ``logger.debug(...)`` after creating a logger
   object as above. You'll want most logging to look like this:

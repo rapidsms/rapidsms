@@ -2,16 +2,16 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 from django.utils.timezone import now
+
 from rapidsms.messages.base import MessageBase
 
 
 class OutgoingMessage(MessageBase):
-    """Outbound message that can easily be sent to the router.
-    """
+    """Outbound message that can easily be sent to the router."""
 
     def __init__(self, *args, **kwargs):
-        self.received_at = kwargs.pop('sent_at', now())
-        if 'sent_at' in kwargs:
+        self.received_at = kwargs.pop("sent_at", now())
+        if "sent_at" in kwargs:
             raise Exception("OutgoingMessage.sent_at is meaningless")
         super(OutgoingMessage, self).__init__(*args, **kwargs)
 
@@ -32,9 +32,9 @@ class OutgoingMessage(MessageBase):
         context = {}
         if self.in_response_to:
             original = self.in_response_to
-            context['in_response_to'] = original.id
-            if 'external_id' in original.fields:
-                context['external_id'] = original.fields['external_id']
+            context["in_response_to"] = original.id
+            if "external_id" in original.fields:
+                context["external_id"] = original.fields["external_id"]
         return context
 
     def send(self):
@@ -42,4 +42,5 @@ class OutgoingMessage(MessageBase):
         ``rapidsms.router.send(text, connections)``.
         """
         from rapidsms.router import send
+
         send(self.text, self.connections)

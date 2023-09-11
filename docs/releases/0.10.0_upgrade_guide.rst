@@ -65,7 +65,7 @@ If you used PyGSM or one of the other non-HTTP backends, you must update your co
 Other backends
 ~~~~~~~~~~~~~~
 
-If none of the new backends suit the needs of your project, you may write a custom backend app. Backend classes should extend from the classes found in ``rapidsms.backends.base``.  
+If none of the new backends suit the needs of your project, you may write a custom backend app. Backend classes should extend from the classes found in ``rapidsms.backends.base``.
 
 
 Remove ``rapidsms.contrib.ajax``

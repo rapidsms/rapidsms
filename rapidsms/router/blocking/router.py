@@ -1,20 +1,19 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
 
+import copy
 import logging
 import warnings
-import copy
 from collections import defaultdict
 
 from django.db.models.query import QuerySet
 
-from rapidsms.messages.incoming import IncomingMessage
-from rapidsms.messages.outgoing import OutgoingMessage
-from rapidsms.backends.base import BackendBase
 from rapidsms.apps.base import AppBase
+from rapidsms.backends.base import BackendBase
 from rapidsms.conf import settings
 from rapidsms.errors import MessageSendingError
-
+from rapidsms.messages.incoming import IncomingMessage
+from rapidsms.messages.outgoing import OutgoingMessage
 
 logger = logging.getLogger(__name__)
 

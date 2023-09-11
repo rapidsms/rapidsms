@@ -1,4 +1,5 @@
 from django.test import TestCase
+
 from rapidsms.apps.base import AppBase
 from rapidsms.router.blocking import BlockingRouter
 
@@ -17,7 +18,7 @@ class RouterAppTest(TestCase):
 
     def test_invalid_app_path(self):
         """Invalid RapidSMS app modules shouldn't raise any errors."""
-        app = self.router.add_app('django.conrib.admin')
+        app = self.router.add_app("django.conrib.admin")
         self.assertTrue(app is None)
 
     def test_get_app_by_path(self):

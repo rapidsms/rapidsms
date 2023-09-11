@@ -3,8 +3,10 @@
 
 
 from django.core.management.base import BaseCommand
-from rapidsms.models import App
+
 from rapidsms.apps.base import AppBase
+from rapidsms.models import App
+
 from ...conf import settings
 
 
@@ -25,8 +27,7 @@ class Command(BaseCommand):
                 # Assure the module is a rapidsms app with an App class
                 if AppBase.find(module_name):
                     known_module_names.append(module_name)
-                    app = App.objects.create(
-                        module=module_name)
+                    app = App.objects.create(module=module_name)
 
                     # log at the same level as syncdb's "created table..."
                     # messages, to stay silent when called with -v 0

@@ -7,11 +7,10 @@ from rapidsms.messages.error import ErrorMessage
 
 
 class IncomingMessage(MessageBase):
-    """Inbound message that provides an API to handle responses.
-    """
+    """Inbound message that provides an API to handle responses."""
 
     def __init__(self, *args, **kwargs):
-        if 'received_at' in kwargs:
+        if "received_at" in kwargs:
             raise Exception("IncomingMessage.received_at is meaningless")
         super(IncomingMessage, self).__init__(*args, **kwargs)
         #: list of messages created by IncomingMessage.respond()
@@ -41,13 +40,17 @@ class IncomingMessage(MessageBase):
         :returns: dictionary with the arguments that will be passed to
             :py:meth:`rapidsms.router.send` to send this response.
         """
-        if 'template' in kwargs:
-            raise TypeError("`template` is no longer valid usage for "
-                            "respond().  Pass the message text as `text`.")
+        if "template" in kwargs:
+            raise TypeError(
+                "`template` is no longer valid usage for "
+                "respond().  Pass the message text as `text`."
+            )
 
-        context = {'text': text,
-                   'connections': self.connections,
-                   'in_response_to': self}
+        context = {
+            "text": text,
+            "connections": self.connections,
+            "in_response_to": self,
+        }
         context.update(kwargs)
         self.responses.append(context)
         return context

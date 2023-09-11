@@ -4,35 +4,42 @@ from __future__ import unicode_literals
 
 from django.db import models
 
-from .utils.modules import try_import, get_classes
 from .conf import settings
+from .utils.modules import get_classes, try_import
 
 
 class ExtensibleModelBase(models.base.ModelBase):
     def __new__(cls, name, bases, attrs):
         try:
-            app_label = attrs['Meta'].app_label
+            app_label = attrs["Meta"].app_label
         except KeyError:
             module_name = attrs["__module__"]
-            app_label = module_name.split('.')[-2]
+            app_label = module_name.split(".")[-2]
         extensions = _find_extensions(app_label, name)
         bases = tuple(extensions) + bases
 
-        return super(ExtensibleModelBase, cls).__new__(
-            cls, name, bases, attrs)
+        return super(ExtensibleModelBase, cls).__new__(cls, name, bases, attrs)
 
 
 def _find_extensions(app_label, model_name):
     ext = []
 
-    suffix = "extensions.%s.%s" % (
-        app_label, model_name.lower())
-    modules = filter(None, [
-        try_import("%s.%s" % (app_name, suffix))
-        for app_name in settings.INSTALLED_APPS])
-    modules = [mod for mod in [
-        try_import("%s.%s" % (app_name, suffix))
-        for app_name in settings.INSTALLED_APPS] if mod]
+    suffix = "extensions.%s.%s" % (app_label, model_name.lower())
+    modules = filter(
+        None,
+        [
+            try_import("%s.%s" % (app_name, suffix))
+            for app_name in settings.INSTALLED_APPS
+        ],
+    )
+    modules = [
+        mod
+        for mod in [
+            try_import("%s.%s" % (app_name, suffix))
+            for app_name in settings.INSTALLED_APPS
+        ]
+        if mod
+    ]
 
     for module in modules:
         for cls in get_classes(module, models.Model):
@@ -53,14 +60,13 @@ class Backend(models.Model):
     name = models.CharField(max_length=20, unique=True)
 
     class Meta:
-        app_label = 'rapidsms'
+        app_label = "rapidsms"
 
     def __str__(self):
         return self.name
 
     def __repr__(self):
-        return '<%s: %s>' %\
-            (type(self).__name__, self)
+        return "<%s: %s>" % (type(self).__name__, self)
 
 
 class App(models.Model):
@@ -82,14 +88,13 @@ class App(models.Model):
     active = models.BooleanField(default=False)
 
     class Meta:
-        app_label = 'rapidsms'
+        app_label = "rapidsms"
 
     def __str__(self):
         return self.module
 
     def __repr__(self):
-        return '<%s: %s>' %\
-            (type(self).__name__, self)
+        return "<%s: %s>" % (type(self).__name__, self)
 
 
 class ContactBase(models.Model):
@@ -103,23 +108,25 @@ class ContactBase(models.Model):
     #: The contact's preferred language.  the
     #: spec: http://www.w3.org/International/articles/language-tags/Overview
     #: reference: http://www.iana.org/assignments/language-subtag-registry
-    language = models.CharField(max_length=6, blank=True,
-                                help_text="The language which this contact "
-                                "prefers to communicate in, as a W3C "
-                                "language tag. If this field is left blank, "
-                                "RapidSMS will default to the value in "
-                                "LANGUAGE_CODE.")
+    language = models.CharField(
+        max_length=6,
+        blank=True,
+        help_text="The language which this contact "
+        "prefers to communicate in, as a W3C "
+        "language tag. If this field is left blank, "
+        "RapidSMS will default to the value in "
+        "LANGUAGE_CODE.",
+    )
 
     class Meta:
         abstract = True
-        app_label = 'rapidsms'
+        app_label = "rapidsms"
 
     def __str__(self):
         return self.name or "Anonymous"
 
     def __repr__(self):
-        return '<%s: %s>' %\
-            (type(self).__name__, self)
+        return "<%s: %s>" % (type(self).__name__, self)
 
     @property
     def is_anonymous(self):
@@ -140,8 +147,8 @@ class ContactBase(models.Model):
 
 
 class Contact(ContactBase):
-    """This model represents a person with a name
-    """
+    """This model represents a person with a name"""
+
     __metaclass__ = ExtensibleModelBase
 
 
@@ -153,7 +160,9 @@ class ConnectionBase(models.Model):
     #: number, email address, IRC nick, etc.)
     identity = models.CharField(max_length=100)
     #: (optional) associated :py:class:`~rapidsms.models.Contact`
-    contact = models.ForeignKey(Contact, null=True, blank=True, on_delete=models.CASCADE)
+    contact = models.ForeignKey(
+        Contact, null=True, blank=True, on_delete=models.CASCADE
+    )
     #: when this connection was created
     created_on = models.DateTimeField(auto_now_add=True)
     #: when this connection was last modified
@@ -161,16 +170,14 @@ class ConnectionBase(models.Model):
 
     class Meta:
         abstract = True
-        unique_together = (('backend', 'identity'),)
-        app_label = 'rapidsms'
+        unique_together = (("backend", "identity"),)
+        app_label = "rapidsms"
 
     def __str__(self):
-        return "%s via %s" %\
-            (self.identity, self.backend)
+        return "%s via %s" % (self.identity, self.backend)
 
     def __repr__(self):
-        return '<%s: %s>' %\
-            (type(self).__name__, self)
+        return "<%s: %s>" % (type(self).__name__, self)
 
 
 class Connection(ConnectionBase):

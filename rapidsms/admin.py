@@ -3,6 +3,7 @@
 
 
 from django.contrib import admin
+
 from .models import App, Backend, Connection, Contact
 
 
@@ -18,10 +19,10 @@ class ContactAdmin(admin.ModelAdmin):
 
 @admin.register(Connection)
 class ConnectionAdmin(admin.ModelAdmin):
-    list_display = ('id', 'backend', 'identity', 'contact')
-    list_filter = ('backend',)
-    search_fields = ('identity',)
-    raw_id_fields = ('contact',)
+    list_display = ("id", "backend", "identity", "contact")
+    list_filter = ("backend",)
+    search_fields = ("identity",)
+    raw_id_fields = ("contact",)
 
 
 admin.site.register(App)

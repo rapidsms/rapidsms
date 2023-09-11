@@ -78,7 +78,7 @@ Create ``config/rapidsms.yaml`` using the following configuration:
 .. code-block:: yaml
 
     smpp_transport:
-        transport_name: "transport" 
+        transport_name: "transport"
         system_id: smppclient1  # username
         password: password      # password
         host: localhost         # the host to connect to
@@ -98,9 +98,9 @@ Create ``config/rapidsms.yaml`` using the following configuration:
         smpp_transport: vumi.transports.smpp.SmppTransport
         rapidsms_relay: vumi.application.rapidsms_relay.RapidSMSRelay
 
-This configures a Vumi ``SmppTransport`` to communicate to 
-:ref:`SMPPSim <vumi-smppsim>` and a Vumi ``RapidSMSRelay`` to communicate to 
-RapidSMS. While not required for this setup, you'll need to set ``from_addr`` 
+This configures a Vumi ``SmppTransport`` to communicate to
+:ref:`SMPPSim <vumi-smppsim>` and a Vumi ``RapidSMSRelay`` to communicate to
+RapidSMS. While not required for this setup, you'll need to set ``from_addr``
 to your phone number if using a real SMSC.
 
 Now we can start Vumi using our config file::
@@ -135,7 +135,7 @@ backend.  You can do this like so:
 
     from django.conf.urls.defaults import *
     from rapidsms.backends.vumi.views import VumiBackendView
-    
+
     urlpatterns = patterns('',
         # ...
         url(r"^backend/vumi-fake-smsc/$",

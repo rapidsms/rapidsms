@@ -5,15 +5,15 @@ from django.test import TestCase
 
 from ..apps.base import AppBase
 
-
 # since AppBase introspects its name based upon the django app which it
 # is located in, if the module name changes, the tests fail. this would
 # be misleading, since it's the renamed tests at fault, not AppBase. to
 # avoid confusion, explode early with a more detailed error.
 if not __name__.startswith("rapidsms.tests"):
     raise Exception(
-        "This module must be within the 'rapidsms.tests' package for " +
-        "the unit tests to work, since AppBase introspects its name.")
+        "This module must be within the 'rapidsms.tests' package for "
+        + "the unit tests to work, since AppBase introspects its name."
+    )
 
 
 class MockRouter(object):
@@ -25,7 +25,6 @@ class AppStub(AppBase):
 
 
 class AppBaseTest(TestCase):
-
     def test_app_exposes_router(self):
         router = MockRouter()
         app = AppStub(router)
@@ -39,10 +38,11 @@ class AppBaseTest(TestCase):
         self.assertEqual(app.name, "tests")
 
     def test_app_finds_valid_app_classes(self):
-        app = AppBase.find('rapidsms.contrib.default')
+        app = AppBase.find("rapidsms.contrib.default")
         from rapidsms.contrib.default.app import App
+
         self.assertEqual(app, App)
 
     def test_app_ignores_invalid_modules(self):
-        app = AppBase.find('not.a.valid.module')
+        app = AppBase.find("not.a.valid.module")
         self.assertEqual(app, None)

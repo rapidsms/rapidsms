@@ -3,9 +3,10 @@
 
 
 from django import template
+
 register = template.Library()
 
 
-@register.inclusion_tag('rapidsms/templatetags/form.html')
+@register.inclusion_tag("rapidsms/templatetags/form.html")
 def render_form(form):
     return {"form": form}

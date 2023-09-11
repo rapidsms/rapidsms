@@ -4,10 +4,9 @@
 """ Store and get messages from cache """
 
 from rapidsms.backends.database.models import INCOMING, BackendMessage
-from rapidsms.router import receive, lookup_connections
+from rapidsms.router import lookup_connections, receive
 
-
-BACKEND_NAME = 'message_tester'
+BACKEND_NAME = "message_tester"
 
 
 def get_messages():
@@ -24,8 +23,9 @@ def store_message(direction, identity, text):
        or to (out)
     :param text: The message
     """
-    BackendMessage.objects.create(direction=direction, identity=identity,
-                                  text=text, name=BACKEND_NAME)
+    BackendMessage.objects.create(
+        direction=direction, identity=identity, text=text, name=BACKEND_NAME
+    )
 
 
 def store_and_queue(identity, text):
@@ -44,8 +44,7 @@ def clear_messages(identity):
 
     :param identity: The phone number whose messages will be cleared
     """
-    BackendMessage.objects.filter(identity=identity,
-                                  name=BACKEND_NAME).delete()
+    BackendMessage.objects.filter(identity=identity, name=BACKEND_NAME).delete()
 
 
 def clear_all_messages():

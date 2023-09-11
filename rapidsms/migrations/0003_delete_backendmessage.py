@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.db import models, migrations
+from django.db import migrations
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('rapidsms', '0002_alter_contact_language'),
+        ("rapidsms", "0002_alter_contact_language"),
     ]
 
     operations = [
         migrations.DeleteModel(
-            name='BackendMessage',
+            name="BackendMessage",
         ),
     ]
