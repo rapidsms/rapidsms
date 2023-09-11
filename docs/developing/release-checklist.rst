@@ -52,10 +52,8 @@ All the following checks should be verified before continuing:
 * ``master`` merged to ``develop`` to be sure any hotfixes are included
 * Version number in ``rapidsms/__init__.py`` updated
 * `Next` version number in ``rapidsms/docs/conf.py`` updated
-* New release labeled as current in ``rapidsms/docs/releases`` in
-  ``index.rst``, ``this-release.rst``, and ``roadmap.rst``
-* Previous release not labeled as current in ``rapidsms/docs/releases`` in
-  ``index.rst``, ``prev-release.rst``, and ``roadmap.rst``.
+* New release labeled as current in ``rapidsms/docs/releases/index.rst``
+* Previous release not labeled as current in ``rapidsms/docs/releases/index.rst``
 * Create a ``release-X.X.X`` branch (based off ``master``) in the RapidSMS
   `project template repository`_. Make sure to update ``README.rst`` as well.
 * Update project template command line in ``intro/install/index.rst`` to point
