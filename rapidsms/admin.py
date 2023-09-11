@@ -11,10 +11,12 @@ class ConnectionInline(admin.TabularInline):
     extra = 1
 
 
+@admin.register(Contact)
 class ContactAdmin(admin.ModelAdmin):
     inlines = (ConnectionInline,)
 
 
+@admin.register(Connection)
 class ConnectionAdmin(admin.ModelAdmin):
     list_display = ('id', 'backend', 'identity', 'contact')
     list_filter = ('backend',)
@@ -24,5 +26,3 @@ class ConnectionAdmin(admin.ModelAdmin):
 
 admin.site.register(App)
 admin.site.register(Backend)
-admin.site.register(Connection, ConnectionAdmin)
-admin.site.register(Contact, ContactAdmin)

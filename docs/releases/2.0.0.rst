@@ -1,5 +1,5 @@
 ================================================
-RapidSMS 2.0.0 release notes (current release)
+RapidSMS 2.0.0 release notes
 ================================================
 
 Welcome to RapidSMS 2.0.0! These release notes cover the new features in 2.0.0
