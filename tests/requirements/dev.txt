@@ -1,4 +1,4 @@
 # django-tables2 setup.py pulls in Django>=1.11
 # Ensure we don't install too new of a version when building docs.
-Django<5.0
+Django<5.2
 celery>=5.2.1
