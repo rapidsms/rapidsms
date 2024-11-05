@@ -25,3 +25,13 @@ repos:
       - id: detect-private-key
       - id: end-of-file-fixer
       - id: trailing-whitespace
+  - repo: https://github.com/asottile/pyupgrade
+    rev: v3.19.0
+    hooks:
+      - id: pyupgrade
+        args: [--py39-plus]
+  - repo: https://github.com/adamchainz/django-upgrade
+    rev: 1.22.1
+    hooks:
+      - id: django-upgrade
+        args: [--target-version, "4.2"]

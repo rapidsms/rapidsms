@@ -19,7 +19,7 @@ class VumiBackendView(BaseHttpBackendView):
 
     def get_form_kwargs(self):
         """Load JSON POST data."""
-        kwargs = super(VumiBackendView, self).get_form_kwargs()
+        kwargs = super().get_form_kwargs()
         try:
             kwargs["data"] = json.loads(self.request.body.decode())
         except ValueError:
@@ -27,6 +27,6 @@ class VumiBackendView(BaseHttpBackendView):
         return kwargs
 
     def form_valid(self, form):
-        super(VumiBackendView, self).form_valid(form)
+        super().form_valid(form)
         # return 200 for Vumi
         return HttpResponse("")

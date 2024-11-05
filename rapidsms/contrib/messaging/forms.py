@@ -14,7 +14,7 @@ class MessageForm(forms.Form):
     connections = AutoCompleteSelectMultipleField(lookup_class=ConnectionLookup)
 
     def __init__(self, *args, **kwargs):
-        super(MessageForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.fields["connections"].widget.attrs["placeholder"] = "Add a Recipient"
         self.fields["message"].widget.attrs["placeholder"] = "Message"
 

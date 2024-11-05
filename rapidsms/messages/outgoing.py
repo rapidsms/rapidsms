@@ -13,7 +13,7 @@ class OutgoingMessage(MessageBase):
         self.received_at = kwargs.pop("sent_at", now())
         if "sent_at" in kwargs:
             raise Exception("OutgoingMessage.sent_at is meaningless")
-        super(OutgoingMessage, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     @property
     def sent_at(self):

@@ -26,11 +26,11 @@ class BaseHttpBackendView(FormMixin, ProcessFormView):
         """
         if "backend_name" in kwargs:
             self.backend_name = kwargs["backend_name"]
-        return super(BaseHttpBackendView, self).dispatch(*args, **kwargs)
+        return super().dispatch(*args, **kwargs)
 
     def get_form_kwargs(self):
         """Always pass backend_name into __init__"""
-        kwargs = super(BaseHttpBackendView, self).get_form_kwargs()
+        kwargs = super().get_form_kwargs()
         kwargs["backend_name"] = self.backend_name
         return kwargs
 
@@ -58,7 +58,7 @@ class BaseHttpBackendView(FormMixin, ProcessFormView):
         """
         logger.error("%s data:", self.request.method)
         logger.error(pprint.pformat(form.data))
-        errors = dict((k, v[0]) for k, v in form.errors.items())
+        errors = {k: v[0] for k, v in form.errors.items()}
         logger.error(str(errors))
         if form.non_field_errors():
             logger.error(form.non_field_errors())
@@ -76,7 +76,7 @@ class GenericHttpBackendView(BaseHttpBackendView):
     form_class = GenericHttpForm
 
     def get_form_kwargs(self):
-        kwargs = super(GenericHttpBackendView, self).get_form_kwargs()
+        kwargs = super().get_form_kwargs()
         # pass the identity and text field names into the form
         if self.params:
             kwargs.update(self.params)

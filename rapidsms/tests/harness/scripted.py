@@ -46,7 +46,7 @@ class TestScriptMixin(TestRouterMixin):
             if not line or line.startswith("#"):
                 continue
             tokens = re.split(r"([<>])", line, 1)
-            num, dir, txt = [x.strip() for x in tokens]
+            num, dir, txt = (x.strip() for x in tokens)
             # allow users to optionally put dates in the number
             # 19232922@200804150730
             if "@" in num:

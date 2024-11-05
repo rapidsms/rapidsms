@@ -6,9 +6,9 @@ from rapidsms.tests.translation import app
 from rapidsms.utils import translation as trans_helpers
 
 
-class TranslationTestMixin(object):
+class TranslationTestMixin:
     def setUp(self):
-        super(TranslationTestMixin, self).setUp()
+        super().setUp()
         self.backend = self.create_backend(data={"name": "mockbackend"})
 
     def create_lang_connection(self, identity, language):

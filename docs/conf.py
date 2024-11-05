@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # RapidSMS documentation build configuration file, created by
 # sphinx-quickstart on Sun Oct 16 13:48:46 2011.

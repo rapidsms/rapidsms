@@ -137,7 +137,7 @@ def _handlers(module_name):
 
     files = find_python_files(handlers_module.__path__[0])
 
-    module_names = ["%s.%s" % (handlers_module.__name__, file) for file in files]
+    module_names = [f"{handlers_module.__name__}.{file}" for file in files]
 
     modules = [try_import(mod_name) for mod_name in module_names]
 

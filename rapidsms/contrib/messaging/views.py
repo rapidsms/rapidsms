@@ -30,7 +30,7 @@ def send(request):
             if len(message.connections) == 1:
                 return HttpResponse("Your message was sent to 1 recipient.")
             else:
-                msg = "Your message was sent to {0} " "recipients.".format(
+                msg = "Your message was sent to {} " "recipients.".format(
                     len(message.connections)
                 )
                 return HttpResponse(msg)

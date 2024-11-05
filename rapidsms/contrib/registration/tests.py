@@ -1,10 +1,9 @@
-# coding=utf-8
 from io import BytesIO
+from unittest.mock import Mock, patch
 
 from django.http import Http404, HttpRequest, HttpResponseRedirect, QueryDict
 from django.test import TestCase
 from django.urls import reverse
-from mock import Mock, patch
 
 from rapidsms.contrib.registration import views
 from rapidsms.models import Connection, Contact
@@ -195,7 +194,7 @@ class TestViews(TestCase, CreateDataMixin, LoginMixin):
             retval = views.contact(request, pk=contact.pk)
         self.assertTrue(isinstance(retval, HttpResponseRedirect))
         self.assertEqual(302, retval.status_code)
-        render.assert_called()
+        render.assert_not_called()
         new_contact = Contact.objects.get(pk=contact.pk)
         self.assertEqual(data["name"], new_contact.name)
         self.assertEqual(data["language"], new_contact.language)

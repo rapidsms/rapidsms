@@ -1,6 +1,7 @@
+from unittest.mock import patch
+
 from django.test import TestCase
 from django.test.utils import override_settings
-from mock import patch
 
 from rapidsms.contrib.echo.handlers.echo import EchoHandler
 from rapidsms.errors import MessageSendingError
@@ -302,8 +303,8 @@ class DatabaseRouterSendTest(harness.DatabaseBackendMixin, TestCase):
         # only 2 messages should be sent, both from t2
         self.assertEqual(2, len(self.sent_messages))
         self.assertEqual(
-            set([m.identity for m in self.sent_messages]),
-            set([t.connection.identity for t in t2]),
+            {m.identity for m in self.sent_messages},
+            {t.connection.identity for t in t2},
         )
 
     def test_all_transmissions_set_to_E_if_backend_sending_error(self):

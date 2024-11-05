@@ -34,9 +34,7 @@ class DatabaseRouter(BlockingRouter):
 
     def new_incoming_message(self, connections, text, **kwargs):
         """Create and attach database message to message object."""
-        msg = super(DatabaseRouter, self).new_incoming_message(
-            connections, text, **kwargs
-        )
+        msg = super().new_incoming_message(connections, text, **kwargs)
         # save and attach database message to message object
         msg.dbm = self.queue_message("I", connections, text, **kwargs)
         # set id of message to the database message primary key

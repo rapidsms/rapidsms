@@ -2,7 +2,7 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 
-class BaseHandler(object):
+class BaseHandler:
     @classmethod
     def dispatch(cls, router, msg):
         return False

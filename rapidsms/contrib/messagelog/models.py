@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
-from __future__ import unicode_literals
 
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -56,7 +55,7 @@ class Message(models.Model):
             # we still might want to know who it originally came
             # in from.
             self.contact = self.connection.contact
-        super(Message, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
     @property
     def who(self):
@@ -67,4 +66,4 @@ class Message(models.Model):
         # crop the text (to avoid exploding the admin)
         text = self.text if len(self.text) < 60 else "%s..." % self.text[0:57]
         direction = "to" if self.direction == self.INCOMING else "from"
-        return "%s (%s %s)" % (text, direction, self.who)
+        return f"{text} ({direction} {self.who})"

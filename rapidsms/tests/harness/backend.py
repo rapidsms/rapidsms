@@ -6,7 +6,7 @@ class MockBackend(BackendBase):
     """Simple backend that stores sent messages."""
 
     def __init__(self, *args, **kwargs):
-        super(MockBackend, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.messages = []
 
     def clear(self):

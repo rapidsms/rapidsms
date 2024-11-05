@@ -32,10 +32,6 @@ class LanguageHandler(KeywordHandler):
             self.msg.connections[0].contact.language = code
             self.msg.connections[0].contact.save()
 
-            return self.respond(
-                "I will speak to you in %(language)s." % {"language": name}
-            )
+            return self.respond(f"I will speak to you in {name}.")
 
-        return self.respond_error(
-            'Sorry, I don\'t speak "%(language)s".' % {"language": text}
-        )
+        return self.respond_error(f'Sorry, I don\'t speak "{text}".')

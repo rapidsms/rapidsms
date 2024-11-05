@@ -1,9 +1,9 @@
 import json
+from unittest.mock import patch
 
 from django.test import TestCase
 from django.test.utils import override_settings
 from django.urls import reverse
-from mock import patch
 
 from rapidsms.backends.vumi.forms import VumiForm
 from rapidsms.backends.vumi.outgoing import VumiBackend

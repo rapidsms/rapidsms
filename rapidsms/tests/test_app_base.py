@@ -16,7 +16,7 @@ if not __name__.startswith("rapidsms.tests"):
     )
 
 
-class MockRouter(object):
+class MockRouter:
     pass
 
 

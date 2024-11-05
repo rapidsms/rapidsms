@@ -7,7 +7,7 @@ from rapidsms.router import get_router, receive, send
 from rapidsms.tests import harness
 
 
-class MockRouter(object):
+class MockRouter:
     """Dummy class used to test importing with get_router()"""
 
     pass

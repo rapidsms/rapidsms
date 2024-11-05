@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
 
 import copy
 import logging
@@ -18,7 +17,7 @@ from rapidsms.messages.outgoing import OutgoingMessage
 logger = logging.getLogger(__name__)
 
 
-class BlockingRouter(object):
+class BlockingRouter:
     """Base RapidSMS router implementation."""
 
     #: Incoming router phases processed in the order in which they're defined.
@@ -106,7 +105,7 @@ class BlockingRouter(object):
         intended to make the backend configuration case insensitive.)
         """
 
-        return dict([(key.lower(), val) for key, val in config.items()])
+        return {key.lower(): val for key, val in config.items()}
 
     def receive_incoming(self, msg):
         """

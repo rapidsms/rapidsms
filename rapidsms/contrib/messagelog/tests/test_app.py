@@ -14,7 +14,7 @@ __all__ = [
 ]
 
 
-class MessageLogAppTestBase(object):
+class MessageLogAppTestBase:
     def setUp(self):
         self.contact = self.create_contact()
         self.connection = self.lookup_connections(["1112223333"])[0]

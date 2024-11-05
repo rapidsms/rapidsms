@@ -63,7 +63,7 @@ def paginator(context, page, prefix=""):
     )
     last_page_number = page.paginator.num_pages + 1
 
-    pages = set([page.number])
+    pages = {page.number}
     # first set of border links
     for p in range(1, num_border_links + 1):
         pages.add(p)
@@ -111,4 +111,4 @@ def _self_link(request, **kwargs):
         new_kwargs[k] = v
 
     kwargs_enc = new_kwargs.urlencode()
-    return "%s?%s" % (request.path, kwargs_enc)
+    return f"{request.path}?{kwargs_enc}"
