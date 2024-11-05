@@ -22,12 +22,12 @@ class KannelBackendView(BaseHttpBackendView):
         return self.post(*args, **kwargs)
 
     def get_form_kwargs(self):
-        kwargs = super(KannelBackendView, self).get_form_kwargs()
+        kwargs = super().get_form_kwargs()
         kwargs["data"] = self.request.GET  # passes request.GET to the form
         return kwargs
 
     def form_valid(self, form):
-        super(KannelBackendView, self).form_valid(form)
+        super().form_valid(form)
         # any text in the response will be sent as an SMS, so make that ''
         return HttpResponse("")
 
@@ -52,7 +52,7 @@ class DeliveryReportView(CreateView):
         return self.post(*args, **kwargs)
 
     def get_form_kwargs(self):
-        kwargs = super(DeliveryReportView, self).get_form_kwargs()
+        kwargs = super().get_form_kwargs()
         kwargs["data"] = self.request.GET  # passes request.GET to the form
         return kwargs
 
@@ -67,7 +67,7 @@ class DeliveryReportView(CreateView):
         """
         logger.error("%s data:", self.request.method)
         logger.error(pprint.pformat(form.data))
-        errors = dict((k, v[0]) for k, v in form.errors.items())
+        errors = {k: v[0] for k, v in form.errors.items()}
         logger.error(str(errors))
         if form.non_field_errors():
             logger.error(form.non_field_errors())

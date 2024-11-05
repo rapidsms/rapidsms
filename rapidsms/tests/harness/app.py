@@ -5,7 +5,7 @@ class MockApp(AppBase):
     """A subclass of AppBase with all the moving parts replaced."""
 
     def __init__(self, *args, **kwargs):
-        super(MockApp, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.calls = []
         self.return_values = {}
 

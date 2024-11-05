@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 import random
 import string
 
@@ -15,7 +13,7 @@ __all__ = ("CreateDataMixin", "LoginMixin")
 UNICODE_CHARS = [chr(x) for x in range(1, 0xD7FF)]
 
 
-class CreateDataMixin(object):
+class CreateDataMixin:
     """Base test mixin class that provides helper functions to create data.
 
     No superclasses.
@@ -110,7 +108,7 @@ class CreateDataMixin(object):
         return IncomingMessage(**defaults)
 
 
-class LoginMixin(object):
+class LoginMixin:
     """Helpers for creating users and logging in"""
 
     def login(self):

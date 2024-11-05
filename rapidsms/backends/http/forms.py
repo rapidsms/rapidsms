@@ -12,7 +12,7 @@ class BaseHttpForm(forms.Form):
     def __init__(self, *args, **kwargs):
         """Save backend name to form for use later"""
         self.backend_name = kwargs.pop("backend_name")
-        super(BaseHttpForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def lookup_connections(self, identities):
         """Simple wrapper to ease connection lookup on child forms."""
@@ -38,7 +38,7 @@ class GenericHttpForm(BaseHttpForm):
         # defaults to "text" and "identity"
         self.text_name = kwargs.pop("text_name", "text")
         self.identity_name = kwargs.pop("identity_name", "identity")
-        super(GenericHttpForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.fields[self.text_name] = forms.CharField()
         self.fields[self.identity_name] = forms.CharField()
 

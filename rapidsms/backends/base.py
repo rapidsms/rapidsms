@@ -4,7 +4,7 @@
 from rapidsms.utils.modules import import_class
 
 
-class BackendBase(object):
+class BackendBase:
     """Base class for outbound backend functionality."""
 
     @classmethod

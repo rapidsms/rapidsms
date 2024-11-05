@@ -12,7 +12,7 @@ except ImportError:
 
 class ReturningEchoApp(EchoApp):
     def handle(self, message):
-        super(ReturningEchoApp, self).handle(message)
+        super().handle(message)
         return True  # Return so that future apps don't handle the message
 
 

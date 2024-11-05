@@ -4,7 +4,7 @@
 from ..utils.modules import get_class, try_import
 
 
-class AppBase(object):
+class AppBase:
     """ """
 
     @classmethod

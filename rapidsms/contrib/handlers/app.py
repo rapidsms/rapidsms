@@ -14,7 +14,7 @@ class App(AppBase):
         """
         Spiders all apps, and registers all available handlers.
         """
-        super(App, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.handlers = get_handlers()
         if len(self.handlers):
             class_names = [cls.__name__ for cls in self.handlers]

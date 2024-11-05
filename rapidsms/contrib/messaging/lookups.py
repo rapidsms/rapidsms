@@ -18,13 +18,13 @@ class ConnectionLookup(ModelLookup):
         # Add an asterisk to default connections
         default = not item.contact or item == item.contact.default_connection
         if default:
-            conn_name = "{0} - {1}*".format(item.backend.name, item.identity)
+            conn_name = f"{item.backend.name} - {item.identity}*"
         else:
-            conn_name = "{0} - {1}".format(item.backend.name, item.identity)
+            conn_name = f"{item.backend.name} - {item.identity}"
 
         if not item.contact or not item.contact.name:
             return conn_name
-        return "{0} ({1})".format(item.contact.name, conn_name)
+        return f"{item.contact.name} ({conn_name})"
 
 
 registry.register(ConnectionLookup)

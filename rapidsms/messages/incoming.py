@@ -12,7 +12,7 @@ class IncomingMessage(MessageBase):
     def __init__(self, *args, **kwargs):
         if "received_at" in kwargs:
             raise Exception("IncomingMessage.received_at is meaningless")
-        super(IncomingMessage, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         #: list of messages created by IncomingMessage.respond()
         self.responses = []
 

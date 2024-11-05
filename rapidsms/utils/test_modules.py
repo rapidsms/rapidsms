@@ -3,7 +3,7 @@ from django.test import TestCase
 from rapidsms.utils.modules import get_class, import_class, import_module
 
 
-class ParentA(object):
+class ParentA:
     pass
 
 
@@ -11,7 +11,7 @@ class ChildOfA(ParentA):
     pass
 
 
-class ParentB(object):
+class ParentB:
     pass
 
 

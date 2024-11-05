@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
 from io import BytesIO
+from unittest.mock import patch
 
 from django.test import TestCase
 from django.urls import reverse
-from mock import patch
 
 from rapidsms.backends.database.models import INCOMING
 from rapidsms.contrib.httptester.forms import MessageForm

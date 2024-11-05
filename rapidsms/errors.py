@@ -14,7 +14,7 @@ class MessageSendingError(Exception):
     ):
         # list of failed identities can optionally be attached
         self.failed_identities = failed_identities or []
-        super(MessageSendingError, self).__init__(message)
+        super().__init__(message)
 
 
 class NoRouterError(MessageSendingError):

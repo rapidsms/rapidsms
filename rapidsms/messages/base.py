@@ -6,7 +6,7 @@ import warnings
 from uuid import uuid4
 
 
-class MessageBase(object):
+class MessageBase:
     """Basic message representation with text and connection(s)."""
 
     def __init__(
@@ -63,7 +63,7 @@ class MessageBase(object):
         return self.text
 
     def __repr__(self):
-        return "<%s: %s>" % (self.__class__.__name__, self.text)
+        return f"<{self.__class__.__name__}: {self.text}>"
 
     @staticmethod
     def generate_id():

@@ -8,7 +8,7 @@ from rapidsms.models import Connection, Contact
 
 class ConnectionFormSetBase(forms.models.BaseInlineFormSet):
     def __init__(self, *args, **kwargs):
-        super(ConnectionFormSetBase, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.forms[0].empty_permitted = False
         for form in self.forms:
             if not form.initial:

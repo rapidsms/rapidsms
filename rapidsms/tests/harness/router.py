@@ -47,7 +47,7 @@ class CustomRouterMixin(CreateDataMixin):
 
     def __call__(self, result=None):
         self._pre_rapidsms_setup()
-        super(CustomRouterMixin, self).__call__(result)
+        super().__call__(result)
         self._post_rapidsms_teardown()
 
     def receive(self, text, connection, **kwargs):
@@ -91,11 +91,11 @@ class DatabaseBackendMixin(CustomRouterMixin):
 
     def setUp(self):
         self.backend = self.create_backend(data={"name": "mockbackend"})
-        super(DatabaseBackendMixin, self).setUp()
+        super().setUp()
 
     def lookup_connections(self, identities, backend="mockbackend"):
         """lookup_connections wrapper to use mockbackend by default"""
-        return super(DatabaseBackendMixin, self).lookup_connections(backend, identities)
+        return super().lookup_connections(backend, identities)
 
     @property
     def sent_messages(self):
@@ -127,7 +127,7 @@ class TestRouterMixin(CustomRouterMixin):
         self.router = test_router.TestRouter(**kwargs)
         # set RAPIDSMS_ROUTER to our newly created instance
         self.router_class = self.router
-        super(TestRouterMixin, self).set_router()
+        super().set_router()
 
     @property
     def inbound(self):
@@ -151,4 +151,4 @@ class TestRouterMixin(CustomRouterMixin):
     def lookup_connections(self, identities, backend="mockbackend"):
         """A wrapper around the ``lookup_connections`` API.
         See :ref:`connection_lookup`."""
-        return super(TestRouterMixin, self).lookup_connections(backend, identities)
+        return super().lookup_connections(backend, identities)

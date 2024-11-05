@@ -49,7 +49,7 @@ class KannelBackend(BackendBase):
                 "identity=%p",
             )
             dlr_url_params = "&".join(dlr_url_params)
-            dlr_url = "%s%s" % (
+            dlr_url = "{}{}".format(
                 self.delivery_report_url,
                 reverse("kannel-delivery-report"),
             )

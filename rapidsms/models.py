@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
-from __future__ import unicode_literals
 
 from django.db import models
 
@@ -18,25 +17,21 @@ class ExtensibleModelBase(models.base.ModelBase):
         extensions = _find_extensions(app_label, name)
         bases = tuple(extensions) + bases
 
-        return super(ExtensibleModelBase, cls).__new__(cls, name, bases, attrs)
+        return super().__new__(cls, name, bases, attrs)
 
 
 def _find_extensions(app_label, model_name):
     ext = []
 
-    suffix = "extensions.%s.%s" % (app_label, model_name.lower())
+    suffix = f"extensions.{app_label}.{model_name.lower()}"
     modules = filter(
         None,
-        [
-            try_import("%s.%s" % (app_name, suffix))
-            for app_name in settings.INSTALLED_APPS
-        ],
+        [try_import(f"{app_name}.{suffix}") for app_name in settings.INSTALLED_APPS],
     )
     modules = [
         mod
         for mod in [
-            try_import("%s.%s" % (app_name, suffix))
-            for app_name in settings.INSTALLED_APPS
+            try_import(f"{app_name}.{suffix}") for app_name in settings.INSTALLED_APPS
         ]
         if mod
     ]
@@ -66,7 +61,7 @@ class Backend(models.Model):
         return self.name
 
     def __repr__(self):
-        return "<%s: %s>" % (type(self).__name__, self)
+        return f"<{type(self).__name__}: {self}>"
 
 
 class App(models.Model):
@@ -94,7 +89,7 @@ class App(models.Model):
         return self.module
 
     def __repr__(self):
-        return "<%s: %s>" % (type(self).__name__, self)
+        return f"<{type(self).__name__}: {self}>"
 
 
 class ContactBase(models.Model):
@@ -126,7 +121,7 @@ class ContactBase(models.Model):
         return self.name or "Anonymous"
 
     def __repr__(self):
-        return "<%s: %s>" % (type(self).__name__, self)
+        return f"<{type(self).__name__}: {self}>"
 
     @property
     def is_anonymous(self):
@@ -174,10 +169,10 @@ class ConnectionBase(models.Model):
         app_label = "rapidsms"
 
     def __str__(self):
-        return "%s via %s" % (self.identity, self.backend)
+        return f"{self.identity} via {self.backend}"
 
     def __repr__(self):
-        return "<%s: %s>" % (type(self).__name__, self)
+        return f"<{type(self).__name__}: {self}>"
 
 
 class Connection(ConnectionBase):

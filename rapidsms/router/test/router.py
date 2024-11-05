@@ -18,7 +18,7 @@ class TestRouter(BlockingRouter):
         self.outbound = []
 
         self.disable_phases = kwargs.pop("disable_phases", False)
-        super(TestRouter, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def receive_incoming(self, msg):
         """Save all inbound messages locally for test inspection"""
@@ -26,7 +26,7 @@ class TestRouter(BlockingRouter):
         # short-circut router phases if disabled
         if self.disable_phases:
             return
-        super(TestRouter, self).receive_incoming(msg)
+        super().receive_incoming(msg)
 
     def send_outgoing(self, msg):
         """Save all outbound messages locally for test inspection"""
@@ -34,4 +34,4 @@ class TestRouter(BlockingRouter):
         # short-circut router phases if disabled
         if self.disable_phases:
             return
-        super(TestRouter, self).send_outgoing(msg)
+        super().send_outgoing(msg)

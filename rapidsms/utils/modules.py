@@ -28,7 +28,7 @@ def import_class(import_path, base_class=None):
     try:
         mod = import_module(module)
     except ImportError as e:
-        raise ImportError('Error importing module %s: "%s"' % (module, e))
+        raise ImportError(f'Error importing module {module}: "{e}"')
     try:
         class_ = getattr(mod, class_name)
     except AttributeError:
@@ -38,7 +38,7 @@ def import_class(import_path, base_class=None):
     if not inspect.isclass(class_):
         raise ImportError("%s is not a class." % import_path)
     if base_class and not issubclass(class_, base_class):
-        msg = "%s is not a subclass of %s" % (class_name, base_class.__name__)
+        msg = f"{class_name} is not a subclass of {base_class.__name__}"
         raise ImportError(msg)
     return class_
 
@@ -183,12 +183,14 @@ def get_class(module, superclass=None):
         names = ", ".join([cls.__name__ for cls in classes])
         raise (
             AttributeError(
-                "Module %s contains multiple %s (%s)." % (module.__name__, desc, names)
+                "Module {} contains multiple {} ({}).".format(
+                    module.__name__, desc, names
+                )
             )
         )
 
     else:  # len < 1
-        raise (AttributeError("Module %s contains no %s." % (module.__name__, desc)))
+        raise (AttributeError(f"Module {module.__name__} contains no {desc}."))
 
 
 def get_package_path(package_name):

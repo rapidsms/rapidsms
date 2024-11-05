@@ -1,6 +1,7 @@
+from unittest.mock import patch
+
 from django.test import TestCase
 from django.test.utils import override_settings
-from mock import patch
 
 from rapidsms.router import get_router
 from rapidsms.router.celery.tasks import receive_async, send_async
