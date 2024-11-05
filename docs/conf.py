@@ -46,7 +46,7 @@ master_doc = "index"
 # General information about the project.
 project = "RapidSMS"
 copyright = (
-    "2013-2023, RapidSMS. Sphinx-powered using a "
+    "2013-2024, RapidSMS. Sphinx-powered using a "
     '<a href="https://github.com/mitsuhiko/flask-sphinx-themes">custom</a> theme'
 )
 
